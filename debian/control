@@ -17,7 +17,7 @@ Package: noson-app
 Architecture: any
 Depends: qmlscene,
          qml-module-qt-labs-settings,
-         qml-module-qtmultimedia (>=5.5.1-1ubuntu2),
+         qml-module-qtmultimedia,
          qtdeclarative5-ubuntu-content0.1,
          qtdeclarative5-particles-plugin,
          qtdeclarative5-qtmultimedia-plugin,
