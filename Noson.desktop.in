@@ -1,0 +1,11 @@
+[Desktop Entry]
+_Name=Noson
+Comment=Sonos music
+Exec=@EXEC@
+Icon=@ICON@
+Terminal=false
+Type=Application
+X-Ubuntu-Touch=true
+
+
+

@@ -1,0 +1,26 @@
+
+#ifndef LOCAL_CONFIG_H
+#define LOCAL_CONFIG_H
+
+#undef HAVE_TIMEGM
+#define HAVE_TIMEGM @HAVE_TIMEGM@
+
+#undef HAVE_LOCALTIME_R
+#define HAVE_LOCALTIME_R @HAVE_LOCALTIME_R@
+
+#undef HAVE_GMTIME_R
+#define HAVE_GMTIME_R @HAVE_GMTIME_R@
+
+#undef CC_INLINE
+#define CC_INLINE @CC_INLINE@
+
+#undef CXX_STANDARD
+#define CXX_STANDARD @CXX_STANDARD@
+
+#undef NSROOT
+#define NSROOT SONOS
+
+#undef LIBTAG
+#define LIBTAG "SONOS"
+
+#endif	/* LOCAL_CONFIG_H */

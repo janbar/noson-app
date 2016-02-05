@@ -1,0 +1,30 @@
+Source: noson-app
+Section: misc
+Priority: extra
+Maintainer: janbar <jlbarriere68@gmail.com>
+Build-Depends: cmake,
+               debhelper (>= 9.0.0),
+               intltool,
+               qt5-default,
+               qtbase5-dev
+Standards-Version: 3.9.4
+Homepage: https://github.com/janbar/noson-app
+
+Package: noson-app
+Architecture: any
+Depends: qmlscene,
+         qml-module-qt-labs-settings,
+         qml-module-qtmultimedia (>=5.5.1-1ubuntu2),
+         qtdeclarative5-ubuntu-content0.1,
+         qtdeclarative5-particles-plugin,
+         qtdeclarative5-qtmultimedia-plugin,
+         qtdeclarative5-qtquick2-plugin,
+         qtdeclarative5-ubuntu-thumbnailer0.1,
+         qtdeclarative5-ubuntu-ui-toolkit-plugin,
+         qtdeclarative5-window-plugin,
+         thumbnailer-service,
+         suru-icon-theme | ubuntu-mobile-icons,
+         ${shlibs:Depends}, ${misc:Depends},
+Description: SONOS controller for Ubuntu Touch
+ Touch enabled SONOS controller for Ubuntu
+

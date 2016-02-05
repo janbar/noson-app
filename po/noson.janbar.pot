@@ -1,0 +1,431 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-02-02 21:32+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: ../app/Main.qml:95
+#: /home/jlb/src/janbar/QML/noson-app-build/po/Noson.desktop.in.h:1
+msgid "Noson"
+msgstr ""
+
+#: ../app/Main.qml:206
+msgid "Index loaded"
+msgstr ""
+
+#: ../app/Main.qml:311
+msgid "Debug: "
+msgstr ""
+
+#: ../app/Main.qml:353
+msgid "Refreshing of index is running"
+msgstr ""
+
+#: ../app/Main.qml:356 ../app/Main.qml:375 ../app/Main.qml:383
+#: ../app/Main.qml:393 ../app/Main.qml:398 ../app/Main.qml:422
+#: ../app/Main.qml:436 ../app/Main.qml:448 ../app/Main.qml:459
+#: ../app/Main.qml:467 ../app/Main.qml:477 ../app/Main.qml:487
+#: ../app/Main.qml:494 ../app/Main.qml:501 ../app/Main.qml:510
+#: ../app/Main.qml:519 ../app/Main.qml:527 ../app/Main.qml:534
+#: ../app/ui/AddToPlaylist.qml:139
+msgid "Action can't be performed"
+msgstr ""
+
+#: ../app/Main.qml:380 ../app/Main.qml:433 ../app/Main.qml:445
+#: ../app/Main.qml:507 ../app/ui/AddToPlaylist.qml:136
+msgid "song added"
+msgstr ""
+
+#: ../app/Main.qml:419
+#, qt-format
+msgid "%1 song added"
+msgid_plural "%1 songs added"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../app/Main.qml:456
+msgid "Queue cleared"
+msgstr ""
+
+#: ../app/Main.qml:516
+#, qt-format
+msgid "%1 song removed"
+msgid_plural "%1 songs removed"
+msgstr[0] ""
+msgstr[1] ""
+
+#. TRANSLATORS: this appears in the header with limited space (around 20 characters)
+#: ../app/Main.qml:631 ../app/ui/NowPlaying.qml:37
+msgid "Now playing"
+msgstr ""
+
+#. TRANSLATORS: this is a title of a dialog with a prompt to rename a playlist
+#: ../app/components/Dialog/DialogEditPlaylist.qml:28
+msgid "Rename playlist"
+msgstr ""
+
+#: ../app/components/Dialog/DialogEditPlaylist.qml:35
+#: ../app/components/Dialog/DialogManageQueue.qml:40
+#: ../app/components/Dialog/DialogNewPlaylist.qml:43
+msgid "Enter playlist name"
+msgstr ""
+
+#: ../app/components/Dialog/DialogEditPlaylist.qml:44
+msgid "Change"
+msgstr ""
+
+#: ../app/components/Dialog/DialogEditPlaylist.qml:54
+#: ../app/components/Dialog/DialogManageQueue.qml:58
+#: ../app/components/Dialog/DialogNewPlaylist.qml:58
+msgid "Please type in a name."
+msgstr ""
+
+#: ../app/components/Dialog/DialogEditPlaylist.qml:59
+#: ../app/components/Dialog/DialogNewPlaylist.qml:64
+#: ../app/components/Dialog/DialogRemovePlaylist.qml:59
+msgid "Cancel"
+msgstr ""
+
+#. TRANSLATORS: this is a title of a dialog to manage queue
+#. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
+#: ../app/components/Dialog/DialogManageQueue.qml:26
+#: ../app/ui/NowPlaying.qml:100
+msgid "Manage queue"
+msgstr ""
+
+#: ../app/components/Dialog/DialogManageQueue.qml:44
+msgid "Save queue"
+msgstr ""
+
+#: ../app/components/Dialog/DialogManageQueue.qml:53
+msgid "Saving failed."
+msgstr ""
+
+#: ../app/components/Dialog/DialogManageQueue.qml:66
+msgid "Clearing the queue cannot be undone."
+msgstr ""
+
+#: ../app/components/Dialog/DialogManageQueue.qml:73
+msgid "Clear queue"
+msgstr ""
+
+#: ../app/components/Dialog/DialogManageQueue.qml:85
+msgid "Close the queue management screen."
+msgstr ""
+
+#: ../app/components/Dialog/DialogManageQueue.qml:92
+#: ../app/components/Dialog/DialogSettings.qml:54
+#: ../app/components/Dialog/DialogSleepTimer.qml:118
+msgid "Close"
+msgstr ""
+
+#: ../app/components/Dialog/DialogNewPlaylist.qml:28
+msgid "New playlist"
+msgstr ""
+
+#: ../app/components/Dialog/DialogNewPlaylist.qml:47
+msgid "Create"
+msgstr ""
+
+#. TRANSLATORS: this is a title of a dialog with a prompt to delete a playlist
+#: ../app/components/Dialog/DialogRemovePlaylist.qml:29
+msgid "Permanently delete playlist ?"
+msgstr ""
+
+#: ../app/components/Dialog/DialogRemovePlaylist.qml:34
+msgid "This cannot be undone"
+msgstr ""
+
+#: ../app/components/Dialog/DialogRemovePlaylist.qml:44
+#: ../app/components/ListItemActions/Remove.qml:27
+msgid "Remove"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSettings.qml:24 ../app/ui/Zones.qml:52
+msgid "Settings"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSettings.qml:29
+msgid ""
+"Whenever you make changes to your music library, such as adding and removing "
+"tracks, or adjusting album artwork, you will need to update the music index "
+"on Sonos before these changes will show up in the Sonos controller."
+msgstr ""
+
+#: ../app/components/Dialog/DialogSettings.qml:36
+msgid "Update music index now"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSettings.qml:47
+msgid "Close the settings screen."
+msgstr ""
+
+#. TRANSLATORS: this is a title of a dialog to configure standby timer
+#. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
+#: ../app/components/Dialog/DialogSleepTimer.qml:26
+#: ../app/ui/NowPlaying.qml:111
+msgid "Standby timer"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSleepTimer.qml:68
+msgid "Disabled"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSleepTimer.qml:69
+msgid "15 minutes"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSleepTimer.qml:70
+msgid "30 minutes"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSleepTimer.qml:71
+msgid "45 minutes"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSleepTimer.qml:72
+msgid "1 hour"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSleepTimer.qml:73
+msgid "2 hours"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSleepTimer.qml:74
+msgid "3 hours"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSleepTimer.qml:75
+msgid "4 hours"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSleepTimer.qml:76
+msgid "5 hours"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSleepTimer.qml:77
+msgid "6 hours"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSongInfo.qml:38 ../app/ui/Albums.qml:79
+#: ../app/ui/Albums.qml:94 ../app/ui/ArtistView.qml:133
+#: ../app/ui/ArtistView.qml:148 ../app/ui/SongsView.qml:184
+msgid "Unknown Album"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSongInfo.qml:39 ../app/ui/Albums.qml:80
+#: ../app/ui/Albums.qml:93 ../app/ui/ArtistView.qml:79
+#: ../app/ui/ArtistView.qml:147 ../app/ui/Artists.qml:81
+#: ../app/ui/SongsView.qml:205
+msgid "Unknown Artist"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSongInfo.qml:41
+#, qt-format
+msgid "%1 - track #%2"
+msgstr ""
+
+#: ../app/components/HeadState/MultiSelectHeadState.qml:31
+msgid "Select All"
+msgstr ""
+
+#: ../app/components/HeadState/MultiSelectHeadState.qml:44
+#: ../app/components/ListItemActions/AddToQueue.qml:27
+msgid "Add to queue"
+msgstr ""
+
+#: ../app/components/HeadState/MultiSelectHeadState.qml:67
+#: ../app/components/ListItemActions/AddToPlaylist.qml:27
+msgid "Add to playlist"
+msgstr ""
+
+#: ../app/components/HeadState/MultiSelectHeadState.qml:89
+msgid "Delete"
+msgstr ""
+
+#: ../app/components/HeadState/MultiSelectHeadState.qml:100
+msgid "Cancel selection"
+msgstr ""
+
+#: ../app/components/HeadState/SearchHeadState.qml:42
+msgid "Search music"
+msgstr ""
+
+#: ../app/components/ListItemActions/Clear.qml:25
+msgid "Clear"
+msgstr ""
+
+#: ../app/components/ListItemActions/PlaySong.qml:24
+msgid "Play"
+msgstr ""
+
+#: ../app/components/ListItemActions/ShowInfo.qml:24
+msgid "Show info"
+msgstr ""
+
+#: ../app/components/LoadingSpinnerComponent.qml:47
+msgid "Loading..."
+msgstr ""
+
+#: ../app/components/MusicPage.qml:42
+msgid "No items found"
+msgstr ""
+
+#: ../app/components/MusicPage.qml:77 ../app/ui/Zones.qml:31
+msgid "Zones"
+msgstr ""
+
+#: ../app/components/MusicToolbar.qml:92
+msgid "No music in queue"
+msgstr ""
+
+#: ../app/components/PlaylistsEmptyState.qml:43
+msgid "No playlists found"
+msgstr ""
+
+#: ../app/components/PlaylistsEmptyState.qml:54
+#, qt-format
+msgid ""
+"Get more out of Sonos by tapping the %1 icon to start making playlists for "
+"every mood and occasion."
+msgstr ""
+
+#. TRANSLATORS: this appears in a button with limited space (around 14 characters)
+#: ../app/components/ViewButton/PlayAllButton.qml:29
+msgid "Play all"
+msgstr ""
+
+#. TRANSLATORS: this appears in a button with limited space (around 14 characters)
+#: ../app/components/ViewButton/QueueAllButton.qml:43
+msgid "Queue all"
+msgstr ""
+
+#. TRANSLATORS: this appears in a button with limited space (around 14 characters)
+#: ../app/components/ViewButton/ShuffleButton.qml:42
+msgid "Shuffle"
+msgstr ""
+
+#: ../app/components/ZoneControls.qml:52
+msgid "Under construction"
+msgstr ""
+
+#: ../app/components/ZoneControls.qml:63
+msgid "This feature will be added in a next version. Please rate the App."
+msgstr ""
+
+#. TRANSLATORS: this appears in the header with limited space (around 20 characters)
+#: ../app/ui/AddToPlaylist.qml:35
+msgid "Select playlist"
+msgstr ""
+
+#: ../app/ui/Albums.qml:33
+msgid "Albums"
+msgstr ""
+
+#: ../app/ui/Albums.qml:92 ../app/ui/ArtistView.qml:146
+msgid "Album"
+msgstr ""
+
+#: ../app/ui/ArtistView.qml:98
+#, qt-format
+msgid "%1 album"
+msgid_plural "%1 albums"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../app/ui/Artists.qml:36
+msgid "Artists"
+msgstr ""
+
+#: ../app/ui/Artists.qml:91
+msgid "Artist"
+msgstr ""
+
+#: ../app/ui/Genres.qml:34
+msgid "Genres"
+msgstr ""
+
+#: ../app/ui/Genres.qml:81
+msgid "<Undefined>"
+msgstr ""
+
+#: ../app/ui/Genres.qml:92 ../app/ui/Genres.qml:94
+msgid "Genre"
+msgstr ""
+
+#: ../app/ui/NoZoneState.qml:103
+msgid "No Sonos zone found"
+msgstr ""
+
+#: ../app/ui/NoZoneState.qml:114
+msgid ""
+"Make sure that your device is connected to the correct wireless network and "
+"one or more Sonos products are receiving power."
+msgstr ""
+
+#. TRANSLATORS: this appears in a button with limited space (around 30 characters)
+#: ../app/ui/NoZoneState.qml:123
+msgid "Search for Sonos zones"
+msgstr ""
+
+#. TRANSLATORS: this appears in the header with limited space (around 20 characters)
+#: ../app/ui/NowPlaying.qml:39
+msgid "Full view"
+msgstr ""
+
+#. TRANSLATORS: this appears in the header with limited space (around 20 characters)
+#: ../app/ui/NowPlaying.qml:41
+msgid "Queue"
+msgstr ""
+
+#. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
+#: ../app/ui/NowPlaying.qml:90
+msgid "Show queue"
+msgstr ""
+
+#. TRANSLATORS: this is the name of the playlists page shown in the tab header.
+#. Remember to keep the translation short to fit the screen width
+#: ../app/ui/Playlists.qml:36
+msgid "Playlists"
+msgstr ""
+
+#: ../app/ui/Playlists.qml:93 ../app/ui/Playlists.qml:94
+msgid "Playlist"
+msgstr ""
+
+#: ../app/ui/Radios.qml:33
+msgid "My radios"
+msgstr ""
+
+#: ../app/ui/SongsView.qml:226 ../app/ui/SongsView.qml:227
+#, qt-format
+msgid "%1 song"
+msgid_plural "%1 songs"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../app/ui/Zones.qml:40
+msgid "Zone controls"
+msgstr ""
+
+#: ../app/ui/Zones.qml:58
+msgid "Reload zones"
+msgstr ""
+
+#: ../app/ui/Zones.qml:64
+msgid "Quit"
+msgstr ""

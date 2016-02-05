@@ -1,0 +1,34 @@
+NOSON project is under construction
+
+This project is intended to create a easy client interface to
+control SONOS player. Its development started from November 2015
+and today the API supports basic features to control your players.
+
+=============================
+       Linux, OS-X, BSD
+=============================
+
+Build:
+------
+
+Start by configuring the build folder:
+
+mkdir build
+cd build
+cmake <root path of noson>
+
+Then build the lib and test:
+
+make
+
+Running nosontest:
+--------------------
+
+./test/nosontest
+
+Generate the documentation:
+---------------------------
+
+doxygen <root path of noson>/docs/doxygen-dev.cfg
+
+

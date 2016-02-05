@@ -1,0 +1,15 @@
+{
+    "name": "@APP_ID@",
+    "description": "description of Noson",
+    "architecture": "@CLICK_ARCH@",
+    "title": "@APP_NAME@",
+    "hooks": {
+        "Noson": {
+            "apparmor": "Noson.apparmor",
+            "desktop": "Noson.desktop"
+        }
+    },
+    "version": "0.99.14",
+    "maintainer": "Jean-luc Barriere <jlbarriere68@gmail.com>",
+    "framework": "ubuntu-sdk-15.04-qml"
+}

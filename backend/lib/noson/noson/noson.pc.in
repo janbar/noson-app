@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=${prefix}/include
+
+Name: conos
+Description: C++ library to control sonos player
+Version: @VERSION@
+Libs: -L${libdir} -lnoson
+Cflags: -I${includedir}
