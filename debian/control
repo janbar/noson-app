@@ -6,7 +6,8 @@ Build-Depends: cmake,
                debhelper (>= 9.0.0),
                intltool,
                qt5-default,
-               qtbase5-dev
+               qtbase5-dev,
+               qtdeclarative5-dev
 Standards-Version: 3.9.4
 Homepage: https://github.com/janbar/noson-app
 
