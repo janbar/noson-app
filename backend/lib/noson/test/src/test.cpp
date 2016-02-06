@@ -75,7 +75,7 @@ int main(int argc, char** argv)
       for (SONOS::ZonePlayerList::const_iterator it = players.begin(); it != players.end(); ++it)
       {
         fprintf(stderr, "found player '%s' at location %s [%s]\n", it->second->c_str(), it->second->GetLocation().c_str(),
-                it->second->GetIcon().c_str());
+                it->second->GetIconName().c_str());
       }
 
       if (sonos.IsConnected())
