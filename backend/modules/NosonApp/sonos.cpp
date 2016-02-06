@@ -232,7 +232,7 @@ void Sonos::playerEventCB(void* handle)
         if (slash < 0)
           _base.append(it->model->m_root);
         else
-          _base.append(it->model->m_root.right(slash));
+          _base.append(it->model->m_root.left(slash));
 
         // need update ?
         bool _update = false;
