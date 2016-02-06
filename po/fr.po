@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Noson\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-23 15:50+0100\n"
-"PO-Revision-Date: 2016-01-24 10:54+0000\n"
+"POT-Creation-Date: 2016-02-02 21:32+0100\n"
+"PO-Revision-Date: 2016-02-06 20:11+0000\n"
 "Last-Translator: Jean-Luc Barrière <jlbarriere68@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/janbar/noson/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -23,50 +23,56 @@ msgstr ""
 msgid "Noson"
 msgstr "Noson"
 
-#: ../app/Main.qml:205
+#: ../app/Main.qml:206
 msgid "Index loaded"
 msgstr "Index musical chargé"
 
-#: ../app/Main.qml:220
+#: ../app/Main.qml:311
 msgid "Debug: "
 msgstr "Debug: "
 
-#: ../app/Main.qml:262
+#: ../app/Main.qml:353
 msgid "Refreshing of index is running"
 msgstr "Mise à jour de l'index en cours"
 
-#: ../app/Main.qml:265 ../app/Main.qml:284 ../app/Main.qml:292
-#: ../app/Main.qml:302 ../app/Main.qml:307 ../app/Main.qml:329
-#: ../app/Main.qml:343 ../app/Main.qml:355 ../app/Main.qml:366
-#: ../app/Main.qml:374 ../app/Main.qml:384 ../app/Main.qml:394
-#: ../app/Main.qml:401 ../app/Main.qml:408 ../app/Main.qml:417
-#: ../app/Main.qml:426 ../app/Main.qml:434 ../app/Main.qml:441
-#: ../app/ui/AddToPlaylist.qml:131
+#: ../app/Main.qml:356 ../app/Main.qml:375 ../app/Main.qml:383
+#: ../app/Main.qml:393 ../app/Main.qml:398 ../app/Main.qml:422
+#: ../app/Main.qml:436 ../app/Main.qml:448 ../app/Main.qml:459
+#: ../app/Main.qml:467 ../app/Main.qml:477 ../app/Main.qml:487
+#: ../app/Main.qml:494 ../app/Main.qml:501 ../app/Main.qml:510
+#: ../app/Main.qml:519 ../app/Main.qml:527 ../app/Main.qml:534
+#: ../app/ui/AddToPlaylist.qml:139
 msgid "Action can't be performed"
 msgstr "L'action a échouée"
 
-#: ../app/Main.qml:289 ../app/Main.qml:340 ../app/Main.qml:352
-#: ../app/Main.qml:414 ../app/ui/AddToPlaylist.qml:128
+#: ../app/Main.qml:380 ../app/Main.qml:433 ../app/Main.qml:445
+#: ../app/Main.qml:507 ../app/ui/AddToPlaylist.qml:136
 msgid "song added"
 msgstr "Titre ajouté"
 
-#: ../app/Main.qml:326
+#: ../app/Main.qml:419
 #, qt-format
 msgid "%1 song added"
 msgid_plural "%1 songs added"
 msgstr[0] "%1 titres ajoutés"
 msgstr[1] "%1 titres ajoutés"
 
-#: ../app/Main.qml:363
+#: ../app/Main.qml:456
 msgid "Queue cleared"
 msgstr "La file d'attente a été vidée"
 
-#: ../app/Main.qml:423
+#: ../app/Main.qml:516
 #, qt-format
 msgid "%1 song removed"
 msgid_plural "%1 songs removed"
 msgstr[0] "%1 titres supprimés"
 msgstr[1] "%1 titres supprimés"
+
+#. TRANSLATORS: this appears in the header with limited space (around 20
+#. characters)
+#: ../app/Main.qml:631 ../app/ui/NowPlaying.qml:37
+msgid "Now playing"
+msgstr "Lecture en cours"
 
 #. TRANSLATORS: this is a title of a dialog with a prompt to rename a playlist
 #: ../app/components/Dialog/DialogEditPlaylist.qml:28
@@ -124,7 +130,7 @@ msgid "Close the queue management screen."
 msgstr "Fermer l'écran de gestion de la file d'attente."
 
 #: ../app/components/Dialog/DialogManageQueue.qml:92
-#: ../app/components/Dialog/DialogSettings.qml:60
+#: ../app/components/Dialog/DialogSettings.qml:54
 #: ../app/components/Dialog/DialogSleepTimer.qml:118
 msgid "Close"
 msgstr "Fermer"
@@ -151,22 +157,22 @@ msgstr "Ceci ne peut être annulé"
 msgid "Remove"
 msgstr "Supprimer"
 
-#: ../app/components/Dialog/DialogSettings.qml:30
+#: ../app/components/Dialog/DialogSettings.qml:24 ../app/ui/Zones.qml:52
 msgid "Settings"
 msgstr "Paramètres"
 
-#: ../app/components/Dialog/DialogSettings.qml:35
+#: ../app/components/Dialog/DialogSettings.qml:29
 msgid ""
 "Whenever you make changes to your music library, such as adding and removing"
 " tracks, or adjusting album artwork, you will need to update the music index"
 " on Sonos before these changes will show up in the Sonos controller."
 msgstr "Chaque fois que vous apportez des modifications à votre bibliothèque musicale, comme ajouter et supprimer des titres, ou modifier les illustrations d'album, vous aurez besoin de mettre à jour l'index musical pour que ces changements apparaissent dans le dispositif de commande de votre système Sonos."
 
-#: ../app/components/Dialog/DialogSettings.qml:42
+#: ../app/components/Dialog/DialogSettings.qml:36
 msgid "Update music index now"
 msgstr "Mettre à jour l'index musical"
 
-#: ../app/components/Dialog/DialogSettings.qml:53
+#: ../app/components/Dialog/DialogSettings.qml:47
 msgid "Close the settings screen."
 msgstr "Fermer l'écran des paramètres."
 
@@ -218,16 +224,16 @@ msgstr "5 heures"
 msgid "6 hours"
 msgstr "6 heures"
 
-#: ../app/components/Dialog/DialogSongInfo.qml:38 ../app/ui/Albums.qml:69
-#: ../app/ui/Albums.qml:84 ../app/ui/ArtistView.qml:126
-#: ../app/ui/ArtistView.qml:141 ../app/ui/SongsView.qml:183
+#: ../app/components/Dialog/DialogSongInfo.qml:38 ../app/ui/Albums.qml:79
+#: ../app/ui/Albums.qml:94 ../app/ui/ArtistView.qml:133
+#: ../app/ui/ArtistView.qml:148 ../app/ui/SongsView.qml:184
 msgid "Unknown Album"
 msgstr "Album inconnu"
 
-#: ../app/components/Dialog/DialogSongInfo.qml:39 ../app/ui/Albums.qml:70
-#: ../app/ui/Albums.qml:83 ../app/ui/ArtistView.qml:90
-#: ../app/ui/ArtistView.qml:140 ../app/ui/Artists.qml:73
-#: ../app/ui/SongsView.qml:204
+#: ../app/components/Dialog/DialogSongInfo.qml:39 ../app/ui/Albums.qml:80
+#: ../app/ui/Albums.qml:93 ../app/ui/ArtistView.qml:79
+#: ../app/ui/ArtistView.qml:147 ../app/ui/Artists.qml:81
+#: ../app/ui/SongsView.qml:205
 msgid "Unknown Artist"
 msgstr "Artiste inconnu"
 
@@ -282,7 +288,7 @@ msgstr "Chargement..."
 msgid "No items found"
 msgstr "Aucun élément trouvé"
 
-#: ../app/components/MusicPage.qml:77 ../app/ui/Zones.qml:30
+#: ../app/components/MusicPage.qml:77 ../app/ui/Zones.qml:31
 msgid "Zones"
 msgstr "Zones"
 
@@ -337,11 +343,11 @@ msgstr "Choisir une liste"
 msgid "Albums"
 msgstr "Albums"
 
-#: ../app/ui/Albums.qml:82 ../app/ui/ArtistView.qml:139
+#: ../app/ui/Albums.qml:92 ../app/ui/ArtistView.qml:146
 msgid "Album"
 msgstr "Album"
 
-#: ../app/ui/ArtistView.qml:109
+#: ../app/ui/ArtistView.qml:98
 #, qt-format
 msgid "%1 album"
 msgid_plural "%1 albums"
@@ -352,7 +358,7 @@ msgstr[1] "%1 albums"
 msgid "Artists"
 msgstr "Artistes"
 
-#: ../app/ui/Artists.qml:83
+#: ../app/ui/Artists.qml:91
 msgid "Artist"
 msgstr "Artiste"
 
@@ -360,11 +366,11 @@ msgstr "Artiste"
 msgid "Genres"
 msgstr "Genres"
 
-#: ../app/ui/Genres.qml:73
+#: ../app/ui/Genres.qml:81
 msgid "<Undefined>"
 msgstr "<Non Défini>"
 
-#: ../app/ui/Genres.qml:84 ../app/ui/Genres.qml:86
+#: ../app/ui/Genres.qml:92 ../app/ui/Genres.qml:94
 msgid "Genre"
 msgstr "Genre"
 
@@ -383,12 +389,6 @@ msgstr "Assurez-vous que votre appareil est connecté au réseau sans fil approp
 #: ../app/ui/NoZoneState.qml:123
 msgid "Search for Sonos zones"
 msgstr "Rechercher les zones Sonos"
-
-#. TRANSLATORS: this appears in the header with limited space (around 20
-#. characters)
-#: ../app/ui/NowPlaying.qml:37
-msgid "Now playing"
-msgstr "Lecture en cours"
 
 #. TRANSLATORS: this appears in the header with limited space (around 20
 #. characters)
@@ -415,7 +415,7 @@ msgstr "Afficher la file d'attente"
 msgid "Playlists"
 msgstr "Listes de lecture"
 
-#: ../app/ui/Playlists.qml:84 ../app/ui/Playlists.qml:85
+#: ../app/ui/Playlists.qml:93 ../app/ui/Playlists.qml:94
 msgid "Playlist"
 msgstr "Liste de lecture"
 
@@ -423,13 +423,21 @@ msgstr "Liste de lecture"
 msgid "My radios"
 msgstr "Mes radios"
 
-#: ../app/ui/SongsView.qml:225 ../app/ui/SongsView.qml:226
+#: ../app/ui/SongsView.qml:226 ../app/ui/SongsView.qml:227
 #, qt-format
 msgid "%1 song"
 msgid_plural "%1 songs"
 msgstr[0] "%1 titre"
 msgstr[1] "%1 titres"
 
-#: ../app/ui/Zones.qml:39
+#: ../app/ui/Zones.qml:40
 msgid "Zone controls"
 msgstr "Paramètres de la zone"
+
+#: ../app/ui/Zones.qml:58
+msgid "Reload zones"
+msgstr "Recharger les zones"
+
+#: ../app/ui/Zones.qml:64
+msgid "Quit"
+msgstr "Quitter"
