@@ -52,6 +52,8 @@ bool ListModel::init(QObject* sonos, const QString& root, bool fill /*= false*/)
   if (m_provider)
     m_provider->unregisterModel(this);
   _sonos->registerModel(this, root);
+  // Reset container status to allow async reload
+  m_loaded = false;
   if (fill)
     this->load();
 }
