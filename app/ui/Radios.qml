@@ -117,7 +117,19 @@ MusicPage {
             }
             multiselectable: true
 
-            onItemClicked: radioClicked(model)  // play radio
+            onItemClicked: {
+                mainView.currentlyWorking = true
+                delayRadioClicked.start()
+            }
+
+            Timer {
+                id: delayRadioClicked
+                interval: 100
+                onTriggered: {
+                    radioClicked(model) // play radio
+                    mainView.currentlyWorking = false
+                }
+            }
         }
     }
 }

@@ -166,6 +166,8 @@ bool ArtistsModel::load()
     else
       delete item;
   }
+  if (cl.failure())
+    return m_loaded = false;
   m_updateID = cl.GetUpdateID(); // sync new baseline
   return m_loaded = true;
 }

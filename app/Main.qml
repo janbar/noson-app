@@ -135,6 +135,8 @@ MainView {
         // push the page to view
         mainPageStack.push(tabs)
 
+        currentlyWorking = true
+
         // try to connect a zone
         // currentZone is alias of startupSettings.zoneName
         connectZone(currentZone)
@@ -157,6 +159,7 @@ MainView {
     // Show/hide page NoZoneState
     onNoZoneChanged: {
         if (noZone) {
+            currentlyWorking = false // hide actvity indicator
             emptyPage = mainPageStack.push(Qt.resolvedUrl("ui/NoZoneState.qml"), {})
         } else {
             mainPageStack.popPage(emptyPage)
@@ -165,8 +168,19 @@ MainView {
 
     // Refresh player state when application becomes active
     onApplicationStateChanged: {
-        if (applicationState && player.connected)
-            player.refreshAll();
+        if (applicationState && player.connected) {
+            mainView.currentlyWorking = true
+            delayPlayerWakeUp.start()
+        }
+    }
+
+    Timer {
+        id: delayPlayerWakeUp
+        interval: 100
+        onTriggered: {
+            noZone = !player.wakeUp()
+            mainView.currentlyWorking = false
+        }
     }
 
     // About backend signals
@@ -176,6 +190,11 @@ MainView {
     Connections {
         target: AllZonesModel
         onDataUpdated: AllZonesModel.asyncLoad()
+    }
+
+    Connections {
+        target: AllAlbumsModel
+        onDataUpdated: AllAlbumsModel.asyncLoad()
     }
 
     Connections {
@@ -205,6 +224,7 @@ MainView {
                 infoLoadedIndex = false;
                 popInfo.open(i18n.tr("Index loaded"));
             }
+            currentlyWorking = false; // hide actvity indicator
         }
     }
 
@@ -771,5 +791,11 @@ MainView {
                 }
             }
         } // end of tabs
+    }
+
+    property alias currentlyWorking: loading.visible
+
+    LoadingSpinnerComponent {
+        id: loading
     }
 }

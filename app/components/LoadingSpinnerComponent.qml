@@ -26,29 +26,19 @@ Item {
     width: parent.width
     visible: false
 
-    property alias loadingText: loadingLabel.text
-
     anchors {
         horizontalCenter: parent.horizontalCenter
-        top: parent.top
-        margins: units.gu(20)
+        verticalCenter: parent.verticalCenter
     }
+
     ActivityIndicator {
         id: loading
         objectName: "LoadingSpinner"
         anchors.verticalCenter: parent.verticalCenter
-        anchors.right: loadingLabel.left
-        anchors.rightMargin: units.gu(1)
-        running: refresh.visible
-        z: 1
-    }
-    Label {
-        id: loadingLabel
-        text: i18n.tr("Loading...")
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.horizontalCenterOffset: (loading.width / 2) + (loading.anchors.rightMargin / 2)
-        anchors.verticalCenter: parent.verticalCenter
-        fontSize: "large"
-        color: styleMusic.common.subtitle
+        running: refresh.visible
+        height: units.gu(10)
+        width: height
+        z: 1
     }
 }

@@ -29,7 +29,19 @@ Button {
 
     property var containerItem
 
-    onClicked: addQueue(containerItem)
+    onClicked: {
+        mainView.currentlyWorking = true
+        delayAddQueue.start()
+    }
+
+    Timer {
+        id: delayAddQueue
+        interval: 100
+        onTriggered: {
+            addQueue(containerItem)
+            mainView.currentlyWorking = false
+        }
+    }
 
     Text {
         anchors {

@@ -50,6 +50,7 @@ private:
 Sonos::Sonos(QObject* parent)
 : QObject(parent)
 , m_library(ManagedContents())
+, m_shareUpdateID(0)
 , m_threadpool(5)
 {
   SONOS::DBGLevel(2);
@@ -121,17 +122,17 @@ void Sonos::loadEmptyModels()
       if (!it->model->m_loaded)
         left.push_back(qMakePair(it->model, SONOS::LockGuard(it->model->m_lock)));
   }
+  emit loadingStarted();
   if (!left.empty())
   {
-    emit loadingStarted();
     while (!left.isEmpty())
     {
       QPair<ListModel*, SONOS::LockGuard> item = left.front();
       item.first->load();
       left.pop_front();
     }
-    emit loadingFinished();
   }
+  emit loadingFinished();
 }
 
 void Sonos::runModelLoader(ListModel* model)
@@ -224,6 +225,15 @@ void Sonos::playerEventCB(void* handle)
       SONOS::Locked<ManagedContents>::pointer cl = sonos->m_library.Get();
       SONOS::ContentProperty prop = player->GetContentProperty();
       SONOS::DBG(DBG_DEBUG, "%s: container [%s] has being updated to %u\n", __FUNCTION__, prop.ContainerRoot.c_str(), prop.ContainerUpdateID);
+
+      // Reload musical index on any update of shares
+      bool shareUpdated = false;
+      if (prop.ContainerRoot == "S:" && prop.ContainerUpdateID != sonos->m_shareUpdateID)
+      {
+        shareUpdated = true;
+        sonos->m_shareUpdateID = prop.ContainerUpdateID; // Track current updateID
+      }
+
       for (ManagedContents::iterator it = cl->begin(); it != cl->end(); ++it)
       {
         // find the base of the model from its root
@@ -240,7 +250,7 @@ void Sonos::playerEventCB(void* handle)
         if (it->model->m_updateID != prop.ContainerUpdateID && _base == prop.ContainerRoot.c_str())
           _update = true;
         // about shares
-        else if (prop.ContainerRoot == "S:" && _base.startsWith(QString::fromUtf8("A:")))
+        else if (shareUpdated && _base.startsWith(QString::fromUtf8("A:")))
           _update = true;
 
         if (_update)

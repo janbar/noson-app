@@ -108,15 +108,32 @@ MusicPage {
 
     TracksModel {
         id: songsModel
-        Component.onCompleted: {
-            init(Sonos, songSearch, true);
+    }
+
+    Timer {
+        id: delayInitTrackModel
+        interval: 100
+        onTriggered: {
+            songsModel.init(Sonos, songSearch, true)
+            mainView.currentlyWorking = false
+            songStackPage.loaded = true;
         }
     }
 
     Connections {
         target: songsModel
         onDataUpdated: {
-            songsModel.load();
+            mainView.currentlyWorking = true
+            delayLoadTrackModel.start()
+        }
+    }
+
+    Timer {
+        id: delayLoadTrackModel
+        interval: 100
+        onTriggered: {
+            songsModel.load()
+            mainView.currentlyWorking = false
         }
     }
 
@@ -276,12 +293,22 @@ MusicPage {
                     actions: [
                         Remove {
                             onTriggered: {
-                                if (removeTracksFromPlaylist(containerItem.id, [index], songsModel.containerUpdateID())) {
-                                    songsModel.load();
-                                }
+                                mainView.currentlyWorking = true
+                                delayRemoveTracksFromPlaylist.start()
                             }
                         }
                     ]
+                }
+            }
+
+            Timer {
+                id: delayRemoveTracksFromPlaylist
+                interval: 100
+                onTriggered: {
+                    if (removeTracksFromPlaylist(containerItem.id, [index], songsModel.containerUpdateID())) {
+                        songsModel.load();
+                    }
+                    mainView.currentlyWorking = false
                 }
             }
 
@@ -293,13 +320,28 @@ MusicPage {
         }
 
         onReorder: {
-            if (reorderTrackInPlaylist(containerItem.id, from, to, songsModel.containerUpdateID())) {
-                songsModel.load();
+            mainView.currentlyWorking = true
+            delayReorderTrackInPlaylist.argFrom = from
+            delayReorderTrackInPlaylist.argTo = to
+            delayReorderTrackInPlaylist.start()
+        }
+
+        Timer {
+            id: delayReorderTrackInPlaylist
+            interval: 100
+            property int argFrom: 0
+            property int argTo: 0
+            onTriggered: {
+                if (reorderTrackInPlaylist(containerItem.id, argFrom, argTo, songsModel.containerUpdateID())) {
+                    songsModel.load();
+                }
+                mainView.currentlyWorking = false
             }
         }
     }
 
     Component.onCompleted: {
-        songStackPage.loaded = true;
+        mainView.currentlyWorking = true
+        delayInitTrackModel.start()
     }
 }

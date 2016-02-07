@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-06 11:37+0100\n"
+"POT-Creation-Date: 2016-02-07 19:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,45 +23,45 @@ msgstr ""
 msgid "Noson"
 msgstr ""
 
-#: ../app/Main.qml:206
+#: ../app/Main.qml:225
 msgid "Index loaded"
 msgstr ""
 
-#: ../app/Main.qml:311
+#: ../app/Main.qml:331
 msgid "Debug: "
 msgstr ""
 
-#: ../app/Main.qml:353
+#: ../app/Main.qml:373
 msgid "Refreshing of index is running"
 msgstr ""
 
-#: ../app/Main.qml:356 ../app/Main.qml:375 ../app/Main.qml:383
-#: ../app/Main.qml:393 ../app/Main.qml:398 ../app/Main.qml:422
-#: ../app/Main.qml:436 ../app/Main.qml:448 ../app/Main.qml:459
-#: ../app/Main.qml:467 ../app/Main.qml:477 ../app/Main.qml:487
-#: ../app/Main.qml:494 ../app/Main.qml:501 ../app/Main.qml:510
-#: ../app/Main.qml:519 ../app/Main.qml:527 ../app/Main.qml:534
+#: ../app/Main.qml:376 ../app/Main.qml:395 ../app/Main.qml:403
+#: ../app/Main.qml:413 ../app/Main.qml:418 ../app/Main.qml:442
+#: ../app/Main.qml:456 ../app/Main.qml:468 ../app/Main.qml:479
+#: ../app/Main.qml:487 ../app/Main.qml:497 ../app/Main.qml:507
+#: ../app/Main.qml:514 ../app/Main.qml:521 ../app/Main.qml:530
+#: ../app/Main.qml:539 ../app/Main.qml:547 ../app/Main.qml:554
 #: ../app/ui/AddToPlaylist.qml:139
 msgid "Action can't be performed"
 msgstr ""
 
-#: ../app/Main.qml:380 ../app/Main.qml:433 ../app/Main.qml:445
-#: ../app/Main.qml:507 ../app/ui/AddToPlaylist.qml:136
+#: ../app/Main.qml:400 ../app/Main.qml:453 ../app/Main.qml:465
+#: ../app/Main.qml:527 ../app/ui/AddToPlaylist.qml:136
 msgid "song added"
 msgstr ""
 
-#: ../app/Main.qml:419
+#: ../app/Main.qml:439
 #, qt-format
 msgid "%1 song added"
 msgid_plural "%1 songs added"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/Main.qml:456
+#: ../app/Main.qml:476
 msgid "Queue cleared"
 msgstr ""
 
-#: ../app/Main.qml:516
+#: ../app/Main.qml:536
 #, qt-format
 msgid "%1 song removed"
 msgid_plural "%1 songs removed"
@@ -69,7 +69,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANSLATORS: this appears in the header with limited space (around 20 characters)
-#: ../app/Main.qml:631 ../app/ui/NowPlaying.qml:37
+#: ../app/Main.qml:651 ../app/ui/NowPlaying.qml:37
 msgid "Now playing"
 msgstr ""
 
@@ -223,14 +223,14 @@ msgstr ""
 
 #: ../app/components/Dialog/DialogSongInfo.qml:38 ../app/ui/Albums.qml:79
 #: ../app/ui/Albums.qml:94 ../app/ui/ArtistView.qml:133
-#: ../app/ui/ArtistView.qml:148 ../app/ui/SongsView.qml:184
+#: ../app/ui/ArtistView.qml:148 ../app/ui/SongsView.qml:201
 msgid "Unknown Album"
 msgstr ""
 
 #: ../app/components/Dialog/DialogSongInfo.qml:39 ../app/ui/Albums.qml:80
 #: ../app/ui/Albums.qml:93 ../app/ui/ArtistView.qml:79
 #: ../app/ui/ArtistView.qml:147 ../app/ui/Artists.qml:81
-#: ../app/ui/SongsView.qml:205
+#: ../app/ui/SongsView.qml:222
 msgid "Unknown Artist"
 msgstr ""
 
@@ -277,10 +277,6 @@ msgstr ""
 msgid "Show info"
 msgstr ""
 
-#: ../app/components/LoadingSpinnerComponent.qml:47
-msgid "Loading..."
-msgstr ""
-
 #: ../app/components/MusicPage.qml:42
 msgid "No items found"
 msgstr ""
@@ -310,12 +306,12 @@ msgid "Play all"
 msgstr ""
 
 #. TRANSLATORS: this appears in a button with limited space (around 14 characters)
-#: ../app/components/ViewButton/QueueAllButton.qml:43
+#: ../app/components/ViewButton/QueueAllButton.qml:55
 msgid "Queue all"
 msgstr ""
 
 #. TRANSLATORS: this appears in a button with limited space (around 14 characters)
-#: ../app/components/ViewButton/ShuffleButton.qml:42
+#: ../app/components/ViewButton/ShuffleButton.qml:54
 msgid "Shuffle"
 msgstr ""
 
@@ -411,7 +407,7 @@ msgstr ""
 msgid "My radios"
 msgstr ""
 
-#: ../app/ui/SongsView.qml:226 ../app/ui/SongsView.qml:227
+#: ../app/ui/SongsView.qml:243 ../app/ui/SongsView.qml:244
 #, qt-format
 msgid "%1 song"
 msgid_plural "%1 songs"
@@ -426,6 +422,6 @@ msgstr ""
 msgid "Reload zones"
 msgstr ""
 
-#: ../app/ui/Zones.qml:64
+#: ../app/ui/Zones.qml:67
 msgid "Quit"
 msgstr ""

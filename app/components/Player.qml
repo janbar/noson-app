@@ -62,23 +62,24 @@ Item {
 
     function connect() {
         if (playerLoader.item.init(Sonos)) {
-            if (trackQueue.canLoad)
+            if (trackQueue.canLoad) {
                 // When switching zone, updateid cannot drive correctly the queue refreshing
                 // so new force refreshing of queue
-                trackQueue.loadQueue();
-            else
-              trackQueue.canLoad = true;
-            return true;
+                return trackQueue.loadQueue();
+            }
+            return trackQueue.canLoad = true;
         }
         // dont try to refresh queue
-        trackQueue.canLoad = false;
-        return false;
+        return trackQueue.canLoad = false;
     }
 
-    function refreshAll() {
-        trackQueue.loadQueue();
-        customdebug("Renew subscriptions");
-        playerLoader.item.renewSubscriptions();
+    function wakeUp() {
+        if (trackQueue.loadQueue()) {
+            customdebug("Renew subscriptions");
+            playerLoader.item.renewSubscriptions();
+            return true;
+        }
+        return false;
     }
 
     function stop() {

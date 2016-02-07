@@ -59,7 +59,10 @@ MultiSelectListView {
         leadingActions: ListItemActions {
             actions: [
                 Remove {
-                    onTriggered: removeTrackFromQueue(model)
+                    onTriggered: {
+                        mainView.currentlyWorking = true
+                        delayRemoveTrackFromQueue.start()
+                    }
                 }
             ]
         }
@@ -77,10 +80,46 @@ MultiSelectListView {
             }
         }
 
-        onItemClicked: indexQueueClicked(index); // toggle track state
+        Timer {
+            id: delayRemoveTrackFromQueue
+            interval: 100
+            onTriggered: {
+                removeTrackFromQueue(model)
+                mainView.currentlyWorking = false
+            }
+        }
+
+        onItemClicked: {
+            mainView.currentlyWorking = true
+            delayIndexQueueClicked.start()
+        }
+
+        Timer {
+            id: delayIndexQueueClicked
+            interval: 100
+            onTriggered: {
+                indexQueueClicked(index) // toggle track state
+                mainView.currentlyWorking = false
+            }
+        }
     }
 
     onReorder: {
-        reorderTrackInQueue(from, to);
+        delayReorderTrackInQueue.argFrom = from
+        delayReorderTrackInQueue.argTo = to
+        mainView.currentlyWorking = true
+        delayReorderTrackInQueue.start()
     }
+
+    Timer {
+        id: delayReorderTrackInQueue
+        interval: 100
+        property int argFrom: 0
+        property int argTo: 0
+        onTriggered: {
+            reorderTrackInQueue(argFrom, argTo)
+            mainView.currentlyWorking = false
+        }
+    }
+
 }

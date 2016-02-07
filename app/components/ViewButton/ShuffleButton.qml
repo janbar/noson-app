@@ -28,7 +28,19 @@ Button {
 
     property var model
 
-    onClicked: shuffleModel(model)
+    onClicked: {
+        mainView.currentlyWorking = true
+        delayShuffleModel.start()
+    }
+
+    Timer {
+        id: delayShuffleModel
+        interval: 100
+        onTriggered: {
+            shuffleModel(model)
+            mainView.currentlyWorking = false
+        }
+    }
 
     Text {
         anchors {

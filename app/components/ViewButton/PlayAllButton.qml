@@ -31,5 +31,17 @@ Button {
 
     property var containerItem
 
-    onClicked: playAll(containerItem)
+    onClicked: {
+        mainView.currentlyWorking = true
+        delayPlayAll.start()
+    }
+
+    Timer {
+        id: delayPlayAll
+        interval: 100
+        onTriggered: {
+            playAll(containerItem)
+            mainView.currentlyWorking = false
+        }
+    }
 }

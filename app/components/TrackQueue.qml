@@ -27,16 +27,33 @@ Item {
     }
 
     function loadQueue() {
-        return canLoad && model.load();
+        if (canLoad) {
+            if (model.load())
+                return completed = true
+            return completed = false
+        }
+        return true
     }
 
     onCanLoadChanged: {
-        if (loadQueue())
-            completed = true;
+        mainView.currentlyWorking = true
+        delayLoadQueue.start()
+    }
+
+    Timer {
+        id: delayLoadQueue
+        interval: 100
+        onTriggered: {
+            loadQueue()
+            mainView.currentlyWorking = false
+        }
     }
 
     Connections {
         target: model
-        onDataUpdated: loadQueue()
+        onDataUpdated: {
+            mainView.currentlyWorking = true
+            delayLoadQueue.start()
+        }
     }
 }

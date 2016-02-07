@@ -56,7 +56,10 @@ BottomEdgePage {
                   enabled: true
                   iconName: "reload"
                   text: i18n.tr("Reload zones")
-                  onTriggered: connectZone()
+                  onTriggered: {
+                      mainView.currentlyWorking = true
+                      delayReloadZones.start()
+                  }
                 },
                 Action {
                     enabled: true
@@ -82,6 +85,15 @@ BottomEdgePage {
             thisPage: zonesPage
         }
     ]
+
+    Timer {
+        id: delayReloadZones
+        interval: 100
+        onTriggered: {
+            connectZone()
+            // activity indicator will be hidden on index loaded
+        }
+    }
 
     MultiSelectListView {
         id: zoneList
@@ -124,17 +136,27 @@ BottomEdgePage {
             }
 
             onItemClicked: {
-                if (currentZone !== model.name) {
-                    customdebug("Connecting zone '" + name + "'");
-                    if ((Sonos.connectZone(model.name) || Sonos.connectZone("")) && player.connect()) {
-                        currentZone = Sonos.getZoneName();
-                        if (noZone)
-                            noZone = false;
+                mainView.currentlyWorking = true
+                delayChangeZone.start()
+            }
+
+            Timer {
+                id: delayChangeZone
+                interval: 100
+                onTriggered: {
+                    if (currentZone !== model.name) {
+                        customdebug("Connecting zone '" + name + "'");
+                        if ((Sonos.connectZone(model.name) || Sonos.connectZone("")) && player.connect()) {
+                            currentZone = Sonos.getZoneName();
+                            if (noZone)
+                                noZone = false;
+                        }
+                        else {
+                            if (!noZone)
+                                noZone = true;
+                        }
                     }
-                    else {
-                        if (!noZone)
-                            noZone = true;
-                    }
+                    mainView.currentlyWorking = false
                 }
             }
         }

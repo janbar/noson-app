@@ -141,6 +141,7 @@ private:
   };
   typedef QList<RegisteredContent> ManagedContents;
   SONOS::Locked<ManagedContents> m_library;
+  unsigned m_shareUpdateID; // Current updateID of SONOS shares
 
   SONOS::System m_system;
   SONOS::OS::CThreadPool m_threadpool;

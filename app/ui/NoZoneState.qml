@@ -123,7 +123,19 @@ Page {
                 text: i18n.tr("Search for Sonos zones")
                 width: parent.width
 
-                onClicked: connectZone()
+                onClicked: {
+                    mainView.currentlyWorking = true
+                    delayConnectZone.start()
+                }
+
+                Timer {
+                    id: delayConnectZone
+                    interval: 100
+                    onTriggered: {
+                        connectZone()
+                        mainView.currentlyWorking = false
+                    }
+                }
             }
         }
     }
