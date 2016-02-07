@@ -217,7 +217,8 @@ std::string ContentSearch::Root() const
 ////
 
 ContentList::ContentList(ContentDirectory& service, const ContentSearch& search, unsigned bulksize)
-: m_service(service)
+: m_succeeded(false)
+, m_service(service)
 , m_bulkSize(BROWSE_COUNT)
 , m_root(search.Root())
 , m_baseUpdateID(0)
@@ -232,7 +233,8 @@ ContentList::ContentList(ContentDirectory& service, const ContentSearch& search,
 }
 
 ContentList::ContentList(ContentDirectory& service, const std::string& objectID, unsigned bulksize)
-: m_service(service)
+: m_succeeded(false)
+, m_service(service)
 , m_bulkSize(BROWSE_COUNT)
 , m_root(objectID)
 , m_baseUpdateID(0)
@@ -276,7 +278,7 @@ bool ContentList::BrowseContent(unsigned startingIndex, unsigned count, List::it
   DBG(DBG_PROTO, "%s: browse %u from %u\n", __FUNCTION__, count, startingIndex);
   ElementList vars;
   ElementList::const_iterator it;
-  if (m_service.Browse(m_root, startingIndex, count, vars) && (it = vars.FinKey("Result")) != vars.end())
+  if ((m_succeeded = m_service.Browse(m_root, startingIndex, count, vars)) && (it = vars.FinKey("Result")) != vars.end())
   {
     uint32_t updateID = 0;
     if (string_to_uint32(vars.GetValue("UpdateID").c_str(), &updateID) == 0)

@@ -149,6 +149,8 @@ namespace NSROOT
       iterator(ContentList* _c, const List::iterator& _i) : c(_c) { if (_c) i = _i; }
     };
 
+    bool failure() const { return !m_succeeded; }
+
     iterator begin() { return iterator(this, m_list.begin()); }
 
     iterator end() { return iterator(this, m_list.end()); }
@@ -158,6 +160,7 @@ namespace NSROOT
     unsigned GetUpdateID() { return m_baseUpdateID; }
 
   private:
+    bool m_succeeded;
     ContentDirectory& m_service;
     unsigned m_bulkSize;
     std::string m_root;
