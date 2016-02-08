@@ -5,12 +5,11 @@ Maintainer: janbar <jlbarriere68@gmail.com>
 Build-Depends: cmake,
                debhelper (>= 9.0.0),
                intltool,
-               qt5-default,
                qtbase5-dev,
                qtdeclarative5-dev,
                qttools5-dev,
                qttools5-dev-tools
-Standards-Version: 3.9.4
+Standards-Version: 3.9.6
 Homepage: https://github.com/janbar/noson-app
 
 Package: noson-app
