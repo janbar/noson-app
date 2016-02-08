@@ -32,7 +32,7 @@ Item {
                 return completed = true
             return completed = false
         }
-        return true
+        return false
     }
 
     onCanLoadChanged: {

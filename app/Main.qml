@@ -168,7 +168,7 @@ MainView {
 
     // Refresh player state when application becomes active
     onApplicationStateChanged: {
-        if (applicationState && player.connected) {
+        if (!noZone && applicationState && player.connected) {
             mainView.currentlyWorking = true
             delayPlayerWakeUp.start()
         }
