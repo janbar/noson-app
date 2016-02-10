@@ -128,6 +128,9 @@ bool AVTransport::SetPlayMode(PlayMode_t mode)
     case PlayMode_SHUFFLE_NOREPEAT:
       modeStr = "SHUFFLE_NOREPEAT";
       break;
+    case PlayMode_REPEAT_ONE:
+      modeStr = "REPEAT_ONE";
+      break;
     default:
       modeStr = "";
   }

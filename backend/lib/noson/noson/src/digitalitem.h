@@ -45,14 +45,26 @@ namespace NSROOT
     } Type_t;
 
     typedef enum {
+      // container
       SubType_playlistContainer = 0,
       SubType_album             = 1,
       SubType_genre,
       SubType_person,
+      SubType_channelGroup,
+      SubType_epgContainer,
+      SubType_storageSystem,
+      SubType_storageVolume,
+      SubType_storageFolder,
+      SubType_bookmarkFolder,
+      // item
       SubType_audioItem,
       SubType_videoItem,
       SubType_imageItem,
       SubType_playlistItem,
+      SubType_textItem,
+      SubType_bookmarkItem,
+      SubType_epgItem,
+      // else
       SubType_unknown,
     } SubType_t;
 

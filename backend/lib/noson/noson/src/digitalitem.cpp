@@ -48,8 +48,8 @@ const char* DigitalItem::TypeTable[Type_unknown + 1] = {
 };
 
 const char* DigitalItem::SubTypeTable[SubType_unknown + 1] = {
-  "playlistContainer", "album", "genre", "person",
-  "audioItem", "videoItem", "imageItem", "playlistItem", ""
+  "playlistContainer", "album", "genre", "person", "channelGroup", "epgContainer", "storageSystem", "storageVolume", "storageFolder", "bookmarkFolder",
+  "audioItem", "videoItem", "imageItem", "playlistItem", "textItem", "bookmarkItem", "epgItem", ""
 };
 
 DigitalItem::DigitalItem(Type_t _type, SubType_t _subType)
@@ -85,13 +85,10 @@ DigitalItem::DigitalItem(const std::string& objectID, const std::string& parentI
     __tokenize((*it)->c_str(), ".", tokens);
     if (tokens.size() >= 2 && tokens[0] == "object")
     {
-      for (unsigned i = 0; i < Type_unknown; ++i)
-      {
-        if (tokens[1] != TypeTable[i])
-          continue;
-        m_type = (Type_t)i;
-        break;
-      }
+      if (tokens[1] == TypeTable[Type_container])
+        m_type = Type_container;
+      else
+        m_type = Type_item;
       if (tokens.size() >= 3)
       {
         for (unsigned i = 0; i < SubType_unknown; ++i)

@@ -43,7 +43,8 @@ namespace NSROOT
     PlayMode_NORMAL           = 0,
     PlayMode_REPEAT_ALL       = 1,
     PlayMode_SHUFFLE,
-    PlayMode_SHUFFLE_NOREPEAT
+    PlayMode_SHUFFLE_NOREPEAT,
+    PlayMode_REPEAT_ONE,
   } PlayMode_t;
 
   typedef enum
@@ -52,7 +53,9 @@ namespace NSROOT
     TransportState_PLAYING          = 1,
     TransportState_PAUSED_PLAYBACK,
     TransportState_TRANSITIONING,
-    TransportState_NO_MEDIA_PRESENT
+    TransportState_NO_MEDIA_PRESENT,
+    TransportState_RECORDING,
+    TransportState_PAUSED_RECORDING,
   } TransportState_t;
 
   typedef enum
