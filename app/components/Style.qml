@@ -19,7 +19,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 
 QtObject {
@@ -118,6 +118,6 @@ QtObject {
     }
 
     Component.onCompleted: {
-        Theme.palette.normal.field = mainView.normalTextFieldColor
+        theme.palette.normal.field = mainView.normalTextFieldColor
     }
 }
