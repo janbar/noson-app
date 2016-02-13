@@ -113,7 +113,7 @@ BottomEdgePage {
                 Label {
                     id: zoneName
                     color: currentZone === model.name ? UbuntuColors.blue : styleMusic.common.music
-                    fontSize: "large"
+                    fontSize: "medium"
                     objectName: "nameLabel"
                     text: model.name
                 }

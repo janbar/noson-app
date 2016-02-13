@@ -24,102 +24,111 @@ import "Delegates"
 import "Flickables"
 import "ListItemActions"
 
-MultiSelectListView {
-    id: queueList
-    anchors {
-        fill: parent
-    }
-    footer: Item {
-        height: mainView.height - (styleMusic.common.expandHeight + queueList.currentHeight) + units.gu(8)
-    }
-    model: player.trackQueue.model
-    objectName: "nowPlayingqueueList"
+Item {
+    property alias listview: queueList
 
-    delegate: MusicListItem {
-        id: queueListItem
-        color: player.currentIndex === index ? "#2c2c34" : styleMusic.mainView.backgroundColor
-        imageSource: model
-        column: Column {
-            Label {
-                id: trackTitle
-                color: player.currentIndex === index ? UbuntuColors.blue : styleMusic.common.music
-                fontSize: "small"
-                objectName: "titleLabel"
-                text: model.title
-            }
-
-            Label {
-                id: trackArtist
-                color: styleMusic.common.subtitle
-                fontSize: "x-small"
-                objectName: "artistLabel"
-                text: model.author
-            }
+    MultiSelectListView {
+        id: queueList
+        anchors {
+            fill: parent
         }
-        leadingActions: ListItemActions {
-            actions: [
-                Remove {
-                    onTriggered: {
-                        mainView.currentlyWorking = true
-                        delayRemoveTrackFromQueue.start()
+        footer: Item {
+            height: mainView.height - (styleMusic.common.expandHeight + queueList.currentHeight) + units.gu(8)
+        }
+        model: player.trackQueue.model
+        objectName: "nowPlayingqueueList"
+
+        delegate: MusicListItem {
+            id: queueListItem
+            color: player.currentIndex === index ? "#2c2c34" : styleMusic.mainView.backgroundColor
+            imageSource: model
+            column: Column {
+                Label {
+                    id: trackTitle
+                    color: player.currentIndex === index ? UbuntuColors.blue : styleMusic.common.music
+                    fontSize: "small"
+                    objectName: "titleLabel"
+                    text: model.title
+                }
+
+                Label {
+                    id: trackArtist
+                    color: styleMusic.common.subtitle
+                    fontSize: "x-small"
+                    objectName: "artistLabel"
+                    text: model.author
+                }
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Remove {
+                        onTriggered: {
+                            mainView.currentlyWorking = true
+                            delayRemoveTrackFromQueue.start()
+                        }
                     }
+                ]
+            }
+            multiselectable: false
+            objectName: "nowPlayingListItem" + index
+            reorderable: true
+            trailingActions: ListItemActions {
+                actions: [
+                    ShowInfo {
+                    },
+                    AddToPlaylist {
+                    }
+                ]
+                delegate: ActionDelegate {
                 }
-            ]
-        }
-        multiselectable: false
-        objectName: "nowPlayingListItem" + index
-        reorderable: true
-        trailingActions: ListItemActions {
-            actions: [
-                ShowInfo {
-                },
-                AddToPlaylist {
+            }
+
+            Timer {
+                id: delayRemoveTrackFromQueue
+                interval: 100
+                onTriggered: {
+                    removeTrackFromQueue(model)
+                    mainView.currentlyWorking = false
                 }
-            ]
-            delegate: ActionDelegate {
+            }
+
+            onItemClicked: {
+                mainView.currentlyWorking = true
+                delayIndexQueueClicked.start()
+            }
+
+            Timer {
+                id: delayIndexQueueClicked
+                interval: 100
+                onTriggered: {
+                    indexQueueClicked(index) // toggle track state
+                    mainView.currentlyWorking = false
+                }
             }
         }
 
-        Timer {
-            id: delayRemoveTrackFromQueue
-            interval: 100
-            onTriggered: {
-                removeTrackFromQueue(model)
-                mainView.currentlyWorking = false
-            }
-        }
-
-        onItemClicked: {
+        onReorder: {
+            delayReorderTrackInQueue.argFrom = from
+            delayReorderTrackInQueue.argTo = to
             mainView.currentlyWorking = true
-            delayIndexQueueClicked.start()
+            delayReorderTrackInQueue.start()
         }
 
         Timer {
-            id: delayIndexQueueClicked
+            id: delayReorderTrackInQueue
             interval: 100
+            property int argFrom: 0
+            property int argTo: 0
             onTriggered: {
-                indexQueueClicked(index) // toggle track state
+                reorderTrackInQueue(argFrom, argTo)
                 mainView.currentlyWorking = false
             }
         }
+
     }
 
-    onReorder: {
-        delayReorderTrackInQueue.argFrom = from
-        delayReorderTrackInQueue.argTo = to
-        mainView.currentlyWorking = true
-        delayReorderTrackInQueue.start()
+    Scrollbar {
+        flickableItem: queueList
+        align: Qt.AlignTrailing
     }
-
-    Timer {
-        id: delayReorderTrackInQueue
-        interval: 100
-        property int argFrom: 0
-        property int argTo: 0
-        onTriggered: {
-            reorderTrackInQueue(argFrom, argTo)
-            mainView.currentlyWorking = false
-        }
-    }
-
 }

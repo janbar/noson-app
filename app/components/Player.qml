@@ -26,7 +26,8 @@ import NosonApp 1.0
 
 
 Item {
-    objectName: "player"
+    id: player
+    objectName: "controller"
     property bool connected: false
     property string currentMetaAlbum: ""
     property string currentMetaArt: ""
@@ -35,6 +36,7 @@ Item {
     property string currentMetaTitle: ""
     property string currentMetaURITitle: ""
     property int currentIndex: -1
+    property int currentCount: 0
     property int duration: 1
     readonly property bool isPlaying: player.playbackState === "PLAYING"
     readonly property var playbackState: playerLoader.status == Loader.Ready ? playerLoader.item.playbackState : ""
@@ -46,7 +48,12 @@ Item {
     property int renderingControlCount: 0
     property bool sleepTimerEnabled: false
 
+    property string queueInfo: queueOverviewString()
+
     signal stopped()
+
+    onCurrentCountChanged: queueInfo = queueOverviewString()
+    onCurrentIndexChanged: queueInfo = queueOverviewString()
 
     onIsPlayingChanged: {
         if (playingTimerLoader.status == Loader.Ready) {
@@ -71,6 +78,17 @@ Item {
         }
         // dont try to refresh queue
         return trackQueue.canLoad = false;
+    }
+
+    function queueOverviewString() {
+        var str = "";
+        if (!connected)
+            str = "- / -";
+        else if (currentIndex < 0)
+            str = "- / " + currentCount;
+        else
+            str = (currentIndex + 1) + " / " + currentCount;
+        return str;
     }
 
     function wakeUp() {

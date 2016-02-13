@@ -65,18 +65,18 @@ Page {
 
     PageHeadSections {
         id: defaultStateSections
-        model: [currentZone]
+        model: [player.queueInfo, currentZone]
         selectedIndex: -1
     }
 
     head {
         sections {
             model: defaultStateSections.model
-            selectedIndex: defaultStateSections.selectedIndex
+            selectedIndex: 0
             onSelectedIndexChanged: {
-                if (head.sections.selectedIndex == 0 && mainPageStack.currentPage.title !== i18n.tr("Zones")) {
+                if (head.sections.selectedIndex == 1 && mainPageStack.currentPage.title !== i18n.tr("Zones")) {
+                    head.sections.selectedIndex = 0
                     mainPageStack.push(zonesPageLoader.item), {}
-                    head.sections.selectedIndex = -1
                 }
             }
         }
