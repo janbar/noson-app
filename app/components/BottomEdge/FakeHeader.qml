@@ -17,7 +17,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 Column {
     id: fakeHeader
@@ -27,7 +27,7 @@ Column {
     Rectangle {
         height: units.gu(6)
         width: parent.width
-        color: Theme.palette.normal.background
+        color: theme.palette.normal.background
     }
     
     Rectangle {

@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 /*
   The default slider style consists of a bar and a thumb shape.
@@ -117,7 +117,7 @@ Item {
             id: label
             anchors.centerIn: parent
             text: styledItem.formatValue(SliderUtils.liveValue(styledItem))
-            color: Theme.palette.normal.overlayText
+            color: theme.palette.normal.overlayText
         }
     }
 }

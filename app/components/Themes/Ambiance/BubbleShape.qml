@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.3
 
 Item {
     id: bubbleShape
@@ -28,7 +28,7 @@ Item {
     /*!
       The background color of the bubble.
      */
-    property color color: square ? Theme.palette.normal.background : Theme.palette.normal.overlay
+    property color color: square ? theme.palette.normal.background : theme.palette.normal.overlay
 
     property point target
     property string direction: "down"
@@ -110,7 +110,7 @@ Item {
 
     UbuntuShape {
         anchors.fill: parent
-        backgroundColor: Theme.palette.normal.overlay
+        backgroundColor: theme.palette.normal.overlay
         source: bubbleShape.clipContent ? shapeSource : null
         visible: !square
     }

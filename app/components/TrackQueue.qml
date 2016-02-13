@@ -28,8 +28,11 @@ Item {
 
     function loadQueue() {
         if (canLoad) {
-            if (model.load())
+            if (model.load()) {
+                player.currentCount = model.count
                 return completed = true
+            }
+            player.currentCount = 0
             return completed = false
         }
         return false

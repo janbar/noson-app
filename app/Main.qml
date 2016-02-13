@@ -16,9 +16,9 @@
  */
 
 import QtQuick 2.4
-import Ubuntu.Components 1.2
-import Ubuntu.Components.Popups 1.0
-//import Ubuntu.Connectivity 1.0
+import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
+//import Ubuntu.Connectivity 1.3
 import Qt.labs.settings 1.0
 import QtMultimedia 5.0
 import QtGraphicalEffects 1.0
@@ -42,7 +42,7 @@ MainView {
     backgroundColor: styleMusic.mainView.backgroundColor
 
     Binding {
-        target: Theme
+        target: theme
         property: "name"
         value: "Ubuntu.Components.Themes.SuruDark"
     }
@@ -53,7 +53,7 @@ MainView {
 
     // Design stuff
     Style { id: styleMusic }
-    width: units.gu(100)
+    width: units.gu(46)
     height: units.gu(80)
 
     // Arguments during startup
