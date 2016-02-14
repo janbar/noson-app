@@ -84,7 +84,7 @@ MusicPage {
             name: "default"
             actions: [
                 Action {
-                    enabled: true
+                    enabled: (queueLoader.status === Loader.Ready)
                     iconName: isListView ? "view-fullscreen" : "media-playlist"
                     // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
                     text: i18n.tr("Show queue")
@@ -135,7 +135,12 @@ MusicPage {
             fill: parent
         }
         source: "../components/NowPlayingFullView.qml"
-        visible: !isListView
+        visible: opacity != 0.0
+        opacity: !isListView ? 1.0 : 0.0
+
+        Behavior on opacity {
+            NumberAnimation { duration: 250 }
+        }
     }
 
     Loader {
@@ -146,7 +151,12 @@ MusicPage {
         }
         asynchronous: true
         source: "../components/Queue.qml"
-        visible: isListView
+        visible: opacity != 0.0
+        opacity: isListView ? 1.0 : 0.0
+
+        Behavior on opacity {
+            NumberAnimation { duration: 250 }
+        }
     }
 
     Loader {
