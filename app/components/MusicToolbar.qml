@@ -140,7 +140,7 @@ Rectangle {
                      left: parent.left
                      top: parent.top
                  }
-                 covers: [{art: player.currentMetaArt, author: player.currentMetaArtist, album: player.currentMetaArt}]
+                 covers: [{art: player.currentMetaArt, author: player.currentMetaArtist, album: player.currentMetaAlbum}]
                  size: parent.height
             }
 
