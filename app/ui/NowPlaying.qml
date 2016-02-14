@@ -125,21 +125,6 @@ MusicPage {
                 backAction: defaultState.backAction
                 actions: defaultState.actions
             }
-        },
-        MultiSelectHeadState {
-            id: selectionState
-            name: "selection"
-            listview: queueLoader.item.listview
-            thisPage: nowPlaying
-            addToQueue: false
-            removable: false
-
-            /*onRemoved: {
-                // Remove the tracks from the queue
-                // Use slice() to copy the list
-                // so that the indexes don't change as they are removed
-                removeQueueList(selectedIndices.slice())
-            }*/
         }
     ]
 
