@@ -365,6 +365,25 @@ MainView {
         return false;
     }
 
+    // Reload zones and try connect
+    function reloadZone() {
+        if (Sonos.init(debugLevel)) {
+            customdebug("Connecting zone '" + currentZone + "'");
+            if ((Sonos.connectZone(currentZone) || Sonos.connectZone("")) && player.connect()) {
+                currentZone = Sonos.getZoneName();
+                AllZonesModel.init(Sonos, true); // force load now
+                // Signal change if any
+                if (noZone)
+                    noZone = false;
+                return true;
+            }
+        }
+        // Signal change if any
+        if (!noZone)
+            noZone = true;
+        return false;
+    }
+
     // Action on request to update music library
     function updateMusicIndex() {
         if (player.refreshShareIndex()) {
