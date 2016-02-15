@@ -94,7 +94,8 @@ MusicPage {
                 },
                 Action {
                     enabled: player.trackQueue.model.count > 0
-                    iconName: "settings"
+                    //iconName: "settings"
+                    iconSource: Qt.resolvedUrl("../graphics/cogs.svg")
                     objectName: "queueActions"
                     // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
                     text: i18n.tr("Manage queue")
@@ -113,6 +114,7 @@ MusicPage {
                         currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSleepTimer.qml"), mainView)
                     }
                 }
+
             ]
             backAction: Action {
                 iconName: "back"

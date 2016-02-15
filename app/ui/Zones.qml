@@ -48,7 +48,8 @@ BottomEdgePage {
             actions: [
                 Action {
                     enabled: true
-                    iconName: "settings"
+                    //iconName: "settings"
+                    iconSource: Qt.resolvedUrl("../graphics/cogs.svg")
                     text: i18n.tr("Settings")
                     onTriggered: PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSettings.qml"), mainView)
                 },
@@ -62,12 +63,12 @@ BottomEdgePage {
                   }
                 },
                 Action {
-                    enabled: true
-                    iconName: "close"
-                    text: i18n.tr("Quit")
-                    onTriggered: Qt.quit()
+                    enabled: zoneList.model.count > 1
+                    //iconName: "compose"
+                    iconSource: Qt.resolvedUrl("../graphics/group.svg")
+                    text: i18n.tr("Create group")
+                    onTriggered: zoneList.clearSelection() // change view state to multiselectable
                 }
-
             ]
             PropertyChanges {
                 target: zonesPage.head
@@ -119,8 +120,8 @@ BottomEdgePage {
         id: delayReloadZones
         interval: 100
         onTriggered: {
-            connectZone()
-            // activity indicator will be hidden on index loaded
+            reloadZone()
+            mainView.currentlyWorking = false
         }
     }
 
@@ -130,8 +131,8 @@ BottomEdgePage {
         onTriggered: {
             handleJoinZones()
             zoneList.closeSelection()
-            connectZone()
-            // activity indicator will be hidden on index loaded
+            reloadZone()
+            mainView.currentlyWorking = false
         }
     }
 
@@ -196,8 +197,7 @@ BottomEdgePage {
                 actions: [
                     Action {
                         enabled: model.isGroup
-                        iconName: "settings"
-                        objectName: "ZoneGroup"
+                        iconName: "edit-cut"
                         text: i18n.tr("Group")
 
                         onTriggered: {
@@ -241,8 +241,8 @@ BottomEdgePage {
                 interval: 100
                 onTriggered: {
                     Sonos.unjoinZone(model.payload)
-                    connectZone()
-                    // activity indicator will be hidden on index loaded
+                    reloadZone()
+                    mainView.currentlyWorking = false
                 }
             }
 

@@ -31,8 +31,18 @@ ListItem {
     property alias column: musicRow.column
     property alias imageSource: musicRow.imageSource
 
+    signal itemClicked()
+
     Component.onCompleted: {
         ListView.view.ViewItems.selectMode = true
+    }
+
+    onClicked: {
+        if (selectMode) {
+            selected = !selected;
+        } else {
+            itemClicked()
+        }
     }
 
     divider {

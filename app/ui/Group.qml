@@ -98,8 +98,8 @@ Page {
                         break;
                     }
                 }
-                connectZone();
-                // activity indicator will be hidden on index loaded
+                reloadZone();
+                mainView.currentlyWorking = false
             }
             mainPageStack.pop()
         }
