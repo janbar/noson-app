@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-13 17:12+0100\n"
+"POT-Creation-Date: 2016-02-15 02:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -240,6 +240,7 @@ msgid "%1 - track #%2"
 msgstr ""
 
 #: ../app/components/HeadState/MultiSelectHeadState.qml:31
+#: ../app/ui/Group.qml:44 ../app/ui/Zones.qml:85
 msgid "Select All"
 msgstr ""
 
@@ -265,7 +266,7 @@ msgstr ""
 msgid "Search music"
 msgstr ""
 
-#: ../app/components/ListItemActions/Clear.qml:25
+#: ../app/components/ListItemActions/Clear.qml:25 ../app/ui/Zones.qml:85
 msgid "Clear"
 msgstr ""
 
@@ -363,6 +364,10 @@ msgstr ""
 msgid "Genre"
 msgstr ""
 
+#: ../app/ui/Group.qml:31 ../app/ui/Zones.qml:201
+msgid "Group"
+msgstr ""
+
 #: ../app/ui/NoZoneState.qml:109
 msgid "No Sonos zone found"
 msgstr ""
@@ -424,4 +429,8 @@ msgstr ""
 
 #: ../app/ui/Zones.qml:67
 msgid "Quit"
+msgstr ""
+
+#: ../app/ui/Zones.qml:96
+msgid "back"
 msgstr ""
