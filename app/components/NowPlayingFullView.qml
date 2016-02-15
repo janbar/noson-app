@@ -125,6 +125,7 @@ Flickable {
                 top: nowPlayingWideAspectLabels.top
                 right: nowPlayingWideAspectLabels.right
             }
+            color: UbuntuColors.orange
             height: units.gu(3)
             width: height
             visible: player.sleepTimerEnabled
