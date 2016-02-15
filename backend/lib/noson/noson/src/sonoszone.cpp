@@ -87,7 +87,7 @@ std::string Zone::GetZoneName() const
     if (*it)
     {
       if (!name.empty())
-        name.append("+");
+        name.append(" + ");
       name.append(**it);
     }
   return name;
