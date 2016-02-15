@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Jean-Luc Barriere
+ *      Copyright (C) 2016 Jean-Luc Barriere
  *
  *  This library is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -19,61 +19,58 @@
  *
  */
 
-#ifndef ZONESMODEL_H
-#define ZONESMODEL_H
+#ifndef ROOMSMODEL_H
+#define ROOMSMODEL_H
 
 #include "listmodel.h"
-#include "../../lib/noson/noson/src/sonoszone.h"
+#include "../../lib/noson/noson/src/sonosplayer.h"
 
 #include <QAbstractListModel>
 
-class ZoneItem
+class RoomItem
 {
 public:
-  ZoneItem(const SONOS::ZonePtr& ptr);
+  RoomItem(const SONOS::ZonePlayerPtr& ptr);
 
-  virtual ~ZoneItem() { }
+  virtual ~RoomItem() { }
 
   bool isValid() const { return m_valid; }
 
   QVariant payload() const;
-  
+
   QString id() const { return m_id; }
 
   QString name() const { return m_name; }
 
   QString icon() const { return m_icon; }
 
-  bool isGroup() const { return m_isGroup; }
-
 private:
-  SONOS::ZonePtr m_ptr;
+  SONOS::ZonePlayerPtr m_ptr;
   bool m_valid;
   QString m_id;
   QString m_name;
   QString m_icon;
-  bool m_isGroup;
+
 };
 
-class ZonesModel : public QAbstractListModel, public ListModel
+class RoomsModel : public QAbstractListModel, public ListModel
 {
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
 
 public:
-  enum ZonesRoles
+  enum RoomsRoles
   {
     PayloadRole,
     IdRole,
     NameRole,
     IconRole,
-    IsGroupRole,
   };
 
-  ZonesModel(QObject* parent = 0);
-  virtual ~ZonesModel();
+  RoomsModel(QObject* parent = 0);
+  virtual ~RoomsModel();
 
-  void addItem(ZoneItem* item);
+  void addItem(RoomItem* item);
 
   int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
@@ -87,6 +84,8 @@ public:
 
   Q_INVOKABLE bool load();
 
+  Q_INVOKABLE bool load(const QString& zoneId);
+
   virtual void handleDataUpdate();
 
 signals:
@@ -97,8 +96,8 @@ protected:
   QHash<int, QByteArray> roleNames() const;
 
 private:
-  QList<ZoneItem*> m_items;
+  QList<RoomItem*> m_items;
 };
 
-#endif /* ZONESMODEL_H */
+#endif /* ROOMSMODEL_H */
 

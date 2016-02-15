@@ -23,11 +23,14 @@
 #define LISTMODEL
 
 #include "../../lib/noson/noson/src/digitalitem.h"
+#include "../../lib/noson/noson/src/sonoszone.h"
 #include "../../lib/noson/noson/src/locked.h"
 
 #include <QObject>
 
 Q_DECLARE_METATYPE(SONOS::DigitalItemPtr)
+Q_DECLARE_METATYPE(SONOS::ZonePtr)
+Q_DECLARE_METATYPE(SONOS::ZonePlayerPtr)
 
 class Sonos;
 

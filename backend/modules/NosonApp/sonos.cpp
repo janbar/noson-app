@@ -98,6 +98,62 @@ QString Sonos::getZoneName() const
   return "";
 }
 
+bool Sonos::joinRoom(const QVariant& roomPayload, const QVariant& toZonePayload)
+{
+  SONOS::ZonePlayerPtr room = roomPayload.value<SONOS::ZonePlayerPtr>();
+  SONOS::ZonePtr zone = toZonePayload.value<SONOS::ZonePtr>();
+  if (room && room->IsValid() && zone && zone->GetCoordinator())
+  {
+    SONOS::Player player(room);
+    return player.JoinToGroup(zone->GetCoordinator()->GetUUID());
+  }
+  return false;
+}
+
+bool Sonos::joinZone(const QVariant& zonePayload, const QVariant& toZonePayload)
+{
+  SONOS::ZonePtr zone = zonePayload.value<SONOS::ZonePtr>();
+  SONOS::ZonePtr toZone = toZonePayload.value<SONOS::ZonePtr>();
+  if (zone && toZone && toZone->GetCoordinator())
+  {
+    for (std::vector<SONOS::ZonePlayerPtr>::iterator it = zone->begin(); it != zone->end(); ++it)
+    {
+      SONOS::Player player(*it);
+      player.JoinToGroup(toZone->GetCoordinator()->GetUUID());
+    }
+    return true;
+  }
+  return false;
+
+}
+
+bool Sonos::unjoinRoom(const QVariant& roomPayload)
+{
+  SONOS::ZonePlayerPtr room = roomPayload.value<SONOS::ZonePlayerPtr>();
+  if (room && room->IsValid())
+  {
+    SONOS::Player player(room);
+    return player.BecomeStandalone();
+  }
+  return false;
+}
+
+bool Sonos::unjoinZone(const QVariant& zonePayload)
+{
+  SONOS::ZonePtr zone = zonePayload.value<SONOS::ZonePtr>();
+  if (zone)
+  {
+    for (std::vector<SONOS::ZonePlayerPtr>::iterator it = zone->begin(); it != zone->end(); ++it)
+    {
+      SONOS::Player player(*it);
+      player.BecomeStandalone();
+    }
+    return true;
+  }
+  return false;
+
+}
+
 const SONOS::System& Sonos::getSystem() const
 {
   return m_system;

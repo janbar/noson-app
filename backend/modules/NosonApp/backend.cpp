@@ -22,7 +22,6 @@
 #include "backend.h"
 #include "sonos.h"
 #include "player.h"
-#include "playlistsmodel.h"
 #include "renderingmodel.h"
 
 #include <QtQml>
@@ -43,6 +42,7 @@ void BackendPlugin::registerTypes(const char *uri)
 
   qmlRegisterType<Player>(uri, 1, 0, "ZonePlayer");
   qmlRegisterType<ZonesModel>(uri, 1, 0, "ZonesModel");
+  qmlRegisterType<RoomsModel>(uri, 1, 0, "RoomsModel");
   qmlRegisterType<AlbumsModel>(uri, 1, 0, "AlbumsModel");
   qmlRegisterType<ArtistsModel>(uri, 1, 0, "ArtistsModel");
   qmlRegisterType<GenresModel>(uri, 1, 0, "GenresModel");

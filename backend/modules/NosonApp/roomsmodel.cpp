@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Jean-Luc Barriere
+ *      Copyright (C) 2016 Jean-Luc Barriere
  *
  *  This library is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -19,43 +19,36 @@
  *
  */
 
-#include "zonesmodel.h"
+#include "roomsmodel.h"
 #include "sonos.h"
 
-ZoneItem::ZoneItem(const SONOS::ZonePtr& ptr)
+RoomItem::RoomItem(const SONOS::ZonePlayerPtr& ptr)
 : m_ptr(ptr)
 , m_valid(false)
-, m_isGroup(false)
 {
-  m_id = QString::fromUtf8(ptr->GetGroup().c_str());
-  m_name = QString::fromUtf8(ptr->GetZoneName().c_str());
-  if (ptr->size() == 1)
-    m_icon = QString::fromUtf8(ptr->GetCoordinator()->GetIconName().c_str());
-  else
-  {
-    m_icon = "";
-    m_isGroup = true;
-  }
+  m_id = QString::fromUtf8(ptr->GetUUID().c_str());
+  m_name = QString::fromUtf8(ptr->c_str());
+  m_icon = QString::fromUtf8(ptr->GetIconName().c_str());
   m_valid = true;
 }
 
-QVariant ZoneItem::payload() const
+QVariant RoomItem::payload() const
 {
   QVariant var;
-  var.setValue<SONOS::ZonePtr>(m_ptr);
+  var.setValue<SONOS::ZonePlayerPtr>(m_ptr);
   return var;
 }
 
-ZonesModel::ZonesModel(QObject* parent)
+RoomsModel::RoomsModel(QObject* parent)
 : QAbstractListModel(parent)
 {
 }
 
-ZonesModel::~ZonesModel()
+RoomsModel::~RoomsModel()
 {
 }
 
-void ZonesModel::addItem(ZoneItem* item)
+void RoomsModel::addItem(RoomItem* item)
 {
   {
     SONOS::LockGuard lock(m_lock);
@@ -66,18 +59,18 @@ void ZonesModel::addItem(ZoneItem* item)
   emit countChanged();
 }
 
-int ZonesModel::rowCount(const QModelIndex& parent) const
+int RoomsModel::rowCount(const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
     return m_items.count();
 }
 
-QVariant ZonesModel::data(const QModelIndex& index, int role) const
+QVariant RoomsModel::data(const QModelIndex& index, int role) const
 {
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
-  const ZoneItem* item = m_items[index.row()];
+  const RoomItem* item = m_items[index.row()];
   switch (role)
   {
   case PayloadRole:
@@ -88,46 +81,42 @@ QVariant ZonesModel::data(const QModelIndex& index, int role) const
     return item->name();
   case IconRole:
     return item->icon();
-  case IsGroupRole:
-    return item->isGroup();
   default:
     return QVariant();
   }
 }
 
-QHash<int, QByteArray> ZonesModel::roleNames() const
+QHash<int, QByteArray> RoomsModel::roleNames() const
 {
   QHash<int, QByteArray> roles;
   roles[PayloadRole] = "payload";
   roles[IdRole] = "id";
   roles[NameRole] = "name";
   roles[IconRole] = "icon";
-  roles[IsGroupRole] = "isGroup";
   return roles;
 }
 
-QVariantMap ZonesModel::get(int row)
+QVariantMap RoomsModel::get(int row)
 {
   SONOS::LockGuard lock(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
-  const ZoneItem* item = m_items[row];
+  const RoomItem* item = m_items[row];
   QVariantMap model;
   QHash<int, QByteArray> roles = roleNames();
   model[roles[PayloadRole]] = item->payload();
   model[roles[IdRole]] = item->id();
   model[roles[NameRole]] = item->name();
   model[roles[IconRole]] = item->icon();
-  model[roles[IsGroupRole]] = item->isGroup();
   return model;
 }
 
-bool ZonesModel::init(QObject* sonos, bool fill)
+bool RoomsModel::init(QObject* sonos, bool fill)
 {
   return ListModel::init(sonos, "", fill);
 }
 
-void ZonesModel::clear()
+void RoomsModel::clear()
 {
   {
     SONOS::LockGuard lock(m_lock);
@@ -138,18 +127,18 @@ void ZonesModel::clear()
   emit countChanged();
 }
 
-bool ZonesModel::load()
+bool RoomsModel::load()
 {
   setUpdateSignaled(false);
-  
+
   if (!m_provider)
     return false;
   clear();
-  SONOS::ZoneList zones = m_provider->getSystem().GetZoneList();
+  SONOS::ZonePlayerList zonePlayers = m_provider->getSystem().GetZonePlayerList();
 
-  for (SONOS::ZoneList::iterator it = zones.begin(); it != zones.end(); ++it)
+  for (SONOS::ZonePlayerList::iterator it = zonePlayers.begin(); it != zonePlayers.end(); ++it)
   {
-    ZoneItem* item = new ZoneItem(it->second);
+    RoomItem* item = new RoomItem(it->second);
     if (item->isValid())
       addItem(item);
     else
@@ -158,7 +147,30 @@ bool ZonesModel::load()
   return m_loaded = true;
 }
 
-void ZonesModel::handleDataUpdate()
+bool RoomsModel::load(const QString& zoneId)
+{
+  setUpdateSignaled(false);
+
+  if (!m_provider)
+    return false;
+  clear();
+  SONOS::ZoneList zones = m_provider->getSystem().GetZoneList();
+  SONOS::ZoneList::const_iterator itz = zones.find(zoneId.toUtf8().constData());
+  if (itz != zones.end())
+  {
+    for (std::vector<SONOS::ZonePlayerPtr>::iterator it = itz->second->begin(); it != itz->second->end(); ++it)
+    {
+      RoomItem* item = new RoomItem(*it);
+      if (item->isValid())
+        addItem(item);
+      else
+        delete item;
+    }
+  }
+  return m_loaded = true;
+}
+
+void RoomsModel::handleDataUpdate()
 {
   if (!updateSignaled())
   {

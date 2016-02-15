@@ -23,6 +23,7 @@ set(
     modules/NosonApp/playlistsmodel.cpp
     modules/NosonApp/zonesmodel.cpp
     modules/NosonApp/renderingmodel.cpp
+    modules/NosonApp/roomsmodel.cpp
 )
 
 add_library(NosonAppbackend MODULE

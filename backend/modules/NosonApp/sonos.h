@@ -28,6 +28,7 @@
 
 #include "tools.h"
 #include "zonesmodel.h"
+#include "roomsmodel.h"
 #include "albumsmodel.h"
 #include "artistsmodel.h"
 #include "genresmodel.h"
@@ -55,6 +56,14 @@ public:
   Q_INVOKABLE bool connectZone(const QString& zoneName);
 
   Q_INVOKABLE QString getZoneName() const;
+
+  Q_INVOKABLE bool joinRoom(const QVariant& roomPayload, const QVariant& toZonePayload);
+
+  Q_INVOKABLE bool joinZone(const QVariant& zonePayload, const QVariant& toZonePayload);
+
+  Q_INVOKABLE bool unjoinRoom(const QVariant& roomPayload);
+
+  Q_INVOKABLE bool unjoinZone(const QVariant& zonePayload);
 
   const SONOS::System& getSystem() const;
   const SONOS::PlayerPtr& getPlayer() const;
