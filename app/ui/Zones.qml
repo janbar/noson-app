@@ -75,14 +75,43 @@ BottomEdgePage {
                 actions: defaultState.actions
             }
         },
-        MultiSelectHeadState {
+        PageHeadState {
             id: selectionState
             name: "selection"
-            removable: false
-            addToQueue: false
-            addToPlaylist: false
-            listview: zoneList
-            thisPage: zonesPage
+            actions: [
+                Action {
+                    enabled: zoneList.model.count > 0
+                    iconName: zoneList.model.count > zoneList.getSelectedIndices().length ? "select" : "clear"
+                    text: zoneList.model.count > zoneList.getSelectedIndices().length ? i18n.tr("Select All") : i18n.tr("Clear")
+
+                    onTriggered: {
+                        if (zoneList.model.count > zoneList.getSelectedIndices().length)
+                            zoneList.selectAll()
+                        else
+                            zoneList.clearSelection()
+                    }
+                }
+            ]
+            backAction: Action {
+                text: i18n.tr("back")
+                iconName: "back"
+                onTriggered: {
+                    if (zoneList.getSelectedIndices().length > 1) {
+                        mainView.currentlyWorking = true
+                        delayJoinZones.start()
+                    }
+                    else {
+                        zoneList.closeSelection()
+                    }
+                }
+            }
+            head: zonesPage.head
+
+            PropertyChanges {
+                target: zonesPage.head
+                backAction: selectionState.backAction
+                actions: selectionState.actions
+            }
         }
     ]
 
@@ -95,8 +124,39 @@ BottomEdgePage {
         }
     }
 
+    Timer {
+        id: delayJoinZones
+        interval: 100
+        onTriggered: {
+            handleJoinZones()
+            zoneList.closeSelection()
+            connectZone()
+            // activity indicator will be hidden on index loaded
+        }
+    }
+
+    function handleJoinZones() {
+        var indicies = zoneList.getSelectedIndices();
+        // get current as master
+        for (var z = 0; z < zoneList.model.count; ++z) {
+            if (zoneList.model.get(z).name === currentZone) {
+                var master = zoneList.model.get(z)
+                // join zones
+                for (var i = 0; i < indicies.length; ++i) {
+                    if (indicies[i] !== z) {
+                        if (!Sonos.joinZone(zoneList.model.get(indicies[i]).payload, master.payload))
+                            return false;
+                    }
+                }
+                // all changes done
+                return true;
+            }
+        }
+        return false;
+    }
+
     MultiSelectListView {
-        id: zoneList
+        id: zoneList        
         anchors {
             fill: parent
         }
@@ -121,15 +181,31 @@ BottomEdgePage {
             leadingActions: ListItemActions {
                 actions: [
                     Clear {
-                        onTriggered: {}
+                        enabled: model.isGroup
+                        onTriggered: {
+                            mainView.currentlyWorking = true
+                            delayUnjoinZone.start()
+                        }
                     }
                 ]
             }
             multiselectable: true
-            objectName: "zoneListItem" + index
             reorderable: false
+            objectName: "zoneListItem" + index
             trailingActions: ListItemActions {
-                actions: []
+                actions: [
+                    Action {
+                        enabled: model.isGroup
+                        iconName: "settings"
+                        objectName: "ZoneGroup"
+                        text: i18n.tr("Group")
+
+                        onTriggered: {
+                            mainPageStack.push(Qt.resolvedUrl("Group.qml"),
+                                               {"zoneId": model.id})
+                        }
+                    }
+                ]
                 delegate: ActionDelegate {
 
                 }
@@ -159,6 +235,55 @@ BottomEdgePage {
                     mainView.currentlyWorking = false
                 }
             }
+
+            Timer {
+                id: delayUnjoinZone
+                interval: 100
+                onTriggered: {
+                    Sonos.unjoinZone(model.payload)
+                    connectZone()
+                    // activity indicator will be hidden on index loaded
+                }
+            }
+
+            onSelectedChanged: {
+                if (zoneList.state === "multiselectable")
+                    zoneList.checkSelected()
+            }
+
         }
+
+        onStateChanged: {
+            if (state === "multiselectable")
+                selectCurrentZone()
+        }
+
+        function selectCurrentZone() {
+            var tmp = [];
+            for (var i = 0; i < model.count; i++) {
+                if (model.get(i).name === currentZone) {
+                    tmp.push(i);
+                    break;
+                }
+            }
+            ViewItems.selectedIndices = tmp
+        }
+
+        function checkSelected() {
+            // keep currentZone selected
+            var indicies = getSelectedIndices();
+            for (var i = 0; i < indicies.length; i++) {
+                if (model.get(indicies[i]).name === currentZone)
+                    return;
+            }
+            for (var i = 0; i < model.count; i++) {
+                if (model.get(i).name === currentZone) {
+                    indicies.push(i);
+                    ViewItems.selectedIndices = indicies;
+                    break;
+                }
+            }
+        }
+
     }
 }

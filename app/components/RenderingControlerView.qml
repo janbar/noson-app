@@ -36,8 +36,6 @@ MusicListView {
 
     delegate: SimpleListItem {
         id: renderingControlListItem
-        multiselectable: false
-        reorderable: false
         objectName: "renderingControlListItem" + index
 
         color: renderingControlList.backgroundColor
