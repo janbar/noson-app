@@ -59,7 +59,7 @@ public:
   Q_INVOKABLE bool refreshShareIndex();
   Q_INVOKABLE bool configureSleepTimer(int seconds);
   Q_INVOKABLE int remainingSleepTimerDuration();
-  
+
   Q_INVOKABLE bool play();
   Q_INVOKABLE bool stop();
   Q_INVOKABLE bool pause();
@@ -71,6 +71,8 @@ public:
   Q_INVOKABLE bool toggleMute();
   Q_INVOKABLE bool toggleMute(const QString& uuid);
 
+  Q_INVOKABLE bool playLineIN();
+  Q_INVOKABLE bool playTvSPDIF();
   Q_INVOKABLE bool playQueue(bool start);
   Q_INVOKABLE bool seekTime(int timesec);
   Q_INVOKABLE bool seekTrack(int position);

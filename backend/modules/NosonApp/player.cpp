@@ -208,6 +208,16 @@ bool Player::toggleMute(const QString& uuid)
   return false;
 }
 
+bool Player::playLineIN()
+{
+  return m_player ? m_player->SwitchLineIN() : false;
+}
+
+bool Player::playTvSPDIF()
+{
+  return m_player ? m_player->SwitchTvSPDIF() : false;
+}
+
 bool Player::playQueue(bool start)
 {
   return m_player ? m_player->PlayQueue(start) : false;
