@@ -52,8 +52,34 @@ namespace NSROOT
   {
   public:
 
+    /**
+     * Initialize a zone player.
+     * It will implement all needs to control the zone.
+     * @param zone
+     * @param eventHandler
+     * @param CBHandle
+     * @param eventCB
+     */
     Player(const ZonePtr& zone, EventHandler& eventHandler, void* CBHandle = 0, EventCB eventCB = 0);
+
+    /**
+     * Initialize a standalone player.
+     * @param zonePlayer
+     * @param eventHandler
+     * @param CBHandle
+     * @param eventCB
+     */
     Player(const ZonePlayerPtr& zonePlayer, EventHandler& eventHandler, void* CBHandle = 0, EventCB eventCB = 0);
+
+    /**
+     * Initialize a basic player without any substription or callback.
+     * WARNING: Properties won't be filled.
+     * AV-transport or rendering status have to be manually requested using Get actions.
+     * @param zonePlayer
+     * @param eventHandler
+     */
+    Player(const ZonePlayerPtr& zonePlayer);
+
     virtual ~Player();
 
     bool IsValid() const { return m_valid; }
@@ -105,7 +131,13 @@ namespace NSROOT
     bool Previous();
 
     bool ConfigureSleepTimer(unsigned seconds);
-    
+
+    bool BecomeStandalone();
+    bool JoinToGroup(const std::string& coordinatorUUID);
+
+    bool SwitchLineIN();
+    bool SwitchTvSPDIF();
+
     ContentDirectory* ContentDirectoryProvider(void* CBHandle = 0, EventCB eventCB = 0);
 
     // Implements EventSubscriber
@@ -116,7 +148,7 @@ namespace NSROOT
     std::string m_uuid;
     std::string m_host;
     unsigned m_port;
-    EventHandler& m_eventHandler;
+    EventHandler m_eventHandler;
     void* m_CBHandle;
     EventCB m_eventCB;
     Locked<bool> m_eventSignaled;

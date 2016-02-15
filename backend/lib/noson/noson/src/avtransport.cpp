@@ -101,16 +101,6 @@ bool AVTransport::GetRemainingSleepTimerDuration(ElementList& vars)
   return false;
 }
 
-bool AVTransport::BecomeCoordinatorOfStandaloneGroup()
-{
-  ElementList args;
-  args.push_back(ElementPtr(new Element("InstanceID", "0")));
-  ElementList vars = Request("BecomeCoordinatorOfStandaloneGroup", args);
-  if (!vars.empty() && vars[0]->compare("u:BecomeCoordinatorOfStandaloneGroupResponse") == 0)
-    return true;
-  return false;
-}
-
 bool AVTransport::SetPlayMode(PlayMode_t mode)
 {
   const char* modeStr;
@@ -465,6 +455,28 @@ bool AVTransport::ConfigureSleepTimer(unsigned seconds)
   args.push_back(ElementPtr(new Element("NewSleepTimerDuration", buf)));
   ElementList vars = Request("ConfigureSleepTimer", args);
   if (!vars.empty() && vars[0]->compare("u:ConfigureSleepTimerResponse") == 0)
+    return true;
+  return false;
+}
+
+bool AVTransport::SetAVTransportURI(const std::string& currentURI, const std::string& CurrentURIMetaData)
+{
+  ElementList args;
+  args.push_back(ElementPtr(new Element("InstanceID", "0")));
+  args.push_back(ElementPtr(new Element("CurrentURI", currentURI)));
+  args.push_back(ElementPtr(new Element("CurrentURIMetaData", CurrentURIMetaData)));
+  ElementList vars = Request("SetAVTransportURI", args);
+  if (!vars.empty() && vars[0]->compare("u:SetAVTransportURIResponse") == 0)
+    return true;
+  return false;
+}
+
+bool AVTransport::BecomeCoordinatorOfStandaloneGroup()
+{
+  ElementList args;
+  args.push_back(ElementPtr(new Element("InstanceID", "0")));
+  ElementList vars = Request("BecomeCoordinatorOfStandaloneGroup", args);
+  if (!vars.empty() && vars[0]->compare("u:BecomeCoordinatorOfStandaloneGroupResponse") == 0)
     return true;
   return false;
 }

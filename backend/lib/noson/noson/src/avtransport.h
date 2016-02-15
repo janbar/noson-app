@@ -63,8 +63,6 @@ namespace NSROOT
 
     bool GetRemainingSleepTimerDuration(ElementList& vars);
 
-    bool BecomeCoordinatorOfStandaloneGroup();
-
     bool SetPlayMode(PlayMode_t mode);
 
     bool Play();
@@ -109,6 +107,11 @@ namespace NSROOT
     bool ReorderTracksInSavedQueue(const std::string& SQObjectID, const std::string& trackList, const std::string& newPositionList, unsigned containerUpdateID);
 
     bool ConfigureSleepTimer(unsigned seconds);
+
+    bool SetAVTransportURI(const std::string& currentURI, const std::string& CurrentURIMetaData);
+
+    // Remove this player from a group
+    bool BecomeCoordinatorOfStandaloneGroup();
 
     // Implements EventSubscriber
     virtual void HandleEventMessage(EventMessagePtr msg);

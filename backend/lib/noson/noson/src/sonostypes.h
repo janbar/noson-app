@@ -61,7 +61,9 @@ namespace NSROOT
   typedef enum
   {
     Protocol_xRinconQueue    = 0,
-    Protocol_xSonosapiStream = 1,
+    Protocol_xRinconStream   = 1,
+    Protocol_xSonosapiStream,
+    Protocol_xSonosHtastream,
     Protocol_xFileCifs,
     Protocol_xRincon,
     Protocol_httpGet,

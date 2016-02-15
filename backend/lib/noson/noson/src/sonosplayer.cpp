@@ -96,6 +96,44 @@ Player::Player(const ZonePlayerPtr& zonePlayer, EventHandler& eventHandler, void
     DBG(DBG_ERROR, "%s: invalid zone player\n", __FUNCTION__);
 }
 
+Player::Player(const ZonePlayerPtr& zonePlayer)
+: m_valid(false)
+, m_uuid()
+, m_host()
+, m_port(0)
+, m_eventHandler()
+, m_CBHandle(0)
+, m_eventCB(0)
+, m_eventSignaled(false)
+, m_eventMask(0)
+, m_AVTransport(0)
+, m_deviceProperties(0)
+, m_contentDirectory(0)
+{
+  if (zonePlayer && zonePlayer->IsValid())
+  {
+    DBG(DBG_DEBUG, "%s: initialize player '%s' (%s:%u)\n", __FUNCTION__, zonePlayer->c_str(), zonePlayer->GetHost().c_str(), zonePlayer->GetPort());
+    m_uuid = zonePlayer->GetUUID();
+    m_host = zonePlayer->GetHost();
+    m_port = zonePlayer->GetPort();
+
+    SubordinateRC rc;
+    rc.uuid = m_uuid;
+    rc.name = *zonePlayer;
+    rc.renderingControl = new RenderingControl(m_host, m_port);
+    m_RCTable.push_back(rc);
+
+    m_AVTransport = new AVTransport(m_host, m_port);
+    m_contentDirectory = new ContentDirectory(m_host, m_port);
+    m_deviceProperties = new DeviceProperties(m_host, m_port);
+
+    m_queueURI.assign("x-rincon-queue:").append(m_uuid).append("#0");
+    m_valid = true;
+  }
+  else
+    DBG(DBG_ERROR, "%s: invalid zone player\n", __FUNCTION__);
+}
+
 Player::~Player()
 {
   m_eventHandler.RevokeAllSubscriptions(this);
@@ -443,6 +481,32 @@ bool Player::Previous()
 bool Player::ConfigureSleepTimer(unsigned seconds)
 {
   return m_AVTransport->ConfigureSleepTimer(seconds);
+}
+
+bool Player::BecomeStandalone()
+{
+  return m_AVTransport->BecomeCoordinatorOfStandaloneGroup();
+}
+
+bool Player::JoinToGroup(const std::string& coordinatorUUID)
+{
+  std::string uri(ProtocolTable[Protocol_xRincon]);
+  uri.append(":").append(coordinatorUUID);
+  return m_AVTransport->SetAVTransportURI(uri, "");
+}
+
+bool Player::SwitchLineIN()
+{
+  std::string uri(ProtocolTable[Protocol_xRinconStream]);
+  uri.append(":").append(m_uuid);
+  return m_AVTransport->SetAVTransportURI(uri, "");
+}
+
+bool Player::SwitchTvSPDIF()
+{
+  std::string uri(ProtocolTable[Protocol_xSonosHtastream]);
+  uri.append(":").append(m_uuid).append(":spdif");
+  return m_AVTransport->SetAVTransportURI(uri, "");
 }
 
 ContentDirectory* Player::ContentDirectoryProvider(void* CBHandle, EventCB eventCB)
