@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-15 02:05+0100\n"
+"POT-Creation-Date: 2016-02-16 01:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,37 +31,37 @@ msgstr ""
 msgid "Debug: "
 msgstr ""
 
-#: ../app/Main.qml:373
+#: ../app/Main.qml:392
 msgid "Refreshing of index is running"
 msgstr ""
 
-#: ../app/Main.qml:376 ../app/Main.qml:395 ../app/Main.qml:403
-#: ../app/Main.qml:413 ../app/Main.qml:418 ../app/Main.qml:442
-#: ../app/Main.qml:456 ../app/Main.qml:468 ../app/Main.qml:479
-#: ../app/Main.qml:487 ../app/Main.qml:497 ../app/Main.qml:507
-#: ../app/Main.qml:514 ../app/Main.qml:521 ../app/Main.qml:530
-#: ../app/Main.qml:539 ../app/Main.qml:547 ../app/Main.qml:554
+#: ../app/Main.qml:395 ../app/Main.qml:414 ../app/Main.qml:422
+#: ../app/Main.qml:432 ../app/Main.qml:437 ../app/Main.qml:461
+#: ../app/Main.qml:475 ../app/Main.qml:487 ../app/Main.qml:498
+#: ../app/Main.qml:506 ../app/Main.qml:516 ../app/Main.qml:526
+#: ../app/Main.qml:533 ../app/Main.qml:540 ../app/Main.qml:549
+#: ../app/Main.qml:558 ../app/Main.qml:566 ../app/Main.qml:573
 #: ../app/ui/AddToPlaylist.qml:139
 msgid "Action can't be performed"
 msgstr ""
 
-#: ../app/Main.qml:400 ../app/Main.qml:453 ../app/Main.qml:465
-#: ../app/Main.qml:527 ../app/ui/AddToPlaylist.qml:136
+#: ../app/Main.qml:419 ../app/Main.qml:472 ../app/Main.qml:484
+#: ../app/Main.qml:546 ../app/ui/AddToPlaylist.qml:136
 msgid "song added"
 msgstr ""
 
-#: ../app/Main.qml:439
+#: ../app/Main.qml:458
 #, qt-format
 msgid "%1 song added"
 msgid_plural "%1 songs added"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/Main.qml:476
+#: ../app/Main.qml:495
 msgid "Queue cleared"
 msgstr ""
 
-#: ../app/Main.qml:536
+#: ../app/Main.qml:555
 #, qt-format
 msgid "%1 song removed"
 msgid_plural "%1 songs removed"
@@ -69,7 +69,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANSLATORS: this appears in the header with limited space (around 20 characters)
-#: ../app/Main.qml:651 ../app/ui/NowPlaying.qml:37
+#: ../app/Main.qml:670 ../app/ui/NowPlaying.qml:37
 msgid "Now playing"
 msgstr ""
 
@@ -103,7 +103,7 @@ msgstr ""
 #. TRANSLATORS: this is a title of a dialog to manage queue
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
 #: ../app/components/Dialog/DialogManageQueue.qml:26
-#: ../app/ui/NowPlaying.qml:100
+#: ../app/ui/NowPlaying.qml:101
 msgid "Manage queue"
 msgstr ""
 
@@ -155,7 +155,7 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSettings.qml:24 ../app/ui/Zones.qml:52
+#: ../app/components/Dialog/DialogSettings.qml:24 ../app/ui/Zones.qml:53
 msgid "Settings"
 msgstr ""
 
@@ -177,7 +177,7 @@ msgstr ""
 #. TRANSLATORS: this is a title of a dialog to configure standby timer
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
 #: ../app/components/Dialog/DialogSleepTimer.qml:26
-#: ../app/ui/NowPlaying.qml:111
+#: ../app/ui/NowPlaying.qml:112
 msgid "Standby timer"
 msgstr ""
 
@@ -240,7 +240,7 @@ msgid "%1 - track #%2"
 msgstr ""
 
 #: ../app/components/HeadState/MultiSelectHeadState.qml:31
-#: ../app/ui/Group.qml:44 ../app/ui/Zones.qml:85
+#: ../app/ui/Group.qml:44 ../app/ui/Zones.qml:86
 msgid "Select All"
 msgstr ""
 
@@ -266,7 +266,7 @@ msgstr ""
 msgid "Search music"
 msgstr ""
 
-#: ../app/components/ListItemActions/Clear.qml:25 ../app/ui/Zones.qml:85
+#: ../app/components/ListItemActions/Clear.qml:25 ../app/ui/Zones.qml:86
 msgid "Clear"
 msgstr ""
 
@@ -423,14 +423,14 @@ msgstr[1] ""
 msgid "Zone controls"
 msgstr ""
 
-#: ../app/ui/Zones.qml:58
+#: ../app/ui/Zones.qml:59
 msgid "Reload zones"
 msgstr ""
 
-#: ../app/ui/Zones.qml:67
-msgid "Quit"
+#: ../app/ui/Zones.qml:69
+msgid "Create group"
 msgstr ""
 
-#: ../app/ui/Zones.qml:96
+#: ../app/ui/Zones.qml:97
 msgid "back"
 msgstr ""

@@ -9,7 +9,7 @@
             "desktop": "Noson.desktop"
         }
     },
-    "version": "0.99.20",
+    "version": "0.99.21",
     "maintainer": "Jean-luc Barriere <jlbarriere68@gmail.com>",
     "framework": "ubuntu-sdk-15.04-qml"
 }
