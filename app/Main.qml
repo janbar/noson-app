@@ -18,6 +18,7 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
+import Ubuntu.Content 1.1
 //import Ubuntu.Connectivity 1.3
 import Qt.labs.settings 1.0
 import QtMultimedia 5.0
@@ -59,15 +60,6 @@ MainView {
     // Arguments during startup
     Arguments {
         id: args
-        //defaultArgument.help: "Expects URI of the track to play."
-        //defaultArgument.valueNames: ["URI"]
-        // grab a media
-        Argument {
-            name: "url"
-            help: "URI for track to run at start."
-            required: false
-            valueNames: ["track"]
-        }
         // Debug/development mode
         Argument {
             name: "debug"
@@ -103,6 +95,9 @@ MainView {
 
     // setting alias to store last zone connected
     property alias currentZone: startupSettings.zoneName
+
+    // track latest stream link
+    property string inputStreamUrl: ""
 
     // Device isn't connected to network: true/false
     // property bool noNetwork: !NetworkingStatus.online || NetworkingStatus.limitedBandwith
@@ -315,6 +310,27 @@ MainView {
             default:
                 break;
             }
+        }
+    }
+
+    Connections {
+        target: ContentHub
+        onShareRequested: {
+            delayPlayURL.url = transfer.items[0].url
+            delayPlayURL.start()
+        }
+    }
+
+    Timer {
+        id: delayPlayURL
+        interval: 100
+        property string url: ""
+        onTriggered: {
+            if (!player.playStream(url, ""))
+                popInfo.open(i18n.tr("Action can't be performed"))
+            else
+                inputStreamUrl = url
+            mainView.currentlyWorking = false
         }
     }
 

@@ -260,6 +260,18 @@ Item {
         return playerLoader.item.remainingSleepTimerDuration();
     }
 
+    function playStream(url, title) {
+        return playerLoader.item.playStream(url, (title === "" ? i18n.tr("Untitled") : title))
+    }
+
+    function playLineIN() {
+        return playerLoader.item.playLineIN()
+    }
+
+    function playDigitalIN() {
+        return playerLoader.item.playDigitalIN()
+    }
+
     property alias renderingModel: renderingModelLoader.item
 
     Loader {

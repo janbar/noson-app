@@ -21,6 +21,7 @@
 import QtQuick 2.4
 import QtMultimedia 5.0
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
 
 Rectangle {
     anchors {
@@ -89,7 +90,7 @@ Rectangle {
                     verticalCenter: parent.verticalCenter
                 }
                 color: styleMusic.playerControls.labelColor
-                text: i18n.tr("No music in queue")
+                text: player.currentCount === 0 ? i18n.tr("No music in queue") : i18n.tr("Tap to play music")
                 fontSize: "large"
                 wrapMode: Text.WordWrap
                 maximumLineCount: 2
@@ -103,26 +104,43 @@ Rectangle {
                     rightMargin: units.gu(3)
                     verticalCenter: parent.verticalCenter
                 }
+                visible: player.currentCount > 0
                 color: "white"
                 height: units.gu(4)
                 name: player.isPlaying ? "media-playback-pause" : "media-playback-start"
-                objectName: "disabledSmallPlayShape"
                 width: height
             }
 
-            /* Click to play music */
+            /* Select input */
+            Icon {
+                id: disabledPlayerControlsSelectButton
+                anchors {
+                    right: parent.right
+                    rightMargin: units.gu(3)
+                    verticalCenter: parent.verticalCenter
+                }
+                visible: player.currentCount === 0
+                color: "white"
+                height: units.gu(4)
+                source: Qt.resolvedUrl("../graphics/input.svg")
+                width: height
+            }
+
+            /* Click action */
             MouseArea {
                 anchors {
                     fill: parent
                 }
                 onClicked: {
-                    if (player.trackQueue.model.count !== 0)
-                        player.toggle();
+                    if (player.currentCount > 0)
+                        player.playQueue(true)
+                    else
+                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSelectSource.qml"), mainView)
                 }
             }
         }
 
-        /* Enabled (queue > 0) controls */
+        /* Enabled controls */
         Item {
             id: enabledPlayerControlsGroup
             anchors {

@@ -94,7 +94,7 @@ BottomEdgePage {
                 }
             ]
             backAction: Action {
-                text: i18n.tr("back")
+                text: "back"
                 iconName: "back"
                 onTriggered: {
                     if (zoneList.getSelectedIndices().length > 1) {
