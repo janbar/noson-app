@@ -52,6 +52,7 @@ if(CLICK_MODE)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/manifest.json
           DESTINATION ${CMAKE_INSTALL_PREFIX})
   install(FILES "Noson.apparmor" DESTINATION ${DATA_DIR})
+  install(FILES "Noson-content.json" DESTINATION ${DATA_DIR})
   configure_file(${DESKTOP_FILE_NAME}.in ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE_NAME}.in)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE_NAME}
           DESTINATION ${DESKTOP_DIR})
@@ -73,6 +74,7 @@ else(CLICK_MODE)
     configure_file(${DESKTOP_FILE_NAME}.in ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE_NAME}.in)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE_NAME}
         DESTINATION ${DESKTOP_DIR} RENAME noson-app.desktop)
+    install(FILES Noson-content.json DESTINATION ${CMAKE_INSTALL_DATADIR}/content-hub/peers/ RENAME ${APP_HARDCODE})
 endif(CLICK_MODE)
 
 install(FILES ${ICON_FILE} DESTINATION ${DATA_DIR})
@@ -86,5 +88,5 @@ add_custom_target("run" /usr/bin/qmlscene -I ${CMAKE_BINARY_DIR}/backend  ${CMAK
                     WORKING_DIRECTORY ./app)
 
 # No op custom target for all not compiled files, so they show up in the QtCreator project tree
-add_custom_target("nosonapp_ClickFiles" ALL SOURCES "Noson.apparmor" "manifest.json.in")
+add_custom_target("nosonapp_ClickFiles" ALL SOURCES "Noson.apparmor" "manifest.json.in" "Noson-content.json")
 

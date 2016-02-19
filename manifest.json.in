@@ -6,7 +6,8 @@
     "hooks": {
         "Noson": {
             "apparmor": "Noson.apparmor",
-            "desktop": "Noson.desktop"
+            "desktop": "Noson.desktop",
+            "content-hub": "Noson-content.json"
         }
     },
     "version": "0.99.21",
