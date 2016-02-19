@@ -335,24 +335,22 @@ bool Player::SetCurrentURI(const DigitalItemPtr& item)
   return m_AVTransport->SetCurrentURI(item->GetValue("res"), item->DIDL());
 }
 
-bool Player::SetCurrentURI(const std::string& uri, const std::string& title)
+bool Player::PlayStream(const std::string& streamURL, const std::string& title)
 {
-  URIParser _uri(uri);
+  URIParser _uri(streamURL);
   if (_uri.Scheme())
   {
+    std::string val;
     std::string protocolInfo;
-    if (strncmp(_uri.Scheme(), "http", 4) == 0)
-      protocolInfo.assign(ProtocolTable[Protocol_httpGet]);
-    else
-      protocolInfo.assign(_uri.Scheme());
-    protocolInfo.append(":*:*:*");
+    val.assign(ProtocolTable[Protocol_xRinconMP3Radio]).append(streamURL.substr(streamURL.find(":")));
+    protocolInfo.assign(ProtocolTable[Protocol_xRinconMP3Radio]).append(":*:*:*");
     // Setup the digital item
-    DigitalItemPtr item(new DigitalItem(DigitalItem::Type_item));
+    DigitalItemPtr item(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
     item->SetProperty(ElementPtr(new Element("dc:title", title)));
-    ElementPtr res(new Element("res", uri));
+    ElementPtr res(new Element("res", val));
     res->SetAttribut("protocolInfo", protocolInfo);
     item->SetProperty(res);
-    return SetCurrentURI(item);
+    return SetCurrentURI(item) && m_AVTransport->Play();
   }
   return false;
 }
@@ -495,18 +493,18 @@ bool Player::JoinToGroup(const std::string& coordinatorUUID)
   return m_AVTransport->SetAVTransportURI(uri, "");
 }
 
-bool Player::SwitchLineIN()
+bool Player::PlayLineIN()
 {
   std::string uri(ProtocolTable[Protocol_xRinconStream]);
   uri.append(":").append(m_uuid);
-  return m_AVTransport->SetAVTransportURI(uri, "");
+  return m_AVTransport->SetCurrentURI(uri, "") && m_AVTransport->Play();
 }
 
-bool Player::SwitchTvSPDIF()
+bool Player::PlayDigitalIN()
 {
-  std::string uri(ProtocolTable[Protocol_xSonosHtastream]);
+  std::string uri(ProtocolTable[Protocol_xSonosHtaStream]);
   uri.append(":").append(m_uuid).append(":spdif");
-  return m_AVTransport->SetAVTransportURI(uri, "");
+  return m_AVTransport->SetCurrentURI(uri, "") && m_AVTransport->Play();
 }
 
 ContentDirectory* Player::ContentDirectoryProvider(void* CBHandle, EventCB eventCB)
