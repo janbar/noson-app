@@ -64,12 +64,12 @@ bool Player::init(QObject* sonos)
         handleTransportChange();
 
       m_connected = true;
-      emit connectedChanged();        
+      emit connectedChanged();
       return true;
     }
   }
   m_connected = false;
-  emit connectedChanged(); 
+  emit connectedChanged();
   return false;
 }
 
@@ -208,14 +208,21 @@ bool Player::toggleMute(const QString& uuid)
   return false;
 }
 
-bool Player::playLineIN()
+bool Player::playStream(const QString& url, const QString& title)
 {
-  return m_player ? m_player->SwitchLineIN() : false;
+  if (m_player)
+    return m_player->PlayStream(url.toUtf8().constData(), title.toUtf8().constData());
+  return false;
 }
 
-bool Player::playTvSPDIF()
+bool Player::playLineIN()
 {
-  return m_player ? m_player->SwitchTvSPDIF() : false;
+  return m_player ? m_player->PlayLineIN() : false;
+}
+
+bool Player::playDigitalIN()
+{
+  return m_player ? m_player->PlayDigitalIN() : false;
 }
 
 bool Player::playQueue(bool start)
@@ -401,17 +408,16 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
     url.append(m_player->GetHost().c_str()).append(":").append(port);
 
     m_currentMetaSource = QString::fromUtf8(prop.CurrentTrackURI.c_str());
-    m_currentIndex = prop.CurrentTrack - 1;
+    m_currentIndex = -1;
     if (prop.r_EnqueuedTransportURIMetaData)
       m_currentMetaURITitle = QString::fromUtf8(prop.r_EnqueuedTransportURIMetaData->GetValue("dc:title").c_str());
 
     QString uri;
     if (prop.CurrentTrackMetaData)
     {
-      if (prop.CurrentTrackMetaData->GetValue("res").find(SONOS::ProtocolTable[SONOS::Protocol_xSonosapiStream], 0) == 0)
+      if (prop.CurrentTrackURI.find(SONOS::ProtocolTable[SONOS::Protocol_xRinconMP3Radio], 0) == 0)
       {
-        // api stream
-        m_currentIndex = -1; // not from queue
+        // stream
         uri = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:albumArtURI").c_str());
         if (prop.TransportState.compare("TRANSITIONING") == 0)
           m_currentMetaTitle = m_currentMetaURITitle;
@@ -427,6 +433,10 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
         m_currentMetaTitle = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("dc:title").c_str());
         m_currentMetaAlbum = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:album").c_str());
         m_currentMetaArtist = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("dc:creator").c_str());
+        // is playing queue ?
+        if (    prop.CurrentTrackURI.find(SONOS::ProtocolTable[SONOS::Protocol_xRinconStream], 0) != 0 &&
+                prop.CurrentTrackURI.find(SONOS::ProtocolTable[SONOS::Protocol_xSonosHtaStream], 0) != 0)
+            m_currentIndex = prop.CurrentTrack - 1; // playing queue
       }
       if (!uri.isEmpty())
         m_currentMetaArt = url + uri;
