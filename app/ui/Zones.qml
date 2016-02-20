@@ -37,7 +37,7 @@ BottomEdgePage {
             controlledZone: currentZone
         }
     }
-    bottomEdgeTitle: i18n.tr("Zone controls")
+    bottomEdgeTitle: "" //i18n.tr("Zone controls")
     bottomEdgeMarging: musicToolbar.visible ? musicToolbar.height : 0
 
     state: zoneList.state === "multiselectable" ? "selection" : "default"
