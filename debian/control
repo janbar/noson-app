@@ -17,7 +17,7 @@ Architecture: any
 Depends: qmlscene,
          qml-module-qt-labs-settings,
          qml-module-qtmultimedia,
-         qtdeclarative5-ubuntu-content0.1,
+         qtdeclarative5-ubuntu-content1,
          qtdeclarative5-particles-plugin,
          qtdeclarative5-qtmultimedia-plugin,
          qtdeclarative5-qtquick2-plugin,
@@ -25,7 +25,8 @@ Depends: qmlscene,
          qtdeclarative5-ubuntu-ui-toolkit-plugin,
          qtdeclarative5-window-plugin,
          thumbnailer-service,
-         suru-icon-theme | ubuntu-mobile-icons,
+         suru-icon-theme,
+         ubuntu-mobile-icons,
          ${shlibs:Depends}, ${misc:Depends},
 Description: SONOS controller for Ubuntu Touch
  Touch enabled SONOS controller for Ubuntu
