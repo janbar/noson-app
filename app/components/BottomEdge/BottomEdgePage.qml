@@ -196,8 +196,20 @@ Page {
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
             color: bottomEdgeTitleColor
-            fontSize: "medium"
-            font.weight: Font.DemiBold
+            fontSize: "small"
+            font.weight: Font.Light
+            visible: text !== ""
+        }
+
+        Icon {
+            id: tipIcon
+
+            anchors.top: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
+            name: "go-up"
+            height: units.gu(3)
+            width: height
+            visible: !tipLabel.visible
         }
     }
 
