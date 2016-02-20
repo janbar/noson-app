@@ -98,7 +98,7 @@ Flickable {
                 fontSize: "x-large"
                 maximumLineCount: 2
                 objectName: "playercontroltitle"
-                text: player.trackQueue.model.count === 0 ? "" : player.currentMetaTitle === "" ? player.currentMetaURITitle : player.currentMetaTitle
+                text: player.currentMetaTitle === "" ? player.currentMetaURITitle : player.currentMetaTitle
                 wrapMode: Text.WordWrap
             }
 
@@ -114,7 +114,7 @@ Flickable {
                 color: styleMusic.nowPlaying.labelSecondaryColor
                 elide: Text.ElideRight
                 fontSize: "small"
-                text: player.trackQueue.model.count === 0 ? "" : player.currentMetaArtist
+                text: player.currentMetaArtist
             }
         }
 

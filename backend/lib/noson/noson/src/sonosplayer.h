@@ -74,9 +74,8 @@ namespace NSROOT
     /**
      * Initialize a basic player without any substription or callback.
      * WARNING: Properties won't be filled.
-     * AV-transport or rendering status have to be manually requested using Get actions.
+     * AV-transport or rendering status have to be manually requested using dedicated actions.
      * @param zonePlayer
-     * @param eventHandler
      */
     Player(const ZonePlayerPtr& zonePlayer);
 
@@ -107,7 +106,7 @@ namespace NSROOT
     bool SetMute(const std::string& uuid, uint8_t value);
 
     bool SetCurrentURI(const DigitalItemPtr& item);
-    bool SetCurrentURI(const std::string& uri, const std::string& title);
+    bool PlayStream(const std::string& streamURL, const std::string& title);
     bool PlayQueue(bool start);
     unsigned AddURIToQueue(const DigitalItemPtr& item, unsigned position);
     unsigned AddMultipleURIsToQueue(const std::vector<DigitalItemPtr>& items);
@@ -135,8 +134,8 @@ namespace NSROOT
     bool BecomeStandalone();
     bool JoinToGroup(const std::string& coordinatorUUID);
 
-    bool SwitchLineIN();
-    bool SwitchTvSPDIF();
+    bool PlayLineIN();
+    bool PlayDigitalIN();
 
     ContentDirectory* ContentDirectoryProvider(void* CBHandle = 0, EventCB eventCB = 0);
 

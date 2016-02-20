@@ -62,8 +62,8 @@ namespace NSROOT
   {
     Protocol_xRinconQueue    = 0,
     Protocol_xRinconStream   = 1,
-    Protocol_xSonosapiStream,
-    Protocol_xSonosHtastream,
+    Protocol_xRinconMP3Radio,
+    Protocol_xSonosHtaStream,
     Protocol_xFileCifs,
     Protocol_xRincon,
     Protocol_httpGet,

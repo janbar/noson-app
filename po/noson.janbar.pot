@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-16 01:02+0100\n"
+"POT-Creation-Date: 2016-02-20 00:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,50 +18,52 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ../app/Main.qml:95
+#: ../app/Main.qml:87
 #: /home/jlb/src/janbar/QML/noson-app-build/po/Noson.desktop.in.h:1
 msgid "Noson"
 msgstr ""
 
-#: ../app/Main.qml:225
+#: ../app/Main.qml:220
 msgid "Index loaded"
 msgstr ""
 
-#: ../app/Main.qml:331
-msgid "Debug: "
-msgstr ""
-
-#: ../app/Main.qml:392
-msgid "Refreshing of index is running"
-msgstr ""
-
-#: ../app/Main.qml:395 ../app/Main.qml:414 ../app/Main.qml:422
-#: ../app/Main.qml:432 ../app/Main.qml:437 ../app/Main.qml:461
-#: ../app/Main.qml:475 ../app/Main.qml:487 ../app/Main.qml:498
-#: ../app/Main.qml:506 ../app/Main.qml:516 ../app/Main.qml:526
-#: ../app/Main.qml:533 ../app/Main.qml:540 ../app/Main.qml:549
-#: ../app/Main.qml:558 ../app/Main.qml:566 ../app/Main.qml:573
+#: ../app/Main.qml:330 ../app/Main.qml:411 ../app/Main.qml:430
+#: ../app/Main.qml:438 ../app/Main.qml:448 ../app/Main.qml:453
+#: ../app/Main.qml:477 ../app/Main.qml:491 ../app/Main.qml:503
+#: ../app/Main.qml:514 ../app/Main.qml:522 ../app/Main.qml:532
+#: ../app/Main.qml:542 ../app/Main.qml:549 ../app/Main.qml:556
+#: ../app/Main.qml:565 ../app/Main.qml:574 ../app/Main.qml:582
+#: ../app/Main.qml:589 ../app/components/Dialog/DialogSelectSource.qml:93
+#: ../app/components/Dialog/DialogSelectSource.qml:104
 #: ../app/ui/AddToPlaylist.qml:139
 msgid "Action can't be performed"
 msgstr ""
 
-#: ../app/Main.qml:419 ../app/Main.qml:472 ../app/Main.qml:484
-#: ../app/Main.qml:546 ../app/ui/AddToPlaylist.qml:136
+#: ../app/Main.qml:347
+msgid "Debug: "
+msgstr ""
+
+#: ../app/Main.qml:408
+msgid "Refreshing of index is running"
+msgstr ""
+
+#: ../app/Main.qml:435 ../app/Main.qml:488 ../app/Main.qml:500
+#: ../app/Main.qml:562 ../app/ui/AddToPlaylist.qml:136
 msgid "song added"
 msgstr ""
 
-#: ../app/Main.qml:458
+#: ../app/Main.qml:474
 #, qt-format
 msgid "%1 song added"
 msgid_plural "%1 songs added"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/Main.qml:495
+#: ../app/Main.qml:511
 msgid "Queue cleared"
 msgstr ""
 
-#: ../app/Main.qml:555
+#: ../app/Main.qml:571
 #, qt-format
 msgid "%1 song removed"
 msgid_plural "%1 songs removed"
@@ -69,7 +71,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANSLATORS: this appears in the header with limited space (around 20 characters)
-#: ../app/Main.qml:670 ../app/ui/NowPlaying.qml:37
+#: ../app/Main.qml:686 ../app/ui/NowPlaying.qml:37
 msgid "Now playing"
 msgstr ""
 
@@ -128,6 +130,7 @@ msgid "Close the queue management screen."
 msgstr ""
 
 #: ../app/components/Dialog/DialogManageQueue.qml:92
+#: ../app/components/Dialog/DialogSelectSource.qml:120
 #: ../app/components/Dialog/DialogSettings.qml:54
 #: ../app/components/Dialog/DialogSleepTimer.qml:118
 msgid "Close"
@@ -153,6 +156,45 @@ msgstr ""
 #: ../app/components/Dialog/DialogRemovePlaylist.qml:44
 #: ../app/components/ListItemActions/Remove.qml:27
 msgid "Remove"
+msgstr ""
+
+#. TRANSLATORS: this is a title of a dialog to select source
+#. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
+#: ../app/components/Dialog/DialogSelectSource.qml:26
+#: ../app/ui/NowPlaying.qml:123
+msgid "Select source"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSelectSource.qml:41
+msgid "Enter stream URL"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSelectSource.qml:46
+msgid "Play stream"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSelectSource.qml:56
+msgid "Please type in an URL."
+msgstr ""
+
+#: ../app/components/Dialog/DialogSelectSource.qml:71
+msgid "Playing failed."
+msgstr ""
+
+#: ../app/components/Dialog/DialogSelectSource.qml:81
+msgid "Select the audio input."
+msgstr ""
+
+#: ../app/components/Dialog/DialogSelectSource.qml:89
+msgid "Play line IN"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSelectSource.qml:100
+msgid "Play TV"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSelectSource.qml:113
+msgid "Close this screen."
 msgstr ""
 
 #: ../app/components/Dialog/DialogSettings.qml:24 ../app/ui/Zones.qml:53
@@ -286,8 +328,16 @@ msgstr ""
 msgid "Zones"
 msgstr ""
 
-#: ../app/components/MusicToolbar.qml:92
+#: ../app/components/MusicToolbar.qml:93
 msgid "No music in queue"
+msgstr ""
+
+#: ../app/components/MusicToolbar.qml:93
+msgid "Tap to play music"
+msgstr ""
+
+#: ../app/components/Player.qml:264
+msgid "Untitled"
 msgstr ""
 
 #: ../app/components/PlaylistsEmptyState.qml:43
@@ -429,8 +479,4 @@ msgstr ""
 
 #: ../app/ui/Zones.qml:69
 msgid "Create group"
-msgstr ""
-
-#: ../app/ui/Zones.qml:97
-msgid "back"
 msgstr ""

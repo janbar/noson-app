@@ -113,6 +113,17 @@ MusicPage {
                     onTriggered: {
                         currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSleepTimer.qml"), mainView)
                     }
+                },
+                Action {
+                    enabled: true
+                    //iconName: "import"
+                    iconSource: Qt.resolvedUrl("../graphics/input.svg")
+                    objectName: "inputActions"
+                    // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
+                    text: i18n.tr("Select source")
+                    onTriggered: {
+                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSelectSource.qml"), mainView)
+                    }
                 }
 
             ]
