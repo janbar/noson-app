@@ -42,6 +42,7 @@ Dialog {
         objectName: "playlistNameTextField"
         placeholderText: i18n.tr("Enter playlist name")
         inputMethodHints: Qt.ImhNoPredictiveText
+        color: styleMusic.common.black
     }
     Button {
         text: i18n.tr("Create")

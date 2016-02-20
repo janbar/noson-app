@@ -39,7 +39,8 @@ Dialog {
         id: url
         text: inputStreamUrl
         placeholderText: i18n.tr("Enter stream URL")
-        inputMethodHints: Qt.ImhNoPredictiveText
+        inputMethodHints: Qt.ImhNoPredictiveText | Qt.ImhNoAutoUppercase
+        color: styleMusic.common.black
     }
     Button {
         id: buttonPlayStream
@@ -101,6 +102,17 @@ Dialog {
         color: UbuntuColors.orange
         onClicked: {
             if (!player.playDigitalIN())
+                popInfo.open(i18n.tr("Action can't be performed"))
+            else
+                PopupUtils.close(dialogSelectSource)
+        }
+    }
+
+    Button {
+        text: i18n.tr("Queue")
+        color: UbuntuColors.orange
+        onClicked: {
+            if (!player.playQueue(false))
                 popInfo.open(i18n.tr("Action can't be performed"))
             else
                 PopupUtils.close(dialogSelectSource)
