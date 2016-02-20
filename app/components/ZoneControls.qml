@@ -59,7 +59,7 @@ Item {
                 elide: Text.ElideRight
                 fontSize: "large"
                 horizontalAlignment: Text.AlignLeft
-                maximumLineCount: 4
+                maximumLineCount: 8
                 text: i18n.tr("This feature will be added in a next version. Please rate the App.")
                 width: parent.width
                 wrapMode: Text.WordWrap
