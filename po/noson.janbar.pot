@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-20 00:42+0100\n"
+"POT-Creation-Date: 2016-02-20 14:28+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,8 +33,9 @@ msgstr ""
 #: ../app/Main.qml:514 ../app/Main.qml:522 ../app/Main.qml:532
 #: ../app/Main.qml:542 ../app/Main.qml:549 ../app/Main.qml:556
 #: ../app/Main.qml:565 ../app/Main.qml:574 ../app/Main.qml:582
-#: ../app/Main.qml:589 ../app/components/Dialog/DialogSelectSource.qml:93
-#: ../app/components/Dialog/DialogSelectSource.qml:104
+#: ../app/Main.qml:589 ../app/components/Dialog/DialogSelectSource.qml:94
+#: ../app/components/Dialog/DialogSelectSource.qml:105
+#: ../app/components/Dialog/DialogSelectSource.qml:116
 #: ../app/ui/AddToPlaylist.qml:139
 msgid "Action can't be performed"
 msgstr ""
@@ -92,12 +93,12 @@ msgstr ""
 
 #: ../app/components/Dialog/DialogEditPlaylist.qml:54
 #: ../app/components/Dialog/DialogManageQueue.qml:58
-#: ../app/components/Dialog/DialogNewPlaylist.qml:58
+#: ../app/components/Dialog/DialogNewPlaylist.qml:59
 msgid "Please type in a name."
 msgstr ""
 
 #: ../app/components/Dialog/DialogEditPlaylist.qml:59
-#: ../app/components/Dialog/DialogNewPlaylist.qml:64
+#: ../app/components/Dialog/DialogNewPlaylist.qml:65
 #: ../app/components/Dialog/DialogRemovePlaylist.qml:59
 msgid "Cancel"
 msgstr ""
@@ -130,7 +131,7 @@ msgid "Close the queue management screen."
 msgstr ""
 
 #: ../app/components/Dialog/DialogManageQueue.qml:92
-#: ../app/components/Dialog/DialogSelectSource.qml:120
+#: ../app/components/Dialog/DialogSelectSource.qml:132
 #: ../app/components/Dialog/DialogSettings.qml:54
 #: ../app/components/Dialog/DialogSleepTimer.qml:118
 msgid "Close"
@@ -140,7 +141,7 @@ msgstr ""
 msgid "New playlist"
 msgstr ""
 
-#: ../app/components/Dialog/DialogNewPlaylist.qml:47
+#: ../app/components/Dialog/DialogNewPlaylist.qml:48
 msgid "Create"
 msgstr ""
 
@@ -169,31 +170,37 @@ msgstr ""
 msgid "Enter stream URL"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSelectSource.qml:46
+#: ../app/components/Dialog/DialogSelectSource.qml:47
 msgid "Play stream"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSelectSource.qml:56
+#: ../app/components/Dialog/DialogSelectSource.qml:57
 msgid "Please type in an URL."
 msgstr ""
 
-#: ../app/components/Dialog/DialogSelectSource.qml:71
+#: ../app/components/Dialog/DialogSelectSource.qml:72
 msgid "Playing failed."
 msgstr ""
 
-#: ../app/components/Dialog/DialogSelectSource.qml:81
+#: ../app/components/Dialog/DialogSelectSource.qml:82
 msgid "Select the audio input."
 msgstr ""
 
-#: ../app/components/Dialog/DialogSelectSource.qml:89
+#: ../app/components/Dialog/DialogSelectSource.qml:90
 msgid "Play line IN"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSelectSource.qml:100
+#: ../app/components/Dialog/DialogSelectSource.qml:101
 msgid "Play TV"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSelectSource.qml:113
+#. TRANSLATORS: this appears in the header with limited space (around 20 characters)
+#: ../app/components/Dialog/DialogSelectSource.qml:112
+#: ../app/ui/NowPlaying.qml:41
+msgid "Queue"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSelectSource.qml:125
 msgid "Close this screen."
 msgstr ""
 
@@ -438,11 +445,6 @@ msgstr ""
 msgid "Full view"
 msgstr ""
 
-#. TRANSLATORS: this appears in the header with limited space (around 20 characters)
-#: ../app/ui/NowPlaying.qml:41
-msgid "Queue"
-msgstr ""
-
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
 #: ../app/ui/NowPlaying.qml:90
 msgid "Show queue"
@@ -468,10 +470,6 @@ msgid "%1 song"
 msgid_plural "%1 songs"
 msgstr[0] ""
 msgstr[1] ""
-
-#: ../app/ui/Zones.qml:40
-msgid "Zone controls"
-msgstr ""
 
 #: ../app/ui/Zones.qml:59
 msgid "Reload zones"

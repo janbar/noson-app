@@ -10,7 +10,7 @@
             "content-hub": "Noson-content.json"
         }
     },
-    "version": "0.99.22",
+    "version": "0.99.23",
     "maintainer": "Jean-luc Barriere <jlbarriere68@gmail.com>",
     "framework": "ubuntu-sdk-15.04-qml"
 }
