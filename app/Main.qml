@@ -21,7 +21,6 @@ import Ubuntu.Components.Popups 1.3
 import Ubuntu.Content 1.1
 //import Ubuntu.Connectivity 1.3
 import Qt.labs.settings 1.0
-import QtMultimedia 5.0
 import QtGraphicalEffects 1.0
 import NosonApp 1.0
 import "./components/BottomEdge"
