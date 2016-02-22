@@ -1,6 +1,6 @@
 {
     "name": "@APP_ID@",
-    "description": "description of Noson",
+    "description": "A fast and smart SONOS controller for Ubuntu platforms: phone, touch and desktop.",
     "architecture": "@CLICK_ARCH@",
     "title": "@APP_NAME@",
     "hooks": {
@@ -10,7 +10,7 @@
             "content-hub": "Noson-content.json"
         }
     },
-    "version": "0.99.23",
+    "version": "1.0.0",
     "maintainer": "Jean-luc Barriere <jlbarriere68@gmail.com>",
     "framework": "ubuntu-sdk-15.04-qml"
 }
