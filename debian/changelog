@@ -1,6 +1,7 @@
-noson-app (0.99) UNRELEASED; urgency=low
+noson-app (1.0) UNRELEASED; urgency=low
 
   [ janbar ]
-  * RC 0.99.14
+  * Release 1.0.0
+
 
  -- janbar <jlbarriere68@gmail.com>  Thu, 04 Feb 2016 19:52:13 +0100
