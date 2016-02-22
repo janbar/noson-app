@@ -95,7 +95,7 @@ Flickable {
                 }
                 color: styleMusic.playerControls.labelColor
                 elide: Text.ElideRight
-                fontSize: "x-large"
+                fontSize: "large"
                 maximumLineCount: 2
                 objectName: "playercontroltitle"
                 text: player.currentMetaTitle === "" ? player.currentMetaURITitle : player.currentMetaTitle
