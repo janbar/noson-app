@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Noson\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-20 00:42+0100\n"
-"PO-Revision-Date: 2016-02-19 23:43+0000\n"
+"POT-Creation-Date: 2016-02-22 23:56+0100\n"
+"PO-Revision-Date: 2016-02-23 22:09+0000\n"
 "Last-Translator: Jean-Luc Barrière <jlbarriere68@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/janbar/noson/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -18,61 +18,61 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../app/Main.qml:87
-#: /home/jlb/src/janbar/QML/noson-app-build/po/Noson.desktop.in.h:1
+#: ../app/Main.qml:86 /home/ubuntu/src/noson-app-build/po/Noson.desktop.in.h:1
 msgid "Noson"
 msgstr "Noson"
 
-#: ../app/Main.qml:220
+#: ../app/Main.qml:219
 msgid "Index loaded"
 msgstr "Index musical chargé"
 
-#: ../app/Main.qml:330 ../app/Main.qml:411 ../app/Main.qml:430
-#: ../app/Main.qml:438 ../app/Main.qml:448 ../app/Main.qml:453
-#: ../app/Main.qml:477 ../app/Main.qml:491 ../app/Main.qml:503
-#: ../app/Main.qml:514 ../app/Main.qml:522 ../app/Main.qml:532
-#: ../app/Main.qml:542 ../app/Main.qml:549 ../app/Main.qml:556
-#: ../app/Main.qml:565 ../app/Main.qml:574 ../app/Main.qml:582
-#: ../app/Main.qml:589 ../app/components/Dialog/DialogSelectSource.qml:93
-#: ../app/components/Dialog/DialogSelectSource.qml:104
-#: ../app/ui/AddToPlaylist.qml:139
+#: ../app/Main.qml:329 ../app/Main.qml:410 ../app/Main.qml:429
+#: ../app/Main.qml:437 ../app/Main.qml:447 ../app/Main.qml:452
+#: ../app/Main.qml:476 ../app/Main.qml:490 ../app/Main.qml:502
+#: ../app/Main.qml:513 ../app/Main.qml:521 ../app/Main.qml:531
+#: ../app/Main.qml:541 ../app/Main.qml:548 ../app/Main.qml:555
+#: ../app/Main.qml:564 ../app/Main.qml:573 ../app/Main.qml:581
+#: ../app/Main.qml:588 ../app/components/Dialog/DialogSelectSource.qml:94
+#: ../app/components/Dialog/DialogSelectSource.qml:105
+#: ../app/components/Dialog/DialogSelectSource.qml:116
+#: ../app/ui/AddToPlaylist.qml:138
 msgid "Action can't be performed"
 msgstr "L'action a échouée"
 
-#: ../app/Main.qml:347
+#: ../app/Main.qml:346
 msgid "Debug: "
 msgstr "Debug: "
 
-#: ../app/Main.qml:408
+#: ../app/Main.qml:407
 msgid "Refreshing of index is running"
 msgstr "Mise à jour de l'index en cours"
 
-#: ../app/Main.qml:435 ../app/Main.qml:488 ../app/Main.qml:500
-#: ../app/Main.qml:562 ../app/ui/AddToPlaylist.qml:136
+#: ../app/Main.qml:434 ../app/Main.qml:487 ../app/Main.qml:499
+#: ../app/Main.qml:561 ../app/ui/AddToPlaylist.qml:135
 msgid "song added"
 msgstr "Titre ajouté"
 
-#: ../app/Main.qml:474
+#: ../app/Main.qml:473
 #, qt-format
 msgid "%1 song added"
 msgid_plural "%1 songs added"
-msgstr[0] "%1 titres ajoutés"
+msgstr[0] "%1 titre ajouté"
 msgstr[1] "%1 titres ajoutés"
 
-#: ../app/Main.qml:511
+#: ../app/Main.qml:510
 msgid "Queue cleared"
 msgstr "La file d'attente a été vidée"
 
-#: ../app/Main.qml:571
+#: ../app/Main.qml:570
 #, qt-format
 msgid "%1 song removed"
 msgid_plural "%1 songs removed"
-msgstr[0] "%1 titres supprimés"
+msgstr[0] "%1 titre supprimé"
 msgstr[1] "%1 titres supprimés"
 
 #. TRANSLATORS: this appears in the header with limited space (around 20
 #. characters)
-#: ../app/Main.qml:686 ../app/ui/NowPlaying.qml:37
+#: ../app/Main.qml:685 ../app/ui/NowPlaying.qml:37
 msgid "Now playing"
 msgstr "Lecture en cours"
 
@@ -93,12 +93,12 @@ msgstr "Modifier"
 
 #: ../app/components/Dialog/DialogEditPlaylist.qml:54
 #: ../app/components/Dialog/DialogManageQueue.qml:58
-#: ../app/components/Dialog/DialogNewPlaylist.qml:58
+#: ../app/components/Dialog/DialogNewPlaylist.qml:59
 msgid "Please type in a name."
 msgstr "Veuillez saisir un nom."
 
 #: ../app/components/Dialog/DialogEditPlaylist.qml:59
-#: ../app/components/Dialog/DialogNewPlaylist.qml:64
+#: ../app/components/Dialog/DialogNewPlaylist.qml:65
 #: ../app/components/Dialog/DialogRemovePlaylist.qml:59
 msgid "Cancel"
 msgstr "Annuler"
@@ -132,7 +132,7 @@ msgid "Close the queue management screen."
 msgstr "Fermer l'écran de gestion de la file d'attente."
 
 #: ../app/components/Dialog/DialogManageQueue.qml:92
-#: ../app/components/Dialog/DialogSelectSource.qml:120
+#: ../app/components/Dialog/DialogSelectSource.qml:132
 #: ../app/components/Dialog/DialogSettings.qml:54
 #: ../app/components/Dialog/DialogSleepTimer.qml:118
 msgid "Close"
@@ -142,7 +142,7 @@ msgstr "Fermer"
 msgid "New playlist"
 msgstr "Nouvelle liste de lecture"
 
-#: ../app/components/Dialog/DialogNewPlaylist.qml:47
+#: ../app/components/Dialog/DialogNewPlaylist.qml:48
 msgid "Create"
 msgstr "Créer"
 
@@ -172,31 +172,38 @@ msgstr "Choisir une source"
 msgid "Enter stream URL"
 msgstr "Saisir l'URL du flux audio"
 
-#: ../app/components/Dialog/DialogSelectSource.qml:46
+#: ../app/components/Dialog/DialogSelectSource.qml:47
 msgid "Play stream"
 msgstr "Lire le flux"
 
-#: ../app/components/Dialog/DialogSelectSource.qml:56
+#: ../app/components/Dialog/DialogSelectSource.qml:57
 msgid "Please type in an URL."
 msgstr "Veuillez saisir une URL."
 
-#: ../app/components/Dialog/DialogSelectSource.qml:71
+#: ../app/components/Dialog/DialogSelectSource.qml:72
 msgid "Playing failed."
 msgstr "La lecture a échouée"
 
-#: ../app/components/Dialog/DialogSelectSource.qml:81
+#: ../app/components/Dialog/DialogSelectSource.qml:82
 msgid "Select the audio input."
 msgstr "Choisir l'entrée audio."
 
-#: ../app/components/Dialog/DialogSelectSource.qml:89
+#: ../app/components/Dialog/DialogSelectSource.qml:90
 msgid "Play line IN"
 msgstr "Lire l'entrée audio"
 
-#: ../app/components/Dialog/DialogSelectSource.qml:100
+#: ../app/components/Dialog/DialogSelectSource.qml:101
 msgid "Play TV"
 msgstr "Lire l'entrée TV"
 
-#: ../app/components/Dialog/DialogSelectSource.qml:113
+#. TRANSLATORS: this appears in the header with limited space (around 20
+#. characters)
+#: ../app/components/Dialog/DialogSelectSource.qml:112
+#: ../app/ui/NowPlaying.qml:41
+msgid "Queue"
+msgstr "File d’attente"
+
+#: ../app/components/Dialog/DialogSelectSource.qml:125
 msgid "Close this screen."
 msgstr "Fermer cet écran."
 
@@ -332,11 +339,11 @@ msgstr "Aucun élément trouvé"
 msgid "Zones"
 msgstr "Zones"
 
-#: ../app/components/MusicToolbar.qml:93
+#: ../app/components/MusicToolbar.qml:92
 msgid "No music in queue"
 msgstr "Pas de musique en attente"
 
-#: ../app/components/MusicToolbar.qml:93
+#: ../app/components/MusicToolbar.qml:92
 msgid "Tap to play music"
 msgstr "Appuyer pour lire la musique"
 
@@ -383,7 +390,7 @@ msgstr "Cette fonctionnalité sera ajoutée dans une prochaine version. S'il vou
 
 #. TRANSLATORS: this appears in the header with limited space (around 20
 #. characters)
-#: ../app/ui/AddToPlaylist.qml:35
+#: ../app/ui/AddToPlaylist.qml:34
 msgid "Select playlist"
 msgstr "Choisir une liste"
 
@@ -448,12 +455,6 @@ msgstr "Rechercher les zones Sonos"
 msgid "Full view"
 msgstr "Vue complète"
 
-#. TRANSLATORS: this appears in the header with limited space (around 20
-#. characters)
-#: ../app/ui/NowPlaying.qml:41
-msgid "Queue"
-msgstr "File d’attente"
-
 #. TRANSLATORS: this action appears in the overflow drawer with limited space
 #. (around 18 characters)
 #: ../app/ui/NowPlaying.qml:90
@@ -463,15 +464,15 @@ msgstr "Afficher la file d'attente"
 #. TRANSLATORS: this is the name of the playlists page shown in the tab
 #. header.
 #. Remember to keep the translation short to fit the screen width
-#: ../app/ui/Playlists.qml:36
+#: ../app/ui/Playlists.qml:35
 msgid "Playlists"
 msgstr "Listes de lecture"
 
-#: ../app/ui/Playlists.qml:93 ../app/ui/Playlists.qml:94
+#: ../app/ui/Playlists.qml:92 ../app/ui/Playlists.qml:93
 msgid "Playlist"
 msgstr "Liste de lecture"
 
-#: ../app/ui/Radios.qml:33
+#: ../app/ui/Radios.qml:32
 msgid "My radios"
 msgstr "Mes radios"
 
@@ -481,10 +482,6 @@ msgid "%1 song"
 msgid_plural "%1 songs"
 msgstr[0] "%1 titre"
 msgstr[1] "%1 titres"
-
-#: ../app/ui/Zones.qml:40
-msgid "Zone controls"
-msgstr "Paramètres de la zone"
 
 #: ../app/ui/Zones.qml:59
 msgid "Reload zones"
