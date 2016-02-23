@@ -81,7 +81,7 @@ Flickable {
                 right: parent.right
                 rightMargin: units.gu(2)
                 top: nowPlayingWideAspectLabelsBackground.top
-                topMargin: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(2) : units.gu(1.5)
+                topMargin: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(3) : units.gu(4)
             }
 
             /* Title of track */
