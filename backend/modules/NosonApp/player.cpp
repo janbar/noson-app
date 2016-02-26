@@ -412,40 +412,42 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
     if (prop.r_EnqueuedTransportURIMetaData)
       m_currentMetaURITitle = QString::fromUtf8(prop.r_EnqueuedTransportURIMetaData->GetValue("dc:title").c_str());
 
-    QString uri;
+    unsigned hh, hm, hs;
+    if (sscanf(prop.CurrentTrackDuration.c_str(), "%u:%u:%u", &hh, &hm, &hs) == 3)
+      m_currentTrackDuration = hh * 3600 + hm * 60 + hs;
+
     if (prop.CurrentTrackMetaData)
     {
-      if (    prop.CurrentTrackURI.find(SONOS::ProtocolTable[SONOS::Protocol_xRinconMP3Radio], 0) == 0 ||
-              prop.CurrentTrackURI.find(SONOS::ProtocolTable[SONOS::Protocol_aac], 0) == 0)
+      QString uri;
+      // Postulate: stream has 0 duration
+      if (m_currentTrackDuration == 0)
       {
         // stream
         uri = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:albumArtURI").c_str());
         if (prop.TransportState.compare("TRANSITIONING") == 0)
           m_currentMetaTitle = m_currentMetaURITitle;
         else
+        {
           m_currentMetaTitle = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("r:streamContent").c_str());
+          // fallback to uri title then title
+          if (m_currentMetaTitle.isEmpty())
+            m_currentMetaTitle = !m_currentMetaURITitle.isEmpty() ? m_currentMetaURITitle : QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("dc:title").c_str());
+        }
         m_currentMetaAlbum = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:album").c_str());
         m_currentMetaArtist = "";
       }
       else
       {
-        // audio file
+        // file
         uri = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:albumArtURI").c_str());
         m_currentMetaTitle = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("dc:title").c_str());
         m_currentMetaAlbum = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:album").c_str());
         m_currentMetaArtist = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("dc:creator").c_str());
-        // is playing queue ?
-        if (    prop.CurrentTrackURI.find(SONOS::ProtocolTable[SONOS::Protocol_xRinconStream], 0) != 0 &&
-                prop.CurrentTrackURI.find(SONOS::ProtocolTable[SONOS::Protocol_xSonosHtaStream], 0) != 0)
-            m_currentIndex = prop.CurrentTrack - 1; // playing queue
+        m_currentIndex = prop.CurrentTrack - 1; // playing queue
       }
       if (!uri.isEmpty())
         m_currentMetaArt = url + uri;
     }
-
-    unsigned hh, hm, hs;
-    if (sscanf(prop.CurrentTrackDuration.c_str(), "%u:%u:%u", &hh, &hm, &hs) == 3)
-      m_currentTrackDuration = hh * 3600 + hm * 60 + hs;
   }
 }
 
