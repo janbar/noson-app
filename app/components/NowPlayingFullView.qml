@@ -98,7 +98,7 @@ Flickable {
                 fontSize: "large"
                 maximumLineCount: 2
                 objectName: "playercontroltitle"
-                text: player.currentMetaTitle === "" ? player.currentMetaURITitle : player.currentMetaTitle
+                text: player.currentMetaTitle
                 wrapMode: Text.WordWrap
             }
 

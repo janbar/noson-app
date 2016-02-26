@@ -183,7 +183,7 @@ Rectangle {
                     elide: Text.ElideRight
                     fontSize: "small"
                     font.weight: Font.DemiBold
-                    text: player.currentMetaTitle === "" ? player.currentMetaURITitle : player.currentMetaTitle
+                    text: player.currentMetaTitle
                 }
 
                 /* Artist of track */
