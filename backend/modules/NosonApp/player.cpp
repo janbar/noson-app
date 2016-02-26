@@ -415,7 +415,8 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
     QString uri;
     if (prop.CurrentTrackMetaData)
     {
-      if (prop.CurrentTrackURI.find(SONOS::ProtocolTable[SONOS::Protocol_xRinconMP3Radio], 0) == 0)
+      if (    prop.CurrentTrackURI.find(SONOS::ProtocolTable[SONOS::Protocol_xRinconMP3Radio], 0) == 0 ||
+              prop.CurrentTrackURI.find(SONOS::ProtocolTable[SONOS::Protocol_aac], 0) == 0)
       {
         // stream
         uri = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:albumArtURI").c_str());
