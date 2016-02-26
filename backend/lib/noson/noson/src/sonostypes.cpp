@@ -31,6 +31,7 @@ const char* NSROOT::ProtocolTable[Protocol_unknown + 1] = {
   "x-file-cifs",
   "x-rincon",
   "http-get",
+  "aac",
   ""
 };
 

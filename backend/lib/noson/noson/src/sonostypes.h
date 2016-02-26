@@ -67,6 +67,7 @@ namespace NSROOT
     Protocol_xFileCifs,
     Protocol_xRincon,
     Protocol_httpGet,
+    Protocol_aac,
     Protocol_unknown,
   } Protocol_t;
 
