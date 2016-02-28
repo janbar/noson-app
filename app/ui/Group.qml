@@ -128,7 +128,7 @@ Page {
             column: Column {
                 Label {
                     id: roomName
-                    color: styleMusic.common.music
+                    color: model.coordinator ? UbuntuColors.blue : styleMusic.common.music
                     fontSize: "medium"
                     objectName: "nameLabel"
                     text: model.name

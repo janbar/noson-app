@@ -94,6 +94,7 @@ MainView {
 
     // setting alias to store last zone connected
     property alias currentZone: startupSettings.zoneName
+    property string currentZoneTag: ""
 
     // track latest stream link
     property string inputStreamUrl: ""
@@ -359,6 +360,7 @@ MainView {
             customdebug("Connecting zone '" + name + "'");
             if ((Sonos.connectZone(name) || Sonos.connectZone("")) && player.connect()) {
                 currentZone = Sonos.getZoneName();
+                currentZoneTag = Sonos.getZoneShortName();
                 AllZonesModel.init(Sonos, true); // force load now
                 AllAlbumsModel.init(Sonos, "");
                 AllArtistsModel.init(Sonos, "");
@@ -386,6 +388,7 @@ MainView {
             customdebug("Connecting zone '" + currentZone + "'");
             if ((Sonos.connectZone(currentZone) || Sonos.connectZone("")) && player.connect()) {
                 currentZone = Sonos.getZoneName();
+                currentZoneTag = Sonos.getZoneShortName();
                 AllZonesModel.init(Sonos, true); // force load now
                 // Signal change if any
                 if (noZone)

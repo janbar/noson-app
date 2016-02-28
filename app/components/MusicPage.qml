@@ -65,7 +65,7 @@ Page {
 
     PageHeadSections {
         id: defaultStateSections
-        model: [player.queueInfo, currentZone]
+        model: [player.queueInfo, currentZoneTag]
         selectedIndex: -1
     }
 

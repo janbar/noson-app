@@ -32,7 +32,7 @@ BottomEdgePage {
 
     bottomEdgeEnabled: true
     bottomEdgePage: Page {
-        title: currentZone
+        title: currentZoneTag
         ZoneControls {
             controlledZone: currentZone
         }
@@ -176,7 +176,16 @@ BottomEdgePage {
                     color: currentZone === model.name ? UbuntuColors.blue : styleMusic.common.music
                     fontSize: "medium"
                     objectName: "nameLabel"
+                    text: model.isGroup ? model.shortName : model.name
+                }
+
+                Label {
+                    id: fullName
+                    color: styleMusic.common.subtitle
+                    fontSize: "x-small"
+                    objectName: "fillNameLabel"
                     text: model.name
+                    visible: model.isGroup
                 }
             }
             leadingActions: ListItemActions {
@@ -224,6 +233,7 @@ BottomEdgePage {
                         customdebug("Connecting zone '" + name + "'");
                         if ((Sonos.connectZone(model.name) || Sonos.connectZone("")) && player.connect()) {
                             currentZone = Sonos.getZoneName();
+                            currentZoneTag = Sonos.getZoneShortName();
                             if (noZone)
                                 noZone = false;
                         }
