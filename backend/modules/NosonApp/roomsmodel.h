@@ -44,12 +44,15 @@ public:
 
   QString icon() const { return m_icon; }
 
+  bool coordinator() const { return m_coordinator; }
+
 private:
   SONOS::ZonePlayerPtr m_ptr;
   bool m_valid;
   QString m_id;
   QString m_name;
   QString m_icon;
+  bool m_coordinator;
 
 };
 
@@ -65,6 +68,7 @@ public:
     IdRole,
     NameRole,
     IconRole,
+    CoordinatorRole,
   };
 
   RoomsModel(QObject* parent = 0);

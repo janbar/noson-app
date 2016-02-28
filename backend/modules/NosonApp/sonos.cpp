@@ -98,6 +98,13 @@ QString Sonos::getZoneName() const
   return "";
 }
 
+QString Sonos::getZoneShortName() const
+{
+  if (m_system.IsConnected())
+    return m_system.GetConnectedZone()->GetZoneShortName().c_str();
+  return "";
+}
+
 bool Sonos::joinRoom(const QVariant& roomPayload, const QVariant& toZonePayload)
 {
   SONOS::ZonePlayerPtr room = roomPayload.value<SONOS::ZonePlayerPtr>();

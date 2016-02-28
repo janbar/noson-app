@@ -46,6 +46,8 @@ public:
 
   bool isGroup() const { return m_isGroup; }
 
+  QString shortName() const { return m_shortName; }
+
 private:
   SONOS::ZonePtr m_ptr;
   bool m_valid;
@@ -53,6 +55,7 @@ private:
   QString m_name;
   QString m_icon;
   bool m_isGroup;
+  QString m_shortName;
 };
 
 class ZonesModel : public QAbstractListModel, public ListModel
@@ -68,6 +71,7 @@ public:
     NameRole,
     IconRole,
     IsGroupRole,
+    ShortNameRole,
   };
 
   ZonesModel(QObject* parent = 0);

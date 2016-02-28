@@ -25,10 +25,12 @@
 RoomItem::RoomItem(const SONOS::ZonePlayerPtr& ptr)
 : m_ptr(ptr)
 , m_valid(false)
+, m_coordinator(false)
 {
   m_id = QString::fromUtf8(ptr->GetUUID().c_str());
   m_name = QString::fromUtf8(ptr->c_str());
   m_icon = QString::fromUtf8(ptr->GetIconName().c_str());
+  m_coordinator = (ptr->GetAttribut("coordinator") == "true");
   m_valid = true;
 }
 
@@ -81,6 +83,8 @@ QVariant RoomsModel::data(const QModelIndex& index, int role) const
     return item->name();
   case IconRole:
     return item->icon();
+  case CoordinatorRole:
+    return item->coordinator();
   default:
     return QVariant();
   }
@@ -93,6 +97,7 @@ QHash<int, QByteArray> RoomsModel::roleNames() const
   roles[IdRole] = "id";
   roles[NameRole] = "name";
   roles[IconRole] = "icon";
+  roles[CoordinatorRole] = "coordinator";
   return roles;
 }
 
@@ -108,6 +113,7 @@ QVariantMap RoomsModel::get(int row)
   model[roles[IdRole]] = item->id();
   model[roles[NameRole]] = item->name();
   model[roles[IconRole]] = item->icon();
+  model[roles[CoordinatorRole]] = item->coordinator();
   return model;
 }
 

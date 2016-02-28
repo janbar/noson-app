@@ -57,6 +57,8 @@ public:
 
   Q_INVOKABLE QString getZoneName() const;
 
+  Q_INVOKABLE QString getZoneShortName() const;
+
   Q_INVOKABLE bool joinRoom(const QVariant& roomPayload, const QVariant& toZonePayload);
 
   Q_INVOKABLE bool joinZone(const QVariant& zonePayload, const QVariant& toZonePayload);

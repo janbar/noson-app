@@ -36,6 +36,7 @@ ZoneItem::ZoneItem(const SONOS::ZonePtr& ptr)
     m_icon = "";
     m_isGroup = true;
   }
+  m_shortName = QString::fromUtf8(ptr->GetZoneShortName().c_str());
   m_valid = true;
 }
 
@@ -90,6 +91,8 @@ QVariant ZonesModel::data(const QModelIndex& index, int role) const
     return item->icon();
   case IsGroupRole:
     return item->isGroup();
+  case ShortNameRole:
+    return item->shortName();
   default:
     return QVariant();
   }
@@ -103,6 +106,7 @@ QHash<int, QByteArray> ZonesModel::roleNames() const
   roles[NameRole] = "name";
   roles[IconRole] = "icon";
   roles[IsGroupRole] = "isGroup";
+  roles[ShortNameRole] = "shortName";
   return roles;
 }
 
@@ -119,6 +123,7 @@ QVariantMap ZonesModel::get(int row)
   model[roles[NameRole]] = item->name();
   model[roles[IconRole]] = item->icon();
   model[roles[IsGroupRole]] = item->isGroup();
+  model[roles[ShortNameRole]] = item->shortName();
   return model;
 }
 
