@@ -76,10 +76,19 @@ namespace NSROOT
 
     std::string GetZoneName() const;
 
+    std::string GetZoneShortName() const;
+
     ZonePlayerPtr GetCoordinator() const;
+
+    void Revamp();
 
   private:
     std::string m_group;
+
+    static bool _compare(const ZonePlayerPtr& first, const ZonePlayerPtr& last)
+    {
+      return first->compare(*last) < 0 ? true : false;
+    }
   };
 }
 

@@ -330,5 +330,8 @@ bool System::GetTopology(const std::string& host, unsigned port)
     }
     elem = elem->NextSiblingElement(NULL);
   }
+  // Revamp loaded zones
+  for (ZoneList::iterator it = m_zones.begin(); it != m_zones.end(); ++it)
+    it->second->Revamp();
   return true;
 }

@@ -22,7 +22,9 @@
 #include "sonoszone.h"
 #include "deviceproperties.h"
 #include "private/uriparser.h"
-#include "private/wsrequestbroker.h" // for Tokenize
+#include "private/builtin.h"
+
+#include <algorithm>
 
 using namespace NSROOT;
 
@@ -93,10 +95,49 @@ std::string Zone::GetZoneName() const
   return name;
 }
 
+std::string Zone::GetZoneShortName() const
+{
+  // Concat coordinator and subordinate count: zp1 + n
+  std::string name;
+  ZonePlayerPtr coordinator = GetCoordinator();
+  if (!coordinator)
+    return GetZoneName();
+  name.append(*coordinator);
+  if (size() > 1)
+  {
+    char buf[3];
+    memset(buf, 0, sizeof(buf));
+    uint8_to_string((uint8_t)(size() - 1), buf);
+    name.append(" + ").append(buf);
+  }
+  return name;
+}
+
 ZonePlayerPtr Zone::GetCoordinator() const
 {
   for (const_iterator it = begin(); it != end(); ++it)
     if (*it && (*it)->GetAttribut("coordinator") == "true")
       return *it;
   return ZonePlayerPtr();
+}
+
+void Zone::Revamp()
+{
+  std::vector<ZonePlayerPtr> tmp(this->begin(), this->end());
+  std::sort(tmp.begin(), tmp.end(), _compare);
+  ZonePlayerPtr coordinator(GetCoordinator());
+  this->clear();
+  std::string cuuid = "";
+  // push first the coordinator if any
+  if (coordinator)
+  {
+    cuuid = coordinator->GetUUID();
+    this->push_back(coordinator);
+  }
+  // push others in sorted order
+  for (std::vector<ZonePlayerPtr>::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
+  {
+    if (cuuid.empty() || (*it)->GetUUID() != cuuid)
+      this->push_back(*it);
+  }
 }

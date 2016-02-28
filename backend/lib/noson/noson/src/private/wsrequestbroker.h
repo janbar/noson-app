@@ -60,7 +60,6 @@ namespace NSROOT
 
   private:
     NetSocket* m_socket;
-    struct timeval m_timeout;
     bool m_parsed;
     HRM_t m_parsedMethod;
     std::string m_parsedURI;

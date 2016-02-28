@@ -103,7 +103,6 @@ void WSRequestBroker::Tokenize(const std::string& str, const char *delimiters, s
 
 WSRequestBroker::WSRequestBroker(NetSocket* socket, timeval timeout)
 : m_socket(socket)
-, m_timeout(timeout)
 , m_parsed(false)
 , m_parsedMethod(HRM_HEAD)
 , m_contentChunked(false)
