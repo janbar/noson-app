@@ -140,7 +140,7 @@ namespace OS
       Handle()
       : nativeHandle(0)
       , running(false)
-      , stopped(false)
+      , stopped(true)
       , notifiedStop(false)
       , started(false)
       , condition()

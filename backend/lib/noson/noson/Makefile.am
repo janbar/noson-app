@@ -33,7 +33,8 @@ libnoson_la_SOURCES = \
 	src/sonosplayer.cpp \
 	src/sonossystem.cpp \
 	src/sonostypes.cpp \
-	src/sonoszone.cpp
+	src/sonoszone.cpp \
+	src/zonegrouptopology.cpp
 
 nosonheadersdir = $(includedir)/noson
 nosonheaders_HEADERS = \
@@ -53,4 +54,5 @@ nosonheaders_HEADERS = \
 	src/sonosplayer.h \
 	src/sonossystem.h \
 	src/sonostypes.h \
-	src/sonoszone.h
+	src/sonoszone.h \
+	src/zonegrouptopology.h

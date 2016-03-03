@@ -51,7 +51,7 @@ int main(int argc, char** argv)
 
   {
 
-    SONOS::System sonos;
+    SONOS::System sonos(0, handleEventCB);
     if (sonos.Discover())
     {
       fprintf(stderr, "Discovered !!!\n");

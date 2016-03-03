@@ -26,28 +26,26 @@
 #include "sonoszone.h"
 #include "sonosplayer.h"
 #include "eventhandler.h"
+#include "subscription.h"
 
 #include <string>
-#include <map>
 
 #define SONOS_LISTENER_PORT 1400
 
 namespace NSROOT
 {
-  // List of ZonePlayer by name
-  typedef std::map<std::string, ZonePlayerPtr> ZonePlayerList;
-  // List of Zone by group
-  typedef std::map<std::string, ZonePtr> ZoneList;
-
   namespace OS
   {
     class CMutex;
+    class CEvent;
   }
+
+  class ZoneGroupTopology;
 
   class System : private EventSubscriber
   {
   public:
-     System();
+    System(void* CBHandle, EventCB eventCB);
     ~System();
 
     bool IsListening() { return m_eventHandler.IsRunning(); }
@@ -73,11 +71,13 @@ namespace NSROOT
 
   private:
     mutable OS::CMutex* m_mutex;
+    OS::CEvent* m_cbzgt;
     EventHandler m_eventHandler;
     unsigned m_subId;
-
-    ZonePlayerList m_zonePlayers;
-    ZoneList m_zones;
+    Subscription m_ZGTSubscription;
+    ZoneGroupTopology* m_groupTopology;
+    void* m_CBHandle;
+    EventCB m_eventCB;
 
     struct
     {
@@ -87,7 +87,7 @@ namespace NSROOT
 
     static bool FindDeviceDescription(std::string& url);
 
-    bool GetTopology(const std::string& host, unsigned port);
+    static void CBZGTopology(void* handle);
   };
 }
 

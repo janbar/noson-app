@@ -26,13 +26,23 @@
 #include "sharedptr.h"
 #include "element.h"
 
+#include <map>
 #include <vector>
+
+#define ZP_UUID         "uuid"
+#define ZP_LOCATION     "location"
+#define ZP_ICON         "icon"
+#define ZP_VERSION      "version"
+#define ZP_MCVERSION    "mincompatibleversion"
+#define ZP_LCVERSION    "legacycompatibleversion"
+#define ZP_COORDINATOR  "coordinator"
 
 namespace NSROOT
 {
   class ZonePlayer;
 
   typedef SHARED_PTR<ZonePlayer> ZonePlayerPtr;
+  typedef std::map<std::string, ZonePlayerPtr> ZonePlayerList;
 
   class ZonePlayer : public Element
   {
@@ -40,9 +50,9 @@ namespace NSROOT
     ZonePlayer(const std::string& name);
     virtual ~ZonePlayer() {};
 
-    const std::string& GetUUID() { return GetAttribut("uuid"); }
+    const std::string& GetUUID() { return GetAttribut(ZP_UUID); }
 
-    const std::string& GetLocation() { return GetAttribut("location"); }
+    const std::string& GetLocation() { return GetAttribut(ZP_LOCATION); }
 
     bool IsValid() { return ParseLocation(); }
 
@@ -64,6 +74,7 @@ namespace NSROOT
   class Zone;
 
   typedef SHARED_PTR<Zone> ZonePtr;
+  typedef std::map<std::string, ZonePtr> ZoneList;
 
   class Zone : public std::vector<ZonePlayerPtr>
   {

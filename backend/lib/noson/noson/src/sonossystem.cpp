@@ -20,6 +20,7 @@
  */
 
 #include "sonossystem.h"
+#include "zonegrouptopology.h"
 #include "private/socket.h"
 #include "private/wsresponse.h"
 
@@ -28,18 +29,24 @@
 #include "private/uriparser.h"
 #include "private/tinyxml2.h"
 #include "private/os/threads/mutex.h"
+#include "private/os/threads/event.h"
 #include "private/cppdef.h"
 
 #include <cstdio> // for sscanf
 
+#define CB_TIMEOUT    5000
 #define PATH_TOPOLOGY "/status/topology"
 
 using namespace SONOS;
 
-System::System()
+System::System(void* CBHandle, EventCB eventCB)
 : m_mutex(new OS::CMutex)
+, m_cbzgt(new OS::CEvent)
 , m_eventHandler(SONOS_LISTENER_PORT)
 , m_subId(0)
+, m_groupTopology(0)
+, m_CBHandle(CBHandle)
+, m_eventCB(eventCB)
 {
   m_connectedZone.player.reset();
   m_connectedZone.zone.reset();
@@ -54,6 +61,8 @@ System::System()
 System::~System()
 {
   m_mutex->Lock();
+  SAFE_DELETE(m_groupTopology);
+  SAFE_DELETE(m_cbzgt);
   SAFE_DELETE(m_mutex);
 }
 
@@ -65,26 +74,40 @@ bool System::Discover()
   URIParser uri(url);
   if (!uri.Scheme() || !uri.Host() || !uri.Port())
     return false;
-  DBG(DBG_DEBUG, "%s: get topology from %s://%s:%u" PATH_TOPOLOGY "\n", __FUNCTION__, uri.Scheme(), uri.Host(), uri.Port());
-  if (!GetTopology(uri.Host(), uri.Port()))
-    return false;
-  return true;
+
+  OS::CLockGuard lock(*m_mutex);
+  // subscribe to ZoneGroupTopology events
+  SAFE_DELETE(m_groupTopology);
+  m_ZGTSubscription = Subscription(uri.Host(), uri.Port(), ZoneGroupTopology::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
+  m_groupTopology = new ZoneGroupTopology(uri.Host(), uri.Port(), m_eventHandler, m_ZGTSubscription, this, CBZGTopology);
+  m_ZGTSubscription.Start();
+  // Wait event notification
+  if (m_cbzgt->Wait(CB_TIMEOUT))
+    return true;
+  DBG(DBG_WARN, "%s: notification wasn't received after timeout: fall back on manual call\n", __FUNCTION__);
+  return m_groupTopology->GetZoneGroupState();
 }
 
 ZoneList System::GetZoneList() const
 {
   OS::CLockGuard lock(*m_mutex);
   ZoneList list;
-  for (ZoneList::const_iterator it = m_zones.begin(); it != m_zones.end(); ++it)
-    if (it->second->GetCoordinator())
-      list.insert(std::make_pair(it->first, it->second));
+  if (m_groupTopology)
+  {
+    Locked<ZoneList>::pointer zones = m_groupTopology->GetZoneList().Get();
+    for (ZoneList::const_iterator it = zones->begin(); it != zones->end(); ++it)
+      if (it->second->GetCoordinator())
+        list.insert(std::make_pair(it->first, it->second));
+  }
   return list;
 }
 
 ZonePlayerList System::GetZonePlayerList() const
 {
   OS::CLockGuard lock(*m_mutex);
-  return m_zonePlayers;
+  if (m_groupTopology)
+    return *(m_groupTopology->GetZonePlayerList().Get());
+  return ZonePlayerList();
 }
 
 bool System::ConnectZone(const ZonePtr& zone, void* CBHandle, EventCB eventCB)
@@ -93,7 +116,7 @@ bool System::ConnectZone(const ZonePtr& zone, void* CBHandle, EventCB eventCB)
   // Check listener
   if (!m_eventHandler.IsRunning() && !m_eventHandler.Start())
     return false;
-  // Check zone
+  // Check requirements
   if (!zone)
     return false;
   DBG(DBG_DEBUG, "%s: connect zone '%s'\n", __FUNCTION__, zone->GetZoneName().c_str());
@@ -113,11 +136,12 @@ bool System::ConnectZone(const ZonePlayerPtr& zonePlayer, void* CBHandle, EventC
   // Check listener
   if (!m_eventHandler.IsRunning() && !m_eventHandler.Start())
     return false;
-  // Check player
-  if (!zonePlayer)
+  // Check requirements
+  if (!m_groupTopology || !zonePlayer)
     return false;
-  ZoneList::const_iterator zit = m_zones.find(zonePlayer->GetAttribut("group"));
-  if (zit == m_zones.end())
+  Locked<ZoneList>::pointer zones = m_groupTopology->GetZoneList().Get();
+  ZoneList::const_iterator zit = zones->find(zonePlayer->GetAttribut("group"));
+  if (zit == zones->end())
     return false;
   return ConnectZone(zit->second, CBHandle, eventCB);
 }
@@ -258,80 +282,13 @@ bool System::FindDeviceDescription(std::string& url)
   return ret;
 }
 
-bool System::GetTopology(const std::string& host, unsigned port)
+void System::CBZGTopology(void* handle)
 {
-  WSRequest request(host, port);
-  request.RequestService(PATH_TOPOLOGY, HRM_GET);
-  WSResponse response(request);
-  if (!response.IsSuccessful() || response.GetStatusCode() != 200)
-    return false;
-  tinyxml2::XMLDocument rootdoc;
+  if (handle)
   {
-    std::string xml;
-    xml.reserve(4096);
-    size_t len;
-    if (!(len = response.GetContentLength()))
-      len = 16384;
-    char buffer[256];
-    memset(buffer, 0, sizeof(buffer));
-    size_t l = 0;
-    while ((l = response.ReadContent(buffer, (len > sizeof(buffer) - 1 ? sizeof(buffer) - 1 : len))))
-    {
-      xml.append(buffer, 0, l);
-      len -= l;
-    }
-    // Parse xml content
-    if (rootdoc.Parse(xml.c_str(), response.GetConsumed()) != tinyxml2::XML_SUCCESS)
-    {
-      DBG(DBG_ERROR, "%s: parse xml failed\n", __FUNCTION__);
-      return false;
-    }
+    System* _handle = static_cast<System*>(handle);
+    _handle->m_cbzgt->Broadcast();
+    if (_handle->m_eventCB)
+      (_handle->m_eventCB)(_handle->m_CBHandle);
   }
-  tinyxml2::XMLElement* elem; // an element
-  // Check for response: ZPSupportInfo
-  if (!(elem = rootdoc.RootElement()) ||
-          (strncmp(elem->Name(), "ZPSupportInfo", 13) != 0) ||
-          !(elem = elem->FirstChildElement("ZonePlayers")))
-  {
-    DBG(DBG_ERROR, "%s: invalid or not supported response\n", __FUNCTION__);
-    tinyxml2::XMLPrinter out;
-    rootdoc.Accept(&out);
-    DBG(DBG_ERROR, "%s\n", out.CStr());
-    return false;
-  }
-
-  OS::CLockGuard lock(*m_mutex);
-  m_zones.clear();
-  m_zonePlayers.clear();
-  elem = elem->FirstChildElement();
-  while (elem)
-  {
-    DBG(DBG_DEBUG, "%s: new player '%s'\n", __FUNCTION__, elem->GetText());
-    ZonePlayerPtr zp(new ZonePlayer(elem->GetText()));
-    const tinyxml2::XMLAttribute* attr = elem->FirstAttribute();
-    while (attr)
-    {
-      zp->SetAttribut(attr->Name(), attr->Value());
-      attr = attr->Next();
-    }
-    m_zonePlayers.insert(std::make_pair(*zp, zp));
-    const std::string& group = zp->GetAttribut("group");
-    if (!group.empty())
-    {
-      ZoneList::iterator zit = m_zones.find(group);
-      if (zit != m_zones.end())
-        zit->second->push_back(zp);
-      else
-      {
-        ZonePtr zone(new Zone(group));
-        zone->push_back(zp);
-        m_zones.insert(std::make_pair(group, zone));
-      }
-    }
-    elem = elem->NextSiblingElement(NULL);
-  }
-  // Revamp loaded zones
-  for (ZoneList::iterator it = m_zones.begin(); it != m_zones.end(); ++it)
-    it->second->Revamp();
-  return true;
 }

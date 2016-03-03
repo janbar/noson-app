@@ -67,16 +67,10 @@ const std::string& ZonePlayer::GetIconName()
 {
   if (m_icon.empty())
   {
-    ParseLocation();
-    DeviceProperties dp(m_host, m_port);
-    ElementList vars;
-    if (dp.GetZoneAttributes(vars))
-    {
-      std::string icon = vars.GetValue("CurrentIcon");
-      size_t p = icon.find_last_of(":");
-      if (p++ != std::string::npos)
-        m_icon = icon.substr(p);
-    }
+    std::string icon = GetAttribut(ZP_ICON);
+    size_t p = icon.find_last_of(":");
+    if (p++ != std::string::npos)
+      m_icon = icon.substr(p);
   }
   return m_icon;
 }
@@ -116,7 +110,7 @@ std::string Zone::GetZoneShortName() const
 ZonePlayerPtr Zone::GetCoordinator() const
 {
   for (const_iterator it = begin(); it != end(); ++it)
-    if (*it && (*it)->GetAttribut("coordinator") == "true")
+    if (*it && (*it)->GetAttribut(ZP_COORDINATOR) == "true")
       return *it;
   return ZonePlayerPtr();
 }

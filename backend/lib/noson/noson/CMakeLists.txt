@@ -154,6 +154,8 @@ file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/sonostypes.h
           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/sonoszone.h
           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/zonegrouptopology.h
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
 
 include_directories (
   ${CMAKE_CURRENT_BINARY_DIR}/include/.)
@@ -248,4 +250,5 @@ install (FILES
   ${CMAKE_CURRENT_BINARY_DIR}/include/sonossystem.h
   ${CMAKE_CURRENT_BINARY_DIR}/include/sonostypes.h
   ${CMAKE_CURRENT_BINARY_DIR}/include/sonoszone.h
+  ${CMAKE_CURRENT_BINARY_DIR}/include/zonegrouptopology.h
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/noson/)
