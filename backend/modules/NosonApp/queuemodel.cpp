@@ -30,6 +30,7 @@ QueueModel::QueueModel(QObject* parent)
 
 QueueModel::~QueueModel()
 {
+  clear();
 }
 
 void QueueModel::addItem(TrackItem* item)

@@ -50,6 +50,11 @@ GenresModel::GenresModel(QObject* parent)
 {
 }
 
+GenresModel::~GenresModel()
+{
+  clear();
+}
+
 void GenresModel::addItem(GenreItem* item)
 {
   {

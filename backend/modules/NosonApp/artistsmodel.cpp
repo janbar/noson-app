@@ -50,6 +50,11 @@ ArtistsModel::ArtistsModel(QObject* parent)
 {
 }
 
+ArtistsModel::~ArtistsModel()
+{
+  clear();
+}
+
 void ArtistsModel::addItem(ArtistItem* item)
 {
   {

@@ -55,6 +55,11 @@ PlaylistsModel::PlaylistsModel(QObject* parent)
 {
 }
 
+PlaylistsModel::~PlaylistsModel()
+{
+  clear();
+}
+
 void PlaylistsModel::addItem(PlaylistItem* item)
 {
   {

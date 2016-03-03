@@ -55,6 +55,7 @@ AlbumsModel::AlbumsModel(QObject* parent)
 
 AlbumsModel::~AlbumsModel()
 {
+  clear();
 }
 
 void AlbumsModel::addItem(AlbumItem* item)

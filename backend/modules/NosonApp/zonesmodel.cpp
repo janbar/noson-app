@@ -54,6 +54,7 @@ ZonesModel::ZonesModel(QObject* parent)
 
 ZonesModel::~ZonesModel()
 {
+  clear();
 }
 
 void ZonesModel::addItem(ZoneItem* item)

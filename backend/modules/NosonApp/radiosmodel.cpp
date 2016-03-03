@@ -69,6 +69,7 @@ RadiosModel::RadiosModel(QObject* parent)
 
 RadiosModel::~RadiosModel()
 {
+  clear();
 }
 
 void RadiosModel::addItem(RadioItem* item)

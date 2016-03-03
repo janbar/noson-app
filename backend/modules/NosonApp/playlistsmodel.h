@@ -72,6 +72,7 @@ public:
   };
 
   PlaylistsModel(QObject* parent = 0);
+  virtual ~PlaylistsModel();
 
   void addItem(PlaylistItem* item);
 

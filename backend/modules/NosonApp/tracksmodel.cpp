@@ -55,6 +55,7 @@ TracksModel::TracksModel(QObject* parent)
 
 TracksModel::~TracksModel()
 {
+  clear();
 }
 
 void TracksModel::addItem(TrackItem* item)

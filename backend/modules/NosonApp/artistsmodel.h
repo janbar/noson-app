@@ -70,6 +70,7 @@ public:
   };
 
   ArtistsModel(QObject* parent = 0);
+  virtual ~ArtistsModel();
 
   void addItem(ArtistItem* item);
 

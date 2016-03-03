@@ -66,6 +66,7 @@ public:
   };
 
   GenresModel(QObject* parent = 0);
+  virtual ~GenresModel();
 
   void addItem(GenreItem* item);
 

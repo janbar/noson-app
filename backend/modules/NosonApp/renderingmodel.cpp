@@ -38,6 +38,7 @@ RenderingModel::RenderingModel(QObject* parent)
 
 RenderingModel::~RenderingModel()
 {
+  clear();
 }
 
 void RenderingModel::addItem(RenderingItem* item)

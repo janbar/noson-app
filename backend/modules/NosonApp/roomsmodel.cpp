@@ -48,6 +48,7 @@ RoomsModel::RoomsModel(QObject* parent)
 
 RoomsModel::~RoomsModel()
 {
+  clear();
 }
 
 void RoomsModel::addItem(RoomItem* item)
