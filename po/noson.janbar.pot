@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-03 02:49+0100\n"
+"POT-Creation-Date: 2016-03-03 14:23+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ../app/Main.qml:86 /home/ubuntu/src/noson-app-build/po/Noson.desktop.in.h:1
+#: ../app/Main.qml:86
+#: /home/jlb/src/janbar/QML/noson-app-build/po/Noson.desktop.in.h:1
 msgid "Noson"
 msgstr ""
 
@@ -270,14 +271,14 @@ msgid "6 hours"
 msgstr ""
 
 #: ../app/components/Dialog/DialogSongInfo.qml:38 ../app/ui/Albums.qml:79
-#: ../app/ui/Albums.qml:94 ../app/ui/ArtistView.qml:133
-#: ../app/ui/ArtistView.qml:148 ../app/ui/SongsView.qml:201
+#: ../app/ui/Albums.qml:94 ../app/ui/ArtistView.qml:151
+#: ../app/ui/ArtistView.qml:166 ../app/ui/SongsView.qml:201
 msgid "Unknown Album"
 msgstr ""
 
 #: ../app/components/Dialog/DialogSongInfo.qml:39 ../app/ui/Albums.qml:80
 #: ../app/ui/Albums.qml:93 ../app/ui/ArtistView.qml:79
-#: ../app/ui/ArtistView.qml:147 ../app/ui/Artists.qml:81
+#: ../app/ui/ArtistView.qml:165 ../app/ui/Artists.qml:81
 #: ../app/ui/SongsView.qml:222
 msgid "Unknown Artist"
 msgstr ""
@@ -389,14 +390,22 @@ msgstr ""
 msgid "Albums"
 msgstr ""
 
-#: ../app/ui/Albums.qml:92 ../app/ui/ArtistView.qml:146
+#: ../app/ui/Albums.qml:92 ../app/ui/ArtistView.qml:164
 msgid "Album"
 msgstr ""
 
-#: ../app/ui/ArtistView.qml:98
+#: ../app/ui/ArtistView.qml:100
 #, qt-format
 msgid "%1 album"
 msgid_plural "%1 albums"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../app/ui/ArtistView.qml:119 ../app/ui/SongsView.qml:243
+#: ../app/ui/SongsView.qml:244
+#, qt-format
+msgid "%1 song"
+msgid_plural "%1 songs"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -462,13 +471,6 @@ msgstr ""
 #: ../app/ui/Radios.qml:32
 msgid "My radios"
 msgstr ""
-
-#: ../app/ui/SongsView.qml:243 ../app/ui/SongsView.qml:244
-#, qt-format
-msgid "%1 song"
-msgid_plural "%1 songs"
-msgstr[0] ""
-msgstr[1] ""
 
 #: ../app/ui/Zones.qml:59
 msgid "Reload zones"
