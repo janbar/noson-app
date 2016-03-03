@@ -140,6 +140,7 @@ signals:
   void loadingFinished();
   void transportChanged();
   void renderingControlChanged();
+  void topologyChanged();
 
 private:
   struct RegisteredContent
@@ -158,6 +159,7 @@ private:
   SONOS::OS::CThreadPool m_threadpool;
 
   static void playerEventCB(void* handle);
+  static void topologyEventCB(void* handle);
 };
 
 #endif // SONOS_H

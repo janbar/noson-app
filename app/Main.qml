@@ -132,9 +132,8 @@ MainView {
 
         currentlyWorking = true
 
-        // try to connect a zone
-        // currentZone is alias of startupSettings.zoneName
-        connectZone(currentZone)
+        // try to connect the controller
+        connectSonos()
 
         // if a tab index exists restore it, otherwise goto Recent if there are items otherwise go to Albums
         tabs.selectedTabIndex = startupSettings.tabIndex === -1
@@ -220,6 +219,10 @@ MainView {
                 popInfo.open(i18n.tr("Index loaded"));
             }
             currentlyWorking = false; // hide actvity indicator
+        }
+
+        onTopologyChanged: {
+            reloadZone()
         }
     }
 
@@ -348,33 +351,18 @@ MainView {
         }
     }
 
-    // Try to connect zone
-    // On success: noZone is set to false and content loader thread is started
-    // to fill data in global models
+    // Try to connect to SONOS system
     // On failure: noZone is set to true
-    function connectZone(name) {
-        // by default try currentZone if any
-        name = (name === undefined || name === "") ? currentZone : name;
-
+    function connectSonos() {
         if (Sonos.init(debugLevel)) {
-            customdebug("Connecting zone '" + name + "'");
-            if ((Sonos.connectZone(name) || Sonos.connectZone("")) && player.connect()) {
-                currentZone = Sonos.getZoneName();
-                currentZoneTag = Sonos.getZoneShortName();
-                AllZonesModel.init(Sonos, true); // force load now
-                AllAlbumsModel.init(Sonos, "");
-                AllArtistsModel.init(Sonos, "");
-                AllGenresModel.init(Sonos, "");
-                AllRadiosModel.init(Sonos, "R:0/0");
-                AllPlaylistsModel.init(Sonos, "");
-                // enable info on index loaded
-                infoLoadedIndex = true;
-                Sonos.runLoader();
-                // Signal change if any
-                if (noZone)
-                    noZone = false;
-                return true;
-            }
+            AllAlbumsModel.init(Sonos, "");
+            AllArtistsModel.init(Sonos, "");
+            AllGenresModel.init(Sonos, "");
+            AllRadiosModel.init(Sonos, "R:0/0");
+            AllPlaylistsModel.init(Sonos, "");
+            // enable info on index loaded
+            infoLoadedIndex = true;
+            return true;
         }
         // Signal change if any
         if (!noZone)
@@ -383,18 +371,20 @@ MainView {
     }
 
     // Reload zones and try connect
+    // On success: noZone is set to false and content loader thread is started
+    // to fill data in global models
     function reloadZone() {
-        if (Sonos.init(debugLevel)) {
-            customdebug("Connecting zone '" + currentZone + "'");
-            if ((Sonos.connectZone(currentZone) || Sonos.connectZone("")) && player.connect()) {
-                currentZone = Sonos.getZoneName();
-                currentZoneTag = Sonos.getZoneShortName();
-                AllZonesModel.init(Sonos, true); // force load now
-                // Signal change if any
-                if (noZone)
-                    noZone = false;
-                return true;
-            }
+        AllZonesModel.init(Sonos, true); // force load now
+        customdebug("Connecting zone '" + currentZone + "'");
+        if ((Sonos.connectZone(currentZone) || Sonos.connectZone("")) && player.connect()) {
+            currentZone = Sonos.getZoneName();
+            currentZoneTag = Sonos.getZoneShortName();
+            // It is time to fill models
+            Sonos.runLoader();
+            // Signal change if any
+            if (noZone)
+                noZone = false;
+            return true;
         }
         // Signal change if any
         if (!noZone)

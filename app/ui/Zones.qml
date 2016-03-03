@@ -59,7 +59,7 @@ BottomEdgePage {
                   text: i18n.tr("Reload zones")
                   onTriggered: {
                       mainView.currentlyWorking = true
-                      delayReloadZones.start()
+                      delayResetController.start()
                   }
                 },
                 Action {
@@ -117,11 +117,11 @@ BottomEdgePage {
     ]
 
     Timer {
-        id: delayReloadZones
+        id: delayResetController
         interval: 100
         onTriggered: {
-            reloadZone()
-            mainView.currentlyWorking = false
+            connectSonos()
+            // activity indicator will be hidden after finished loading
         }
     }
 

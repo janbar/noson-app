@@ -131,14 +131,14 @@ Page {
 
                 onClicked: {
                     mainView.currentlyWorking = true
-                    delayConnectZone.start()
+                    delayConnectSonos.start()
                 }
 
                 Timer {
-                    id: delayConnectZone
+                    id: delayConnectSonos
                     interval: 100
                     onTriggered: {
-                        connectZone()
+                        connectSonos()
                         mainView.currentlyWorking = false
                     }
                 }

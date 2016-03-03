@@ -51,6 +51,7 @@ Sonos::Sonos(QObject* parent)
 : QObject(parent)
 , m_library(ManagedContents())
 , m_shareUpdateID(0)
+, m_system(this, topologyEventCB)
 , m_threadpool(5)
 {
   SONOS::DBGLevel(2);
@@ -321,4 +322,10 @@ void Sonos::playerEventCB(void* handle)
       }
     }
   }
+}
+
+void Sonos::topologyEventCB(void *handle)
+{
+  Sonos* sonos = static_cast<Sonos*>(handle);
+  emit sonos->topologyChanged();
 }

@@ -154,7 +154,7 @@ void AlbumsModel::clear()
 bool AlbumsModel::load()
 {
   setUpdateSignaled(false);
-  
+
   if (!m_provider)
     return false;
   clear();
