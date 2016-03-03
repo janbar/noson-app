@@ -85,17 +85,40 @@ MusicPage {
                         width: parent.width
                     }
 
-                    Label {
-                        id: artistCount
+                    Row {
                         anchors {
                             left: parent.left
                             right: parent.right
                         }
-                        color: styleMusic.common.subtitle
-                        elide: Text.ElideRight
-                        fontSize: "small"
-                        maximumLineCount: 1
-                        text: i18n.tr("%1 album", "%1 albums", albumsModel.count).arg(albumsModel.count)
+
+                        Label {
+                            id: albumCount
+                            color: styleMusic.common.subtitle
+                            elide: Text.ElideRight
+                            fontSize: "small"
+                            maximumLineCount: 1
+                            text: i18n.tr("%1 album", "%1 albums", albumsModel.count).arg(albumsModel.count)
+                        }
+
+                        Label {
+                            id: separator
+                            color: styleMusic.common.subtitle
+                            elide: Text.ElideRight
+                            fontSize: "small"
+                            maximumLineCount: 1
+                            text: " , "
+                            visible: songArtistModel.count > 0
+                        }
+
+                        Label {
+                            id: songCount
+                            color: styleMusic.common.subtitle
+                            elide: Text.ElideRight
+                            fontSize: "small"
+                            maximumLineCount: 1
+                            text: i18n.tr("%1 song", "%1 songs", songArtistModel.count).arg(songArtistModel.count)
+                            visible: songArtistModel.count > 0
+                        }
                     }
                 }
                 coverSources: artistViewPage.covers
@@ -115,12 +138,7 @@ MusicPage {
                         width: blurredHeader.width > units.gu(60) ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
                     }
                 }
-
-                TracksModel {
-                    id: songArtistModel
-                    Component.onCompleted: init(Sonos, artistSearch + "/", true)
-                }
-            }
+            }            
         }
         model: AlbumsModel {
             id: albumsModel
@@ -151,6 +169,23 @@ MusicPage {
         }
     }
 
-    Component.onCompleted: loaded = true
+    TracksModel {
+        id: songArtistModel
+    }
+
+    Timer {
+        id: delayInitTrackModel
+        interval: 100
+        onTriggered: {
+            songArtistModel.init(Sonos, artistSearch + "/", true)
+            mainView.currentlyWorking = false
+            loaded = true
+        }
+    }
+
+    Component.onCompleted: {
+        mainView.currentlyWorking = true
+        delayInitTrackModel.start()
+    }
 }
 
