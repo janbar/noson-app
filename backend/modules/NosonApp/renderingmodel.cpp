@@ -109,6 +109,7 @@ QHash<int, QByteArray> RenderingModel::roleNames() const
 void RenderingModel::clear()
 {
   beginRemoveRows(QModelIndex(), 0, m_items.count());
+  qDeleteAll(m_items);
   m_items.clear();
   endRemoveRows();
   emit countChanged();

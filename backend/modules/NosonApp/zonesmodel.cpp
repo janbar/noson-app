@@ -137,6 +137,7 @@ void ZonesModel::clear()
   {
     SONOS::LockGuard lock(m_lock);
     beginRemoveRows(QModelIndex(), 0, m_items.count());
+    qDeleteAll(m_items);
     m_items.clear();
     endRemoveRows();
   }
