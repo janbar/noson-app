@@ -32,8 +32,6 @@
 namespace NSROOT
 {
 
-  class SubscriptionImpl;
-
   class Subscription
   {
   public:

@@ -54,6 +54,8 @@ namespace NSROOT
 
     bool GetZoneGroupState();
 
+    unsigned GetTopologyKey() const { return m_topologyKey; }
+
     Locked<ZoneList>& GetZoneList() { return m_zones; }
 
     Locked<ZonePlayerList>& GetZonePlayerList() { return m_zonePlayers; }
@@ -67,11 +69,13 @@ namespace NSROOT
     void* m_CBHandle;
     EventCB m_eventCB;
     unsigned m_msgCount;
+    unsigned m_topologyKey;
 
     Locked<ZoneList> m_zones;
     Locked<ZonePlayerList> m_zonePlayers;
 
     bool ParseZoneGroupState(const std::string& xml);
+
   };
 }
 

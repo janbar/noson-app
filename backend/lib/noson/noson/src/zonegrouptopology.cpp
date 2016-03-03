@@ -31,6 +31,23 @@ const std::string ZoneGroupTopology::ControlURL("/ZoneGroupTopology/Control");
 const std::string ZoneGroupTopology::EventURL("/ZoneGroupTopology/Event");
 const std::string ZoneGroupTopology::SCPDURL("/xml/ZoneGroupTopology1.xml");
 
+inline uint_fast32_t __hashvalue(uint_fast32_t maxsize, const char *value)
+{
+  uint_fast32_t h = 0, g;
+
+  while (*value)
+  {
+    h = (h << 4) + *value++;
+    if ((g = h & 0xF0000000L))
+    {
+      h ^= g >> 24;
+    }
+    h &= ~g;
+  }
+
+  return h % maxsize;
+}
+
 ZoneGroupTopology::ZoneGroupTopology(const std::string& serviceHost, unsigned servicePort)
 : Service(serviceHost, servicePort)
 , m_eventHandler()
@@ -38,6 +55,7 @@ ZoneGroupTopology::ZoneGroupTopology(const std::string& serviceHost, unsigned se
 , m_CBHandle(0)
 , m_eventCB(0)
 , m_msgCount(0)
+, m_topologyKey(0)
 , m_zones(ZoneList())
 , m_zonePlayers(ZonePlayerList())
 {
@@ -50,6 +68,7 @@ ZoneGroupTopology::ZoneGroupTopology(const std::string& serviceHost, unsigned se
 , m_CBHandle(CBHandle)
 , m_eventCB(eventCB)
 , m_msgCount(0)
+, m_topologyKey(0)
 , m_zones(ZoneList())
 , m_zonePlayers(ZonePlayerList())
 {
@@ -81,6 +100,7 @@ void ZoneGroupTopology::HandleEventMessage(EventMessagePtr msg)
     {
       DBG(DBG_DEBUG, "%s: %s SEQ=%s %s\n", __FUNCTION__, msg->subject[0].c_str(), msg->subject[1].c_str(), msg->subject[2].c_str());
       std::vector<std::string>::const_iterator it = msg->subject.begin();
+      unsigned _key = m_topologyKey;
       while (it != msg->subject.end())
       {
         if (*it == "ZoneGroupState")
@@ -90,6 +110,9 @@ void ZoneGroupTopology::HandleEventMessage(EventMessagePtr msg)
         }
         ++it;
       }
+      // Event is signaled only on first or any change
+      if (m_msgCount && _key == m_topologyKey)
+        return;
       // Signal
       ++m_msgCount;
       if (m_eventCB)
@@ -170,5 +193,12 @@ bool ZoneGroupTopology::ParseZoneGroupState(const std::string& xml)
     zones->insert(std::make_pair(zone->GetGroup(), zone));
     elem = elem->NextSiblingElement(NULL);
   }
+  // compute a key for this state
+  std::string keyStr;
+  keyStr.reserve(zones->size() << 5);
+  for (ZoneList::const_iterator it = zones->begin(); it != zones->end(); ++it)
+    keyStr.append(it->first);
+  m_topologyKey = __hashvalue(0xFFFFFFFF, keyStr.c_str());
+  DBG(DBG_INFO, "%s: topology key %u\n", __FUNCTION__, m_topologyKey);
   return true;
 }
