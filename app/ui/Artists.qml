@@ -76,7 +76,7 @@ MusicPage {
         }
         delegate: Card {
             id: artistCard
-            coverSources: [{art: "image://artistart/artist=" + model.artist + "&album=" + artistCard.album}]
+            coverSources: [{artist: model.artist}]
             objectName: "artistsPageGridItem" + index
             primaryText: model.artist !== undefined && model.artist !== "" ? model.artist : i18n.tr("Unknown Artist")
             secondaryTextVisible: false
@@ -87,7 +87,7 @@ MusicPage {
                                        "containerItem": makeContainerItem(model),
                                        "artistSearch": model.id,
                                        "artist": model.artist,
-                                       "covers": artistCard.coverSources,
+                                       "covers": [{art: artistCard.imageSource}],
                                        "title": i18n.tr("Artist")
                                    })
             }

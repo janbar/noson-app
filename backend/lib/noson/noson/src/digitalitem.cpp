@@ -138,6 +138,13 @@ const ElementPtr& DigitalItem::SetProperty(const ElementPtr& var)
   return var;
 }
 
+void DigitalItem::RemoveProperty(const std::string& key)
+{
+  ElementList::iterator it = m_vars.FinKey(key);
+  if (it != m_vars.end())
+    m_vars.erase(it);
+}
+
 std::string DigitalItem::DIDL() const
 {
   std::string xml;
@@ -148,8 +155,13 @@ std::string DigitalItem::DIDL() const
     "xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\">");
   if (m_type != Type_unknown)
   {
-    xml.append("<").append(TypeTable[m_type]).append(" id=\"").append(m_objectID).append("\" parentID=\"").append(m_parentID).append("\"")
-            .append(" restricted=\"").append((m_restricted ? "true" : "false")).append("\">");
+    xml.append("<").append(TypeTable[m_type]);
+    if (!m_objectID.empty())
+    {
+      xml.append(" id=\"").append(m_objectID).append("\" parentID=\"").append(m_parentID).append("\"");
+      xml.append(" restricted=\"").append((m_restricted ? "true" : "false")).append("\"");
+    }
+    xml.append(">");
     for (ElementList::const_iterator it = m_vars.begin(); it != m_vars.end(); ++it)
     {
       if (*it)

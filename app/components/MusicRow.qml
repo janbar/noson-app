@@ -39,11 +39,16 @@ Row {
         asynchronous: true
         fillMode: Image.PreserveAspectCrop
         height: width
-        source: imageSource !== undefined && imageSource !== ""
-                ? (imageSource.art !== undefined
+        source: (imageSource !== undefined)
+                ? (imageSource.art !== undefined && imageSource.art !== "")
                    ? imageSource.art
-                   : "image://albumart/artist=" + imageSource.author + "&album=" + imageSource.album)
+                   : (imageSource.album !== undefined && imageSource.artist !== undefined)
+                      ? "image://albumart/artist=" + imageSource.artist + "&album=" + imageSource.album
+                      : (imageSource.artist !== undefined)
+                         ? "image://artistart/artist=" + imageSource.artist + "&album=undefined"
+                         : Qt.resolvedUrl("../graphics/no_cover.png")
                 : ""
+
         sourceSize.height: height
         sourceSize.width: width
         width: units.gu(6)

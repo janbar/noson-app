@@ -89,7 +89,7 @@ MusicPage {
             }
         }
 
-        delegate: StreamListItem {
+        delegate: MusicListItem {
             id: radio
             objectName: "radiosPageListItem" + index
             column: Column {
@@ -115,6 +115,15 @@ MusicPage {
                                                    : undefined
             }
             multiselectable: true
+            trailingActions: ListItemActions {
+                actions: [
+                    AddToFavorites {
+                        description: i18n.tr("Radio")
+                    }
+                ]
+                delegate: ActionDelegate {
+                }
+            }
 
             onItemClicked: {
                 mainView.currentlyWorking = true

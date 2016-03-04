@@ -57,11 +57,15 @@ Item {
                 fillMode: Image.PreserveAspectCrop
                 height: coverGrid.size / (coverGrid.covers.length > 1 ? 2 : 1)
                 width: coverGrid.size / (coverGrid.covers.length > 2 && !(coverGrid.covers.length === 3 && index === 2) ? 2 : 1)
-                source: coverGrid.covers.length !== 0 && coverGrid.covers[index] !== "" && coverGrid.covers[index] !== undefined
-                        ? (coverGrid.covers[index].art !== undefined
+                source: (coverGrid.covers.length > 0 && coverGrid.covers[index] !== undefined)
+                        ? (coverGrid.covers[index].art !== undefined && coverGrid.covers[index].art !== "")
                            ? coverGrid.covers[index].art
-                           : "image://albumart/artist=" + coverGrid.covers[index].author + "&album=" + coverGrid.covers[index].album)
-                        : Qt.resolvedUrl("../graphics/no_cover.png")
+                           : (coverGrid.covers[index].album !== undefined && coverGrid.covers[index].artist !== undefined)
+                              ? "image://albumart/artist=" + coverGrid.covers[index].artist + "&album=" + coverGrid.covers[index].album
+                              : (coverGrid.covers[index].artist !== undefined)
+                                 ? "image://artistart/artist=" + coverGrid.covers[index].artist + "&album=undefined"
+                                 : Qt.resolvedUrl("../graphics/no_cover.png")
+                        : ""
 
                 // TODO: This should be investigated once http://pad.lv/1391368
                 //       is resolved. Once it is, these can either be set to

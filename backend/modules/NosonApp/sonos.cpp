@@ -286,37 +286,40 @@ void Sonos::playerEventCB(void* handle)
     {
       SONOS::Locked<ManagedContents>::pointer cl = sonos->m_library.Get();
       SONOS::ContentProperty prop = player->GetContentProperty();
-      SONOS::DBG(DBG_DEBUG, "%s: container [%s] has being updated to %u\n", __FUNCTION__, prop.ContainerRoot.c_str(), prop.ContainerUpdateID);
-
-      // Reload musical index on any update of shares
-      bool shareUpdated = false;
-      if (prop.ContainerRoot == "S:" && prop.ContainerUpdateID != sonos->m_shareUpdateID)
+      for (std::vector<std::pair<std::string, unsigned> >::const_iterator uit = prop.ContainerUpdateIDs.begin(); uit != prop.ContainerUpdateIDs.end(); ++uit)
       {
-        shareUpdated = true;
-        sonos->m_shareUpdateID = prop.ContainerUpdateID; // Track current updateID
-      }
+        SONOS::DBG(DBG_DEBUG, "%s: container [%s] has being updated to %u\n", __FUNCTION__, uit->first.c_str(), uit->second);
 
-      for (ManagedContents::iterator it = cl->begin(); it != cl->end(); ++it)
-      {
-        // find the base of the model from its root
-        QString _base;
-        int slash = it->model->m_root.indexOf("/");
-        if (slash < 0)
-          _base.append(it->model->m_root);
-        else
-          _base.append(it->model->m_root.left(slash));
+        // Reload musical index on any update of shares
+        bool shareUpdated = false;
+        if (uit->first == "S:" && uit->second != sonos->m_shareUpdateID)
+        {
+          shareUpdated = true;
+          sonos->m_shareUpdateID = uit->second; // Track current updateID
+        }
 
-        // need update ?
-        bool _update = false;
-        // same base
-        if (it->model->m_updateID != prop.ContainerUpdateID && _base == prop.ContainerRoot.c_str())
-          _update = true;
-        // about shares
-        else if (shareUpdated && _base.startsWith(QString::fromUtf8("A:")))
-          _update = true;
+        for (ManagedContents::iterator it = cl->begin(); it != cl->end(); ++it)
+        {
+          // find the base of the model from its root
+          QString _base;
+          int slash = it->model->m_root.indexOf("/");
+          if (slash < 0)
+            _base.append(it->model->m_root);
+          else
+            _base.append(it->model->m_root.left(slash));
 
-        if (_update)
-          it->model->handleDataUpdate();
+          // need update ?
+          bool _update = false;
+          // same base
+          if (it->model->m_updateID != uit->second && _base == uit->first.c_str())
+            _update = true;
+          // about shares
+          else if (shareUpdated && _base.startsWith(QString::fromUtf8("A:")))
+            _update = true;
+
+          if (_update)
+            it->model->handleDataUpdate();
+        }
       }
     }
   }

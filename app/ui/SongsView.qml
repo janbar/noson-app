@@ -52,11 +52,25 @@ MusicPage {
 
     property bool loaded: false  // used to detect difference between first and further loads
 
+    property bool isFavorite: false
+
     state: albumtrackslist.state === "multiselectable" ? "selection" : (isPlaylist ? "playlist" : "album")
     states: [
         PageHeadState {
             id: albumState
             name: "album"
+            actions: [
+                Action {
+                    objectName: "likeAlbum"
+                    iconName: isFavorite ? "like" : "unlike"
+                    onTriggered: {
+                        if (isFavorite && removeFromFavorites(containerItem))
+                            isFavorite = false
+                        else if (!isFavorite && addItemToFavorites(containerItem, title))
+                            isFavorite = true
+                    }
+                }
+            ]
             PropertyChanges {
                 target: songStackPage.head
                 backAction: albumState.backAction
@@ -67,15 +81,16 @@ MusicPage {
             id: playlistState
             name: "playlist"
             actions: [
-                /*Action {
-                    objectName: "editPlaylist"
-                    iconName: "edit"
+                Action {
+                    objectName: "likePlaylist"
+                    iconName: isFavorite ? "like" : "unlike"
                     onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogEditPlaylist.qml"), mainView)
-                        currentDialog.oldPlaylistName = line2
+                        if (isFavorite && removeFromFavorites(containerItem))
+                            isFavorite = false
+                        else if (!isFavorite && addItemToFavorites(containerItem, title))
+                            isFavorite = true
                     }
-                    enabled: false
-                },*/
+                },
                 Action {
                     objectName: "deletePlaylist"
                     iconName: "delete"
@@ -111,9 +126,10 @@ MusicPage {
     }
 
     Timer {
-        id: delayInitTrackModel
+        id: delayInitModel
         interval: 100
         onTriggered: {
+            isFavorite = (AllFavoritesModel.findFavorite(containerItem.id) !== "")
             songsModel.init(Sonos, songSearch, true)
             mainView.currentlyWorking = false
             songStackPage.loaded = true;
@@ -143,13 +159,15 @@ MusicPage {
 
         delegate: Item {
             property string art: model.art
+            property string artist: model.author
+            property string album: model.album
         }
         property var arts: []
         property bool hasCover: covers.length ? true : false
 
         onItemAdded: {
             if (!hasCover && item.art !== "") {
-                covers = [{art: item.art}]
+                covers = [{art: item.art, artist: item.artist, album: item.album}]
                 hasCover = true
             }
         }
@@ -198,7 +216,7 @@ MusicPage {
                     elide: Text.ElideRight
                     fontSize: "x-large"
                     maximumLineCount: 1
-                    text: line2 != "" ? line2 : i18n.tr("Unknown Album")
+                    text: line2
                     wrapMode: Text.NoWrap
                 }
 
@@ -218,9 +236,8 @@ MusicPage {
                     elide: Text.ElideRight
                     fontSize: "small"
                     maximumLineCount: 1
-                    objectName: "songsPageHeaderAlbumArtist"
-                    text: line1 != "" ? line1 : i18n.tr("Unknown Artist")
-                    visible: isAlbum
+                    text: line1
+                    visible: line1 !== ""
                     wrapMode: Text.NoWrap
                 }
 
@@ -252,7 +269,7 @@ MusicPage {
         delegate: MusicListItem {
             id: track
             objectName: "songsPageListItem" + index
-            imageSource: songStackPage.isPlaylist ? model : undefined
+            imageSource: songStackPage.isPlaylist ? {art: model.art, artist: model.author, album: model.album} : undefined
             column: Column {
                 Label {
                     id: trackTitle
@@ -279,6 +296,9 @@ MusicPage {
                     AddToQueue {
                     },
                     AddToPlaylist {
+                    },
+                    AddToFavorites {
+                        description: i18n.tr("Song")
                     }
                 ]
                 delegate: ActionDelegate {
@@ -342,6 +362,6 @@ MusicPage {
 
     Component.onCompleted: {
         mainView.currentlyWorking = true
-        delayInitTrackModel.start()
+        delayInitModel.start()
     }
 }

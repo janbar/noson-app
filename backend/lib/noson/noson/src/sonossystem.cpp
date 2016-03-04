@@ -21,8 +21,10 @@
 
 #include "sonossystem.h"
 #include "zonegrouptopology.h"
+#include "digitalitem.h"
 #include "private/socket.h"
 #include "private/wsresponse.h"
+#include "private/didlparser.h"
 
 #include "private/os/threads/timeout.h"
 #include "private/debug.h"
@@ -86,6 +88,11 @@ bool System::Discover()
     return true;
   DBG(DBG_WARN, "%s: notification wasn't received after timeout: fall back on manual call\n", __FUNCTION__);
   return m_groupTopology->GetZoneGroupState();
+}
+
+void System::RenewSubscriptions()
+{
+  m_ZGTSubscription.AskRenewal();
 }
 
 ZoneList System::GetZoneList() const
@@ -161,6 +168,40 @@ void System::HandleEventMessage(EventMessagePtr msg)
     if (msg->subject[0] == "GET" && msg->subject[1] == "/stop")
       m_eventHandler.Stop();
   }
+}
+
+bool System::ExtractObjectFromFavorite(const DigitalItemPtr& favorite, DigitalItemPtr& item)
+{
+  const std::string& str = favorite->GetValue("r:resMD");
+  if (str.empty())
+    return false;
+  DIDLParser didl(str.c_str());
+  if (didl.IsValid() && !didl.GetItems().empty())
+  {
+    item.swap(didl.GetItems()[0]);
+    item->SetProperty(favorite->GetProperty("res"));
+    return true;
+  }
+  DigitalItemPtr ptr(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_unknown));
+  ptr->SetProperty(favorite->GetProperty("res"));
+  ptr->SetProperty(favorite->GetProperty("dc:title"));
+  ptr->SetProperty(favorite->GetProperty("upnp:albumArtURI"));
+  ptr->SetObjectID("-1");
+  ptr->SetParentID("-1");
+  item.swap(ptr);
+  return true;
+}
+
+bool System::CanQueueItem(const DigitalItemPtr& item)
+{
+  if (item)
+  {
+    const std::string& parent = item->GetParentID();
+    if (    parent.compare(0, 2, "A:") == 0 ||
+            parent.compare(0, 3, "SQ:") == 0)
+      return true;
+  }
+  return false;
 }
 
 bool System::FindDeviceDescription(std::string& url)

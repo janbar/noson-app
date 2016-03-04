@@ -85,12 +85,12 @@ MusicPage {
                                        "containerItem": makeContainerItem(model),
                                        "songSearch": model.id,
                                        "album": undefined,
-                                       "covers": playlistCard.coverSources,
+                                       "covers": [{art: playlistCard.imageSource}],
                                        "isPlaylist": true,
                                        "genre": undefined,
                                        "page": playlistsPage,
                                        "title": i18n.tr("Playlist"),
-                                       "line1": i18n.tr("Playlist"),
+                                       "line1": "",
                                        "line2": model.title,
                                    })
             }

@@ -104,6 +104,8 @@ namespace NSROOT
 
     const ElementPtr& SetProperty(const std::string& key, const std::string& value) { return SetProperty(Element(key, value)); }
 
+    void RemoveProperty(const std::string& key);
+
     std::string DIDL() const;
 
   private:

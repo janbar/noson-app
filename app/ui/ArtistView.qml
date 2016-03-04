@@ -47,6 +47,33 @@ MusicPage {
     height: mainView.height
     width: mainView.width
 
+    property bool isFavorite: false
+
+    state: "default"
+    states: [
+        PageHeadState {
+            id: artistState
+            name: "default"
+            actions: [
+                Action {
+                    objectName: "likeAlbum"
+                    iconName: isFavorite ? "like" : "unlike"
+                    onTriggered: {
+                        if (isFavorite && removeFromFavorites(containerItem))
+                            isFavorite = false
+                        else if (!isFavorite && addItemToFavorites(containerItem, title))
+                            isFavorite = true
+                    }
+                }
+            ]
+            PropertyChanges {
+                target: artistViewPage.head
+                backAction: artistState.backAction
+                actions: artistState.actions
+            }
+        }
+    ]
+
     MusicGridView {
         id: artistAlbumView
         itemWidth: units.gu(15)
@@ -146,9 +173,9 @@ MusicPage {
         }
         delegate: Card {
             id: albumCard
-            coverSources: [{art: model.art}]
+            coverSources: [{art: model.art, artist: model.artist, album: model.title}]
             objectName: "albumsPageGridItem" + index
-            primaryText: model.title != "" ? model.title : i18n.tr("Unknown Album")
+            primaryText: model.title !== "" ? model.title : i18n.tr("Unknown Album")
             secondaryTextVisible: false
 
             onClicked: {
@@ -158,7 +185,7 @@ MusicPage {
                                        "songSearch": model.id,
                                        "album": model.title,
                                        "artist": model.artist,
-                                       "covers": [{art: model.art}],
+                                       "covers": [{art: model.art, artist: model.artist, album: model.title}],
                                        "isAlbum": true,
                                        "genre": undefined,
                                        "title": i18n.tr("Album"),
@@ -174,9 +201,10 @@ MusicPage {
     }
 
     Timer {
-        id: delayInitTrackModel
+        id: delayInitModel
         interval: 100
         onTriggered: {
+            isFavorite = (AllFavoritesModel.findFavorite(containerItem.id) !== "")
             songArtistModel.init(Sonos, artistSearch + "/", true)
             mainView.currentlyWorking = false
             loaded = true
@@ -185,7 +213,7 @@ MusicPage {
 
     Component.onCompleted: {
         mainView.currentlyWorking = true
-        delayInitTrackModel.start()
+        delayInitModel.start()
     }
 }
 

@@ -79,6 +79,16 @@ void Player::renewSubscriptions()
     m_player->RenewSubscriptions();
 }
 
+bool Player::ping()
+{
+  if (m_player)
+  {
+    SONOS::ElementList vars;
+    return m_player->GetMediaInfo(vars);
+  }
+  return false;
+}
+
 bool Player::refreshShareIndex()
 {
   return m_player ? m_player->RefreshShareIndex() : false;
@@ -320,6 +330,36 @@ bool Player::reorderTrackInSavedQueue(const QString& SQid, int index, int newInd
 bool Player::destroySavedQueue(const QString& SQid)
 {
   return m_player ? m_player->DestroySavedQueue(SQid.toUtf8().constData()) : false;
+}
+
+bool Player::addItemToFavorites(const QVariant& payload, const QString& description)
+{
+  return m_player ? m_player->AddURIToFavorites(payload.value<SONOS::DigitalItemPtr>(), description.toUtf8().constData()) : false;
+}
+
+bool Player::destroyFavorite(const QString& FVid)
+{
+  return m_player ? m_player->DestroyFavorite(FVid.toUtf8().constData()) : false;
+}
+
+bool Player::playFavorite(const QVariant& payload)
+{
+  SONOS::DigitalItemPtr favorite(payload.value<SONOS::DigitalItemPtr>());
+  SONOS::PlayerPtr player(m_player);
+  if (favorite && player)
+  {
+    SONOS::DigitalItemPtr item;
+    if (SONOS::System::ExtractObjectFromFavorite(favorite, item))
+    {
+      if (SONOS::System::CanQueueItem(item))
+      {
+        int pos = (m_currentIndex < 0 ? 1 : m_currentIndex + 2);
+        return m_player->PlayQueue(false) && m_player->AddURIToQueue(item, pos) && m_player->SeekTrack(pos) && m_player->Play();
+      }
+      return m_player->SetCurrentURI(item) && m_player->Play();
+    }
+  }
+  return false;
 }
 
 bool Player::setVolumeGroup(double volume)

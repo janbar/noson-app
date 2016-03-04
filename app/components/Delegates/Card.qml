@@ -27,6 +27,7 @@ Item {
 
     property alias coversGridVisible: coverGrid.visible
     property alias coverSources: coverGrid.covers
+    property alias imageSource: coverGrid.firstSource
     property alias primaryText: primaryLabel.text
     property alias secondaryText: secondaryLabel.text
     property alias secondaryTextVisible: secondaryLabel.visible

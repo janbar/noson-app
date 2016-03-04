@@ -92,7 +92,7 @@ Item {
     }
 
     function wakeUp() {
-        if (trackQueue.loadQueue()) {
+        if (playerLoader.item.ping()) {
             customdebug("Renew subscriptions");
             playerLoader.item.renewSubscriptions();
             return true;
@@ -270,6 +270,18 @@ Item {
 
     function playDigitalIN() {
         return playerLoader.item.playDigitalIN()
+    }
+
+    function addItemToFavorites(modelItem, description) {
+        return playerLoader.item.addItemToFavorites(modelItem.payload, description);
+    }
+
+    function removeFavorite(itemId) {
+        return playerLoader.item.destroyFavorite(itemId);
+    }
+
+    function playFavorite(modelItem) {
+        return playerLoader.item.playFavorite(modelItem.payload);
     }
 
     property alias renderingModel: renderingModelLoader.item
