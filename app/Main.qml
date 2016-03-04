@@ -642,8 +642,7 @@ MainView {
         }
         asynchronous: true
         source: "components/MusicToolbar.qml"
-        visible: (mainPageStack.currentPage.showToolbar || mainPageStack.currentPage.showToolbar === undefined) &&
-                 !noZone
+        visible: !noZone && (mainPageStack.currentPage.showToolbar || mainPageStack.currentPage.showToolbar === undefined)
 
         z: 200  // put on top of everything else
     }
