@@ -246,8 +246,6 @@ void Sonos::registerModel(ListModel* model, const QString& root)
         return;
       }
     }
-    model->m_provider = this;
-    model->m_root = root;
     mc->append(RegisteredContent(model, root));
   }
 }
