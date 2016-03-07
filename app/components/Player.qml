@@ -93,7 +93,6 @@ Item {
 
     function wakeUp() {
         if (playerLoader.item.ping()) {
-            customdebug("Renew subscriptions");
             playerLoader.item.renewSubscriptions();
             return true;
         }

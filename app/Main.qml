@@ -172,7 +172,12 @@ MainView {
         id: delayPlayerWakeUp
         interval: 100
         onTriggered: {
-            noZone = !player.wakeUp()
+            if (!player.wakeUp())
+                noZone = true
+            else {
+                Sonos.renewSubscriptions()
+                noZone = false
+            }
             mainView.currentlyWorking = false
         }
     }

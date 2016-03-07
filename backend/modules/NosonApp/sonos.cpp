@@ -72,6 +72,11 @@ bool Sonos::init(int debug)
   return m_system.Discover();
 }
 
+void Sonos::renewSubscriptions()
+{
+  m_system.RenewSubscriptions();
+}
+
 ZonesModel* Sonos::getZones()
 {
   ZonesModel* model = new ZonesModel();

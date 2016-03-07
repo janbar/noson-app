@@ -52,6 +52,8 @@ public:
 
   Q_INVOKABLE bool init(int debug = 0);
 
+  Q_INVOKABLE void renewSubscriptions();
+
   Q_INVOKABLE ZonesModel* getZones();
 
   Q_INVOKABLE bool connectZone(const QString& zoneName);
