@@ -29,6 +29,7 @@
 #include "private/debug.h"
 #include "private/uriparser.h"
 #include "private/didlparser.h"
+#include "sonossystem.h"
 
 using namespace NSROOT;
 
@@ -454,12 +455,17 @@ bool Player::AddURIToFavorites(const DigitalItemPtr& item, const std::string& de
   obj.SetRestricted(item->GetRestricted());
   obj.SetProperty(item->GetProperty("upnp:class"));
   obj.SetProperty(item->GetProperty("dc:title"));
-  ElementPtr desc = item->GetProperty("desc");
-  if (desc)
+  // make desc
+  if (System::CanQueueItem(item))
+  {
+    ElementPtr desc(new Element("desc", "RINCON_AssociatedZPUDN"));
+    desc->SetAttribut("id", "cdudn");
+    desc->SetAttribut("nameSpace", "urn:schemas-rinconnetworks-com:metadata-1-0");
     obj.SetProperty(desc);
+  }
   else
   {
-    desc.reset(new Element("desc", "RINCON_AssociatedZPUDN"));
+    ElementPtr desc(new Element("desc", NetServiceDescTable[NetService_TuneIN]));
     desc->SetAttribut("id", "cdudn");
     desc->SetAttribut("nameSpace", "urn:schemas-rinconnetworks-com:metadata-1-0");
     obj.SetProperty(desc);
