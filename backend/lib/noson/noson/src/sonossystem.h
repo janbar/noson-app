@@ -52,6 +52,8 @@ namespace NSROOT
 
     bool Discover();
 
+    void RenewSubscriptions();
+
     ZoneList GetZoneList() const;
 
     ZonePlayerList GetZonePlayerList() const;
@@ -68,6 +70,10 @@ namespace NSROOT
 
     // Implements EventSubscriber
     virtual void HandleEventMessage(EventMessagePtr msg);
+
+    // helpers
+    static bool ExtractObjectFromFavorite(const DigitalItemPtr& favorite, DigitalItemPtr& item);
+    static bool CanQueueItem(const DigitalItemPtr& item);
 
   private:
     mutable OS::CMutex* m_mutex;

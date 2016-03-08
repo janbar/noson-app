@@ -172,7 +172,12 @@ MainView {
         id: delayPlayerWakeUp
         interval: 100
         onTriggered: {
-            noZone = !player.wakeUp()
+            if (!player.wakeUp())
+                noZone = true
+            else {
+                Sonos.renewSubscriptions()
+                noZone = false
+            }
             mainView.currentlyWorking = false
         }
     }
@@ -209,6 +214,11 @@ MainView {
     Connections {
         target: AllPlaylistsModel
         onDataUpdated: AllPlaylistsModel.asyncLoad()
+    }
+
+    Connections {
+        target: AllFavoritesModel
+        onDataUpdated: AllFavoritesModel.asyncLoad()
     }
 
     Connections {
@@ -360,6 +370,7 @@ MainView {
             AllGenresModel.init(Sonos, "");
             AllRadiosModel.init(Sonos, "R:0/0");
             AllPlaylistsModel.init(Sonos, "");
+            AllFavoritesModel.init(Sonos, "");
             // enable info on index loaded
             infoLoadedIndex = true;
             return true;
@@ -582,6 +593,21 @@ MainView {
         return false;
     }
 
+    function addItemToFavorites(modelItem, description) {
+        if (player.addItemToFavorites(modelItem, description))
+            return true;
+        popInfo.open(i18n.tr("Action can't be performed"));
+        return false;
+    }
+
+    function removeFromFavorites(modelItem) {
+        var id = AllFavoritesModel.findFavorite(modelItem.id)
+        if (player.removeFavorite(id))
+            return true;
+        popInfo.open(i18n.tr("Action can't be performed"));
+        return false;
+    }
+
     // Helpers
 
     // Converts an duration in ms to a formated string ("minutes:seconds")
@@ -789,6 +815,18 @@ MainView {
                 // Tab content begins here
                 page: Playlists {
                     id: playlistsPage
+                }
+            }
+
+            Tab {
+                id: favoritesTab
+                objectName: "favoritesTab"
+                anchors.fill: parent
+                title: page.title
+
+                // Tab content begins here
+                page: Favorites {
+                    id: favoritesPage
                 }
             }
 

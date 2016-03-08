@@ -55,6 +55,7 @@ public:
   Q_INVOKABLE bool init(QObject* sonos);
   bool connected() { return m_connected; }
   Q_INVOKABLE void renewSubscriptions();
+  Q_INVOKABLE bool ping();
 
   Q_INVOKABLE bool refreshShareIndex();
   Q_INVOKABLE bool configureSleepTimer(int seconds);
@@ -89,7 +90,11 @@ public:
   Q_INVOKABLE bool removeTracksFromSavedQueue(const QString& SQid, const QVariantList& indexes, int containerUpdateID);
   Q_INVOKABLE bool reorderTrackInSavedQueue(const QString& SQid, int index, int newIndex, int containerUpdateID);
   Q_INVOKABLE bool destroySavedQueue(const QString& SQid);
-  
+
+  Q_INVOKABLE bool addItemToFavorites(const QVariant& payload, const QString& description);
+  Q_INVOKABLE bool destroyFavorite(const QString& FVid);
+  Q_INVOKABLE bool playFavorite(const QVariant& payload);
+
   bool muteMaster() { return m_RCGroup.mute; }
   int muteLF() { return m_RCGroup.mute; }
   int muteRF() { return m_RCGroup.mute; }

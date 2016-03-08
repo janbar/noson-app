@@ -119,6 +119,18 @@ bool ContentDirectory::DestroyObject(const std::string& objectID)
   return false;
 }
 
+bool ContentDirectory::CreateObject(const std::string& containerID, const DigitalItemPtr& element)
+{
+  ElementList vars;
+  ElementList args;
+  args.push_back(ElementPtr(new Element("ContainerID", containerID)));
+  args.push_back(ElementPtr(new Element("Elements", element->DIDL())));
+  vars = Request("CreateObject", args);
+  if (!vars.empty() && vars[0]->compare("u:CreateObjectResponse") == 0)
+    return true;
+  return false;
+}
+
 void ContentDirectory::HandleEventMessage(EventMessagePtr msg)
 {
   if (!msg)
@@ -137,15 +149,18 @@ void ContentDirectory::HandleEventMessage(EventMessagePtr msg)
           prop->SystemUpdateID.assign(*++it);
         else if (*it == "ContainerUpdateIDs")
         {
+          prop->ContainerUpdateIDs.clear();
           std::vector<std::string> tokens;
           __tokenize((*++it).c_str(), ",", tokens);
-          if (tokens.size() >= 2)
+          std::vector<std::string>::const_iterator itt = tokens.begin();
+          while (itt != tokens.end())
           {
-            uint32_t num;
-            if (string_to_uint32(tokens[1].c_str(), &num) == 0)
+            const std::string& str = *itt;
+            if (++itt != tokens.end())
             {
-              prop->ContainerRoot.assign(tokens[0]);
-              prop->ContainerUpdateID = num;
+              uint32_t num;
+              if (string_to_uint32(itt->c_str(), &num) == 0)
+                prop->ContainerUpdateIDs.push_back(std::make_pair(str, num));
             }
           }
         }
@@ -217,6 +232,9 @@ std::string ContentSearch::Root() const
     break;
   case SearchShare:
     objectId.assign("S:");
+    break;
+  case SearchFavorite:
+    objectId.assign("FV:2");
     break;
   case SearchCategory:
   default:

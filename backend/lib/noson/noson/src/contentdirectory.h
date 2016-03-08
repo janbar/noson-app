@@ -65,6 +65,8 @@ namespace NSROOT
 
     bool DestroyObject(const std::string& objectID);
 
+    bool CreateObject(const std::string& containerID, const DigitalItemPtr& element);
+
     // Implements EventSubscriber
     virtual void HandleEventMessage(EventMessagePtr msg);
 
@@ -97,6 +99,7 @@ namespace NSROOT
     SearchQueue,
     SearchSonosPlaylist,
     SearchShare,
+    SearchFavorite,
     SearchCategory,
   } Search_t;
 

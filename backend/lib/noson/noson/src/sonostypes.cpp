@@ -27,6 +27,7 @@ const char* NSROOT::ProtocolTable[Protocol_unknown + 1] = {
   "x-rincon-queue",
   "x-rincon-stream",
   "x-rincon-mp3radio",
+  "x-rincon-playlist",
   "x-sonos-htastream",
   "x-file-cifs",
   "x-rincon",

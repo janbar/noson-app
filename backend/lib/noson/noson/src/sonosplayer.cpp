@@ -28,6 +28,7 @@
 #include "private/cppdef.h"
 #include "private/debug.h"
 #include "private/uriparser.h"
+#include "private/didlparser.h"
 
 using namespace NSROOT;
 
@@ -434,6 +435,43 @@ bool Player::ReorderTracksInSavedQueue(const std::string& SQObjectID, const std:
 bool Player::DestroySavedQueue(const std::string& SQObjectID)
 {
   return m_contentDirectory->DestroyObject(SQObjectID);
+}
+
+bool Player::AddURIToFavorites(const DigitalItemPtr& item, const std::string& description)
+{
+  DigitalItemPtr favorite(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_unknown));
+  favorite->SetProperty("dc:title", item->GetValue("dc:title"));
+  favorite->SetProperty("r:type", "instantPlay");
+  favorite->SetProperty(item->GetProperty("res"));
+  favorite->SetProperty(item->GetProperty("upnp:albumArtURI"));
+  const std::string& album = item->GetValue("upnp:album");
+  const std::string& creator = item->GetValue("dc:creator");
+  favorite->SetProperty("r:description", description.empty() ? album.empty() ? creator : album : description);
+  // make r:resMD
+  DigitalItem obj(DigitalItem::Type_item, DigitalItem::SubType_unknown);
+  obj.SetObjectID(item->GetObjectID());
+  obj.SetParentID(item->GetParentID());
+  obj.SetRestricted(item->GetRestricted());
+  obj.SetProperty(item->GetProperty("upnp:class"));
+  obj.SetProperty(item->GetProperty("dc:title"));
+  ElementPtr desc = item->GetProperty("desc");
+  if (desc)
+    obj.SetProperty(desc);
+  else
+  {
+    desc.reset(new Element("desc", "RINCON_AssociatedZPUDN"));
+    desc->SetAttribut("id", "cdudn");
+    desc->SetAttribut("nameSpace", "urn:schemas-rinconnetworks-com:metadata-1-0");
+    obj.SetProperty(desc);
+  }
+  favorite->SetProperty("r:resMD", obj.DIDL());
+  ContentSearch search(SearchFavorite, "");
+  return m_contentDirectory->CreateObject(search.Root(), favorite);
+}
+
+bool Player::DestroyFavorite(const std::string& FVObjectID)
+{
+  return m_contentDirectory->DestroyObject(FVObjectID);
 }
 
 bool Player::SetPlayMode(PlayMode_t mode)

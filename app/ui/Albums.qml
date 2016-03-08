@@ -74,7 +74,7 @@ MusicPage {
         }
         delegate: Card {
             id: albumCard
-            coverSources: [{art: model.art}]
+            coverSources: [{art: model.art, artist: model.artist, album: model.title}]
             objectName: "albumsPageGridItem" + index
             primaryText: model.title !== undefined && model.title !== "" ? model.title : i18n.tr("Unknown Album")
             secondaryText: model.artist !== undefined && model.artist !== "" ? model.artist : i18n.tr("Unknown Artist")
@@ -86,7 +86,7 @@ MusicPage {
                                        "songSearch": model.id,
                                        "album": model.title,
                                        "artist": model.artist,
-                                       "covers": [{art: model.art}],
+                                       "covers": [{art: albumCard.imageSource}],
                                        "isAlbum": true,
                                        "genre": undefined,
                                        "title": i18n.tr("Album"),

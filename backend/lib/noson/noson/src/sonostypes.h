@@ -24,6 +24,7 @@
 
 #include <local_config.h>
 #include <stdint.h>
+#include <vector>
 
 #include "digitalitem.h"
 
@@ -63,6 +64,7 @@ namespace NSROOT
     Protocol_xRinconQueue    = 0,
     Protocol_xRinconStream   = 1,
     Protocol_xRinconMP3Radio,
+    Protocol_xRinconPlaylist,
     Protocol_xSonosHtaStream,
     Protocol_xFileCifs,
     Protocol_xRincon,
@@ -133,16 +135,14 @@ namespace NSROOT
   {
   public:
     ContentProperty()
-    : ShareIndexInProgress(false)
-    , ContainerUpdateID(0) { }
+    : ShareIndexInProgress(false) { }
 
     virtual ~ContentProperty() { }
 
     std::string SystemUpdateID;
     bool ShareIndexInProgress;
     std::string ShareIndexLastError;
-    std::string ContainerRoot;
-    unsigned ContainerUpdateID;
+    std::vector<std::pair<std::string, unsigned> > ContainerUpdateIDs;
     std::string UserRadioUpdateID;
     std::string SavedQueuesUpdateID;
     std::string ShareListUpdateID;

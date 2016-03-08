@@ -36,6 +36,7 @@
 #include "queuemodel.h"
 #include "radiosmodel.h"
 #include "playlistsmodel.h"
+#include "favoritesmodel.h"
 
 #include <QObject>
 #include <QString>
@@ -50,6 +51,8 @@ public:
   ~Sonos();
 
   Q_INVOKABLE bool init(int debug = 0);
+
+  Q_INVOKABLE void renewSubscriptions();
 
   Q_INVOKABLE ZonesModel* getZones();
 
@@ -127,6 +130,13 @@ public:
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
     return new PlaylistsModel;
+  }
+
+  static QObject* allFavoritesModel_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
+  {
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+    return new FavoritesModel;
   }
 
   // Helpers

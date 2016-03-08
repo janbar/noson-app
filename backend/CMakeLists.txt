@@ -24,6 +24,7 @@ set(
     modules/NosonApp/zonesmodel.cpp
     modules/NosonApp/renderingmodel.cpp
     modules/NosonApp/roomsmodel.cpp
+    modules/NosonApp/favoritesmodel.cpp
 )
 
 add_library(NosonAppbackend MODULE

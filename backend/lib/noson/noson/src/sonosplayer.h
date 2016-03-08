@@ -120,6 +120,9 @@ namespace NSROOT
     bool ReorderTracksInSavedQueue(const std::string& SQObjectID, const std::string& trackList, const std::string& newPositionList, unsigned containerUpdateID);
     bool DestroySavedQueue(const std::string& SQObjectID);
 
+    bool AddURIToFavorites(const DigitalItemPtr& item, const std::string& description);
+    bool DestroyFavorite(const std::string& FVObjectID);
+
     bool SetPlayMode(PlayMode_t mode);
     bool Play();
     bool Stop();

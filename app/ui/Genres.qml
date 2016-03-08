@@ -90,8 +90,8 @@ MusicPage {
                                        "album": undefined,
                                        "genre": model.genre,
                                        "title": i18n.tr("Genre"),
-                                       "line2": model.genre,
-                                       "line1": i18n.tr("Genre")
+                                       "line1": "",
+                                       "line2": model.genre
                                    })
             }
         }
