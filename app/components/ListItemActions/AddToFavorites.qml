@@ -24,8 +24,8 @@ Action {
     property string description: ""
 
     iconName: isFavorite ? "like" : "unlike"
-    objectName: "addToFavorite"
-    text: i18n.tr("Add to favorites")
+    objectName: "ActionFavorite"
+    text: i18n.tr("Favorite")
 
     Component.onCompleted: {
         isFavorite = (AllFavoritesModel.findFavorite(model.id) !== "")
