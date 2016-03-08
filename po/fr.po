@@ -322,8 +322,8 @@ msgid "Search music"
 msgstr "Rechercher de la musique"
 
 #: ../app/components/ListItemActions/AddToFavorites.qml:28
-msgid "Add to favorites"
-msgstr "Ajouter aux favoris"
+msgid "Favorite"
+msgstr "Favori"
 
 #: ../app/components/ListItemActions/Clear.qml:25 ../app/ui/Zones.qml:86
 msgid "Clear"

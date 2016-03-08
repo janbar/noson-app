@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-08 00:37+0100\n"
+"POT-Creation-Date: 2016-03-08 20:38+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ../app/Main.qml:86 /home/ubuntu/src/noson-app-build/po/Noson.desktop.in.h:1
+#: ../app/Main.qml:86
+#: /home/jlb/src/janbar/QML/noson-app-build/po/Noson.desktop.in.h:1
 msgid "Noson"
 msgstr ""
 
@@ -36,7 +37,7 @@ msgstr ""
 #: ../app/components/Dialog/DialogSelectSource.qml:94
 #: ../app/components/Dialog/DialogSelectSource.qml:105
 #: ../app/components/Dialog/DialogSelectSource.qml:116
-#: ../app/ui/AddToPlaylist.qml:138
+#: ../app/ui/AddToPlaylist.qml:138 ../app/ui/Favorites.qml:161
 msgid "Action can't be performed"
 msgstr ""
 
@@ -272,7 +273,7 @@ msgstr ""
 
 #: ../app/components/Dialog/DialogSongInfo.qml:38 ../app/ui/Albums.qml:79
 #: ../app/ui/Albums.qml:94 ../app/ui/ArtistView.qml:178
-#: ../app/ui/ArtistView.qml:193 ../app/ui/Favorites.qml:177
+#: ../app/ui/ArtistView.qml:193 ../app/ui/Favorites.qml:179
 msgid "Unknown Album"
 msgstr ""
 
@@ -294,13 +295,13 @@ msgstr ""
 
 #: ../app/components/HeadState/MultiSelectHeadState.qml:44
 #: ../app/components/ListItemActions/AddToQueue.qml:27
-#: ../app/ui/Favorites.qml:136
+#: ../app/ui/Favorites.qml:137
 msgid "Add to queue"
 msgstr ""
 
 #: ../app/components/HeadState/MultiSelectHeadState.qml:67
 #: ../app/components/ListItemActions/AddToPlaylist.qml:27
-#: ../app/ui/Favorites.qml:143
+#: ../app/ui/Favorites.qml:144
 msgid "Add to playlist"
 msgstr ""
 
@@ -317,7 +318,7 @@ msgid "Search music"
 msgstr ""
 
 #: ../app/components/ListItemActions/AddToFavorites.qml:28
-msgid "Add to favorites"
+msgid "Favorite"
 msgstr ""
 
 #: ../app/components/ListItemActions/Clear.qml:25 ../app/ui/Zones.qml:86
@@ -396,7 +397,7 @@ msgid "Albums"
 msgstr ""
 
 #: ../app/ui/Albums.qml:92 ../app/ui/ArtistView.qml:191
-#: ../app/ui/Favorites.qml:175
+#: ../app/ui/Favorites.qml:177
 msgid "Album"
 msgstr ""
 
@@ -419,19 +420,19 @@ msgstr[1] ""
 msgid "Artists"
 msgstr ""
 
-#: ../app/ui/Artists.qml:91 ../app/ui/Favorites.qml:187
+#: ../app/ui/Artists.qml:91 ../app/ui/Favorites.qml:189
 msgid "Artist"
 msgstr ""
 
-#: ../app/ui/Favorites.qml:32
+#: ../app/ui/Favorites.qml:33
 msgid "Favorites"
 msgstr ""
 
-#: ../app/ui/Favorites.qml:198 ../app/ui/Genres.qml:92
+#: ../app/ui/Favorites.qml:200 ../app/ui/Genres.qml:92
 msgid "Genre"
 msgstr ""
 
-#: ../app/ui/Favorites.qml:213 ../app/ui/Playlists.qml:92
+#: ../app/ui/Favorites.qml:215 ../app/ui/Playlists.qml:92
 msgid "Playlist"
 msgstr ""
 
