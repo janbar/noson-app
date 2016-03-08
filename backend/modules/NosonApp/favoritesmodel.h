@@ -72,9 +72,9 @@ public:
 
   bool canQueue() const { return m_canQueue; }
 
-  const QString artist() const { return m_artist; }
+  const QString& artist() const { return m_artist; }
 
-  const QString album() const { return m_album; }
+  const QString& album() const { return m_album; }
 
 private:
   SONOS::DigitalItemPtr m_ptr;

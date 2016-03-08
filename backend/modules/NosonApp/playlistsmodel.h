@@ -37,15 +37,15 @@ public:
 
   QVariant payload() const;
 
-  QString id() const { return m_id; }
+  const QString& id() const { return m_id; }
 
-  QString title() const { return m_title; }
+  const QString& title() const { return m_title; }
 
   int artsCount() const { return m_arts.size(); }
 
   QString art(unsigned index) const { return (artsCount() > index ? m_arts[index] : ""); }
 
-  QString normalized() const { return m_normalized; }
+  const QString& normalized() const { return m_normalized; }
 
 private:
   SONOS::DigitalItemPtr m_ptr;

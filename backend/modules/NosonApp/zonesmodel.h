@@ -38,15 +38,15 @@ public:
 
   QVariant payload() const;
   
-  QString id() const { return m_id; }
+  const QString& id() const { return m_id; }
 
-  QString name() const { return m_name; }
+  const QString& name() const { return m_name; }
 
-  QString icon() const { return m_icon; }
+  const QString& icon() const { return m_icon; }
 
   bool isGroup() const { return m_isGroup; }
 
-  QString shortName() const { return m_shortName; }
+  const QString& shortName() const { return m_shortName; }
 
 private:
   SONOS::ZonePtr m_ptr;

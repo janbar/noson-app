@@ -37,11 +37,11 @@ public:
 
   QVariant payload() const;
 
-  QString id() const { return m_id; }
+  const QString& id() const { return m_id; }
 
-  QString genre() const { return m_genre; }
+  const QString& genre() const { return m_genre; }
 
-  QString normalized() const { return m_normalized; }
+  const QString& normalized() const { return m_normalized; }
 
 private:
   SONOS::DigitalItemPtr m_ptr;

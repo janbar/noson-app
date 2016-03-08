@@ -33,9 +33,9 @@ public:
 
   virtual ~RenderingItem() { }
 
-  QString uuid() const { return m_uuid; }
+  const QString& uuid() const { return m_uuid; }
 
-  QString name() const { return m_name; }
+  const QString& name() const { return m_name; }
 
   double volume() const { return m_volume; }
 

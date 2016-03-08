@@ -37,17 +37,17 @@ public:
 
   QVariant payload() const;
 
-  QString id() const { return m_id; }
+  const QString& id() const { return m_id; }
 
-  QString title() const { return m_title; }
+  const QString& title() const { return m_title; }
 
-  QString genre() const { return m_genre; }
+  const QString& genre() const { return m_genre; }
 
-  QString icon() const { return m_icon; }
+  const QString& icon() const { return m_icon; }
 
-  QString streamId() const { return m_streamId; }
+  const QString& streamId() const { return m_streamId; }
 
-  QString normalized() const { return m_normalized; }
+  const QString& normalized() const { return m_normalized; }
 
 private:
   SONOS::DigitalItemPtr m_ptr;

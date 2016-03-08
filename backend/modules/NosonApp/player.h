@@ -53,7 +53,7 @@ public:
   ~Player();
 
   Q_INVOKABLE bool init(QObject* sonos);
-  bool connected() { return m_connected; }
+  bool connected() const { return m_connected; }
   Q_INVOKABLE void renewSubscriptions();
   Q_INVOKABLE bool ping();
 
@@ -95,12 +95,12 @@ public:
   Q_INVOKABLE bool destroyFavorite(const QString& FVid);
   Q_INVOKABLE bool playFavorite(const QVariant& payload);
 
-  bool muteMaster() { return m_RCGroup.mute; }
-  int muteLF() { return m_RCGroup.mute; }
-  int muteRF() { return m_RCGroup.mute; }
-  int volumeMaster() { return m_RCGroup.volume; }
-  int volumeLF() { return m_RCGroup.volume; }
-  int volumeRF() { return m_RCGroup.volume; }
+  bool muteMaster() const { return m_RCGroup.mute; }
+  int muteLF() const { return m_RCGroup.mute; }
+  int muteRF() const { return m_RCGroup.mute; }
+  int volumeMaster() const { return m_RCGroup.volume; }
+  int volumeLF() const { return m_RCGroup.volume; }
+  int volumeRF() const { return m_RCGroup.volume; }
 
   struct RCProperty
   {
@@ -121,16 +121,16 @@ public:
   Q_INVOKABLE int currentTrackPosition();
 
   void setCurrentMeta(const SONOS::AVTProperty& prop);
-  QString currentMetaAlbum() { return m_currentMetaAlbum; }
-  QString currentMetaArt() { return m_currentMetaArt; }
-  QString currentMetaArtist() { return m_currentMetaArtist; }
-  QString currentMetaSource() { return m_currentMetaSource; }
-  QString currentMetaTitle() { return m_currentMetaTitle; }
-  QString currentMetaURITitle() { return m_currentMetaURITitle; }
-  int currentIndex() { return m_currentIndex; }
-  int currentTrackDuration() { return m_currentTrackDuration; }
-  QString playbackState() { return QString::fromUtf8(m_AVTProperty.TransportState.c_str()); }
-  QString playMode() { return QString::fromUtf8(m_AVTProperty.CurrentPlayMode.c_str()); }
+  const QString& currentMetaAlbum() const { return m_currentMetaAlbum; }
+  const QString& currentMetaArt() const { return m_currentMetaArt; }
+  const QString& currentMetaArtist() const { return m_currentMetaArtist; }
+  const QString& currentMetaSource() const { return m_currentMetaSource; }
+  const QString& currentMetaTitle() const { return m_currentMetaTitle; }
+  const QString& currentMetaURITitle() const { return m_currentMetaURITitle; }
+  int currentIndex() const { return m_currentIndex; }
+  int currentTrackDuration() const { return m_currentTrackDuration; }
+  QString playbackState() const { return QString::fromUtf8(m_AVTProperty.TransportState.c_str()); }
+  QString playMode() const { return QString::fromUtf8(m_AVTProperty.CurrentPlayMode.c_str()); }
 
 signals:
   void connectedChanged();
