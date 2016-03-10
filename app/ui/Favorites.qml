@@ -121,10 +121,12 @@ MusicPage {
             }
 
             height: units.gu(7)
+
+            noCover: model.type === 5 && !model.canQueue ? Qt.resolvedUrl("../graphics/streaming.svg") : Qt.resolvedUrl("../graphics/no_cover.png")
+
             imageSource: model.type === 1 ? {art: model.art, artist: model.artist, album: model.title} :
                          model.type === 2 ? {artist: model.artist} :
                          model.type === 5 && model.art !== "" ? {art: model.art, artist: model.author, album: model.album} :
-                         model.type === 5 && !model.canQueue ? {art: Qt.resolvedUrl("../graphics/streaming.svg")} :
                          {art: model.art}
 
             multiselectable: false

@@ -22,6 +22,7 @@ import NosonApp 1.0
 Action {
     property bool isFavorite: false
     property string description: ""
+    property string art: ""
 
     iconName: isFavorite ? "like" : "unlike"
     objectName: "ActionFavorite"
@@ -34,7 +35,7 @@ Action {
     onTriggered: {
         if (isFavorite && removeFromFavorites(model))
             isFavorite = false
-        else if (!isFavorite && addItemToFavorites(model, description))
+        else if (!isFavorite && addItemToFavorites(model, description, art))
             isFavorite = true
     }
 }

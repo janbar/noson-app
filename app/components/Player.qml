@@ -271,8 +271,8 @@ Item {
         return playerLoader.item.playDigitalIN()
     }
 
-    function addItemToFavorites(modelItem, description) {
-        return playerLoader.item.addItemToFavorites(modelItem.payload, description);
+    function addItemToFavorites(modelItem, description, artURI) {
+        return playerLoader.item.addItemToFavorites(modelItem.payload, description, artURI);
     }
 
     function removeFavorite(itemId) {

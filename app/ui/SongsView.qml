@@ -66,7 +66,7 @@ MusicPage {
                     onTriggered: {
                         if (isFavorite && removeFromFavorites(containerItem))
                             isFavorite = false
-                        else if (!isFavorite && addItemToFavorites(containerItem, title))
+                        else if (!isFavorite && addItemToFavorites(containerItem, title, ""))
                             isFavorite = true
                     }
                 }
@@ -87,7 +87,7 @@ MusicPage {
                     onTriggered: {
                         if (isFavorite && removeFromFavorites(containerItem))
                             isFavorite = false
-                        else if (!isFavorite && addItemToFavorites(containerItem, title))
+                        else if (!isFavorite && addItemToFavorites(containerItem, title, ""))
                             isFavorite = true
                     }
                 },
@@ -299,6 +299,7 @@ MusicPage {
                     },
                     AddToFavorites {
                         description: i18n.tr("Song")
+                        art: model.art
                     }
                 ]
                 delegate: ActionDelegate {

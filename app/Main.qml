@@ -593,8 +593,8 @@ MainView {
         return false;
     }
 
-    function addItemToFavorites(modelItem, description) {
-        if (player.addItemToFavorites(modelItem, description))
+    function addItemToFavorites(modelItem, description, artURI) {
+        if (player.addItemToFavorites(modelItem, description, artURI))
             return true;
         popInfo.open(i18n.tr("Action can't be performed"));
         return false;

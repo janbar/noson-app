@@ -61,7 +61,7 @@ MusicPage {
                     onTriggered: {
                         if (isFavorite && removeFromFavorites(containerItem))
                             isFavorite = false
-                        else if (!isFavorite && addItemToFavorites(containerItem, title))
+                        else if (!isFavorite && addItemToFavorites(containerItem, title, ""))
                             isFavorite = true
                     }
                 }

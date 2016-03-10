@@ -120,6 +120,7 @@ MusicPage {
                 actions: [
                     AddToFavorites {
                         description: i18n.tr("Radio")
+                        art: imageSource.art !== undefined ? imageSource.art : ""
                     }
                 ]
                 delegate: ActionDelegate {
