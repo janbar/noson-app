@@ -438,13 +438,16 @@ bool Player::DestroySavedQueue(const std::string& SQObjectID)
   return m_contentDirectory->DestroyObject(SQObjectID);
 }
 
-bool Player::AddURIToFavorites(const DigitalItemPtr& item, const std::string& description)
+bool Player::AddURIToFavorites(const DigitalItemPtr& item, const std::string& description, const std::string& artURI)
 {
   DigitalItemPtr favorite(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_unknown));
   favorite->SetProperty("dc:title", item->GetValue("dc:title"));
   favorite->SetProperty("r:type", "instantPlay");
   favorite->SetProperty(item->GetProperty("res"));
-  favorite->SetProperty(item->GetProperty("upnp:albumArtURI"));
+  ElementPtr art = item->GetProperty("upnp:albumArtURI");
+  if (!art && !artURI.empty())
+    art.reset(new Element("upnp:albumArtURI", artURI));
+  favorite->SetProperty(art);
   const std::string& album = item->GetValue("upnp:album");
   const std::string& creator = item->GetValue("dc:creator");
   favorite->SetProperty("r:description", description.empty() ? album.empty() ? creator : album : description);
