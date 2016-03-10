@@ -91,7 +91,7 @@ public:
   Q_INVOKABLE bool reorderTrackInSavedQueue(const QString& SQid, int index, int newIndex, int containerUpdateID);
   Q_INVOKABLE bool destroySavedQueue(const QString& SQid);
 
-  Q_INVOKABLE bool addItemToFavorites(const QVariant& payload, const QString& description);
+  Q_INVOKABLE bool addItemToFavorites(const QVariant& payload, const QString& description, const QString& artURI);
   Q_INVOKABLE bool destroyFavorite(const QString& FVid);
   Q_INVOKABLE bool playFavorite(const QVariant& payload);
 

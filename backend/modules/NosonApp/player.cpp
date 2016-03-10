@@ -332,9 +332,9 @@ bool Player::destroySavedQueue(const QString& SQid)
   return m_player ? m_player->DestroySavedQueue(SQid.toUtf8().constData()) : false;
 }
 
-bool Player::addItemToFavorites(const QVariant& payload, const QString& description)
+bool Player::addItemToFavorites(const QVariant& payload, const QString& description, const QString& artURI)
 {
-  return m_player ? m_player->AddURIToFavorites(payload.value<SONOS::DigitalItemPtr>(), description.toUtf8().constData()) : false;
+  return m_player ? m_player->AddURIToFavorites(payload.value<SONOS::DigitalItemPtr>(), description.toUtf8().constData(), artURI.toUtf8().constData()) : false;
 }
 
 bool Player::destroyFavorite(const QString& FVid)
