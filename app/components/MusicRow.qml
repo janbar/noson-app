@@ -27,6 +27,7 @@ Row {
 
     property alias column: columnComponent.sourceComponent
     property real coverSize: styleMusic.common.albumSize
+    property string noCover: Qt.resolvedUrl("../graphics/no_cover.png")
     property var imageSource
 
     spacing: units.gu(2)
@@ -42,11 +43,12 @@ Row {
         source: (imageSource !== undefined)
                 ? (imageSource.art !== undefined && imageSource.art !== "")
                    ? imageSource.art
-                   : (imageSource.album !== undefined && imageSource.artist !== undefined)
+                   : (imageSource.album !== undefined && imageSource.artist !== undefined &&
+                      imageSource.album !== "" && imageSource.artist !== "")
                       ? "image://albumart/artist=" + imageSource.artist + "&album=" + imageSource.album
-                      : (imageSource.artist !== undefined)
+                      : (imageSource.artist !== undefined && imageSource.artist !== "")
                          ? "image://artistart/artist=" + imageSource.artist + "&album=undefined"
-                         : Qt.resolvedUrl("../graphics/no_cover.png")
+                         : noCover
                 : ""
 
         sourceSize.height: height
@@ -55,7 +57,7 @@ Row {
 
         onStatusChanged: {
             if (status === Image.Error) {
-                source = Qt.resolvedUrl("../graphics/no_cover.png")
+                source = noCover
             }
         }
         visible: imageSource !== undefined

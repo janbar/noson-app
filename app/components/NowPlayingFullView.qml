@@ -59,6 +59,7 @@ Flickable {
                 anchors.centerIn: parent
                 covers: [{art: player.currentMetaArt, artist: player.currentMetaArtist, album: player.currentMetaAlbum}]
                 size: parent.height
+                noCover: ""
             }
         }
 

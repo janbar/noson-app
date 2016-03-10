@@ -30,6 +30,7 @@ ListItem {
 
     property alias column: musicRow.column
     property alias imageSource: musicRow.imageSource
+    property alias noCover: musicRow.noCover
 
     property bool multiselectable: false
     property bool reorderable: false

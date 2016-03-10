@@ -32,6 +32,9 @@ Item {
     // Property to set the size of the cover image
     property int size
 
+    // Property to set source of default cover image
+    property string noCover: Qt.resolvedUrl("../graphics/no_cover.png")
+
     property string firstSource
 
     onCoversChanged: {
@@ -60,11 +63,12 @@ Item {
                 source: (coverGrid.covers.length > 0 && coverGrid.covers[index] !== undefined)
                         ? (coverGrid.covers[index].art !== undefined && coverGrid.covers[index].art !== "")
                            ? coverGrid.covers[index].art
-                           : (coverGrid.covers[index].album !== undefined && coverGrid.covers[index].artist !== undefined)
+                           : (coverGrid.covers[index].album !== undefined && coverGrid.covers[index].artist !== undefined &&
+                              coverGrid.covers[index].album !== "" && coverGrid.covers[index].artist !== "")
                               ? "image://albumart/artist=" + coverGrid.covers[index].artist + "&album=" + coverGrid.covers[index].album
-                              : (coverGrid.covers[index].artist !== undefined)
+                              : (coverGrid.covers[index].artist !== undefined && coverGrid.covers[index].artist !== "")
                                  ? "image://artistart/artist=" + coverGrid.covers[index].artist + "&album=undefined"
-                                 : Qt.resolvedUrl("../graphics/no_cover.png")
+                                 : noCover
                         : ""
 
                 // TODO: This should be investigated once http://pad.lv/1391368
@@ -78,7 +82,7 @@ Item {
 
                 onStatusChanged: {
                     if (status === Image.Error) {
-                        source = Qt.resolvedUrl("../graphics/no_cover.png")
+                        source = noCover
                     } else if (status === Image.Ready && index === 0) {
                         firstSource = source
                     }
