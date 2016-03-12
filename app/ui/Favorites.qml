@@ -124,10 +124,10 @@ MusicPage {
 
             noCover: model.type === 5 && !model.canQueue ? Qt.resolvedUrl("../graphics/streaming.svg") : Qt.resolvedUrl("../graphics/no_cover.png")
 
-            imageSource: model.type === 1 ? {art: model.art, artist: model.artist, album: model.title} :
-                         model.type === 2 ? {artist: model.artist} :
-                         model.type === 5 && model.art !== "" ? {art: model.art, artist: model.author, album: model.album} :
-                         {art: model.art}
+            imageSource: model.type === 1 ? makeCoverSource(model.art, model.artist, model.title) :
+                         model.type === 2 ? makeCoverSource(undefined, model.artist, undefined) :
+                         model.type === 5 ? makeCoverSource(model.art, model.author, model.album) :
+                         makeCoverSource(model.art, undefined, undefined)
 
             multiselectable: false
 
@@ -173,7 +173,7 @@ MusicPage {
                                            "songSearch": model.objectId,
                                            "album": model.album,
                                            "artist": model.artist,
-                                           "covers": [{art: model.art, artist: model.artist, album: model.album}],
+                                           "covers": [{art: makeCoverSource(model.art, model.artist, model.album)}],
                                            "isAlbum": true,
                                            "genre": undefined,
                                            "title": i18n.tr("Album"),
@@ -187,7 +187,7 @@ MusicPage {
                                            "containerItem": {id: model.objectId, payload: model.object},
                                            "artistSearch": model.objectId,
                                            "artist": model.artist,
-                                           "covers": [{artist: model.artist}],
+                                           "covers": [{art: makeCoverSource(undefined, model.artist, undefined)}],
                                            "title": i18n.tr("Artist")
                                        })
                 }
@@ -210,7 +210,7 @@ MusicPage {
                                            "containerItem": {id: model.objectId, payload: model.object},
                                            "songSearch": model.objectId,
                                            "album": undefined,
-                                           "covers": [{art: model.art, artist: model.artist, album: model.album}],
+                                           "covers": [{art: makeCoverSource(model.art, model.artist, model.album)}],
                                            "isPlaylist": true,
                                            "genre": undefined,
                                            "page": playlistsPage,

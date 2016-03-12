@@ -646,6 +646,17 @@ MainView {
         };
     }
 
+    function makeCoverSource(art, artist, album) {
+        var uri = "";
+        if (art !== undefined && art !== "")
+            uri = art;
+        else if (album !== undefined && artist !== undefined && album !== "" && artist !== "")
+            uri = "image://albumart/artist=" + artist + "&album=" + album;
+        else if (artist !== undefined && artist !== "")
+            uri = "image://artistart/artist=" + artist + "&album=undefined";
+        return uri;
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     ////
     //// Display items

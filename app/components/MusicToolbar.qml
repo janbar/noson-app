@@ -157,7 +157,7 @@ Rectangle {
                      left: parent.left
                      top: parent.top
                  }
-                 covers: [{art: player.currentMetaArt, artist: player.currentMetaArtist, album: player.currentMetaAlbum}]
+                 covers: [{art: makeCoverSource(player.currentMetaArt, player.currentMetaArtist, player.currentMetaAlbum)}]
                  size: parent.height
             }
 

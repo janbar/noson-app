@@ -66,7 +66,7 @@ MusicPage {
                     onTriggered: {
                         if (isFavorite && removeFromFavorites(containerItem))
                             isFavorite = false
-                        else if (!isFavorite && addItemToFavorites(containerItem, title, ""))
+                        else if (!isFavorite && addItemToFavorites(containerItem, title, albumtrackslist.headerItem.firstSource))
                             isFavorite = true
                     }
                 }
@@ -87,7 +87,7 @@ MusicPage {
                     onTriggered: {
                         if (isFavorite && removeFromFavorites(containerItem))
                             isFavorite = false
-                        else if (!isFavorite && addItemToFavorites(containerItem, title, ""))
+                        else if (!isFavorite && addItemToFavorites(containerItem, title, albumtrackslist.headerItem.firstSource))
                             isFavorite = true
                     }
                 },
@@ -162,12 +162,11 @@ MusicPage {
             property string artist: model.author
             property string album: model.album
         }
-        property var arts: []
         property bool hasCover: covers.length ? true : false
 
         onItemAdded: {
             if (!hasCover && item.art !== "") {
-                covers = [{art: item.art, artist: item.artist, album: item.album}]
+                songStackPage.covers = [{art: item.art}]
                 hasCover = true
             }
         }
@@ -269,7 +268,8 @@ MusicPage {
         delegate: MusicListItem {
             id: track
             objectName: "songsPageListItem" + index
-            imageSource: songStackPage.isPlaylist ? {art: model.art, artist: model.author, album: model.album} : undefined
+            noCover: !songStackPage.isAlbum ? Qt.resolvedUrl("../graphics/no_cover.png") : ""
+            imageSource: !songStackPage.isAlbum ? makeCoverSource(model.art, model.author, model.album) : ""
             column: Column {
                 Label {
                     id: trackTitle

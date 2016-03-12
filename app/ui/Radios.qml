@@ -110,11 +110,9 @@ MusicPage {
             }
             height: units.gu(7)
             noCover: Qt.resolvedUrl("../graphics/streaming.svg")
-            imageSource: {"art": model.icon !== "" ? model.icon
-                                                   : model.streamId !== undefined && model.streamId !== ""
-                                                   ? "http://cdn-radiotime-logos.tunein.com/" + model.streamId + "q.png"
-                                                   : undefined
-            }
+            imageSource: model.icon !== "" ? model.icon :
+                         model.streamId !== undefined && model.streamId !== "" ? "http://cdn-radiotime-logos.tunein.com/" + model.streamId + "q.png" :
+                         ""
             multiselectable: true
             trailingActions: ListItemActions {
                 actions: [

@@ -34,7 +34,7 @@ Item {
 
             Component.onCompleted: {
                 if (songInfo.model) {
-                    card.coverSources = [{art: songInfo.model.art, artist: songInfo.model.author, album: songInfo.model.album}];
+                    card.coverSources = [{art: makeCoverSource(songInfo.model.art, songInfo.model.author, songInfo.model.album)}];
                     card.primaryText = songInfo.model.title !== "" ? songInfo.model.title : i18n.tr("Unknown Album");
                     card.secondaryText = songInfo.model.author !== "" ? songInfo.model.author : i18n.tr("Unknown Artist");
                     card.tertiaryLabelVisible = songInfo.model.album.length !== "";

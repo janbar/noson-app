@@ -28,7 +28,7 @@ Row {
     property alias column: columnComponent.sourceComponent
     property real coverSize: styleMusic.common.albumSize
     property string noCover: Qt.resolvedUrl("../graphics/no_cover.png")
-    property var imageSource
+    property string imageSource: ""
 
     spacing: units.gu(2)
 
@@ -40,17 +40,7 @@ Row {
         asynchronous: true
         fillMode: Image.PreserveAspectCrop
         height: width
-        source: (imageSource !== undefined)
-                ? (imageSource.art !== undefined && imageSource.art !== "")
-                   ? imageSource.art
-                   : (imageSource.album !== undefined && imageSource.artist !== undefined &&
-                      imageSource.album !== "" && imageSource.artist !== "")
-                      ? "image://albumart/artist=" + imageSource.artist + "&album=" + imageSource.album
-                      : (imageSource.artist !== undefined && imageSource.artist !== "")
-                         ? "image://artistart/artist=" + imageSource.artist + "&album=undefined"
-                         : noCover
-                : ""
-
+        source: imageSource !== "" ? imageSource : noCover
         sourceSize.height: height
         sourceSize.width: width
         width: units.gu(6)
@@ -60,7 +50,7 @@ Row {
                 source = noCover
             }
         }
-        visible: imageSource !== undefined
+        visible: imageSource !== ""
     }
 
     Loader {

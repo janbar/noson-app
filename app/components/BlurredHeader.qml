@@ -25,6 +25,7 @@ Item {
     property alias bottomColumn: bottomColumnLoader.sourceComponent
     property alias coverSources: coversImage.covers
     property alias rightColumn: rightColumnLoader.sourceComponent
+    property alias firstSource: coversImage.firstSource
 
     BlurredBackground {
         id: blurredBackground
