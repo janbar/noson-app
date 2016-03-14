@@ -1,3 +1,5 @@
+[![Gitter](https://badges.gitter.im/janbar/noson-app.svg)](https://gitter.im/janbar/noson-app?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 ## Noson
 [project page](http://janbar.github.io/noson-app/index.html)
 
