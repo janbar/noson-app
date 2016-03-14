@@ -1,4 +1,6 @@
 ## Noson
+
+[![Join the chat at https://gitter.im/janbar/noson-app](https://badges.gitter.im/janbar/noson-app.svg)](https://gitter.im/janbar/noson-app?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [project page](http://janbar.github.io/noson-app/index.html)
 
 A fast and smart SONOS controller for Ubuntu platforms: phone, touch and desktop.
