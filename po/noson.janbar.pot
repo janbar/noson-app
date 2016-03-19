@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-12 23:24+0100\n"
+"POT-Creation-Date: 2016-03-19 10:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: ../app/Main.qml:86
-#: /home/jlb/src/janbar/QML/noson-app-build-armhf/po/Noson.desktop.in.h:1
+#: /home/jlb/src/janbar/QML/noson-app-build/po/Noson.desktop.in.h:1
 msgid "Noson"
 msgstr ""
 
@@ -27,13 +27,13 @@ msgstr ""
 msgid "Index loaded"
 msgstr ""
 
-#: ../app/Main.qml:343 ../app/Main.qml:414 ../app/Main.qml:433
-#: ../app/Main.qml:441 ../app/Main.qml:451 ../app/Main.qml:456
-#: ../app/Main.qml:480 ../app/Main.qml:494 ../app/Main.qml:506
-#: ../app/Main.qml:517 ../app/Main.qml:525 ../app/Main.qml:535
-#: ../app/Main.qml:545 ../app/Main.qml:552 ../app/Main.qml:559
-#: ../app/Main.qml:568 ../app/Main.qml:577 ../app/Main.qml:585
-#: ../app/Main.qml:592 ../app/Main.qml:599 ../app/Main.qml:607
+#: ../app/Main.qml:357 ../app/Main.qml:428 ../app/Main.qml:447
+#: ../app/Main.qml:455 ../app/Main.qml:465 ../app/Main.qml:470
+#: ../app/Main.qml:494 ../app/Main.qml:508 ../app/Main.qml:520
+#: ../app/Main.qml:531 ../app/Main.qml:539 ../app/Main.qml:549
+#: ../app/Main.qml:559 ../app/Main.qml:566 ../app/Main.qml:573
+#: ../app/Main.qml:582 ../app/Main.qml:591 ../app/Main.qml:599
+#: ../app/Main.qml:606 ../app/Main.qml:613 ../app/Main.qml:621
 #: ../app/components/Dialog/DialogSelectSource.qml:94
 #: ../app/components/Dialog/DialogSelectSource.qml:105
 #: ../app/components/Dialog/DialogSelectSource.qml:116
@@ -41,31 +41,31 @@ msgstr ""
 msgid "Action can't be performed"
 msgstr ""
 
-#: ../app/Main.qml:360
+#: ../app/Main.qml:374
 msgid "Debug: "
 msgstr ""
 
-#: ../app/Main.qml:411
+#: ../app/Main.qml:425
 msgid "Refreshing of index is running"
 msgstr ""
 
-#: ../app/Main.qml:438 ../app/Main.qml:491 ../app/Main.qml:503
-#: ../app/Main.qml:565 ../app/ui/AddToPlaylist.qml:135
+#: ../app/Main.qml:452 ../app/Main.qml:505 ../app/Main.qml:517
+#: ../app/Main.qml:579 ../app/ui/AddToPlaylist.qml:135
 msgid "song added"
 msgstr ""
 
-#: ../app/Main.qml:477
+#: ../app/Main.qml:491
 #, qt-format
 msgid "%1 song added"
 msgid_plural "%1 songs added"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/Main.qml:514
+#: ../app/Main.qml:528
 msgid "Queue cleared"
 msgstr ""
 
-#: ../app/Main.qml:574
+#: ../app/Main.qml:588
 #, qt-format
 msgid "%1 song removed"
 msgid_plural "%1 songs removed"
@@ -73,7 +73,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANSLATORS: this appears in the header with limited space (around 20 characters)
-#: ../app/Main.qml:714 ../app/ui/NowPlaying.qml:37
+#: ../app/Main.qml:728 ../app/ui/NowPlaying.qml:37
 msgid "Now playing"
 msgstr ""
 
@@ -353,11 +353,11 @@ msgstr ""
 msgid "Untitled"
 msgstr ""
 
-#: ../app/components/PlaylistsEmptyState.qml:43
+#: ../app/components/PlaylistsEmptyState.qml:45
 msgid "No playlists found"
 msgstr ""
 
-#: ../app/components/PlaylistsEmptyState.qml:54
+#: ../app/components/PlaylistsEmptyState.qml:56
 #, qt-format
 msgid ""
 "Get more out of Sonos by tapping the %1 icon to start making playlists for "
