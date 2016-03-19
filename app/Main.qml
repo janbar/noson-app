@@ -324,6 +324,20 @@ MainView {
                 break;
             }
         }
+        else {
+            switch (event.key) {
+            case Qt.Key_MediaPlay:  //   Play   Toggle playing state
+            case Qt.Key_MediaPause:  //  Pause  Toggle playing state
+                player.toggle();
+                break;
+            case Qt.Key_MediaPrev:   //  Prev   Previous Song
+                player.previousSong(true);
+                break;
+            case Qt.Key_MediaNext:  //   Next   Next Song
+                player.nextSong(true, true);
+                break;
+            }
+        }
     }
 
     Connections {
