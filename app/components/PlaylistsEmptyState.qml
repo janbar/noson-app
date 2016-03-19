@@ -51,7 +51,7 @@ Rectangle {
             color: styleMusic.libraryEmpty.labelColor
             elide: Text.ElideRight
             fontSize: "large"
-            horizontalAlignment: Text.AlignLeft
+            horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 6
             text: i18n.tr("Get more out of Sonos by tapping the %1 icon to start making playlists for every mood and occasion.").arg('"+"')
             width: parent.width

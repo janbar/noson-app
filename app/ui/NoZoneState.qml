@@ -115,7 +115,7 @@ Page {
                 color: styleMusic.libraryEmpty.labelColor
                 elide: Text.ElideRight
                 fontSize: "large"
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignHCenter
                 maximumLineCount: 6
                 text: i18n.tr("Make sure that your device is connected to the correct wireless network and one or more Sonos products are receiving power.")
                 width: parent.width
