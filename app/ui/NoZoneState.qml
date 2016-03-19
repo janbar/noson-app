@@ -19,7 +19,7 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 
 Page {
-    id: libraryEmptyPage
+    id: noZoneStatePage
     anchors {
         fill: parent
     }
@@ -44,7 +44,7 @@ Page {
                 centerIn: parent
             }
             spacing: units.gu(4)
-            width: units.gu(36)
+            width: parent.width > units.gu(44) ? parent.width - units.gu(8) : units.gu(36)
 
             Row {
                 anchors {
@@ -104,7 +104,7 @@ Page {
                 color: styleMusic.libraryEmpty.labelColor
                 elide: Text.ElideRight
                 fontSize: "x-large"
-                horizontalAlignment: Text.AlignLeft
+                horizontalAlignment: Text.AlignHCenter
                 maximumLineCount: 2
                 text: i18n.tr("No Sonos zone found")
                 width: parent.width
@@ -116,7 +116,7 @@ Page {
                 elide: Text.ElideRight
                 fontSize: "large"
                 horizontalAlignment: Text.AlignLeft
-                maximumLineCount: 4
+                maximumLineCount: 6
                 text: i18n.tr("Make sure that your device is connected to the correct wireless network and one or more Sonos products are receiving power.")
                 width: parent.width
                 wrapMode: Text.WordWrap
