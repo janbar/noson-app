@@ -26,7 +26,7 @@ Rectangle {
     id: playlistsEmptyState
     anchors {
         top: parent.top
-        topMargin: units.gu(24)
+        topMargin: units.gu(22)
         bottom: parent.bottom
     }
     color: mainView.backgroundColor
