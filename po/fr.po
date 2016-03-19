@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Noson\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-12 23:13+0100\n"
-"PO-Revision-Date: 2016-03-16 19:23+0000\n"
+"POT-Creation-Date: 2016-03-12 23:24+0100\n"
+"PO-Revision-Date: 2016-03-19 09:32+0000\n"
 "Last-Translator: Jean-Luc Barrière <jlbarriere68@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/janbar/noson/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../app/Main.qml:86
-#: /home/jlb/src/janbar/QML/noson-app-build/po/Noson.desktop.in.h:1
+#: /home/jlb/src/janbar/QML/noson-app-build-armhf/po/Noson.desktop.in.h:1
 msgid "Noson"
 msgstr "Noson"
 
@@ -367,7 +367,7 @@ msgstr "Aucune liste de lecture trouvée"
 msgid ""
 "Get more out of Sonos by tapping the %1 icon to start making playlists for "
 "every mood and occasion."
-msgstr "Profitez pleinement de Sonos en appuyant sur l'icône %1 pour commencer à \"\n\"créer des listes de lecture pour chaque humeur et chaque occasion."
+msgstr "Profitez pleinement de Sonos en appuyant sur l'icône %1 pour commencer à créer des listes de lecture pour chaque humeur et chaque occasion."
 
 #. TRANSLATORS: this appears in a button with limited space (around 14
 #. characters)
