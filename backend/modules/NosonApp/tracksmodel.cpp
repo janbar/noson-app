@@ -207,7 +207,12 @@ bool TracksModel::load()
       ++cnt;
     }
     else
+    {
       delete item;
+      // Also decrease total count
+      if (m_totalCount)
+        --m_totalCount;
+    }
     ++m_iterator;
   }
   if (m_contentList->failure())
@@ -240,7 +245,12 @@ bool TracksModel::loadMore()
       ++cnt;
     }
     else
+    {
       delete item;
+      // Also decrease total count
+      if (m_totalCount)
+        --m_totalCount;
+    }
     ++m_iterator;
   }
   if (m_contentList->failure())
