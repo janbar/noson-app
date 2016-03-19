@@ -143,7 +143,7 @@ MusicPage {
                             elide: Text.ElideRight
                             fontSize: "small"
                             maximumLineCount: 1
-                            text: i18n.tr("%1 song", "%1 songs", songArtistModel.count).arg(songArtistModel.count)
+                            text: i18n.tr("%1 song", "%1 songs", songArtistModel.totalCount).arg(songArtistModel.totalCount)
                             visible: songArtistModel.count > 0
                         }
                     }

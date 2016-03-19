@@ -114,12 +114,26 @@ MusicPage {
             thisPage: songStackPage
 
             onRemoved: {
-                if (removeTracksFromPlaylist(containerItem.id, selectedIndices, songsModel.containerUpdateID())) {
-                    songsModel.load(); // FIXME: no event
-                }
+                mainView.currentlyWorking = false
+                delayRemoveSelectedFromPlaylist.selectedIndices = selectedIndices
+                delayRemoveSelectedFromPlaylist.start()
             }
         }
     ]
+
+    Timer {
+        id: delayRemoveSelectedFromPlaylist
+        interval: 100
+        property var selectedIndices: []
+        onTriggered: {
+            var cnt = songsModel.count;
+            if (removeTracksFromPlaylist(containerItem.id, selectedIndices, songsModel.containerUpdateID())) {
+                songsModel.load();
+                while (songsModel.count < cnt && songsModel.loadMore());
+            }
+            mainView.currentlyWorking = false
+        }
+    }
 
     TracksModel {
         id: songsModel
@@ -148,7 +162,9 @@ MusicPage {
         id: delayLoadTrackModel
         interval: 100
         onTriggered: {
-            songsModel.load()
+            var cnt = songsModel.count;
+            songsModel.load();
+            while (songsModel.count < cnt && songsModel.loadMore());
             mainView.currentlyWorking = false
         }
     }
@@ -256,8 +272,8 @@ MusicPage {
                     fontSize: "small"
                     maximumLineCount: 1
                     text: isAlbum
-                          ? (year !== "" ? year + " | " : "") + i18n.tr("%1 song", "%1 songs", albumtrackslist.count).arg(albumtrackslist.count)
-                          : i18n.tr("%1 song", "%1 songs", albumtrackslist.count).arg(albumtrackslist.count)
+                          ? (year !== "" ? year + " | " : "") + i18n.tr("%1 song", "%1 songs", songsModel.totalCount).arg(songsModel.totalCount)
+                          : i18n.tr("%1 song", "%1 songs", songsModel.totalCount).arg(songsModel.totalCount)
                     wrapMode: Text.NoWrap
                 }
             }
@@ -315,7 +331,7 @@ MusicPage {
                         Remove {
                             onTriggered: {
                                 mainView.currentlyWorking = true
-                                delayRemoveTracksFromPlaylist.start()
+                                delayRemoveTrackFromPlaylist.start()
                             }
                         }
                     ]
@@ -323,11 +339,13 @@ MusicPage {
             }
 
             Timer {
-                id: delayRemoveTracksFromPlaylist
+                id: delayRemoveTrackFromPlaylist
                 interval: 100
                 onTriggered: {
+                    var cnt = songsModel.count;
                     if (removeTracksFromPlaylist(containerItem.id, [index], songsModel.containerUpdateID())) {
                         songsModel.load();
+                        while (songsModel.count < cnt && songsModel.loadMore());
                     }
                     mainView.currentlyWorking = false
                 }
@@ -359,6 +377,23 @@ MusicPage {
                 mainView.currentlyWorking = false
             }
         }
+
+        onAtYEndChanged: {
+            if (albumtrackslist.atYEnd && songsModel.totalCount > songsModel.count) {
+                mainView.currentlyWorking = true
+                delayLoadMoreTracks.start()
+            }
+        }
+
+        Timer {
+            id: delayLoadMoreTracks
+            interval: 100
+            onTriggered: {
+                songsModel.loadMore()
+                mainView.currentlyWorking = false
+            }
+        }
+
     }
 
     Component.onCompleted: {

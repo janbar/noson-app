@@ -23,6 +23,7 @@
 #define TRACKSMODEL_H
 
 #include "listmodel.h"
+#include "../../lib/noson/noson/src/contentdirectory.h"
 
 #include <QAbstractListModel>
 
@@ -64,6 +65,7 @@ class TracksModel : public QAbstractListModel, public ListModel
 {
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
+  Q_PROPERTY(int totalCount READ totalCount NOTIFY totalCountChanged)
   
 public:
   enum TrackRoles
@@ -94,6 +96,10 @@ public:
 
   Q_INVOKABLE bool load();
 
+  int totalCount() const { return m_totalCount; }
+
+  Q_INVOKABLE bool loadMore();
+
   Q_INVOKABLE bool asyncLoad();
 
   virtual void handleDataUpdate();
@@ -103,12 +109,19 @@ public:
 signals:
   void dataUpdated();
   void countChanged();
+  void totalCountChanged();
 
 protected:
   QHash<int, QByteArray> roleNames() const;
 
 private:
   QList<TrackItem*> m_items;
+
+  SONOS::ContentDirectory* m_contentDirectory;
+  SONOS::ContentList* m_contentList;
+  SONOS::ContentList::iterator m_iterator;
+  unsigned m_totalCount;
+
 };
 
 #endif /* TRACKSMODEL_H */

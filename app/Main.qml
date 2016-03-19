@@ -476,7 +476,15 @@ MainView {
     {
         var now = new Date();
         var seed = now.getSeconds();
-        var index = Math.floor(model.count * Math.random(seed));
+        var index = 0;
+
+        if (model.totalCount !== undefined) {
+            index = Math.floor(model.totalCount * Math.random(seed));
+            while (model.count < index && model.loadMore());
+        }
+        else {
+            index = Math.floor(model.count * Math.random(seed));
+        }
         if (index >= model.count)
             return false;
         else if (player.isPlaying)

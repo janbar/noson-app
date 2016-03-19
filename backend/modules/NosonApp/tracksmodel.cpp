@@ -21,7 +21,9 @@
 
 #include "tracksmodel.h"
 #include "sonos.h"
-#include "../../lib/noson/noson/src/contentdirectory.h"
+#include "lib/noson/noson/src/private/cppdef.h"
+
+#define LOAD_BULKSIZE 100
 
 TrackItem::TrackItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
 : m_ptr(ptr)
@@ -50,12 +52,17 @@ QVariant TrackItem::payload() const
 
 TracksModel::TracksModel(QObject* parent)
 : QAbstractListModel(parent)
+, m_contentDirectory(0)
+, m_contentList(0)
+, m_totalCount(0)
 {
 }
 
 TracksModel::~TracksModel()
 {
   clear();
+  SAFE_DELETE(m_contentList)
+  SAFE_DELETE(m_contentDirectory);
 }
 
 void TracksModel::addItem(TrackItem* item)
@@ -152,6 +159,7 @@ void TracksModel::clear()
     beginRemoveRows(QModelIndex(), 0, m_items.count());
     qDeleteAll(m_items);
     m_items.clear();
+    m_totalCount = 0;
     endRemoveRows();
   }
   emit countChanged();
@@ -164,29 +172,80 @@ bool TracksModel::load()
   if (!m_provider)
     return false;
   clear();
+  {
+    SONOS::LockGuard lock(m_lock);
+    SAFE_DELETE(m_contentList);
+    SAFE_DELETE(m_contentDirectory);
+  }
   const SONOS::PlayerPtr player = m_provider->getPlayer();
   if (!player)
     return false;
+  {
+    SONOS::LockGuard lock(m_lock);
+    m_contentDirectory = new SONOS::ContentDirectory(player->GetHost(), player->GetPort());
+    if (m_contentDirectory)
+      m_contentList = new SONOS::ContentList(*m_contentDirectory, m_root.isEmpty() ? SONOS::ContentSearch(SONOS::SearchTrack,"").Root() : m_root.toUtf8().constData());
+    if (!m_contentList)
+      return false;
+    m_totalCount = m_contentList->size();
+    m_iterator = m_contentList->begin();
+  }
+  emit totalCountChanged();
 
   QString port;
-  port.setNum(player->GetPort());
+  port.setNum(m_contentDirectory->GetPort());
   QString url = "http://";
-  url.append(player->GetHost().c_str()).append(":").append(port);
+  url.append(m_contentDirectory->GetHost().c_str()).append(":").append(port);
 
-  SONOS::ContentDirectory cd(player->GetHost(), player->GetPort());
-  SONOS::ContentList cl(cd, m_root.isEmpty() ? SONOS::ContentSearch(SONOS::SearchTrack,"").Root() : m_root.toUtf8().constData());
-  for (SONOS::ContentList::iterator it = cl.begin(); it != cl.end(); ++it)
+  unsigned cnt = 0;
+  while (cnt < LOAD_BULKSIZE && m_iterator != m_contentList->end())
   {
-    TrackItem* item = new TrackItem(*it, url);
+    TrackItem* item = new TrackItem(*m_iterator, url);
     if (item->isValid())
+    {
       addItem(item);
+      ++cnt;
+    }
     else
       delete item;
+    ++m_iterator;
   }
-  if (cl.failure())
+  if (m_contentList->failure())
     return m_loaded = false;
-  m_updateID = cl.GetUpdateID(); // sync new baseline
+  m_updateID = m_contentList->GetUpdateID(); // sync new baseline
   return m_loaded = true;
+}
+
+bool TracksModel::loadMore()
+{
+  SONOS::LockGuard lock(m_lock);
+  if (!m_contentDirectory || !m_contentList)
+    return false;
+  // At end return false
+  if (m_iterator == m_contentList->end())
+    return false;
+
+  QString port;
+  port.setNum(m_contentDirectory->GetPort());
+  QString url = "http://";
+  url.append(m_contentDirectory->GetHost().c_str()).append(":").append(port);
+
+  unsigned cnt = 0;
+  while (cnt < LOAD_BULKSIZE && m_iterator != m_contentList->end())
+  {
+    TrackItem* item = new TrackItem(*m_iterator, url);
+    if (item->isValid())
+    {
+      addItem(item);
+      ++cnt;
+    }
+    else
+      delete item;
+    ++m_iterator;
+  }
+  if (m_contentList->failure())
+    return false;
+  return true;
 }
 
 bool TracksModel::asyncLoad()
