@@ -25,20 +25,22 @@ import Ubuntu.Components 1.3
 Rectangle {
     id: playlistsEmptyState
     anchors {
-        fill: parent
+        top: parent.top
+        topMargin: units.gu(24)
+        bottom: parent.bottom
     }
     color: mainView.backgroundColor
 
     Column {
         anchors.centerIn: parent
         spacing: units.gu(4)
-        width: units.gu(36)
+        width: parent.width > units.gu(44) ? parent.width - units.gu(8) : units.gu(36)
 
         Label {
             color: styleMusic.libraryEmpty.labelColor
             elide: Text.ElideRight
             fontSize: "x-large"
-            horizontalAlignment: Text.AlignLeft
+            horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 2
             text: i18n.tr("No playlists found")
             width: parent.width
@@ -50,7 +52,7 @@ Rectangle {
             elide: Text.ElideRight
             fontSize: "large"
             horizontalAlignment: Text.AlignLeft
-            maximumLineCount: 4
+            maximumLineCount: 6
             text: i18n.tr("Get more out of Sonos by tapping the %1 icon to start making playlists for every mood and occasion.").arg('"+"')
             width: parent.width
             wrapMode: Text.WordWrap
