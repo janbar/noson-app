@@ -21,7 +21,7 @@
 
 #include "tracksmodel.h"
 #include "sonos.h"
-#include "lib/noson/noson/src/private/cppdef.h"
+#include "../../lib/noson/noson/src/private/cppdef.h"
 
 #define LOAD_BULKSIZE 100
 
