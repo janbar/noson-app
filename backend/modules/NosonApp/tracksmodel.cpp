@@ -168,7 +168,7 @@ void TracksModel::clear()
 bool TracksModel::load()
 {
   setUpdateSignaled(false);
-  
+
   if (!m_provider)
     return false;
   clear();
@@ -211,7 +211,10 @@ bool TracksModel::load()
       delete item;
       // Also decrease total count
       if (m_totalCount)
+      {
         --m_totalCount;
+        emit totalCountChanged();
+      }
     }
     ++m_iterator;
   }
@@ -249,7 +252,10 @@ bool TracksModel::loadMore()
       delete item;
       // Also decrease total count
       if (m_totalCount)
+      {
         --m_totalCount;
+        emit totalCountChanged();
+      }
     }
     ++m_iterator;
   }
