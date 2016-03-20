@@ -23,8 +23,7 @@
 #include "debug.h"
 
 #include <cstdio>
-#include <cstring>
-#include <map>  // for strlen
+#include <cstring> // for strlen
 
 using namespace NSROOT;
 

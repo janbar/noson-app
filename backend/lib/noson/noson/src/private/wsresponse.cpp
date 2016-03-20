@@ -223,27 +223,27 @@ bool WSResponse::GetResponse()
       switch (token_len)
       {
         case 4:
-          if (val && memcmp(token, "ETAG", token_len) == 0)
+          if (memcmp(token, "ETAG", token_len) == 0)
             m_etag.append(val);
           break;
         case 6:
-          if (val && memcmp(token, "SERVER", token_len) == 0)
+          if (memcmp(token, "SERVER", token_len) == 0)
             m_serverInfo.append(val);
           break;
         case 8:
-          if (val && memcmp(token, "LOCATION", token_len) == 0)
+          if (memcmp(token, "LOCATION", token_len) == 0)
             m_location.append(val);
           break;
         case 12:
-          if (val && memcmp(token, "CONTENT-TYPE", token_len) == 0)
+          if (memcmp(token, "CONTENT-TYPE", token_len) == 0)
             m_contentType = ContentTypeFromMime(val);
           break;
         case 14:
-          if (val && memcmp(token, "CONTENT-LENGTH", token_len) == 0)
+          if (memcmp(token, "CONTENT-LENGTH", token_len) == 0)
             m_contentLength = atol(val);
           break;
         case 17:
-          if (val && memcmp(token, "TRANSFER-ENCODING", token_len) == 0)
+          if (memcmp(token, "TRANSFER-ENCODING", token_len) == 0)
           {
             m_transferEncoding.append(val);
             if (m_transferEncoding == "chunked")
