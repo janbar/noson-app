@@ -448,7 +448,6 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
     url.append(m_player->GetHost().c_str()).append(":").append(port);
 
     m_currentMetaSource = QString::fromUtf8(prop.CurrentTrackURI.c_str());
-    m_currentIndex = -1;
     if (prop.r_EnqueuedTransportURIMetaData)
       m_currentMetaURITitle = QString::fromUtf8(prop.r_EnqueuedTransportURIMetaData->GetValue("dc:title").c_str());
 
