@@ -41,6 +41,10 @@ TrackItem::TrackItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
       m_art.append(baseURL).append(uri);
     m_valid = true;
   }
+  else
+  {
+    m_title = QString::fromUtf8(ptr->GetValue("dc:title").c_str());
+  }
 }
 
 QVariant TrackItem::payload() const

@@ -153,10 +153,7 @@ bool QueueModel::load()
   for (SONOS::ContentList::iterator it = cl.begin(); it != cl.end(); ++it)
   {
     TrackItem* item = new TrackItem(*it, url);
-    if (item->isValid())
-      addItem(item);
-    else
-      delete item;
+    addItem(item);
   }
   if (cl.failure())
     return m_loaded = false;
