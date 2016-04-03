@@ -47,26 +47,26 @@ BottomEdgePage {
             name: "default"
             actions: [
                 Action {
-                    enabled: true
                     //iconName: "settings"
                     iconSource: Qt.resolvedUrl("../graphics/cogs.svg")
                     text: i18n.tr("Settings")
+                    visible: true
                     onTriggered: PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSettings.qml"), mainView)
                 },
                 Action {
-                  enabled: true
                   iconName: "reload"
                   text: i18n.tr("Reload zones")
+                  visible: true
                   onTriggered: {
                       mainView.currentlyWorking = true
                       delayResetController.start()
                   }
                 },
                 Action {
-                    enabled: zoneList.model.count > 1
                     //iconName: "compose"
                     iconSource: Qt.resolvedUrl("../graphics/group.svg")
                     text: i18n.tr("Create group")
+                    visible: zoneList.model.count > 1
                     onTriggered: zoneList.clearSelection() // change view state to multiselectable
                 }
             ]
@@ -81,9 +81,9 @@ BottomEdgePage {
             name: "selection"
             actions: [
                 Action {
-                    enabled: zoneList.model.count > 0
                     iconName: zoneList.model.count > zoneList.getSelectedIndices().length ? "select" : "clear"
                     text: zoneList.model.count > zoneList.getSelectedIndices().length ? i18n.tr("Select All") : i18n.tr("Clear")
+                    visible: zoneList.model.count > 0
 
                     onTriggered: {
                         if (zoneList.model.count > zoneList.getSelectedIndices().length)
@@ -191,7 +191,7 @@ BottomEdgePage {
             leadingActions: ListItemActions {
                 actions: [
                     Clear {
-                        enabled: model.isGroup
+                        visible: model.isGroup
                         onTriggered: {
                             mainView.currentlyWorking = true
                             delayUnjoinZone.start()
@@ -205,7 +205,7 @@ BottomEdgePage {
             trailingActions: ListItemActions {
                 actions: [
                     Action {
-                        enabled: model.isGroup
+                        visible: model.isGroup
                         iconName: "edit-cut"
                         text: i18n.tr("Group")
 

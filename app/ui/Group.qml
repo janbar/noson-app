@@ -39,9 +39,9 @@ Page {
             name: "default"
             actions: [
                 Action {
-                    enabled: true
                     iconName: "select"
                     text: i18n.tr("Select All")
+                    visible: true
 
                     onTriggered: {
                         if (groupList.getSelectedIndices().length > 0) {

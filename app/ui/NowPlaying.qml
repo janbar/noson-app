@@ -84,43 +84,43 @@ MusicPage {
             name: "default"
             actions: [
                 Action {
-                    enabled: (queueLoader.status === Loader.Ready)
                     iconName: isListView ? "view-fullscreen" : "media-playlist"
                     // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
                     text: i18n.tr("Show queue")
+                    visible: (queueLoader.status === Loader.Ready)
                     onTriggered: {
                         isListView = !isListView
                     }
                 },
                 Action {
-                    enabled: player.trackQueue.model.count > 0
                     //iconName: "settings"
                     iconSource: Qt.resolvedUrl("../graphics/cogs.svg")
                     objectName: "queueActions"
                     // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
                     text: i18n.tr("Manage queue")
+                    visible: player.trackQueue.model.count > 0
                     onTriggered: {
                         currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogManageQueue.qml"), mainView)
                     }
                 },
                 Action {
-                    enabled: true
                     //iconName: "clock"
                     iconSource: Qt.resolvedUrl("../graphics/timer.svg")
                     objectName: "timerActions"
                     // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
                     text: i18n.tr("Standby timer")
+                    visible: true
                     onTriggered: {
                         currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSleepTimer.qml"), mainView)
                     }
                 },
                 Action {
-                    enabled: true
                     //iconName: "import"
                     iconSource: Qt.resolvedUrl("../graphics/input.svg")
                     objectName: "inputActions"
                     // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
                     text: i18n.tr("Select source")
+                    visible: true
                     onTriggered: {
                         currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSelectSource.qml"), mainView)
                     }

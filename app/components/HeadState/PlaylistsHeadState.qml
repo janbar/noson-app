@@ -41,7 +41,7 @@ PageHeadState {
         }
     ]
 
-    property alias newPlaylistEnabled: newPlaylistAction.enabled
-    property alias searchEnabled: searchAction.enabled
+    property alias newPlaylistEnabled: newPlaylistAction.visible
+    property alias searchEnabled: searchAction.visible
     property Page thisPage
 }
