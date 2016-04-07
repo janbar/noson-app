@@ -25,16 +25,6 @@ GridView {
         fill: parent
         leftMargin: units.gu(1)
         rightMargin: units.gu(1)
-        // FIXME: workaround until pad.lv/1531016 (gridview juddery) is fixed
-        // due to anchors.fill: parent not being used when the header is locked
-        // an extra margin is needed
-        topMargin: {
-            if (parent.head.locked) {
-                units.gu(6.125) * 2 + units.gu(2)  // FIXME: 6.125 is header.height
-            } else {
-                units.gu(6.125) + units.gu(2)  // FIXME: 6.125 is header.height
-            }
-        }
     }
     cellHeight: cellSize + heightOffset
     cellWidth: cellSize + widthOffset

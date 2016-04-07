@@ -52,6 +52,8 @@ MusicPage {
 
     property bool loaded: false  // used to detect difference between first and further loads
 
+    width: mainPageStack.width
+
     property bool isFavorite: false
 
     state: albumtrackslist.state === "multiselectable" ? "selection" : (isPlaylist ? "playlist" : "album")

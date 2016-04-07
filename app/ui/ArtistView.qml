@@ -40,12 +40,7 @@ MusicPage {
     property var covers: []
     property bool loaded: false  // used to detect difference between first and further loads
 
-    // FIXME: workaround for pad.lv/1531016 (gridview juddery)
-    anchors {
-        fill: undefined
-    }
-    height: mainView.height
-    width: mainView.width
+    width: mainPageStack.width
 
     property bool isFavorite: false
 

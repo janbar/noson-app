@@ -48,12 +48,8 @@ MusicPage {
         }
     ]
 
-    // FIXME: workaround for pad.lv/1531016 (gridview juddery)
-    anchors {
-        fill: undefined
-    }
-    height: mainView.height + musicToolbar.height
-    width: mainView.width
+    height: mainPageStack.height + musicToolbar.height
+    width: mainPageStack.width
 
     property var chosenElements: []
 
