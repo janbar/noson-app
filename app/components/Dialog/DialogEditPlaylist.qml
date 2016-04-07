@@ -22,7 +22,7 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 
-Dialog {
+DialogBase {
     id: dialogEditPlaylist
     // TRANSLATORS: this is a title of a dialog with a prompt to rename a playlist
     title: i18n.tr("Rename playlist")
@@ -33,6 +33,7 @@ Dialog {
         id: playlistName
         inputMethodHints: Qt.ImhNoPredictiveText
         placeholderText: i18n.tr("Enter playlist name")
+        color: theme.palette.selected.baseText
     }
     Label {
         id: editplaylistoutput

@@ -19,7 +19,7 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 
-Dialog {
+DialogBase {
     id: dialogSelectSource
     objectName: "dialogSelectSource"
     // TRANSLATORS: this is a title of a dialog to select source
@@ -30,7 +30,7 @@ Dialog {
         anchors.left: parent.left
         anchors.right: parent.right
         wrapMode: Text.WordWrap
-        color: UbuntuColors.red
+        color: styleMusic.dialog.labelColor
         fontSize: "x-small"
         font.weight: Font.Normal
         visible: false // should only be visible when an error is made.
@@ -40,7 +40,7 @@ Dialog {
         text: inputStreamUrl
         placeholderText: i18n.tr("Enter stream URL")
         inputMethodHints: Qt.ImhNoPredictiveText | Qt.ImhNoAutoUppercase
-        color: styleMusic.common.black
+        color: theme.palette.selected.baseText
     }
     Button {
         id: buttonPlayStream

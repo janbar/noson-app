@@ -36,6 +36,8 @@ PageHeadState {
             right: parent ? parent.right : undefined
             rightMargin: units.gu(2)
         }
+        color: theme.palette.selected.baseText
+        focus: true
         hasClearButton: true
         inputMethodHints: Qt.ImhNoPredictiveText
         placeholderText: i18n.tr("Search music")

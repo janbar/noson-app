@@ -29,7 +29,7 @@ Item {
 
     Component {
         id: dialogComponent
-        Dialog {
+        DialogBase {
             id: dialog
 
             Component.onCompleted: {
@@ -136,7 +136,7 @@ Item {
                         color: styleMusic.popover.labelColor
                         elide: Text.ElideRight
                         fontSize: "small"
-                        opacity: 0.4
+                        opacity: 0.8
                         wrapMode: Text.WordWrap
                     }
 
@@ -151,7 +151,7 @@ Item {
                         color: styleMusic.popover.labelColor
                         elide: Text.ElideRight
                         fontSize: "small"
-                        opacity: 0.4
+                        opacity: 0.8
                         wrapMode: Text.WordWrap
                     }
 

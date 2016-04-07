@@ -19,7 +19,7 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 
-Dialog {
+DialogBase {
     id: dialogSleepTimer
     objectName: "dialogSleepTimer"
     // TRANSLATORS: this is a title of a dialog to configure standby timer
@@ -59,7 +59,7 @@ Dialog {
 
     Rectangle {
         id: timeSelector
-        color: UbuntuColors.orange //styleMusic.popover.labelColor
+        color: styleMusic.common.black //styleMusic.popover.labelColor
         height: selector.containerHeight
         radius: units.gu(1.5)
 

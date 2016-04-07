@@ -41,6 +41,12 @@ Item {
             id: popover
             width: label.paintedWidth + units.gu(6)
 
+            Rectangle {
+                id: containerLayoutBackground
+                anchors.fill: parent
+                color: styleMusic.popover.backgroundColor
+            }
+
             Label {
                 id: label
                 text: message

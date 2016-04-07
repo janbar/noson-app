@@ -19,7 +19,7 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 
-Dialog {
+DialogBase {
     id: dialogManageQueue
     objectName: "dialogManageQueue"
     // TRANSLATORS: this is a title of a dialog to manage queue
@@ -39,6 +39,7 @@ Dialog {
         id: playlistName
         placeholderText: i18n.tr("Enter playlist name")
         inputMethodHints: Qt.ImhNoPredictiveText
+        color: theme.palette.selected.baseText
     }
     Button {
         text: i18n.tr("Save queue")

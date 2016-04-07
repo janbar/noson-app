@@ -22,7 +22,7 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 
-Dialog {
+DialogBase {
     id: dialogNewPlaylist
     objectName: "dialogNewPlaylist"
     title: i18n.tr("New playlist")
@@ -42,7 +42,7 @@ Dialog {
         objectName: "playlistNameTextField"
         placeholderText: i18n.tr("Enter playlist name")
         inputMethodHints: Qt.ImhNoPredictiveText
-        color: styleMusic.common.black
+        color: theme.palette.selected.baseText
     }
     Button {
         text: i18n.tr("Create")
