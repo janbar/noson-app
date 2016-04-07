@@ -111,7 +111,7 @@ MainView {
 
     // property to detect if the UI has finished
     property bool loadedUI: false
-    property bool wideAspect: width >= units.gu(70) && loadedUI
+    property bool wideAspect: width >= units.gu(100) && loadedUI
 
     // property to enable pop info on index loaded
     property bool infoLoadedIndex: false
@@ -302,7 +302,7 @@ MainView {
                 break;
             case Qt.Key_J:  //      Ctrl+J      Jump to playing song
                 tabs.pushNowPlaying()
-                mainPageStack.currentPage.isListView = true
+                mainPageStack.currentPage.setListView(true)
                 break;
             case Qt.Key_N:  //      Ctrl+N      Show Now playing
                 tabs.pushNowPlaying()
@@ -693,20 +693,6 @@ MainView {
     }
 
     Loader {
-        id: musicToolbar
-        anchors {
-            bottom: parent.bottom
-            left: parent.left
-            right: parent.right
-        }
-        asynchronous: true
-        source: "components/MusicToolbar.qml"
-        visible: !noZone && (mainPageStack.currentPage.showToolbar || mainPageStack.currentPage.showToolbar === undefined)
-
-        z: 200  // put on top of everything else
-    }
-
-    Loader {
         id: zonesPageLoader
         asynchronous: false
         source: "ui/Zones.qml"
@@ -715,6 +701,14 @@ MainView {
 
     PageStack {
         id: mainPageStack
+        anchors {
+            bottom: parent.bottom
+            fill: undefined
+            left: parent.left
+            right: nowPlayingSidebarLoader.left
+            top: parent.top
+        }
+        clip: true  // otherwise listitems actions overflow
 
         // Properties storing the current page info
         property Page currentMusicPage: null  // currentPage can be Tabs
@@ -877,19 +871,70 @@ MainView {
 
             function pushNowPlaying()
             {
-                // only push if not already loaded
-                if (!mainPageStack.nowPlayingLoaded) {
-                    mainPageStack.nowPlayingLoaded = true
-                    mainPageStack.push(Qt.resolvedUrl("ui/NowPlaying.qml"), {})
-                }
+                if (!wideAspect) {
+                    // only push if on a different page
+                    if (mainPageStack.currentPage.title !== i18n.tr("Now playing")) {
+                        mainPageStack.push(Qt.resolvedUrl("ui/NowPlaying.qml"), {})
+                    }
 
-                if (mainPageStack.currentPage.isListView === true) {
-                    mainPageStack.currentPage.isListView = false;  // ensure full view
+                    if (mainPageStack.currentPage.isListView === true) {
+                        mainPageStack.currentPage.setListView(false);  // ensure full view
+                    }
                 }
             }
         } // end of tabs
     }
 
+    //
+    // Components that are ontop of the PageStack
+    //
+
+    Loader {
+        id: nowPlayingSidebarLoader
+        active: shown || anchors.leftMargin < 0
+        anchors {  // start offscreen
+            bottom: parent.bottom
+            //left: parent.right
+            //leftMargin: shown && status === Loader.Ready ? -width : 0
+            right: parent.right
+            top: parent.top
+        }
+        asynchronous: true
+        source: "components/NowPlayingSidebar.qml"
+        width: shown && status === Loader.Ready ? units.gu(44) : 0
+        visible: width > 0
+
+        property bool shown: loadedUI && wideAspect && player.currentMetaSource !== ""
+
+        Behavior on anchors.leftMargin {
+            NumberAnimation {
+
+            }
+        }
+    }
+
+    Loader {
+        id: musicToolbar
+        active: !wideAspect || anchors.topMargin < 0
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.bottom
+            topMargin: !wideAspect && status === Loader.Ready ? -height : 0
+        }
+        asynchronous: true
+        source: "components/MusicToolbar.qml"
+        visible: !noZone && (!wideAspect || player.currentMetaSource === "") && status === Loader.Ready &&
+                 (mainPageStack.currentPage && (mainPageStack.currentPage.showToolbar || mainPageStack.currentPage.showToolbar === undefined))
+
+        height: status === Loader.Ready ? item.height : 0
+
+        Behavior on anchors.topMargin {
+            NumberAnimation {
+
+            }
+        }
+    }
     property alias currentlyWorking: loading.visible
 
     LoadingSpinnerComponent {

@@ -43,7 +43,7 @@ Flickable {
             right: parent.right
             top: parent.top
         }
-        height: fullviewBackground.height - musicToolbarFullProgressBackground.height - units.gu(10)
+        height: fullviewBackground.height - musicToolbarFullProgressBackground.height
 
         Item {
             id: albumImageContainer
@@ -158,7 +158,6 @@ Flickable {
         id: musicToolbarFullProgressBackground
         anchors {
             bottom: fullviewBackground.bottom
-            bottomMargin: units.gu(10)
             left: parent.left
             right: parent.right
         }

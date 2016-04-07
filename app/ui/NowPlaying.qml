@@ -30,7 +30,6 @@ MusicPage {
     objectName: "nowPlayingPage"
     showToolbar: false
     title: nowPlayingTitle
-    visible: false
 
     property bool isListView: false
     // TRANSLATORS: this appears in the header with limited space (around 20 characters)
@@ -59,6 +58,18 @@ MusicPage {
         }
     }
 
+    onVisibleChanged: {
+        if (wideAspect) {
+           popWaitTimer.start()
+        }
+    }
+
+    Timer {  // FIXME: workaround for when entering wideAspect coming back from a stacked page (AddToPlaylist) and the page being deleted breaks the stacked page
+        id: popWaitTimer
+        interval: 250
+        onTriggered: mainPageStack.popPage(nowPlaying);
+    }
+
     // Ensure that the listview has loaded before attempting to positionAt
     function ensureListViewLoaded() {
         if (queueLoader.item.listview.count === player.trackQueue.model.count) {
@@ -75,6 +86,10 @@ MusicPage {
     // Position the view at the index
     function positionAt(index) {
         queueLoader.item.listview.positionViewAtIndex(index, ListView.Center);
+    }
+
+    function setListView(listView) {
+        isListView = listView;
     }
 
     state: isListView && queueLoader.item.listview.state === "multiselectable" ? "selection" : "default"
@@ -144,7 +159,7 @@ MusicPage {
     Loader {
         id: fullViewLoader
         anchors {
-            bottomMargin: nowPlayingToolbarLoader.height
+            bottomMargin: nowPlayingToolbarLoader.height + units.gu(10)
             fill: parent
         }
         source: "../components/NowPlayingFullView.qml"
@@ -181,5 +196,15 @@ MusicPage {
         }
         height: units.gu(15)
         source: "../components/NowPlayingToolbar.qml"
+    }
+
+    Connections {
+        target: mainView
+        onWideAspectChanged: {
+            // Do not pop if not visible (eg on AddToPlaylist)
+            if (wideAspect && nowPlaying.visible) {
+                mainPageStack.popPage(nowPlaying);
+            }
+        }
     }
 }

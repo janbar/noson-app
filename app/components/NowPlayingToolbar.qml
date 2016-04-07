@@ -30,6 +30,8 @@ Rectangle {
     }
     color: styleMusic.common.black
 
+    property alias bottomProgressHint: playerControlsProgressBar.visible
+
     RenderingBubble {
         id: renderingBubble
     }

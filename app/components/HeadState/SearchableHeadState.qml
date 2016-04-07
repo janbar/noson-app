@@ -18,7 +18,7 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-
+import Ubuntu.Components.Popups 1.3
 
 PageHeadState {
     name: "default"
@@ -28,6 +28,39 @@ PageHeadState {
         id: searchAction
         iconName: "search"
         onTriggered: thisPage.state = "search"
+        },
+        Action {
+            //iconName: "settings"
+            iconSource: Qt.resolvedUrl("../../graphics/cogs.svg")
+            objectName: "queueActions"
+            // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
+            text: i18n.tr("Manage queue")
+            visible: mainView.wideAspect && player.trackQueue.model.count > 0
+            onTriggered: {
+                currentDialog = PopupUtils.open(Qt.resolvedUrl("../Dialog/DialogManageQueue.qml"), mainView)
+            }
+        },
+        Action {
+            //iconName: "clock"
+            iconSource: Qt.resolvedUrl("../../graphics/timer.svg")
+            objectName: "timerActions"
+            // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
+            text: i18n.tr("Standby timer")
+            visible: mainView.wideAspect
+            onTriggered: {
+                currentDialog = PopupUtils.open(Qt.resolvedUrl("../Dialog/DialogSleepTimer.qml"), mainView)
+            }
+        },
+        Action {
+            //iconName: "import"
+            iconSource: Qt.resolvedUrl("../../graphics/input.svg")
+            objectName: "inputActions"
+            // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
+            text: i18n.tr("Select source")
+            visible: mainView.wideAspect
+            onTriggered: {
+                currentDialog = PopupUtils.open(Qt.resolvedUrl("../Dialog/DialogSelectSource.qml"), mainView)
+            }
         }
     ]
 

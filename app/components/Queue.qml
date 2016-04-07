@@ -26,6 +26,7 @@ import "ListItemActions"
 
 Item {
     property alias listview: queueList
+    property alias header: queueList.header
 
     MultiSelectListView {
         id: queueList
