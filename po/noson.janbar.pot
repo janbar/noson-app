@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-30 00:01+0200\n"
+"POT-Creation-Date: 2016-04-07 20:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -88,17 +88,17 @@ msgstr ""
 msgid "Enter playlist name"
 msgstr ""
 
-#: ../app/components/Dialog/DialogEditPlaylist.qml:44
+#: ../app/components/Dialog/DialogEditPlaylist.qml:45
 msgid "Change"
 msgstr ""
 
-#: ../app/components/Dialog/DialogEditPlaylist.qml:54
-#: ../app/components/Dialog/DialogManageQueue.qml:58
+#: ../app/components/Dialog/DialogEditPlaylist.qml:55
+#: ../app/components/Dialog/DialogManageQueue.qml:59
 #: ../app/components/Dialog/DialogNewPlaylist.qml:59
 msgid "Please type in a name."
 msgstr ""
 
-#: ../app/components/Dialog/DialogEditPlaylist.qml:59
+#: ../app/components/Dialog/DialogEditPlaylist.qml:60
 #: ../app/components/Dialog/DialogNewPlaylist.qml:65
 #: ../app/components/Dialog/DialogRemovePlaylist.qml:59
 msgid "Cancel"
@@ -107,31 +107,31 @@ msgstr ""
 #. TRANSLATORS: this is a title of a dialog to manage queue
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
 #: ../app/components/Dialog/DialogManageQueue.qml:26
-#: ../app/ui/NowPlaying.qml:101
+#: ../app/ui/NowPlaying.qml:100
 msgid "Manage queue"
 msgstr ""
 
-#: ../app/components/Dialog/DialogManageQueue.qml:44
+#: ../app/components/Dialog/DialogManageQueue.qml:45
 msgid "Save queue"
 msgstr ""
 
-#: ../app/components/Dialog/DialogManageQueue.qml:53
+#: ../app/components/Dialog/DialogManageQueue.qml:54
 msgid "Saving failed."
 msgstr ""
 
-#: ../app/components/Dialog/DialogManageQueue.qml:66
+#: ../app/components/Dialog/DialogManageQueue.qml:67
 msgid "Clearing the queue cannot be undone."
 msgstr ""
 
-#: ../app/components/Dialog/DialogManageQueue.qml:73
+#: ../app/components/Dialog/DialogManageQueue.qml:74
 msgid "Clear queue"
 msgstr ""
 
-#: ../app/components/Dialog/DialogManageQueue.qml:85
+#: ../app/components/Dialog/DialogManageQueue.qml:86
 msgid "Close the queue management screen."
 msgstr ""
 
-#: ../app/components/Dialog/DialogManageQueue.qml:92
+#: ../app/components/Dialog/DialogManageQueue.qml:93
 #: ../app/components/Dialog/DialogSelectSource.qml:132
 #: ../app/components/Dialog/DialogSettings.qml:54
 #: ../app/components/Dialog/DialogSleepTimer.qml:118
@@ -163,7 +163,7 @@ msgstr ""
 #. TRANSLATORS: this is a title of a dialog to select source
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
 #: ../app/components/Dialog/DialogSelectSource.qml:26
-#: ../app/ui/NowPlaying.qml:123
+#: ../app/ui/NowPlaying.qml:122
 msgid "Select source"
 msgstr ""
 
@@ -205,7 +205,7 @@ msgstr ""
 msgid "Close this screen."
 msgstr ""
 
-#: ../app/components/Dialog/DialogSettings.qml:24 ../app/ui/Zones.qml:53
+#: ../app/components/Dialog/DialogSettings.qml:24 ../app/ui/Zones.qml:52
 msgid "Settings"
 msgstr ""
 
@@ -227,7 +227,7 @@ msgstr ""
 #. TRANSLATORS: this is a title of a dialog to configure standby timer
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
 #: ../app/components/Dialog/DialogSleepTimer.qml:26
-#: ../app/ui/NowPlaying.qml:112
+#: ../app/ui/NowPlaying.qml:111
 msgid "Standby timer"
 msgstr ""
 
@@ -288,32 +288,32 @@ msgstr ""
 msgid "%1 - track #%2"
 msgstr ""
 
-#: ../app/components/HeadState/MultiSelectHeadState.qml:31
-#: ../app/ui/Group.qml:44 ../app/ui/Zones.qml:86
+#: ../app/components/HeadState/MultiSelectHeadState.qml:29
+#: ../app/ui/Group.qml:43 ../app/ui/Zones.qml:85
 msgid "Select All"
 msgstr ""
 
-#: ../app/components/HeadState/MultiSelectHeadState.qml:44
+#: ../app/components/HeadState/MultiSelectHeadState.qml:43
 #: ../app/components/ListItemActions/AddToQueue.qml:27
 #: ../app/ui/Favorites.qml:139
 msgid "Add to queue"
 msgstr ""
 
-#: ../app/components/HeadState/MultiSelectHeadState.qml:67
+#: ../app/components/HeadState/MultiSelectHeadState.qml:65
 #: ../app/components/ListItemActions/AddToPlaylist.qml:27
 #: ../app/ui/Favorites.qml:146
 msgid "Add to playlist"
 msgstr ""
 
-#: ../app/components/HeadState/MultiSelectHeadState.qml:89
+#: ../app/components/HeadState/MultiSelectHeadState.qml:86
 msgid "Delete"
 msgstr ""
 
-#: ../app/components/HeadState/MultiSelectHeadState.qml:100
+#: ../app/components/HeadState/MultiSelectHeadState.qml:97
 msgid "Cancel selection"
 msgstr ""
 
-#: ../app/components/HeadState/SearchHeadState.qml:42
+#: ../app/components/HeadState/SearchHeadState.qml:43
 msgid "Search music"
 msgstr ""
 
@@ -321,7 +321,7 @@ msgstr ""
 msgid "Favorite"
 msgstr ""
 
-#: ../app/components/ListItemActions/Clear.qml:25 ../app/ui/Zones.qml:86
+#: ../app/components/ListItemActions/Clear.qml:25 ../app/ui/Zones.qml:85
 msgid "Clear"
 msgstr ""
 
@@ -333,11 +333,11 @@ msgstr ""
 msgid "Show info"
 msgstr ""
 
-#: ../app/components/MusicPage.qml:42
+#: ../app/components/MusicPage.qml:43
 msgid "No items found"
 msgstr ""
 
-#: ../app/components/MusicPage.qml:77 ../app/ui/Zones.qml:31
+#: ../app/components/MusicPage.qml:78 ../app/ui/Zones.qml:31
 msgid "Zones"
 msgstr ""
 
@@ -469,7 +469,7 @@ msgid "Full view"
 msgstr ""
 
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-#: ../app/ui/NowPlaying.qml:90
+#: ../app/ui/NowPlaying.qml:89
 msgid "Show queue"
 msgstr ""
 
@@ -491,10 +491,10 @@ msgstr ""
 msgid "Song"
 msgstr ""
 
-#: ../app/ui/Zones.qml:59
+#: ../app/ui/Zones.qml:58
 msgid "Reload zones"
 msgstr ""
 
-#: ../app/ui/Zones.qml:69
+#: ../app/ui/Zones.qml:68
 msgid "Create group"
 msgstr ""
