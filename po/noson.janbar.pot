@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-07 20:39+0200\n"
+"POT-Creation-Date: 2016-04-08 01:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,7 +37,7 @@ msgstr ""
 #: ../app/components/Dialog/DialogSelectSource.qml:94
 #: ../app/components/Dialog/DialogSelectSource.qml:105
 #: ../app/components/Dialog/DialogSelectSource.qml:116
-#: ../app/ui/AddToPlaylist.qml:138 ../app/ui/Favorites.qml:163
+#: ../app/ui/AddToPlaylist.qml:134 ../app/ui/Favorites.qml:165
 msgid "Action can't be performed"
 msgstr ""
 
@@ -50,7 +50,7 @@ msgid "Refreshing of index is running"
 msgstr ""
 
 #: ../app/Main.qml:452 ../app/Main.qml:513 ../app/Main.qml:525
-#: ../app/Main.qml:587 ../app/ui/AddToPlaylist.qml:135
+#: ../app/Main.qml:587 ../app/ui/AddToPlaylist.qml:131
 msgid "song added"
 msgstr ""
 
@@ -271,15 +271,15 @@ msgstr ""
 msgid "6 hours"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSongInfo.qml:38 ../app/ui/Albums.qml:79
-#: ../app/ui/Albums.qml:94 ../app/ui/ArtistView.qml:178
-#: ../app/ui/ArtistView.qml:193 ../app/ui/Favorites.qml:181
+#: ../app/components/Dialog/DialogSongInfo.qml:38 ../app/ui/Albums.qml:74
+#: ../app/ui/Albums.qml:89 ../app/ui/ArtistView.qml:173
+#: ../app/ui/ArtistView.qml:188 ../app/ui/Favorites.qml:183
 msgid "Unknown Album"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSongInfo.qml:39 ../app/ui/Albums.qml:80
-#: ../app/ui/Albums.qml:93 ../app/ui/ArtistView.qml:106
-#: ../app/ui/ArtistView.qml:192 ../app/ui/Artists.qml:81
+#: ../app/components/Dialog/DialogSongInfo.qml:39 ../app/ui/Albums.qml:75
+#: ../app/ui/Albums.qml:88 ../app/ui/ArtistView.qml:101
+#: ../app/ui/ArtistView.qml:187 ../app/ui/Artists.qml:76
 msgid "Unknown Artist"
 msgstr ""
 
@@ -295,13 +295,13 @@ msgstr ""
 
 #: ../app/components/HeadState/MultiSelectHeadState.qml:43
 #: ../app/components/ListItemActions/AddToQueue.qml:27
-#: ../app/ui/Favorites.qml:139
+#: ../app/ui/Favorites.qml:141
 msgid "Add to queue"
 msgstr ""
 
 #: ../app/components/HeadState/MultiSelectHeadState.qml:65
 #: ../app/components/ListItemActions/AddToPlaylist.qml:27
-#: ../app/ui/Favorites.qml:146
+#: ../app/ui/Favorites.qml:148
 msgid "Add to playlist"
 msgstr ""
 
@@ -396,20 +396,20 @@ msgstr ""
 msgid "Albums"
 msgstr ""
 
-#: ../app/ui/Albums.qml:92 ../app/ui/ArtistView.qml:191
-#: ../app/ui/Favorites.qml:179
+#: ../app/ui/Albums.qml:87 ../app/ui/ArtistView.qml:186
+#: ../app/ui/Favorites.qml:181
 msgid "Album"
 msgstr ""
 
-#: ../app/ui/ArtistView.qml:127
+#: ../app/ui/ArtistView.qml:122
 #, qt-format
 msgid "%1 album"
 msgid_plural "%1 albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/ui/ArtistView.qml:146 ../app/ui/SongsView.qml:275
-#: ../app/ui/SongsView.qml:276
+#: ../app/ui/ArtistView.qml:141 ../app/ui/SongsView.qml:277
+#: ../app/ui/SongsView.qml:278
 #, qt-format
 msgid "%1 song"
 msgid_plural "%1 songs"
@@ -420,7 +420,7 @@ msgstr[1] ""
 msgid "Artists"
 msgstr ""
 
-#: ../app/ui/Artists.qml:91 ../app/ui/Favorites.qml:191
+#: ../app/ui/Artists.qml:86 ../app/ui/Favorites.qml:193
 msgid "Artist"
 msgstr ""
 
@@ -428,11 +428,11 @@ msgstr ""
 msgid "Favorites"
 msgstr ""
 
-#: ../app/ui/Favorites.qml:202 ../app/ui/Genres.qml:92
+#: ../app/ui/Favorites.qml:204 ../app/ui/Genres.qml:87
 msgid "Genre"
 msgstr ""
 
-#: ../app/ui/Favorites.qml:217 ../app/ui/Playlists.qml:92
+#: ../app/ui/Favorites.qml:219 ../app/ui/Playlists.qml:87
 msgid "Playlist"
 msgstr ""
 
@@ -440,7 +440,7 @@ msgstr ""
 msgid "Genres"
 msgstr ""
 
-#: ../app/ui/Genres.qml:81
+#: ../app/ui/Genres.qml:76
 msgid "<Undefined>"
 msgstr ""
 
@@ -483,11 +483,11 @@ msgstr ""
 msgid "My radios"
 msgstr ""
 
-#: ../app/ui/Radios.qml:120
+#: ../app/ui/Radios.qml:122
 msgid "Radio"
 msgstr ""
 
-#: ../app/ui/SongsView.qml:317
+#: ../app/ui/SongsView.qml:319
 msgid "Song"
 msgstr ""
 
