@@ -65,4 +65,28 @@ Rectangle {
             }
         }
     }
+
+    // Ensure that the listview has loaded before attempting to positionAt
+    function ensureListViewLoaded() {
+        if (queue.listview.count === player.trackQueue.model.count) {
+            positionAt(player.currentIndex);
+        } else {
+            queue.listview.onCountChanged.connect(function() {
+                if (queue.listview.count === player.trackQueue.model.count) {
+                    positionAt(player.currentIndex);
+                }
+            })
+        }
+    }
+
+    // Position the view at the index
+    function positionAt(index) {
+        customdebug("#### position at " + index);
+        queue.listview.positionViewAtIndex(index, ListView.Center);
+    }
+
+    onVisibleChanged: {
+        if (visible)
+            ensureListViewLoaded();
+    }
 }
