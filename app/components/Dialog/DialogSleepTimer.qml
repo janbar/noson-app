@@ -75,7 +75,7 @@ DialogBase {
                     i18n.tr("4 hours"),
                     i18n.tr("5 hours"),
                     i18n.tr("6 hours")]
-            containerHeight: itemHeight * 6
+            containerHeight: mainView.height > units.gu(60) ? itemHeight * 6 : itemHeight * 2
             selectedIndex: -1
             expanded: true
             multiSelection: false
