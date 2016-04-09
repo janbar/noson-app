@@ -50,7 +50,7 @@ Rectangle {
                     fill: undefined
                 }
                 clip: true
-                height: units.gu(57)
+                height: units.gu(55)
                 width: parent.width
             }
             NowPlayingToolbar {

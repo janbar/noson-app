@@ -53,7 +53,7 @@ MainView {
 
     // Design stuff
     Style { id: styleMusic }
-    width: units.gu(46)
+    width: units.gu(100)
     height: units.gu(80)
 
     // Arguments during startup
