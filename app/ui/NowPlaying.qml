@@ -115,7 +115,7 @@ MusicPage {
                     text: i18n.tr("Manage queue")
                     visible: player.trackQueue.model.count > 0
                     onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogManageQueue.qml"), mainView)
+                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogManageQueue.qml"), nowPlaying)
                     }
                 },
                 Action {
@@ -126,7 +126,7 @@ MusicPage {
                     text: i18n.tr("Standby timer")
                     visible: true
                     onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSleepTimer.qml"), mainView)
+                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSleepTimer.qml"), nowPlaying)
                     }
                 },
                 Action {
@@ -137,7 +137,7 @@ MusicPage {
                     text: i18n.tr("Select source")
                     visible: true
                     onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSelectSource.qml"), mainView)
+                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSelectSource.qml"), nowPlaying)
                     }
                 }
 
@@ -203,6 +203,8 @@ MusicPage {
         onWideAspectChanged: {
             // Do not pop if not visible (eg on AddToPlaylist)
             if (wideAspect && nowPlaying.visible) {
+                if (currentDialog)
+                    PopupUtils.close(currentDialog);
                 mainPageStack.popPage(nowPlaying);
             }
         }
