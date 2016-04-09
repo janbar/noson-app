@@ -1,7 +1,7 @@
-noson-app (1.4) UNRELEASED; urgency=low
+noson-app (1.5) UNRELEASED; urgency=low
 
   [ janbar ]
   * Release 1.5
+  * Implement convergent mode with now playing and queue as a sidebar
 
-
- -- janbar <jlbarriere68@gmail.com>  Thu, 04 Feb 2016 19:52:13 +0100
+ -- janbar <jlbarriere68@gmail.com>  Thu, 09 Apr 2016 18:38:00 +0200
