@@ -33,7 +33,7 @@ Flickable {
     Rectangle {
         id: fullviewBackground
         anchors.fill: parent
-        color: styleMusic.common.black
+        color: styleMusic.nowPlaying.backgroundColor
     }
 
     BlurredBackground {

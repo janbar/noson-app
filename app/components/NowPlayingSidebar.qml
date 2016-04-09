@@ -23,7 +23,7 @@ Rectangle {
     anchors {
         fill: parent
     }
-    color: styleMusic.common.black
+    color: styleMusic.nowPlaying.backgroundColor
 
     property alias flickable: queue  // fake normal Page
     property string title: ""  // fake normal Page
