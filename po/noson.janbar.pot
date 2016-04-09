@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-08 01:22+0200\n"
+"POT-Creation-Date: 2016-04-09 15:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,7 +73,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANSLATORS: this appears in the header with limited space (around 20 characters)
-#: ../app/Main.qml:736 ../app/ui/NowPlaying.qml:37
+#: ../app/Main.qml:730 ../app/Main.qml:876 ../app/ui/NowPlaying.qml:36
 msgid "Now playing"
 msgstr ""
 
@@ -107,7 +107,10 @@ msgstr ""
 #. TRANSLATORS: this is a title of a dialog to manage queue
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
 #: ../app/components/Dialog/DialogManageQueue.qml:26
-#: ../app/ui/NowPlaying.qml:100
+#: ../app/components/HeadState/PlaylistsHeadState.qml:47
+#: ../app/components/HeadState/SearchableHeadState.qml:37
+#: ../app/ui/ArtistView.qml:68 ../app/ui/NowPlaying.qml:115
+#: ../app/ui/SongsView.qml:80 ../app/ui/SongsView.qml:142
 msgid "Manage queue"
 msgstr ""
 
@@ -163,7 +166,10 @@ msgstr ""
 #. TRANSLATORS: this is a title of a dialog to select source
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
 #: ../app/components/Dialog/DialogSelectSource.qml:26
-#: ../app/ui/NowPlaying.qml:122
+#: ../app/components/HeadState/PlaylistsHeadState.qml:69
+#: ../app/components/HeadState/SearchableHeadState.qml:59
+#: ../app/ui/ArtistView.qml:90 ../app/ui/NowPlaying.qml:137
+#: ../app/ui/SongsView.qml:102 ../app/ui/SongsView.qml:164
 msgid "Select source"
 msgstr ""
 
@@ -197,7 +203,7 @@ msgstr ""
 
 #. TRANSLATORS: this appears in the header with limited space (around 20 characters)
 #: ../app/components/Dialog/DialogSelectSource.qml:112
-#: ../app/ui/NowPlaying.qml:41
+#: ../app/ui/NowPlaying.qml:40
 msgid "Queue"
 msgstr ""
 
@@ -227,7 +233,10 @@ msgstr ""
 #. TRANSLATORS: this is a title of a dialog to configure standby timer
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
 #: ../app/components/Dialog/DialogSleepTimer.qml:26
-#: ../app/ui/NowPlaying.qml:111
+#: ../app/components/HeadState/PlaylistsHeadState.qml:58
+#: ../app/components/HeadState/SearchableHeadState.qml:48
+#: ../app/ui/ArtistView.qml:79 ../app/ui/NowPlaying.qml:126
+#: ../app/ui/SongsView.qml:91 ../app/ui/SongsView.qml:153
 msgid "Standby timer"
 msgstr ""
 
@@ -272,14 +281,14 @@ msgid "6 hours"
 msgstr ""
 
 #: ../app/components/Dialog/DialogSongInfo.qml:38 ../app/ui/Albums.qml:74
-#: ../app/ui/Albums.qml:89 ../app/ui/ArtistView.qml:173
-#: ../app/ui/ArtistView.qml:188 ../app/ui/Favorites.qml:183
+#: ../app/ui/Albums.qml:89 ../app/ui/ArtistView.qml:206
+#: ../app/ui/ArtistView.qml:221 ../app/ui/Favorites.qml:183
 msgid "Unknown Album"
 msgstr ""
 
 #: ../app/components/Dialog/DialogSongInfo.qml:39 ../app/ui/Albums.qml:75
-#: ../app/ui/Albums.qml:88 ../app/ui/ArtistView.qml:101
-#: ../app/ui/ArtistView.qml:187 ../app/ui/Artists.qml:76
+#: ../app/ui/Albums.qml:88 ../app/ui/ArtistView.qml:134
+#: ../app/ui/ArtistView.qml:220 ../app/ui/Artists.qml:76
 msgid "Unknown Artist"
 msgstr ""
 
@@ -396,20 +405,20 @@ msgstr ""
 msgid "Albums"
 msgstr ""
 
-#: ../app/ui/Albums.qml:87 ../app/ui/ArtistView.qml:186
+#: ../app/ui/Albums.qml:87 ../app/ui/ArtistView.qml:219
 #: ../app/ui/Favorites.qml:181
 msgid "Album"
 msgstr ""
 
-#: ../app/ui/ArtistView.qml:122
+#: ../app/ui/ArtistView.qml:155
 #, qt-format
 msgid "%1 album"
 msgid_plural "%1 albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/ui/ArtistView.qml:141 ../app/ui/SongsView.qml:277
-#: ../app/ui/SongsView.qml:278
+#: ../app/ui/ArtistView.qml:174 ../app/ui/SongsView.qml:343
+#: ../app/ui/SongsView.qml:344
 #, qt-format
 msgid "%1 song"
 msgid_plural "%1 songs"
@@ -464,12 +473,12 @@ msgid "Search for Sonos zones"
 msgstr ""
 
 #. TRANSLATORS: this appears in the header with limited space (around 20 characters)
-#: ../app/ui/NowPlaying.qml:39
+#: ../app/ui/NowPlaying.qml:38
 msgid "Full view"
 msgstr ""
 
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-#: ../app/ui/NowPlaying.qml:89
+#: ../app/ui/NowPlaying.qml:104
 msgid "Show queue"
 msgstr ""
 
@@ -487,7 +496,7 @@ msgstr ""
 msgid "Radio"
 msgstr ""
 
-#: ../app/ui/SongsView.qml:319
+#: ../app/ui/SongsView.qml:385
 msgid "Song"
 msgstr ""
 
