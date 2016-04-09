@@ -26,8 +26,8 @@ import Ubuntu.Components 1.3
 Item {
     id: sliderStyle
 
-    property color foregroundColor: UbuntuColors.blue // CUSTOM
-    property color backgroundColor: styleMusic.mainView.backgroundColor // CUSTOM
+    property color foregroundColor: styleMusic.nowPlaying.progressForegroundColor // CUSTOM
+    property color backgroundColor: styleMusic.nowPlaying.progressBackgroundColor // CUSTOM
 
     property real thumbSpacing: units.gu(0)
     property Item bar: background
@@ -82,7 +82,7 @@ Item {
         width: units.gu(1.5)
         height: units.gu(1.5)
         opacity: 0.97
-        color: UbuntuColors.blue
+        color: sliderStyle.foregroundColor
     }
 
     BubbleShape {

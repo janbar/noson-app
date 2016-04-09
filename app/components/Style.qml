@@ -81,16 +81,16 @@ QtObject {
         property color foregroundColor: "#454545"
         property color labelColor: common.white;
         property color labelSecondaryColor: "#AAA";
-        property color progressBackgroundColor: common.black;
-        property color progressForegroundColor: UbuntuColors.orange;
-        property color progressHandleColor: common.white;
+        property color progressBackgroundColor: "#1e1e23";
+        property color progressForegroundColor: UbuntuColors.blue;
     }
 
     property QtObject playerControls: QtObject {
         property color backgroundColor: "#0f0f0f";
         property color labelColor: common.white;
-        property color progressBackgroundColor: common.black;
+        property color progressBackgroundColor: "#1e1e23";
         property color progressForegroundColor: UbuntuColors.orange;
+        property color progressHandleColor: common.white;
     }
 
     property QtObject popover: QtObject {

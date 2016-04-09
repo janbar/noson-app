@@ -89,9 +89,9 @@ Rectangle {
             style: SoundSliderStyle {
                 thumbRadius: units.gu(0.5)
                 thumbSize: units.gu(2)
-                thumbColor: "white"
-                backgroundColor: styleMusic.mainView.backgroundColor
-                foregroundColor: UbuntuColors.orange
+                thumbColor: styleMusic.playerControls.progressHandleColor
+                backgroundColor: styleMusic.playerControls.backgroundColor
+                foregroundColor: styleMusic.playerControls.progressForegroundColor
             }
 
             Timer {
@@ -275,7 +275,7 @@ Rectangle {
                     left: parent.left
                     bottom: parent.bottom
                 }
-                color: UbuntuColors.blue
+                color: styleMusic.nowPlaying.progressForegroundColor
                 height: parent.height
                 width: player.duration > 0 ? (player.position / player.duration) * playerControlsProgressBar.width : 0
 

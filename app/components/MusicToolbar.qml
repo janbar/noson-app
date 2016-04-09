@@ -269,7 +269,7 @@ Rectangle {
                     left: parent.left
                     top: parent.top
                 }
-                color: UbuntuColors.blue
+                color: styleMusic.nowPlaying.progressForegroundColor
                 height: parent.height
                 width: player.duration > 0 ? (player.position / player.duration) * playerControlsProgressBar.width : 0
 
