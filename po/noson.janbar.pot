@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-09 20:15+0200\n"
+"POT-Creation-Date: 2016-04-12 20:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -110,7 +110,7 @@ msgstr ""
 #: ../app/components/HeadState/PlaylistsHeadState.qml:47
 #: ../app/components/HeadState/SearchHeadState.qml:33
 #: ../app/components/HeadState/SearchableHeadState.qml:37
-#: ../app/ui/ArtistView.qml:68 ../app/ui/NowPlaying.qml:115
+#: ../app/ui/ArtistView.qml:68 ../app/ui/NowPlaying.qml:116
 #: ../app/ui/SongsView.qml:80 ../app/ui/SongsView.qml:142
 msgid "Manage queue"
 msgstr ""
@@ -170,7 +170,7 @@ msgstr ""
 #: ../app/components/HeadState/PlaylistsHeadState.qml:69
 #: ../app/components/HeadState/SearchHeadState.qml:55
 #: ../app/components/HeadState/SearchableHeadState.qml:59
-#: ../app/ui/ArtistView.qml:90 ../app/ui/NowPlaying.qml:137
+#: ../app/ui/ArtistView.qml:90 ../app/ui/NowPlaying.qml:138
 #: ../app/ui/SongsView.qml:102 ../app/ui/SongsView.qml:164
 msgid "Select source"
 msgstr ""
@@ -238,7 +238,7 @@ msgstr ""
 #: ../app/components/HeadState/PlaylistsHeadState.qml:58
 #: ../app/components/HeadState/SearchHeadState.qml:44
 #: ../app/components/HeadState/SearchableHeadState.qml:48
-#: ../app/ui/ArtistView.qml:79 ../app/ui/NowPlaying.qml:126
+#: ../app/ui/ArtistView.qml:79 ../app/ui/NowPlaying.qml:127
 #: ../app/ui/SongsView.qml:91 ../app/ui/SongsView.qml:153
 msgid "Standby timer"
 msgstr ""
@@ -481,7 +481,7 @@ msgid "Full view"
 msgstr ""
 
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-#: ../app/ui/NowPlaying.qml:104
+#: ../app/ui/NowPlaying.qml:105
 msgid "Show queue"
 msgstr ""
 
