@@ -81,7 +81,6 @@ Rectangle {
 
     // Position the view at the index
     function positionAt(index) {
-        customdebug("#### position at " + index);
         queue.listview.positionViewAtIndex(index, ListView.Center);
     }
 
