@@ -20,7 +20,6 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-import Ubuntu.Components.Themes.Ambiance 1.3 as Ambiance
 
 
 QtObject {
@@ -122,6 +121,7 @@ QtObject {
     }
 
     Component.onCompleted: {
+        theme.palette.normal.background = mainView.backgroundColor
         theme.palette.normal.base = common.subtitle
         theme.palette.normal.field = mainView.normalTextFieldColor
         theme.palette.normal.baseText = mainView.normalTextBaseColor

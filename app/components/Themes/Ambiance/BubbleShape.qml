@@ -23,7 +23,7 @@ Item {
     /*!
       Do not use an UbuntuShape but a Rectangle as the background of the BubbleShape.
      */
-    property bool square: false
+    property bool square: true
 
     /*!
       The background color of the bubble.
