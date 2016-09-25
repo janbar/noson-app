@@ -83,7 +83,7 @@ MusicPage {
                                        "artist": model.artist,
                                        "covers": [{art: albumCard.imageSource}],
                                        "isAlbum": true,
-                                       "genre": undefined,
+                                       "genre": "",
                                        "title": i18n.tr("Album"),
                                        "line1": model.artist !== undefined && model.artist !== "" ? model.artist : i18n.tr("Unknown Artist"),
                                        "line2": model.title !== undefined && model.title !== "" ? model.title : i18n.tr("Unknown Album")

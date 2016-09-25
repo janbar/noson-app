@@ -82,7 +82,7 @@ MusicPage {
                                        "containerItem": makeContainerItem(model),
                                        "songSearch": model.id + "//",
                                        "covers": [],
-                                       "album": undefined,
+                                       "album": "",
                                        "genre": model.genre,
                                        "title": i18n.tr("Genre"),
                                        "line1": "",
