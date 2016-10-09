@@ -673,9 +673,9 @@ MainView {
         if (art !== undefined && art !== "")
             uri = art;
         else if (album !== undefined && artist !== undefined && album !== "" && artist !== "")
-            uri = "image://albumart/artist=" + artist + "&album=" + album;
+            uri = "image://albumart/artist=" + encodeURIComponent(artist) + "&album=" + encodeURIComponent(album);
         else if (artist !== undefined && artist !== "")
-            uri = "image://artistart/artist=" + artist + "&album=undefined";
+            uri = "image://artistart/artist=" + encodeURIComponent(artist) + "&album=undefined";
         return uri;
     }
 
