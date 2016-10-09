@@ -39,10 +39,16 @@ MusicPage {
         SearchableHeadState {
             thisPage: genresPage
             searchEnabled: genresModelFilter.count > 0
+            thisHeader {
+                extension: DefaultSections { }
+            }
         },
         SearchHeadState {
             id: searchHeader
             thisPage: genresPage
+            thisHeader {
+                extension: DefaultSections { }
+            }
         }
     ]
 

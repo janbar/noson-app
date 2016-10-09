@@ -18,65 +18,58 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
 
-PageHeadState {
-    id: headerState
+State {
     name: "search"
-    head: thisPage.head
-    actions: [
-        Action {
-            //iconName: "settings"
-            iconSource: Qt.resolvedUrl("../../graphics/cogs.svg")
-            objectName: "queueActions"
-            // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-            text: i18n.tr("Manage queue")
-            visible: mainView.wideAspect && player.trackQueue.model.count > 0
-            onTriggered: {
-                currentDialog = PopupUtils.open(Qt.resolvedUrl("../Dialog/DialogManageQueue.qml"), mainView)
+
+    property PageHeader thisHeader: PageHeader {
+        id: headerState
+        contents: TextField {
+            id: searchField
+            anchors {
+                left: parent ? parent.left : undefined
+                right: parent ? parent.right : undefined
+                verticalCenter: parent ? parent.verticalCenter : undefined
             }
-        },
-        Action {
-            //iconName: "clock"
-            iconSource: Qt.resolvedUrl("../../graphics/timer.svg")
-            objectName: "timerActions"
-            // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-            text: i18n.tr("Standby timer")
-            visible: mainView.wideAspect
-            onTriggered: {
-                currentDialog = PopupUtils.open(Qt.resolvedUrl("../Dialog/DialogSleepTimer.qml"), mainView)
-            }
-        },
-        Action {
-            //iconName: "import"
-            iconSource: Qt.resolvedUrl("../../graphics/input.svg")
-            objectName: "inputActions"
-            // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-            text: i18n.tr("Select source")
-            visible: mainView.wideAspect
-            onTriggered: {
-                currentDialog = PopupUtils.open(Qt.resolvedUrl("../Dialog/DialogSelectSource.qml"), mainView)
+            color: theme.palette.selected.baseText
+            focus: true
+            hasClearButton: true
+            inputMethodHints: Qt.ImhNoPredictiveText
+            placeholderText: i18n.tr("Search music")
+
+            // Use the page onVisible as the text field goes visible=false when switching states
+            // This is used when popping from the pageStack and returning back to a page with search
+            Connections {
+                target: thisPage
+
+                onStateChanged: {  // ensure the search is reset (eg pressing Esc)
+                    if (state === "default") {
+                        searchField.text = ""
+                    }
+                }
+
+                onVisibleChanged: {
+                    // clear when the page becomes visible not invisible
+                    // if invisible is used the delegates can be destroyed which
+                    // have created the pushed component
+                    if (visible) {
+                        thisPage.state = "default"
+                    }
+                }
             }
         }
-    ]
-    backAction: Action {
-        id: leaveSearchAction
-        text: "back"
-        iconName: "back"
-        onTriggered: thisPage.state = "default"
-    }
-    contents: TextField {
-        id: searchField
-        anchors {
-            left: parent ? parent.left : undefined
-            right: parent ? parent.right : undefined
-            rightMargin: units.gu(2)
+        flickable: thisPage.flickable
+        leadingActionBar {
+            actions: [
+                Action {
+                    id: leaveSearchAction
+                    text: "back"
+                    iconName: "back"
+                    onTriggered: thisPage.state = "default"
+                }
+            ]
         }
-        color: theme.palette.selected.baseText
-        focus: true
-        hasClearButton: true
-        inputMethodHints: Qt.ImhNoPredictiveText
-        placeholderText: i18n.tr("Search music")
+        visible: thisPage.state === "search"
 
         onVisibleChanged: {
             if (visible) {
@@ -84,33 +77,16 @@ PageHeadState {
             }
         }
 
-        // Use the page onVisible as the text field goes visible=false when switching states
-        // This is used when popping from the pageStack and returning back to a page with search
-        Connections {
-            target: thisPage
-
-            onStateChanged: {  // ensure the search is reset (eg pressing Esc)
-                if (state === "default") {
-                    searchField.text = ""
-                }
-
-                // FIXME: Workaround for pad.lv/1514143 (keyboard show/hide on view moving)
-                // by locking the header and forcing a topMargin of page to the header height
-                //headerState.head.locked = state === headerState.name;
-                //thisPage.anchors.topMargin = state === headerState.name ? units.gu(6.125) : 0  // FIXME: 6.125 is header.height
-            }
-
-            onVisibleChanged: {
-                // clear when the page becomes visible not invisible
-                // if invisible is used the delegates can be destroyed which
-                // have created the pushed component
-                if (visible) {
-                    thisPage.state = "default"
-                }
-            }
+        StyleHints {
+            backgroundColor: mainView.headerColor
+            dividerColor: Qt.darker(mainView.headerColor, 1.1)
         }
     }
-
-    property Page thisPage
+    property Item thisPage
     property alias query: searchField.text
+
+    PropertyChanges {
+        target: thisPage
+        header: thisHeader
+    }
 }

@@ -38,6 +38,9 @@ MusicPage {
         SearchableHeadState {
             thisPage: favoritesPage
             searchEnabled: favoritesModelFilter.count > 0
+            thisHeader {
+                extension: DefaultSections { }
+            }
         },
         MultiSelectHeadState {
             listview: favoritelist
@@ -45,15 +48,20 @@ MusicPage {
             addToQueue: false
             addToPlaylist: false
             removable: true
+            thisHeader {
+                extension: DefaultSections { }
+            }
 
             onRemoved: {
                 customdebug("remove selected indices from favorites");
             }
-
         },
         SearchHeadState {
             id: searchHeader
             thisPage: favoritesPage
+            thisHeader {
+                extension: DefaultSections { }
+            }
         }
     ]
 

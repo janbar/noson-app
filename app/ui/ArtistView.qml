@@ -27,6 +27,7 @@ import "../components"
 import "../components/Delegates"
 import "../components/Flickables"
 import "../components/ViewButton"
+import "../components/HeadState"
 
 MusicPage {
     id: artistViewPage
@@ -44,60 +45,12 @@ MusicPage {
 
     property bool isFavorite: false
 
-    state: "default"
+    state: "artist"
     states: [
-        PageHeadState {
-            id: artistState
-            name: "default"
-            actions: [
-                Action {
-                    objectName: "likeAlbum"
-                    iconName: isFavorite ? "like" : "unlike"
-                    onTriggered: {
-                        if (isFavorite && removeFromFavorites(containerItem))
-                            isFavorite = false
-                        else if (!isFavorite && addItemToFavorites(containerItem, title, ""))
-                            isFavorite = true
-                    }
-                },
-                Action {
-                    //iconName: "settings"
-                    iconSource: Qt.resolvedUrl("../graphics/cogs.svg")
-                    objectName: "queueActions"
-                    // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-                    text: i18n.tr("Manage queue")
-                    visible: mainView.wideAspect && player.trackQueue.model.count > 0
-                    onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogManageQueue.qml"), mainView)
-                    }
-                },
-                Action {
-                    //iconName: "clock"
-                    iconSource: Qt.resolvedUrl("../graphics/timer.svg")
-                    objectName: "timerActions"
-                    // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-                    text: i18n.tr("Standby timer")
-                    visible: mainView.wideAspect
-                    onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSleepTimer.qml"), mainView)
-                    }
-                },
-                Action {
-                    //iconName: "import"
-                    iconSource: Qt.resolvedUrl("../graphics/input.svg")
-                    objectName: "inputActions"
-                    // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-                    text: i18n.tr("Select source")
-                    visible: mainView.wideAspect
-                    onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSelectSource.qml"), mainView)
-                    }
-                }
-            ]
-            PropertyChanges {
-                target: artistViewPage.head
-                backAction: artistState.backAction
-                actions: artistState.actions
+        ArtistAlbumsHeadState {
+            thisPage: artistViewPage
+            thisHeader {
+                extension: DefaultSections { }
             }
         }
     ]

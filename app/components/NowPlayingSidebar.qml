@@ -17,16 +17,80 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
+import "HeadState"
+import "Dialog"
 
 Rectangle {
     id: nowPlayingSidebar
     anchors {
         fill: parent
     }
-    color: styleMusic.nowPlaying.backgroundColor
 
-    property alias flickable: queue  // fake normal Page
+    property bool isListView: true
+    property DialogBase currentDialog
+
+    color: styleMusic.nowPlaying.backgroundColor
+    state: queue.state === "multiselectable" ? "selection" : "default"
+    states: [
+        QueueHeadState {
+            stateName: "default"
+            thisHeader {
+                leadingActionBar {
+                    actions: []  // hide tab bar
+                    objectName: "sideLeadingActionBar"
+                }
+                z: 100  // put on top of content
+            }
+            thisPage: nowPlayingSidebar
+        },
+        MultiSelectHeadState {
+            addToQueue: false
+            listview: queue
+            removable: true
+            thisHeader {
+                z: 100  // put on top of content
+            }
+            thisPage: nowPlayingSidebar
+        }
+    ]
+    property alias flickable: queue.listview  // fake normal Page
+    property Item header: PageHeader {
+        id: pageHeader
+        leadingActionBar {
+            actions: nowPlayingSidebar.head.backAction
+            objectName: "sideLeadingActionBar"
+        }
+        flickable: queue.listview
+        trailingActionBar {
+            actions: nowPlayingSidebar.head.actions
+        }
+        z: 100  // put on top of content
+
+        StyleHints {
+            backgroundColor: mainView.headerColor
+        }
+    }
+    property Item previousHeader: null
     property string title: ""  // fake normal Page
+
+    onHeaderChanged: {  // Copy what SDK does to parent header correctly
+        if (previousHeader) {
+            previousHeader.parent = null
+        }
+
+        header.parent = nowPlayingSidebar
+        previousHeader = header;
+    }
+
+    Loader {
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+        }
+        height: units.gu(6.125)
+        sourceComponent: header
+    }
 
     Queue {
         id: queue
@@ -40,10 +104,6 @@ Rectangle {
             anchors {
                 left: parent.left
                 right: parent.right
-            }
-            Item {
-                height: units.gu(10) // page header
-                width: parent.width
             }
             NowPlayingFullView {
                 anchors {

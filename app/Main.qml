@@ -774,6 +774,38 @@ MainView {
             }
 
             property Tab lastTab: selectedTab
+            property list<Action> tabActions: [
+                Action {
+                    objectName: "artistsTabAction"
+                    text: artistsTab.title
+                    onTriggered: tabs.selectedTabIndex = artistsTab.index
+                },
+                Action {
+                    objectName: "albumsTabAction"
+                    text: albumsTab.title
+                    onTriggered: tabs.selectedTabIndex = albumsTab.index
+                },
+                Action {
+                    objectName: "genresTabAction"
+                    text: genresTab.title
+                    onTriggered: tabs.selectedTabIndex = genresTab.index
+                },
+                Action {
+                    objectName: "radiosTabAction"
+                    text: radiosTab.title
+                    onTriggered: tabs.selectedTabIndex = radiosTab.index
+                },
+                Action {
+                    objectName: "playlistsTabAction"
+                    text: playlistsTab.title
+                    onTriggered: tabs.selectedTabIndex = playlistsTab.index
+                },
+                Action {
+                    objectName: "favoritesTabAction"
+                    text: favoritesTab.title
+                    onTriggered: tabs.selectedTabIndex = favoritesTab.index
+                }
+            ]
 
             onSelectedTabChanged: {
                 lastTab = selectedTab;

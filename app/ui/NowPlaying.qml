@@ -92,66 +92,41 @@ MusicPage {
         isListView = listView;
     }
 
-    state: isListView && queueLoader.item.listview.state === "multiselectable" ? "selection" : "default"
-    states: [
-        PageHeadState {
-            id: defaultState
-            name: "default"
-            actions: [
-                Action {
-                    iconName: isListView ? "view-fullscreen" : "media-playlist"
-                    // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-                    text: i18n.tr("Show queue")
-                    visible: (queueLoader.status === Loader.Ready)
-                    onTriggered: {
-                        isListView = !isListView
-                    }
-                },
-                Action {
-                    //iconName: "settings"
-                    iconSource: Qt.resolvedUrl("../graphics/cogs.svg")
-                    objectName: "queueActions"
-                    // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-                    text: i18n.tr("Manage queue")
-                    visible: player.trackQueue.model.count > 0
-                    onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogManageQueue.qml"), nowPlaying)
-                    }
-                },
-                Action {
-                    //iconName: "clock"
-                    iconSource: Qt.resolvedUrl("../graphics/timer.svg")
-                    objectName: "timerActions"
-                    // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-                    text: i18n.tr("Standby timer")
-                    visible: true
-                    onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSleepTimer.qml"), nowPlaying)
-                    }
-                },
-                Action {
-                    //iconName: "import"
-                    iconSource: Qt.resolvedUrl("../graphics/input.svg")
-                    objectName: "inputActions"
-                    // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-                    text: i18n.tr("Select source")
-                    visible: true
-                    onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSelectSource.qml"), nowPlaying)
-                    }
-                }
-
-            ]
-            backAction: Action {
-                iconName: "back"
-                onTriggered: {
-                    mainPageStack.goBack()
-                }
+    state: {
+        if (isListView) {
+            if (queueLoader.item.listview.state === "multiselectable") {
+                "selection"
+            } else {
+                "default"
             }
-            PropertyChanges {
-                target: nowPlaying.head
-                backAction: defaultState.backAction
-                actions: defaultState.actions
+        } else {
+            "fullview"
+        }
+    }
+    states: [
+        QueueHeadState {
+            stateName: "fullview"
+            thisPage: nowPlaying
+            thisHeader {
+                flickable: null
+                extension: DefaultSections { }
+            }
+        },
+        QueueHeadState {
+            stateName: "default"
+            thisPage: nowPlaying
+            thisHeader {
+                flickable: queueLoader.item.listview
+                extension: DefaultSections { }
+            }
+        },
+        MultiSelectHeadState {
+            addToQueue: false
+            listview: queueLoader.item.listview
+            removable: true
+            thisPage: nowPlaying
+            thisHeader {
+                extension: DefaultSections { }
             }
         }
     ]

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015
+ * Copyright (C) 2016
  *      Andrew Hayzen <ahayzen@gmail.com>
  *      Victor Thompson <victor.thompson@gmail.com>
  *
@@ -21,11 +21,10 @@ import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 
 State {
-    name: "default"
+    id: playlistHeadState
+    name: "playlist"
 
-    property alias searchEnabled: searchAction.enabled
     property PageHeader thisHeader: PageHeader {
-        id: headerState
         flickable: thisPage.flickable
         leadingActionBar {
             actions: {
@@ -43,16 +42,27 @@ State {
         trailingActionBar {
             actions: [
                 Action {
-                    id: searchAction
-                    iconName: "search"
+                    objectName: "likePlaylist"
+                    iconName: isFavorite ? "like" : "unlike"
                     onTriggered: {
-                        thisPage.state = "search";
-                        thisPage.header.contents.forceActiveFocus();
+                        if (isFavorite && removeFromFavorites(containerItem))
+                            isFavorite = false
+                        else if (!isFavorite && addItemToFavorites(containerItem, title, albumtrackslist.headerItem.firstSource))
+                            isFavorite = true
+                    }
+                },
+                Action {
+                    objectName: "deletePlaylist"
+                    iconName: "delete"
+                    onTriggered: {
+                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../Dialog/DialogRemovePlaylist.qml"), mainView)
+                        currentDialog.oldPlaylistId = songStackPage.containerItem.id
                     }
                 }
             ]
+            objectName: "playlistTrailingActionBar"
         }
-        visible: thisPage.state === "default"
+        visible: thisPage.state === "playlist"
 
         Action {
             id: backActionComponent

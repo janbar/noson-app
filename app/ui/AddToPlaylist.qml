@@ -41,10 +41,16 @@ MusicPage {
             newPlaylistEnabled: true
             searchEnabled: AllPlaylistsModel.count > 0
             thisPage: addToPlaylistPage
+            thisHeader {
+                extension: DefaultSections { }
+            }
         },
         SearchHeadState {
             id: searchHeader
             thisPage: addToPlaylistPage
+            thisHeader {
+                extension: DefaultSections { }
+            }
         }
     ]
 

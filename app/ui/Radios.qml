@@ -37,6 +37,9 @@ MusicPage {
         SearchableHeadState {
             thisPage: radiosPage
             searchEnabled: radiosModelFilter.count > 0
+            thisHeader {
+                extension: DefaultSections { }
+            }
         },
         MultiSelectHeadState {
             listview: radiolist
@@ -44,15 +47,20 @@ MusicPage {
             addToQueue: false
             addToPlaylist: false
             removable: true
+            thisHeader {
+                extension: DefaultSections { }
+            }
 
             onRemoved: {
                 customdebug("remove selected indices from radios");
             }
-
         },
         SearchHeadState {
             id: searchHeader
             thisPage: radiosPage
+            thisHeader {
+                extension: DefaultSections { }
+            }
         }
     ]
 

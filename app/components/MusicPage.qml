@@ -64,22 +64,40 @@ Page {
         }
     }
 
-    PageHeadSections {
-        id: defaultStateSections
-        model: [player.queueInfo, currentZoneTag]
-        selectedIndex: -1
+    head {  // hide default header
+        locked: true
+        visible: false
     }
 
-    head {
-        sections {
-            model: defaultStateSections.model
-            selectedIndex: 0
-            onSelectedIndexChanged: {
-                if (head.sections.selectedIndex == 1 && mainPageStack.currentPage.title !== i18n.tr("Zones")) {
-                    head.sections.selectedIndex = 0
-                    mainPageStack.push(zonesPageLoader.item), {}
+    header: PageHeader {
+        id: pageHeader
+        extension: DefaultSections { }
+
+        flickable: thisPage.flickable
+        leadingActionBar {
+            actions: {
+                if (mainPageStack.currentPage === tabs) {
+                    tabs.tabActions
+                } else if (mainPageStack.depth > 1) {
+                    backActionComponent
+                } else {
+                    null
                 }
             }
+            objectName: "tabsLeadingActionBar"
+        }
+        title: thisPage.title
+
+        StyleHints {
+            backgroundColor: mainView.headerColor
+            dividerColor: Qt.darker(mainView.headerColor, 1.1)
+        }
+
+        Action {
+            id: backActionComponent
+            iconName: "back"
+            objectName: "backAction"
+            onTriggered: mainPageStack.pop()
         }
     }
 }

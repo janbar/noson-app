@@ -58,128 +58,26 @@ MusicPage {
 
     state: albumtrackslist.state === "multiselectable" ? "selection" : (isPlaylist ? "playlist" : "album")
     states: [
-        PageHeadState {
-            id: albumState
-            name: "album"
-            actions: [
-                Action {
-                    objectName: "likeAlbum"
-                    iconName: isFavorite ? "like" : "unlike"
-                    onTriggered: {
-                        if (isFavorite && removeFromFavorites(containerItem))
-                            isFavorite = false
-                        else if (!isFavorite && addItemToFavorites(containerItem, title, albumtrackslist.headerItem.firstSource))
-                            isFavorite = true
-                    }
-                },
-                Action {
-                    //iconName: "settings"
-                    iconSource: Qt.resolvedUrl("../graphics/cogs.svg")
-                    objectName: "queueActions"
-                    // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-                    text: i18n.tr("Manage queue")
-                    visible: mainView.wideAspect && player.trackQueue.model.count > 0
-                    onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogManageQueue.qml"), mainView)
-                    }
-                },
-                Action {
-                    //iconName: "clock"
-                    iconSource: Qt.resolvedUrl("../graphics/timer.svg")
-                    objectName: "timerActions"
-                    // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-                    text: i18n.tr("Standby timer")
-                    visible: mainView.wideAspect
-                    onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSleepTimer.qml"), mainView)
-                    }
-                },
-                Action {
-                    //iconName: "import"
-                    iconSource: Qt.resolvedUrl("../graphics/input.svg")
-                    objectName: "inputActions"
-                    // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-                    text: i18n.tr("Select source")
-                    visible: mainView.wideAspect
-                    onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSelectSource.qml"), mainView)
-                    }
-                }
-            ]
-            PropertyChanges {
-                target: songStackPage.head
-                backAction: albumState.backAction
-                actions: albumState.actions
+        AlbumSongsHeadState {
+            thisPage: songStackPage
+            thisHeader {
+                extension: DefaultSections { }
             }
         },
-        PageHeadState {
-            id: playlistState
-            name: "playlist"
-            actions: [
-                Action {
-                    objectName: "likePlaylist"
-                    iconName: isFavorite ? "like" : "unlike"
-                    onTriggered: {
-                        if (isFavorite && removeFromFavorites(containerItem))
-                            isFavorite = false
-                        else if (!isFavorite && addItemToFavorites(containerItem, title, albumtrackslist.headerItem.firstSource))
-                            isFavorite = true
-                    }
-                },
-                Action {
-                    objectName: "deletePlaylist"
-                    iconName: "delete"
-                    onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogRemovePlaylist.qml"), mainView)
-                        currentDialog.oldPlaylistId = songStackPage.containerItem.id
-                    }
-                },
-                Action {
-                    //iconName: "settings"
-                    iconSource: Qt.resolvedUrl("../graphics/cogs.svg")
-                    objectName: "queueActions"
-                    // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-                    text: i18n.tr("Manage queue")
-                    visible: mainView.wideAspect && player.trackQueue.model.count > 0
-                    onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogManageQueue.qml"), mainView)
-                    }
-                },
-                Action {
-                    //iconName: "clock"
-                    iconSource: Qt.resolvedUrl("../graphics/timer.svg")
-                    objectName: "timerActions"
-                    // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-                    text: i18n.tr("Standby timer")
-                    visible: mainView.wideAspect
-                    onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSleepTimer.qml"), mainView)
-                    }
-                },
-                Action {
-                    //iconName: "import"
-                    iconSource: Qt.resolvedUrl("../graphics/input.svg")
-                    objectName: "inputActions"
-                    // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-                    text: i18n.tr("Select source")
-                    visible: mainView.wideAspect
-                    onTriggered: {
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSelectSource.qml"), mainView)
-                    }
-                }
-            ]
-            PropertyChanges {
-                target: songStackPage.head
-                backAction: playlistState.backAction
-                actions: playlistState.actions
+        PlaylistHeadState {
+            thisPage: songStackPage
+            thisHeader {
+                extension: DefaultSections { }
             }
         },
         MultiSelectHeadState {
-            id: selection
             containerItem: songStackPage.containerItem
             listview: albumtrackslist
             removable: isPlaylist
             thisPage: songStackPage
+            thisHeader {
+                extension: DefaultSections { }
+            }
 
             onRemoved: {
                 mainView.currentlyWorking = false

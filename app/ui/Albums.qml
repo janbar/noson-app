@@ -38,10 +38,16 @@ MusicPage {
         SearchableHeadState {
             thisPage: albumsPage
             searchEnabled: albumsModelFilter.count > 0
+            thisHeader {
+                extension: DefaultSections { }
+            }
         },
         SearchHeadState {
             id: searchHeader
             thisPage: albumsPage
+            thisHeader {
+                extension: DefaultSections { }
+            }
         }
     ]
 

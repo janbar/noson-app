@@ -1,7 +1,6 @@
 /*
- * Copyright (C) 2015
- *      Andrew Hayzen <ahayzen@gmail.com>
- *      Victor Thompson <victor.thompson@gmail.com>
+ * Copyright (C) 2016
+ *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,14 +17,11 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
 
 State {
-    name: "default"
+    name: "album"
 
-    property alias searchEnabled: searchAction.enabled
     property PageHeader thisHeader: PageHeader {
-        id: headerState
         flickable: thisPage.flickable
         leadingActionBar {
             actions: {
@@ -43,16 +39,19 @@ State {
         trailingActionBar {
             actions: [
                 Action {
-                    id: searchAction
-                    iconName: "search"
+                    objectName: "likeAlbum"
+                    iconName: isFavorite ? "like" : "unlike"
                     onTriggered: {
-                        thisPage.state = "search";
-                        thisPage.header.contents.forceActiveFocus();
+                        if (isFavorite && removeFromFavorites(containerItem))
+                            isFavorite = false
+                        else if (!isFavorite && addItemToFavorites(containerItem, title, albumtrackslist.headerItem.firstSource))
+                            isFavorite = true
                     }
                 }
             ]
+            objectName: "albumSongsTrailingActionBar"
         }
-        visible: thisPage.state === "default"
+        visible: thisPage.state === "album"
 
         Action {
             id: backActionComponent
