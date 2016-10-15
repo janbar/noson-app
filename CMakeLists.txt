@@ -24,6 +24,7 @@ set(QT_IMPORTS_DIR "lib/${ARCH_TRIPLET}")
 
 option(INSTALL_TESTS "Install the tests on make install" on)
 option(CLICK_MODE "Installs to a contained location" on)
+set(QT_SELECT "qt5" CACHE STRING "Configures QT chooser")
 
 set(APP_VERSION       1.6.0)
 set(APP_NAME          Noson)
