@@ -23,11 +23,6 @@ import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 
 Rectangle {
-    anchors {
-        bottom: parent.bottom
-        left: parent.left
-        right: parent.right
-    }
     color: styleMusic.common.black
     height: units.gu(7.25)
     objectName: "musicToolbarObject"

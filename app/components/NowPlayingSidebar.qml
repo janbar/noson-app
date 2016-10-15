@@ -56,19 +56,8 @@ Rectangle {
     property alias flickable: queue.listview  // fake normal Page
     property Item header: PageHeader {
         id: pageHeader
-        leadingActionBar {
-            actions: nowPlayingSidebar.head.backAction
-            objectName: "sideLeadingActionBar"
-        }
         flickable: queue.listview
-        trailingActionBar {
-            actions: nowPlayingSidebar.head.actions
-        }
         z: 100  // put on top of content
-
-        StyleHints {
-            backgroundColor: mainView.headerColor
-        }
     }
     property Item previousHeader: null
     property string title: ""  // fake normal Page
@@ -80,16 +69,6 @@ Rectangle {
 
         header.parent = nowPlayingSidebar
         previousHeader = header;
-    }
-
-    Loader {
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-        }
-        height: units.gu(6.125)
-        sourceComponent: header
     }
 
     Queue {
