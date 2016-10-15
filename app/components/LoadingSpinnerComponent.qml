@@ -1,8 +1,6 @@
 /*
- * Copyright (C) 2013, 2014, 2015
- *      Andrew Hayzen <ahayzen@gmail.com>
- *      Daniel Holm <d.holmen@gmail.com>
- *      Victor Thompson <victor.thompson@gmail.com>
+ * Copyright (C) 2016
+ *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +29,40 @@ Item {
         verticalCenter: parent.verticalCenter
     }
 
+    Rectangle {
+        id: loading
+        objectName: "LoadingSpinner"
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        height: units.gu(7)
+        width: units.gu(17)
+        radius: units.gu(1.5)
+        color: "transparent"
+        border.color: "white"
+        border.width: units.gu(0.6)
+        visible: refresh.visible
+
+        Rectangle {
+            anchors.fill: parent
+            border.color: "transparent"
+            border.width: parent.border.width
+            radius: parent.radius
+            color: parent.border.color
+            opacity: 0.3
+        }
+        Label {
+            anchors.centerIn: parent
+            color: styleMusic.mainView.labalColor
+            fontSize: "x-large"
+            font.bold : true
+            maximumLineCount: 1
+            text: "Loading"
+        }
+
+        z: 1
+    }
+
+    /*
     ActivityIndicator {
         id: loading
         objectName: "LoadingSpinner"
@@ -41,4 +73,5 @@ Item {
         width: height
         z: 1
     }
+    */
 }
