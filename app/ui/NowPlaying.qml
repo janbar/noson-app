@@ -108,7 +108,7 @@ MusicPage {
             stateName: "fullview"
             thisPage: nowPlaying
             thisHeader {
-                flickable: null
+                flickable: thisPage.flickable
                 extension: DefaultSections { }
             }
         },
@@ -116,7 +116,7 @@ MusicPage {
             stateName: "default"
             thisPage: nowPlaying
             thisHeader {
-                flickable: queueLoader.item.listview
+                flickable: thisPage.flickable
                 extension: DefaultSections { }
             }
         },

@@ -45,7 +45,7 @@ Rectangle {
         },
         MultiSelectHeadState {
             addToQueue: false
-            listview: queue
+            listview: queue.listview
             removable: true
             thisHeader {
                 z: 100  // put on top of content
