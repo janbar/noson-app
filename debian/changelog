@@ -1,4 +1,8 @@
-noson-app (1.5) UNRELEASED; urgency=low
+noson-app (1.6) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 1.6
+  * Refactor using components 1.3
 
   [ janbar ]
   * Release 1.5
