@@ -947,7 +947,7 @@ MainView {
 
     Loader {
         id: musicToolbar
-        active: !wideAspect || anchors.topMargin < 0
+        active: true
         anchors {
             left: parent.left
             right: parent.right
