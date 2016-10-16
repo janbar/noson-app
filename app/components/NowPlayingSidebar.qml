@@ -53,12 +53,13 @@ Rectangle {
             thisPage: nowPlayingSidebar
         }
     ]
-    property alias flickable: queue.listview  // fake normal Page
+    property Item flickable: null // fake normal Page
     property Item header: PageHeader {
         id: pageHeader
-        flickable: queue.listview
+        flickable: toolbar
         z: 100  // put on top of content
     }
+
     property Item previousHeader: null
     property string title: ""  // fake normal Page
 
@@ -71,10 +72,32 @@ Rectangle {
         previousHeader = header;
     }
 
+    Column {
+        id: toolbar
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+            topMargin: units.gu(6.5)
+        }
+        NowPlayingToolbar {
+            id: nowPlayingToolBar
+            anchors {
+                fill: undefined
+            }
+            bottomProgressHint: false
+            height: units.gu(15)
+            width: parent.width
+        }
+    }
+
     Queue {
         id: queue
         anchors {
-            fill: parent
+            top: toolbar.bottom
+            bottom: parent.bottom
+            left: parent.left
+            right: parent.right
             topMargin: 0
             bottomMargin: 0
         }
@@ -90,16 +113,6 @@ Rectangle {
                 }
                 clip: true
                 height: units.gu(55)
-                width: parent.width
-            }
-            NowPlayingToolbar {
-                id: nowPlayingToolBar
-                anchors {
-                    fill: undefined
-                }
-                bottomProgressHint: false
-                color: styleMusic.common.black
-                height: units.gu(15)
                 width: parent.width
             }
         }

@@ -28,7 +28,7 @@ Rectangle {
     anchors {
         fill: parent
     }
-    color: styleMusic.common.black
+    color: styleMusic.playerControls.backgroundColor
 
     property alias bottomProgressHint: playerControlsProgressBar.visible
 
@@ -90,7 +90,7 @@ Rectangle {
                 thumbRadius: units.gu(0.5)
                 thumbSize: units.gu(2)
                 thumbColor: styleMusic.playerControls.progressHandleColor
-                backgroundColor: styleMusic.playerControls.backgroundColor
+                backgroundColor: styleMusic.playerControls.progressBackgroundColor
                 foregroundColor: styleMusic.playerControls.progressForegroundColor
             }
 

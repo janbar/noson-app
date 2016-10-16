@@ -66,7 +66,7 @@ Flickable {
         Rectangle {
             id: nowPlayingWideAspectLabelsBackground
             anchors.bottom: parent.bottom
-            color: styleMusic.common.black
+            color: styleMusic.nowPlaying.backgroundColor
             height: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(10) : units.gu(13)
             opacity: 0.8
             width: parent.width
@@ -162,7 +162,7 @@ Flickable {
             right: parent.right
         }
         height: units.gu(5)
-        color: styleMusic.common.black
+        color: styleMusic.nowPlaying.backgroundColor
     }
 
     /* Progress bar component */

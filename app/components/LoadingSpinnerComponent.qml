@@ -52,7 +52,7 @@ Item {
         }
         Label {
             anchors.centerIn: parent
-            color: styleMusic.mainView.labalColor
+            color: "white"
             fontSize: "x-large"
             font.bold : true
             maximumLineCount: 1

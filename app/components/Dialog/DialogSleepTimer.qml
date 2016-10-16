@@ -59,7 +59,7 @@ DialogBase {
 
     Rectangle {
         id: timeSelector
-        color: styleMusic.common.black //styleMusic.popover.labelColor
+        color: styleMusic.mainView.backgroundColor
         height: selector.containerHeight
         radius: units.gu(1.5)
 
