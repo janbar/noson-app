@@ -93,7 +93,7 @@ State {
                             items.push(containerItem);
                         else {
                             for (var i = 0; i < indicies.length; i++) {
-                                items.push(listview.model.get(indicies[i]));
+                                items.push({"payload": listview.model.get(indicies[i]).payload});
                             }
                         }
                         mainPageStack.push(Qt.resolvedUrl("../../ui/AddToPlaylist.qml"),

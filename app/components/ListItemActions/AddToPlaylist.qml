@@ -27,7 +27,8 @@ Action {
     text: i18n.tr("Add to playlist")
 
     onTriggered: {
+        // WARNING: Get the payload of model now to increment the reference count
         mainPageStack.push(Qt.resolvedUrl("../../ui/AddToPlaylist.qml"),
-                           {"chosenElements": [model]})
+                           {"chosenElements": [{"payload": model.payload}]})
     }
 }
