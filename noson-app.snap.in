@@ -1,0 +1,3 @@
+#!/bin/bash
+export QT_SELECT=snappy-qt5
+exec qmlscene -I $SNAP@CMAKE_INSTALL_PREFIX@/@QT_IMPORTS_DIR@ $SNAP@NOSONAPP_DIR@/@MAIN_QML@

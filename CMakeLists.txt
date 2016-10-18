@@ -24,7 +24,7 @@ set(QT_IMPORTS_DIR "lib/${ARCH_TRIPLET}")
 
 option(INSTALL_TESTS "Install the tests on make install" on)
 option(CLICK_MODE "Installs to a contained location" on)
-set(QT_SELECT "qt5" CACHE STRING "Configures QT chooser")
+option(SNAP_MODE "Installs to location suitable for snaps" off)
 
 set(APP_VERSION       1.6.3)
 set(APP_NAME          Noson)
@@ -69,8 +69,14 @@ else(CLICK_MODE)
 
     set(EXEC ${APP_HARDCODE})
 
-    configure_file(${APP_HARDCODE}.in
-        ${CMAKE_CURRENT_BINARY_DIR}/${APP_HARDCODE})
+    if(SNAP_MODE)
+        configure_file(${APP_HARDCODE}.snap.in
+            ${CMAKE_CURRENT_BINARY_DIR}/${APP_HARDCODE})
+    else(SNAP_MODE)
+        configure_file(${APP_HARDCODE}.in
+            ${CMAKE_CURRENT_BINARY_DIR}/${APP_HARDCODE})
+    endif(SNAP_MODE)
+
     install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${APP_HARDCODE}
         DESTINATION ${CMAKE_INSTALL_BINDIR})
     configure_file(${DESKTOP_FILE_NAME}.in ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE_NAME}.in)
