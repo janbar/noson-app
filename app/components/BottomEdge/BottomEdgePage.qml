@@ -44,9 +44,9 @@ Page {
         if (bottomEdgePageLoaded) {
             bottomEdgePage.active = true
             page.pageStack.push(bottomEdgePage)
-            if (bottomEdgePage.flickable) {
-                bottomEdgePage.flickable.contentY = -page.header.height
-                bottomEdgePage.flickable.returnToBounds()
+            if (bottomEdgePage.header.flickable) {
+                bottomEdgePage.header.flickable.contentY = -page.header.height
+                bottomEdgePage.header.flickable.returnToBounds()
             }
             if (bottomEdgePage.ready)
                 bottomEdgePage.ready()
@@ -371,10 +371,10 @@ Page {
             Binding {
                 target: bottomEdgePageLoaded ? shaderSource : null
                 property: "anchors.topMargin"
-                value:  bottomEdgePage && bottomEdgePage.flickable ? bottomEdgePage.flickable.contentY : 0
+                value:  bottomEdgePage && bottomEdgePage.header.flickable ? bottomEdgePage.header.flickable.contentY : 0
                 when: !page.isReady
             }
         }
-    } // Rectanlgle
+    } // Rectangle
 }
 

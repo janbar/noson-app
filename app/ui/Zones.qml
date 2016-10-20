@@ -28,11 +28,28 @@ import "../components/BottomEdge"
 
 BottomEdgePage {
     id: zonesPage
-    title: i18n.tr("Zones")
 
     bottomEdgeEnabled: true
     bottomEdgePage: Page {
-        title: currentZoneTag
+        header: PageHeader {
+            title: currentZoneTag
+
+            leadingActionBar {
+                actions: [
+                    Action {
+                        iconName: "back"
+                        objectName: "backAction"
+                        onTriggered: mainPageStack.pop()
+                    }
+                ]
+            }
+
+            StyleHints {
+                backgroundColor: mainView.headerColor
+                dividerColor: Qt.darker(mainView.headerColor, 1.1)
+            }
+        }
+
         ZoneControls {
             controlledZone: currentZone
         }
@@ -40,78 +57,122 @@ BottomEdgePage {
     bottomEdgeTitle: "" //i18n.tr("Zone controls")
     bottomEdgeMarging: musicToolbar.visible ? musicToolbar.height : 0
 
+    property string pageTitle: i18n.tr("Zones")
+    property Item pageFlickable: zoneList
+
     state: zoneList.state === "multiselectable" ? "selection" : "default"
     states: [
-        PageHeadState {
+        State {
             id: defaultState
             name: "default"
-            actions: [
-                Action {
-                    //iconName: "settings"
-                    iconSource: Qt.resolvedUrl("../graphics/cogs.svg")
-                    text: i18n.tr("Settings")
-                    visible: true
-                    onTriggered: PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSettings.qml"), mainView)
-                },
-                Action {
-                  iconName: "reload"
-                  text: i18n.tr("Reload zones")
-                  visible: true
-                  onTriggered: {
-                      mainView.currentlyWorking = true
-                      delayResetController.start()
-                  }
-                },
-                Action {
-                    //iconName: "compose"
-                    iconSource: Qt.resolvedUrl("../graphics/group.svg")
-                    text: i18n.tr("Create group")
-                    visible: zoneList.model.count > 1
-                    onTriggered: zoneList.clearSelection() // change view state to multiselectable
+            property PageHeader thisHeader: PageHeader {
+                flickable: zonesPage.pageFlickable
+                title: zonesPage.pageTitle
+
+                leadingActionBar {
+                    actions: [
+                        Action {
+                            iconName: "back"
+                            objectName: "backAction"
+                            onTriggered: mainPageStack.pop()
+                        }
+                    ]
+                    objectName: "zonesLeadingActionBar"
                 }
-            ]
+                trailingActionBar {
+                    actions: [
+                        Action {
+                            //iconName: "settings"
+                            iconSource: Qt.resolvedUrl("../graphics/cogs.svg")
+                            text: i18n.tr("Settings")
+                            visible: true
+                            onTriggered: PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSettings.qml"), mainView)
+                        },
+                        Action {
+                          iconName: "reload"
+                          text: i18n.tr("Reload zones")
+                          visible: true
+                          onTriggered: {
+                              mainView.currentlyWorking = true
+                              delayResetController.start()
+                          }
+                        },
+                        Action {
+                            //iconName: "compose"
+                            iconSource: Qt.resolvedUrl("../graphics/group.svg")
+                            text: i18n.tr("Create group")
+                            visible: zoneList.model.count > 1
+                            onTriggered: zoneList.clearSelection() // change view state to multiselectable
+                        }
+                    ]
+                    objectName: "zonesTrailingActionBar"
+                }
+                visible: zonesPage.state === "default"
+
+                StyleHints {
+                    backgroundColor: mainView.headerColor
+                    dividerColor: Qt.darker(mainView.headerColor, 1.1)
+                }
+            }
+
             PropertyChanges {
-                target: zonesPage.head
-                backAction: defaultState.backAction
-                actions: defaultState.actions
+                target: zonesPage
+                header: defaultState.thisHeader
             }
         },
-        PageHeadState {
+        State {
             id: selectionState
             name: "selection"
-            actions: [
-                Action {
-                    iconName: zoneList.model.count > zoneList.getSelectedIndices().length ? "select" : "clear"
-                    text: zoneList.model.count > zoneList.getSelectedIndices().length ? i18n.tr("Select All") : i18n.tr("Clear")
-                    visible: zoneList.model.count > 0
+            property PageHeader thisHeader: PageHeader {
+                flickable: zonesPage.pageFlickable
+                title: zonesPage.pageTitle
 
-                    onTriggered: {
-                        if (zoneList.model.count > zoneList.getSelectedIndices().length)
-                            zoneList.selectAll()
-                        else
-                            zoneList.clearSelection()
-                    }
+                leadingActionBar {
+                    actions: [
+                        Action {
+                            text: "back"
+                            iconName: "back"
+                            onTriggered: {
+                                if (zoneList.getSelectedIndices().length > 1) {
+                                    mainView.currentlyWorking = true
+                                    delayJoinZones.start()
+                                }
+                                else {
+                                    zoneList.closeSelection()
+                                }
+                            }
+                        }
+                    ]
+                    objectName: "zonesLeadingActionBar"
                 }
-            ]
-            backAction: Action {
-                text: "back"
-                iconName: "back"
-                onTriggered: {
-                    if (zoneList.getSelectedIndices().length > 1) {
-                        mainView.currentlyWorking = true
-                        delayJoinZones.start()
-                    }
-                    else {
-                        zoneList.closeSelection()
-                    }
+                trailingActionBar {
+                    actions: [
+                        Action {
+                            iconName: zoneList.model.count > zoneList.getSelectedIndices().length ? "select" : "clear"
+                            text: zoneList.model.count > zoneList.getSelectedIndices().length ? i18n.tr("Select All") : i18n.tr("Clear")
+                            visible: zoneList.model.count > 0
+
+                            onTriggered: {
+                                if (zoneList.model.count > zoneList.getSelectedIndices().length)
+                                    zoneList.selectAll()
+                                else
+                                    zoneList.clearSelection()
+                            }
+                        }
+                    ]
+                    objectName: "zonesSelectionTrailingActionBar"
+                }
+                visible: zonesPage.state === "selection"
+
+                StyleHints {
+                    backgroundColor: mainView.headerColor
+                    dividerColor: Qt.darker(mainView.headerColor, 1.1)
                 }
             }
-            head: zonesPage.head
 
             PropertyChanges {
-                target: zonesPage.head
-                backAction: selectionState.backAction
-                actions: selectionState.actions
+                target: zonesPage
+                header: selectionState.thisHeader
             }
         }
     ]
@@ -131,7 +192,8 @@ BottomEdgePage {
         onTriggered: {
             handleJoinZones()
             zoneList.closeSelection()
-            reloadZone()
+            // Zones will be reloaded on signal topologyChanged
+            // Signal is handled in MainView
             mainView.currentlyWorking = false
         }
     }
@@ -251,7 +313,8 @@ BottomEdgePage {
                 interval: 100
                 onTriggered: {
                     Sonos.unjoinZone(model.payload)
-                    reloadZone()
+                    // Zones will be reloaded on signal topologyChanged
+                    // Signal is handled in MainView
                     mainView.currentlyWorking = false
                 }
             }

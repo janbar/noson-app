@@ -28,15 +28,30 @@ import "../components/BottomEdge"
 
 Page {
     id: groupPage
-    title: i18n.tr("Group")
 
+    property string pageTitle: i18n.tr("Group")
+    property Item pageFlickable: groupList
     property string zoneId: ""
 
-    state: "default"
-    states: [
-        PageHeadState {
-            id: defaultState
-            name: "default"
+    header: PageHeader {
+        flickable: groupPage.pageFlickable
+        title: groupPage.pageTitle
+
+        leadingActionBar {
+            actions: [
+                Action {
+                    id: leaveGroup
+                    iconName: "back"
+                    objectName: "backAction"
+                    onTriggered: {
+                        mainView.currentlyWorking = true
+                        delayHandleGroupChanges.start()
+                    }
+                }
+            ]
+            objectName: "groupLeadingActionBar"
+        }
+        trailingActionBar {
             actions: [
                 Action {
                     iconName: "select"
@@ -52,22 +67,14 @@ Page {
                     }
                 }
             ]
-            backAction: Action {
-                id: leaveGroup
-                text: "back"
-                iconName: "back"
-                onTriggered: {
-                    mainView.currentlyWorking = true
-                    delayHandleGroupChanges.start()
-                }
-            }
-            PropertyChanges {
-                target: groupPage.head
-                backAction: defaultState.backAction
-                actions: defaultState.actions
-            }
+            objectName: "groupTrailingActionBar"
         }
-    ]
+
+        StyleHints {
+            backgroundColor: mainView.headerColor
+            dividerColor: Qt.darker(mainView.headerColor, 1.1)
+        }
+    }
 
     Timer {
         id: delayHandleGroupChanges
@@ -98,7 +105,8 @@ Page {
                         break;
                     }
                 }
-                reloadZone();
+                // Zones will be reloaded on signal topologyChanged
+                // Signal is handled in MainView
                 mainView.currentlyWorking = false
             }
             mainPageStack.pop()
