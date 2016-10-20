@@ -400,10 +400,11 @@ MainView {
     // to fill data in global models
     function reloadZone() {
         AllZonesModel.init(Sonos, true); // force load now
-        customdebug("Connecting zone '" + currentZone + "'");
+        customdebug("Reloading zone ...");
         if ((Sonos.connectZone(currentZone) || Sonos.connectZone("")) && player.connect()) {
             currentZone = Sonos.getZoneName();
             currentZoneTag = Sonos.getZoneShortName();
+            customdebug("Connected zone is '" + currentZone + "'");
             // It is time to fill models
             Sonos.runLoader();
             // Signal change if any
