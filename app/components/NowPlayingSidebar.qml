@@ -53,6 +53,7 @@ Rectangle {
             thisPage: nowPlayingSidebar
         }
     ]
+    property string pageTitle: ""  // fake normal Page
     property Item pageFlickable: null // fake normal Page
     property Item header: PageHeader {
         id: pageHeader
@@ -61,7 +62,6 @@ Rectangle {
     }
 
     property Item previousHeader: null
-    property string title: ""  // fake normal Page
 
     onHeaderChanged: {  // Copy what SDK does to parent header correctly
         if (previousHeader) {

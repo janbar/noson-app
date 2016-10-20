@@ -218,7 +218,15 @@ Rectangle {
                 }
                 objectName: "jumpNowPlaying"
                 enabled: true
-                onClicked: !mainPageStack.nowPlayingLoaded ? tabs.pushNowPlaying() : mainPageStack.goBack()
+                onClicked: {
+                    if (nowPlaying !== null) {
+                        while (mainPageStack.depth > 1 && mainPageStack.currentPage.pageTitle !== i18n.tr("Now playing")) {
+                            mainPageStack.goBack();
+                        }
+                    } else {
+                        tabs.pushNowPlaying();
+                    }
+                }
             }
 
             /* Mouse area for the play button (ontop of the jump to now playing) */

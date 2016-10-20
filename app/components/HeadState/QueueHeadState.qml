@@ -48,7 +48,7 @@ State {
                     iconName: isListView ? "view-fullscreen" : "media-playlist"
                     // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
                     text: i18n.tr("Show queue")
-                    visible: !mainView.wideAspect && queueLoader.status === Loader.Ready
+                    visible: thisPage === mainView.nowPlaying && queueLoader.status === Loader.Ready
                     onTriggered: {
                         isListView = !isListView
                     }
@@ -94,7 +94,7 @@ State {
             id: backActionComponent
             iconName: "back"
             objectName: "backAction"
-            onTriggered: mainPageStack.pop()
+            onTriggered: mainPageStack.goBack()
         }
 
         StyleHints {

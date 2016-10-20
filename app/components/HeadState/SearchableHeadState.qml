@@ -58,7 +58,7 @@ State {
             id: backActionComponent
             iconName: "back"
             objectName: "backAction"
-            onTriggered: mainPageStack.pop()
+            onTriggered: mainPageStack.goBack()
         }
 
         StyleHints {

@@ -109,6 +109,9 @@ MainView {
     property bool noZone: false // doesn't pop page on startup
     property Page emptyPage
 
+    // current page now playing
+    property Page nowPlaying
+
     // property to detect if the UI has finished
     property bool loadedUI: false
     property bool wideAspect: width >= units.gu(100) && loadedUI
@@ -179,6 +182,14 @@ MainView {
                 noZone = false
             }
             mainView.currentlyWorking = false
+        }
+    }
+
+    // On wide aspect pop now playing from the page stack
+    onWideAspectChanged: {
+        if (nowPlaying !== null) {
+            mainPageStack.popPage(nowPlaying);
+            nowPlaying = null;
         }
     }
 
@@ -715,9 +726,6 @@ MainView {
         property Page currentMusicPage: null  // currentPage can be Tabs
         property bool popping: false
 
-        // Property to detect if page 'Now playing' is in the flow and then disable navigation from the toolbar
-        property bool nowPlayingLoaded: false
-
         /* Helper functions */
 
         // Go back up the stack if possible
@@ -728,8 +736,9 @@ MainView {
             }
             if (depth > 1) {
                 // Check popping of now playing
-                if (mainPageStack.currentPage.pageTitle === i18n.tr("Now playing"))
-                    mainPageStack.nowPlayingLoaded = false
+                if (mainPageStack.currentPage.pageTitle === i18n.tr("Now playing")) {
+                    nowPlaying = null
+                }
                 pop()
             }
         }
@@ -905,13 +914,14 @@ MainView {
             function pushNowPlaying()
             {
                 if (!wideAspect) {
-                    // only push if on a different page
-                    if (mainPageStack.currentPage.pageTitle !== i18n.tr("Now playing")) {
-                        mainPageStack.push(Qt.resolvedUrl("ui/NowPlaying.qml"), {})
+                    // pop existing page now playing
+                    if (nowPlaying !== null) {
+                        mainPageStack.popPage(nowPlaying);
+                        nowPlaying = null;
                     }
-
-                    if (mainPageStack.currentPage.isListView === true) {
-                        mainPageStack.currentPage.setListView(false);  // ensure full view
+                    nowPlaying = mainPageStack.push(Qt.resolvedUrl("ui/NowPlaying.qml"), {});
+                    if (nowPlaying.isListView === true) {
+                        nowPlaying.setListView(false);  // ensure full view
                     }
                 }
             }
