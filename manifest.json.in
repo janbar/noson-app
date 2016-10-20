@@ -4,10 +4,10 @@
     "architecture": "@CLICK_ARCH@",
     "title": "@APP_NAME@",
     "hooks": {
-        "Noson": {
-            "apparmor": "Noson.apparmor",
-            "desktop": "Noson.desktop",
-            "content-hub": "Noson-content.json"
+        "noson": {
+            "apparmor": "noson.apparmor",
+            "desktop": "noson.desktop",
+            "content-hub": "noson-content.json"
         }
     },
     "version": "@APP_VERSION@",
