@@ -29,6 +29,7 @@ Flickable {
     anchors {
         fill: parent
     }
+    property alias color: fullviewBackground.color
 
     Rectangle {
         id: fullviewBackground
@@ -66,7 +67,7 @@ Flickable {
         Rectangle {
             id: nowPlayingWideAspectLabelsBackground
             anchors.bottom: parent.bottom
-            color: styleMusic.nowPlaying.backgroundColor
+            color: fullview.color
             height: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(10) : units.gu(13)
             opacity: 0.8
             width: parent.width
@@ -162,7 +163,7 @@ Flickable {
             right: parent.right
         }
         height: units.gu(5)
-        color: styleMusic.nowPlaying.backgroundColor
+        color: fullview.color
     }
 
     /* Progress bar component */

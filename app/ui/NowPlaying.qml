@@ -137,7 +137,6 @@ MusicPage {
             bottomMargin: nowPlayingToolbarLoader.height + units.gu(10)
             fill: parent
         }
-        source: "../components/NowPlayingFullView.qml"
         visible: opacity != 0.0
         opacity: !isListView ? 1.0 : 0.0
 
@@ -170,7 +169,11 @@ MusicPage {
             right: parent.right
         }
         height: units.gu(15)
-        source: "../components/NowPlayingToolbar.qml"
+    }
+
+    Component.onCompleted: {
+        fullViewLoader.setSource("../components/NowPlayingFullView.qml", { "color": styleMusic.common.black })
+        nowPlayingToolbarLoader.setSource("../components/NowPlayingToolbar.qml", { "color": styleMusic.common.black })
     }
 
     Connections {

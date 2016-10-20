@@ -56,7 +56,7 @@ Rectangle {
     property Item flickable: null // fake normal Page
     property Item header: PageHeader {
         id: pageHeader
-        flickable: toolbar
+        flickable: null
         z: 100  // put on top of content
     }
 
