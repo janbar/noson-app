@@ -24,6 +24,11 @@ Page {
         fill: parent
     }
 
+    // Do not show the Page Header
+    header: PageHeader {
+        visible: false
+    }
+
     // Overlay to show when no zone found
     Rectangle {
         id: scanLauncher

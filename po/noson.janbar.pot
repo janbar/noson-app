@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-20 22:00+0200\n"
+"POT-Creation-Date: 2016-10-20 22:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -450,18 +450,18 @@ msgstr ""
 msgid "Group"
 msgstr ""
 
-#: ../app/ui/NoZoneState.qml:103
+#: ../app/ui/NoZoneState.qml:112
 msgid "No Sonos zone found"
 msgstr ""
 
-#: ../app/ui/NoZoneState.qml:114
+#: ../app/ui/NoZoneState.qml:123
 msgid ""
 "Make sure that your device is connected to the correct wireless network and "
 "one or more Sonos products are receiving power."
 msgstr ""
 
 #. TRANSLATORS: this appears in a button with limited space (around 30 characters)
-#: ../app/ui/NoZoneState.qml:123
+#: ../app/ui/NoZoneState.qml:132
 msgid "Search for Sonos zones"
 msgstr ""
 
