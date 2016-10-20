@@ -35,6 +35,7 @@ MusicPage {
     id: songStackPage
     objectName: "songsPage"
     visible: false
+    pageFlickable: albumtrackslist
 
     property string line1: ""
     property string line2: ""

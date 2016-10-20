@@ -26,10 +26,8 @@ import "../components/HeadState"
 
 MusicPage {
     id: nowPlaying
-    flickable: isListView ? queueLoader.item.listview : fullViewLoader.item // Ensures that the header is shown in fullview
     objectName: "nowPlayingPage"
     showToolbar: false
-    title: nowPlayingTitle
 
     property bool isListView: false
     // TRANSLATORS: this appears in the header with limited space (around 20 characters)
@@ -38,6 +36,9 @@ MusicPage {
     property string fullViewTitle: i18n.tr("Full view")
     // TRANSLATORS: this appears in the header with limited space (around 20 characters)
     property string queueTitle: i18n.tr("Queue")
+
+    pageTitle: nowPlayingTitle
+    pageFlickable: isListView ? queueLoader.item.listview : fullViewLoader.item // Ensures that the header is shown in fullview
 
     onIsListViewChanged: {
         if (isListView) {  // When changing to the queue positionAt the currentIndex
@@ -108,7 +109,7 @@ MusicPage {
             stateName: "fullview"
             thisPage: nowPlaying
             thisHeader {
-                flickable: thisPage.flickable
+                flickable: thisPage.pageFlickable
                 extension: DefaultSections { }
             }
         },
@@ -116,7 +117,7 @@ MusicPage {
             stateName: "default"
             thisPage: nowPlaying
             thisHeader {
-                flickable: thisPage.flickable
+                flickable: thisPage.pageFlickable
                 extension: DefaultSections { }
             }
         },

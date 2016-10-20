@@ -25,7 +25,7 @@ State {
     name: "playlist"
 
     property PageHeader thisHeader: PageHeader {
-        flickable: thisPage.flickable
+        flickable: thisPage.pageFlickable
         leadingActionBar {
             actions: {
                 if (mainPageStack.currentPage === tabs) {
@@ -38,7 +38,7 @@ State {
             }
             objectName: "tabsLeadingActionBar"
         }
-        title: thisPage.title
+        title: thisPage.pageTitle
         trailingActionBar {
             actions: [
                 Action {

@@ -33,7 +33,8 @@ import "../components/HeadState"
 MusicPage {
     id: artistsPage
     objectName: "artistsPage"
-    title: i18n.tr("Artists")
+    pageTitle: i18n.tr("Artists")
+    pageFlickable: artistGridView
     searchable: true
     searchResultsCount: artistsModelFilter.count
     state: "default"
@@ -89,7 +90,7 @@ MusicPage {
                                        "artistSearch": model.id,
                                        "artist": model.artist,
                                        "covers": [{art: artistCard.imageSource}],
-                                       "title": i18n.tr("Artist")
+                                       "pageTitle": i18n.tr("Artist")
                                    })
             }
         }

@@ -58,7 +58,7 @@ State {
                 }
             }
         }
-        flickable: thisPage.flickable
+        flickable: thisPage.pageFlickable
         leadingActionBar {
             actions: [
                 Action {

@@ -728,7 +728,7 @@ MainView {
             }
             if (depth > 1) {
                 // Check popping of now playing
-                if (mainPageStack.currentPage.title === i18n.tr("Now playing"))
+                if (mainPageStack.currentPage.pageTitle === i18n.tr("Now playing"))
                     mainPageStack.nowPlayingLoaded = false
                 pop()
             }
@@ -822,7 +822,7 @@ MainView {
                 id: artistsTab
                 objectName: "artistsTab"
                 anchors.fill: parent
-                title: page.title
+                title: page.pageTitle
 
                 // tab content
                 page: Artists {
@@ -834,7 +834,7 @@ MainView {
                 id: albumsTab
                 objectName: "albumsTab"
                 anchors.fill: parent
-                title: page.title
+                title: page.pageTitle
 
                 // Tab content begins here
                 page: Albums {
@@ -846,7 +846,7 @@ MainView {
                 id: genresTab
                 objectName: "genresTab"
                 anchors.fill: parent
-                title: page.title
+                title: page.pageTitle
 
                 // Tab content begins here
                 page: Genres {
@@ -858,7 +858,7 @@ MainView {
                 id: radiosTab
                 objectName: "radiosTab"
                 anchors.fill: parent
-                title: page.title
+                title: page.pageTitle
 
                 // Tab content begins here
                 page: Radios {
@@ -870,7 +870,7 @@ MainView {
                 id: playlistsTab
                 objectName: "playlistsTab"
                 anchors.fill: parent
-                title: page.title
+                title: page.pageTitle
 
                 // Tab content begins here
                 page: Playlists {
@@ -882,7 +882,7 @@ MainView {
                 id: favoritesTab
                 objectName: "favoritesTab"
                 anchors.fill: parent
-                title: page.title
+                title: page.pageTitle
 
                 // Tab content begins here
                 page: Favorites {
@@ -894,7 +894,7 @@ MainView {
                 id: songsTab
                 objectName: "songsTab"
                 anchors.fill: parent
-                title: page.title
+                title: page.pageTitle
 
                 // Tab content begins here
                 page: Songs {
@@ -906,7 +906,7 @@ MainView {
             {
                 if (!wideAspect) {
                     // only push if on a different page
-                    if (mainPageStack.currentPage.title !== i18n.tr("Now playing")) {
+                    if (mainPageStack.currentPage.pageTitle !== i18n.tr("Now playing")) {
                         mainPageStack.push(Qt.resolvedUrl("ui/NowPlaying.qml"), {})
                     }
 

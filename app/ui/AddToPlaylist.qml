@@ -31,7 +31,8 @@ MusicPage {
     id: addToPlaylistPage
     objectName: "addToPlaylistPage"
     // TRANSLATORS: this appears in the header with limited space (around 20 characters)
-    title: i18n.tr("Select playlist")
+    pageTitle: i18n.tr("Select playlist")
+    pageFlickable: addtoPlaylistView
     searchable: true
     searchResultsCount: addToPlaylistModelFilter.count
     showToolbar: false
@@ -62,7 +63,7 @@ MusicPage {
     onVisibleChanged: {
         // Load the playlistmodel if it hasn't loaded or is empty
         if (visible && (AllPlaylistsModel.count === 0)) {
-            customdebug("#### AllPlaylistsModel is empty !!!")
+            customdebug("AllPlaylistsModel is empty !!!")
         }
     }
 

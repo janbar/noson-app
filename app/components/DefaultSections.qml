@@ -22,7 +22,7 @@ Sections {
     model: [player.queueInfo, currentZoneTag]
     selectedIndex: 0
     onSelectedIndexChanged: {
-        if (selectedIndex == 1 && mainPageStack.currentPage.title !== i18n.tr("Zones")) {
+        if (selectedIndex == 1) {
             selectedIndex = 0
             mainPageStack.push(zonesPageLoader.item)
         }

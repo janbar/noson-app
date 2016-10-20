@@ -30,7 +30,8 @@ Page {
         bottomMargin: musicToolbar.visible ? musicToolbar.height : 0
         fill: parent
     }
-
+    property string pageTitle: ""
+    property Item pageFlickable: null
     property DialogBase currentDialog
     property bool searchable: false
     property int searchResultsCount
@@ -64,16 +65,11 @@ Page {
         }
     }
 
-    head {  // hide default header
-        locked: true
-        visible: false
-    }
-
     header: PageHeader {
         id: pageHeader
         extension: DefaultSections { }
 
-        flickable: thisPage.flickable
+        flickable: thisPage.pageFlickable
         leadingActionBar {
             actions: {
                 if (mainPageStack.currentPage === tabs) {
@@ -86,7 +82,7 @@ Page {
             }
             objectName: "tabsLeadingActionBar"
         }
-        title: thisPage.title
+        title: thisPage.pageTitle
 
         StyleHints {
             backgroundColor: mainView.headerColor

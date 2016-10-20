@@ -29,7 +29,8 @@ import "../components/ListItemActions"
 MusicPage {
     id: radiosPage
     objectName: "radiosPage"
-    title: i18n.tr("My radios")
+    pageTitle: i18n.tr("My radios")
+    pageFlickable: radiolist
     searchable: true
     searchResultsCount: radiosModelFilter.count
     state: "default"

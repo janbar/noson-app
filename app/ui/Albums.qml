@@ -30,7 +30,8 @@ import "../components/HeadState"
 MusicPage {
     id: albumsPage
     objectName: "albumsPage"
-    title: i18n.tr("Albums")
+    pageTitle: i18n.tr("Albums")
+    pageFlickable: albumGridView
     searchable: true
     searchResultsCount: albumsModelFilter.count
     state: "default"
@@ -90,7 +91,7 @@ MusicPage {
                                        "covers": [{art: albumCard.imageSource}],
                                        "isAlbum": true,
                                        "genre": "",
-                                       "title": i18n.tr("Album"),
+                                       "pageTitle": i18n.tr("Album"),
                                        "line1": model.artist !== undefined && model.artist !== "" ? model.artist : i18n.tr("Unknown Artist"),
                                        "line2": model.title !== undefined && model.title !== "" ? model.title : i18n.tr("Unknown Album")
                                    })

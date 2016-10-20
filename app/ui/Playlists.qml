@@ -32,7 +32,8 @@ MusicPage {
     objectName: "playlistsPage"
     // TRANSLATORS: this is the name of the playlists page shown in the tab header.
     // Remember to keep the translation short to fit the screen width
-    title: i18n.tr("Playlists")
+    pageTitle: i18n.tr("Playlists")
+    pageFlickable: playlistslist
     searchable: true
     searchResultsCount: playlistModelFilter.count
     state: "default"
@@ -90,7 +91,7 @@ MusicPage {
                                        "isPlaylist": true,
                                        "genre": undefined,
                                        "page": playlistsPage,
-                                       "title": i18n.tr("Playlist"),
+                                       "pageTitle": i18n.tr("Playlist"),
                                        "line1": "",
                                        "line2": model.title,
                                    })

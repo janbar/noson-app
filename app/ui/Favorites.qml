@@ -30,7 +30,8 @@ import "../components/ListItemActions"
 MusicPage {
     id: favoritesPage
     objectName: "favoritesPage"
-    title: i18n.tr("Favorites")
+    pageTitle: i18n.tr("Favorites")
+    pageFlickable: favoritelist
     searchable: true
     searchResultsCount: favoritesModelFilter.count
     state: "default"
@@ -186,7 +187,7 @@ MusicPage {
                                            "covers": [{art: makeCoverSource(model.art, model.artist, model.album)}],
                                            "isAlbum": true,
                                            "genre": "",
-                                           "title": i18n.tr("Album"),
+                                           "pageTitle": i18n.tr("Album"),
                                            "line1": model.artist !== undefined ? model.artist : "",
                                            "line2": model.album !== undefined ? model.album : i18n.tr("Unknown Album")
                                        })
@@ -198,7 +199,7 @@ MusicPage {
                                            "artistSearch": model.objectId,
                                            "artist": model.artist,
                                            "covers": [{art: makeCoverSource(undefined, model.artist, undefined)}],
-                                           "title": i18n.tr("Artist")
+                                           "pageTitle": i18n.tr("Artist")
                                        })
                 }
                 else if (model.type === 3) {
@@ -209,7 +210,7 @@ MusicPage {
                                            "covers": [],
                                            "album": "",
                                            "genre": model.title,
-                                           "title": i18n.tr("Genre"),
+                                           "pageTitle": i18n.tr("Genre"),
                                            "line1": "",
                                            "line2": model.title
                                        })
@@ -224,7 +225,7 @@ MusicPage {
                                            "isPlaylist": true,
                                            "genre": "",
                                            "page": playlistsPage,
-                                           "title": i18n.tr("Playlist"),
+                                           "pageTitle": i18n.tr("Playlist"),
                                            "line1": "",
                                            "line2": model.title
                                        })

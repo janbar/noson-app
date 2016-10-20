@@ -27,7 +27,7 @@ State {
     property alias searchEnabled: searchAction.visible
     property PageHeader thisHeader: PageHeader {
         id: headerState
-        flickable: thisPage.flickable
+        flickable: thisPage.pageFlickable
         leadingActionBar {
             actions: {
                 if (mainPageStack.currentPage === tabs) {
@@ -40,7 +40,7 @@ State {
             }
             objectName: "tabsLeadingActionBar"
         }
-        title: thisPage.title
+        title: thisPage.pageTitle
         trailingActionBar {
             actions: [
                 Action {

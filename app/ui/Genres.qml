@@ -31,7 +31,8 @@ import "../components/HeadState"
 MusicPage {
     id: genresPage
     objectName: "genresPage"
-    title: i18n.tr("Genres")
+    pageTitle: i18n.tr("Genres")
+    pageFlickable: genreGridView
     searchable: true
     searchResultsCount: genresModelFilter.count
     state: "default"
@@ -90,7 +91,7 @@ MusicPage {
                                        "covers": [],
                                        "album": "",
                                        "genre": model.genre,
-                                       "title": i18n.tr("Genre"),
+                                       "pageTitle": i18n.tr("Genre"),
                                        "line1": "",
                                        "line2": model.genre
                                    })

@@ -31,7 +31,7 @@ State {
     property bool removable: false
     property PageHeader thisHeader: PageHeader {
         id: selectionState
-        flickable: thisPage.flickable
+        flickable: thisPage.pageFlickable
         leadingActionBar {
             actions: [
                 Action {
@@ -41,7 +41,7 @@ State {
                 }
             ]
         }
-        title: thisPage.title
+        title: thisPage.pageTitle
         trailingActionBar {
             actions: [
                 Action {

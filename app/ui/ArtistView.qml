@@ -33,6 +33,7 @@ MusicPage {
     id: artistViewPage
     objectName: "artistViewPage"
     visible: false
+    pageFlickable: artistAlbumView
 
     property var containerItem: null
 
@@ -169,7 +170,7 @@ MusicPage {
                                        "covers": [{art: albumCard.imageSource}],
                                        "isAlbum": true,
                                        "genre": "",
-                                       "title": i18n.tr("Album"),
+                                       "pageTitle": i18n.tr("Album"),
                                        "line1": model.artist !== undefined && model.artist !== "" ? model.artist : i18n.tr("Unknown Artist"),
                                        "line2": model.title !== undefined && model.title !== "" ? model.title : i18n.tr("Unknown Album")
                                    })

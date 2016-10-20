@@ -53,7 +53,7 @@ Rectangle {
             thisPage: nowPlayingSidebar
         }
     ]
-    property Item flickable: null // fake normal Page
+    property Item pageFlickable: null // fake normal Page
     property Item header: PageHeader {
         id: pageHeader
         flickable: null
