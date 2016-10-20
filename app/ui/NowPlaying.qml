@@ -68,7 +68,10 @@ MusicPage {
     Timer {  // FIXME: workaround for when entering wideAspect coming back from a stacked page (AddToPlaylist) and the page being deleted breaks the stacked page
         id: popWaitTimer
         interval: 250
-        onTriggered: mainPageStack.popPage(nowPlaying);
+        onTriggered: {
+            mainPageStack.popPage(nowPlaying);
+            mainView.nowPlaying = null;
+        }
     }
 
     // Ensure that the listview has loaded before attempting to positionAt
@@ -132,6 +135,12 @@ MusicPage {
         }
     ]
 
+    Rectangle {
+        id: nowPlayingBackground
+        anchors.fill: parent
+        color: styleMusic.common.black
+    }
+
     Loader {
         id: fullViewLoader
         anchors {
@@ -185,6 +194,7 @@ MusicPage {
                 if (currentDialog)
                     PopupUtils.close(currentDialog);
                 mainPageStack.popPage(nowPlaying);
+                mainView.nowPlaying = null;
             }
         }
     }

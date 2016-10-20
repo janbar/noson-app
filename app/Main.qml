@@ -185,14 +185,6 @@ MainView {
         }
     }
 
-    // On wide aspect pop now playing from the page stack
-    onWideAspectChanged: {
-        if (nowPlaying !== null) {
-            mainPageStack.popPage(nowPlaying);
-            nowPlaying = null;
-        }
-    }
-
     // About backend signals
     // Triggers asynchronous loading on dataUpdated from global models
     // For these singletons, data loading is processed by backend threads.
