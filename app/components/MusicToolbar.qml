@@ -129,7 +129,7 @@ Rectangle {
                     if (player.currentCount > 0)
                         player.playQueue(true)
                     else
-                        currentDialog = PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSelectSource.qml"), mainView)
+                        PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSelectSource.qml"), mainView)
                 }
             }
         }
