@@ -1,8 +1,13 @@
-noson-app (1.6) UNRELEASED; urgency=low
+noson-app (1.7) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 1.7
+  * Refactor with sdk 15.04.5
+  * Enable snap package
 
   [ janbar ]
   * Release 1.6
-  * Refactor using components 1.3
+  * Refactor with sdk 15.04.5
 
   [ janbar ]
   * Release 1.5
