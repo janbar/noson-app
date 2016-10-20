@@ -952,7 +952,7 @@ MainView {
             left: parent.left
             right: parent.right
             top: parent.bottom
-            topMargin: !wideAspect && status === Loader.Ready ? -height : 0
+            topMargin: visible && status === Loader.Ready ? -height : 0
         }
         asynchronous: true
         source: "components/MusicToolbar.qml"
