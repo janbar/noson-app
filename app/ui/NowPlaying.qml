@@ -138,7 +138,8 @@ MusicPage {
     Rectangle {
         id: nowPlayingBackground
         anchors.fill: parent
-        color: isListView ? styleMusic.nowPlaying.backgroundColor : styleMusic.common.black
+        color: styleMusic.common.black
+        visible: !isListView
     }
 
     Loader {
