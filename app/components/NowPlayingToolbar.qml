@@ -265,7 +265,7 @@ Rectangle {
                 left: parent.left
                 right: parent.right
             }
-            color: styleMusic.common.black
+            color: "transparent"
             height: units.gu(0.25)
             visible: isListView
 

@@ -118,6 +118,14 @@ Rectangle {
                 width: parent.width - rightMargin
             }
         }
+
+        Connections {
+            target: queue.listview
+            onContentYChanged: {
+                nowPlayingToolBar.bottomProgressHint = (queue.listview.contentY > -units.gu(0.5))
+            }
+        }
+
     }
 
     // Ensure that the listview has loaded before attempting to positionAt
