@@ -34,12 +34,10 @@ Item {
         objectName: "LoadingSpinner"
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
-        height: units.gu(7)
-        width: units.gu(17)
+        height: units.gu(15)
+        width: units.gu(15)
         radius: units.gu(1.5)
         color: "transparent"
-        border.color: "white"
-        border.width: units.gu(0.6)
         visible: refresh.visible
 
         Rectangle {
@@ -47,16 +45,13 @@ Item {
             border.color: "transparent"
             border.width: parent.border.width
             radius: parent.radius
-            color: parent.border.color
+            color: "white"
             opacity: 0.3
         }
-        Label {
-            anchors.centerIn: parent
-            color: "white"
-            fontSize: "x-large"
-            font.bold : true
-            maximumLineCount: 1
-            text: "Loading"
+        Image {
+            source: "../graphics/working.svg"
+            anchors.fill: parent
+            anchors.margins: units.gu(2)
         }
 
         z: 1
