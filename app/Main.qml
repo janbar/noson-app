@@ -110,7 +110,7 @@ MainView {
     property Page emptyPage
 
     // current page now playing
-    property Page nowPlaying
+    property Page nowPlayingPage
 
     // property to detect if the UI has finished
     property bool loadedUI: false
@@ -728,8 +728,8 @@ MainView {
             }
             if (depth > 1) {
                 // Check popping of now playing
-                if (mainPageStack.currentPage.pageTitle === i18n.tr("Now playing")) {
-                    nowPlaying = null
+                if (mainPageStack.currentPage === nowPlayingPage) {
+                    nowPlayingPage = null
                 }
                 pop()
             }
@@ -907,13 +907,13 @@ MainView {
             {
                 if (!wideAspect) {
                     // pop existing page now playing
-                    if (nowPlaying !== null) {
-                        mainPageStack.popPage(nowPlaying);
-                        nowPlaying = null;
+                    if (nowPlayingPage !== null) {
+                        mainPageStack.popPage(nowPlayingPage);
+                        nowPlayingPage = null;
                     }
-                    nowPlaying = mainPageStack.push(Qt.resolvedUrl("ui/NowPlaying.qml"), {});
-                    if (nowPlaying.isListView === true) {
-                        nowPlaying.setListView(false);  // ensure full view
+                    nowPlayingPage = mainPageStack.push(Qt.resolvedUrl("ui/NowPlaying.qml"), {});
+                    if (nowPlayingPage.isListView === true) {
+                        nowPlayingPage.setListView(false);  // ensure full view
                     }
                 }
             }

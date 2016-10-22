@@ -219,8 +219,8 @@ Rectangle {
                 objectName: "jumpNowPlaying"
                 enabled: true
                 onClicked: {
-                    if (mainView.nowPlaying !== null) {
-                        while (mainPageStack.depth > 1 && mainPageStack.currentPage.pageTitle !== i18n.tr("Now playing")) {
+                    if (mainView.nowPlayingPage !== null) {
+                        while (mainPageStack.depth > 1 && mainPageStack.currentPage !== mainView.nowPlayingPage) {
                             mainPageStack.goBack();
                         }
                     } else {

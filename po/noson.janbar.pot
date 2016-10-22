@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-21 01:48+0200\n"
+"POT-Creation-Date: 2016-10-22 12:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -71,12 +71,6 @@ msgid "%1 song removed"
 msgid_plural "%1 songs removed"
 msgstr[0] ""
 msgstr[1] ""
-
-#. TRANSLATORS: this appears in the header with limited space (around 20 characters)
-#: ../app/Main.qml:731 ../app/components/MusicToolbar.qml:223
-#: ../app/ui/NowPlaying.qml:34
-msgid "Now playing"
-msgstr ""
 
 #. TRANSLATORS: this is a title of a dialog with a prompt to rename a playlist
 #: ../app/components/Dialog/DialogEditPlaylist.qml:28
@@ -463,6 +457,11 @@ msgstr ""
 #. TRANSLATORS: this appears in a button with limited space (around 30 characters)
 #: ../app/ui/NoZoneState.qml:128
 msgid "Search for Sonos zones"
+msgstr ""
+
+#. TRANSLATORS: this appears in the header with limited space (around 20 characters)
+#: ../app/ui/NowPlaying.qml:34
+msgid "Now playing"
 msgstr ""
 
 #. TRANSLATORS: this appears in the header with limited space (around 20 characters)

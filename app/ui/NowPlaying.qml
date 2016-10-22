@@ -59,18 +59,32 @@ MusicPage {
         }
     }
 
+    Connections {
+        target: mainView
+        onWideAspectChanged: {
+            // Do not pop if not visible (eg on AddToPlaylist)
+            if (wideAspect && nowPlaying.visible) {
+                if (currentDialog)
+                    PopupUtils.close(currentDialog);
+                mainPageStack.popPage(nowPlaying);
+                mainView.nowPlayingPage = null;
+            }
+        }
+    }
+
+    // FIXME: workaround for when entering wideAspect coming back from a stacked page (AddToPlaylist) and the page being deleted breaks the stacked page
     onVisibleChanged: {
         if (wideAspect) {
            popWaitTimer.start()
         }
     }
 
-    Timer {  // FIXME: workaround for when entering wideAspect coming back from a stacked page (AddToPlaylist) and the page being deleted breaks the stacked page
+    Timer {
         id: popWaitTimer
         interval: 250
         onTriggered: {
             mainPageStack.popPage(nowPlaying);
-            mainView.nowPlaying = null;
+            mainView.nowPlayingPage = null;
         }
     }
 
@@ -185,18 +199,5 @@ MusicPage {
     Component.onCompleted: {
         fullViewLoader.setSource("../components/NowPlayingFullView.qml", { "color": styleMusic.common.black })
         nowPlayingToolbarLoader.setSource("../components/NowPlayingToolbar.qml", { "color": styleMusic.common.black })
-    }
-
-    Connections {
-        target: mainView
-        onWideAspectChanged: {
-            // Do not pop if not visible (eg on AddToPlaylist)
-            if (wideAspect && nowPlaying.visible) {
-                if (currentDialog)
-                    PopupUtils.close(currentDialog);
-                mainPageStack.popPage(nowPlaying);
-                mainView.nowPlaying = null;
-            }
-        }
     }
 }
