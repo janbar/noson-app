@@ -53,11 +53,12 @@ Rectangle {
             thisPage: nowPlayingSidebar
         }
     ]
-    property string pageTitle: ""  // fake normal Page
+    property string pageTitle: i18n.tr("Now playing") // fake normal Page
     property Item pageFlickable: null // fake normal Page
     property Item header: PageHeader {
         id: pageHeader
         flickable: null
+        title: nowPlayingSidebar.pageTitle
         z: 100  // put on top of content
     }
 
@@ -113,7 +114,8 @@ Rectangle {
                 }
                 clip: true
                 height: units.gu(55)
-                width: parent.width
+                rightMargin: units.gu(2)
+                width: parent.width - rightMargin
             }
         }
     }
