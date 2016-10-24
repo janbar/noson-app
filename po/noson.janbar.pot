@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-22 15:09+0200\n"
+"POT-Creation-Date: 2016-10-25 03:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,21 +19,21 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: ../app/Main.qml:86
-#: /home/jlb/src/janbar/QML/noson-app-build/po/noson.desktop.in.h:1
+#: /home/jlb/src/janbar/QML/build-noson-app/po/noson.desktop.in.h:1
 msgid "Noson"
 msgstr ""
 
-#: ../app/Main.qml:232
+#: ../app/Main.qml:237
 msgid "Index loaded"
 msgstr ""
 
-#: ../app/Main.qml:360 ../app/Main.qml:432 ../app/Main.qml:451
-#: ../app/Main.qml:459 ../app/Main.qml:469 ../app/Main.qml:474
-#: ../app/Main.qml:506 ../app/Main.qml:520 ../app/Main.qml:532
-#: ../app/Main.qml:543 ../app/Main.qml:551 ../app/Main.qml:561
-#: ../app/Main.qml:571 ../app/Main.qml:578 ../app/Main.qml:585
-#: ../app/Main.qml:594 ../app/Main.qml:603 ../app/Main.qml:611
-#: ../app/Main.qml:618 ../app/Main.qml:625 ../app/Main.qml:633
+#: ../app/Main.qml:365 ../app/Main.qml:437 ../app/Main.qml:456
+#: ../app/Main.qml:464 ../app/Main.qml:474 ../app/Main.qml:479
+#: ../app/Main.qml:511 ../app/Main.qml:525 ../app/Main.qml:537
+#: ../app/Main.qml:548 ../app/Main.qml:556 ../app/Main.qml:566
+#: ../app/Main.qml:576 ../app/Main.qml:583 ../app/Main.qml:590
+#: ../app/Main.qml:599 ../app/Main.qml:608 ../app/Main.qml:616
+#: ../app/Main.qml:623 ../app/Main.qml:630 ../app/Main.qml:638
 #: ../app/components/Dialog/DialogSelectSource.qml:94
 #: ../app/components/Dialog/DialogSelectSource.qml:105
 #: ../app/components/Dialog/DialogSelectSource.qml:116
@@ -41,31 +41,31 @@ msgstr ""
 msgid "Action can't be performed"
 msgstr ""
 
-#: ../app/Main.qml:377
+#: ../app/Main.qml:382
 msgid "Debug: "
 msgstr ""
 
-#: ../app/Main.qml:429
+#: ../app/Main.qml:434
 msgid "Refreshing of index is running"
 msgstr ""
 
-#: ../app/Main.qml:456 ../app/Main.qml:517 ../app/Main.qml:529
-#: ../app/Main.qml:591 ../app/ui/AddToPlaylist.qml:138
+#: ../app/Main.qml:461 ../app/Main.qml:522 ../app/Main.qml:534
+#: ../app/Main.qml:596 ../app/ui/AddToPlaylist.qml:138
 msgid "song added"
 msgstr ""
 
-#: ../app/Main.qml:503
+#: ../app/Main.qml:508
 #, qt-format
 msgid "%1 song added"
 msgid_plural "%1 songs added"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/Main.qml:540
+#: ../app/Main.qml:545
 msgid "Queue cleared"
 msgstr ""
 
-#: ../app/Main.qml:600
+#: ../app/Main.qml:605
 #, qt-format
 msgid "%1 song removed"
 msgid_plural "%1 songs removed"

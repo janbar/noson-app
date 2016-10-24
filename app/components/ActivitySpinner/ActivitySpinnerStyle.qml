@@ -17,27 +17,24 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-import "./ActivitySpinner"
 
-Item {
-    id: refresh
-    height: units.gu(5)
-    width: parent.width
-    visible: false
+Image {
+    id: container
 
-    anchors {
-        horizontalCenter: parent.horizontalCenter
-        verticalCenter: parent.verticalCenter
-    }
+    smooth: true
+    visible: styledItem.running && styledItem.visible
+    fillMode: Image.PreserveAspectFit
+    horizontalAlignment: Image.AlignHCenter
+    verticalAlignment: Image.AlignVCenter
+    source: visible ? Qt.resolvedUrl("../../graphics/spinner_blue.png") : ""
+    asynchronous: true
 
-    ActivitySpinner {
-        id: loading
-        objectName: "LoadingSpinner"
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.horizontalCenter: parent.horizontalCenter
-        running: refresh.visible
-        height: units.gu(20)
-        width: height
-        z: 1
+    RotationAnimator on rotation {
+        running: styledItem.running
+        from: 0
+        to: 360
+        loops: Animation.Infinite
+        duration: 1500 /*UbuntuAnimation.SleepyDuration*/
     }
 }
+

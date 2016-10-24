@@ -129,28 +129,33 @@ MainView {
 
     // Run on startup
     Component.onCompleted: {
-
-        // push the page to view
-        mainPageStack.push(tabs)
-
         currentlyWorking = true
+        delayStartup.start()
+    }
 
-        // try to connect the controller
-        connectSonos()
+    Timer {
+        id: delayStartup
+        interval: 100
+        onTriggered: {
+            // push the page to view
+            mainPageStack.push(tabs)
 
-        // if a tab index exists restore it, otherwise goto Recent if there are items otherwise go to Albums
-        tabs.selectedTabIndex = startupSettings.tabIndex === -1
-                ? albumsTab.index
-                : (startupSettings.tabIndex > tabs.count - 1
-                   ? tabs.count - 1 : startupSettings.tabIndex)
+            // try to connect the controller
+            connectSonos()
 
-        // signal UI has finished
-        loadedUI = true;
+            // if a tab index exists restore it, otherwise goto Recent if there are items otherwise go to Albums
+            tabs.selectedTabIndex = startupSettings.tabIndex === -1
+                    ? albumsTab.index
+                    : (startupSettings.tabIndex > tabs.count - 1
+                       ? tabs.count - 1 : startupSettings.tabIndex)
 
-        if (args.values.url) {
-            //@TODO add url to play list
+            // signal UI has finished
+            loadedUI = true;
+
+            if (args.values.url) {
+                //@TODO add url to play list
+            }
         }
-
     }
 
     // Show/hide page NoZoneState

@@ -17,27 +17,21 @@
 
 import QtQuick 2.4
 import Ubuntu.Components 1.3
-import "./ActivitySpinner"
 
-Item {
-    id: refresh
-    height: units.gu(5)
-    width: parent.width
-    visible: false
+StyledItem {
+    id: indicator
 
-    anchors {
-        horizontalCenter: parent.horizontalCenter
-        verticalCenter: parent.verticalCenter
-    }
+    /*!
+       Presents whether there is activity to be visualized or not. The default value is false.
+       When activated (set to true), an animation is shown indicating an ongoing activity, which
+       continues until deactivated (set to false).
+    */
+    property bool running: false
 
-    ActivitySpinner {
-        id: loading
-        objectName: "LoadingSpinner"
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.horizontalCenter: parent.horizontalCenter
-        running: refresh.visible
-        height: units.gu(20)
-        width: height
-        z: 1
-    }
+    implicitWidth: units.gu(3)
+    implicitHeight: units.gu(3)
+    width: units.gu(3)
+    height: units.gu(3)
+
+    style: ActivitySpinnerStyle { }
 }

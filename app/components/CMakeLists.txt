@@ -6,6 +6,7 @@ add_subdirectory(Themes)
 add_subdirectory(ViewButton)
 add_subdirectory(BottomEdge)
 add_subdirectory(Dialog)
+add_subdirectory(ActivitySpinner)
 
 # make the qml files visible on qtcreator
 file(GLOB COMPONENTS_QML_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.qml)
