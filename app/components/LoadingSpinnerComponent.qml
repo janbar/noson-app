@@ -36,8 +36,9 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
         running: refresh.visible
-        height: units.gu(20)
+        height: units.gu(12)
         width: height
+        opacity: 0.9
         z: 1
     }
 }
