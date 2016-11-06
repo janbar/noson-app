@@ -43,7 +43,7 @@ Item {
             right: parent.right
             left: parent.left
         }
-        height: units.dp(4)
+        height: units.dp(1)
         backgroundColor: sliderStyle.backgroundColor
         overlayColor: sliderStyle.foregroundColor
         overlayRect: Qt.application.layoutDirection == Qt.LeftToRight ?
@@ -78,7 +78,7 @@ Item {
                 duration: UbuntuAnimation.FastDuration
             }
         }
-        radius: units.gu(1.5)
+        radius: units.gu(0.75)
         width: units.gu(1.5)
         height: units.gu(1.5)
         opacity: 0.97

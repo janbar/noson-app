@@ -89,7 +89,10 @@ QtObject {
         property color labelColor: common.white;
         property color progressBackgroundColor: "#2c2c33";
         property color progressForegroundColor: UbuntuColors.orange;
-        property color progressHandleColor: common.white;
+        property color progressHandleColor: UbuntuColors.orange;
+        property color volumeBackgroundColor: "#2c2c33";
+        property color volumeForegroundColor: UbuntuColors.orange;
+        property color volumeHandleColor: common.white;
     }
 
     property QtObject popover: QtObject {

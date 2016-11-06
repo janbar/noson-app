@@ -87,11 +87,11 @@ Rectangle {
             value: player.volumeMaster // load value at startup
             opacity: 1.0
             style: SoundSliderStyle {
-                thumbRadius: units.gu(0.5)
+                thumbRadius: units.gu(1)
                 thumbSize: units.gu(2)
-                thumbColor: styleMusic.playerControls.progressHandleColor
-                backgroundColor: styleMusic.playerControls.progressBackgroundColor
-                foregroundColor: styleMusic.playerControls.progressForegroundColor
+                thumbColor: styleMusic.playerControls.volumeHandleColor
+                backgroundColor: styleMusic.playerControls.volumeBackgroundColor
+                foregroundColor: styleMusic.playerControls.volumeForegroundColor
             }
 
             Timer {

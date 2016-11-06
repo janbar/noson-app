@@ -47,7 +47,7 @@ Item {
             right: parent.right
             left: parent.left
         }
-        height: units.dp(4)
+        height: units.dp(1)
         backgroundColor: sliderStyle.backgroundColor
         overlayColor: sliderStyle.foregroundColor
         overlayRect: Qt.application.layoutDirection == Qt.LeftToRight ?
@@ -86,7 +86,7 @@ Item {
         property real size: units.gu(1.5)
         width: size
         height: size
-        radius: units.gu(1)
+        radius: units.gu(0.75)
         opacity: 1.0
         color: sliderStyle.foregroundColor
     }
