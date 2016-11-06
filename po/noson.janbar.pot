@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-25 03:15+0200\n"
+"POT-Creation-Date: 2016-11-06 13:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -274,7 +274,7 @@ msgstr ""
 
 #: ../app/components/Dialog/DialogSongInfo.qml:39 ../app/ui/Albums.qml:82
 #: ../app/ui/Albums.qml:95 ../app/ui/ArtistView.qml:88
-#: ../app/ui/ArtistView.qml:174 ../app/ui/Artists.qml:83
+#: ../app/ui/ArtistView.qml:174 ../app/ui/Artists.qml:84
 msgid "Unknown Artist"
 msgstr ""
 
@@ -354,11 +354,11 @@ msgstr ""
 msgid "Untitled"
 msgstr ""
 
-#: ../app/components/PlaylistsEmptyState.qml:45
+#: ../app/components/PlaylistsEmptyState.qml:42
 msgid "No playlists found"
 msgstr ""
 
-#: ../app/components/PlaylistsEmptyState.qml:56
+#: ../app/components/PlaylistsEmptyState.qml:53
 #, qt-format
 msgid ""
 "Get more out of Sonos by tapping the %1 icon to start making playlists for "
@@ -421,7 +421,7 @@ msgstr[1] ""
 msgid "Artists"
 msgstr ""
 
-#: ../app/ui/Artists.qml:93 ../app/ui/Favorites.qml:202
+#: ../app/ui/Artists.qml:94 ../app/ui/Favorites.qml:202
 msgid "Artist"
 msgstr ""
 
