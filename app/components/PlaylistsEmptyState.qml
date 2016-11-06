@@ -24,11 +24,8 @@ import Ubuntu.Components 1.3
 
 Rectangle {
     id: playlistsEmptyState
-    anchors {
-        top: parent.top
-        topMargin: units.gu(22)
-        bottom: parent.bottom
-    }
+    anchors.fill: parent
+    anchors.topMargin: units.gu(22)
     color: mainView.backgroundColor
 
     Column {
