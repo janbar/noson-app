@@ -44,7 +44,7 @@ Flickable {
             right: parent.right
             top: parent.top
         }
-        height: fullviewBackground.height - musicToolbarFullProgressBackground.height
+        height: fullviewBackground.height - fullviewProgressBackground.height
 
         Item {
             id: albumImageContainer
@@ -73,7 +73,7 @@ Flickable {
             width: parent.width
         }
 
-        /* Column for labels in wideAspect */
+        /* Column for labels */
         Column {
             id: nowPlayingWideAspectLabels
             spacing: units.gu(1)
@@ -156,7 +156,7 @@ Flickable {
 
     /* Background for progress bar component */
     Rectangle {
-        id: musicToolbarFullProgressBackground
+        id: fullviewProgressBackground
         anchors {
             bottom: fullviewBackground.bottom
             left: parent.left
@@ -168,18 +168,18 @@ Flickable {
 
     /* Progress bar component */
     Item {
-        id: musicToolbarFullProgressContainer
+        id: fullviewProgressContainer
         anchors {
-            left: musicToolbarFullProgressBackground.left
-            right: musicToolbarFullProgressBackground.right
-            top: musicToolbarFullProgressBackground.top
+            left: fullviewProgressBackground.left
+            right: fullviewProgressBackground.right
+            top: fullviewProgressBackground.top
         }
         height: units.gu(2)
         width: parent.width
 
         /* Position label */
         Label {
-            id: musicToolbarFullPositionLabel
+            id: fullviewPositionLabel
             anchors {
                 top: progressSliderMusic.bottom
                 topMargin: units.gu(-2)
@@ -209,7 +209,7 @@ Flickable {
 
             function formatValue(v) {
                 if (seeking) {  // update position label while dragging
-                    musicToolbarFullPositionLabel.text = durationToString(v)
+                    fullviewPositionLabel.text = durationToString(v)
                 }
 
                 return durationToString(v)
@@ -220,7 +220,7 @@ Flickable {
 
             onSeekingChanged: {
                 if (seeking === false) {
-                    musicToolbarFullPositionLabel.text = durationToString(player.position)
+                    fullviewPositionLabel.text = durationToString(player.position)
                 }
             }
 
@@ -231,7 +231,7 @@ Flickable {
                     seeked = true
                     player.seek(value)
 
-                    musicToolbarFullPositionLabel.text = durationToString(value)
+                    fullviewPositionLabel.text = durationToString(value)
                 }
             }
 
@@ -240,8 +240,8 @@ Flickable {
                 onPositionChanged: {
                     // seeked is a workaround for bug 1310706 as the first position after a seek is sometimes invalid (0)
                     if (progressSliderMusic.seeking === false && !progressSliderMusic.seeked) {
-                        musicToolbarFullPositionLabel.text = durationToString(player.position)
-                        musicToolbarFullDurationLabel.text = durationToString(player.duration)
+                        fullviewPositionLabel.text = durationToString(player.position)
+                        fullviewDurationLabel.text = durationToString(player.duration)
 
                         progressSliderMusic.value = player.position
                         progressSliderMusic.maximumValue = player.duration
@@ -250,15 +250,15 @@ Flickable {
                     progressSliderMusic.seeked = false;
                 }
                 onStopped: {
-                    musicToolbarFullPositionLabel.text = durationToString(0);
-                    musicToolbarFullDurationLabel.text = durationToString(0);
+                    fullviewPositionLabel.text = durationToString(0);
+                    fullviewDurationLabel.text = durationToString(0);
                 }
             }
         }
 
         /* Duration label */
         Label {
-            id: musicToolbarFullDurationLabel
+            id: fullviewDurationLabel
             anchors {
                 top: progressSliderMusic.bottom
                 topMargin: units.gu(-2)
