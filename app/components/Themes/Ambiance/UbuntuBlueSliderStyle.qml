@@ -43,7 +43,7 @@ Item {
             right: parent.right
             left: parent.left
         }
-        height: units.dp(1)
+        height: units.dp(2)
         backgroundColor: sliderStyle.backgroundColor
         overlayColor: sliderStyle.foregroundColor
         overlayRect: Qt.application.layoutDirection == Qt.LeftToRight ?
