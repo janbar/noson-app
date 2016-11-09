@@ -130,6 +130,7 @@ MusicPage {
                         }
                     }
                 }
+                noCover: Qt.resolvedUrl("../graphics/none.png")
                 coverSources: artistViewPage.covers
                 height: blurredHeader.width > units.gu(60) ? units.gu(33.5) : ((blurredHeader.width - units.gu(5)) / 2) + units.gu(12)
                 rightColumn: Column {

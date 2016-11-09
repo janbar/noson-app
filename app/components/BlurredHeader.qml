@@ -24,6 +24,7 @@ Item {
 
     property alias bottomColumn: bottomColumnLoader.sourceComponent
     property alias coverSources: coversImage.covers
+    property alias noCover: coversImage.noCover
     property alias rightColumn: rightColumnLoader.sourceComponent
     property alias firstSource: coversImage.firstSource
 
