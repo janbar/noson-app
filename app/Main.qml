@@ -633,6 +633,8 @@ MainView {
 
     function removeFromFavorites(modelItem) {
         var id = AllFavoritesModel.findFavorite(modelItem.id)
+        if (id.length === 0) // no favorite
+            return true;
         if (player.removeFavorite(id))
             return true;
         popInfo.open(i18n.tr("Action can't be performed"));
