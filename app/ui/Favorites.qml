@@ -117,7 +117,13 @@ MusicPage {
                     id: favoriteDescription
                     color: styleMusic.common.subtitle
                     fontSize: "x-small"
-                    text: model.description
+                    text: model.description.length > 0 ? model.description :
+                          model.type === 1 ? i18n.tr("Album") :
+                          model.type === 2 ? i18n.tr("Artist") :
+                          model.type === 3 ? i18n.tr("Genre") :
+                          model.type === 4 ? i18n.tr("Playlist") :
+                          model.type === 5 ? i18n.tr("Song") :
+                          "";
                 }
             }
             leadingActions: ListItemActions {
@@ -133,12 +139,14 @@ MusicPage {
 
             height: units.gu(7)
 
-            noCover: model.type === 5 && !model.canQueue ? Qt.resolvedUrl("../graphics/streaming.svg") : Qt.resolvedUrl("../graphics/no_cover.png")
+            noCover: model.type === 5 && !model.canQueue ? Qt.resolvedUrl("../graphics/streaming.svg") :
+                     model.type === 2 ? Qt.resolvedUrl("../graphics/none.png") :
+                     Qt.resolvedUrl("../graphics/no_cover.png");
 
             imageSource: model.type === 1 ? makeCoverSource(model.art, model.artist, model.title) :
                          model.type === 2 ? makeCoverSource(undefined, model.artist, undefined) :
                          model.type === 5 ? makeCoverSource(model.art, model.author, model.album) :
-                         makeCoverSource(model.art, undefined, undefined)
+                         makeCoverSource(model.art, undefined, undefined);
 
             multiselectable: false
 
