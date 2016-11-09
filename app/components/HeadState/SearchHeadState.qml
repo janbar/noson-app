@@ -69,6 +69,19 @@ State {
                 }
             ]
         }
+        trailingActionBar {
+            actions: [
+                Action {
+                    visible: thisPage.isListView !== undefined
+                    iconName: thisPage.isListView ? "view-grid-symbolic" : "view-list-symbolic"
+                    // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
+                    text: i18n.tr("Show list")
+                    onTriggered: {
+                        thisPage.isListView = !thisPage.isListView
+                    }
+                }
+            ]
+        }
         visible: thisPage.state === "search"
 
         onVisibleChanged: {
