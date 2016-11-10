@@ -47,15 +47,15 @@ bool ListModel::init(QObject* sonos, const QString& root, bool fill /*= false*/)
 {
   SONOS::LockGuard lock(m_lock);
   Sonos* _sonos = reinterpret_cast<Sonos*> (sonos);
-  if (!_sonos)
-    return false;
   if (m_provider)
     m_provider->unregisterModel(this);
-  _sonos->registerModel(this, root);
+  if (_sonos)
+    _sonos->registerModel(this, root);
   m_provider = _sonos;
   m_root = root;
   // Reset container status to allow async reload
   m_loaded = false;
   if (fill)
-    this->load();
+    return this->load();
+  return false; // not filled
 }
