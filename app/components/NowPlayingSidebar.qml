@@ -113,7 +113,7 @@ Rectangle {
                     fill: undefined
                 }
                 clip: true
-                height: units.gu(55)
+                height: units.gu(48)
                 rightMargin: units.gu(2)
                 width: parent.width - rightMargin
             }
