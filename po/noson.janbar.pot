@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-10 13:34+0100\n"
+"POT-Creation-Date: 2016-11-10 22:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -439,8 +439,8 @@ msgid "Favorites"
 msgstr ""
 
 #: ../app/ui/Favorites.qml:127 ../app/ui/Favorites.qml:223
-#: ../app/ui/Favorites.qml:294 ../app/ui/Genres.qml:103
-#: ../app/ui/Genres.qml:116
+#: ../app/ui/Favorites.qml:294 ../app/ui/Genres.qml:143
+#: ../app/ui/Genres.qml:151
 msgid "Genre"
 msgstr ""
 
@@ -459,7 +459,7 @@ msgstr ""
 msgid "Genres"
 msgstr ""
 
-#: ../app/ui/Genres.qml:83
+#: ../app/ui/Genres.qml:106
 msgid "<Undefined>"
 msgstr ""
 

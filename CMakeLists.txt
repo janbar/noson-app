@@ -25,7 +25,7 @@ set(QT_IMPORTS_DIR "lib/${ARCH_TRIPLET}")
 option(INSTALL_TESTS "Install the tests on make install" on)
 option(CLICK_MODE "Installs to a contained location" on)
 
-set(APP_VERSION       1.7.9)
+set(APP_VERSION       1.7.10)
 set(APP_NAME          noson)
 set(APP_ID            "noson.janbar")
 set(MAIN_QML          "Main.qml")
