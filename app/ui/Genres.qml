@@ -63,7 +63,7 @@ MusicPage {
     MusicGridView {
         id: genreGridView
         itemWidth: units.gu(12)
-        heightOffset: units.gu(0)
+        heightOffset: units.gu(7)
         model: SortFilterModel {
             id: genresModelFilter
             model: AllGenresModel
@@ -75,9 +75,32 @@ MusicPage {
             sortCaseSensitivity: Qt.CaseInsensitive
         }
 
+        AlbumsModel {
+            id: childModel
+        }
+        property var artworks: []
+
+        function findCoverSources(modelItem) {
+            var covers = [];
+            var root = modelItem.id + "/";
+            // register and load directory content for root
+            childModel.init(Sonos, root, true);
+            var count = childModel.count;
+            var index = 0;
+            while (index < count && index < 4) {
+                var childItem = childModel.get(index);
+                covers.push({art: makeCoverSource(childItem.art, childItem.artist, undefined)});
+                ++index;
+            }
+            artworks[modelItem.genre] = covers;
+            // unregister directory content
+            childModel.init(null, root);
+            return covers;
+        }
+
         delegate: Card {
             id: genreCard
-            coversGridVisible: false
+            coversGridVisible: true
             coverSources: []
             objectName: "genresPageGridItem" + index
             primaryText: model.genre || i18n.tr("<Undefined>")
@@ -92,12 +115,29 @@ MusicPage {
                 }
             }
 
+            Component.onCompleted: {
+                // read from artworks cache
+                var covers = genreGridView.artworks[model.genre];
+                if (covers !== undefined)
+                    coverSources = covers
+                else
+                    delayArtwork.start()
+            }
+
+            Timer {
+                id: delayArtwork
+                interval: 1000
+                onTriggered: {
+                    coverSources = genreGridView.findCoverSources(model);
+                }
+            }
+
             onClicked: {
                 mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
                                    {
                                        "containerItem": makeContainerItem(model),
                                        "songSearch": model.id + "//",
-                                       "covers": [],
+                                       "covers": coverSources,
                                        "album": "",
                                        "genre": model.genre,
                                        "pageTitle": i18n.tr("Genre"),
@@ -106,17 +146,10 @@ MusicPage {
                                    })
             }
             onPressAndHold: {
-                mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
-                                   {
-                                       "containerItem": makeContainerItem(model),
-                                       "songSearch": model.id + "//",
-                                       "covers": [],
-                                       "album": "",
-                                       "genre": model.genre,
-                                       "pageTitle": i18n.tr("Genre"),
-                                       "line1": "",
-                                       "line2": model.genre
-                                   })
+                if (isFavorite && removeFromFavorites(model))
+                    isFavorite = false
+                else if (!isFavorite && addItemToFavorites(model, i18n.tr("Genre"), imageSource))
+                    isFavorite = true
             }
         }
     }
