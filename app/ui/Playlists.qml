@@ -80,6 +80,15 @@ MusicPage {
             objectName: "playlistCardItem" + index
             primaryText: model.title
             secondaryTextVisible: false
+            isFavorite: (AllFavoritesModel.findFavorite(model.id).length > 0)
+
+            // check favorite on data updated
+            Connections {
+                target: AllFavoritesModel
+                onDataUpdated: {
+                    isFavorite = (AllFavoritesModel.findFavorite(model.id).length > 0)
+                }
+            }
 
             onClicked: {
                 mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
@@ -95,6 +104,12 @@ MusicPage {
                                        "line1": "",
                                        "line2": model.title,
                                    })
+            }
+            onPressAndHold: {
+                if (isFavorite && removeFromFavorites(model))
+                    isFavorite = false
+                else if (!isFavorite && addItemToFavorites(model, i18n.tr("Playlist"), imageSource))
+                    isFavorite = true
             }
         }
     }

@@ -40,7 +40,7 @@ State {
             actions: [
                 Action {
                     objectName: "likeAlbum"
-                    iconName: isFavorite ? "like" : "unlike"
+                    iconName: isFavorite ? "starred" : "scope-manager"
                     onTriggered: {
                         if (isFavorite && removeFromFavorites(containerItem))
                             isFavorite = false

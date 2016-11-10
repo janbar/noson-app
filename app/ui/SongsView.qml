@@ -110,7 +110,7 @@ MusicPage {
         id: delayInitModel
         interval: 100
         onTriggered: {
-            isFavorite = (AllFavoritesModel.findFavorite(containerItem.id) !== "")
+            isFavorite = (AllFavoritesModel.findFavorite(containerItem.id).length > 0)
             songsModel.init(Sonos, songSearch, true)
             mainView.currentlyWorking = false
             songStackPage.loaded = true;

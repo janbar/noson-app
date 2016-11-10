@@ -34,7 +34,7 @@ MusicPage {
     property bool isListView: false
 
     pageTitle: i18n.tr("Favorites")
-    pageFlickable: isListView ? favoriteList : favoriteGrid
+    pageFlickable: favoriteGrid.visible ? favoriteGrid : favoriteList
     searchable: true
     searchResultsCount: favoritesModelFilter.count
     state: "default"
@@ -143,7 +143,7 @@ MusicPage {
 
             height: units.gu(7)
 
-            noCover: model.type === 5 && !model.canQueue ? Qt.resolvedUrl("../graphics/streaming.svg") :
+            noCover: model.type === 5 && !model.canQueue ? Qt.resolvedUrl("../graphics/radio.png") :
                      model.type === 2 ? Qt.resolvedUrl("../graphics/none.png") :
                      Qt.resolvedUrl("../graphics/no_cover.png")
 
@@ -225,7 +225,7 @@ MusicPage {
                            model.type === 5 ? i18n.tr("Song") :
                            ""
 
-            noCover: model.type === 5 && !model.canQueue ? Qt.resolvedUrl("../graphics/streaming.svg") :
+            noCover: model.type === 5 && !model.canQueue ? Qt.resolvedUrl("../graphics/radio.png") :
                      model.type === 2 ? Qt.resolvedUrl("../graphics/none.png") :
                      Qt.resolvedUrl("../graphics/no_cover.png")
 

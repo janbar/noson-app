@@ -80,6 +80,15 @@ MusicPage {
             objectName: "albumsPageGridItem" + index
             primaryText: model.title !== undefined && model.title !== "" ? model.title : i18n.tr("Unknown Album")
             secondaryText: model.artist !== undefined && model.artist !== "" ? model.artist : i18n.tr("Unknown Artist")
+            isFavorite: (AllFavoritesModel.findFavorite(model.id).length > 0)
+
+            // check favorite on data updated
+            Connections {
+                target: AllFavoritesModel
+                onDataUpdated: {
+                    isFavorite = (AllFavoritesModel.findFavorite(model.id).length > 0)
+                }
+            }
 
             onClicked: {
                 mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
@@ -95,6 +104,12 @@ MusicPage {
                                        "line1": model.artist !== undefined && model.artist !== "" ? model.artist : i18n.tr("Unknown Artist"),
                                        "line2": model.title !== undefined && model.title !== "" ? model.title : i18n.tr("Unknown Album")
                                    })
+            }
+            onPressAndHold: {
+                if (isFavorite && removeFromFavorites(model))
+                    isFavorite = false
+                else if (!isFavorite && addItemToFavorites(model, i18n.tr("Album"), imageSource))
+                    isFavorite = true
             }
         }
     }

@@ -32,6 +32,7 @@ Item {
     property alias primaryText: primaryLabel.text
     property alias secondaryText: secondaryLabel.text
     property alias secondaryTextVisible: secondaryLabel.visible
+    property bool isFavorite: false
 
     signal clicked(var mouse)
     signal pressAndHold(var mouse)
@@ -117,6 +118,19 @@ Item {
             height: units.gu(1) + cardColumn.spacing
             width: units.gu(1)
         }
+    }
+
+    /* Show starred */
+    Icon {
+        name: "starred"
+        anchors {
+            bottom: bg.bottom
+            right: bg.right
+        }
+        color: "#FFF"
+        height: (card.width * 0.25)
+        width: height
+        visible: isFavorite
     }
 
     /* Overlay for when card is pressed */

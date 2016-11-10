@@ -24,7 +24,7 @@ Action {
     property string description: ""
     property string art: ""
 
-    iconName: isFavorite ? "like" : "unlike"
+    iconName: isFavorite ? "starred" : "scope-manager"
     objectName: "ActionFavorite"
     text: i18n.tr("Favorite")
 

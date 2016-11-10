@@ -83,6 +83,15 @@ MusicPage {
             objectName: "artistsPageGridItem" + index
             primaryText: model.artist !== undefined && model.artist !== "" ? model.artist : i18n.tr("Unknown Artist")
             secondaryTextVisible: false
+            isFavorite: (AllFavoritesModel.findFavorite(model.id).length > 0)
+
+            // check favorite on data updated
+            Connections {
+                target: AllFavoritesModel
+                onDataUpdated: {
+                    isFavorite = (AllFavoritesModel.findFavorite(model.id).length > 0)
+                }
+            }
 
             onClicked: {
                 mainPageStack.push(Qt.resolvedUrl("ArtistView.qml"),
@@ -93,6 +102,12 @@ MusicPage {
                                        "covers": [{art: artistCard.imageSource}],
                                        "pageTitle": i18n.tr("Artist")
                                    })
+            }
+            onPressAndHold: {
+                if (isFavorite && removeFromFavorites(model))
+                    isFavorite = false
+                else if (!isFavorite && addItemToFavorites(model, i18n.tr("Artist"), imageSource))
+                    isFavorite = true
             }
         }
     }

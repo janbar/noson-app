@@ -29,8 +29,11 @@ import "../components/ListItemActions"
 MusicPage {
     id: radiosPage
     objectName: "radiosPage"
+
+    property bool isListView: false
+
     pageTitle: i18n.tr("My radios")
-    pageFlickable: radiolist
+    pageFlickable: radioGrid.visible ? radioGrid : radioList
     searchable: true
     searchResultsCount: radiosModelFilter.count
     state: "default"
@@ -43,7 +46,7 @@ MusicPage {
             }
         },
         MultiSelectHeadState {
-            listview: radiolist
+            listview: radioList
             thisPage: radiosPage
             addToQueue: false
             addToPlaylist: false
@@ -67,29 +70,30 @@ MusicPage {
 
     width: mainPageStack.width
 
+    SortFilterModel {
+        id: radiosModelFilter
+        model: AllRadiosModel
+        sort.property: "title"
+        sort.order: Qt.AscendingOrder
+        sortCaseSensitivity: Qt.CaseInsensitive
+        filter.property: "normalized"
+        filter.pattern: new RegExp(normalizedInput(searchHeader.query), "i")
+        filterCaseSensitivity: Qt.CaseInsensitive
+    }
+
     // Hack for autopilot otherwise Albums appears as MusicPage
     // due to bug 1341671 it is required that there is a property so that
     // qml doesn't optimise using the parent type
     property bool bug1341671workaround: true
 
     MultiSelectListView {
-        id: radiolist
+        id: radioList
         anchors {
-            bottomMargin: units.gu(2)
             fill: parent
             topMargin: units.gu(2)
+            bottomMargin: units.gu(2)
         }
-        objectName: "radiostab-listview"
-        model: SortFilterModel {
-            id: radiosModelFilter
-            model: AllRadiosModel
-            sort.property: "title"
-            sort.order: Qt.AscendingOrder
-            sortCaseSensitivity: Qt.CaseInsensitive
-            filter.property: "normalized"
-            filter.pattern: new RegExp(normalizedInput(searchHeader.query), "i")
-            filterCaseSensitivity: Qt.CaseInsensitive
-        }
+        model: radiosModelFilter
 
         onStateChanged: {
             if (state === "multiselectable") {
@@ -119,12 +123,17 @@ MusicPage {
                     text: /*model.genre !== undefined && model.genre !== "" ? model.genre : */ model.streamId
                 }
             }
+
             height: units.gu(7)
-            noCover: Qt.resolvedUrl("../graphics/streaming.svg")
+
+            noCover: Qt.resolvedUrl("../graphics/radio.png")
+
             imageSource: model.icon !== "" ? model.icon :
                          model.streamId !== undefined && model.streamId !== "" ? "http://cdn-radiotime-logos.tunein.com/" + model.streamId + "q.png" :
                          ""
+
             multiselectable: true
+
             trailingActions: ListItemActions {
                 actions: [
                     AddToFavorites {
@@ -138,17 +147,81 @@ MusicPage {
 
             onItemClicked: {
                 mainView.currentlyWorking = true
+                delayRadioClicked.model = model
                 delayRadioClicked.start()
             }
 
-            Timer {
-                id: delayRadioClicked
-                interval: 100
-                onTriggered: {
-                    radioClicked(model) // play radio
-                    mainView.currentlyWorking = false
+        }
+
+        opacity: isListView ? 1.0 : 0.0
+        visible: opacity > 0.0
+        Behavior on opacity {
+            NumberAnimation { duration: 250 }
+        }
+    }
+
+    MusicGridView {
+        id: radioGrid
+        itemWidth: units.gu(15)
+        heightOffset: units.gu(9.5)
+
+        model: radiosModelFilter
+
+        onStateChanged: {
+            if (state === "multiselectable") {
+                radiosPage.state = "selection"
+            } else {
+                searchHeader.query = ""  // force query back to default
+                radiosPage.state = "default"
+            }
+        }
+
+        delegate: Card {
+            id: radioCard
+            primaryText: model.title
+            secondaryText: /*model.genre !== undefined && model.genre !== "" ? model.genre : */ model.streamId
+            isFavorite: (AllFavoritesModel.findFavorite(model.id).length > 0)
+
+            // check favorite on data updated
+            Connections {
+                target: AllFavoritesModel
+                onDataUpdated: {
+                    isFavorite = (AllFavoritesModel.findFavorite(model.id).length > 0)
                 }
             }
+
+            noCover: Qt.resolvedUrl("../graphics/radio.png")
+            coverSources: [{art: model.icon !== "" ? model.icon :
+                         model.streamId !== undefined && model.streamId !== "" ? "http://cdn-radiotime-logos.tunein.com/" + model.streamId + "q.png" :
+                         ""}]
+
+            onClicked: {
+                mainView.currentlyWorking = true
+                delayRadioClicked.model = model
+                delayRadioClicked.start()
+            }
+            onPressAndHold: {
+                if (isFavorite && removeFromFavorites(model))
+                    isFavorite = false
+                else if (!isFavorite && addItemToFavorites(model, i18n.tr("Radio"), imageSource))
+                    isFavorite = true
+            }
+        }
+
+        opacity: isListView ? 0.0 : 1.0
+        visible: opacity > 0.0
+        Behavior on opacity {
+            NumberAnimation { duration: 250 }
+        }
+    }
+
+    Timer {
+        id: delayRadioClicked
+        interval: 100
+        property QtObject model
+        onTriggered: {
+            radioClicked(model) // play radio
+            mainView.currentlyWorking = false
         }
     }
 }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-10 00:22+0100\n"
+"POT-Creation-Date: 2016-11-10 13:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -267,13 +267,13 @@ msgid "6 hours"
 msgstr ""
 
 #: ../app/components/Dialog/DialogSongInfo.qml:38 ../app/ui/Albums.qml:81
-#: ../app/ui/Albums.qml:96 ../app/ui/ArtistView.qml:161
+#: ../app/ui/Albums.qml:105 ../app/ui/ArtistView.qml:161
 #: ../app/ui/ArtistView.qml:176 ../app/ui/Favorites.qml:273
 msgid "Unknown Album"
 msgstr ""
 
 #: ../app/components/Dialog/DialogSongInfo.qml:39 ../app/ui/Albums.qml:82
-#: ../app/ui/Albums.qml:95 ../app/ui/ArtistView.qml:88
+#: ../app/ui/Albums.qml:104 ../app/ui/ArtistView.qml:88
 #: ../app/ui/ArtistView.qml:175 ../app/ui/Artists.qml:84
 msgid "Unknown Artist"
 msgstr ""
@@ -403,9 +403,9 @@ msgstr ""
 msgid "Albums"
 msgstr ""
 
-#: ../app/ui/Albums.qml:94 ../app/ui/ArtistView.qml:174
-#: ../app/ui/Favorites.qml:125 ../app/ui/Favorites.qml:221
-#: ../app/ui/Favorites.qml:271
+#: ../app/ui/Albums.qml:103 ../app/ui/Albums.qml:111
+#: ../app/ui/ArtistView.qml:174 ../app/ui/Favorites.qml:125
+#: ../app/ui/Favorites.qml:221 ../app/ui/Favorites.qml:271
 msgid "Album"
 msgstr ""
 
@@ -428,8 +428,9 @@ msgstr[1] ""
 msgid "Artists"
 msgstr ""
 
-#: ../app/ui/Artists.qml:94 ../app/ui/Favorites.qml:126
-#: ../app/ui/Favorites.qml:222 ../app/ui/Favorites.qml:283
+#: ../app/ui/Artists.qml:103 ../app/ui/Artists.qml:109
+#: ../app/ui/Favorites.qml:126 ../app/ui/Favorites.qml:222
+#: ../app/ui/Favorites.qml:283
 msgid "Artist"
 msgstr ""
 
@@ -438,12 +439,14 @@ msgid "Favorites"
 msgstr ""
 
 #: ../app/ui/Favorites.qml:127 ../app/ui/Favorites.qml:223
-#: ../app/ui/Favorites.qml:294 ../app/ui/Genres.qml:94
+#: ../app/ui/Favorites.qml:294 ../app/ui/Genres.qml:103
+#: ../app/ui/Genres.qml:116
 msgid "Genre"
 msgstr ""
 
 #: ../app/ui/Favorites.qml:128 ../app/ui/Favorites.qml:224
-#: ../app/ui/Favorites.qml:309 ../app/ui/Playlists.qml:94
+#: ../app/ui/Favorites.qml:309 ../app/ui/Playlists.qml:103
+#: ../app/ui/Playlists.qml:111
 msgid "Playlist"
 msgstr ""
 
@@ -490,11 +493,11 @@ msgstr ""
 msgid "Playlists"
 msgstr ""
 
-#: ../app/ui/Radios.qml:32
+#: ../app/ui/Radios.qml:35
 msgid "My radios"
 msgstr ""
 
-#: ../app/ui/Radios.qml:131
+#: ../app/ui/Radios.qml:140 ../app/ui/Radios.qml:206
 msgid "Radio"
 msgstr ""
 
