@@ -35,16 +35,6 @@ Flickable {
         id: fullviewBackground
         anchors.fill: parent
         color: styleMusic.nowPlaying.backgroundColor
-    }
-
-    BlurredBackground {
-        id: blurredBackground
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.top
-        }
-        height: fullviewBackground.height - fullviewProgressBackground.height
 
         Item {
             id: albumImageContainer
@@ -52,7 +42,7 @@ Flickable {
                 horizontalCenter: parent.horizontalCenter
                 top: parent.top
             }
-            height: parent.height
+            height: parent.height - fullviewProgressBackground.height
             width: parent.width
 
             CoverGrid {
@@ -60,17 +50,17 @@ Flickable {
                 anchors.centerIn: parent
                 covers: [{art: makeCoverSource(player.currentMetaArt, player.currentMetaArtist, player.currentMetaAlbum)}]
                 size: parent.height
-                noCover: ""
+                useFallbackArt: false
             }
         }
 
         Rectangle {
             id: nowPlayingWideAspectLabelsBackground
-            anchors.bottom: parent.bottom
-            color: fullview.color
+            anchors.bottom: albumImageContainer.bottom
             height: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(10) : units.gu(13)
-            opacity: 0.8
             width: parent.width
+            color: styleMusic.common.black
+            opacity: 0.3
         }
 
         /* Column for labels */
@@ -83,7 +73,7 @@ Flickable {
                 right: parent.right
                 rightMargin: units.gu(2)
                 top: nowPlayingWideAspectLabelsBackground.top
-                topMargin: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(3) : units.gu(4)
+                topMargin: units.gu(2)
             }
 
             /* Title of track */
@@ -98,6 +88,7 @@ Flickable {
                 color: styleMusic.playerControls.labelColor
                 elide: Text.ElideRight
                 fontSize: "large"
+                font.weight: Font.DemiBold
                 maximumLineCount: 2
                 objectName: "playercontroltitle"
                 text: player.currentMetaTitle
@@ -113,9 +104,10 @@ Flickable {
                     right: parent.right
                     rightMargin: units.gu(1)
                 }
-                color: styleMusic.nowPlaying.labelSecondaryColor
+                color: styleMusic.nowPlaying.labelColor
                 elide: Text.ElideRight
                 fontSize: "small"
+                font.weight: Font.DemiBold
                 text: player.currentMetaArtist
             }
         }
@@ -157,13 +149,12 @@ Flickable {
     /* Background for progress bar component */
     Rectangle {
         id: fullviewProgressBackground
-        anchors {
-            bottom: fullviewBackground.bottom
-            left: parent.left
-            right: parent.right
-        }
+        anchors.bottom: fullviewBackground.bottom
         height: units.gu(5)
-        color: fullview.color
+        width: parent.width
+        color: fullviewBackground.color
+        //color: styleMusic.common.black
+        //opacity: 0.3
     }
 
     /* Progress bar component */

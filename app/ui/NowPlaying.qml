@@ -149,11 +149,9 @@ MusicPage {
         }
     ]
 
-    Rectangle {
+    BlurredBackground {
         id: nowPlayingBackground
         anchors.fill: parent
-        color: styleMusic.common.black
-        visible: !isListView
     }
 
     Loader {
@@ -161,6 +159,7 @@ MusicPage {
         anchors {
             bottomMargin: nowPlayingToolbarLoader.height + units.gu(10)
             fill: parent
+            topMargin: units.gu(1)
         }
         visible: opacity != 0.0
         opacity: !isListView ? 1.0 : 0.0
@@ -190,14 +189,22 @@ MusicPage {
         id: nowPlayingToolbarLoader
         anchors {
             bottom: parent.bottom
-            left: parent.left
-            right: parent.right
+            bottomMargin: -height
         }
-        height: units.gu(15)
+        height: units.gu(14)
+        width: parent.width
+
+        Component.onCompleted: {
+            anchors.bottomMargin = 0
+        }
+
+        Behavior on anchors.bottomMargin {
+            NumberAnimation { duration: 250 }
+        }
     }
 
     Component.onCompleted: {
-        fullViewLoader.setSource("../components/NowPlayingFullView.qml", { "color": styleMusic.common.black })
-        nowPlayingToolbarLoader.setSource("../components/NowPlayingToolbar.qml", { "color": styleMusic.common.black })
+        fullViewLoader.setSource("../components/NowPlayingFullView.qml", { "color": "transparent" })
+        nowPlayingToolbarLoader.setSource("../components/NowPlayingToolbar.qml", { "color": "transparent" })
     }
 }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-10 22:55+0100\n"
+"POT-Creation-Date: 2016-11-11 11:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -267,14 +267,14 @@ msgid "6 hours"
 msgstr ""
 
 #: ../app/components/Dialog/DialogSongInfo.qml:38 ../app/ui/Albums.qml:81
-#: ../app/ui/Albums.qml:105 ../app/ui/ArtistView.qml:161
-#: ../app/ui/ArtistView.qml:176 ../app/ui/Favorites.qml:273
+#: ../app/ui/Albums.qml:105 ../app/ui/ArtistView.qml:166
+#: ../app/ui/ArtistView.qml:181 ../app/ui/Favorites.qml:273
 msgid "Unknown Album"
 msgstr ""
 
 #: ../app/components/Dialog/DialogSongInfo.qml:39 ../app/ui/Albums.qml:82
-#: ../app/ui/Albums.qml:104 ../app/ui/ArtistView.qml:88
-#: ../app/ui/ArtistView.qml:175 ../app/ui/Artists.qml:84
+#: ../app/ui/Albums.qml:104 ../app/ui/ArtistView.qml:93
+#: ../app/ui/ArtistView.qml:180 ../app/ui/Artists.qml:84
 msgid "Unknown Artist"
 msgstr ""
 
@@ -404,20 +404,20 @@ msgid "Albums"
 msgstr ""
 
 #: ../app/ui/Albums.qml:103 ../app/ui/Albums.qml:111
-#: ../app/ui/ArtistView.qml:174 ../app/ui/Favorites.qml:125
+#: ../app/ui/ArtistView.qml:179 ../app/ui/Favorites.qml:125
 #: ../app/ui/Favorites.qml:221 ../app/ui/Favorites.qml:271
 msgid "Album"
 msgstr ""
 
-#: ../app/ui/ArtistView.qml:109
+#: ../app/ui/ArtistView.qml:114
 #, qt-format
 msgid "%1 album"
 msgid_plural "%1 albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/ui/ArtistView.qml:128 ../app/ui/SongsView.qml:242
-#: ../app/ui/SongsView.qml:243
+#: ../app/ui/ArtistView.qml:133 ../app/ui/SongsView.qml:245
+#: ../app/ui/SongsView.qml:246
 #, qt-format
 msgid "%1 song"
 msgid_plural "%1 songs"
@@ -451,7 +451,7 @@ msgid "Playlist"
 msgstr ""
 
 #: ../app/ui/Favorites.qml:129 ../app/ui/Favorites.qml:225
-#: ../app/ui/SongsView.qml:284
+#: ../app/ui/SongsView.qml:291
 msgid "Song"
 msgstr ""
 

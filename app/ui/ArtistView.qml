@@ -56,6 +56,11 @@ MusicPage {
         }
     ]
 
+    BlurredBackground {
+            id: blurredBackground
+            height: parent.height
+    }
+
     MusicGridView {
         id: artistAlbumView
         itemWidth: units.gu(15)
@@ -65,11 +70,12 @@ MusicPage {
             width: parent.width
 
             // Put BlurredHeader in contain so we can remove the margins
-            BlurredHeader {
+            MusicHeader {
                 id: blurredHeader
                 anchors {
                     left: parent.left
-                    margins: -units.gu(1)
+                    leftMargin: -units.gu(1)
+                    rightMargin: -units.gu(1)
                     right: parent.right
                     top: parent.top
                 }
@@ -147,6 +153,10 @@ MusicPage {
                         containerItem: artistViewPage.containerItem
                         width: blurredHeader.width > units.gu(60) ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
                     }
+                }
+
+                onFirstSourceChanged: {
+                    blurredBackground.art = firstSource
                 }
             }            
         }

@@ -38,8 +38,7 @@ Item {
     // the album art
     Image {
         id: backgroundImage
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.fill: parent
         asynchronous: true
         fillMode: Image.PreserveAspectCrop
         height: parent.height

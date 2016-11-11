@@ -22,10 +22,17 @@ import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 
-Rectangle {
-    color: styleMusic.common.black
+Item {
+    property alias color: bg.color
     height: units.gu(7.25)
     objectName: "musicToolbarObject"
+
+    Rectangle {
+        id: bg
+        anchors.fill: parent
+        color: styleMusic.common.black
+        opacity: 0.8
+    }
 
     // Hack for autopilot otherwise MusicToolbar appears as QQuickRectangle
     // due to bug 1341671 it is required that there is a property so that
@@ -151,9 +158,11 @@ Rectangle {
                      bottom: parent.bottom
                      left: parent.left
                      top: parent.top
+                     margins: units.dp(2)
                  }
                  covers: [{art: makeCoverSource(player.currentMetaArt, player.currentMetaArtist, player.currentMetaAlbum)}]
                  size: parent.height
+                 useFallbackArt: false
             }
 
             /* Column of meta labels */
@@ -191,7 +200,6 @@ Rectangle {
                     color: styleMusic.common.music
                     elide: Text.ElideRight
                     fontSize: "small"
-                    opacity: 0.4
                     text: player.currentMetaArtist
                 }
             }

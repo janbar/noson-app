@@ -27,7 +27,6 @@ import "./Dialog"
 Page {
     id: thisPage
     anchors {
-        bottomMargin: musicToolbar.visible ? musicToolbar.height : 0
         fill: parent
     }
     property string pageTitle: ""

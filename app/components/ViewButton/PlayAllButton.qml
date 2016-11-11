@@ -23,11 +23,12 @@ import Ubuntu.Components 1.3
 
 
 Button {
-    color: UbuntuColors.green
     height: units.gu(4)
+    color: "transparent"
+    width: units.gu(15)
+    iconName: "media-playback-start"
     // TRANSLATORS: this appears in a button with limited space (around 14 characters)
     text: i18n.tr("Play all")
-    width: units.gu(15)
 
     property var containerItem
 
@@ -44,4 +45,18 @@ Button {
             mainView.currentlyWorking = false
         }
     }
+
+    /*Text {
+        anchors {
+            centerIn: parent
+        }
+        color: "white"
+        elide: Text.ElideRight
+        height: parent.height
+        horizontalAlignment: Text.AlignHCenter
+        // TRANSLATORS: this appears in a button with limited space (around 14 characters)
+        text: i18n.tr("Play all")
+        verticalAlignment: Text.AlignVCenter
+        width: parent.width - units.gu(2)
+    }*/
 }

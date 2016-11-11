@@ -28,12 +28,6 @@ Item {
     property alias rightColumn: rightColumnLoader.sourceComponent
     property alias firstSource: coversImage.firstSource
 
-    BlurredBackground {
-        id: blurredBackground
-        height: parent.height
-        art: coversImage.firstSource
-    }
-
     CoverGrid {
         id: coversImage
         anchors {

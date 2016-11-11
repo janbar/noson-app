@@ -32,6 +32,9 @@ Item {
     // Property to set the size of the cover image
     property int size
 
+    // Property to determine if the fallback art should be used
+    property bool useFallbackArt: true
+
     // Property to set source of default cover image
     property string noCover: Qt.resolvedUrl("../graphics/no_cover.png")
 
@@ -60,7 +63,9 @@ Item {
                 fillMode: Image.PreserveAspectCrop
                 height: coverGrid.size / (coverGrid.covers.length > 1 ? 2 : 1)
                 width: coverGrid.size / (coverGrid.covers.length > 2 && !(coverGrid.covers.length === 3 && index === 2) ? 2 : 1)
-                source: coverGrid.covers.length > index && coverGrid.covers[index].art !== undefined ? coverGrid.covers[index].art : noCover
+                source: coverGrid.covers.length !== 0 && coverGrid.covers[index] !== undefined && coverGrid.covers[index].art !== undefined
+                        ? coverGrid.covers[index].art
+                        : noCover
 
                 // TODO: This should be investigated once http://pad.lv/1391368
                 //       is resolved. Once it is, these can either be set to
@@ -73,10 +78,18 @@ Item {
 
                 onStatusChanged: {
                     if (status === Image.Error) {
-                        source = noCover
+                        if (useFallbackArt) {
+                            var array = coverGrid.covers.slice(0);
+                            array.splice(index,1);
+                            coverGrid.covers = array;
+                        }
                     } else if (status === Image.Ready && index === 0) {
-                        firstSource = source
+                        firstSource = source;
                     }
+                }
+                opacity: status == Image.Ready ? 1.0 : 0.0
+                Behavior on opacity {
+                    UbuntuNumberAnimation {}
                 }
             }
         }

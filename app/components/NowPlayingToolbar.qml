@@ -23,14 +23,23 @@ import Ubuntu.Components 1.3
 
 
 /* Full toolbar */
-Rectangle {
+Item {
     id: musicToolbarFullContainer
     anchors {
         fill: parent
     }
-    color: styleMusic.playerControls.backgroundColor
 
+    property bool mirror: false
+    property alias color: bg.color
     property alias bottomProgressHint: playerControlsProgressBar.visible
+    readonly property real toolbarHeight: musicToolbarFullVolumeContainer.height + musicToolbarFullButtonContainer.height
+
+    Rectangle {
+        id: bg
+        anchors.fill: parent
+        color: styleMusic.common.black
+        opacity: 0.3
+    }
 
     RenderingBubble {
         id: renderingBubble
@@ -44,9 +53,9 @@ Rectangle {
             leftMargin: units.gu(2)
             right: parent.right
             rightMargin: units.gu(2)
-            bottom: musicToolbarFullButtonContainer.top
+            top: mirror ? parent.top : musicToolbarFullButtonContainer.bottom
         }
-        height: units.gu(3)
+        height: units.gu(6)
         width: parent.width
 
         /* Mute button */
@@ -56,7 +65,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             height: parent.height
             opacity: 1
-            width: height
+            width: units.gu(3)
             onClicked: {
                 player.toggleMuteGroup()
                 player.refreshRenderingGroup()
@@ -127,11 +136,11 @@ Rectangle {
     Item {
         id: musicToolbarFullButtonContainer
         anchors {
-            bottom: parent.bottom
+            top: mirror ? musicToolbarFullVolumeContainer.bottom : parent.top
             left: parent.left
             right: parent.right
         }
-        height: units.gu(10)
+        height: units.gu(8)
         width: parent.width
 
         /* Repeat button */
@@ -261,7 +270,8 @@ Rectangle {
         Rectangle {
             id: playerControlsProgressBar
             anchors {
-                bottom: parent.bottom
+                bottom: mirror ? parent.bottom : parent.top
+                bottomMargin: mirror ? 0 : -height
                 left: parent.left
                 right: parent.right
             }

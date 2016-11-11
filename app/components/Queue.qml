@@ -41,7 +41,15 @@ Item {
 
         delegate: MusicListItem {
             id: queueListItem
-            color: player.currentIndex === index ? "#2c2c34" : styleMusic.mainView.backgroundColor
+            color: "transparent"
+
+            Rectangle {
+                anchors.fill: parent
+                visible: (player.currentIndex === index)
+                color: "#FFF"
+                opacity: 0.1
+            }
+
             imageSource: makeCoverSource(model.art, model.author, model.album)
             column: Column {
                 Label {

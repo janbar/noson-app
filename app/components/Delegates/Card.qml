@@ -25,6 +25,7 @@ Item {
     height: parent.parent.cellHeight
     width: parent.parent.cellWidth
 
+    property alias color: bg.color
     property alias coversGridVisible: coverGrid.visible
     property alias coverSources: coverGrid.covers
     property alias imageSource: coverGrid.firstSource
@@ -57,7 +58,9 @@ Item {
             fill: parent
             margins: units.gu(1)
         }
-        color: "#2c2c34"
+        border.width: units.dp(1)
+        border.color: styleMusic.card.borderColor
+        color: styleMusic.card.backgroundColor
     }
 
     /* Column containing image and labels */

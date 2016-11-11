@@ -155,15 +155,18 @@ MusicPage {
         }
     }
 
+    BlurredBackground {
+            id: blurredBackground
+            height: parent.height
+    }
+
     MultiSelectListView {
         id: albumtrackslist
         anchors {
             fill: parent
         }
-        objectName: "songspage-listview"
         width: parent.width
-
-        header: BlurredHeader {
+        header: MusicHeader {
             id: blurredHeader
             rightColumn: Column {
                 spacing: units.gu(2)
@@ -244,20 +247,24 @@ MusicPage {
                     wrapMode: Text.NoWrap
                 }
             }
+
+            onFirstSourceChanged: {
+                blurredBackground.art = firstSource
+            }
         }
 
         model: songsModel
 
         delegate: MusicListItem {
             id: track
-            objectName: "songsPageListItem" + index
+            color: "transparent"
             noCover: !songStackPage.isAlbum ? Qt.resolvedUrl("../graphics/no_cover.png") : ""
             imageSource: !songStackPage.isAlbum ? makeCoverSource(model.art, model.author, model.album) : ""
             column: Column {
                 Label {
                     id: trackTitle
                     color: styleMusic.common.music
-                    fontSize: "small"
+                    fontSize: !songStackPage.isAlbum ? "small" : "medium"
                     objectName: "songspage-tracktitle"
                     text: model.title
                 }
@@ -265,7 +272,7 @@ MusicPage {
                 Label {
                     id: trackArtist
                     color: styleMusic.common.subtitle
-                    fontSize: "x-small"
+                    fontSize: !songStackPage.isAlbum ? "x-small" : "small"
                     text: model.author
                 }
             }

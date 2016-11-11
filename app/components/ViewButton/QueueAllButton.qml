@@ -24,8 +24,11 @@ import Ubuntu.Components 1.3
 
 Button {
     height: units.gu(4)
-    strokeColor: UbuntuColors.green
+    color: "transparent"
     width: units.gu(15)
+    iconName: "add"
+    // TRANSLATORS: this appears in a button with limited space (around 14 characters)
+    text: i18n.tr("Queue all")
 
     property var containerItem
 
@@ -43,7 +46,7 @@ Button {
         }
     }
 
-    Text {
+    /*Text {
         anchors {
             centerIn: parent
         }
@@ -55,5 +58,5 @@ Button {
         text: i18n.tr("Queue all")
         verticalAlignment: Text.AlignVCenter
         width: parent.width - units.gu(2)
-    }
+    }*/
 }

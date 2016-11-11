@@ -30,6 +30,7 @@ Rectangle {
     property DialogBase currentDialog
 
     color: styleMusic.nowPlaying.backgroundColor
+
     state: queue.state === "multiselectable" ? "selection" : "default"
     states: [
         QueueHeadState {
@@ -60,6 +61,7 @@ Rectangle {
         flickable: null
         title: nowPlayingSidebar.pageTitle
         z: 100  // put on top of content
+
     }
 
     property Item previousHeader: null
@@ -71,6 +73,10 @@ Rectangle {
 
         header.parent = nowPlayingSidebar
         previousHeader = header;
+    }
+
+    BlurredBackground {
+        anchors.fill: parent
     }
 
     Column {
@@ -86,9 +92,11 @@ Rectangle {
             anchors {
                 fill: undefined
             }
-            bottomProgressHint: false
-            height: units.gu(15)
+            height: units.gu(14)
             width: parent.width
+            bottomProgressHint: false
+            mirror: true
+            color: "transparent"
         }
     }
 
@@ -99,10 +107,9 @@ Rectangle {
             bottom: parent.bottom
             left: parent.left
             right: parent.right
-            topMargin: 0
-            bottomMargin: 0
         }
         clip: true
+
         header: Column {
             anchors {
                 left: parent.left
@@ -114,8 +121,8 @@ Rectangle {
                 }
                 clip: true
                 height: units.gu(48)
-                rightMargin: units.gu(2)
-                width: parent.width - rightMargin
+                width: parent.width
+                color: "transparent"
             }
         }
 
