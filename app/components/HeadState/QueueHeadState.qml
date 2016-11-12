@@ -48,7 +48,7 @@ State {
                     iconName: isListView ? "view-fullscreen" : "media-playlist"
                     // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
                     text: i18n.tr("Show queue")
-                    visible: thisPage === mainView.nowPlayingPage && queueLoader.status === Loader.Ready
+                    visible: thisPage === mainView.nowPlayingPage && queue.listview.count > 0
                     onTriggered: {
                         isListView = !isListView
                     }

@@ -265,38 +265,37 @@ Item {
                 opacity: player.shuffle ? 1 : .4
             }
         }
+    }
 
-        /* Object which provides the progress bar when in the queue */
+    /* Object which provides the progress bar when in the queue */
+    Rectangle {
+        id: playerControlsProgressBar
+        anchors {
+            bottom: parent.bottom
+            left: parent.left
+            right: parent.right
+        }
+        color: "transparent"
+        height: units.gu(0.25)
+        visible: isListView
+
         Rectangle {
-            id: playerControlsProgressBar
+            id: playerControlsProgressBarHint
             anchors {
-                bottom: mirror ? parent.bottom : parent.top
-                bottomMargin: mirror ? 0 : -height
                 left: parent.left
-                right: parent.right
+                bottom: parent.bottom
             }
-            color: "transparent"
-            height: units.gu(0.25)
-            visible: isListView
+            color: styleMusic.nowPlaying.progressForegroundColor
+            height: parent.height
+            width: player.duration > 0 ? (player.position / player.duration) * playerControlsProgressBar.width : 0
 
-            Rectangle {
-                id: playerControlsProgressBarHint
-                anchors {
-                    left: parent.left
-                    bottom: parent.bottom
+            Connections {
+                target: player
+                onPositionChanged: {
+                    playerControlsProgressBarHint.width = (player.position / player.duration) * playerControlsProgressBar.width
                 }
-                color: styleMusic.nowPlaying.progressForegroundColor
-                height: parent.height
-                width: player.duration > 0 ? (player.position / player.duration) * playerControlsProgressBar.width : 0
-
-                Connections {
-                    target: player
-                    onPositionChanged: {
-                        playerControlsProgressBarHint.width = (player.position / player.duration) * playerControlsProgressBar.width
-                    }
-                    onStopped: {
-                        playerControlsProgressBarHint.width = 0;
-                    }
+                onStopped: {
+                    playerControlsProgressBarHint.width = 0;
                 }
             }
         }

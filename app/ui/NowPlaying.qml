@@ -38,24 +38,15 @@ MusicPage {
     property string queueTitle: i18n.tr("Queue")
 
     pageTitle: nowPlayingTitle
-    pageFlickable: isListView ? queueLoader.item.listview : fullViewLoader.item // Ensures that the header is shown in fullview
+    pageFlickable: fullViewLoader.item
 
     onIsListViewChanged: {
-        if (isListView) {  // When changing to the queue positionAt the currentIndex
-            // ensure the loader and listview is ready
-            if (queueLoader.status === Loader.Ready) {
-                ensureListViewLoaded()
-            } else {
-                queueLoader.onStatusChanged.connect(function() {
-                    if (queueLoader.status === Loader.Ready) {
-                        ensureListViewLoaded()
-                    }
-                })
-            }
+        if (isListView) {
+            // When changing to the queue positionAt the currentIndex
+            ensureListViewLoaded()
         } else {
             // Close multiselection mode.
-            if (queueLoader.status === Loader.Ready)
-                queueLoader.item.listview.closeSelection()
+            queue.listview.closeSelection()
         }
     }
 
@@ -90,11 +81,11 @@ MusicPage {
 
     // Ensure that the listview has loaded before attempting to positionAt
     function ensureListViewLoaded() {
-        if (queueLoader.item.listview.count === player.trackQueue.model.count) {
+        if (queue.listview.count === player.trackQueue.model.count) {
             positionAt(player.currentIndex);
         } else {
-            queueLoader.item.listview.onCountChanged.connect(function() {
-                if (queueLoader.item.listview.count === player.trackQueue.model.count) {
+            queue.listview.onCountChanged.connect(function() {
+                if (queue.listview.count === player.trackQueue.model.count) {
                     positionAt(player.currentIndex);
                 }
             })
@@ -103,7 +94,7 @@ MusicPage {
 
     // Position the view at the index
     function positionAt(index) {
-        queueLoader.item.listview.positionViewAtIndex(index, ListView.Center);
+        queue.listview.positionViewAtIndex(index, ListView.Center);
     }
 
     function setListView(listView) {
@@ -112,7 +103,7 @@ MusicPage {
 
     state: {
         if (isListView) {
-            if (queueLoader.item.listview.state === "multiselectable") {
+            if (queue.listview.state === "multiselectable") {
                 "selection"
             } else {
                 "default"
@@ -140,7 +131,7 @@ MusicPage {
         },
         MultiSelectHeadState {
             addToQueue: false
-            listview: queueLoader.item.listview
+            listview: queue.listview
             removable: true
             thisPage: nowPlaying
             thisHeader {
@@ -170,37 +161,28 @@ MusicPage {
     }
 
     Loader {
-        id: queueLoader
-        anchors {
-            bottomMargin: nowPlayingToolbarLoader.height + units.gu(3)
-            fill: parent
-        }
-        asynchronous: true
-        source: "../components/Queue.qml"
-        visible: opacity != 0.0
-        opacity: isListView ? 1.0 : 0.0
-
-        Behavior on opacity {
-            NumberAnimation { duration: 250 }
-        }
-    }
-
-    Loader {
         id: nowPlayingToolbarLoader
         anchors {
             bottom: parent.bottom
-            bottomMargin: -height
+            bottomMargin: isListView ? nowPlaying.height - units.gu(10) - height : 0
         }
         height: units.gu(14)
         width: parent.width
 
-        Component.onCompleted: {
-            anchors.bottomMargin = 0
-        }
-
         Behavior on anchors.bottomMargin {
             NumberAnimation { duration: 250 }
         }
+    }
+
+    Queue {
+        id: queue
+        anchors {
+            top: nowPlayingToolbarLoader.bottom
+            bottom: parent.bottom
+            left: parent.left
+            right: parent.right
+        }
+        clip: true
     }
 
     Component.onCompleted: {
