@@ -970,12 +970,6 @@ MainView {
                  (mainPageStack.currentPage && (mainPageStack.currentPage.showToolbar || mainPageStack.currentPage.showToolbar === undefined))
 
         height: status === Loader.Ready ? item.height : 0
-
-        Behavior on anchors.topMargin {
-            NumberAnimation {
-
-            }
-        }
     }
     property alias currentlyWorking: loading.visible
 

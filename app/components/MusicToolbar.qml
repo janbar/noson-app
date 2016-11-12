@@ -31,7 +31,7 @@ Item {
         id: bg
         anchors.fill: parent
         color: styleMusic.common.black
-        opacity: 0.8
+        opacity: 0.9
     }
 
     // Hack for autopilot otherwise MusicToolbar appears as QQuickRectangle

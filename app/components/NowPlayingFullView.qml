@@ -150,11 +150,9 @@ Flickable {
     Rectangle {
         id: fullviewProgressBackground
         anchors.bottom: fullviewBackground.bottom
-        height: units.gu(5)
+        height: units.gu(3)
         width: parent.width
         color: fullviewBackground.color
-        //color: styleMusic.common.black
-        //opacity: 0.3
     }
 
     /* Progress bar component */
@@ -164,6 +162,7 @@ Flickable {
             left: fullviewProgressBackground.left
             right: fullviewProgressBackground.right
             top: fullviewProgressBackground.top
+            topMargin: -units.gu(2)
         }
         height: units.gu(2)
         width: parent.width

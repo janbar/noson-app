@@ -172,7 +172,7 @@ MusicPage {
     Loader {
         id: queueLoader
         anchors {
-            bottomMargin: nowPlayingToolbarLoader.height
+            bottomMargin: nowPlayingToolbarLoader.height + units.gu(3)
             fill: parent
         }
         asynchronous: true
