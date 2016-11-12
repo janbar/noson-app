@@ -28,6 +28,8 @@ Item {
     property alias listview: queueList
     property alias header: queueList.header
 
+    clip: true
+
     MultiSelectListView {
         id: queueList
         anchors {

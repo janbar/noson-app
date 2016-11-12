@@ -108,7 +108,6 @@ Rectangle {
             left: parent.left
             right: parent.right
         }
-        clip: true
 
         header: Column {
             anchors {
