@@ -130,8 +130,6 @@ SecureSocket::~SecureSocket()
 #if HAVE_OPENSSL
   Disconnect();
   SSL_free(static_cast<SSL*>(m_ssl));
-  if (m_cert)
-    X509_free(static_cast<X509*>(m_cert));
 #endif
 }
 
@@ -280,6 +278,11 @@ void SecureSocket::Disconnect()
     m_connected = false;
   }
   TcpSocket::Disconnect();
+  if (m_cert)
+  {
+    X509_free(static_cast<X509*>(m_cert));
+    m_cert = NULL;
+  }
 #endif
 }
 
@@ -291,6 +294,8 @@ bool SecureSocket::IsValid() const
 bool SecureSocket::IsCertificateValid(std::string& str)
 {
 #if HAVE_OPENSSL
+  if (m_cert)
+    X509_free(static_cast<X509*>(m_cert));
   m_cert = SSL_get_peer_certificate(static_cast<SSL*>(m_ssl));
   if (m_cert)
   {
