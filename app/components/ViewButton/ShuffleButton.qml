@@ -31,6 +31,13 @@ Button {
 
     property var model
 
+    onPressedChanged: {
+        if (pressed)
+            color = styleMusic.common.white;
+        else
+            color = "transparent";
+    }
+
     onClicked: {
         mainView.currentlyWorking = true
         delayShuffleModel.start()

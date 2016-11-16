@@ -32,6 +32,13 @@ Button {
 
     property var containerItem
 
+    onPressedChanged: {
+        if (pressed)
+            color = styleMusic.common.white;
+        else
+            color = "transparent";
+    }
+
     onClicked: {
         mainView.currentlyWorking = true
         delayPlayAll.start()
