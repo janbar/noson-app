@@ -135,53 +135,6 @@ const std::string& WSRequestBroker::GetParsedNamedEntry(const std::string& name)
   return emptyStr;
 }
 
-size_t WSRequestBroker::ReadContent(char* buf, size_t buflen)
-{
-  size_t s = 0;
-  if (!m_contentChunked)
-  {
-    // let read on unknown length
-    if (!m_contentLength)
-      s = m_socket->ReceiveData(buf, buflen);
-    else if (m_contentLength > m_consumed)
-    {
-      size_t len = m_contentLength - m_consumed;
-      s = m_socket->ReceiveData(buf, len > buflen ? buflen : len);
-    }
-  }
-  else
-  {
-    if (m_chunkPtr == NULL || m_chunkPtr >= m_chunkEnd)
-    {
-      SAFE_DELETE_ARRAY(m_chunkBuffer);
-      m_chunkBuffer = m_chunkPtr = m_chunkEnd = NULL;
-      std::string strread;
-      size_t len = 0;
-      while (ReadHeaderLine(m_socket, "\r\n", strread, &len) && len == 0);
-      DBG(DBG_PROTO, "%s: chunked data (%s)\n", __FUNCTION__, strread.c_str());
-      std::string chunkStr("0x0");
-      uint32_t chunkSize = 0;
-      if (!strread.empty() && sscanf(chunkStr.append(strread).c_str(), "%x", &chunkSize) == 1 && chunkSize > 0)
-      {
-        if (!(m_chunkBuffer = new char[chunkSize]))
-          return 0;
-        m_chunkPtr = m_chunkBuffer;
-        m_chunkEnd = m_chunkBuffer + chunkSize;
-        if (m_socket->ReceiveData(m_chunkBuffer, chunkSize) != chunkSize)
-          return 0;
-      }
-      else
-        return 0;
-    }
-    if ((s = m_chunkEnd - m_chunkPtr) > buflen)
-      s = buflen;
-    memcpy(buf, m_chunkPtr, s);
-    m_chunkPtr += s;
-  }
-  m_consumed += s;
-  return s;
-}
-
 bool WSRequestBroker::ParseQuery()
 {
   size_t len;
@@ -272,7 +225,7 @@ bool WSRequestBroker::ParseQuery()
     if (token_len && val)
     {
       m_namedEntries[token].append(val);
-      if (memcmp(token, "CONTENT-LENGTH", token_len) == 0)
+      if (token_len == 14 && memcmp(token, "CONTENT-LENGTH", token_len) == 0)
       {
         uint32_t num;
         if (string_to_uint32(val, &num) == 0)
@@ -284,4 +237,62 @@ bool WSRequestBroker::ParseQuery()
   }
 
   return ret;
+}
+
+size_t WSRequestBroker::ReadChunk(void *buf, size_t buflen)
+{
+  size_t s = 0;
+  if (m_contentChunked)
+  {
+    if (m_chunkPtr == NULL || m_chunkPtr >= m_chunkEnd)
+    {
+      SAFE_DELETE_ARRAY(m_chunkBuffer);
+      m_chunkBuffer = m_chunkPtr = m_chunkEnd = NULL;
+      std::string strread;
+      size_t len = 0;
+      while (ReadHeaderLine(m_socket, "\r\n", strread, &len) && len == 0);
+      DBG(DBG_PROTO, "%s: chunked data (%s)\n", __FUNCTION__, strread.c_str());
+      std::string chunkStr("0x0");
+      uint32_t chunkSize = 0;
+      if (!strread.empty() && sscanf(chunkStr.append(strread).c_str(), "%x", &chunkSize) == 1 && chunkSize > 0)
+      {
+        if (!(m_chunkBuffer = new char[chunkSize]))
+          return 0;
+        m_chunkPtr = m_chunkBuffer;
+        m_chunkEnd = m_chunkBuffer + chunkSize;
+        if (m_socket->ReceiveData(m_chunkBuffer, chunkSize) != chunkSize)
+          return 0;
+      }
+      else
+        return 0;
+    }
+    if ((s = m_chunkEnd - m_chunkPtr) > buflen)
+      s = buflen;
+    memcpy(buf, m_chunkPtr, s);
+    m_chunkPtr += s;
+    m_consumed += s;
+  }
+  return s;
+}
+
+size_t WSRequestBroker::ReadContent(char* buf, size_t buflen)
+{
+  size_t s = 0;
+  if (!m_contentChunked)
+  {
+    // let read on unknown length
+    if (!m_contentLength)
+      s = m_socket->ReceiveData(buf, buflen);
+    else if (m_contentLength > m_consumed)
+    {
+      size_t len = m_contentLength - m_consumed;
+      s = m_socket->ReceiveData(buf, len > buflen ? buflen : len);
+    }
+  }
+  else
+  {
+    s = ReadChunk(buf, buflen);
+  }
+  m_consumed += s;
+  return s;
 }

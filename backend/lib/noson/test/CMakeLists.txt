@@ -33,3 +33,7 @@ target_link_libraries (nosontest noson)
 add_executable (intrinsictest src/intrinsictest.cpp)
 add_dependencies (intrinsictest noson)
 target_link_libraries (intrinsictest noson)
+
+add_executable (sslwgettest src/sslwgettest.cpp)
+add_dependencies (sslwgettest noson)
+target_link_libraries (sslwgettest noson)

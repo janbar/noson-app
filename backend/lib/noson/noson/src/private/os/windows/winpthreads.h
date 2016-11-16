@@ -96,12 +96,16 @@ extern "C" {
 #define PTHREAD_BARRIER_SERIAL_THREAD 1
 
 /* Windows doesn't have this, so declare it ourselves. */
+#if (_MSC_VER < 1900)
 struct timespec
 {
   /* long long in windows is the same as long in unix for 64bit */
   long long tv_sec;
   long long tv_nsec;
 };
+#else
+#include <time.h>
+#endif
 
 struct _pthread_v;
 typedef struct _pthread_v *pthread_t;

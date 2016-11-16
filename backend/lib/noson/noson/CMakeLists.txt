@@ -21,7 +21,7 @@ endif ()
 
 ###############################################################################
 # set lib version here
-set (NOSON_LIB_VERSION "1.0.0")
+set (NOSON_LIB_VERSION "1.1.0")
 set (NOSON_LIB_SOVERSION "1")
 
 ###############################################################################
@@ -80,6 +80,22 @@ if (CHK_GMTIME_R)
     set (HAVE_GMTIME_R 1)
 else ()
     set (HAVE_GMTIME_R 0)
+endif ()
+
+find_package (ZLIB)
+if (ZLIB_FOUND)
+    include_directories (${ZLIB_INCLUDE_DIRS})
+    set (HAVE_ZLIB 1)
+else ()
+    set (HAVE_ZLIB 0)
+endif ()
+find_package(OpenSSL)
+
+if (OPENSSL_FOUND)
+    include_directories (${OPENSSL_INCLUDE_DIRS})
+    set (HAVE_OPENSSL 1)
+else ()
+    set (HAVE_OPENSSL 0)
 endif ()
 
 # Check what the inline keyword is.
@@ -156,6 +172,8 @@ file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/sonoszone.h
           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/zonegrouptopology.h
           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/musicservices.h
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
 
 include_directories (
   ${CMAKE_CURRENT_BINARY_DIR}/include/.)
@@ -165,7 +183,8 @@ include_directories (
 file (GLOB SRC_FILES
   src/private/*.c
   src/private/*.cpp
-  src/*.cpp)
+  src/*.cpp
+  src/smapi/*.cpp)
 
 file (GLOB OS_SRC_FILES
   src/private/os/threads/threadpool.cpp)
@@ -181,6 +200,12 @@ set (NOSON_SOURCES
 ###############################################################################
 # add targets
 set (noson_LIBRARIES ${CMAKE_THREAD_LIBS_INIT})
+if (ZLIB_FOUND)
+  list (APPEND noson_LIBRARIES ${ZLIB_LIBRARIES})
+endif ()
+if (OPENSSL_FOUND)
+  list (APPEND noson_LIBRARIES ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY})
+endif ()
 if (WIN32)
   list (APPEND noson_LIBRARIES ws2_32)
 else ()

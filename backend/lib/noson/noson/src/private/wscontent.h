@@ -45,6 +45,13 @@ namespace NSROOT
   const char* MimeFromContentType(CT_t ct);
   const char* ExtnFromContentType(CT_t ct);
 
+  typedef enum
+  {
+    CE_NONE     = 0,
+    CE_DEFLATE  = 1,
+    CE_GZIP,
+    CE_UNKNOWN  // Keep at last
+  } CE_t;
 }
 
 #endif	/* WSCONTENT_H */

@@ -64,8 +64,6 @@ namespace NSROOT
     HRM_t m_parsedMethod;
     std::string m_parsedURI;
     std::string m_parsedQueryProtocol;
-    typedef std::map<std::string, std::string> entries_t;
-    entries_t m_namedEntries;
     bool m_contentChunked;
     size_t m_contentLength;
     size_t m_consumed;
@@ -73,7 +71,15 @@ namespace NSROOT
     char* m_chunkPtr;
     char* m_chunkEnd;
 
+    typedef std::map<std::string, std::string> entries_t;
+    entries_t m_namedEntries;
+
+    // prevent copy
+    WSRequestBroker(const WSRequestBroker&);
+    WSRequestBroker& operator=(const WSRequestBroker&);
+
     bool ParseQuery();
+    size_t ReadChunk(void *buf, size_t buflen);
   };
 
 }

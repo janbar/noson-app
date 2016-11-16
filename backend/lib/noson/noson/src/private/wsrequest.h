@@ -51,32 +51,28 @@ namespace NSROOT
   {
   public:
     WSRequest(const std::string& server, unsigned port);
+    WSRequest(const std::string& server, unsigned port, bool secureURI);
     ~WSRequest();
 
     void RequestService(const std::string& url, HRM_t method = HRM_GET);
     void RequestAccept(CT_t contentType);
+    void RequestAcceptEncoding(bool yesno);
     void SetContentParam(const std::string& param, const std::string& value);
     void SetContentCustom(CT_t contentType, const char *content);
     void SetHeader(const std::string& field, const std::string& value);
     const std::string& GetContent() const { return m_contentData; }
     void ClearContent();
 
-    void MakeMessage(std::string& msg) const
-    {
-      if (m_service_method == HRM_GET) MakeMessageGET(msg);
-      else if (m_service_method == HRM_POST) MakeMessagePOST(msg);
-      else if (m_service_method == HRM_HEAD) MakeMessageHEAD(msg);
-      else if (m_service_method == HRM_SUBSCRIBE) MakeMessageHEAD(msg, "SUBSCRIBE");
-      else if (m_service_method == HRM_UNSUBSCRIBE) MakeMessageHEAD(msg, "UNSUBSCRIBE");
-      else if (m_service_method == HRM_NOTIFY) MakeMessagePOST(msg, "NOTIFY");
-    }
+    void MakeMessage(std::string& msg) const;
 
     const std::string& GetServer() const { return m_server; }
     unsigned GetPort() const { return m_port; }
+    bool IsSecureURI() const { return m_secure_uri; }
 
   private:
     std::string m_server;
     unsigned m_port;
+    bool m_secure_uri;
     std::string m_service_url;
     HRM_t m_service_method;
     std::string m_charset;

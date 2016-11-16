@@ -17,6 +17,7 @@
 #include "../../noson/src/sonossystem.h"
 #include "../../noson/src/contentdirectory.h"
 #include "../../noson/src/avtransport.h"
+#include "../../noson/src/musicservices.h"
 
 #include <cstdio>
 #include <string>
@@ -112,6 +113,16 @@ int main(int argc, char** argv)
           s += bdir2.count();
         }
         */
+
+        /*
+         * Music services
+         */
+        SONOS::MusicServices svc(playerPtr->GetHost(), playerPtr->GetPort());
+        SONOS::MusicServiceList svcList(svc);
+        for (auto item : svcList) {
+          fprintf(stdout, "%s : %s\n", item->GetName().c_str(), item->GetServiceType().c_str());
+        }
+
       }
     }
   }

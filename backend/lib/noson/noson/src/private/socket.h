@@ -70,49 +70,34 @@ namespace NSROOT
     friend class TcpServerSocket;
   public:
     TcpSocket();
-    ~TcpSocket();
-
-    // Implements NetSocket
-    bool SendData(const char* buf, size_t size)
-    {
-      return SendMessage(buf, size);
-    }
-    size_t ReceiveData(void* buf, size_t n)
-    {
-      return ReadResponse(buf, n);
-    }
+    virtual ~TcpSocket();
 
     int GetErrNo() const
     {
       return m_errno;
     }
-    bool Connect(const char *server, unsigned port, int rcvbuf);
-    bool SendMessage(const char *msg, size_t size);
     void SetReadAttempt(int n)
     {
       m_attempt = n;
     }
-    size_t ReadResponse(void *buf, size_t n);
-    void Disconnect();
-    bool IsValid() const
-    {
-      return (m_socket == INVALID_SOCKET_VALUE ? false : true);
-    }
-    bool IsConnected() const
-    {
-      return IsValid();
-    }
+    virtual bool Connect(const char *server, unsigned port, int rcvbuf);
+    virtual bool SendData(const char* buf, size_t size);
+    virtual size_t ReceiveData(void* buf, size_t n);
+    virtual void Disconnect();
+    virtual bool IsValid() const;
     int Listen(timeval *timeout);
     net_socket_t GetSocket() const;
     std::string GetLocalIP();
 
     static const char* GetMyHostName();
 
-  private:
+  protected:
     net_socket_t m_socket;
     int m_rcvbuf;
     int m_errno;
     int m_attempt;
+
+  private:
     char* m_buffer;
     char* m_bufptr;
     size_t m_buflen;
@@ -134,10 +119,7 @@ namespace NSROOT
       return m_errno;
     }
     bool Create(SOCKET_AF_t af);
-    bool IsValid() const
-    {
-      return (m_socket == INVALID_SOCKET_VALUE ? false : true);
-    }
+    bool IsValid() const;
     bool Bind(unsigned port);
     bool ListenConnection();
     bool AcceptConnection(TcpSocket& socket);
@@ -161,14 +143,14 @@ namespace NSROOT
     UdpSocket(size_t bufferSize);
     ~UdpSocket();
 
-    // Implements NetSocket
-    bool SendData(const char* data, size_t size);
-    size_t ReceiveData(void* buf, size_t n);
-
     int GetErrNo() const
     {
       return m_errno;
     }
+    bool SendData(const char* data, size_t size);
+    size_t ReceiveData(void* buf, size_t n);
+    bool IsValid() const;
+
     bool SetAddress(SOCKET_AF_t af, const char *target, unsigned port);
     bool SetMulticastTTL(int multicastTTL);
     size_t GetPayloadLength() const
@@ -180,10 +162,6 @@ namespace NSROOT
       m_rcvlen = 0;
     }
     std::string GetRemoteIP() const;
-    bool IsValid() const
-    {
-      return (m_socket == INVALID_SOCKET_VALUE ? false : true);
-    }
 
   private:
     SocketAddress* m_addr;

@@ -11,6 +11,12 @@
 #undef HAVE_GMTIME_R
 #define HAVE_GMTIME_R @HAVE_GMTIME_R@
 
+#undef HAVE_ZLIB
+#define HAVE_ZLIB @HAVE_ZLIB@
+
+#undef HAVE_OPENSSL
+#define HAVE_OPENSSL @HAVE_OPENSSL@
+
 #undef CC_INLINE
 #define CC_INLINE @CC_INLINE@
 

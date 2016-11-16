@@ -2,7 +2,7 @@
 lib_LTLIBRARIES    = libnoson.la
 # LIB_VERSION   : [$1-$3].[$3].[$2]
 # LIB_SOVERSION : [$1-$3]
-libnoson_la_LDFLAGS = -version-info 1:0:0
+libnoson_la_LDFLAGS = -version-info 2:0:1
 
 AM_CPPFLAGS = -fPIC -Wall -Wextra \
 	-I@abs_srcdir@/src

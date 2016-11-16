@@ -47,7 +47,7 @@ EventBroker::~EventBroker()
 
 void EventBroker::Process()
 {
-  if (!m_handler || !m_sockPtr || !m_sockPtr->IsConnected())
+  if (!m_handler || !m_sockPtr || !m_sockPtr->IsValid())
     return;
 
   struct timeval socket_timeout = { 0, 500000 };
@@ -59,7 +59,7 @@ void EventBroker::Process()
     WSStatus status(HSC_Bad_Request);
     resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage());
     resp.append("\r\n\r\n");
-    m_sockPtr->SendMessage(resp.c_str(), resp.size());
+    m_sockPtr->SendData(resp.c_str(), resp.size());
     m_sockPtr->Disconnect();
     return;
   }
@@ -88,7 +88,7 @@ void EventBroker::Process()
       WSStatus status(HSC_Internal_Server_Error);
       resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage());
       resp.append("\r\n\r\n");
-      m_sockPtr->SendMessage(resp.c_str(), resp.size());
+      m_sockPtr->SendData(resp.c_str(), resp.size());
       m_sockPtr->Disconnect();
       return;
     }
@@ -120,7 +120,7 @@ void EventBroker::Process()
           WSStatus status(HSC_Internal_Server_Error);
           resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage());
           resp.append("\r\n\r\n");
-          m_sockPtr->SendMessage(resp.c_str(), resp.size());
+          m_sockPtr->SendData(resp.c_str(), resp.size());
           m_sockPtr->Disconnect();
           return;
         }
@@ -190,7 +190,7 @@ void EventBroker::Process()
       WSStatus status(HSC_Internal_Server_Error);
       resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage());
       resp.append("\r\n\r\n");
-      m_sockPtr->SendMessage(resp.c_str(), resp.size());
+      m_sockPtr->SendData(resp.c_str(), resp.size());
       m_sockPtr->Disconnect();
       return;
     }
@@ -199,7 +199,7 @@ void EventBroker::Process()
     WSStatus status(HSC_OK);
     resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage());
     resp.append("\r\n\r\n");
-    m_sockPtr->SendMessage(resp.c_str(), resp.size());
+    m_sockPtr->SendData(resp.c_str(), resp.size());
     m_sockPtr->Disconnect();
     return;
   }
@@ -224,6 +224,6 @@ void EventBroker::Process()
   }
   resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage());
   resp.append("\r\n\r\n");
-  m_sockPtr->SendMessage(resp.c_str(), resp.size());
+  m_sockPtr->SendData(resp.c_str(), resp.size());
   m_sockPtr->Disconnect();
 }

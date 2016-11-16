@@ -110,7 +110,7 @@ TcpSocket::TcpSocket()
 
 TcpSocket::~TcpSocket()
 {
-  if (IsConnected())
+  if (IsValid())
     Disconnect();
   if (m_buffer)
     delete[] m_buffer;
@@ -179,7 +179,7 @@ bool TcpSocket::Connect(const char *server, unsigned port, int rcvbuf)
   char service[33];
   int err;
 
-  if (IsConnected())
+  if (IsValid())
     Disconnect();
 
   if (rcvbuf > SOCKET_RCVBUF_MINSIZE)
@@ -227,7 +227,7 @@ bool TcpSocket::Connect(const char *server, unsigned port, int rcvbuf)
   return (err ? false : true);
 }
 
-bool TcpSocket::SendMessage(const char *msg, size_t size)
+bool TcpSocket::SendData(const char *msg, size_t size)
 {
   if (IsValid())
   {
@@ -244,7 +244,7 @@ bool TcpSocket::SendMessage(const char *msg, size_t size)
   return false;
 }
 
-size_t TcpSocket::ReadResponse(void *buf, size_t n)
+size_t TcpSocket::ReceiveData(void *buf, size_t n)
 {
   if (IsValid())
   {
@@ -365,6 +365,11 @@ void TcpSocket::Disconnect()
   }
 }
 
+bool TcpSocket::IsValid() const
+{
+  return (m_socket == INVALID_SOCKET_VALUE ? false : true);
+}
+
 int TcpSocket::Listen(timeval *timeout)
 {
   if (IsValid())
@@ -471,6 +476,11 @@ bool TcpServerSocket::Create(SOCKET_AF_t af)
     return false;
   }
   return true;
+}
+
+bool TcpServerSocket::IsValid() const
+{
+  return (m_socket == INVALID_SOCKET_VALUE ? false : true);
 }
 
 bool TcpServerSocket::Bind(unsigned port)
@@ -785,6 +795,11 @@ size_t UdpSocket::ReceiveData(void* buf, size_t n)
   }
   m_errno = ENOTSOCK;
   return 0;
+}
+
+bool UdpSocket::IsValid() const
+{
+  return (m_socket == INVALID_SOCKET_VALUE ? false : true);
 }
 
 std::string UdpSocket::GetRemoteIP() const

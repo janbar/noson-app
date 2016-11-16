@@ -35,7 +35,8 @@ namespace NSROOT
 
   class NetSocket;
   class TcpSocket;
-
+  class Decompressor;
+ 
   class WSResponse
   {
   public:
@@ -61,14 +62,16 @@ namespace NSROOT
     std::string m_serverInfo;
     std::string m_etag;
     std::string m_location;
-    std::string m_transferEncoding;
     CT_t m_contentType;
+    CE_t m_contentEncoding;
     bool m_contentChunked;
     size_t m_contentLength;
     size_t m_consumed;
-    char* m_chunkBuffer;
-    char* m_chunkPtr;
-    char* m_chunkEnd;
+    char* m_chunkBuffer;      ///< The chunk data buffer
+    char* m_chunkPtr;         ///< The next position to read data from the chunk
+    char* m_chunkEOR;         ///< The end of received data in the chunk
+    char* m_chunkEnd;         ///< The end of the chunk buffer
+    Decompressor *m_decoder;
 
     typedef std::list<std::pair<std::string, std::string> > HeaderList;
     HeaderList m_headers;
@@ -79,6 +82,9 @@ namespace NSROOT
 
     bool SendRequest(const WSRequest& request);
     bool GetResponse();
+    size_t ReadChunk(void *buf, size_t buflen);
+    static int SocketStreamReader(void *hdl, void *buf, int sz);
+    static int ChunkStreamReader(void *hdl, void *buf, int sz);
   };
 
 }
