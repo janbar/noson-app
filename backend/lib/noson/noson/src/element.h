@@ -134,19 +134,19 @@ namespace NSROOT
       return end();
     }
 
-    iterator FinKey(const std::string& key)
+    iterator FindKey(const std::string& key)
     {
       return FindKey(key, begin());
     }
 
-    const_iterator FinKey(const std::string& key) const
+    const_iterator FindKey(const std::string& key) const
     {
       return FindKey(key, begin());
     }
     
     const std::string& GetValue(const std::string& key) const
     {
-      std::vector<ElementPtr>::const_iterator it = FinKey(key);
+      std::vector<ElementPtr>::const_iterator it = FindKey(key);
       if (it != end() && (*it))
         return (**it);
       return Element::Nil();

@@ -79,7 +79,7 @@ DigitalItem::DigitalItem(const std::string& objectID, const std::string& parentI
 , m_vars(vars)
 {
   ElementList::const_iterator it;
-  if ((it = vars.FinKey("upnp:class")) != vars.end())
+  if ((it = vars.FindKey("upnp:class")) != vars.end())
   {
     std::vector<std::string> tokens;
     __tokenize((*it)->c_str(), ".", tokens);
@@ -105,7 +105,7 @@ DigitalItem::DigitalItem(const std::string& objectID, const std::string& parentI
 
 const ElementPtr DigitalItem::GetProperty(const std::string& key) const
 {
-  ElementList::const_iterator it = m_vars.FinKey(key);
+  ElementList::const_iterator it = m_vars.FindKey(key);
   if (it != m_vars.end())
     return *it;
   else
@@ -115,7 +115,7 @@ const ElementPtr DigitalItem::GetProperty(const std::string& key) const
 std::vector<ElementPtr> DigitalItem::GetCollection(const std::string& key) const
 {
   std::vector<ElementPtr> list;
-  ElementList::const_iterator it = m_vars.FinKey(key);
+  ElementList::const_iterator it = m_vars.FindKey(key);
   if (it != m_vars.end())
   {
     do {
@@ -129,7 +129,7 @@ const ElementPtr& DigitalItem::SetProperty(const ElementPtr& var)
 {
   if (var)
   {
-    ElementList::iterator it = m_vars.FinKey(var->GetKey());
+    ElementList::iterator it = m_vars.FindKey(var->GetKey());
     if (it != m_vars.end())
       return *it = var;
     m_vars.push_back(var);
@@ -140,7 +140,7 @@ const ElementPtr& DigitalItem::SetProperty(const ElementPtr& var)
 
 void DigitalItem::RemoveProperty(const std::string& key)
 {
-  ElementList::iterator it = m_vars.FinKey(key);
+  ElementList::iterator it = m_vars.FindKey(key);
   if (it != m_vars.end())
     m_vars.erase(it);
 }

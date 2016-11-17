@@ -88,7 +88,7 @@ const std::string& SMService::GetCapabilities() const
 
 ElementPtr SMService::GetPolicy() const
 {
-  ElementList::const_iterator it = this->FinKey("Policy");
+  ElementList::const_iterator it = this->FindKey("Policy");
   if (it != this->end())
     return (*it);
   return ElementPtr();
@@ -96,7 +96,7 @@ ElementPtr SMService::GetPolicy() const
 
 ElementPtr SMService::GetStrings() const
 {
-  ElementList::const_iterator it = this->FinKey("Strings");
+  ElementList::const_iterator it = this->FindKey("Strings");
   if (it != this->end())
     return (*it);
   return ElementPtr();
@@ -104,7 +104,7 @@ ElementPtr SMService::GetStrings() const
 
 ElementPtr SMService::GetPresentationMap() const
 {
-  ElementList::const_iterator it = this->FinKey("PresentationMap");
+  ElementList::const_iterator it = this->FindKey("PresentationMap");
   if (it != this->end())
     return (*it);
   return ElementPtr();
@@ -186,6 +186,9 @@ bool MusicServiceList::ParseAvailableServiceDescriptorList(const std::string& xm
   elem = elem->FirstChildElement();
   while (elem)
   {
+    unsigned uid = 0; // unique item id
+    char sid[10];
+    memset(sid, '\0', sizeof(sid));
     const tinyxml2::XMLAttribute* attr = elem->FirstAttribute();
     SMServicePtr servicePtr(new SMService());
     while (attr)
@@ -201,7 +204,8 @@ bool MusicServiceList::ParseAvailableServiceDescriptorList(const std::string& xm
       if (strncmp(child->Name(), "Policy", 6) == 0)
       {
         const tinyxml2::XMLAttribute* cattr = child->FirstAttribute();
-        ElementPtr policyPtr(new Element(child->Name()));
+        uint32_to_string(++uid, sid);
+        ElementPtr policyPtr(new Element(child->Name(), sid));
         while (cattr)
         {
           policyPtr->SetAttribut(cattr->Name(), cattr->Value());
@@ -215,7 +219,8 @@ bool MusicServiceList::ParseAvailableServiceDescriptorList(const std::string& xm
         while (child2)
         {
           const tinyxml2::XMLAttribute* cattr = child2->FirstAttribute();
-          ElementPtr mapPtr(new Element(child2->Name()));
+          uint32_to_string(++uid, sid);
+          ElementPtr mapPtr(new Element(child2->Name(), sid));
           while (cattr)
           {
             mapPtr->SetAttribut(cattr->Name(), cattr->Value());

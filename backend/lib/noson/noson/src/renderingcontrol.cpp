@@ -70,7 +70,7 @@ bool RenderingControl::GetVolume(uint8_t* value, const char* channel)
   ElementList vars = Request("GetVolume", args);
   if (!vars.empty() && vars[0]->compare("u:GetVolumeResponse") == 0)
   {
-    ElementList::const_iterator it = vars.FinKey("CurrentVolume");
+    ElementList::const_iterator it = vars.FindKey("CurrentVolume");
     if (it != vars.end())
       return (string_to_uint8((*it)->c_str(), value) == 0);
   }
@@ -100,7 +100,7 @@ bool RenderingControl::GetMute(uint8_t* value, const char* channel)
   ElementList vars = Request("GetMute", args);
   if (!vars.empty() && vars[0]->compare("u:GetMuteResponse") == 0)
   {
-    ElementList::const_iterator it = vars.FinKey("CurrentMute");
+    ElementList::const_iterator it = vars.FindKey("CurrentMute");
     if (it != vars.end())
       return (string_to_uint8((*it)->c_str(), value) == 0);
   }
