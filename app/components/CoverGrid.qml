@@ -29,6 +29,9 @@ Item {
     // Property (array) to store the cover images
     property var covers: []
 
+    // Property to set the flow of cover arts: 1, 2, 3 or 4
+    property int flowModel: 1
+
     // Property to set the size of the cover image
     property int size
 
@@ -45,6 +48,7 @@ Item {
             while (covers.length > 4) {  // remove any covers after 4
                 covers.pop()
             }
+            imageRow.flowCount = covers.length > flowModel ? flowModel : covers.length
         }
     }
 
@@ -54,15 +58,16 @@ Item {
         anchors {
             fill: parent
         }
+        property int flowCount: coverGrid.flowModel
 
         Repeater {
             id: repeat
-            model: coverGrid.covers.length === 0 ? 1 : coverGrid.covers.length
+            model: imageRow.flowCount === 0 ? 1 : imageRow.flowCount
             delegate: Image {
                 asynchronous: true
                 fillMode: Image.PreserveAspectCrop
-                height: coverGrid.size / (coverGrid.covers.length > 1 ? 2 : 1)
-                width: coverGrid.size / (coverGrid.covers.length > 2 && !(coverGrid.covers.length === 3 && index === 2) ? 2 : 1)
+                height: coverGrid.size / (imageRow.flowCount > 1 ? 2 : 1)
+                width: coverGrid.size / (imageRow.flowCount > 2 && !(imageRow.flowCount === 3 && index === 2) ? 2 : 1)
                 source: coverGrid.covers.length !== 0 && coverGrid.covers[index] !== undefined && coverGrid.covers[index].art !== undefined
                         ? coverGrid.covers[index].art
                         : noCover

@@ -28,6 +28,7 @@ Item {
     property alias color: bg.color
     property alias coversGridVisible: coverGrid.visible
     property alias coverSources: coverGrid.covers
+    property alias coverFlow: coverGrid.flowModel
     property alias imageSource: coverGrid.firstSource
     property alias noCover: coverGrid.noCover
     property alias primaryText: primaryLabel.text

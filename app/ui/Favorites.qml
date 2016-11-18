@@ -229,10 +229,10 @@ MusicPage {
                      model.type === 2 ? Qt.resolvedUrl("../graphics/none.png") :
                      Qt.resolvedUrl("../graphics/no_cover.png")
 
-            coverSources: [{art: model.type === 1 ? makeCoverSource(model.art, model.artist, model.title) :
-                                 model.type === 2 ? makeCoverSource(undefined, model.artist, undefined) :
-                                 model.type === 5 ? makeCoverSource(model.art, model.author, model.album) :
-                                 makeCoverSource(model.art, undefined, undefined)}]
+            coverSources: model.type === 1 ? [{art: makeCoverSource(model.art, model.artist, model.title)}, {art: makeCoverSource(undefined, model.artist, model.title)}]
+                        : model.type === 2 ? [{art: makeCoverSource(undefined, model.artist, undefined)}]
+                        : model.type === 5 ? [{art: makeCoverSource(model.art, model.author, model.album)}, {art: makeCoverSource(undefined, model.author, model.album)}]
+                        : [{art: makeCoverSource(model.art, undefined, undefined)}]
 
             onClicked: clickItem(model)
             onPressAndHold: {

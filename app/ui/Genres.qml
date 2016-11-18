@@ -102,6 +102,7 @@ MusicPage {
             id: genreCard
             coversGridVisible: true
             coverSources: []
+            coverFlow: 4
             objectName: "genresPageGridItem" + index
             primaryText: model.genre || i18n.tr("<Undefined>")
             secondaryTextVisible: false

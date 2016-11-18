@@ -76,7 +76,10 @@ MusicPage {
         }
         delegate: Card {
             id: albumCard
-            coverSources: [{art: makeCoverSource(model.art, model.artist, model.title)}]
+            coverSources: [
+                {art: makeCoverSource(model.art, model.artist, model.title)},
+                {art: makeCoverSource(undefined, model.artist, model.title)}
+            ]
             objectName: "albumsPageGridItem" + index
             primaryText: model.title !== undefined && model.title !== "" ? model.title : i18n.tr("Unknown Album")
             secondaryText: model.artist !== undefined && model.artist !== "" ? model.artist : i18n.tr("Unknown Artist")

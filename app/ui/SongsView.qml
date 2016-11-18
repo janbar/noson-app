@@ -188,6 +188,7 @@ MusicPage {
             }
             property int baseHeight: songStackPage.width > units.gu(60) ? units.gu(33.5) : ((songStackPage.width - units.gu(5)) / 2) + units.gu(12)
             coverSources: songStackPage.covers
+            coverFlow: 4
             height: isAlbum && songStackPage.width <= units.gu(60) ?
                         baseHeight + units.gu(3) : baseHeight
             bottomColumn: Column {

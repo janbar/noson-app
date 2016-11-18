@@ -76,7 +76,16 @@ MusicPage {
         objectName: "playlistsGridView"
         delegate: Card {
             id: playlistCard
-            coverSources: [{art: model.art}]
+            coverSources: makeCoverSources()
+
+            function makeCoverSources() {
+                var cs = [];
+                var arts = model.arts;
+                for (var i = 0; i < arts.length; ++i) cs.push({art: arts[i]});
+                return cs;
+            }
+
+            coverFlow: 4
             objectName: "playlistCardItem" + index
             primaryText: model.title
             secondaryTextVisible: false
@@ -96,7 +105,7 @@ MusicPage {
                                        "containerItem": makeContainerItem(model),
                                        "songSearch": model.id,
                                        "album": undefined,
-                                       "covers": [{art: playlistCard.imageSource}],
+                                       "covers": coverSources,
                                        "isPlaylist": true,
                                        "genre": undefined,
                                        "page": playlistsPage,
