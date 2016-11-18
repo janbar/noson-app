@@ -65,7 +65,7 @@ Item {
 
             Timer {
                 id: timer
-                interval: 2000
+                interval: 1500
 
                 Component.onCompleted: start();
 
