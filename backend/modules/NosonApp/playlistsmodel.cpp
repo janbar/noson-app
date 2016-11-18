@@ -97,6 +97,8 @@ QVariant PlaylistsModel::data(const QModelIndex& index, int role) const
     return item->art(0);
   case NormalizedRole:
     return item->normalized();
+  case ArtsRole:
+      return item->arts();
   default:
     return QVariant();
   }
@@ -110,6 +112,7 @@ QHash<int, QByteArray> PlaylistsModel::roleNames() const
   roles[TitleRole] = "title";
   roles[ArtRole] = "art";
   roles[NormalizedRole] = "normalized";
+  roles[ArtsRole] = "arts";
   return roles;
 }
 
@@ -126,6 +129,7 @@ QVariantMap PlaylistsModel::get(int row)
   model[roles[TitleRole]] = item->title();
   model[roles[ArtRole]] = item->art(0);
   model[roles[NormalizedRole]] = item->normalized();
+  model[roles[ArtsRole]] = item->arts();
   return model;
 }
 

@@ -45,6 +45,8 @@ public:
 
   QString art(unsigned index) const { return (artsCount() > index ? m_arts[index] : ""); }
 
+  QStringList arts() const { return QStringList(m_arts); }
+
   const QString& normalized() const { return m_normalized; }
 
 private:
@@ -69,6 +71,7 @@ public:
     TitleRole,
     ArtRole,
     NormalizedRole,
+    ArtsRole,
   };
 
   PlaylistsModel(QObject* parent = 0);
