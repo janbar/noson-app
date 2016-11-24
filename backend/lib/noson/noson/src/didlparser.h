@@ -19,41 +19,37 @@
  *
  */
 
-#ifndef DEVICEPROPERTIES_H
-#define	DEVICEPROPERTIES_H
+#ifndef DIDLPARSER_H
+#define	DIDLPARSER_H
 
 #include <local_config.h>
-#include "service.h"
+#include "digitalitem.h"
+
+#include <vector>
 
 namespace NSROOT
 {
-
-  class DeviceProperties : public Service
+  class DIDLParser
   {
   public:
-    DeviceProperties(const std::string& serviceHost, unsigned servicePort);
-    ~DeviceProperties() {}
+    DIDLParser(const char* document, unsigned reserve = 0);
+    virtual ~DIDLParser() {}
 
-    static const std::string Name;
-    static const std::string ControlURL;
-    static const std::string EventURL;
-    static const std::string SCPDURL;
+    bool IsValid() { return m_parsed; }
+
+    std::vector<DigitalItemPtr>& GetItems() { return m_items; }
     
-    const std::string& GetName() const { return Name; }
+  private:
+    const char* m_document;
+    bool m_parsed;
 
-    const std::string& GetControlURL() const { return ControlURL; }
+    std::vector<DigitalItemPtr> m_items;
 
-    const std::string& GetEventURL() const { return EventURL; }
+    bool Parse();
 
-    const std::string& GetSCPDURL() const { return SCPDURL; }
-
-    bool GetZoneInfo(ElementList& vars);
-
-    bool GetZoneAttributes(ElementList& vars);
-
-    bool GetHouseholdID(ElementList& vars);
   };
 }
 
-#endif	/* DEVICEPROPERTIES_H */
+
+#endif	/* DIDLPARSER_H */
 

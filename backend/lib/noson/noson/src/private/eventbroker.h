@@ -43,7 +43,6 @@ namespace NSROOT
     EventHandler::EventHandlerThread* m_handler;
     SHARED_PTR<TcpSocket> m_sockPtr;
     char* m_buffer;
-
   };
 }
 

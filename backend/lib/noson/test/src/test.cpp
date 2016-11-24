@@ -118,7 +118,7 @@ int main(int argc, char** argv)
          * Music services
          */
         SONOS::MusicServices svc(playerPtr->GetHost(), playerPtr->GetPort());
-        SONOS::MusicServiceList svcList(svc);
+        SONOS::SMServiceList svcList = svc.GetEnabledServices();
         for (auto item : svcList) {
           fprintf(stdout, "%s : %s\n", item->GetName().c_str(), item->GetServiceType().c_str());
         }

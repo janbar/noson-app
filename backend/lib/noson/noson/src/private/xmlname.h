@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2015 Jean-Luc Barriere
+ *      Copyright (C) 2016 Jean-Luc Barriere
  *
  *  This library is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -19,37 +19,39 @@
  *
  */
 
-#ifndef DIDLPARSER_H
-#define	DIDLPARSER_H
+#ifndef XMLNAME_H
+#define XMLNAME_H
 
 #include <local_config.h>
-#include "../digitalitem.h"
 
-#include <vector>
+#define XMLNAME_MAXLEN  63
 
 namespace NSROOT
 {
-  class DIDLParser
+
+  class XMLName
   {
   public:
-    DIDLParser(const char* document, unsigned reserve = 0);
-    virtual ~DIDLParser() {}
+    XMLName(const char* qname);
+    virtual ~XMLName() {}
 
-    bool IsValid() { return m_parsed; }
+    // compare prefix of a qualified element name
+    static bool XMLPrefixEqual(const char* qname, const char* prefix);
 
-    std::vector<DigitalItemPtr>& GetItems() { return m_items; }
-    
+    // compare name of qualified element name
+    static bool XMLNameEqual(const char* qname, const char* name);
+
+    const char* Prefix() const { return m_prefix; }
+    const char* Name() const { return m_name; }
+
   private:
-    const char* m_document;
-    bool m_parsed;
-
-    std::vector<DigitalItemPtr> m_items;
-
-    bool Parse();
-
+    char m_prefix[XMLNAME_MAXLEN + 1];
+    char m_name[XMLNAME_MAXLEN + 1];
+    int m_prefixLen;
+    int m_nameLen;
   };
+
 }
 
-
-#endif	/* DIDLPARSER_H */
+#endif /* XMLNAME_H */
 

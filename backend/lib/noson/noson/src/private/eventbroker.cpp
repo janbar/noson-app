@@ -22,6 +22,7 @@
 #include "eventbroker.h"
 #include "wsstatus.h"
 #include "tinyxml2.h"
+#include "xmlname.h"
 #include "cppdef.h"
 #include "debug.h"
 
@@ -100,86 +101,87 @@ void EventBroker::Process()
     msg.subject.push_back(rb.GetParsedNamedEntry("SEQ"));
 
     // Parse document
-    tinyxml2::XMLElement* root; // root element
-    tinyxml2::XMLElement* elem; // an element
-    tinyxml2::XMLNode* node;    // a node
+    const tinyxml2::XMLElement* root; // root element
+    const tinyxml2::XMLElement* elem; // an element
+    const tinyxml2::XMLNode* node;    // a node
     tinyxml2::XMLDocument doc;  // a document
     const char* str;
-    if ((root = rootdoc.RootElement()) && memcmp(root->Name(), "e:propertyset", 13) == 0)
+    if ((root = rootdoc.RootElement()) && XMLName::XMLNameEqual(root->Name(), "propertyset"))
     {
-      // Check for embedded doc 'Event': propertyset/property/LastChange
-      if ((node = root->FirstChild()) && memcmp(node->Value(), "e:property", 10) == 0 &&
-              (elem = node->FirstChildElement("LastChange")))
+      if ((node = root->FirstChild()) && XMLName::XMLNameEqual(node->Value(), "property"))
       {
-        if (doc.Parse(elem->GetText()) != tinyxml2::XML_SUCCESS ||
-              !(elem = doc.RootElement()) ||
-              !(str = elem->Attribute("xmlns")))
+        // Check prior for embedded doc 'Event': propertyset/property/LastChange
+        if ((elem = node->FirstChildElement("LastChange")))
         {
-          DBG(DBG_ERROR, "%s: invalid or not supported content\n", __FUNCTION__);
-          DBG(DBG_ERROR, "%s: dump => %s\n", __FUNCTION__, m_buffer);
-          WSStatus status(HSC_Internal_Server_Error);
-          resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage());
-          resp.append("\r\n\r\n");
-          m_sockPtr->SendData(resp.c_str(), resp.size());
-          m_sockPtr->Disconnect();
-          return;
-        }
+          if (doc.Parse(elem->GetText()) != tinyxml2::XML_SUCCESS ||
+                !(elem = doc.RootElement()) ||
+                !(str = elem->Attribute("xmlns")))
+          {
+            DBG(DBG_ERROR, "%s: invalid or not supported content\n", __FUNCTION__);
+            DBG(DBG_ERROR, "%s: dump => %s\n", __FUNCTION__, m_buffer);
+            WSStatus status(HSC_Internal_Server_Error);
+            resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage());
+            resp.append("\r\n\r\n");
+            m_sockPtr->SendData(resp.c_str(), resp.size());
+            m_sockPtr->Disconnect();
+            return;
+          }
 
-        if (memcmp(str, NS_RCS, sizeof(NS_RCS)) == 0 && (node = elem->FirstChildElement("InstanceID")))
-        {
-          msg.subject.push_back("RCS");
-          elem = node->FirstChildElement(NULL);
-          while (elem)
+          if (memcmp(str, NS_RCS, sizeof(NS_RCS)) == 0 && (node = elem->FirstChildElement("InstanceID")))
           {
-            std::string name(elem->Name());
-            if ((str = elem->Attribute("channel")))
-              name.append("/").append(str);
-            msg.subject.push_back(name);
-            if ((str = elem->Attribute("val")))
-              msg.subject.push_back(str);
-            else
-              msg.subject.push_back("");
-            DBG(DBG_PROTO, "%s: %s = %s\n", __FUNCTION__, name.c_str(), str);
-            elem = elem->NextSiblingElement(NULL);
+            msg.subject.push_back("RCS");
+            elem = node->FirstChildElement(NULL);
+            while (elem)
+            {
+              std::string name(elem->Name());
+              if ((str = elem->Attribute("channel")))
+                name.append("/").append(str);
+              msg.subject.push_back(name);
+              if ((str = elem->Attribute("val")))
+                msg.subject.push_back(str);
+              else
+                msg.subject.push_back("");
+              DBG(DBG_PROTO, "%s: %s = %s\n", __FUNCTION__, name.c_str(), str);
+              elem = elem->NextSiblingElement(NULL);
+            }
           }
-        }
-        else if (memcmp(str, NS_AVT, sizeof(NS_AVT)) == 0 && (node = elem->FirstChildElement("InstanceID")))
-        {
-          msg.subject.push_back("AVT");
-          elem = node->FirstChildElement(NULL);
-          while (elem)
+          else if (memcmp(str, NS_AVT, sizeof(NS_AVT)) == 0 && (node = elem->FirstChildElement("InstanceID")))
           {
-            std::string name(elem->Name());
-            msg.subject.push_back(name);
-            if ((str = elem->Attribute("val")))
-              msg.subject.push_back(str);
-            else
-              msg.subject.push_back("");
-            DBG(DBG_PROTO, "%s: %s = %s\n", __FUNCTION__, name.c_str(), str);
-            elem = elem->NextSiblingElement(NULL);
+            msg.subject.push_back("AVT");
+            elem = node->FirstChildElement(NULL);
+            while (elem)
+            {
+              std::string name(elem->Name());
+              msg.subject.push_back(name);
+              if ((str = elem->Attribute("val")))
+                msg.subject.push_back(str);
+              else
+                msg.subject.push_back("");
+              DBG(DBG_PROTO, "%s: %s = %s\n", __FUNCTION__, name.c_str(), str);
+              elem = elem->NextSiblingElement(NULL);
+            }
           }
+          else
+            DBG(DBG_WARN, "%s: not supported content (%s)\n", __FUNCTION__, str);
         }
+        // Else treat propertyset/property/
         else
-          DBG(DBG_WARN, "%s: not supported content (%s)\n", __FUNCTION__, str);
-      }
-      // Check for propertyset/property/
-      else
-      {
-        msg.subject.push_back("PROPERTY");
-        node = root->FirstChildElement("e:property");
-        while (node)
         {
-          if ((elem = node->FirstChildElement(NULL)))
+          msg.subject.push_back("PROPERTY");
+          do
           {
-            std::string name(elem->Name());
-            msg.subject.push_back(name);
-            if ((str = elem->GetText()))
-              msg.subject.push_back(str);
-            else
-              msg.subject.push_back("");
-            DBG(DBG_PROTO, "%s: %s = %s\n", __FUNCTION__, name.c_str(), str);
-          }
-          node = node->NextSibling();
+            if ((elem = node->FirstChildElement(NULL)))
+            {
+              std::string name(elem->Name());
+              msg.subject.push_back(name);
+              if ((str = elem->GetText()))
+                msg.subject.push_back(str);
+              else
+                msg.subject.push_back("");
+              DBG(DBG_PROTO, "%s: %s = %s\n", __FUNCTION__, name.c_str(), str);
+            }
+            node = node->NextSibling();
+          } while (node && XMLName::XMLNameEqual(node->Value(), "property"));
         }
       }
     }

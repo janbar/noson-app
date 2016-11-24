@@ -22,10 +22,9 @@
 #include "sonossystem.h"
 #include "zonegrouptopology.h"
 #include "digitalitem.h"
+#include "didlparser.h"
 #include "private/socket.h"
 #include "private/wsresponse.h"
-#include "private/didlparser.h"
-
 #include "private/os/threads/timeout.h"
 #include "private/debug.h"
 #include "private/uriparser.h"

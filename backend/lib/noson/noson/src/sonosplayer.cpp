@@ -28,7 +28,7 @@
 #include "private/cppdef.h"
 #include "private/debug.h"
 #include "private/uriparser.h"
-#include "private/didlparser.h"
+#include "didlparser.h"
 #include "sonossystem.h"
 
 using namespace NSROOT;
@@ -46,6 +46,7 @@ Player::Player(const ZonePtr& zone, EventHandler& eventHandler, void* CBHandle, 
 , m_AVTransport(0)
 , m_deviceProperties(0)
 , m_contentDirectory(0)
+, m_musicServices(0)
 {
   if (!zone)
     DBG(DBG_ERROR, "%s: invalid zone\n", __FUNCTION__);
@@ -83,6 +84,7 @@ Player::Player(const ZonePlayerPtr& zonePlayer, EventHandler& eventHandler, void
 , m_AVTransport(0)
 , m_deviceProperties(0)
 , m_contentDirectory(0)
+, m_musicServices(0)
 {
   if (zonePlayer && zonePlayer->IsValid())
   {
@@ -111,6 +113,7 @@ Player::Player(const ZonePlayerPtr& zonePlayer)
 , m_AVTransport(0)
 , m_deviceProperties(0)
 , m_contentDirectory(0)
+, m_musicServices(0)
 {
   if (zonePlayer && zonePlayer->IsValid())
   {
@@ -128,6 +131,7 @@ Player::Player(const ZonePlayerPtr& zonePlayer)
     m_AVTransport = new AVTransport(m_host, m_port);
     m_contentDirectory = new ContentDirectory(m_host, m_port);
     m_deviceProperties = new DeviceProperties(m_host, m_port);
+    m_musicServices = new MusicServices(m_host, m_port);
 
     m_queueURI.assign("x-rincon-queue:").append(m_uuid).append("#0");
     m_valid = true;
@@ -139,6 +143,7 @@ Player::Player(const ZonePlayerPtr& zonePlayer)
 Player::~Player()
 {
   m_eventHandler.RevokeAllSubscriptions(this);
+  SAFE_DELETE(m_musicServices);
   SAFE_DELETE(m_contentDirectory);
   SAFE_DELETE(m_deviceProperties);
   SAFE_DELETE(m_AVTransport);
@@ -180,6 +185,7 @@ void Player::Init(const Zone& zone)
   m_AVTransport = new AVTransport(m_host, m_port, m_eventHandler, m_AVTSubscription, this, CB_AVTransport);
   m_contentDirectory = new ContentDirectory(m_host, m_port, m_eventHandler, m_CDSubscription, this, CB_ContentDirectory);
   m_deviceProperties = new DeviceProperties(m_host, m_port);
+  m_musicServices = new MusicServices(m_host, m_port);
 
   for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     it->subscription.Start();
@@ -260,6 +266,16 @@ bool Player::GetZoneInfo(ElementList& vars)
 bool Player::GetZoneAttributes(ElementList& vars)
 {
   return m_deviceProperties->GetZoneAttributes(vars);
+}
+
+bool Player::GetHouseholdID(ElementList& vars)
+{
+  return m_deviceProperties->GetHouseholdID(vars);
+}
+
+bool Player::GetSessionId(const std::string& serviceId, const std::string& username, ElementList& vars)
+{
+  return m_musicServices->GetSessionId(serviceId, username, vars);
 }
 
 bool Player::GetTransportInfo(ElementList& vars)

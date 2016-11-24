@@ -23,6 +23,7 @@
 #include "private/builtin.h"
 #include "private/debug.h"
 #include "private/tinyxml2.h"
+#include "private/xmlname.h"
 
 using namespace NSROOT;
 
@@ -130,9 +131,9 @@ bool ZoneGroupTopology::ParseZoneGroupState(const std::string& xml)
     DBG(DBG_ERROR, "%s: parse xml failed\n", __FUNCTION__);
     return false;
   }
-  tinyxml2::XMLElement* elem; // an element
+  const tinyxml2::XMLElement* elem; // an element
   // Check for response: ZPSupportInfo
-  if (!(elem = rootdoc.RootElement()) || strncmp(elem->Name(), "ZoneGroups", 10) != 0)
+  if (!(elem = rootdoc.RootElement()) || !XMLName::XMLNameEqual(elem->Name(), "ZoneGroups"))
   {
     DBG(DBG_ERROR, "%s: invalid or not supported content\n", __FUNCTION__);
     tinyxml2::XMLPrinter out;
@@ -159,10 +160,10 @@ bool ZoneGroupTopology::ParseZoneGroupState(const std::string& xml)
     const std::string& cuuid = zoneGroup.GetAttribut("Coordinator");
     DBG(DBG_INFO, "%s: new group '%s' with coordinator '%s'\n", __FUNCTION__, zone->GetGroup().c_str(), cuuid.c_str());
     // browse childs
-    tinyxml2::XMLElement* child = elem->FirstChildElement();
+    const tinyxml2::XMLElement* child = elem->FirstChildElement();
     while (child)
     {
-      if (strncmp(child->Name(), "ZoneGroupMember", 15) == 0)
+      if (XMLName::XMLNameEqual(child->Name(), "ZoneGroupMember"))
       {
         const tinyxml2::XMLAttribute* cattr = child->FirstAttribute();
         Element zoneGroupMember(child->Name());

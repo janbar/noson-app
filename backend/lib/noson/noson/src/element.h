@@ -27,6 +27,7 @@
 
 #include <string>
 #include <vector>
+#include <cstring>
 
 namespace NSROOT
 {
@@ -46,13 +47,15 @@ namespace NSROOT
       return nil;
     }
 
-    std::string XML() const
+    std::string XML(std::string ns = std::string()) const
     {
       std::string ret;
-      ret.append("<").append(m_key);
+      if (!ns.empty())
+        ns.append(":");
+      ret.append("<").append(ns).append(m_key);
       for (std::vector<Element>::const_iterator it = m_attrs.begin(); it != m_attrs.end(); ++it)
         ret.append(" ").append(it->m_key).append("=\"").append(it->XMLEncoded()).append("\"");
-      ret.append(">").append(XMLEncoded()).append("</").append(m_key).append(">");
+      ret.append(">").append(XMLEncoded()).append("</").append(ns).append(m_key).append(">");
       return ret;
     }
 

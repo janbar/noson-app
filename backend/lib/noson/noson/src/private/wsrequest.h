@@ -24,6 +24,7 @@
 
 #include <local_config.h>
 #include "wscontent.h"
+#include "uriparser.h"
 
 #include <cstddef>  // for size_t
 #include <string>
@@ -52,11 +53,13 @@ namespace NSROOT
   public:
     WSRequest(const std::string& server, unsigned port);
     WSRequest(const std::string& server, unsigned port, bool secureURI);
+    WSRequest(const URIParser& uri, HRM_t method = HRM_GET);
     ~WSRequest();
 
     void RequestService(const std::string& url, HRM_t method = HRM_GET);
     void RequestAccept(CT_t contentType);
     void RequestAcceptEncoding(bool yesno);
+    void SetUserAgent(const std::string& value);
     void SetContentParam(const std::string& param, const std::string& value);
     void SetContentCustom(CT_t contentType, const char *content);
     void SetHeader(const std::string& field, const std::string& value);
@@ -80,6 +83,7 @@ namespace NSROOT
     CT_t m_contentType;
     std::string m_contentData;
     std::map<std::string, std::string> m_headers;
+    std::string m_userAgent;
 
     void MakeMessageGET(std::string& msg, const char* method = "GET") const;
     void MakeMessagePOST(std::string& msg, const char* method = "POST") const;

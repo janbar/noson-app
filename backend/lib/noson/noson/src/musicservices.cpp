@@ -22,7 +22,12 @@
 #include "musicservices.h"
 #include "private/builtin.h"
 #include "private/debug.h"
+#include "private/cppdef.h"
 #include "private/tinyxml2.h"
+#include "private/xmlname.h"
+#include "private/wsrequest.h"
+#include "private/wsresponse.h"
+#include "private/os/threads/mutex.h"
 
 using namespace NSROOT;
 
@@ -31,9 +36,173 @@ const std::string MusicServices::ControlURL("/MusicServices/Control");
 const std::string MusicServices::EventURL("/MusicServices/Event");
 const std::string MusicServices::SCPDURL("/xml/MusicServices1.xml");
 
+SMAccount::SMAccount()
+: Element("Account")
+, m_mutex(new OS::CMutex)
+{
+}
+
+SMAccount::~SMAccount()
+{
+  SAFE_DELETE(m_mutex);
+}
+
+SMAccount::OACredentials SMAccount::GetOACredentials() const
+{
+  OS::CLockGuard lock(*m_mutex);
+  return std::make_pair(GetAttribut("OADevID"), GetAttribut("Key"));
+}
+
+void SMAccount::SetOACredentials(OACredentials auth)
+{
+  OS::CLockGuard lock(*m_mutex);
+  SetAttribut("OADevID", auth.first);
+  SetAttribut("Key", auth.second);
+}
+
+SMService::SMService(const std::string& agent, const SMAccountPtr& account, const ElementList& vars)
+: m_agent(agent)
+, m_account(account)
+, m_vars(vars)
+{
+  ServiceType(GetId(), m_type);
+}
+
+const std::string& SMService::GetId() const
+{
+  return m_vars.GetValue("Id");
+}
+
+const std::string& SMService::GetName() const
+{
+  return m_vars.GetValue("Name");
+}
+
+const std::string& SMService::GetVersion() const
+{
+  return m_vars.GetValue("Version");
+}
+
+const std::string& SMService::GetUri() const
+{
+  return m_vars.GetValue("Uri");
+}
+
+const std::string& SMService::GetSecureUri() const
+{
+  return m_vars.GetValue("SecureUri");
+}
+
+const std::string& SMService::GetContainerType() const
+{
+  return m_vars.GetValue("ContainerType");
+}
+
+const std::string& SMService::GetCapabilities() const
+{
+  return m_vars.GetValue("Capabilities");
+}
+
+ElementPtr SMService::GetPolicy() const
+{
+  ElementList::const_iterator it = m_vars.FindKey("Policy");
+  if (it != m_vars.end())
+    return (*it);
+  return ElementPtr();
+}
+
+ElementPtr SMService::GetStrings() const
+{
+  ElementList::const_iterator it = m_vars.FindKey("Strings");
+  if (it != m_vars.end())
+    return (*it);
+  return ElementPtr();
+}
+
+ElementPtr SMService::GetPresentationMap() const
+{
+  ElementList::const_iterator it = m_vars.FindKey("PresentationMap");
+  if (it != m_vars.end())
+    return (*it);
+  return ElementPtr();
+}
+
+void SMService::ServiceType(const std::string& id, std::string& type)
+{
+  int num = 0;
+  if (string_to_int32(id.c_str(), &num) == 0)
+    num = num * 256 + 7;
+  char st[10];
+  int32_to_string(num, st);
+  type.assign(st);
+}
+
+const std::string& SMService::GetServiceType() const
+{
+  return m_type;
+}
+
+SMAccountPtr SMService::GetAccount() const
+{
+  return m_account;
+}
+
+const std::string& SMService::GetAgent() const
+{
+  return m_agent;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+////
+//// MusicServices
+////
+
 MusicServices::MusicServices(const std::string& serviceHost, unsigned servicePort)
 : Service(serviceHost, servicePort)
 {
+}
+
+bool MusicServices::GetSessionId(const std::string& serviceId, const std::string& username, ElementList& vars)
+{
+  ElementList args;
+  args.push_back(ElementPtr(new Element("ServiceId", serviceId)));
+  args.push_back(ElementPtr(new Element("Username", username)));
+  vars = Request("GetSessionId", args);
+  if (!vars.empty() && vars[0]->compare("u:GetSessionIdResponse") == 0)
+    return true;
+  return false;
+}
+
+SMServiceList MusicServices::GetEnabledServices()
+{
+  SMServiceList list;
+  ElementList vars;
+  if ((ListAvailableServices(vars)) && ParseAvailableServiceDescriptorList(vars.GetValue("AvailableServiceDescriptorList")))
+  {
+    if (!ListAccounts())
+      DBG(DBG_ERROR, "%s: query accounts failed\n");
+    for (std::list<ElementList>::const_iterator it = m_services.begin(); it != m_services.end(); ++it)
+    {
+      std::string serviceType;
+      SMService::ServiceType(it->GetValue("Id"), serviceType);
+      ElementList::const_iterator policy = it->FindKey("Policy");
+      if (policy != it->end() && (*policy)->GetAttribut("Auth") == "Anonymous")
+      {
+        SMAccountPtr ac(new SMAccount());
+        ac->SetAttribut("Type", serviceType);
+        ac->SetAttribut("SerialNum", "0");
+        SMServicePtr sm(new SMService(m_agent, ac, *it));
+        list.push_back(sm);
+      }
+      else
+      {
+        SMAccountList la = GetAccountsForService(serviceType);
+        if (!la.empty())
+          list.push_back(SMServicePtr(new SMService(m_agent, la.front(), *it)));
+      }
+    }
+  }
+  return list;
 }
 
 bool MusicServices::ListAvailableServices(ElementList& vars)
@@ -45,125 +214,103 @@ bool MusicServices::ListAvailableServices(ElementList& vars)
   return false;
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-////
-//// MusicServiceList
-////
-
-const std::string& SMService::GetId() const
+bool MusicServices::ListAccounts()
 {
-  return this->GetValue("Id");
-}
-
-const std::string& SMService::GetName() const
-{
-  return this->GetValue("Name");
-}
-
-const std::string& SMService::GetVersion() const
-{
-  return this->GetValue("Version");
-}
-
-const std::string& SMService::GetUri() const
-{
-  return this->GetValue("Uri");
-}
-
-const std::string& SMService::GetSecureUri() const
-{
-  return this->GetValue("SecureUri");
-}
-
-const std::string& SMService::GetContainerType() const
-{
-  return this->GetValue("ContainerType");
-}
-
-const std::string& SMService::GetCapabilities() const
-{
-  return this->GetValue("Capabilities");
-}
-
-ElementPtr SMService::GetPolicy() const
-{
-  ElementList::const_iterator it = this->FindKey("Policy");
-  if (it != this->end())
-    return (*it);
-  return ElementPtr();
-}
-
-ElementPtr SMService::GetStrings() const
-{
-  ElementList::const_iterator it = this->FindKey("Strings");
-  if (it != this->end())
-    return (*it);
-  return ElementPtr();
-}
-
-ElementPtr SMService::GetPresentationMap() const
-{
-  ElementList::const_iterator it = this->FindKey("PresentationMap");
-  if (it != this->end())
-    return (*it);
-  return ElementPtr();
-}
-
-std::string SMService::GetServiceType() const
-{
-  int num = 0;
-  if (string_to_int32(GetId().c_str(), &num) == 0)
-    num = num * 256 + 7;
-  char st[10];
-  int32_to_string(num, st);
-  return st;
-}
-
-MusicServiceList::MusicServiceList(MusicServices& service)
-: m_succeeded(false)
-, m_service(service)
-, m_totalCount(0)
-{
-  m_succeeded = Browse();
-}
-
-bool MusicServiceList::Next(List::iterator& i)
-{
-  const List::iterator e(m_list.end());
-  if (i != e)
+  WSRequest request(m_host, m_port);
+  request.RequestService("/status/accounts");
+  WSResponse response(request);
+  if (!response.IsSuccessful() || !response.GetHeaderValue("SERVER", m_agent))
+    return false;
+  size_t s = response.GetContentLength();
+  std::string data;
+  size_t l = 0;
+  char buf[4000];
+  if (s)
   {
-    ++i;
-    return true;
+    data.reserve(s);
+    while (response.GetConsumed() < s && (l = response.ReadContent(buf, sizeof(buf))))
+      data.append(buf, l);
   }
-  return false;
-}
-
-bool MusicServiceList::Previous(List::iterator& i)
-{
-  if (i != m_list.begin())
+  else
   {
-    --i;
-    return true;
+    data.reserve(1000);
+    while ((l = response.ReadContent(buf, sizeof(buf))))
+      data.append(buf, l);
   }
-  return false;
-}
 
-bool MusicServiceList::Browse()
-{
-  DBG(DBG_PROTO, "%s: browse\n", __FUNCTION__);
-  ElementList vars;
-  ElementList::const_iterator it;
-  if ((m_service.ListAvailableServices(vars)) && ParseAvailableServiceDescriptorList(vars.GetValue("AvailableServiceDescriptorList")))
+  /*
+    <ZPSupportInfo>
+    <Accounts LastUpdateDevice="RINCON_000XXXXXXXXXX1400" Version="4" NextSerialNum="2">
+    <Account Type="519" SerialNum="1" Deleted="1">
+    <UN>username</UN>
+    <MD>1</MD>
+    <NN>nickname</NN>
+    <OADevID></OADevID>
+    <Key></Key>
+    </Account>
+    </Accounts>
+    </ZPSupportInfo>
+  */
+  tinyxml2::XMLDocument rootdoc;
+  // Parse xml content
+  if (rootdoc.Parse(data.c_str(), data.size()) != tinyxml2::XML_SUCCESS)
   {
-      m_totalCount = m_list.size();
-      DBG(DBG_PROTO, "%s: count %u\n", __FUNCTION__, m_totalCount);
-      return true;
+    DBG(DBG_ERROR, "%s: parse xml failed\n", __FUNCTION__);
+    return false;
   }
-  return false;
+  const tinyxml2::XMLElement* elem; // an element
+  // Check for response: Services
+  if (!(elem = rootdoc.RootElement()) || !XMLName::XMLNameEqual(elem->Name(), "ZPSupportInfo")
+          || !(elem = elem->FirstChildElement("Accounts")))
+  {
+    DBG(DBG_ERROR, "%s: invalid or not supported content\n", __FUNCTION__);
+    tinyxml2::XMLPrinter out;
+    rootdoc.Accept(&out);
+    DBG(DBG_ERROR, "%s\n", out.CStr());
+    return false;
+  }
+  m_accounts.clear();
+  elem = elem->FirstChildElement("Account");
+  while (elem)
+  {
+    SMAccountPtr item(new SMAccount());
+    const tinyxml2::XMLAttribute* attr = elem->FirstAttribute();
+    while (attr)
+    {
+      item->SetAttribut(attr->Name(), attr->Value());
+      attr = attr->Next();
+    }
+    const tinyxml2::XMLElement* child = elem->FirstChildElement(NULL);
+    while (child)
+    {
+      if (child->GetText())
+        item->SetAttribut(child->Name(), child->GetText());
+      child = child->NextSiblingElement(NULL);
+    }
+    if (item->GetAttribut("Deleted") == "1")
+      DBG(DBG_DEBUG, "%s: account %s (%s) is deleted\n", __FUNCTION__, item->GetSerialNum().c_str(), item->GetType().c_str());
+    else
+    {
+      DBG(DBG_DEBUG, "%s: account %s (%s) is available\n", __FUNCTION__, item->GetSerialNum().c_str(), item->GetType().c_str());
+      m_accounts.push_back(item);
+    }
+    elem = elem->NextSiblingElement(NULL);
+  }
+  return true;
 }
 
-bool MusicServiceList::ParseAvailableServiceDescriptorList(const std::string& xml)
+SMAccountList MusicServices::GetAccountsForService(const std::string& serviceType) const
+{
+  SMAccountList list;
+  for (SMAccountList::const_iterator it = m_accounts.begin(); it != m_accounts.end(); ++it)
+  {
+    if ((*it)->GetType() == serviceType)
+    list.push_back((*it));
+  }
+  return list;
+}
+
+bool MusicServices::ParseAvailableServiceDescriptorList(const std::string& xml)
 {
   tinyxml2::XMLDocument rootdoc;
   // Parse xml content
@@ -172,7 +319,7 @@ bool MusicServiceList::ParseAvailableServiceDescriptorList(const std::string& xm
     DBG(DBG_ERROR, "%s: parse xml failed\n", __FUNCTION__);
     return false;
   }
-  tinyxml2::XMLElement* elem; // an element
+  const tinyxml2::XMLElement* elem; // an element
   // Check for response: Services
   if (!(elem = rootdoc.RootElement()) || strncmp(elem->Name(), "Services", 8) != 0)
   {
@@ -182,7 +329,7 @@ bool MusicServiceList::ParseAvailableServiceDescriptorList(const std::string& xm
     DBG(DBG_ERROR, "%s\n", out.CStr());
     return false;
   }
-  m_list.clear();
+  m_services.clear();
   elem = elem->FirstChildElement();
   while (elem)
   {
@@ -190,18 +337,18 @@ bool MusicServiceList::ParseAvailableServiceDescriptorList(const std::string& xm
     char sid[10];
     memset(sid, '\0', sizeof(sid));
     const tinyxml2::XMLAttribute* attr = elem->FirstAttribute();
-    SMServicePtr servicePtr(new SMService());
+    ElementList service;
     while (attr)
     {
-      servicePtr->push_back(ElementPtr(new Element(attr->Name(), attr->Value())));
+      service.push_back(ElementPtr(new Element(attr->Name(), attr->Value())));
       attr = attr->Next();
     }
-    DBG(DBG_DEBUG, "%s: service '%s' (%s)\n", __FUNCTION__, servicePtr->GetValue("Name").c_str(), servicePtr->GetValue("Id").c_str());
+    DBG(DBG_DEBUG, "%s: service '%s' (%s)\n", __FUNCTION__, service.GetValue("Name").c_str(), service.GetValue("Id").c_str());
     // browse childs
-    tinyxml2::XMLElement* child = elem->FirstChildElement();
+    const tinyxml2::XMLElement* child = elem->FirstChildElement();
     while (child)
     {
-      if (strncmp(child->Name(), "Policy", 6) == 0)
+      if (XMLName::XMLNameEqual(child->Name(), "Policy"))
       {
         const tinyxml2::XMLAttribute* cattr = child->FirstAttribute();
         uint32_to_string(++uid, sid);
@@ -211,11 +358,11 @@ bool MusicServiceList::ParseAvailableServiceDescriptorList(const std::string& xm
           policyPtr->SetAttribut(cattr->Name(), cattr->Value());
           cattr = cattr->Next();
         }
-        servicePtr->push_back(policyPtr);
+        service.push_back(policyPtr);
       }
-      if (strncmp(child->Name(), "Presentation", 6) == 0)
+      if (XMLName::XMLNameEqual(child->Name(), "Presentation"))
       {
-        tinyxml2::XMLElement* child2 = child->FirstChildElement();
+        const tinyxml2::XMLElement* child2 = child->FirstChildElement();
         while (child2)
         {
           const tinyxml2::XMLAttribute* cattr = child2->FirstAttribute();
@@ -226,13 +373,13 @@ bool MusicServiceList::ParseAvailableServiceDescriptorList(const std::string& xm
             mapPtr->SetAttribut(cattr->Name(), cattr->Value());
             cattr = cattr->Next();
           }
-          servicePtr->push_back(mapPtr);
+          service.push_back(mapPtr);
           child2 = child2->NextSiblingElement(NULL);
         }
       }
       child = child->NextSiblingElement(NULL);
     }
-    m_list.push_back(servicePtr);
+    m_services.push_back(service);
     elem = elem->NextSiblingElement(NULL);
   }
   return true;

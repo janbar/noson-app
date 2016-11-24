@@ -22,8 +22,8 @@
 #include "contentdirectory.h"
 #include "private/builtin.h"
 #include "private/debug.h"
-#include "private/didlparser.h"
 #include "eventhandler.h"
+#include "didlparser.h"
 #include "private/cppdef.h"
 
 #include <list>

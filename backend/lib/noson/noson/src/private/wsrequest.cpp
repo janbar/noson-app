@@ -76,6 +76,33 @@ WSRequest::WSRequest(const std::string& server, unsigned port, bool secureURI)
   RequestAcceptEncoding(true);
 }
 
+WSRequest::WSRequest(const URIParser& uri, HRM_t method)
+: m_port(0)
+, m_secure_uri(false)
+, m_service_method(method)
+, m_charset(REQUEST_STD_CHARSET)
+, m_accept(CT_NONE)
+, m_contentType(CT_FORM)
+, m_contentData()
+{
+  if (uri.Host())
+    m_server.assign(uri.Host());
+  if (uri.Scheme() && strncmp(uri.Scheme(), "https", 5) == 0)
+  {
+    m_secure_uri = true;
+    m_port = uri.Port() ? uri.Port() : 443;
+  }
+  else
+    m_port = uri.Port() ? uri.Port() : 80;
+
+  m_service_url = "/";
+  if (uri.Path())
+    m_service_url.append(uri.Path());
+
+  // by default allow content encoding if possible
+  RequestAcceptEncoding(true);
+}
+
 WSRequest::~WSRequest()
 {
 }
@@ -102,6 +129,11 @@ void WSRequest::RequestAcceptEncoding(bool yesno)
   (void)yesno;
   SetHeader("Accept-Encoding", "");
 #endif
+}
+
+void WSRequest::SetUserAgent(const std::string& value)
+{
+  m_userAgent = value;
 }
 
 void WSRequest::SetContentParam(const std::string& param, const std::string& value)
@@ -171,7 +203,10 @@ void WSRequest::MakeMessageGET(std::string& msg, const char* method) const
   msg.append(" " REQUEST_PROTOCOL "\r\n");
   sprintf(buf, "%u", m_port);
   msg.append("Host: ").append(m_server).append(":").append(buf).append("\r\n");
-  msg.append("User-Agent: " REQUEST_USER_AGENT "\r\n");
+  if (m_userAgent.empty())
+    msg.append("User-Agent: " REQUEST_USER_AGENT "\r\n");
+  else
+    msg.append("User-Agent: ").append(m_userAgent).append("\r\n");
   msg.append("Connection: " REQUEST_CONNECTION "\r\n");
   if (m_accept != CT_NONE)
     msg.append("Accept: ").append(MimeFromContentType(m_accept)).append("\r\n");
@@ -191,7 +226,10 @@ void WSRequest::MakeMessagePOST(std::string& msg, const char* method) const
   msg.append(method).append(" ").append(m_service_url).append(" " REQUEST_PROTOCOL "\r\n");
   sprintf(buf, "%u", m_port);
   msg.append("Host: ").append(m_server).append(":").append(buf).append("\r\n");
-  msg.append("User-Agent: " REQUEST_USER_AGENT "\r\n");
+  if (m_userAgent.empty())
+    msg.append("User-Agent: " REQUEST_USER_AGENT "\r\n");
+  else
+    msg.append("User-Agent: ").append(m_userAgent).append("\r\n");
   msg.append("Connection: " REQUEST_CONNECTION "\r\n");
   if (m_accept != CT_NONE)
     msg.append("Accept: ").append(MimeFromContentType(m_accept)).append("\r\n");
@@ -222,7 +260,10 @@ void WSRequest::MakeMessageHEAD(std::string& msg, const char* method) const
   msg.append(" " REQUEST_PROTOCOL "\r\n");
   sprintf(buf, "%u", m_port);
   msg.append("Host: ").append(m_server).append(":").append(buf).append("\r\n");
-  msg.append("User-Agent: " REQUEST_USER_AGENT "\r\n");
+  if (m_userAgent.empty())
+    msg.append("User-Agent: " REQUEST_USER_AGENT "\r\n");
+  else
+    msg.append("User-Agent: ").append(m_userAgent).append("\r\n");
   msg.append("Connection: " REQUEST_CONNECTION "\r\n");
   if (m_accept != CT_NONE)
     msg.append("Accept: ").append(MimeFromContentType(m_accept)).append("\r\n");

@@ -30,6 +30,7 @@
 #include "subscription.h"
 #include "element.h"
 #include "locked.h"
+#include "musicservices.h"
 
 #include <string>
 #include <vector>
@@ -41,6 +42,7 @@ namespace NSROOT
   class DeviceProperties;
   class RenderingControl;
   class ContentDirectory;
+  class MusicServices;
   class Subscription;
 
   class Player;
@@ -95,6 +97,8 @@ namespace NSROOT
     bool RefreshShareIndex();
     bool GetZoneInfo(ElementList& vars);
     bool GetZoneAttributes(ElementList& vars);
+    bool GetHouseholdID(ElementList& vars);
+    bool GetSessionId(const std::string& serviceId, const std::string& username, ElementList& vars);
     bool GetTransportInfo(ElementList& vars);
     bool GetPositionInfo(ElementList &vars);
     bool GetMediaInfo(ElementList &vars);
@@ -179,6 +183,7 @@ namespace NSROOT
     AVTransport*        m_AVTransport;
     DeviceProperties*   m_deviceProperties;
     ContentDirectory*   m_contentDirectory;
+    MusicServices*      m_musicServices;
 
     // cold startup
     void Init(const Zone& zone);

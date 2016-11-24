@@ -23,7 +23,7 @@
 #include "private/builtin.h"
 #include "private/cppdef.h"
 #include "private/debug.h"
-#include "private/didlparser.h"
+#include "didlparser.h"
 
 using namespace NSROOT;
 

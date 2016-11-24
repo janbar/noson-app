@@ -30,6 +30,67 @@
 namespace NSROOT
 {
 
+  namespace OS
+  {
+    class CMutex;
+  }
+
+  class SMAccount : protected Element
+  {
+    friend class MusicServices;
+  public:
+    SMAccount();
+    virtual ~SMAccount();
+    const std::string& GetType() const { return GetAttribut("Type"); }
+    const std::string& GetSerialNum() const { return GetAttribut("SerialNum"); }
+    const std::string& GetUserName() const { return GetAttribut("UN"); }
+    const std::string& GetMetadata() const { return GetAttribut("MD"); }
+    const std::string& GetNickname() const { return GetAttribut("NN"); }
+
+    typedef std::pair<std::string, std::string> OACredentials;
+    OACredentials GetOACredentials() const;
+    void SetOACredentials(OACredentials auth);
+
+  private:
+    OS::CMutex* m_mutex;
+  };
+
+  typedef shared_ptr<SMAccount> SMAccountPtr;
+  typedef std::list<SMAccountPtr> SMAccountList;
+
+  class SMService
+  {
+    friend class MusicServices;
+  public:
+    SMService(const std::string& agent, const SMAccountPtr& account, const ElementList& vars);
+    virtual ~SMService() {}
+
+    const std::string& GetId() const;
+    const std::string& GetName() const;
+    const std::string& GetVersion() const;
+    const std::string& GetUri() const;
+    const std::string& GetSecureUri() const;
+    const std::string& GetContainerType() const;
+    const std::string& GetCapabilities() const;
+    ElementPtr GetPolicy() const;
+    ElementPtr GetStrings() const;
+    ElementPtr GetPresentationMap() const;
+
+    static void ServiceType(const std::string& id, std::string& type);
+    const std::string& GetServiceType() const;
+    SMAccountPtr GetAccount() const;
+    const std::string& GetAgent() const;
+
+  private:
+    std::string m_agent;    ///< The agent string to announce in API call
+    SMAccountPtr m_account; ///< The account relates this service
+    ElementList m_vars;
+    std::string m_type;     ///< The type id of this service
+  };
+
+  typedef shared_ptr<SMService> SMServicePtr;
+  typedef std::list<SMServicePtr> SMServiceList;
+
   class MusicServices : public Service
   {
   public:
@@ -49,87 +110,19 @@ namespace NSROOT
 
     const std::string& GetSCPDURL() const { return SCPDURL; }
 
-    bool ListAvailableServices(ElementList& vars);
-  };
+    bool GetSessionId(const std::string& serviceId, const std::string& username, ElementList& vars);
 
-
-  /////////////////////////////////////////////////////////////////////////////
-  ////
-  //// MusicServiceList
-  ////
-
-  class SMService : protected ElementList
-  {
-  public:
-    SMService() : ElementList() { }
-
-    friend class MusicServiceList;
-
-    const std::string& GetId() const;
-    const std::string& GetName() const;
-    const std::string& GetVersion() const;
-    const std::string& GetUri() const;
-    const std::string& GetSecureUri() const;
-    const std::string& GetContainerType() const;
-    const std::string& GetCapabilities() const;
-    ElementPtr GetPolicy() const;
-    ElementPtr GetStrings() const;
-    ElementPtr GetPresentationMap() const;
-
-    std::string GetServiceType() const;
-    const std::string& GetAttribut(const std::string& key) const { return this->GetValue(key); }
-  };
-
-  typedef shared_ptr<SMService> SMServicePtr;
-
-  class MusicServiceList
-  {
-    typedef std::list<SMServicePtr> List;
-
-    friend class iterator;
-  public:
-    MusicServiceList(MusicServices& service);
-    virtual ~MusicServiceList() {}
-
-    class iterator
-    {
-      friend class MusicServiceList;
-    public:
-      typedef iterator self_type;
-      iterator() : c(0) {}
-      virtual ~iterator() {}
-      self_type operator++() { self_type i0 = *this; if (c) c->Next(i); return i0; }
-      self_type& operator++(int junk) { (void)junk; if (c) c->Next(i); return *this; }
-      self_type operator--() { self_type i0 = *this; if (c) c->Previous(i); return i0; }
-      self_type& operator--(int junk) { (void)junk; if (c) c->Previous(i); return *this; }
-      bool operator==(const self_type& rhs) const { return rhs.i == i; }
-      bool operator!=(const self_type& rhs) const { return rhs.i != i; }
-      List::value_type& operator*() const { return *i; }
-      List::value_type* operator->() const { return &*i; }
-    private:
-      MusicServiceList* c;
-      List::iterator i;
-      iterator(MusicServiceList* _c, const List::iterator& _i) : c(_c) { if (_c) i = _i; }
-    };
-
-    bool failure() const { return !m_succeeded; }
-
-    iterator begin() { return iterator(this, m_list.begin()); }
-
-    iterator end() { return iterator(this, m_list.end()); }
-
-    unsigned size() { return m_totalCount; }
+    SMServiceList GetEnabledServices();
 
   private:
-    bool m_succeeded;
-    MusicServices& m_service;
-    unsigned m_totalCount;
+    bool ListAvailableServices(ElementList& vars);
 
-    List m_list;
+    std::string m_agent;                ///< The announced agent of sonos device
+    SMAccountList m_accounts;           ///< The known accounts
+    std::list<ElementList> m_services;  ///< The available services
 
-    bool Next(List::iterator& i);
-    bool Previous(List::iterator& i);
-    bool Browse();
+    bool ListAccounts();
+    SMAccountList GetAccountsForService(const std::string& serviceType) const;
     bool ParseAvailableServiceDescriptorList(const std::string& xml);
   };
 }

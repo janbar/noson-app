@@ -51,3 +51,12 @@ bool DeviceProperties::GetZoneAttributes(ElementList& vars)
     return true;
   return false;
 }
+
+bool DeviceProperties::GetHouseholdID(ElementList& vars)
+{
+  ElementList args;
+  vars = Request("GetHouseholdID", args);
+  if (!vars.empty() && vars[0]->compare("u:GetHouseholdIDResponse") == 0)
+    return true;
+  return false;
+}
