@@ -347,7 +347,7 @@ bool Player::SetCurrentURI(const DigitalItemPtr& item)
   {
     ElementPtr var(new Element("desc", NetServiceDescTable[NetService_TuneIN]));
     var->SetAttribut("id", "cdudn");
-    var->SetAttribut("nameSpace", "urn:schemas-rinconnetworks-com:metadata-1-0/");
+    var->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
     item->SetProperty(var);
   }
   return m_AVTransport->SetCurrentURI(item->GetValue("res"), item->DIDL());
@@ -364,7 +364,7 @@ bool Player::PlayStream(const std::string& streamURL, const std::string& title)
     protocolInfo.assign(ProtocolTable[Protocol_xRinconMP3Radio]).append(":*:*:*");
     // Setup the digital item
     DigitalItemPtr item(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
-    item->SetProperty(ElementPtr(new Element("dc:title", title)));
+    item->SetProperty(ElementPtr(new Element(DIDL_QNAME_DC "title", title)));
     ElementPtr res(new Element("res", val));
     res->SetAttribut("protocolInfo", protocolInfo);
     item->SetProperty(res);
@@ -457,39 +457,39 @@ bool Player::DestroySavedQueue(const std::string& SQObjectID)
 bool Player::AddURIToFavorites(const DigitalItemPtr& item, const std::string& description, const std::string& artURI)
 {
   DigitalItemPtr favorite(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_unknown));
-  favorite->SetProperty("dc:title", item->GetValue("dc:title"));
-  favorite->SetProperty("r:type", "instantPlay");
+  favorite->SetProperty(DIDL_QNAME_DC "title", item->GetValue(DIDL_QNAME_DC "title"));
+  favorite->SetProperty(DIDL_QNAME_RINC "type", "instantPlay");
   favorite->SetProperty(item->GetProperty("res"));
-  ElementPtr art = item->GetProperty("upnp:albumArtURI");
+  ElementPtr art = item->GetProperty(DIDL_QNAME_UPNP "albumArtURI");
   if (!art && !artURI.empty())
-    art.reset(new Element("upnp:albumArtURI", artURI));
+    art.reset(new Element(DIDL_QNAME_UPNP "albumArtURI", artURI));
   favorite->SetProperty(art);
-  const std::string& album = item->GetValue("upnp:album");
-  const std::string& creator = item->GetValue("dc:creator");
-  favorite->SetProperty("r:description", description.empty() ? album.empty() ? creator : album : description);
+  const std::string& album = item->GetValue(DIDL_QNAME_UPNP "album");
+  const std::string& creator = item->GetValue(DIDL_QNAME_DC "creator");
+  favorite->SetProperty(DIDL_QNAME_RINC "description", description.empty() ? album.empty() ? creator : album : description);
   // make r:resMD
   DigitalItem obj(DigitalItem::Type_item, DigitalItem::SubType_unknown);
   obj.SetObjectID(item->GetObjectID());
   obj.SetParentID(item->GetParentID());
   obj.SetRestricted(item->GetRestricted());
-  obj.SetProperty(item->GetProperty("upnp:class"));
-  obj.SetProperty(item->GetProperty("dc:title"));
+  obj.SetProperty(item->GetProperty(DIDL_QNAME_UPNP "class"));
+  obj.SetProperty(item->GetProperty(DIDL_QNAME_DC "title"));
   // make desc
   if (System::CanQueueItem(item))
   {
     ElementPtr desc(new Element("desc", "RINCON_AssociatedZPUDN"));
     desc->SetAttribut("id", "cdudn");
-    desc->SetAttribut("nameSpace", "urn:schemas-rinconnetworks-com:metadata-1-0");
+    desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
     obj.SetProperty(desc);
   }
   else
   {
     ElementPtr desc(new Element("desc", NetServiceDescTable[NetService_TuneIN]));
     desc->SetAttribut("id", "cdudn");
-    desc->SetAttribut("nameSpace", "urn:schemas-rinconnetworks-com:metadata-1-0");
+    desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
     obj.SetProperty(desc);
   }
-  favorite->SetProperty("r:resMD", obj.DIDL());
+  favorite->SetProperty(DIDL_QNAME_RINC "resMD", obj.DIDL());
   ContentSearch search(SearchFavorite, "");
   return m_contentDirectory->CreateObject(search.Root(), favorite);
 }

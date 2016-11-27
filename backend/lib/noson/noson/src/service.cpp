@@ -25,7 +25,7 @@
 #include "private/debug.h"
 #include "private/cppdef.h"
 #include "private/tinyxml2.h"
-#include "private/xmlname.h"
+#include "private/xmldict.h"
 #include "private/os/threads/mutex.h"
 #include "sonosplayer.h"
 
@@ -107,8 +107,8 @@ ElementList Service::Request(const std::string& action, const ElementList& args)
   }
   const tinyxml2::XMLElement* elem; // an element
   // Check for response: s:Envelope/s:Body/{respTag}
-  if (!(elem = rootdoc.RootElement()) || !XMLName::XMLNameEqual(elem->Name(), "Envelope") ||
-          !(elem = elem->FirstChildElement()) || !XMLName::XMLNameEqual(elem->Name(), "Body") ||
+  if (!(elem = rootdoc.RootElement()) || !XMLNS::NameEqual(elem->Name(), "Envelope") ||
+          !(elem = elem->FirstChildElement()) || !XMLNS::NameEqual(elem->Name(), "Body") ||
           !(elem = elem->FirstChildElement()))
   {
     DBG(DBG_ERROR, "%s: invalid or not supported response\n", __FUNCTION__);
@@ -118,18 +118,25 @@ ElementList Service::Request(const std::string& action, const ElementList& args)
     return vars;
   }
   vars.push_back(ElementPtr(new Element("TAG", elem->Name())));
-  if (XMLName::XMLNameEqual(vars.back()->c_str(), "Fault"))
+  if (XMLNS::NameEqual(vars.back()->c_str(), "Fault"))
   {
     const tinyxml2::XMLElement* felem;
-    if ((felem = elem->FirstChildElement("faultstring")) && felem->GetText())
-    {
+    if ((felem = elem->FirstChildElement("faultcode")) && felem->GetText())
       vars.push_back(ElementPtr(new Element(felem->Name(), felem->GetText())));
-      if (vars.back()->compare("UPnPError") == 0 &&
-              (felem = elem->FirstChildElement("detail")) &&
-              (felem = felem->FirstChildElement()) &&
-              (felem = felem->FirstChildElement("errorCode")) &&
-              (felem->GetText()))
-        vars.push_back(ElementPtr(new Element(felem->Name(), felem->GetText())));
+    if ((felem = elem->FirstChildElement("faultstring")) && felem->GetText())
+      vars.push_back(ElementPtr(new Element(felem->Name(), felem->GetText())));
+    if ((felem = elem->FirstChildElement("detail")) && (felem = felem->FirstChildElement(NULL)))
+    {
+      felem = felem->FirstChildElement(NULL);
+      while (felem)
+      {
+        if (felem->GetText())
+        {
+          // remove the namespace qualifier to handle local name as key
+          vars.push_back(ElementPtr(new Element(XMLNS::LocalName(elem->Name()), felem->GetText())));
+        }
+        felem = felem->NextSiblingElement(NULL);
+      }
     }
     SetFault(vars);
   }

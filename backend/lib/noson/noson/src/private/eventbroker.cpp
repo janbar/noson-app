@@ -22,7 +22,7 @@
 #include "eventbroker.h"
 #include "wsstatus.h"
 #include "tinyxml2.h"
-#include "xmlname.h"
+#include "xmldict.h"
 #include "cppdef.h"
 #include "debug.h"
 
@@ -106,9 +106,9 @@ void EventBroker::Process()
     const tinyxml2::XMLNode* node;    // a node
     tinyxml2::XMLDocument doc;  // a document
     const char* str;
-    if ((root = rootdoc.RootElement()) && XMLName::XMLNameEqual(root->Name(), "propertyset"))
+    if ((root = rootdoc.RootElement()) && XMLNS::NameEqual(root->Name(), "propertyset"))
     {
-      if ((node = root->FirstChild()) && XMLName::XMLNameEqual(node->Value(), "property"))
+      if ((node = root->FirstChild()) && XMLNS::NameEqual(node->Value(), "property"))
       {
         // Check prior for embedded doc 'Event': propertyset/property/LastChange
         if ((elem = node->FirstChildElement("LastChange")))
@@ -181,7 +181,7 @@ void EventBroker::Process()
               DBG(DBG_PROTO, "%s: %s = %s\n", __FUNCTION__, name.c_str(), str);
             }
             node = node->NextSibling();
-          } while (node && XMLName::XMLNameEqual(node->Value(), "property"));
+          } while (node && XMLNS::NameEqual(node->Value(), "property"));
         }
       }
     }

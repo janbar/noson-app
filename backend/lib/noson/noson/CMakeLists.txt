@@ -1,6 +1,6 @@
-cmake_minimum_required (VERSION 2.6 FATAL_ERROR)
-cmake_policy (VERSION 2.6)
-set(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
+cmake_minimum_required (VERSION 3.0.2 FATAL_ERROR)
+cmake_policy (VERSION 3.0)
+#set(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
 
 project (noson)
 
@@ -92,7 +92,7 @@ endif ()
 find_package(OpenSSL)
 
 if (OPENSSL_FOUND)
-    include_directories (${OPENSSL_INCLUDE_DIRS})
+    include_directories (${OPENSSL_INCLUDE_DIR})
     set (HAVE_OPENSSL 1)
 else ()
     set (HAVE_OPENSSL 0)

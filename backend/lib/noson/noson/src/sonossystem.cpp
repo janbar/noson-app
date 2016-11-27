@@ -171,7 +171,7 @@ void System::HandleEventMessage(EventMessagePtr msg)
 
 bool System::ExtractObjectFromFavorite(const DigitalItemPtr& favorite, DigitalItemPtr& item)
 {
-  const std::string& str = favorite->GetValue("r:resMD");
+  const std::string& str = favorite->GetValue(DIDL_QNAME_RINC "resMD");
   if (str.empty())
     return false;
   DIDLParser didl(str.c_str());
@@ -183,8 +183,8 @@ bool System::ExtractObjectFromFavorite(const DigitalItemPtr& favorite, DigitalIt
   }
   DigitalItemPtr ptr(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_unknown));
   ptr->SetProperty(favorite->GetProperty("res"));
-  ptr->SetProperty(favorite->GetProperty("dc:title"));
-  ptr->SetProperty(favorite->GetProperty("upnp:albumArtURI"));
+  ptr->SetProperty(favorite->GetProperty(DIDL_QNAME_DC "title"));
+  ptr->SetProperty(favorite->GetProperty(DIDL_QNAME_UPNP "albumArtURI"));
   ptr->SetObjectID("-1");
   ptr->SetParentID("-1");
   item.swap(ptr);

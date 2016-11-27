@@ -21,6 +21,7 @@
 
 #include "digitalitem.h"
 #include "private/builtin.h"
+#include "didlparser.h"
 
 #include <vector>
 
@@ -59,7 +60,7 @@ DigitalItem::DigitalItem(Type_t _type, SubType_t _subType)
 , m_objectID("")
 , m_parentID("")
 {
-  ElementPtr _class(new Element("upnp:class"));
+  ElementPtr _class(new Element(DIDL_QNAME_UPNP "class"));
   _class->assign("object");
   if (m_type != Type_unknown)
   {
@@ -79,7 +80,7 @@ DigitalItem::DigitalItem(const std::string& objectID, const std::string& parentI
 , m_vars(vars)
 {
   ElementList::const_iterator it;
-  if ((it = vars.FindKey("upnp:class")) != vars.end())
+  if ((it = vars.FindKey(DIDL_QNAME_UPNP "class")) != vars.end())
   {
     std::vector<std::string> tokens;
     __tokenize((*it)->c_str(), ".", tokens);
@@ -148,11 +149,7 @@ void DigitalItem::RemoveProperty(const std::string& key)
 std::string DigitalItem::DIDL() const
 {
   std::string xml;
-  xml.append(
-    "<DIDL-Lite xmlns:dc=\"http://purl.org/dc/elements/1.1/\" "
-    "xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\" "
-    "xmlns:r=\"urn:schemas-rinconnetworks-com:metadata-1-0/\" "
-    "xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\">");
+  xml.append("<DIDL-Lite").append(DIDLParser::DIDLNSString()).append(">");
   if (m_type != Type_unknown)
   {
     xml.append("<").append(TypeTable[m_type]);

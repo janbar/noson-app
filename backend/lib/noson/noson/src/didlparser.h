@@ -27,6 +27,16 @@
 
 #include <vector>
 
+#define DIDL_XMLNS_DC   "http://purl.org/dc/elements/1.1/"
+#define DIDL_XMLNS_UPNP "urn:schemas-upnp-org:metadata-1-0/upnp/"
+#define DIDL_XMLNS_RINC "urn:schemas-rinconnetworks-com:metadata-1-0/"
+#define DIDL_XMLNS_DIDL "urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/"
+
+#define DIDL_QNAME_DC   "dc:"
+#define DIDL_QNAME_UPNP "upnp:"
+#define DIDL_QNAME_RINC "r:"
+#define DIDL_QNAME_DIDL ""
+
 namespace NSROOT
 {
   class DIDLParser
@@ -38,7 +48,10 @@ namespace NSROOT
     bool IsValid() { return m_parsed; }
 
     std::vector<DigitalItemPtr>& GetItems() { return m_items; }
-    
+
+    static const char* KeyForNameSpace(const char* name);
+    static const char* DIDLNSString();
+
   private:
     const char* m_document;
     bool m_parsed;
