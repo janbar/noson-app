@@ -22,7 +22,6 @@
 #include "compressor.h"
 #include "cppdef.h"
 
-#include <local_config.h>
 #if HAVE_ZLIB
 #include <zlib.h>
 #else

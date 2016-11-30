@@ -328,7 +328,11 @@ size_t WSResponse::ReadChunk(void *buf, size_t buflen)
 int WSResponse::SocketStreamReader(void *hdl, void *buf, int sz)
 {
   WSResponse *resp = static_cast<WSResponse*>(hdl);
-  return (resp == NULL ? 0 : resp->m_socket->ReceiveData(buf, sz));
+  if (resp == NULL)
+    return 0;
+  size_t s = resp->m_socket->ReceiveData(buf, sz);
+  resp->m_consumed += s;
+  return s;
 }
 
 int WSResponse::ChunkStreamReader(void *hdl, void *buf, int sz)
@@ -352,6 +356,7 @@ size_t WSResponse::ReadContent(char* buf, size_t buflen)
         size_t len = m_contentLength - m_consumed;
         s = m_socket->ReceiveData(buf, len > buflen ? buflen : len);
       }
+      m_consumed += s;
     }
     else if (m_contentEncoding == CE_GZIP || m_contentEncoding == CE_DEFLATE)
     {
@@ -389,7 +394,6 @@ size_t WSResponse::ReadContent(char* buf, size_t buflen)
       }
     }
   }
-  m_consumed += s;
   return s;
 }
 

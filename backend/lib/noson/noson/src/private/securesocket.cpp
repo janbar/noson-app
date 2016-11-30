@@ -111,6 +111,8 @@ SecureSocket* SSLSessionFactory::NewSocket(bool disableSSLv2 /*= true*/)
      */
     SSL_set_mode(static_cast<SSL*>(ssl), SSL_MODE_AUTO_RETRY);
     return new SecureSocket(ssl);
+#else
+    (void)disableSSLv2;
 #endif
   }
   return NULL;
@@ -232,6 +234,9 @@ size_t SecureSocket::ReceiveData(void* buf, size_t n)
       break;
     }
   }
+#else
+  (void)buf;
+  (void)n;
 #endif
   return 0;
 }
@@ -265,6 +270,9 @@ bool SecureSocket::SendData(const char* buf, size_t size)
       break;
     }
   }
+#else
+  (void)buf;
+  (void)size;
 #endif
   return false;
 }
@@ -306,6 +314,8 @@ bool SecureSocket::IsCertificateValid(std::string& str)
     str.assign(X509_NAME_oneline(name, buf, sizeof(buf) - 1));
     return true;
   }
+#else
+  (void)str;
 #endif
   return false;
 }
