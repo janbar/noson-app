@@ -651,7 +651,7 @@ bool UdpSocket::SetAddress(SOCKET_AF_t af, const char* target, unsigned port)
     }
     case AF_INET6:
     {
-      sockaddr_in6* sa = (sockaddr_in6*)&m_addr->sa; 
+      sockaddr_in6* sa = (sockaddr_in6*)&m_addr->sa;
       sa->sin6_family = AF_INET6;
       memcpy(&(sa->sin6_addr), _addr, sizeof(struct in6_addr));
       sa->sin6_port = htons(port);

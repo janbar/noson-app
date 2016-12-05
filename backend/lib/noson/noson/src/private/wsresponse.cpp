@@ -267,6 +267,7 @@ bool WSResponse::GetResponse()
               DBG(DBG_ERROR, "%s: unsupported content encoding (%s) %d\n", __FUNCTION__, val, value_len);
             }
           }
+          break;
         case 17:
           if (memcmp(token, "TRANSFER-ENCODING", token_len) == 0)
           {
@@ -292,26 +293,23 @@ size_t WSResponse::ReadChunk(void *buf, size_t buflen)
     if (m_chunkPtr == NULL || m_chunkPtr >= m_chunkEOR)
     {
       // process next chunk if all bytes have been read from the chunk buffer
-      if (m_chunkEOR >= m_chunkEnd)
+      SAFE_DELETE_ARRAY(m_chunkBuffer);
+      m_chunkBuffer = m_chunkPtr = m_chunkEOR = m_chunkEnd = NULL;
+      std::string strread;
+      size_t len = 0;
+      while (ReadHeaderLine(m_socket, "\r\n", strread, &len) && len == 0);
+      DBG(DBG_PROTO, "%s: chunked data (%s)\n", __FUNCTION__, strread.c_str());
+      std::string chunkStr("0x0");
+      uint32_t chunkSize;
+      if (!strread.empty() && sscanf(chunkStr.append(strread).c_str(), "%x", &chunkSize) == 1 && chunkSize > 0)
       {
-        SAFE_DELETE_ARRAY(m_chunkBuffer);
-        m_chunkBuffer = m_chunkPtr = m_chunkEOR = m_chunkEnd = NULL;
-        std::string strread;
-        size_t len = 0;
-        while (ReadHeaderLine(m_socket, "\r\n", strread, &len) && len == 0);
-        DBG(DBG_PROTO, "%s: chunked data (%s)\n", __FUNCTION__, strread.c_str());
-        std::string chunkStr("0x0");
-        uint32_t chunkSize;
-        if (!strread.empty() && sscanf(chunkStr.append(strread).c_str(), "%x", &chunkSize) == 1 && chunkSize > 0)
-        {
-          if (!(m_chunkBuffer = new char[chunkSize]))
-            return 0;
-          m_chunkPtr = m_chunkEOR = m_chunkBuffer;
-          m_chunkEnd = m_chunkBuffer + chunkSize;
-        }
-        else
-          return 0; // that's the end of chunks
+        if (!(m_chunkBuffer = new char[chunkSize]))
+          return 0;
+        m_chunkPtr = m_chunkEOR = m_chunkBuffer;
+        m_chunkEnd = m_chunkBuffer + chunkSize;
       }
+      else
+        return 0; // that's the end of chunks
       // ask for new data to fill in the chunk buffer
       // fill at last read position and until to the end
       m_chunkEOR += m_socket->ReceiveData(m_chunkEOR, m_chunkEnd - m_chunkEOR);
@@ -330,7 +328,15 @@ int WSResponse::SocketStreamReader(void *hdl, void *buf, int sz)
   WSResponse *resp = static_cast<WSResponse*>(hdl);
   if (resp == NULL)
     return 0;
-  size_t s = resp->m_socket->ReceiveData(buf, sz);
+  size_t s = 0;
+  // let read on unknown length
+  if (!resp->m_contentLength)
+    s = resp->m_socket->ReceiveData(buf, sz);
+  else if (resp->m_contentLength > resp->m_consumed)
+  {
+    size_t len = resp->m_contentLength - resp->m_consumed;
+    s = resp->m_socket->ReceiveData(buf, len > (size_t)sz ? (size_t)sz : len);
+  }
   resp->m_consumed += s;
   return s;
 }
