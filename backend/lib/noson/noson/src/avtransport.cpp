@@ -66,7 +66,7 @@ bool AVTransport::GetTransportInfo(ElementList& vars)
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   vars = Request("GetTransportInfo", args);
-  if (!vars.empty() && vars[0]->compare("u:GetTransportInfoResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("GetTransportInfoResponse") == 0)
     return true;
   return false;
 }
@@ -76,7 +76,7 @@ bool AVTransport::GetPositionInfo(ElementList& vars)
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   vars = Request("GetPositionInfo", args);
-  if (!vars.empty() && vars[0]->compare("u:GetPositionInfoResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("GetPositionInfoResponse") == 0)
     return true;
   return false;
 }
@@ -86,7 +86,7 @@ bool AVTransport::GetMediaInfo(ElementList& vars)
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   vars = Request("GetMediaInfo", args);
-  if (!vars.empty() && vars[0]->compare("u:GetMediaInfoResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("GetMediaInfoResponse") == 0)
     return true;
   return false;
 }
@@ -96,7 +96,7 @@ bool AVTransport::GetRemainingSleepTimerDuration(ElementList& vars)
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   vars = Request("GetRemainingSleepTimerDuration", args);
-  if (!vars.empty() && vars[0]->compare("u:GetRemainingSleepTimerDurationResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("GetRemainingSleepTimerDurationResponse") == 0)
     return true;
   return false;
 }
@@ -128,7 +128,7 @@ bool AVTransport::SetPlayMode(PlayMode_t mode)
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("NewPlayMode", modeStr)));
   ElementList vars = Request("SetPlayMode", args);
-  if (!vars.empty() && vars[0]->compare("u:SetPlayModeResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("SetPlayModeResponse") == 0)
     return true;
   return false;
 }
@@ -139,7 +139,7 @@ bool AVTransport::Play()
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("Speed", "1")));
   ElementList vars = Request("Play", args);
-  if (!vars.empty() && vars[0]->compare("u:PlayResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("PlayResponse") == 0)
     return true;
   return false;
 }
@@ -150,7 +150,7 @@ bool AVTransport::Stop()
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("Speed", "1")));
   ElementList vars = Request("Stop", args);
-  if (!vars.empty() && vars[0]->compare("u:StopResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("StopResponse") == 0)
     return true;
   return false;
 }
@@ -161,7 +161,7 @@ bool AVTransport::Pause()
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("Speed", "1")));
   ElementList vars = Request("Pause", args);
-  if (!vars.empty() && vars[0]->compare("u:PauseResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("PauseResponse") == 0)
     return true;
   return false;
 }
@@ -177,7 +177,7 @@ bool AVTransport::SeekTime(uint16_t reltime)
   args.push_back(ElementPtr(new Element("Unit", "REL_TIME")));
   args.push_back(ElementPtr(new Element("Target", buf)));
   ElementList vars = Request("Seek", args);
-  if (!vars.empty() && vars[0]->compare("u:SeekResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("SeekResponse") == 0)
     return true;
   return false;
 }
@@ -192,7 +192,7 @@ bool AVTransport::SeekTrack(unsigned tracknr)
   args.push_back(ElementPtr(new Element("Unit", "TRACK_NR")));
   args.push_back(ElementPtr(new Element("Target", buf)));
   ElementList vars = Request("Seek", args);
-  if (!vars.empty() && vars[0]->compare("u:SeekResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("SeekResponse") == 0)
     return true;
   return false;
 }
@@ -203,7 +203,7 @@ bool AVTransport::Next()
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("Speed", "1")));
   ElementList vars = Request("Next", args);
-  if (!vars.empty() && vars[0]->compare("u:NextResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("NextResponse") == 0)
     return true;
   return false;
 }
@@ -214,7 +214,7 @@ bool AVTransport::Previous()
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("Speed", "1")));
   ElementList vars = Request("Previous", args);
-  if (!vars.empty() && vars[0]->compare("u:PreviousResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("PreviousResponse") == 0)
     return true;
   return false;
 }
@@ -226,7 +226,7 @@ bool AVTransport::SetCurrentURI(const std::string& uri, const std::string& metad
   args.push_back(ElementPtr(new Element("CurrentURI", uri)));
   args.push_back(ElementPtr(new Element("CurrentURIMetaData", metadata)));
   ElementList vars = Request("SetAVTransportURI", args);
-  if (!vars.empty() && vars[0]->compare("u:SetAVTransportURIResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("SetAVTransportURIResponse") == 0)
     return true;
   return false;
 }
@@ -238,7 +238,7 @@ bool AVTransport::SetNextURI(const std::string& uri, const std::string& metadata
   args.push_back(ElementPtr(new Element("NextURI", uri)));
   args.push_back(ElementPtr(new Element("NextURIMetaData", metadata)));
   ElementList vars = Request("SetNextAVTransportURI", args);
-  if (!vars.empty() && vars[0]->compare("u:SetNextAVTransportURIResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("SetNextAVTransportURIResponse") == 0)
     return true;
   return false;
 }
@@ -255,7 +255,7 @@ unsigned AVTransport::AddURIToQueue(const std::string& uri, const std::string& m
   args.push_back(ElementPtr(new Element("DesiredFirstTrackNumberEnqueued", buf)));
   args.push_back(ElementPtr(new Element("EnqueueAsNext", "1")));
   ElementList vars = Request("AddURIToQueue", args);
-  if (!vars.empty() && vars[0]->compare("u:AddURIToQueueResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("AddURIToQueueResponse") == 0)
   {
     uint32_t num;
     string_to_uint32(vars.GetValue("FirstTrackNumberEnqueued").c_str(), &num);
@@ -295,7 +295,7 @@ unsigned AVTransport::AddMultipleURIsToQueue(const std::vector<std::string>& uri
   args.push_back(ElementPtr(new Element("DesiredFirstTrackNumberEnqueued", "0")));
   args.push_back(ElementPtr(new Element("EnqueueAsNext", "0")));
   ElementList vars = Request("AddMultipleURIsToQueue", args);
-  if (!vars.empty() && vars[0]->compare("u:AddMultipleURIsToQueueResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("AddMultipleURIsToQueueResponse") == 0)
   {
     uint32_t num;
     string_to_uint32(vars.GetValue("FirstTrackNumberEnqueued").c_str(), &num);
@@ -322,7 +322,7 @@ bool AVTransport::ReorderTracksInQueue(unsigned startIndex, unsigned numTracks, 
   uint32_to_string(containerUpdateID, buf);
   args.push_back(ElementPtr(new Element("UpdateID", buf)));
   ElementList vars = Request("ReorderTracksInQueue", args);
-  if (!vars.empty() && vars[0]->compare("u:ReorderTracksInQueueResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("ReorderTracksInQueueResponse") == 0)
     return true;
   return false;
 }
@@ -337,7 +337,7 @@ bool AVTransport::RemoveTrackFromQueue(const std::string& objectID, unsigned con
   uint32_to_string(containerUpdateID, buf);
   args.push_back(ElementPtr(new Element("UpdateID", buf)));
   ElementList vars = Request("RemoveTrackFromQueue", args);
-  if (!vars.empty() && vars[0]->compare("u:RemoveTrackFromQueueResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("RemoveTrackFromQueueResponse") == 0)
     return true;
   return false;
 }
@@ -357,7 +357,7 @@ bool AVTransport::RemoveTrackRangeFromQueue(unsigned startIndex, unsigned numTra
   uint32_to_string(containerUpdateID, buf);
   args.push_back(ElementPtr(new Element("UpdateID", buf)));
   ElementList vars = Request("RemoveTrackRangeFromQueue", args);
-  if (!vars.empty() && vars[0]->compare("u:RemoveTrackRangeFromQueueResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("RemoveTrackRangeFromQueueResponse") == 0)
   {
     const std::string& val = vars.GetValue("NewUpdateID");
     if (val.empty())
@@ -372,7 +372,7 @@ bool AVTransport::RemoveAllTracksFromQueue()
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   ElementList vars = Request("RemoveAllTracksFromQueue", args);
-  if (!vars.empty() && vars[0]->compare("u:RemoveAllTracksFromQueueResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("RemoveAllTracksFromQueueResponse") == 0)
     return true;
   return false;
 }
@@ -384,7 +384,7 @@ bool AVTransport::SaveQueue(const std::string& title)
   args.push_back(ElementPtr(new Element("Title", title)));
   args.push_back(ElementPtr(new Element("ObjectID", "")));
   ElementList vars = Request("SaveQueue", args);
-  if (!vars.empty() && vars[0]->compare("u:SaveQueueResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("SaveQueueResponse") == 0)
     return true;
   return false;
 }
@@ -397,7 +397,7 @@ bool AVTransport::CreateSavedQueue(const std::string& title)
   args.push_back(ElementPtr(new Element("EnqueuedURI", "")));
   args.push_back(ElementPtr(new Element("EnqueuedURIMetaData", "")));
   ElementList vars = Request("CreateSavedQueue", args);
-  if (!vars.empty() && vars[0]->compare("u:CreateSavedQueueResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("CreateSavedQueueResponse") == 0)
     return true;
   return false;
 }
@@ -415,7 +415,7 @@ unsigned AVTransport::AddURIToSavedQueue(const std::string& SQObjectID, const st
   uint32_to_string(containerUpdateID, buf);
   args.push_back(ElementPtr(new Element("UpdateID", buf)));
   ElementList vars = Request("AddURIToSavedQueue", args);
-  if (!vars.empty() && vars[0]->compare("u:AddURIToSavedQueueResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("AddURIToSavedQueueResponse") == 0)
   {
     uint32_t num;
     string_to_uint32(vars.GetValue("NewUpdateID").c_str(), &num);
@@ -436,7 +436,7 @@ bool AVTransport::ReorderTracksInSavedQueue(const std::string& SQObjectID, const
   uint32_to_string(containerUpdateID, buf);
   args.push_back(ElementPtr(new Element("UpdateID", buf)));
   ElementList vars = Request("ReorderTracksInSavedQueue", args);
-  if (!vars.empty() && vars[0]->compare("u:ReorderTracksInSavedQueueResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("ReorderTracksInSavedQueueResponse") == 0)
     return true;
   return false;
 }
@@ -454,7 +454,7 @@ bool AVTransport::ConfigureSleepTimer(unsigned seconds)
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("NewSleepTimerDuration", buf)));
   ElementList vars = Request("ConfigureSleepTimer", args);
-  if (!vars.empty() && vars[0]->compare("u:ConfigureSleepTimerResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("ConfigureSleepTimerResponse") == 0)
     return true;
   return false;
 }
@@ -466,7 +466,7 @@ bool AVTransport::SetAVTransportURI(const std::string& currentURI, const std::st
   args.push_back(ElementPtr(new Element("CurrentURI", currentURI)));
   args.push_back(ElementPtr(new Element("CurrentURIMetaData", CurrentURIMetaData)));
   ElementList vars = Request("SetAVTransportURI", args);
-  if (!vars.empty() && vars[0]->compare("u:SetAVTransportURIResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("SetAVTransportURIResponse") == 0)
     return true;
   return false;
 }
@@ -476,7 +476,7 @@ bool AVTransport::BecomeCoordinatorOfStandaloneGroup()
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   ElementList vars = Request("BecomeCoordinatorOfStandaloneGroup", args);
-  if (!vars.empty() && vars[0]->compare("u:BecomeCoordinatorOfStandaloneGroupResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("BecomeCoordinatorOfStandaloneGroupResponse") == 0)
     return true;
   return false;
 }
@@ -583,7 +583,7 @@ void AVTransport::HandleEventMessage(EventMessagePtr msg)
           prop->r_RestartPending.assign(*++it);
         else if (*it == "PossiblePlaybackStorageMedia")
           prop->PossiblePlaybackStorageMedia.assign(*++it);
-        
+
         ++it;
       }
       // Signal

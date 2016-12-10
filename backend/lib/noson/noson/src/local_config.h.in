@@ -20,9 +20,6 @@
 #undef CC_INLINE
 #define CC_INLINE @CC_INLINE@
 
-#undef CXX_STANDARD
-#define CXX_STANDARD @CXX_STANDARD@
-
 #undef NSROOT
 #define NSROOT SONOS
 

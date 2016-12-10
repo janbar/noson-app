@@ -29,7 +29,8 @@
 #include "private/os/threads/mutex.h"
 #include "sonosplayer.h"
 
-#define UPNP_SERVICE_NAMESPACE  "urn:schemas-upnp-org:service"
+#define NS_PREFIX               "urn:schemas-upnp-org:service:"
+#define NS_SUFFIX               ":1"
 #define SOAP_ENVELOPE_NAMESPACE "http://schemas.xmlsoap.org/soap/envelope/"
 #define SOAP_ENCODING_NAMESPACE "http://schemas.xmlsoap.org/soap/encoding/"
 
@@ -59,7 +60,7 @@ ElementList Service::Request(const std::string& action, const ElementList& args)
   ElementList vars;
 
   std::string soapaction;
-  soapaction.append("\"" UPNP_SERVICE_NAMESPACE ":").append(GetName()).append(":1#").append(action).append("\"");
+  soapaction.append("\"" NS_PREFIX).append(GetName()).append(NS_SUFFIX "#").append(action).append("\"");
 
   std::string content;
   content.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
@@ -67,7 +68,7 @@ ElementList Service::Request(const std::string& action, const ElementList& args)
   content.append("<s:Envelope xmlns:s=\"" SOAP_ENVELOPE_NAMESPACE "\" s:encodingStyle=\"" SOAP_ENCODING_NAMESPACE "\">");
   // start body
   content.append("<s:Body>");
-  content.append("<u:").append(action).append(" xmlns:u=\"" UPNP_SERVICE_NAMESPACE ":").append(GetName()).append(":1\">");
+  content.append("<u:").append(action).append(" xmlns:u=\"" NS_PREFIX).append(GetName()).append(NS_SUFFIX "\">");
   for (ElementList::const_iterator it = args.begin(); it != args.end(); ++it)
     content.append((*it)->XML());
   content.append("</u:").append(action).append(">");
@@ -106,7 +107,7 @@ ElementList Service::Request(const std::string& action, const ElementList& args)
     return vars;
   }
   const tinyxml2::XMLElement* elem; // an element
-  // Check for response: s:Envelope/s:Body/{respTag}
+  // Check for response: Envelope/Body/{respTag}
   if (!(elem = rootdoc.RootElement()) || !XMLNS::NameEqual(elem->Name(), "Envelope") ||
           !(elem = elem->FirstChildElement()) || !XMLNS::NameEqual(elem->Name(), "Body") ||
           !(elem = elem->FirstChildElement()))
@@ -117,26 +118,34 @@ ElementList Service::Request(const std::string& action, const ElementList& args)
     DBG(DBG_ERROR, "%s\n", out.CStr());
     return vars;
   }
-  vars.push_back(ElementPtr(new Element("TAG", elem->Name())));
-  if (XMLNS::NameEqual(vars.back()->c_str(), "Fault"))
+  vars.push_back(ElementPtr(new Element("TAG", XMLNS::LocalName(elem->Name()))));
+  if (vars.back()->compare("Fault") == 0)
   {
-    const tinyxml2::XMLElement* felem;
-    if ((felem = elem->FirstChildElement("faultcode")) && felem->GetText())
-      vars.push_back(ElementPtr(new Element(felem->Name(), felem->GetText())));
-    if ((felem = elem->FirstChildElement("faultstring")) && felem->GetText())
-      vars.push_back(ElementPtr(new Element(felem->Name(), felem->GetText())));
-    if ((felem = elem->FirstChildElement("detail")) && (felem = felem->FirstChildElement(NULL)))
+    const tinyxml2::XMLElement* felem = elem->FirstChildElement(NULL);
+    while (felem)
     {
-      felem = felem->FirstChildElement(NULL);
-      while (felem)
+      if (XMLNS::NameEqual(felem->Name(), "faultcode") && felem->GetText())
+        vars.push_back(ElementPtr(new Element("faultcode", felem->GetText())));
+      else if (XMLNS::NameEqual(felem->Name(), "faultstring") && felem->GetText())
+        vars.push_back(ElementPtr(new Element("faultstring", felem->GetText())));
+      else if (XMLNS::NameEqual(felem->Name(), "detail"))
       {
-        if (felem->GetText())
+        const tinyxml2::XMLElement* delem = felem->FirstChildElement(NULL);
+        if (delem && (delem = delem->FirstChildElement(NULL)))
         {
-          // remove the namespace qualifier to handle local name as key
-          vars.push_back(ElementPtr(new Element(XMLNS::LocalName(elem->Name()), felem->GetText())));
+          do
+          {
+            if (delem->GetText())
+            {
+              // remove the namespace qualifier to handle local name as key
+              vars.push_back(ElementPtr(new Element(XMLNS::LocalName(delem->Name()), delem->GetText())));
+              DBG(DBG_PROTO, "%s: [fault] %s = %s\n", __FUNCTION__, vars.back()->GetKey().c_str(), vars.back()->c_str());
+            }
+            delem = delem->NextSiblingElement(NULL);
+          } while (delem);
         }
-        felem = felem->NextSiblingElement(NULL);
       }
+      felem = felem->NextSiblingElement(NULL);
     }
     SetFault(vars);
   }
@@ -147,7 +156,8 @@ ElementList Service::Request(const std::string& action, const ElementList& args)
     {
       if (elem->GetText())
       {
-        vars.push_back(ElementPtr(new Element(elem->Name(), elem->GetText())));
+        // remove the namespace qualifier to handle local name as key
+        vars.push_back(ElementPtr(new Element(XMLNS::LocalName(elem->Name()), elem->GetText())));
         DBG(DBG_PROTO, "%s: %s = %s\n", __FUNCTION__, vars.back()->GetKey().c_str(), vars.back()->c_str());
       }
       elem = elem->NextSiblingElement(NULL);

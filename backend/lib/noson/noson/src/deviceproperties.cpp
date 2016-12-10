@@ -38,7 +38,7 @@ bool DeviceProperties::GetZoneInfo(ElementList& vars)
 {
   ElementList args;
   vars = Request("GetZoneInfo", args);
-  if (!vars.empty() && vars[0]->compare("u:GetZoneInfoResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("GetZoneInfoResponse") == 0)
     return true;
   return false;
 }
@@ -47,7 +47,7 @@ bool DeviceProperties::GetZoneAttributes(ElementList& vars)
 {
   ElementList args;
   vars = Request("GetZoneAttributes", args);
-  if (!vars.empty() && vars[0]->compare("u:GetZoneAttributesResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("GetZoneAttributesResponse") == 0)
     return true;
   return false;
 }
@@ -56,7 +56,7 @@ bool DeviceProperties::GetHouseholdID(ElementList& vars)
 {
   ElementList args;
   vars = Request("GetHouseholdID", args);
-  if (!vars.empty() && vars[0]->compare("u:GetHouseholdIDResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("GetHouseholdIDResponse") == 0)
     return true;
   return false;
 }

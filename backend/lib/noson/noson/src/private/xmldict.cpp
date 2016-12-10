@@ -208,3 +208,20 @@ const XMLNS* XMLNames::FindKey(const char* key) const
   return 0;
 }
 
+XMLNS* XMLNames::FindName(const char* name)
+{
+  XMLNSList::iterator it;
+  for (it = m_names.begin(); it != m_names.end(); ++it)
+    if (it->name.compare(name) == 0)
+      return &(*it);
+  return 0;
+}
+
+const XMLNS* XMLNames::FinfName(const char* name) const
+{
+  XMLNSList::const_iterator it;
+  for (it = m_names.begin(); it != m_names.end(); ++it)
+    if (it->name.compare(name) == 0)
+      return &(*it);
+  return 0;
+}

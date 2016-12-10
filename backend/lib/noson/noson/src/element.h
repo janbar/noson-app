@@ -47,15 +47,25 @@ namespace NSROOT
       return nil;
     }
 
-    std::string XML(std::string ns = std::string()) const
+    std::string XML() const
     {
       std::string ret;
-      if (!ns.empty())
-        ns.append(":");
-      ret.append("<").append(ns).append(m_key);
+      ret.append("<").append(m_key);
       for (std::vector<Element>::const_iterator it = m_attrs.begin(); it != m_attrs.end(); ++it)
         ret.append(" ").append(it->m_key).append("=\"").append(it->XMLEncoded()).append("\"");
-      ret.append(">").append(XMLEncoded()).append("</").append(ns).append(m_key).append(">");
+      ret.append(">").append(XMLEncoded()).append("</").append(m_key).append(">");
+      return ret;
+    }
+
+    std::string XML(const std::string& ns) const
+    {
+      if (ns.empty())
+        return XML();
+      std::string ret;
+      ret.append("<").append(ns).append(":").append(m_key);
+      for (std::vector<Element>::const_iterator it = m_attrs.begin(); it != m_attrs.end(); ++it)
+        ret.append(" ").append(it->m_key).append("=\"").append(it->XMLEncoded()).append("\"");
+      ret.append(">").append(XMLEncoded()).append("</").append(ns).append(":").append(m_key).append(">");
       return ret;
     }
 
@@ -120,7 +130,7 @@ namespace NSROOT
     ElementList() {}
     ElementList(const std::vector<ElementPtr>& vars) : std::vector<ElementPtr>(vars) {}
     virtual ~ElementList() {}
-    
+
     iterator FindKey(const std::string& key, iterator _begin)
     {
       for (std::vector<ElementPtr>::iterator it = _begin; it != this->end(); ++it)
@@ -146,7 +156,7 @@ namespace NSROOT
     {
       return FindKey(key, begin());
     }
-    
+
     const std::string& GetValue(const std::string& key) const
     {
       std::vector<ElementPtr>::const_iterator it = FindKey(key);

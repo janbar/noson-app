@@ -30,8 +30,31 @@
 
 #define NS_RCS "urn:schemas-upnp-org:metadata-1-0/RCS/"
 #define NS_AVT "urn:schemas-upnp-org:metadata-1-0/AVT/"
+#define NS_RIN "urn:schemas-rinconnetworks-com:metadata-1-0/"
+#define QN_RIN "r:"
 
 using namespace NSROOT;
+
+namespace NSROOT
+{
+  XMLDict __initRCSDict()
+  {
+    XMLDict dict;
+    dict.DefineNS("", NS_RCS);
+    dict.DefineNS(QN_RIN, NS_RIN);
+    return dict;
+  }
+  XMLDict RCSDict = __initRCSDict();
+
+  XMLDict __initAVTDict()
+  {
+    XMLDict dict;
+    dict.DefineNS("", NS_AVT);
+    dict.DefineNS(QN_RIN, NS_RIN);
+    return dict;
+  }
+  XMLDict AVTDict = __initAVTDict();
+}
 
 EventBroker::EventBroker(EventHandler::EventHandlerThread* handler, SHARED_PTR<TcpSocket>& sockPtr)
 : m_handler(handler)
@@ -114,8 +137,7 @@ void EventBroker::Process()
         if ((elem = node->FirstChildElement("LastChange")))
         {
           if (doc.Parse(elem->GetText()) != tinyxml2::XML_SUCCESS ||
-                !(elem = doc.RootElement()) ||
-                !(str = elem->Attribute("xmlns")))
+                !(elem = doc.RootElement()))
           {
             DBG(DBG_ERROR, "%s: invalid or not supported content\n", __FUNCTION__);
             DBG(DBG_ERROR, "%s: dump => %s\n", __FUNCTION__, m_buffer);
@@ -127,13 +149,19 @@ void EventBroker::Process()
             return;
           }
 
-          if (memcmp(str, NS_RCS, sizeof(NS_RCS)) == 0 && (node = elem->FirstChildElement("InstanceID")))
+          XMLNames docns;
+          docns.AddXMLNS(elem);
+
+          /*
+           * Processing RCS notification
+           */
+          if (docns.FindName(NS_RCS) && (node = elem->FirstChildElement("InstanceID")))
           {
             msg.subject.push_back("RCS");
             elem = node->FirstChildElement(NULL);
             while (elem)
             {
-              std::string name(elem->Name());
+              std::string name(RCSDict.TranslateQName(docns, elem->Name()));
               if ((str = elem->Attribute("channel")))
                 name.append("/").append(str);
               msg.subject.push_back(name);
@@ -145,13 +173,16 @@ void EventBroker::Process()
               elem = elem->NextSiblingElement(NULL);
             }
           }
-          else if (memcmp(str, NS_AVT, sizeof(NS_AVT)) == 0 && (node = elem->FirstChildElement("InstanceID")))
+          /*
+           * Processing AVT notification
+           */
+          else if (docns.FindName(NS_AVT) && (node = elem->FirstChildElement("InstanceID")))
           {
             msg.subject.push_back("AVT");
             elem = node->FirstChildElement(NULL);
             while (elem)
             {
-              std::string name(elem->Name());
+              std::string name(AVTDict.TranslateQName(docns, elem->Name()));
               msg.subject.push_back(name);
               if ((str = elem->Attribute("val")))
                 msg.subject.push_back(str);
@@ -162,7 +193,10 @@ void EventBroker::Process()
             }
           }
           else
-            DBG(DBG_WARN, "%s: not supported content (%s)\n", __FUNCTION__, str);
+          {
+            DBG(DBG_WARN, "%s: not supported content\n", __FUNCTION__);
+            DBG(DBG_WARN, "%s: dump => %s\n", __FUNCTION__, m_buffer);
+          }
         }
         // Else treat propertyset/property/
         else
@@ -172,7 +206,7 @@ void EventBroker::Process()
           {
             if ((elem = node->FirstChildElement(NULL)))
             {
-              std::string name(elem->Name());
+              std::string name(XMLNS::LocalName(elem->Name()));
               msg.subject.push_back(name);
               if ((str = elem->GetText()))
                 msg.subject.push_back(str);

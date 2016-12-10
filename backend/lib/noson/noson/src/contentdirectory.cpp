@@ -92,7 +92,7 @@ bool ContentDirectory::Browse(const std::string& objectId, unsigned index, unsig
   args.push_back(ElementPtr(new Element("RequestedCount", buf)));
   args.push_back(ElementPtr(new Element("SortCriteria", "")));
   vars = Request("Browse", args);
-  if (!vars.empty() && vars[0]->compare("u:BrowseResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("BrowseResponse") == 0)
     return true;
   return false;
 }
@@ -103,7 +103,7 @@ bool ContentDirectory::RefreshShareIndex()
   ElementList args;
   args.push_back(ElementPtr(new Element("AlbumArtistDisplayOption", "")));
   vars = Request("RefreshShareIndex", args);
-  if (!vars.empty() && vars[0]->compare("u:RefreshShareIndexResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("RefreshShareIndexResponse") == 0)
     return true;
   return false;
 }
@@ -114,7 +114,7 @@ bool ContentDirectory::DestroyObject(const std::string& objectID)
   ElementList args;
   args.push_back(ElementPtr(new Element("ObjectID", objectID)));
   vars = Request("DestroyObject", args);
-  if (!vars.empty() && vars[0]->compare("u:DestroyObjectResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("DestroyObjectResponse") == 0)
     return true;
   return false;
 }
@@ -126,7 +126,7 @@ bool ContentDirectory::CreateObject(const std::string& containerID, const Digita
   args.push_back(ElementPtr(new Element("ContainerID", containerID)));
   args.push_back(ElementPtr(new Element("Elements", element->DIDL())));
   vars = Request("CreateObject", args);
-  if (!vars.empty() && vars[0]->compare("u:CreateObjectResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("CreateObjectResponse") == 0)
     return true;
   return false;
 }
@@ -395,7 +395,7 @@ bool ContentBrowser::Browse(unsigned index, unsigned count)
     m_startingIndex = index;
     return true;
   }
-  
+
   m_table.clear();
   m_startingIndex = index;
   return BrowseContent(m_startingIndex, count, m_table.begin());

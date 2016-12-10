@@ -168,7 +168,7 @@ bool MusicServices::GetSessionId(const std::string& serviceId, const std::string
   args.push_back(ElementPtr(new Element("ServiceId", serviceId)));
   args.push_back(ElementPtr(new Element("Username", username)));
   vars = Request("GetSessionId", args);
-  if (!vars.empty() && vars[0]->compare("u:GetSessionIdResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("GetSessionIdResponse") == 0)
     return true;
   return false;
 }
@@ -209,7 +209,7 @@ bool MusicServices::ListAvailableServices(ElementList& vars)
 {
   ElementList args;
   vars = Request("ListAvailableServices", args);
-  if (!vars.empty() && vars[0]->compare("u:ListAvailableServicesResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("ListAvailableServicesResponse") == 0)
     return true;
   return false;
 }

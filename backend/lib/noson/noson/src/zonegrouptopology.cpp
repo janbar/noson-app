@@ -86,7 +86,7 @@ bool ZoneGroupTopology::GetZoneGroupState()
 {
   ElementList args;
   ElementList vars = Request("GetZoneGroupState", args);
-  if (!vars.empty() && vars[0]->compare("u:GetZoneGroupStateResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("GetZoneGroupStateResponse") == 0)
     return ParseZoneGroupState(vars.GetValue("ZoneGroupState"));
   return false;
 }

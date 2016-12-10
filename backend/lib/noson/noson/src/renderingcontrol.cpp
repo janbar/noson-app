@@ -68,7 +68,7 @@ bool RenderingControl::GetVolume(uint8_t* value, const char* channel)
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("Channel", channel)));
   ElementList vars = Request("GetVolume", args);
-  if (!vars.empty() && vars[0]->compare("u:GetVolumeResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("GetVolumeResponse") == 0)
   {
     ElementList::const_iterator it = vars.FindKey("CurrentVolume");
     if (it != vars.end())
@@ -87,7 +87,7 @@ bool RenderingControl::SetVolume(uint8_t value, const char* channel)
   args.push_back(ElementPtr(new Element("Channel", channel)));
   args.push_back(ElementPtr(new Element("DesiredVolume", buf)));
   ElementList vars = Request("SetVolume", args);
-  if (!vars.empty() && vars[0]->compare("u:SetVolumeResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("SetVolumeResponse") == 0)
     return true;
   return false;
 }
@@ -98,7 +98,7 @@ bool RenderingControl::GetMute(uint8_t* value, const char* channel)
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("Channel", channel)));
   ElementList vars = Request("GetMute", args);
-  if (!vars.empty() && vars[0]->compare("u:GetMuteResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("GetMuteResponse") == 0)
   {
     ElementList::const_iterator it = vars.FindKey("CurrentMute");
     if (it != vars.end())
@@ -117,7 +117,7 @@ bool RenderingControl::SetMute(uint8_t value, const char* channel)
   args.push_back(ElementPtr(new Element("Channel", channel)));
   args.push_back(ElementPtr(new Element("DesiredMute", buf)));
   ElementList vars = Request("SetMute", args);
-  if (!vars.empty() && vars[0]->compare("u:SetMuteResponse") == 0)
+  if (!vars.empty() && vars[0]->compare("SetMuteResponse") == 0)
     return true;
   return false;
 }

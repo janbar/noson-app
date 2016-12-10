@@ -22,7 +22,7 @@
 #include "intrinsic.h"
 
 #include <local_config.h>
-#if CXX_STANDARD >= 201103L
+#if __cplusplus >= 201103L
 #include <atomic>
 typedef std::atomic<int> counter_t;
 #define GETVALUE(p)   (p)->load()
@@ -64,7 +64,7 @@ typedef NSROOT::atomic<int> counter_t;
 //
 // Don't know how to do atomic operation for the architecture
 //
-#elif defined USE_MYTH_LOCKED
+#elif defined USE_LOCKED
 #include "locked.h"
 typedef NSROOT::LockedNumber<int> counter_t;
 #define GETVALUE(p)   (p)->Load()
@@ -72,7 +72,7 @@ typedef NSROOT::LockedNumber<int> counter_t;
 #define DECREMENT(p)  (p)->Sub(1)
 
 #else
-#error Atomic add/sub are not. Overcome using definition USE_MYTH_LOCKED.
+#error Atomic add/sub are not. Overcome using definition USE_LOCKED.
 #endif
 #endif
 
