@@ -86,7 +86,7 @@ namespace NSROOT
     XMLNS* FindKey(const char* key);
     const XMLNS* FindKey(const char* key) const;
     XMLNS* FindName(const char* name);
-    const XMLNS* FinfName(const char* name) const;
+    const XMLNS* FindName(const char* name) const;
 
   private:
     typedef std::list<XMLNS> XMLNSList;

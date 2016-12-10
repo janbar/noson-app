@@ -84,7 +84,7 @@ namespace NSROOT
 
     bool operator!() const
     {
-      return !(*this);
+      return m_value == HSC_Unknown;
     }
 
     bool operator==(const WSStatus& other) const

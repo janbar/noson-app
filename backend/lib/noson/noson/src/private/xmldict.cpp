@@ -217,7 +217,7 @@ XMLNS* XMLNames::FindName(const char* name)
   return 0;
 }
 
-const XMLNS* XMLNames::FinfName(const char* name) const
+const XMLNS* XMLNames::FindName(const char* name) const
 {
   XMLNSList::const_iterator it;
   for (it = m_names.begin(); it != m_names.end(); ++it)
