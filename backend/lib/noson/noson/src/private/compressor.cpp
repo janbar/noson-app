@@ -33,7 +33,7 @@
 #endif
 
 #define GZIP_WINDOWS_BIT  15 + 16
-#define GZIP_CHUNK_SIZE   1 * 1024
+#define GZIP_CHUNK_SIZE   16384
 #define MIN(a,b)          (a > b ? b : a)
 #define MAX(a,b)          (a > b ? a : b)
 
@@ -141,9 +141,9 @@ size_t Compressor::ReadOutput(char *buf, size_t len)
     else if (m_status != Z_STREAM_END)
     {
       z_stream *strm = static_cast<z_stream*>(_opaque);
-      if (strm->avail_out > 0)
+      if (!strm->avail_in)
         NextChunk();
-      else
+      if (!strm->avail_out)
       {
         strm->next_out = (unsigned char*)m_output;
         strm->avail_out = m_chunk_size;
@@ -187,9 +187,9 @@ size_t Compressor::FetchOutput(const char **data)
     else if (m_status != Z_STREAM_END)
     {
       z_stream *strm = static_cast<z_stream*>(_opaque);
-      if (strm->avail_out > 0)
+      if (!strm->avail_in)
         NextChunk();
-      else
+      if (!strm->avail_out)
       {
         strm->next_out = (unsigned char*)m_output;
         strm->avail_out = m_chunk_size;
@@ -381,9 +381,9 @@ size_t Decompressor::ReadOutput(char *buf, size_t len)
     else if (m_status != Z_STREAM_END)
     {
       z_stream *strm = static_cast<z_stream*>(_opaque);
-      if (strm->avail_out > 0)
+      if (!strm->avail_in)
         NextChunk();
-      else
+      if (!strm->avail_out)
       {
         strm->next_out = (unsigned char*)m_output;
         strm->avail_out = m_chunk_size;
@@ -427,9 +427,9 @@ size_t Decompressor::FetchOutput(const char **data)
     else if (m_status != Z_STREAM_END)
     {
       z_stream *strm = static_cast<z_stream*>(_opaque);
-      if (strm->avail_out > 0)
+      if (!strm->avail_in)
         NextChunk();
-      else
+      if (!strm->avail_out)
       {
         strm->next_out = (unsigned char*)m_output;
         strm->avail_out = m_chunk_size;
