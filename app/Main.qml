@@ -130,6 +130,7 @@ MainView {
     // Run on startup
     Component.onCompleted: {
         currentlyWorking = true
+        if (args.values.debug) { debugLevel = 4 }
         delayStartup.start()
     }
 
