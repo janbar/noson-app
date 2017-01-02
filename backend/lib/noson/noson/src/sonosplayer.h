@@ -149,6 +149,10 @@ namespace NSROOT
     // Implements EventSubscriber
     virtual void HandleEventMessage(EventMessagePtr msg);
 
+    // Music services
+    SMServiceList GetAvailableServices();
+    SMServicePtr GetServiceForMedia(const std::string& mediaUri);
+
   private:
     bool m_valid;
     std::string m_uuid;
@@ -192,6 +196,9 @@ namespace NSROOT
     static void CB_AVTransport(void* handle);
     static void CB_RenderingControl(void* handle);
     static void CB_ContentDirectory(void* handle);
+
+    // music services
+    SMServiceList m_smservices;
 
     // prevent copy
     Player(const Player&);

@@ -66,6 +66,8 @@ namespace NSROOT
     Protocol_xRinconMP3Radio,
     Protocol_xRinconPlaylist,
     Protocol_xSonosHtaStream,
+    Protocol_xSonosHttp,
+    Protocol_xSonosApiStream,
     Protocol_xFileCifs,
     Protocol_xRincon,
     Protocol_httpGet,
@@ -77,11 +79,11 @@ namespace NSROOT
 
   typedef enum
   {
-    NetService_TuneIN,
-    NetService_unknown,
-  } NetService_t;
+    ServiceDesc_default,
+    ServiceDesc_unknown,
+  } ServiceDesc_t;
 
-  extern const char* NetServiceDescTable[NetService_unknown + 1];
+  extern const char* ServiceDescTable[ServiceDesc_unknown + 1];
 
   class AVTProperty
   {

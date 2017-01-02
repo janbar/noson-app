@@ -108,6 +108,8 @@ namespace NSROOT
 
     std::string DIDL() const;
 
+    void Clone(DigitalItem& _item);
+
   private:
     Type_t m_type;
     SubType_t m_subType;

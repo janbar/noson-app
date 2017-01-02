@@ -104,6 +104,16 @@ DigitalItem::DigitalItem(const std::string& objectID, const std::string& parentI
   }
 }
 
+void DigitalItem::Clone(DigitalItem& _item)
+{
+  _item.m_type        = this->m_type;
+  _item.m_subType     = this->m_subType;
+  _item.m_restricted  = this->m_restricted;
+  _item.m_objectID    = this->m_objectID;
+  _item.m_parentID    = this->m_parentID;
+  this->m_vars.Clone(_item.m_vars);
+}
+
 const ElementPtr DigitalItem::GetProperty(const std::string& key) const
 {
   ElementList::const_iterator it = m_vars.FindKey(key);

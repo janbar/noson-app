@@ -50,14 +50,14 @@ SMAccount::~SMAccount()
 SMAccount::OACredentials SMAccount::GetOACredentials() const
 {
   OS::CLockGuard lock(*m_mutex);
-  return std::make_pair(GetAttribut("OADevID"), GetAttribut("Key"));
+  return OACredentials(GetAttribut("OADevID"), GetAttribut("Key"));
 }
 
-void SMAccount::SetOACredentials(OACredentials auth)
+void SMAccount::SetOACredentials(const OACredentials& auth)
 {
   OS::CLockGuard lock(*m_mutex);
-  SetAttribut("OADevID", auth.first);
-  SetAttribut("Key", auth.second);
+  SetAttribut("OADevID", auth.id);
+  SetAttribut("Key", auth.key);
 }
 
 SMService::SMService(const std::string& agent, const SMAccountPtr& account, const ElementList& vars)
@@ -66,6 +66,8 @@ SMService::SMService(const std::string& agent, const SMAccountPtr& account, cons
 , m_vars(vars)
 {
   ServiceType(GetId(), m_type);
+  // make the sonos descriptor
+  m_desc.assign("SA_RINCON").append(m_type).append("_").append(account->GetUserName());
 }
 
 const std::string& SMService::GetId() const
@@ -142,6 +144,11 @@ const std::string& SMService::GetServiceType() const
   return m_type;
 }
 
+const std::string& SMService::GetServiceDesc() const
+{
+  return m_desc;
+}
+
 SMAccountPtr SMService::GetAccount() const
 {
   return m_account;
@@ -176,29 +183,40 @@ bool MusicServices::GetSessionId(const std::string& serviceId, const std::string
 SMServiceList MusicServices::GetEnabledServices()
 {
   SMServiceList list;
+  // load services
   ElementList vars;
-  if ((ListAvailableServices(vars)) && ParseAvailableServiceDescriptorList(vars.GetValue("AvailableServiceDescriptorList")))
+  std::vector<ElementList> data;
+  if (!ListAvailableServices(vars) || !ParseAvailableServices(vars, data))
+    DBG(DBG_ERROR, "%s: query services failed\n");
+  else
   {
-    if (!ListAccounts())
+    // load accounts
+    SMAccountList accounts; // it is filled with retrieved accounts from the sonos device
+    std::string agent; // it is filled with the SERVER tag from http response header
+    if (!LoadAccounts(accounts, agent))
       DBG(DBG_ERROR, "%s: query accounts failed\n");
-    for (std::list<ElementList>::const_iterator it = m_services.begin(); it != m_services.end(); ++it)
+    // Continue to treat services don't require any account
+
+    // Fill the list of enabled services.
+    // Service is enabled when an account is available for the service type.
+    // Otherwise 'TuneIn' is special case as it is always enabled and no account exists for it.
+    for (std::vector<ElementList>::const_iterator it = data.begin(); it != data.end(); ++it)
     {
       std::string serviceType;
       SMService::ServiceType(it->GetValue("Id"), serviceType);
-      ElementList::const_iterator policy = it->FindKey("Policy");
-      if (policy != it->end() && (*policy)->GetAttribut("Auth") == "Anonymous")
+      if (serviceType == "65031") /* TuneIn */
       {
         SMAccountPtr ac(new SMAccount());
         ac->SetAttribut("Type", serviceType);
         ac->SetAttribut("SerialNum", "0");
-        SMServicePtr sm(new SMService(m_agent, ac, *it));
+        SMServicePtr sm(new SMService(agent, ac, *it));
         list.push_back(sm);
       }
       else
       {
-        SMAccountList la = GetAccountsForService(serviceType);
-        if (!la.empty())
-          list.push_back(SMServicePtr(new SMService(m_agent, la.front(), *it)));
+        SMAccountList la = GetAccountsForService(accounts, serviceType);
+        for (SMAccountList::iterator ita = la.begin(); ita != la.end(); ++ita)
+          list.push_back(SMServicePtr(new SMService(agent, *ita, *it)));
       }
     }
   }
@@ -214,104 +232,9 @@ bool MusicServices::ListAvailableServices(ElementList& vars)
   return false;
 }
 
-bool MusicServices::ListAccounts()
+bool MusicServices::ParseAvailableServices(const ElementList& vars, std::vector<ElementList>& data)
 {
-  WSRequest request(m_host, m_port);
-  request.RequestService("/status/accounts");
-  WSResponse response(request);
-  if (!response.IsSuccessful() || !response.GetHeaderValue("SERVER", m_agent))
-    return false;
-  size_t s = response.GetContentLength();
-  std::string data;
-  size_t l = 0;
-  char buf[4000];
-  if (s)
-  {
-    data.reserve(s);
-    while (response.GetConsumed() < s && (l = response.ReadContent(buf, sizeof(buf))))
-      data.append(buf, l);
-  }
-  else
-  {
-    data.reserve(1000);
-    while ((l = response.ReadContent(buf, sizeof(buf))))
-      data.append(buf, l);
-  }
-
-  /*
-    <ZPSupportInfo>
-    <Accounts LastUpdateDevice="RINCON_000XXXXXXXXXX1400" Version="4" NextSerialNum="2">
-    <Account Type="519" SerialNum="1" Deleted="1">
-    <UN>username</UN>
-    <MD>1</MD>
-    <NN>nickname</NN>
-    <OADevID></OADevID>
-    <Key></Key>
-    </Account>
-    </Accounts>
-    </ZPSupportInfo>
-  */
-  tinyxml2::XMLDocument rootdoc;
-  // Parse xml content
-  if (rootdoc.Parse(data.c_str(), data.size()) != tinyxml2::XML_SUCCESS)
-  {
-    DBG(DBG_ERROR, "%s: parse xml failed\n", __FUNCTION__);
-    return false;
-  }
-  const tinyxml2::XMLElement* elem; // an element
-  // Check for response: Services
-  if (!(elem = rootdoc.RootElement()) || !XMLNS::NameEqual(elem->Name(), "ZPSupportInfo")
-          || !(elem = elem->FirstChildElement("Accounts")))
-  {
-    DBG(DBG_ERROR, "%s: invalid or not supported content\n", __FUNCTION__);
-    tinyxml2::XMLPrinter out;
-    rootdoc.Accept(&out);
-    DBG(DBG_ERROR, "%s\n", out.CStr());
-    return false;
-  }
-  m_accounts.clear();
-  elem = elem->FirstChildElement("Account");
-  while (elem)
-  {
-    SMAccountPtr item(new SMAccount());
-    const tinyxml2::XMLAttribute* attr = elem->FirstAttribute();
-    while (attr)
-    {
-      item->SetAttribut(attr->Name(), attr->Value());
-      attr = attr->Next();
-    }
-    const tinyxml2::XMLElement* child = elem->FirstChildElement(NULL);
-    while (child)
-    {
-      if (child->GetText())
-        item->SetAttribut(child->Name(), child->GetText());
-      child = child->NextSiblingElement(NULL);
-    }
-    if (item->GetAttribut("Deleted") == "1")
-      DBG(DBG_DEBUG, "%s: account %s (%s) is deleted\n", __FUNCTION__, item->GetSerialNum().c_str(), item->GetType().c_str());
-    else
-    {
-      DBG(DBG_DEBUG, "%s: account %s (%s) is available\n", __FUNCTION__, item->GetSerialNum().c_str(), item->GetType().c_str());
-      m_accounts.push_back(item);
-    }
-    elem = elem->NextSiblingElement(NULL);
-  }
-  return true;
-}
-
-SMAccountList MusicServices::GetAccountsForService(const std::string& serviceType) const
-{
-  SMAccountList list;
-  for (SMAccountList::const_iterator it = m_accounts.begin(); it != m_accounts.end(); ++it)
-  {
-    if ((*it)->GetType() == serviceType)
-    list.push_back((*it));
-  }
-  return list;
-}
-
-bool MusicServices::ParseAvailableServiceDescriptorList(const std::string& xml)
-{
+  const std::string& xml = vars.GetValue("AvailableServiceDescriptorList");
   tinyxml2::XMLDocument rootdoc;
   // Parse xml content
   if (rootdoc.Parse(xml.c_str(), xml.size()) != tinyxml2::XML_SUCCESS)
@@ -329,7 +252,7 @@ bool MusicServices::ParseAvailableServiceDescriptorList(const std::string& xml)
     DBG(DBG_ERROR, "%s\n", out.CStr());
     return false;
   }
-  m_services.clear();
+  data.clear();
   elem = elem->FirstChildElement();
   while (elem)
   {
@@ -379,8 +302,104 @@ bool MusicServices::ParseAvailableServiceDescriptorList(const std::string& xml)
       }
       child = child->NextSiblingElement(NULL);
     }
-    m_services.push_back(service);
+    data.push_back(service);
     elem = elem->NextSiblingElement(NULL);
   }
   return true;
+}
+
+bool MusicServices::LoadAccounts(SMAccountList& accounts, std::string& agentStr)
+{
+  WSRequest request(m_host, m_port);
+  request.RequestService("/status/accounts");
+  WSResponse response(request);
+  if (!response.IsSuccessful() || !response.GetHeaderValue("SERVER", agentStr))
+    return false;
+  size_t s = response.GetContentLength();
+  std::string data;
+  size_t l = 0;
+  char buf[4000];
+  if (s)
+  {
+    data.reserve(s);
+    while (response.GetConsumed() < s && (l = response.ReadContent(buf, sizeof(buf))))
+      data.append(buf, l);
+  }
+  else
+  {
+    data.reserve(1000);
+    while ((l = response.ReadContent(buf, sizeof(buf))))
+      data.append(buf, l);
+  }
+
+  /*
+    <ZPSupportInfo>
+    <Accounts LastUpdateDevice="RINCON_000XXXXXXXXXX1400" Version="4" NextSerialNum="2">
+    <Account Type="519" SerialNum="1" Deleted="1">
+    <UN>username</UN>
+    <MD>1</MD>
+    <NN>nickname</NN>
+    <OADevID></OADevID>
+    <Key></Key>
+    </Account>
+    </Accounts>
+    </ZPSupportInfo>
+  */
+  tinyxml2::XMLDocument rootdoc;
+  // Parse xml content
+  if (rootdoc.Parse(data.c_str(), data.size()) != tinyxml2::XML_SUCCESS)
+  {
+    DBG(DBG_ERROR, "%s: parse xml failed\n", __FUNCTION__);
+    return false;
+  }
+  const tinyxml2::XMLElement* elem; // an element
+  // Check for response: Services
+  if (!(elem = rootdoc.RootElement()) || !XMLNS::NameEqual(elem->Name(), "ZPSupportInfo")
+          || !(elem = elem->FirstChildElement("Accounts")))
+  {
+    DBG(DBG_ERROR, "%s: invalid or not supported content\n", __FUNCTION__);
+    tinyxml2::XMLPrinter out;
+    rootdoc.Accept(&out);
+    DBG(DBG_ERROR, "%s\n", out.CStr());
+    return false;
+  }
+  accounts.clear();
+  elem = elem->FirstChildElement("Account");
+  while (elem)
+  {
+    SMAccountPtr item(new SMAccount());
+    const tinyxml2::XMLAttribute* attr = elem->FirstAttribute();
+    while (attr)
+    {
+      item->SetAttribut(attr->Name(), attr->Value());
+      attr = attr->Next();
+    }
+    const tinyxml2::XMLElement* child = elem->FirstChildElement(NULL);
+    while (child)
+    {
+      if (child->GetText())
+        item->SetAttribut(child->Name(), child->GetText());
+      child = child->NextSiblingElement(NULL);
+    }
+    if (item->GetAttribut("Deleted") == "1")
+      DBG(DBG_DEBUG, "%s: account %s (%s) is deleted\n", __FUNCTION__, item->GetSerialNum().c_str(), item->GetType().c_str());
+    else
+    {
+      DBG(DBG_DEBUG, "%s: account %s (%s) is available\n", __FUNCTION__, item->GetSerialNum().c_str(), item->GetType().c_str());
+      accounts.push_back(item);
+    }
+    elem = elem->NextSiblingElement(NULL);
+  }
+  return true;
+}
+
+SMAccountList MusicServices::GetAccountsForService(const SMAccountList& accounts, const std::string& serviceType)
+{
+  SMAccountList list;
+  for (SMAccountList::const_iterator it = accounts.begin(); it != accounts.end(); ++it)
+  {
+    if ((*it)->GetType() == serviceType)
+    list.push_back((*it));
+  }
+  return list;
 }

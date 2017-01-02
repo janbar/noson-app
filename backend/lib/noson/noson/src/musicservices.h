@@ -26,6 +26,7 @@
 #include "service.h"
 
 #include <list>
+#include <vector>
 
 namespace NSROOT
 {
@@ -47,9 +48,18 @@ namespace NSROOT
     const std::string& GetMetadata() const { return GetAttribut("MD"); }
     const std::string& GetNickname() const { return GetAttribut("NN"); }
 
-    typedef std::pair<std::string, std::string> OACredentials;
+    struct OACredentials
+    {
+      OACredentials(const std::string& _id, const std::string& _key)
+      : id(_id)
+      , key(_key)
+      {}
+      const std::string id;
+      const std::string key;
+    };
+
     OACredentials GetOACredentials() const;
-    void SetOACredentials(OACredentials auth);
+    void SetOACredentials(const OACredentials& auth);
 
   private:
     OS::CMutex* m_mutex;
@@ -77,15 +87,19 @@ namespace NSROOT
     ElementPtr GetPresentationMap() const;
 
     static void ServiceType(const std::string& id, std::string& type);
+
     const std::string& GetServiceType() const;
+    const std::string& GetServiceDesc() const;
     SMAccountPtr GetAccount() const;
     const std::string& GetAgent() const;
+
 
   private:
     std::string m_agent;    ///< The agent string to announce in API call
     SMAccountPtr m_account; ///< The account relates this service
     ElementList m_vars;
-    std::string m_type;     ///< The type id of this service
+    std::string m_type;     ///< The type id to use for this service
+    std::string m_desc;     ///< The sonos descriptor to use for this service
   };
 
   typedef shared_ptr<SMService> SMServicePtr;
@@ -110,20 +124,35 @@ namespace NSROOT
 
     const std::string& GetSCPDURL() const { return SCPDURL; }
 
+    /**
+     * Retrieves session info for a service
+     * @param serviceId The id of the service
+     * @param username The user name for the service
+     * @param vars (out) The elements of the returned session
+     * @return succeeded
+     */
     bool GetSessionId(const std::string& serviceId, const std::string& username, ElementList& vars);
 
+    /**
+     * Returns the list of enabled services
+     * @return The service list
+     */
     SMServiceList GetEnabledServices();
 
   private:
+    /**
+     * Query service ListAvailableServices
+     * @param vars (out) Response elements
+     * @return succeeded
+     */
     bool ListAvailableServices(ElementList& vars);
 
-    std::string m_agent;                ///< The announced agent of sonos device
-    SMAccountList m_accounts;           ///< The known accounts
-    std::list<ElementList> m_services;  ///< The available services
+    bool ParseAvailableServices(const ElementList& vars, std::vector<ElementList>& data);
 
-    bool ListAccounts();
-    SMAccountList GetAccountsForService(const std::string& serviceType) const;
-    bool ParseAvailableServiceDescriptorList(const std::string& xml);
+    bool LoadAccounts(SMAccountList& accounts, std::string& agentStr);
+
+    static SMAccountList GetAccountsForService(const SMAccountList& accounts, const std::string& serviceType);
+
   };
 }
 

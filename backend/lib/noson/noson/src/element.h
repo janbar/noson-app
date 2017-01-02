@@ -131,9 +131,17 @@ namespace NSROOT
     ElementList(const std::vector<ElementPtr>& vars) : std::vector<ElementPtr>(vars) {}
     virtual ~ElementList() {}
 
+    void Clone(ElementList& _clone)
+    {
+      _clone.clear();
+      _clone.reserve(size());
+      for (const_iterator it = begin(); it != end(); ++it)
+        _clone.push_back(ElementPtr(new Element(**it)));
+    }
+
     iterator FindKey(const std::string& key, iterator _begin)
     {
-      for (std::vector<ElementPtr>::iterator it = _begin; it != this->end(); ++it)
+      for (iterator it = _begin; it != this->end(); ++it)
         if ((*it)->GetKey() == key)
           return it;
       return this->end();
@@ -141,7 +149,7 @@ namespace NSROOT
 
     const_iterator FindKey(const std::string& key, const_iterator _begin) const
     {
-      for (std::vector<ElementPtr>::const_iterator it = _begin; it != this->end(); ++it)
+      for (const_iterator it = _begin; it != this->end(); ++it)
         if (*it && (*it)->GetKey() == key)
           return it;
       return end();
@@ -159,7 +167,7 @@ namespace NSROOT
 
     const std::string& GetValue(const std::string& key) const
     {
-      std::vector<ElementPtr>::const_iterator it = FindKey(key);
+      const_iterator it = FindKey(key);
       if (it != end() && (*it))
         return (**it);
       return Element::Nil();

@@ -18,6 +18,8 @@
 #include "../../noson/src/contentdirectory.h"
 #include "../../noson/src/avtransport.h"
 #include "../../noson/src/musicservices.h"
+#include "../../noson/src/smapi.h"
+#include "../../noson/src/didlparser.h"
 
 #include <cstdio>
 #include <string>
@@ -46,7 +48,14 @@ int main(int argc, char** argv)
   std::string search = "Q:0";
   if (argc > 2)
     search.assign(argv[2]);
-
+  std::string tstServiceName;
+  std::string tstServiceMediaId;
+  if (argc > 3)
+    tstServiceName.assign(argv[3]);
+  if (argc > 4)
+    tstServiceMediaId.assign(argv[4]);
+  else
+    tstServiceMediaId.assign("root");
 
   SONOS::DBGLevel(3); // debug/proto
 
@@ -97,6 +106,7 @@ int main(int argc, char** argv)
         while (it != bdir.end())
         {
           fprintf(stderr, "Item %d: [%d] [%s] [%s]\n", ++i, (*it)->IsItem(), (*it)->GetValue("dc:title").c_str(), (*it)->GetObjectID().c_str());
+          fprintf(stderr, "       : %s\n", (*it)->GetValue("res").c_str());
           ++it;
         }
 
@@ -117,12 +127,26 @@ int main(int argc, char** argv)
         /*
          * Music services
          */
-        SONOS::MusicServices svc(playerPtr->GetHost(), playerPtr->GetPort());
-        SONOS::SMServiceList svcList = svc.GetEnabledServices();
-        for (auto item : svcList) {
-          fprintf(stdout, "%s : %s\n", item->GetName().c_str(), item->GetServiceType().c_str());
+        for (auto&& item : playerPtr->GetAvailableServices())
+       	{
+            fprintf(stderr, "MusicService: %s : %s , %s\n", item->GetName().c_str(), item->GetServiceType().c_str(), (item->GetPresentationMap() ? item->GetPresentationMap()->GetAttribut("Uri").c_str() : "No presentation map"));
+            if (item->GetName() == tstServiceName)
+            {
+              fprintf(stderr, "Trying service %s ...\n", item->GetName().c_str());
+              SONOS::SMAPI sm(playerPtr);
+              sm.Init(item);
+              SONOS::SMAPIMetadata meta;
+              SONOS::DBGLevel(4);
+              sm.GetMetadata(tstServiceMediaId, 0, 50, false, meta);
+              //sm.GetMediaMetadata(tstServiceMediaId, meta);
+              //sm.Search("stations", "jazz", 0, 10, meta);
+              SONOS::DBGLevel(3);
+              for (auto&& digi : meta.GetItems())
+              {
+                fprintf(stderr, "%s\n", digi->DIDL().c_str());
+              }
+            }
         }
-
       }
     }
   }

@@ -169,6 +169,10 @@ file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/zonegrouptopology.h
           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/musicservices.h
           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/smapi.h
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/smapimetadata.h
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
 
 include_directories (
   ${CMAKE_CURRENT_BINARY_DIR}/include/.)
@@ -178,8 +182,7 @@ include_directories (
 file (GLOB SRC_FILES
   src/private/*.c
   src/private/*.cpp
-  src/*.cpp
-  src/smapi/*.cpp)
+  src/*.cpp)
 
 file (GLOB OS_SRC_FILES
   src/private/os/threads/threadpool.cpp)

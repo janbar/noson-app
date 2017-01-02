@@ -28,6 +28,7 @@
 #include "private/cppdef.h"
 #include "private/debug.h"
 #include "private/uriparser.h"
+#include "private/tokenizer.h"
 #include "didlparser.h"
 #include "sonossystem.h"
 
@@ -133,6 +134,9 @@ Player::Player(const ZonePlayerPtr& zonePlayer)
     m_deviceProperties = new DeviceProperties(m_host, m_port);
     m_musicServices = new MusicServices(m_host, m_port);
 
+    // fill avaialable music services
+    m_smservices = m_musicServices->GetEnabledServices();
+
     m_queueURI.assign("x-rincon-queue:").append(m_uuid).append("#0");
     m_valid = true;
   }
@@ -187,6 +191,9 @@ void Player::Init(const Zone& zone)
   m_deviceProperties = new DeviceProperties(m_host, m_port);
   m_musicServices = new MusicServices(m_host, m_port);
 
+  // fill avaialable music services
+  m_smservices = m_musicServices->GetEnabledServices();
+
   for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     it->subscription.Start();
   m_AVTSubscription.Start();
@@ -194,6 +201,33 @@ void Player::Init(const Zone& zone)
 
   m_queueURI.assign("x-rincon-queue:").append(m_uuid).append("#0");
   m_valid = true;
+}
+
+void Player::CB_AVTransport(void* handle)
+{
+  Player* _handle = static_cast<Player*>(handle);
+  Locked<unsigned char>::pointer _mask = _handle->m_eventMask.Get();
+  *_mask |= SVCEvent_TransportChanged;
+  if (_handle->m_eventCB && !_handle->m_eventSignaled.Load())
+    _handle->m_eventCB(_handle->m_CBHandle);
+}
+
+void Player::CB_RenderingControl(void* handle)
+{
+  Player* _handle = static_cast<Player*>(handle);
+  Locked<unsigned char>::pointer _mask = _handle->m_eventMask.Get();
+  *_mask |= SVCEvent_RenderingControlChanged;
+  if (_handle->m_eventCB && !_handle->m_eventSignaled.Load())
+    _handle->m_eventCB(_handle->m_CBHandle);
+}
+
+void Player::CB_ContentDirectory(void* handle)
+{
+  Player* _handle = static_cast<Player*>(handle);
+  Locked<unsigned char>::pointer _mask = _handle->m_eventMask.Get();
+  *_mask |= SVCEvent_ContentDirectoryChanged;
+  if (_handle->m_eventCB && !_handle->m_eventSignaled.Load())
+    _handle->m_eventCB(_handle->m_CBHandle);
 }
 
 void Player::RenewSubscriptions()
@@ -342,10 +376,10 @@ bool Player::SetMute(const std::string& uuid, uint8_t value)
 
 bool Player::SetCurrentURI(const DigitalItemPtr& item)
 {
-  // Check for radio service tuneIN
-  if (item->GetObjectID().compare(0, 4, "R:0/") == 0)
+  SMServicePtr svc = GetServiceForMedia(item->GetValue("res"));
+  if (svc)
   {
-    ElementPtr var(new Element("desc", NetServiceDescTable[NetService_TuneIN]));
+    ElementPtr var(new Element("desc", svc->GetServiceDesc()));
     var->SetAttribut("id", "cdudn");
     var->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
     item->SetProperty(var);
@@ -441,6 +475,8 @@ bool Player::CreateSavedQueue(const std::string& title)
 
 unsigned Player::AddURIToSavedQueue(const std::string& SQObjectID, const DigitalItemPtr& item, unsigned containerUpdateID)
 {
+  if (GetServiceForMedia(item->GetValue("res")))
+    return 0;
   return m_AVTransport->AddURIToSavedQueue(SQObjectID, item->GetValue("res"), item->DIDL(), containerUpdateID);
 }
 
@@ -475,16 +511,17 @@ bool Player::AddURIToFavorites(const DigitalItemPtr& item, const std::string& de
   obj.SetProperty(item->GetProperty(DIDL_QNAME_UPNP "class"));
   obj.SetProperty(item->GetProperty(DIDL_QNAME_DC "title"));
   // make desc
-  if (System::CanQueueItem(item))
+  SMServicePtr svc = GetServiceForMedia(item->GetValue("res"));
+  if (svc)
   {
-    ElementPtr desc(new Element("desc", "RINCON_AssociatedZPUDN"));
+    ElementPtr desc(new Element("desc", svc->GetServiceDesc()));
     desc->SetAttribut("id", "cdudn");
     desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
     obj.SetProperty(desc);
   }
   else
   {
-    ElementPtr desc(new Element("desc", NetServiceDescTable[NetService_TuneIN]));
+    ElementPtr desc(new Element("desc", ServiceDescTable[ServiceDesc_default]));
     desc->SetAttribut("id", "cdudn");
     desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
     obj.SetProperty(desc);
@@ -586,29 +623,50 @@ void Player::HandleEventMessage(EventMessagePtr msg)
   }
 }
 
-void Player::CB_AVTransport(void* handle)
+SMServiceList Player::GetAvailableServices()
 {
-  Player* _handle = static_cast<Player*>(handle);
-  Locked<unsigned char>::pointer _mask = _handle->m_eventMask.Get();
-  *_mask |= SVCEvent_TransportChanged;
-  if (_handle->m_eventCB && !_handle->m_eventSignaled.Load())
-    _handle->m_eventCB(_handle->m_CBHandle);
+  return m_smservices;
 }
 
-void Player::CB_RenderingControl(void* handle)
+SMServicePtr Player::GetServiceForMedia(const std::string& mediaUri)
 {
-  Player* _handle = static_cast<Player*>(handle);
-  Locked<unsigned char>::pointer _mask = _handle->m_eventMask.Get();
-  *_mask |= SVCEvent_RenderingControlChanged;
-  if (_handle->m_eventCB && !_handle->m_eventSignaled.Load())
-    _handle->m_eventCB(_handle->m_CBHandle);
-}
+  SMServicePtr svc;
+  URIParser parser(mediaUri);
+  if (!parser.Scheme() || !parser.Path())
+  {
+    DBG(DBG_ERROR, "%s: invalid uri (%s)\n", __FUNCTION__, mediaUri.c_str());
+    return svc;
+  }
+  const char* p = strchr(parser.Path(), '?');
+  if (p)
+  {
+    std::vector<std::string> args;
+    tokenize(++p, "&", args, true);
+    std::string sid;
+    std::string sn;
+    for (std::vector<std::string>::const_iterator ita = args.begin(); ita != args.end(); ++ita)
+    {
+      std::vector<std::string> tokens;
+      tokenize(*ita, "=", tokens);
+      if (tokens.size() != 2)
+        break;
+      if (tokens[0] == "sid")
+        sid.assign(tokens[1]);
+      else if (tokens[0] == "sn")
+        sn.assign(tokens[1]);
+    }
+    if (!sid.empty())
+    {
+      if (sn.empty())
+        sn.assign("0"); // trying fake account
 
-void Player::CB_ContentDirectory(void* handle)
-{
-  Player* _handle = static_cast<Player*>(handle);
-  Locked<unsigned char>::pointer _mask = _handle->m_eventMask.Get();
-  *_mask |= SVCEvent_ContentDirectoryChanged;
-  if (_handle->m_eventCB && !_handle->m_eventSignaled.Load())
-    _handle->m_eventCB(_handle->m_CBHandle);
+      // loop in services
+      for (SMServiceList::iterator its = m_smservices.begin(); its != m_smservices.end(); ++its)
+        if ((*its)->GetId() == sid && (*its)->GetAccount()->GetSerialNum() == sn)
+          return *its;
+
+      DBG(DBG_WARN, "%s: not found a valid service for this uri (%s)\n", __FUNCTION__, mediaUri.c_str());
+    }
+  }
+  return svc;
 }

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015 Jean-Luc Barriere
+ *      Copyright (C) 2014-2015 Jean-Luc Barriere
  *
  *  This library is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -19,26 +19,29 @@
  *
  */
 
-#include "sonostypes.h"
+#ifndef TOKENIZER_H
+#define TOKENIZER_H
 
-using namespace NSROOT;
+#include <string>
+#include <vector>
 
-const char* NSROOT::ProtocolTable[Protocol_unknown + 1] = {
-  "x-rincon-queue",
-  "x-rincon-stream",
-  "x-rincon-mp3radio",
-  "x-rincon-playlist",
-  "x-sonos-htastream",
-  "x-sonos-http",
-  "x-sonosapi-stream",
-  "x-file-cifs",
-  "x-rincon",
-  "http-get",
-  "aac",
-  ""
-};
+#define tokenize __tokenize
+inline void __tokenize(const std::string& str, const char *delimiters, std::vector<std::string>& tokens, bool trimnull = false)
+{
+  std::string::size_type pa = 0, pb = 0;
+  unsigned n = 0;
+  // Counter n will break infinite loop. Max count is 255 tokens
+  while ((pb = str.find_first_of(delimiters, pb)) != std::string::npos && ++n < 255)
+  {
+    tokens.push_back(str.substr(pa, pb - pa));
+    do
+    {
+      pa = ++pb;
+    }
+    while (trimnull && str.find_first_of(delimiters, pb) == pb);
+  }
+  tokens.push_back(str.substr(pa));
+}
 
-const char* NSROOT::ServiceDescTable[ServiceDesc_unknown + 1] = {
-  "RINCON_AssociatedZPUDN",
-  ""
-};
+#endif /* TOKENIZER_H */
+
