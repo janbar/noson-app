@@ -731,7 +731,7 @@ MainView {
         // Go back up the stack if possible
         function goBack() {
             // Ensure in the case that goBack is called programmatically that any dialogs are closed
-            if (mainPageStack.currentMusicPage.currentDialog !== null) {
+            if (mainPageStack.currentMusicPage !== null && mainPageStack.currentMusicPage.currentDialog !== null) {
                 PopupUtils.close(mainPageStack.currentMusicPage.currentDialog)
             }
             if (depth > 1) {
@@ -934,11 +934,9 @@ MainView {
 
     Loader {
         id: nowPlayingSidebarLoader
-        active: shown || anchors.leftMargin < 0
+        active: shown
         anchors {  // start offscreen
             bottom: parent.bottom
-            //left: parent.right
-            //leftMargin: shown && status === Loader.Ready ? -width : 0
             right: parent.right
             top: parent.top
         }
@@ -949,7 +947,7 @@ MainView {
 
         property bool shown: loadedUI && wideAspect && player.currentMetaSource !== ""
 
-        Behavior on anchors.leftMargin {
+        Behavior on width {
             NumberAnimation {
 
             }
