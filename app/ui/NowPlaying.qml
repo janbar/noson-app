@@ -179,7 +179,7 @@ MusicPage {
         width: parent.width
 
         Behavior on anchors.bottomMargin {
-            NumberAnimation { duration: 250 }
+            NumberAnimation { duration: 100 }
         }
     }
 
