@@ -26,7 +26,7 @@ Image {
     fillMode: Image.PreserveAspectFit
     horizontalAlignment: Image.AlignHCenter
     verticalAlignment: Image.AlignVCenter
-    source: visible ? Qt.resolvedUrl("../../graphics/spinner_blue.png") : ""
+    source: visible ? Qt.resolvedUrl("../../graphics/spinner.png") : ""
     asynchronous: true
 
     RotationAnimator on rotation {
@@ -34,7 +34,7 @@ Image {
         from: 0
         to: 360
         loops: Animation.Infinite
-        duration: 1500 /*UbuntuAnimation.SleepyDuration*/
+        duration: 1000 /*UbuntuAnimation.SleepyDuration*/
     }
 }
 
