@@ -130,17 +130,27 @@ Flickable {
             anchors.fill: parent
             property string direction: "None"
             property real lastX: -1
+            property real lastY: -1
 
-            onPressed: lastX = mouse.x
+            onPressed: {
+                lastX = mouse.x
+                lastY = mouse.y
+            }
 
             onReleased: {
-                var diff = mouse.x - lastX
-                if (Math.abs(diff) < units.gu(4)) {
-                    return;
-                } else if (diff < 0) {
-                    player.nextSong()
-                } else if (diff > 0) {
-                    player.previousSong()
+                var diffX = mouse.x - lastX
+                if (Math.abs(diffX) > units.gu(4)) {
+                    if (diffX < 0) {
+                        player.nextSong()
+                    } else {
+                        player.previousSong()
+                    }
+                }
+                var diffY = mouse.y - lastY
+                if (Math.abs(diffY) > units.gu(4)) {
+                    if (diffY < 0 && mainView.nowPlayingPage !== null) {
+                        mainView.nowPlayingPage.isListView = true
+                    }
                 }
             }
         }
