@@ -394,6 +394,7 @@ MainView {
             AllRadiosModel.init(Sonos, "R:0/0");
             AllPlaylistsModel.init(Sonos, "");
             AllFavoritesModel.init(Sonos, "");
+            AllServicesModel.init(Sonos);
             // enable info on index loaded
             infoLoadedIndex = true;
             return true;
@@ -786,6 +787,11 @@ MainView {
             property Tab lastTab: selectedTab
             property list<Action> tabActions: [
                 Action {
+                    objectName: "servicesTabAction"
+                    text: servicesTab.title
+                    onTriggered: tabs.selectedTabIndex = servicesTab.index
+                },
+                Action {
                     objectName: "artistsTabAction"
                     text: artistsTab.title
                     onTriggered: tabs.selectedTabIndex = artistsTab.index
@@ -824,6 +830,18 @@ MainView {
             onSelectedTabIndexChanged: {
                 if (loadedUI) {  // store the tab index if changed by the user
                     startupSettings.tabIndex = selectedTabIndex
+                }
+            }
+
+            Tab {
+                id: servicesTab
+                objectName: "servicesTab"
+                anchors.fill: parent
+                title: page.pageTitle
+
+                // tab content
+                page: MusicServices {
+                    id: servicesPage
                 }
             }
 

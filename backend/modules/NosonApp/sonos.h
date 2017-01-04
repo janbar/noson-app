@@ -37,6 +37,8 @@
 #include "radiosmodel.h"
 #include "playlistsmodel.h"
 #include "favoritesmodel.h"
+#include "servicesmodel.h"
+#include "mediamodel.h"
 
 #include <QObject>
 #include <QString>
@@ -137,6 +139,13 @@ public:
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
     return new FavoritesModel;
+  }
+
+  static QObject* allServicesModel_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
+  {
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+    return new ServicesModel;
   }
 
   // Helpers

@@ -24,6 +24,7 @@
 
 #include "../../lib/noson/noson/src/digitalitem.h"
 #include "../../lib/noson/noson/src/sonoszone.h"
+#include "../../lib/noson/noson/src/musicservices.h"
 #include "../../lib/noson/noson/src/locked.h"
 
 #include <QObject>
@@ -31,6 +32,7 @@
 Q_DECLARE_METATYPE(SONOS::DigitalItemPtr)
 Q_DECLARE_METATYPE(SONOS::ZonePtr)
 Q_DECLARE_METATYPE(SONOS::ZonePlayerPtr)
+Q_DECLARE_METATYPE(SONOS::SMServicePtr)
 
 class Sonos;
 
