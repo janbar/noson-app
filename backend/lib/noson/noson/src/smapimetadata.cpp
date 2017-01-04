@@ -60,9 +60,9 @@ void SMAPIMetadata::Reset(const SMServicePtr& svc, const std::string& xml, const
     m_valid = ParseMessage(xml);
 }
 
-DigitalItemList SMAPIMetadata::GetItems()
+SMAPIItemList SMAPIMetadata::GetItems()
 {
-  DigitalItemList list;
+  SMAPIItemList list;
   if (!m_valid)
     return list;
   unsigned c = 0;
@@ -71,112 +71,155 @@ DigitalItemList SMAPIMetadata::GetItems()
     const Element& media = **it;
     const std::string& itemType = media.GetAttribut("itemType");
     DBG(DBG_PROTO, "%s: [%u] %s (%s)\n", __FUNCTION__, c++, media.GetKey().c_str(), itemType.c_str());
-    // initialize the digital item
-    DigitalItemPtr item;
-    if (itemType == "track")
-      item.reset(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
-    else if (itemType == "stream")
-      item.reset(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
-    else if (itemType == "show")
-      item.reset(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
-    else if (itemType == "program")
-      item.reset(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
-    else if (itemType == "album")
-      item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_album));
-    else if (itemType == "albumList")
-      item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_album));
-    else if (itemType == "artist")
-      item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_person));
-    else if (itemType == "artistTrackList")
-      item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_person));
-    else if (itemType == "genre")
-      item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_genre));
-    else if (itemType == "playlist")
-      item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_playlistContainer));
-    else if (media.GetKey() == "mediaCollection")
-      item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_storageFolder));
-    else
-      item.reset(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_unknown));
 
-    switch (item->subType())
+    // initialize the item
+    SMAPIItem data;
+    const std::string& itemDisplayType = media.GetAttribut("displayType");
+    if (itemDisplayType == "List")
+      data.displayType = SMAPIItem::List;
+    else if (itemDisplayType == "Hero")
+      data.displayType = SMAPIItem::Hero;
+    else if (itemDisplayType == "Editorial")
+      data.displayType = SMAPIItem::Editorial;
+    else
+      data.displayType = SMAPIItem::Grid;
+
+    if (itemType == "track")
+      data.item.reset(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
+    else if (itemType == "stream")
+      data.item.reset(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
+    else if (itemType == "show")
+      data.item.reset(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
+    else if (itemType == "program")
+      data.item.reset(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
+    else if (itemType == "album")
+      data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_album));
+    else if (itemType == "albumList")
+      data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_album));
+    else if (itemType == "artist")
+      data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_person));
+    else if (itemType == "artistTrackList")
+      data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_person));
+    else if (itemType == "genre")
+      data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_genre));
+    else if (itemType == "playlist")
+      data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_playlistContainer));
+    else if (media.GetKey() == "mediaCollection")
+      data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_storageFolder));
+    else
+      data.item.reset(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_unknown));
+
+    switch (data.item->subType())
     {
     // container
     case DigitalItem::SubType_playlistContainer:
     case DigitalItem::SubType_storageFolder:
-      item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
-      item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
-      item->SetProperty(DIDL_QNAME_RINC "description", media.GetAttribut("summary"));
+      data.item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
+      data.item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
+      data.item->SetProperty(DIDL_QNAME_RINC "description", media.GetAttribut("summary"));
+
       break;
     case DigitalItem::SubType_album:
-      item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
-      item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
-      item->SetProperty(DIDL_QNAME_DC "creator", media.GetAttribut("author"));
-      item->SetProperty(DIDL_QNAME_DC "contributor", media.GetAttribut("artist"));
+      data.item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
+      data.item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
+      data.item->SetProperty(DIDL_QNAME_DC "creator", media.GetAttribut("author"));
+      data.item->SetProperty(DIDL_QNAME_DC "contributor", media.GetAttribut("artist"));
       break;
     case DigitalItem::SubType_genre:
-      item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
+      data.item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
+      data.item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
       break;
     case DigitalItem::SubType_person:
-      item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
+      data.item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
+      data.item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
       break;
     // item
     case DigitalItem::SubType_audioItem:
-      item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
+      data.item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
       if (itemType == "track")
       {
-        item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
-        item->SetProperty(DIDL_QNAME_DC "creator", media.GetAttribut("composer"));
-        item->SetProperty(DIDL_QNAME_DC "contributor", media.GetAttribut("artist"));
-        item->SetProperty(DIDL_QNAME_UPNP "album", media.GetAttribut("album"));
-        item->SetProperty(DIDL_QNAME_UPNP "originalTrackNumber", media.GetAttribut("trackNumber"));
+        data.item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
+        data.item->SetProperty(DIDL_QNAME_DC "creator", media.GetAttribut("composer"));
+        data.item->SetProperty(DIDL_QNAME_DC "contributor", media.GetAttribut("artist"));
+        data.item->SetProperty(DIDL_QNAME_UPNP "album", media.GetAttribut("album"));
+        data.item->SetProperty(DIDL_QNAME_UPNP "originalTrackNumber", media.GetAttribut("trackNumber"));
       }
       else
       {
-        item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("logo"));
-        item->SetProperty(DIDL_QNAME_RINC "description", media.GetAttribut("summary"));
+        data.item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("logo"));
+        data.item->SetProperty(DIDL_QNAME_RINC "description", media.GetAttribut("summary"));
       }
       break;
     case DigitalItem::SubType_unknown:
     default:
-      item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
-      item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
+      data.item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
+      data.item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
     }
 
-    item->SetObjectID(media.GetAttribut("id"));
-    item->SetParentID(m_root);
+    data.item->SetObjectID(media.GetAttribut("id"));
+    data.item->SetParentID(m_root);
 
     if (media.GetAttribut("canPlay") == "true")
     {
       if (itemType == "stream")
       {
+        // clone the item as skeleton for uri metadata
+        data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
+        data.item->Clone(*(data.uriMetadata));
         // tag <res>
         std::string rval(ProtocolTable[Protocol_xSonosApiStream]);
-        rval.append(":").append(item->GetObjectID()).append("?sid=").append(m_service->GetId());
+        rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
         rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
         ElementPtr res(new Element("res", rval));
-        item->SetProperty(res);
+        data.uriMetadata->SetProperty(res);
         // tag <desc>
         ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
         desc->SetAttribut("id", "cdudn");
         desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
-        item->SetProperty(desc);
+        data.uriMetadata->SetProperty(desc);
       }
       else if (itemType == "track")
       {
+        // clone the item as skeleton for uri metadata
+        data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
+        data.item->Clone(*(data.uriMetadata));
         // tag <res>
         std::string rval(ProtocolTable[Protocol_xSonosHttp]);
-        rval.append(":").append(item->GetObjectID()).append("?sid=").append(m_service->GetId());
+        rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
         rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
         ElementPtr res(new Element("res", rval));
-        item->SetProperty(res);
+        data.uriMetadata->SetProperty(res);
         // tag <desc>
         ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
         desc->SetAttribut("id", "cdudn");
         desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
-        item->SetProperty(desc);
+        data.uriMetadata->SetProperty(desc);
+        data.uriMetadata->SetObjectID(std::string("00032020").append(data.item->GetObjectID()));
+        data.uriMetadata->SetParentID(std::string("0004206c").append(data.item->GetParentID()));
       }
+      else if (itemType == "program")
+      {
+        // clone the item as skeleton for uri metadata
+        data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
+        data.item->Clone(*(data.uriMetadata));
+        // tag <res>
+        std::string rval(ProtocolTable[Protocol_xSonosApiRadio]);
+        rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
+        rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
+        ElementPtr res(new Element("res", rval));
+        data.uriMetadata->SetProperty(res);
+        // tag <desc>
+        ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
+        desc->SetAttribut("id", "cdudn");
+        desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
+        data.uriMetadata->SetProperty(desc);
+        data.uriMetadata->SetObjectID(std::string("000c206c").append(data.item->GetObjectID()));
+        data.uriMetadata->SetParentID("0");
+      }
+      else
+        DBG(DBG_DEBUG, "%s: playable type (%s) isn't handled\n", __FUNCTION__, itemType.c_str());
     }
-    list.push_back(item);
+    list.push_back(data);
   }
   return list;
 }
@@ -259,6 +302,8 @@ ElementPtr SMAPIMetadata::ParseMediaCollection(const void* _elem)
       ptr->SetAttribut("title", felem->GetText());
     else if (XMLNS::NameEqual(felem->Name(), "itemType") && felem->GetText())
       ptr->SetAttribut("itemType", felem->GetText());
+    else if (XMLNS::NameEqual(felem->Name(), "displayType") && felem->GetText())
+      ptr->SetAttribut("displayType", felem->GetText());
     else if (XMLNS::NameEqual(felem->Name(), "canPlay") && felem->GetText())
       ptr->SetAttribut("canPlay", felem->GetText());
     else if (XMLNS::NameEqual(felem->Name(), "canEnumerate") && felem->GetText())
@@ -306,6 +351,8 @@ ElementPtr SMAPIMetadata::ParseMediaMetadata(const void* _elem)
       ptr->SetAttribut("title", felem->GetText());
     else if (XMLNS::NameEqual(felem->Name(), "itemType") && felem->GetText())
       ptr->SetAttribut("itemType", felem->GetText());
+    else if (XMLNS::NameEqual(felem->Name(), "displayType") && felem->GetText())
+      ptr->SetAttribut("displayType", felem->GetText());
     else if (XMLNS::NameEqual(felem->Name(), "mimeType") && felem->GetText())
       ptr->SetAttribut("mimeType", felem->GetText());
     else if (XMLNS::NameEqual(felem->Name(), "isFavorite") && felem->GetText())
