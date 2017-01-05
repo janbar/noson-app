@@ -29,6 +29,8 @@ Depends: qmlscene,
          thumbnailer-service,
          suru-icon-theme,
          ubuntu-mobile-icons,
+         zlib1g,
+         openssl,
          ${shlibs:Depends}, ${misc:Depends},
 Description: SONOS controller for Ubuntu Touch
  Touch enabled SONOS controller for Ubuntu
