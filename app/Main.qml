@@ -394,6 +394,7 @@ MainView {
             AllRadiosModel.init(Sonos, "R:0/0");
             AllPlaylistsModel.init(Sonos, "");
             AllFavoritesModel.init(Sonos, "");
+            AllServicesModel.init(Sonos);
             // enable info on index loaded
             infoLoadedIndex = true;
             return true;
@@ -786,34 +787,46 @@ MainView {
             property Tab lastTab: selectedTab
             property list<Action> tabActions: [
                 Action {
+                    objectName: "servicesTabAction"
+                    text: servicesTab.title
+                    onTriggered: tabs.selectedTabIndex = servicesTab.index
+                    visible: AllServicesModel.count > 0 ? true : false
+                },
+                Action {
                     objectName: "artistsTabAction"
                     text: artistsTab.title
                     onTriggered: tabs.selectedTabIndex = artistsTab.index
+                    visible: AllArtistsModel.count > 0 ? true : false
                 },
                 Action {
                     objectName: "albumsTabAction"
                     text: albumsTab.title
                     onTriggered: tabs.selectedTabIndex = albumsTab.index
+                    visible: AllAlbumsModel.count > 0 ? true : false
                 },
                 Action {
                     objectName: "genresTabAction"
                     text: genresTab.title
                     onTriggered: tabs.selectedTabIndex = genresTab.index
+                    visible: AllGenresModel.count > 0 ? true : false
                 },
                 Action {
                     objectName: "radiosTabAction"
                     text: radiosTab.title
                     onTriggered: tabs.selectedTabIndex = radiosTab.index
+                    visible: AllRadiosModel.count > 0 ? true : false
                 },
                 Action {
                     objectName: "playlistsTabAction"
                     text: playlistsTab.title
                     onTriggered: tabs.selectedTabIndex = playlistsTab.index
+                    visible: true
                 },
                 Action {
                     objectName: "favoritesTabAction"
                     text: favoritesTab.title
                     onTriggered: tabs.selectedTabIndex = favoritesTab.index
+                    visible: AllFavoritesModel.count > 0 ? true : false
                 }
             ]
 
@@ -824,6 +837,18 @@ MainView {
             onSelectedTabIndexChanged: {
                 if (loadedUI) {  // store the tab index if changed by the user
                     startupSettings.tabIndex = selectedTabIndex
+                }
+            }
+
+            Tab {
+                id: servicesTab
+                objectName: "servicesTab"
+                anchors.fill: parent
+                title: page.pageTitle
+
+                // tab content
+                page: MusicServices {
+                    id: servicesPage
                 }
             }
 

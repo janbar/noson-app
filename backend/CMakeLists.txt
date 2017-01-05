@@ -25,6 +25,8 @@ set(
     modules/NosonApp/renderingmodel.cpp
     modules/NosonApp/roomsmodel.cpp
     modules/NosonApp/favoritesmodel.cpp
+    modules/NosonApp/servicesmodel.cpp
+    modules/NosonApp/mediamodel.cpp
 )
 
 add_library(NosonAppbackend MODULE

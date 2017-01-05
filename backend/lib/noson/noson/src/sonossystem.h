@@ -75,6 +75,14 @@ namespace NSROOT
     static bool ExtractObjectFromFavorite(const DigitalItemPtr& favorite, DigitalItemPtr& item);
     static bool CanQueueItem(const DigitalItemPtr& item);
 
+    /**
+     * Request logo for a given music service and placement
+     * @param service The music service
+     * @param placement small|medium|large|x-large|square:x-small|square:small|square|square:x-large
+     * @return uri string for the requested logo
+     */
+    static std::string GetLogoForService(const SMServicePtr& service, const std::string& placement);
+
   private:
     mutable OS::CMutex* m_mutex;
     OS::CEvent* m_cbzgt;
@@ -94,6 +102,8 @@ namespace NSROOT
     static bool FindDeviceDescription(std::string& url);
 
     static void CBZGTopology(void* handle);
+
+    static bool LoadMSLogo(ElementList& logos);
   };
 }
 

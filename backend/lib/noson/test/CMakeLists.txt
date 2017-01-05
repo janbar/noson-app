@@ -30,6 +30,10 @@ add_executable (nosontest src/test.cpp)
 add_dependencies (nosontest noson)
 target_link_libraries (nosontest noson)
 
+add_executable (nosontestms src/testms.cpp)
+add_dependencies (nosontestms noson)
+target_link_libraries (nosontestms noson)
+
 add_executable (intrinsictest src/intrinsictest.cpp)
 add_dependencies (intrinsictest noson)
 target_link_libraries (intrinsictest noson)

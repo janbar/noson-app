@@ -32,11 +32,13 @@
 #include "private/os/threads/mutex.h"
 #include "private/os/threads/event.h"
 #include "private/cppdef.h"
+#include "private/xmldict.h"
 
 #include <cstdio> // for sscanf
 
 #define CB_TIMEOUT    5000
 #define PATH_TOPOLOGY "/status/topology"
+#define URI_MSLOGO    "http://update-services.sonos.com/services/mslogo.xml"
 
 using namespace SONOS;
 
@@ -195,12 +197,44 @@ bool System::CanQueueItem(const DigitalItemPtr& item)
 {
   if (item)
   {
+    // check parent
     const std::string& parent = item->GetParentID();
     if (    parent.compare(0, 2, "A:") == 0 ||
             parent.compare(0, 3, "SQ:") == 0)
       return true;
+
+    // check protocol from tag <res>
+    URIParser parser(item->GetValue("res"));
+    if (parser.Scheme())
+    {
+      if (strcmp(ProtocolTable[Protocol_xSonosHttp], parser.Scheme()) == 0)
+        return true;
+      if (strcmp(ProtocolTable[Protocol_xFileCifs], parser.Scheme()) == 0)
+        return true;
+      if (strcmp(ProtocolTable[Protocol_file], parser.Scheme()) == 0)
+        return true;
+    }
   }
   return false;
+}
+
+std::string System::GetLogoForService(const SMServicePtr& service, const std::string& placement)
+{
+  static Locked<unsigned> cc(0); ///< zero to refill cache
+  static ElementList logos; ///< cached container for logos
+
+  // hold count until return
+  Locked<unsigned>::pointer ccPtr = cc.Get();
+
+  // on first call we fill the container requesting sonos service
+  if ((*ccPtr)++ == 0 && !LoadMSLogo(logos))
+    DBG(DBG_ERROR, "%s: cache for service images cannot be filled", __FUNCTION__);
+
+  const std::string& typeId = service->GetServiceType();
+  for (ElementList::const_iterator it = logos.begin(); it != logos.end(); ++it)
+    if ((*it)->GetKey() == typeId && (*it)->GetAttribut("placement") == placement)
+      return (**it);
+  return Element::Nil();
 }
 
 bool System::FindDeviceDescription(std::string& url)
@@ -331,4 +365,64 @@ void System::CBZGTopology(void* handle)
     if (_handle->m_eventCB)
       (_handle->m_eventCB)(_handle->m_CBHandle);
   }
+}
+
+bool System::LoadMSLogo(ElementList& logos)
+{
+  WSRequest request(URIParser(URI_MSLOGO));
+  WSResponse response(request);
+  if (!response.IsSuccessful())
+    return false;
+
+  size_t len = 0, l = 0;
+  std::string data;
+  char buffer[4000];
+  while ((l = response.ReadContent(buffer, sizeof(buffer))))
+  {
+    data.append(buffer, l);
+    len += l;
+  }
+
+  tinyxml2::XMLDocument rootdoc;
+  // Parse xml content
+  if (rootdoc.Parse(data.c_str(), len) != tinyxml2::XML_SUCCESS)
+  {
+    DBG(DBG_ERROR, "%s: parse xml failed\n", __FUNCTION__);
+    return false;
+  }
+  const tinyxml2::XMLElement* elem; // an element
+  // Check for response: Services
+  if (!(elem = rootdoc.RootElement()) || !XMLNS::NameEqual(elem->Name(), "images")
+          || !(elem = elem->FirstChildElement("sized")))
+  {
+    DBG(DBG_ERROR, "%s: invalid or not supported content\n", __FUNCTION__);
+    tinyxml2::XMLPrinter out;
+    rootdoc.Accept(&out);
+    DBG(DBG_ERROR, "%s\n", out.CStr());
+    return false;
+  }
+  logos.clear();
+  elem = elem->FirstChildElement("service");
+  while (elem)
+  {
+    const tinyxml2::XMLElement* felem;
+    const char* typeId = elem->Attribute("id");
+    if (typeId)
+    {
+      felem = elem->FirstChildElement("image");
+      while (felem)
+      {
+        const char* p = felem->Attribute("placement");
+        if (p && felem->GetText())
+        {
+          ElementPtr logo(new Element(typeId, felem->GetText()));
+          logo->SetAttribut("placement", p);
+          logos.push_back(logo);
+        }
+        felem = felem->NextSiblingElement("image");
+      }
+    }
+    elem = elem->NextSiblingElement("service");
+  }
+  return true;
 }

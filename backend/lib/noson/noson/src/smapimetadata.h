@@ -29,6 +29,15 @@
 
 namespace NSROOT
 {
+  struct SMAPIItem
+  {
+    enum DisplayType { Grid = 0, List = 1, Hero, Editorial } displayType;
+    DigitalItemPtr item;
+    DigitalItemPtr uriMetadata;
+  };
+
+  typedef std::vector<SMAPIItem> SMAPIItemList;
+
   class SMAPIMetadata
   {
   public:
@@ -43,7 +52,7 @@ namespace NSROOT
     unsigned ItemCount() const { return m_itemCount; }
     unsigned TotalCount() const { return m_totalCount; }
 
-    DigitalItemList GetItems();
+    SMAPIItemList GetItems();
 
     const ElementList& GetElements() const { return m_list; }
 

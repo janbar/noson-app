@@ -68,9 +68,11 @@ namespace NSROOT
     Protocol_xSonosHtaStream,
     Protocol_xSonosHttp,
     Protocol_xSonosApiStream,
+    Protocol_xSonosApiRadio,
     Protocol_xFileCifs,
     Protocol_xRincon,
     Protocol_httpGet,
+    Protocol_file,
     Protocol_aac,
     Protocol_unknown,
   } Protocol_t;

@@ -24,6 +24,7 @@
 
 #include <local_config.h>
 #include "service.h"
+#include "locked.h"
 
 #include <list>
 #include <vector>
@@ -93,7 +94,6 @@ namespace NSROOT
     SMAccountPtr GetAccount() const;
     const std::string& GetAgent() const;
 
-
   private:
     std::string m_agent;    ///< The agent string to announce in API call
     SMAccountPtr m_account; ///< The account relates this service
@@ -139,7 +139,11 @@ namespace NSROOT
      */
     SMServiceList GetEnabledServices();
 
+    Locked<std::string>& GetVersion() { return m_version; }
+
   private:
+    Locked<std::string> m_version;  ///< Current version
+
     /**
      * Query service ListAvailableServices
      * @param vars (out) Response elements

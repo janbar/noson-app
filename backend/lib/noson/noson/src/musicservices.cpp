@@ -166,6 +166,7 @@ const std::string& SMService::GetAgent() const
 
 MusicServices::MusicServices(const std::string& serviceHost, unsigned servicePort)
 : Service(serviceHost, servicePort)
+, m_version("")
 {
 }
 
@@ -182,19 +183,23 @@ bool MusicServices::GetSessionId(const std::string& serviceId, const std::string
 
 SMServiceList MusicServices::GetEnabledServices()
 {
+  // hold version's lock until return
+  Locked<std::string>::pointer versionPtr = m_version.Get();
   SMServiceList list;
   // load services
   ElementList vars;
   std::vector<ElementList> data;
   if (!ListAvailableServices(vars) || !ParseAvailableServices(vars, data))
-    DBG(DBG_ERROR, "%s: query services failed\n");
+    DBG(DBG_ERROR, "%s: query services failed\n", __FUNCTION__);
   else
   {
+    // store new value of version
+    versionPtr->assign(vars.GetValue("AvailableServiceListVersion"));
     // load accounts
     SMAccountList accounts; // it is filled with retrieved accounts from the sonos device
     std::string agent; // it is filled with the SERVER tag from http response header
     if (!LoadAccounts(accounts, agent))
-      DBG(DBG_ERROR, "%s: query accounts failed\n");
+      DBG(DBG_ERROR, "%s: query accounts failed\n", __FUNCTION__);
     // Continue to treat services don't require any account
 
     // Fill the list of enabled services.
@@ -220,6 +225,7 @@ SMServiceList MusicServices::GetEnabledServices()
       }
     }
   }
+  DBG(DBG_DEBUG, "%s: version (%s)\n", __FUNCTION__, versionPtr->c_str());
   return list;
 }
 
@@ -315,21 +321,14 @@ bool MusicServices::LoadAccounts(SMAccountList& accounts, std::string& agentStr)
   WSResponse response(request);
   if (!response.IsSuccessful() || !response.GetHeaderValue("SERVER", agentStr))
     return false;
-  size_t s = response.GetContentLength();
+
+  size_t len = 0, l = 0;
   std::string data;
-  size_t l = 0;
-  char buf[4000];
-  if (s)
+  char buffer[4000];
+  while ((l = response.ReadContent(buffer, sizeof(buffer))))
   {
-    data.reserve(s);
-    while (response.GetConsumed() < s && (l = response.ReadContent(buf, sizeof(buf))))
-      data.append(buf, l);
-  }
-  else
-  {
-    data.reserve(1000);
-    while ((l = response.ReadContent(buf, sizeof(buf))))
-      data.append(buf, l);
+    data.append(buffer, l);
+    len += l;
   }
 
   /*
@@ -347,7 +346,7 @@ bool MusicServices::LoadAccounts(SMAccountList& accounts, std::string& agentStr)
   */
   tinyxml2::XMLDocument rootdoc;
   // Parse xml content
-  if (rootdoc.Parse(data.c_str(), data.size()) != tinyxml2::XML_SUCCESS)
+  if (rootdoc.Parse(data.c_str(), len) != tinyxml2::XML_SUCCESS)
   {
     DBG(DBG_ERROR, "%s: parse xml failed\n", __FUNCTION__);
     return false;
