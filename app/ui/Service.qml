@@ -280,7 +280,7 @@ MusicPage {
 
             coverSources: model.art !== "" ? [{art: model.art}]
                         : model.type === 2 ? [{art: Qt.resolvedUrl("../graphics/none.png")}]
-                        : model.type === 5 && !model.canQueue ? [{art: Qt.resolvedUrl("../graphics/radio.png")}]
+                        : model.canPlay && !model.canQueue ? [{art: Qt.resolvedUrl("../graphics/radio.png")}]
                         : [{art: Qt.resolvedUrl("../graphics/no_cover.png")}]
 
             onClicked: clickItem(model)
