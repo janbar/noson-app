@@ -36,6 +36,10 @@ MusicPage {
     property bool isRoot: mediaModel.isRoot
     property bool isListView: false
 
+    // used to detect view has updated properties since first load.
+    // - isFavorite
+    property bool taintedView: false
+
     pageTitle: serviceItem.title
     pageFlickable: mediaGrid.visible ? mediaGrid : mediaList
     searchable: true
@@ -90,30 +94,30 @@ MusicPage {
         }
     }
 
-    Connections {
-        target: mediaModel
-        onDataUpdated: {
-            mainView.currentlyWorking = true
-            delayLoadMediaModel.start()
-        }
-    }
-
     Timer {
-        id: delayLoadMediaModel
+        id: delayLoadModel
         interval: 100
         onTriggered: {
-            var cnt = mediaModel.count;
             mediaModel.load();
-            mainView.currentlyWorking = false
+            servicePage.taintedView = false; // reset
+            mainView.currentlyWorking = false;
         }
     }
 
     Timer {
-        id: delayLoadMoreMedia
+        id: delayLoadMore
         interval: 100
         onTriggered: {
             mediaModel.loadMore()
             mainView.currentlyWorking = false
+        }
+    }
+
+    Connections {
+        target: mediaModel
+        onDataUpdated: {
+            mainView.currentlyWorking = true
+            delayLoadModel.start()
         }
     }
 
@@ -218,10 +222,32 @@ MusicPage {
                         iconName: "add-to-playlist"
                         objectName: "addToPlaylistAction"
                         text: i18n.tr("Add to playlist")
-                        visible: false /*model.canQueue*/
+                        visible: model.canQueue
                         onTriggered: {
                             mainPageStack.push(Qt.resolvedUrl("AddToPlaylist.qml"),
                                                {"chosenElements": [{id: model.Id, payload: model.payload}]})
+                        }
+                    },
+                    Action {
+                        property bool isFavorite: false
+                        property string description: ""
+                        property string art: ""
+
+                        iconName: isFavorite ? "starred" : "scope-manager"
+                        objectName: "ActionFavorite"
+                        text: i18n.tr("Favorite")
+                        visible: model.canPlay
+
+                        Component.onCompleted: {
+                            isFavorite = (AllFavoritesModel.findFavorite(model.objectId) !== "")
+                        }
+
+                        onTriggered: {
+                            if (isFavorite && removeFromFavorites({id: model.objectId}))
+                                isFavorite = false;
+                            else if (!isFavorite && addItemToFavorites(model, description, art))
+                                isFavorite = true;
+                            servicePage.taintedView = true;
                         }
                     }
                 ]
@@ -241,7 +267,7 @@ MusicPage {
         onAtYEndChanged: {
             if (mediaList.atYEnd && mediaModel.totalCount > mediaModel.count) {
                 mainView.currentlyWorking = true
-                delayLoadMoreMedia.start()
+                delayLoadMore.start()
             }
         }
     }
@@ -273,6 +299,7 @@ MusicPage {
                          : model.type === 5 && model.canQueue ? i18n.tr("Song")
                          : model.type === 5 ? i18n.tr("Stream")
                          : ""
+            isFavorite: model.canQueue ? (AllFavoritesModel.findFavorite(model.objectId).length > 0) : false
 
             noCover: model.type === 2 ? Qt.resolvedUrl("../graphics/none.png")
                    : model.canPlay && !model.canQueue ? Qt.resolvedUrl("../graphics/radio.png")
@@ -285,7 +312,15 @@ MusicPage {
 
             onClicked: clickItem(model)
             onPressAndHold: {
-                servicePage.isListView = true
+                if (model.canPlay) {
+                    if (isFavorite && removeFromFavorites({id: model.objectId}))
+                        isFavorite = false;
+                    else if (!isFavorite && addItemToFavorites(model, i18n.tr("Album"), imageSource))
+                        isFavorite = true;
+                    servicePage.taintedView = true;
+                } else {
+                    servicePage.isListView = true
+                }
             }
         }
 
@@ -298,7 +333,7 @@ MusicPage {
         onAtYEndChanged: {
             if (mediaGrid.atYEnd && mediaModel.totalCount > mediaModel.count) {
                 mainView.currentlyWorking = true
-                delayLoadMoreMedia.start()
+                delayLoadMore.start()
             }
         }
     }

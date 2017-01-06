@@ -80,6 +80,8 @@ public:
 
   const QString& parent() const { return m_parent; }
 
+  const QString& objectId() const { return m_objectId; }
+
   const int displayType() const { return m_displayType; }
 
 private:
@@ -96,6 +98,7 @@ private:
   QString m_artist;
   QString m_album;
   QString m_parent;
+  QString m_objectId;
   int m_displayType;
 };
 
@@ -116,14 +119,13 @@ public:
     DescriptionRole,
     ArtRole,
     NormalizedRole,
-    ObjectRole,
-    ObjectIdRole,
     TypeRole,
     CanQueueRole,
     CanPlayRole,
     ArtistRole,
     AlbumRole,
     ParentRole,
+    ObjectIdRole,
     DisplayTypeRole,
   };
 

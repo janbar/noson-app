@@ -46,6 +46,7 @@ MediaItem::MediaItem(const SONOS::SMAPIItem& data)
   {
     m_canPlay = true;
     m_canQueue = SONOS::System::CanQueueItem(data.uriMetadata);
+    m_objectId = QString::fromUtf8(data.uriMetadata->GetObjectID().c_str());
   }
   switch (data.item->subType())
   {
@@ -151,6 +152,8 @@ QVariant MediaModel::data(const QModelIndex& index, int role) const
     return item->album();
   case ParentRole:
     return item->parent();
+  case ObjectIdRole:
+    return item->objectId();
   case DisplayTypeRole:
     return item->displayType();
   default:
@@ -173,6 +176,7 @@ QHash<int, QByteArray> MediaModel::roleNames() const
   roles[ArtistRole] = "artist";
   roles[AlbumRole] = "album";
   roles[ParentRole] = "parent";
+  roles[ObjectIdRole] = "objectId";
   roles[DisplayTypeRole] = "displayType";
   return roles;
 }
@@ -197,6 +201,7 @@ QVariantMap MediaModel::get(int row)
   model[roles[ArtistRole]] = item->artist();
   model[roles[AlbumRole]] = item->album();
   model[roles[ParentRole]] = item->parent();
+  model[roles[ObjectIdRole]] = item->objectId();
   model[roles[DisplayTypeRole]] = item->displayType();
   return model;
 }

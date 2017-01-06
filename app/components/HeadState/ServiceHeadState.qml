@@ -45,7 +45,9 @@ State {
                     // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
                     text: i18n.tr("Show list")
                     onTriggered: {
-                        thisPage.isListView = !thisPage.isListView
+                        thisPage.isListView = !thisPage.isListView;
+                        if (thisPage.taintedView)
+                            delayLoadModel.start();
                     }
                 },
                 Action {
