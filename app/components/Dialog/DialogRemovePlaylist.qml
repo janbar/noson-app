@@ -46,7 +46,7 @@ DialogBase {
         objectName: "removePlaylistDialogRemoveButton"
         onClicked: {
             // removing playlist
-            removeFromFavorites({id: dialogRemovePlaylist.oldPlaylistId})
+            removeFromFavorites(dialogRemovePlaylist.oldPlaylistId)
             removePlaylist(dialogRemovePlaylist.oldPlaylistId)
             PopupUtils.close(dialogRemovePlaylist)
 

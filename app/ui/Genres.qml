@@ -147,7 +147,7 @@ MusicPage {
                                    })
             }
             onPressAndHold: {
-                if (isFavorite && removeFromFavorites(model))
+                if (isFavorite && removeFromFavorites(model.id))
                     isFavorite = false
                 else if (!isFavorite && addItemToFavorites(model, i18n.tr("Genre"), imageSource))
                     isFavorite = true

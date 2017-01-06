@@ -33,7 +33,7 @@ Action {
     }
 
     onTriggered: {
-        if (isFavorite && removeFromFavorites(model))
+        if (isFavorite && removeFromFavorites(model.id))
             isFavorite = false
         else if (!isFavorite && addItemToFavorites(model, description, art))
             isFavorite = true

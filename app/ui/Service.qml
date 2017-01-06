@@ -243,7 +243,7 @@ MusicPage {
                         }
 
                         onTriggered: {
-                            if (isFavorite && removeFromFavorites({id: model.objectId}))
+                            if (isFavorite && removeFromFavorites(model.objectId))
                                 isFavorite = false;
                             else if (!isFavorite && addItemToFavorites(model, description, art))
                                 isFavorite = true;
@@ -313,7 +313,7 @@ MusicPage {
             onClicked: clickItem(model)
             onPressAndHold: {
                 if (model.canPlay) {
-                    if (isFavorite && removeFromFavorites({id: model.objectId}))
+                    if (isFavorite && removeFromFavorites(model.objectId))
                         isFavorite = false;
                     else if (!isFavorite && addItemToFavorites(model, i18n.tr("Album"), imageSource))
                         isFavorite = true;
