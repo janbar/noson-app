@@ -212,16 +212,16 @@ MusicPage {
                         objectName: "addToQueueAction"
                         text: i18n.tr("Add to queue")
                         visible: model.canQueue
-                        onTriggered: addQueue({id: model.objectId, payload: model.object})
+                        onTriggered: addQueue({id: model.Id, payload: model.payload})
                     },
                     Action {
                         iconName: "add-to-playlist"
                         objectName: "addToPlaylistAction"
                         text: i18n.tr("Add to playlist")
-                        visible: model.canQueue
+                        visible: false /*model.canQueue*/
                         onTriggered: {
                             mainPageStack.push(Qt.resolvedUrl("AddToPlaylist.qml"),
-                                               {"chosenElements": [{id: model.objectId, payload: model.object}]})
+                                               {"chosenElements": [{id: model.Id, payload: model.payload}]})
                         }
                     }
                 ]
