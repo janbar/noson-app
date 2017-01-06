@@ -84,7 +84,7 @@ add_subdirectory(app)
 add_subdirectory(backend)
 add_subdirectory(po)
 
-add_custom_target("run" /usr/bin/qmlscene -I ${CMAKE_BINARY_DIR}/backend  ${CMAKE_SOURCE_DIR}/app/Main.qml
+add_custom_target("run" /usr/bin/qmlscene -I ${CMAKE_BINARY_DIR}/backend  ${CMAKE_SOURCE_DIR}/app/Main.qml --debug
                     DEPENDS NosonAppbackend NosonAppbackend-qmldir
                     WORKING_DIRECTORY ./app)
 
