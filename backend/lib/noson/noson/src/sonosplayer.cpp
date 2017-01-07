@@ -385,10 +385,8 @@ bool Player::SetCurrentURI(const DigitalItemPtr& item)
     var->SetAttribut("id", "cdudn");
     var->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
     _item.SetProperty(var);
-    DBG(DBG_DEBUG, "%s: %s\n%s\n", __FUNCTION__, _item.GetValue("res").c_str(), _item.DIDL().c_str());
     return m_AVTransport->SetCurrentURI(_item.GetValue("res"), _item.DIDL());
   }
-  DBG(DBG_DEBUG, "%s: %s\n%s\n", __FUNCTION__, item->GetValue("res").c_str(), item->DIDL().c_str());
   return m_AVTransport->SetCurrentURI(item->GetValue("res"), item->DIDL());
 }
 
@@ -426,7 +424,6 @@ bool Player::PlayQueue(bool start)
 
 unsigned Player::AddURIToQueue(const DigitalItemPtr& item, unsigned position)
 {
-  DBG(DBG_DEBUG, "%s: %s\n%s\n", __FUNCTION__, item->GetValue("res").c_str(), item->DIDL().c_str());
   return m_AVTransport->AddURIToQueue(item->GetValue("res"), item->DIDL(), position);
 }
 
@@ -482,6 +479,19 @@ bool Player::CreateSavedQueue(const std::string& title)
 
 unsigned Player::AddURIToSavedQueue(const std::string& SQObjectID, const DigitalItemPtr& item, unsigned containerUpdateID)
 {
+  SMServicePtr svc = GetServiceForMedia(item->GetValue("res"));
+  if (svc)
+  {
+    DigitalItem _item(DigitalItem::Type_unknown, DigitalItem::SubType_unknown);
+    item->Clone(_item);
+    ElementPtr var(new Element("desc", svc->GetServiceDesc()));
+    var->SetAttribut("id", "cdudn");
+    var->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
+    _item.SetProperty(var);
+    _item.SetObjectID(System::MakeItemIdFromMediaUri(_item.GetValue("res")));
+    _item.SetParentID("");
+    return m_AVTransport->AddURIToSavedQueue(SQObjectID, _item.GetValue("res"), _item.DIDL(), containerUpdateID);
+  }
   return m_AVTransport->AddURIToSavedQueue(SQObjectID, item->GetValue("res"), item->DIDL(), containerUpdateID);
 }
 
@@ -510,8 +520,10 @@ bool Player::AddURIToFavorites(const DigitalItemPtr& item, const std::string& de
   favorite->SetProperty(DIDL_QNAME_RINC "description", description.empty() ? album.empty() ? creator : album : description);
   // make r:resMD
   DigitalItem obj(DigitalItem::Type_item, DigitalItem::SubType_unknown);
-  obj.SetObjectID(item->GetObjectID());
-  obj.SetParentID(item->GetParentID());
+  // make the sonos itemId for this resource
+  std::string objId = System::MakeItemIdFromMediaUri(item->GetValue("res"));
+  obj.SetObjectID(objId);
+  obj.SetParentID(objId);
   obj.SetRestricted(item->GetRestricted());
   obj.SetProperty(item->GetProperty(DIDL_QNAME_UPNP "class"));
   obj.SetProperty(item->GetProperty(DIDL_QNAME_DC "title"));
@@ -630,7 +642,12 @@ void Player::HandleEventMessage(EventMessagePtr msg)
 
 SMServiceList Player::GetAvailableServices()
 {
-  return m_smservices;
+  //@FIXME OpenAuth doesn't work, so reject service uses it
+  SMServiceList list;
+  for (SMServiceList::iterator it = m_smservices.begin(); it != m_smservices.end(); ++it)
+    if ((*it)->GetAccount()->GetOACredentials().devId.empty())
+      list.push_back(*it);
+  return list;
 }
 
 SMServicePtr Player::GetServiceForMedia(const std::string& mediaUri)

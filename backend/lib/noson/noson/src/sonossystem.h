@@ -74,6 +74,8 @@ namespace NSROOT
     // helpers
     static bool ExtractObjectFromFavorite(const DigitalItemPtr& favorite, DigitalItemPtr& item);
     static bool CanQueueItem(const DigitalItemPtr& item);
+    static bool IsItemFromService(const DigitalItemPtr& item);
+    static std::string MakeItemIdFromMediaUri(const std::string& mediaUri);
 
     /**
      * Request logo for a given music service and placement

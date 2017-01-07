@@ -222,11 +222,7 @@ SMServiceList MusicServices::GetEnabledServices()
       {
         SMAccountList la = GetAccountsForService(accounts, serviceType);
         for (SMAccountList::iterator ita = la.begin(); ita != la.end(); ++ita)
-        {
-          //@FIXME OpenAuth doesn't work, so reject service uses it
-          if ((*ita)->GetOACredentials().devId.empty())
             list.push_back(SMServicePtr(new SMService(agent, *ita, *it)));
-        }
       }
     }
   }
