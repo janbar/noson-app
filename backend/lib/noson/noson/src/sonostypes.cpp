@@ -32,6 +32,7 @@ const char* NSROOT::ProtocolTable[Protocol_unknown + 1] = {
   "x-sonos-http",
   "x-sonosapi-stream",
   "x-sonosapi-radio",
+  "x-sonosapi-rtrecent",
   "x-file-cifs",
   "x-rincon",
   "http-get",

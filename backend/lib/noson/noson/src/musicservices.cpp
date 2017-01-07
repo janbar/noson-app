@@ -50,13 +50,14 @@ SMAccount::~SMAccount()
 SMAccount::OACredentials SMAccount::GetOACredentials() const
 {
   OS::CLockGuard lock(*m_mutex);
-  return OACredentials(GetAttribut("OADevID"), GetAttribut("Key"));
+  return OACredentials(GetAttribut("OADevID"), GetAttribut("Token"), GetAttribut("Key"));
 }
 
 void SMAccount::SetOACredentials(const OACredentials& auth)
 {
   OS::CLockGuard lock(*m_mutex);
-  SetAttribut("OADevID", auth.id);
+  SetAttribut("OADevID", auth.devId);
+  SetAttribut("Token", auth.token);
   SetAttribut("Key", auth.key);
 }
 
@@ -221,7 +222,11 @@ SMServiceList MusicServices::GetEnabledServices()
       {
         SMAccountList la = GetAccountsForService(accounts, serviceType);
         for (SMAccountList::iterator ita = la.begin(); ita != la.end(); ++ita)
-          list.push_back(SMServicePtr(new SMService(agent, *ita, *it)));
+        {
+          //@FIXME OpenAuth doesn't work, so reject service uses it
+          if ((*ita)->GetOACredentials().devId.empty())
+            list.push_back(SMServicePtr(new SMService(agent, *ita, *it)));
+        }
       }
     }
   }

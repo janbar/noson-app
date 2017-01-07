@@ -279,20 +279,22 @@ bool SMAPI::parsePresentationMap(const std::string& xml)
 bool SMAPI::makeSoapHeader()
 {
   m_soapHeader.append("<credentials xmlns=\"" SMAPI_NAMESPACE "\">");
-  m_soapHeader.append("<deviceId>").append(m_deviceSerialNumber).append("</deviceId>");
-  m_soapHeader.append("<deviceProvider>" DEVICE_PROVIDER "</deviceProvider>");
 
   SMAccount::OACredentials auth = m_service->GetAccount()->GetOACredentials();
-  if (!auth.id.empty())
+  if (!auth.token.empty())
   {
+    m_soapHeader.append("<deviceId>").append(m_deviceSerialNumber).append("</deviceId>");
+    m_soapHeader.append("<deviceProvider>" DEVICE_PROVIDER "</deviceProvider>");
     m_soapHeader.append("<loginToken>");
-    m_soapHeader.append("<token>").append(auth.id).append("</token>");
+    m_soapHeader.append("<token>").append(auth.token).append("</token>");
     m_soapHeader.append("<key>").append(auth.key).append("</key>");
-    m_soapHeader.append("<householdId>").append(m_deviceHouseholdID).append("</householdId>");
+    m_soapHeader.append("<householdId>").append(auth.devId).append("</householdId>");
     m_soapHeader.append("</loginToken>");
   }
   else
   {
+    m_soapHeader.append("<deviceId>").append(m_deviceSerialNumber).append("</deviceId>");
+    m_soapHeader.append("<deviceProvider>" DEVICE_PROVIDER "</deviceProvider>");
     std::string policyAuth = m_service->GetPolicy()->GetAttribut("Auth");
     if (policyAuth == "UserId" || policyAuth == "DeviceLink")
     {
@@ -336,11 +338,8 @@ ElementList SMAPI::DoCall(const std::string& action, const ElementList& args)
   request.SetContentCustom(CT_XML, content.c_str());
   WSResponse response(request);
 
-  if (!response.IsSuccessful())
-  {
-    DBG(DBG_ERROR, "%s: invalid response\n", __FUNCTION__);
-    return vars;
-  }
+  // don't check response status code
+  // service will return 500 on soap fault
 
   // Receive content data
   size_t len = 0, l = 0;
@@ -371,8 +370,7 @@ ElementList SMAPI::DoCall(const std::string& action, const ElementList& args)
   XMLNames xmlnames;
   xmlnames.AddXMLNS(elem);
 
-  if (!(elem = rootdoc.RootElement()) || !XMLNS::NameEqual(elem->Name(), "Envelope") ||
-          !(elem = elem->FirstChildElement()) || !XMLNS::NameEqual(elem->Name(), "Body") ||
+  if (!(elem = elem->FirstChildElement()) || !XMLNS::NameEqual(elem->Name(), "Body") ||
           !(elem = elem->FirstChildElement()))
   {
     __dumpInvalidResponse(rootdoc);
@@ -459,7 +457,10 @@ ElementList SMAPI::Request(const std::string& action, const ElementList& args)
      </detail>
      </s:Fault>
     */
-    m_service->GetAccount()->SetOACredentials(SMAccount::OACredentials(vars.GetValue("authToken"), vars.GetValue("privateKey")));
+    SMAccount::OACredentials cr = m_service->GetAccount()->GetOACredentials();
+    cr.token = vars.GetValue("authToken");
+    cr.key = vars.GetValue("privateKey");
+    m_service->GetAccount()->SetOACredentials(cr);
     makeSoapHeader();
     // Retry the request
     vars = DoCall(action, args);

@@ -51,12 +51,14 @@ namespace NSROOT
 
     struct OACredentials
     {
-      OACredentials(const std::string& _id, const std::string& _key)
-      : id(_id)
+      OACredentials(const std::string& _devId, const std::string& _token, const std::string& _key)
+      : devId(_devId)
+      , token(_token)
       , key(_key)
       {}
-      const std::string id;
-      const std::string key;
+      const std::string devId;  ///< unique account identifier: OADevID
+      std::string token;
+      std::string key;
     };
 
     OACredentials GetOACredentials() const;
