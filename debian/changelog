@@ -1,4 +1,9 @@
-noson-app (2.0) UNRELEASED; urgency=low
+noson-app (2.1) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 2.1
+  * Refactor actions 'add to playlists'.
+  * Refactor favorites handling which was broken for service items
 
   [ janbar ]
   * Release 2.0
