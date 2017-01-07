@@ -34,6 +34,7 @@ MusicPage {
     property var serviceItem: null
     property bool loaded: false  // used to detect difference between first and further loads
     property bool isRoot: mediaModel.isRoot
+    property int displayType: 0 /*Grid*/
     property bool isListView: false
 
     // used to detect view has updated properties since first load.
@@ -131,15 +132,8 @@ MusicPage {
         }
     }
 
-    Connections {
-        target: mediaModel
-        onDisplayTypeChanged: {
-            var type = mediaModel.displayType;
-            if (type === 0 /*Grid*/ || type === 3 /*Editorial*/)
-                isListView = false;
-            else
-                isListView = true;
-        }
+    onDisplayTypeChanged: {
+        isListView = (displayType === 0 /*Grid*/ || displayType === 3 /*Editorial*/) ? false : true
     }
 
     // Hack for autopilot otherwise Albums appears as MusicPage
@@ -258,11 +252,7 @@ MusicPage {
             onItemClicked: clickItem(model)
         }
 
-        opacity: isListView ? 1.0 : 0.0
-        visible: opacity > 0.0
-        Behavior on opacity {
-            NumberAnimation { duration: 250 }
-        }
+        visible: isListView ? true : false
 
         onAtYEndChanged: {
             if (mediaList.atYEnd && mediaModel.totalCount > mediaModel.count) {
@@ -324,11 +314,7 @@ MusicPage {
             }
         }
 
-        opacity: isListView ? 0.0 : 1.0
-        visible: opacity > 0.0
-        Behavior on opacity {
-            NumberAnimation { duration: 250 }
-        }
+        visible: isListView ? false : true
 
         onAtYEndChanged: {
             if (mediaGrid.atYEnd && mediaModel.totalCount > mediaModel.count) {
@@ -347,6 +333,8 @@ MusicPage {
         id: delayGoUp
         interval: 100
         onTriggered: {
+            // change view depending of previous display type
+            servicePage.displayType = mediaModel.previousDisplayType();
             mediaModel.loadParent();
             mainView.currentlyWorking = false
         }
@@ -367,8 +355,11 @@ MusicPage {
                   trackClicked(model);
                 else
                   radioClicked(model);
-            } else
-              mediaModel.loadChild(model.id, model.title, model.displayType);
+            } else if (model.isContainer) {
+                var old = servicePage.displayType;
+                servicePage.displayType = model.displayType;
+                mediaModel.loadChild(model.id, model.title, old);
+            }
             mainView.currentlyWorking = false
         }
     }

@@ -34,6 +34,7 @@ MediaItem::MediaItem(const SONOS::SMAPIItem& data)
 , m_valid(false)
 , m_canQueue(false)
 , m_canPlay(false)
+, m_isContainer(false)
 {
   m_id = QString::fromUtf8(data.item->GetObjectID().c_str());
   m_parent = QString::fromUtf8(data.item->GetParentID().c_str());
@@ -77,6 +78,7 @@ MediaItem::MediaItem(const SONOS::SMAPIItem& data)
     m_type = MediaType::unknown;
   }
   m_displayType = data.displayType;
+  m_isContainer = data.item->IsContainer();
   m_valid = true;
 }
 
@@ -156,6 +158,8 @@ QVariant MediaModel::data(const QModelIndex& index, int role) const
     return item->objectId();
   case DisplayTypeRole:
     return item->displayType();
+  case IsContainerRole:
+    return item->isContainer();
   default:
     return QVariant();
   }
@@ -178,6 +182,7 @@ QHash<int, QByteArray> MediaModel::roleNames() const
   roles[ParentRole] = "parent";
   roles[ObjectIdRole] = "objectId";
   roles[DisplayTypeRole] = "displayType";
+  roles[IsContainerRole] = "isContainer";
   return roles;
 }
 
@@ -203,6 +208,7 @@ QVariantMap MediaModel::get(int row)
   model[roles[ParentRole]] = item->parent();
   model[roles[ObjectIdRole]] = item->objectId();
   model[roles[DisplayTypeRole]] = item->displayType();
+  model[roles[IsContainerRole]] = item->isContainer();
   return model;
 }
 
@@ -303,7 +309,6 @@ bool MediaModel::loadChild(const QString& id, const QString& title, int displayT
   SONOS::LockGuard lock(m_lock);
   m_path.push(Path(id, title, displayType));
   emit isRootChanged();
-  emit displayTypeChanged();
   return load();
 }
 
@@ -314,7 +319,6 @@ bool MediaModel::loadParent()
     return false;
   m_path.pop();
   emit isRootChanged();
-  emit displayTypeChanged();
   return load();
 }
 
@@ -336,7 +340,7 @@ QString MediaModel::pathId() const
     return m_path.top().id;
 }
 
-int MediaModel::displayType() const
+int MediaModel::previousDisplayType() const
 {
   SONOS::LockGuard lock(m_lock);
   if (m_path.empty())

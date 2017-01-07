@@ -84,6 +84,8 @@ public:
 
   const int displayType() const { return m_displayType; }
 
+  const bool isContainer() const { return m_isContainer; }
+
 private:
   SONOS::DigitalItemPtr m_ptr;
   bool m_valid;
@@ -100,6 +102,7 @@ private:
   QString m_parent;
   QString m_objectId;
   int m_displayType;
+  bool m_isContainer;
 };
 
 class MediaModel : public QAbstractListModel, public ListModel
@@ -108,7 +111,6 @@ class MediaModel : public QAbstractListModel, public ListModel
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
   Q_PROPERTY(int totalCount READ totalCount NOTIFY totalCountChanged)
   Q_PROPERTY(bool isRoot READ isRoot NOTIFY isRootChanged)
-  Q_PROPERTY(int displayType READ displayType NOTIFY displayTypeChanged)
 
 public:
   enum AnyRoles
@@ -127,6 +129,7 @@ public:
     ParentRole,
     ObjectIdRole,
     DisplayTypeRole,
+    IsContainerRole,
   };
 
   MediaModel(QObject* parent = 0);
@@ -150,8 +153,6 @@ public:
 
   bool isRoot() const { return m_path.empty(); }
 
-  int displayType() const;
-
   Q_INVOKABLE bool loadMore();
 
   Q_INVOKABLE bool loadChild(const QString& id, const QString& title, int displayType);
@@ -161,6 +162,8 @@ public:
   Q_INVOKABLE QString path() const;
 
   Q_INVOKABLE QString pathId() const;
+
+  Q_INVOKABLE int previousDisplayType() const;
 
   Q_INVOKABLE bool asyncLoad();
 
@@ -173,7 +176,6 @@ signals:
   void countChanged();
   void totalCountChanged();
   void isRootChanged();
-  void displayTypeChanged();
 
 protected:
   QHash<int, QByteArray> roleNames() const;
