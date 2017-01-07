@@ -232,7 +232,7 @@ MusicPage {
                         visible: model.canPlay
 
                         Component.onCompleted: {
-                            isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
+                            isFavorite = model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
                         }
 
                         onTriggered: {
@@ -288,7 +288,7 @@ MusicPage {
                          : model.type === 5 && model.canQueue ? i18n.tr("Song")
                          : model.type === 5 ? i18n.tr("Radio")
                          : ""
-            isFavorite: model.canQueue ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
+            isFavorite: model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
 
             noCover: model.type === 2 ? Qt.resolvedUrl("../graphics/none.png")
                    : model.canPlay && !model.canQueue ? Qt.resolvedUrl("../graphics/radio.png")
