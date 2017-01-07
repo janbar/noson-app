@@ -42,7 +42,7 @@ State {
                     objectName: "likeAlbum"
                     iconName: isFavorite ? "starred" : "scope-manager"
                     onTriggered: {
-                        if (isFavorite && removeFromFavorites(containerItem.id))
+                        if (isFavorite && removeFromFavorites(containerItem.payload))
                             isFavorite = false
                         else if (!isFavorite && addItemToFavorites(containerItem, title, ""))
                             isFavorite = true

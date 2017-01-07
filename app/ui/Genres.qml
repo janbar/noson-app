@@ -106,13 +106,13 @@ MusicPage {
             objectName: "genresPageGridItem" + index
             primaryText: model.genre || i18n.tr("<Undefined>")
             secondaryTextVisible: false
-            isFavorite: (AllFavoritesModel.findFavorite(model.id).length > 0)
+            isFavorite: (AllFavoritesModel.findFavorite(model.payload).length > 0)
 
             // check favorite on data updated
             Connections {
                 target: AllFavoritesModel
                 onDataUpdated: {
-                    isFavorite = (AllFavoritesModel.findFavorite(model.id).length > 0)
+                    isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
                 }
             }
 
@@ -147,7 +147,7 @@ MusicPage {
                                    })
             }
             onPressAndHold: {
-                if (isFavorite && removeFromFavorites(model.id))
+                if (isFavorite && removeFromFavorites(model.payload))
                     isFavorite = false
                 else if (!isFavorite && addItemToFavorites(model, i18n.tr("Genre"), imageSource))
                     isFavorite = true

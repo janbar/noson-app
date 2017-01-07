@@ -46,8 +46,10 @@ State {
                     text: i18n.tr("Show list")
                     onTriggered: {
                         thisPage.isListView = !thisPage.isListView;
-                        if (thisPage.taintedView)
+                        if (thisPage.taintedView) {
+                            mainView.currentlyWorking = true;
                             delayLoadModel.start();
+                        }
                     }
                 },
                 Action {

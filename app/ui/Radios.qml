@@ -32,6 +32,10 @@ MusicPage {
 
     property bool isListView: false
 
+    // used to detect view has updated properties since first load.
+    // - isFavorite
+    property bool taintedView: false
+
     pageTitle: i18n.tr("My radios")
     pageFlickable: radioGrid.visible ? radioGrid : radioList
     searchable: true
@@ -79,6 +83,16 @@ MusicPage {
         filter.property: "normalized"
         filter.pattern: new RegExp(normalizedInput(searchHeader.query), "i")
         filterCaseSensitivity: Qt.CaseInsensitive
+    }
+
+    Timer {
+        id: delayLoadModel
+        interval: 100
+        onTriggered: {
+            AllRadiosModel.load();
+            radiosPage.taintedView = false; // reset
+            mainView.currentlyWorking = false;
+        }
     }
 
     // Hack for autopilot otherwise Albums appears as MusicPage
@@ -136,9 +150,26 @@ MusicPage {
 
             trailingActions: ListItemActions {
                 actions: [
-                    AddToFavorites {
-                        description: i18n.tr("Radio")
-                        art: imageSource
+                    Action {
+                        property bool isFavorite: false
+                        property string description: i18n.tr("Radio")
+                        property string art: imageSource
+
+                        iconName: isFavorite ? "starred" : "scope-manager"
+                        objectName: "ActionFavorite"
+                        text: i18n.tr("Favorite")
+
+                        Component.onCompleted: {
+                            isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
+                        }
+
+                        onTriggered: {
+                            if (isFavorite && removeFromFavorites(model.payload))
+                                isFavorite = false;
+                            else if (!isFavorite && addItemToFavorites(model, description, art))
+                                isFavorite = true;
+                            radiosPage.taintedView = true;
+                        }
                     }
                 ]
                 delegate: ActionDelegate {
@@ -180,13 +211,13 @@ MusicPage {
             id: radioCard
             primaryText: model.title
             secondaryText: /*model.genre !== undefined && model.genre !== "" ? model.genre : */ model.streamId
-            isFavorite: (AllFavoritesModel.findFavorite(model.id).length > 0)
+            isFavorite: (AllFavoritesModel.findFavorite(model.payload).length > 0)
 
             // check favorite on data updated
             Connections {
                 target: AllFavoritesModel
                 onDataUpdated: {
-                    isFavorite = (AllFavoritesModel.findFavorite(model.id).length > 0)
+                    isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
                 }
             }
 
@@ -201,10 +232,11 @@ MusicPage {
                 delayRadioClicked.start()
             }
             onPressAndHold: {
-                if (isFavorite && removeFromFavorites(model.id))
-                    isFavorite = false
+                if (isFavorite && removeFromFavorites(model.payload))
+                    isFavorite = false;
                 else if (!isFavorite && addItemToFavorites(model, i18n.tr("Radio"), imageSource))
-                    isFavorite = true
+                    isFavorite = true;
+                radiosPage.taintedView = true;
             }
         }
 

@@ -29,11 +29,11 @@ Action {
     text: i18n.tr("Favorite")
 
     Component.onCompleted: {
-        isFavorite = (AllFavoritesModel.findFavorite(model.id) !== "")
+        isFavorite = (AllFavoritesModel.findFavorite(model.payload) !== "")
     }
 
     onTriggered: {
-        if (isFavorite && removeFromFavorites(model.id))
+        if (isFavorite && removeFromFavorites(model.payload))
             isFavorite = false
         else if (!isFavorite && addItemToFavorites(model, description, art))
             isFavorite = true

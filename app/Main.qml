@@ -633,8 +633,8 @@ MainView {
         return false;
     }
 
-    function removeFromFavorites(itemId) {
-        var id = AllFavoritesModel.findFavorite(itemId)
+    function removeFromFavorites(itemPayload) {
+        var id = AllFavoritesModel.findFavorite(itemPayload)
         if (id.length === 0) // no favorite
             return true;
         if (player.removeFavorite(id))

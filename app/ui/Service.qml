@@ -162,6 +162,14 @@ MusicPage {
         delegate: MusicListItem {
             id: mediaItem
             color: "transparent"
+            property string description: model.description.length > 0 ? model.description
+                                       : model.type === 1 ? i18n.tr("Album")
+                                       : model.type === 2 ? i18n.tr("Artist")
+                                       : model.type === 3 ? i18n.tr("Genre")
+                                       : model.type === 4 ? i18n.tr("Playlist")
+                                       : model.type === 5 && model.canQueue ? i18n.tr("Song")
+                                       : model.type === 5 ? i18n.tr("Radio")
+                                       : ""
             column: Column {
                 Label {
                     id: mediaTitle
@@ -175,14 +183,7 @@ MusicPage {
                     id: mediaDescription
                     color: styleMusic.common.subtitle
                     fontSize: "small"
-                    text: model.description.length > 0 ? model.description
-                        : model.type === 1 ? i18n.tr("Album")
-                        : model.type === 2 ? i18n.tr("Artist")
-                        : model.type === 3 ? i18n.tr("Genre")
-                        : model.type === 4 ? i18n.tr("Playlist")
-                        : model.type === 5 && model.canQueue ? i18n.tr("Song")
-                        : model.type === 5 ? i18n.tr("Stream")
-                        : ""
+                    text: description
                 }
             }
             leadingActions: ListItemActions {
@@ -224,8 +225,6 @@ MusicPage {
                     },
                     Action {
                         property bool isFavorite: false
-                        property string description: ""
-                        property string art: ""
 
                         iconName: isFavorite ? "starred" : "scope-manager"
                         objectName: "ActionFavorite"
@@ -233,13 +232,13 @@ MusicPage {
                         visible: model.canPlay
 
                         Component.onCompleted: {
-                            isFavorite = (AllFavoritesModel.findFavorite(model.objectId) !== "")
+                            isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
                         }
 
                         onTriggered: {
-                            if (isFavorite && removeFromFavorites(model.objectId))
+                            if (isFavorite && removeFromFavorites(model.payload))
                                 isFavorite = false;
-                            else if (!isFavorite && addItemToFavorites(model, description, art))
+                            else if (!isFavorite && addItemToFavorites(model, mediaItem.description, mediaItem.imageSource))
                                 isFavorite = true;
                             servicePage.taintedView = true;
                         }
@@ -287,9 +286,9 @@ MusicPage {
                          : model.type === 3 ? i18n.tr("Genre")
                          : model.type === 4 ? i18n.tr("Playlist")
                          : model.type === 5 && model.canQueue ? i18n.tr("Song")
-                         : model.type === 5 ? i18n.tr("Stream")
+                         : model.type === 5 ? i18n.tr("Radio")
                          : ""
-            isFavorite: model.canQueue ? (AllFavoritesModel.findFavorite(model.objectId).length > 0) : false
+            isFavorite: model.canQueue ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
 
             noCover: model.type === 2 ? Qt.resolvedUrl("../graphics/none.png")
                    : model.canPlay && !model.canQueue ? Qt.resolvedUrl("../graphics/radio.png")
@@ -303,9 +302,9 @@ MusicPage {
             onClicked: clickItem(model)
             onPressAndHold: {
                 if (model.canPlay) {
-                    if (isFavorite && removeFromFavorites(model.objectId))
+                    if (isFavorite && removeFromFavorites(model.payload))
                         isFavorite = false;
-                    else if (!isFavorite && addItemToFavorites(model, i18n.tr("Album"), imageSource))
+                    else if (!isFavorite && addItemToFavorites(model, secondaryText, imageSource))
                         isFavorite = true;
                     servicePage.taintedView = true;
                 } else {

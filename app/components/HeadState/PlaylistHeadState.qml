@@ -45,7 +45,7 @@ State {
                     objectName: "likePlaylist"
                     iconName: isFavorite ? "starred" : "scope-manager"
                     onTriggered: {
-                        if (isFavorite && removeFromFavorites(containerItem.id))
+                        if (isFavorite && removeFromFavorites(containerItem.payload))
                             isFavorite = false
                         else if (!isFavorite && addItemToFavorites(containerItem, title, albumtrackslist.headerItem.firstSource))
                             isFavorite = true
@@ -56,7 +56,7 @@ State {
                     iconName: "delete"
                     onTriggered: {
                         currentDialog = PopupUtils.open(Qt.resolvedUrl("../Dialog/DialogRemovePlaylist.qml"), mainView)
-                        currentDialog.oldPlaylistId = songStackPage.containerItem.id
+                        currentDialog.model = songStackPage.containerItem
                     }
                 }
             ]

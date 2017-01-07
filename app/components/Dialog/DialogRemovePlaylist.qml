@@ -38,7 +38,7 @@ DialogBase {
         font.weight: Font.Normal
     }
 
-    property string oldPlaylistId
+    property var model
 
     Button {
         text: i18n.tr("Remove")
@@ -46,8 +46,8 @@ DialogBase {
         objectName: "removePlaylistDialogRemoveButton"
         onClicked: {
             // removing playlist
-            removeFromFavorites(dialogRemovePlaylist.oldPlaylistId)
-            removePlaylist(dialogRemovePlaylist.oldPlaylistId)
+            removeFromFavorites(dialogRemovePlaylist.model.payload)
+            removePlaylist(dialogRemovePlaylist.model.id)
             PopupUtils.close(dialogRemovePlaylist)
 
             // need to destroy the dialog before popping fixes pad.lv/1428450

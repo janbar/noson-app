@@ -158,7 +158,7 @@ MusicPage {
                 onFirstSourceChanged: {
                     blurredBackground.art = firstSource
                 }
-            }            
+            }
         }
         model: AlbumsModel {
             id: albumsModel
@@ -200,7 +200,7 @@ MusicPage {
         id: delayInitModel
         interval: 100
         onTriggered: {
-            isFavorite = (AllFavoritesModel.findFavorite(containerItem.id) !== "")
+            isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload) !== "")
             songArtistModel.init(Sonos, artistSearch + "/", true)
             mainView.currentlyWorking = false
             loaded = true

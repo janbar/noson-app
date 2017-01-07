@@ -258,60 +258,66 @@ MusicPage {
     }
 
     function clickItem(model) {
-        if (model.type === 1) {
-            mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
-                               {
-                                   "containerItem": {id: model.objectId, payload: model.object},
-                                   "songSearch": model.objectId,
-                                   "album": model.album,
-                                   "artist": model.artist,
-                                   "covers": [{art: makeCoverSource(model.art, model.artist, model.album)}],
-                                   "isAlbum": true,
-                                   "genre": "",
-                                   "pageTitle": i18n.tr("Album"),
-                                   "line1": model.artist !== undefined ? model.artist : "",
-                                   "line2": model.album !== undefined ? model.album : i18n.tr("Unknown Album")
-                               })
-        }
-        else if (model.type === 2) {
-            mainPageStack.push(Qt.resolvedUrl("ArtistView.qml"),
-                               {
-                                   "containerItem": {id: model.objectId, payload: model.object},
-                                   "artistSearch": model.objectId,
-                                   "artist": model.artist,
-                                   "covers": [{art: makeCoverSource(undefined, model.artist, undefined)}],
-                                   "pageTitle": i18n.tr("Artist")
-                               })
-        }
-        else if (model.type === 3) {
-            mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
-                               {
-                                   "containerItem": {id: model.objectId, payload: model.object},
-                                   "songSearch": model.objectId + "//",
-                                   "covers": [],
-                                   "album": "",
-                                   "genre": model.title,
-                                   "pageTitle": i18n.tr("Genre"),
-                                   "line1": "",
-                                   "line2": model.title
-                               })
-        }
-        else if (model.type === 4) {
-            mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
-                               {
-                                   "containerItem": {id: model.objectId, payload: model.object},
-                                   "songSearch": model.objectId,
-                                   "album": "",
-                                   "covers": [{art: makeCoverSource(model.art, model.artist, model.album)}],
-                                   "isPlaylist": true,
-                                   "genre": "",
-                                   "page": playlistsPage,
-                                   "pageTitle": i18n.tr("Playlist"),
-                                   "line1": "",
-                                   "line2": model.title
-                               })
-        }
-        else if (model.type === 5) {
+        if (!model.isService) {
+            if (model.type === 1) {
+                mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
+                                   {
+                                       "containerItem": {id: model.objectId, payload: model.object},
+                                       "songSearch": model.objectId,
+                                       "album": model.album,
+                                       "artist": model.artist,
+                                       "covers": [{art: makeCoverSource(model.art, model.artist, model.album)}],
+                                       "isAlbum": true,
+                                       "genre": "",
+                                       "pageTitle": i18n.tr("Album"),
+                                       "line1": model.artist !== undefined ? model.artist : "",
+                                       "line2": model.album !== undefined ? model.album : i18n.tr("Unknown Album")
+                                   })
+            }
+            else if (model.type === 2) {
+                mainPageStack.push(Qt.resolvedUrl("ArtistView.qml"),
+                                   {
+                                       "containerItem": {id: model.objectId, payload: model.object},
+                                       "artistSearch": model.objectId,
+                                       "artist": model.artist,
+                                       "covers": [{art: makeCoverSource(undefined, model.artist, undefined)}],
+                                       "pageTitle": i18n.tr("Artist")
+                                   })
+            }
+            else if (model.type === 3) {
+                mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
+                                   {
+                                       "containerItem": {id: model.objectId, payload: model.object},
+                                       "songSearch": model.objectId + "//",
+                                       "covers": [],
+                                       "album": "",
+                                       "genre": model.title,
+                                       "pageTitle": i18n.tr("Genre"),
+                                       "line1": "",
+                                       "line2": model.title
+                                   })
+            }
+            else if (model.type === 4) {
+                mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
+                                   {
+                                       "containerItem": {id: model.objectId, payload: model.object},
+                                       "songSearch": model.objectId,
+                                       "album": "",
+                                       "covers": [{art: makeCoverSource(model.art, model.artist, model.album)}],
+                                       "isPlaylist": true,
+                                       "genre": "",
+                                       "page": playlistsPage,
+                                       "pageTitle": i18n.tr("Playlist"),
+                                       "line1": "",
+                                       "line2": model.title
+                                   })
+            }
+            else if (model.type === 5) {
+                mainView.currentlyWorking = true
+                delayfavoriteClicked.model = model
+                delayfavoriteClicked.start()
+            }
+        } else {
             mainView.currentlyWorking = true
             delayfavoriteClicked.model = model
             delayfavoriteClicked.start()
