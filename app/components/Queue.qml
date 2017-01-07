@@ -88,6 +88,10 @@ Item {
                     ShowInfo {
                     },
                     AddToPlaylist {
+                    },
+                    AddToFavorites {
+                        description: i18n.tr("Song")
+                        art: model.art
                     }
                 ]
                 delegate: ActionDelegate {
