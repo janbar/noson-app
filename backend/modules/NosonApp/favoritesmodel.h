@@ -76,6 +76,8 @@ public:
 
   const QString& album() const { return m_album; }
 
+  bool isService() const { return m_isService; }
+
 private:
   SONOS::DigitalItemPtr m_ptr;
   bool m_valid;
@@ -90,6 +92,7 @@ private:
   bool m_canQueue;
   QString m_artist;
   QString m_album;
+  bool m_isService;
 };
 
 class FavoritesModel : public QAbstractListModel, public ListModel
@@ -112,6 +115,7 @@ public:
     CanQueueRole,
     ArtistRole,
     AlbumRole,
+    IsServiceRole,
   };
 
   FavoritesModel(QObject* parent = 0);
@@ -137,7 +141,7 @@ public:
 
   Q_INVOKABLE int containerUpdateID() { return m_updateID; }
 
-  Q_INVOKABLE QString findFavorite(const QString& objectID) const;
+  Q_INVOKABLE QString findFavorite(const QVariant& payload) const;
 
 signals:
   void dataUpdated();

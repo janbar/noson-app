@@ -49,6 +49,7 @@ FavoriteItem::FavoriteItem(const SONOS::DigitalItemPtr& ptr, const QString& base
     m_valid = true;
     m_canQueue = SONOS::System::CanQueueItem(m_objectPtr);
     m_objectId = QString::fromUtf8(m_objectPtr->GetObjectID().c_str());
+    m_isService = SONOS::System::IsItemFromService(m_objectPtr);
     switch (m_objectPtr->subType())
     {
     case SONOS::DigitalItem::SubType_album:
@@ -152,6 +153,8 @@ QVariant FavoritesModel::data(const QModelIndex& index, int role) const
     return item->artist();
   case AlbumRole:
     return item->album();
+  case IsServiceRole:
+    return item->isService();
   default:
     return QVariant();
   }
@@ -172,6 +175,7 @@ QHash<int, QByteArray> FavoritesModel::roleNames() const
   roles[CanQueueRole] = "canQueue";
   roles[ArtistRole] = "artist";
   roles[AlbumRole] = "album";
+  roles[IsServiceRole] = "isService";
   return roles;
 }
 
@@ -195,6 +199,7 @@ QVariantMap FavoritesModel::get(int row)
   model[roles[CanQueueRole]] = item->canQueue();
   model[roles[ArtistRole]] = item->artist();
   model[roles[AlbumRole]] = item->album();
+  model[roles[IsServiceRole]] = item->isService();
   return model;
 }
 
@@ -267,14 +272,18 @@ void FavoritesModel::handleDataUpdate()
   }
 }
 
-QString FavoritesModel::findFavorite(const QString& objectID) const
+QString FavoritesModel::findFavorite(const QVariant& payload) const
 {
-  SONOS::LockGuard lock(m_lock);
-  std::string id(objectID.toUtf8().constData());
-  for (QList<FavoriteItem*>::const_iterator it = m_items.begin(); it != m_items.end(); ++it)
+  SONOS::DigitalItemPtr ptr = payload.value<SONOS::DigitalItemPtr>();
+  if (ptr)
   {
-    if ((*it)->objectId() == objectID)
-      return (*it)->id();
+    SONOS::LockGuard lock(m_lock);
+    QString objId = QString::fromUtf8(SONOS::System::MakeItemIdFromMediaUri(ptr->GetValue("res")).c_str());
+    for (QList<FavoriteItem*>::const_iterator it = m_items.begin(); it != m_items.end(); ++it)
+    {
+      if ((*it)->objectId() == objId)
+        return (*it)->id();
+    }
   }
   return "";
 }
