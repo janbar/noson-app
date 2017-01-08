@@ -278,6 +278,7 @@ QString FavoritesModel::findFavorite(const QVariant& payload) const
   if (ptr)
   {
     SONOS::LockGuard lock(m_lock);
+    //@FIXME handle queued item
     QString objId = QString::fromUtf8(SONOS::System::MakeItemIdFromMediaUri(ptr->GetValue("res")).c_str());
     for (QList<FavoriteItem*>::const_iterator it = m_items.begin(); it != m_items.end(); ++it)
     {
