@@ -207,6 +207,13 @@ MusicPage {
             trailingActions: ListItemActions {
                 actions: [
                     Action {
+                        iconName: "media-playback-start"
+                        objectName: "playAction"
+                        text: i18n.tr("Play")
+                        visible: model.canPlay
+                        onTriggered: playItem(model)
+                    },
+                    Action {
                         iconName: "add"
                         objectName: "addToQueueAction"
                         text: i18n.tr("Add to queue")
@@ -349,15 +356,15 @@ MusicPage {
         interval: 100
         property QtObject model
         onTriggered: {
-            if (model.canPlay) {
+            if (model.isContainer) {
+                var old = servicePage.displayType;
+                servicePage.displayType = model.displayType;
+                mediaModel.loadChild(model.id, model.title, old);
+            } else if (model.canPlay) {
                 if (model.canQueue)
                   trackClicked(model);
                 else
                   radioClicked(model);
-            } else if (model.isContainer) {
-                var old = servicePage.displayType;
-                servicePage.displayType = model.displayType;
-                mediaModel.loadChild(model.id, model.title, old);
             }
             mainView.currentlyWorking = false
         }
@@ -367,6 +374,27 @@ MusicPage {
         mainView.currentlyWorking = true
         delayMediaClicked.model = model
         delayMediaClicked.start()
+    }
+
+    Timer {
+        id: delayPlayMedia
+        interval: 100
+        property QtObject model
+        onTriggered: {
+            if (model.canPlay) {
+                if (model.canQueue)
+                  trackClicked(model);
+                else
+                  radioClicked(model);
+            }
+            mainView.currentlyWorking = false
+        }
+    }
+
+    function playItem(model) {
+        mainView.currentlyWorking = true
+        delayPlayMedia.model = model
+        delayPlayMedia.start()
     }
 }
 
