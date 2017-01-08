@@ -69,6 +69,7 @@ namespace NSROOT
     Protocol_xSonosHtaStream,
     Protocol_xSonosHttp,
     Protocol_xSonosSpotify,
+    Protocol_xSonosMms,
     Protocol_xSonosApiStream,
     Protocol_xSonosApiRadio,
     Protocol_xSonosApiRTRecent,

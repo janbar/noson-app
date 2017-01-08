@@ -376,8 +376,9 @@ bool Player::SetMute(const std::string& uuid, uint8_t value)
 
 bool Player::SetCurrentURI(const DigitalItemPtr& item)
 {
+  // Fix items from 'My radios' haven't required tag desc
   SMServicePtr svc = GetServiceForMedia(item->GetValue("res"));
-  if (svc)
+  if (svc && item->GetValue("desc").empty())
   {
     DigitalItem _item(DigitalItem::Type_unknown, DigitalItem::SubType_unknown);
     item->Clone(_item);
@@ -479,18 +480,18 @@ bool Player::CreateSavedQueue(const std::string& title)
 
 unsigned Player::AddURIToSavedQueue(const std::string& SQObjectID, const DigitalItemPtr& item, unsigned containerUpdateID)
 {
+  DigitalItem _item(DigitalItem::Type_unknown, DigitalItem::SubType_unknown);
+  item->Clone(_item);
+  _item.SetObjectID(System::MakeItemIdFromMediaUri(_item.GetValue("res")));
+  _item.SetParentID("");
+
   SMServicePtr svc = GetServiceForMedia(item->GetValue("res"));
-  if (svc)
+  if (svc && item->GetValue("desc").empty())
   {
-    DigitalItem _item(DigitalItem::Type_unknown, DigitalItem::SubType_unknown);
-    item->Clone(_item);
     ElementPtr var(new Element("desc", svc->GetServiceDesc()));
     var->SetAttribut("id", "cdudn");
     var->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
     _item.SetProperty(var);
-    _item.SetObjectID(System::MakeItemIdFromMediaUri(_item.GetValue("res")));
-    _item.SetParentID("");
-    return m_AVTransport->AddURIToSavedQueue(SQObjectID, _item.GetValue("res"), _item.DIDL(), containerUpdateID);
   }
   return m_AVTransport->AddURIToSavedQueue(SQObjectID, item->GetValue("res"), item->DIDL(), containerUpdateID);
 }
@@ -520,22 +521,13 @@ bool Player::AddURIToFavorites(const DigitalItemPtr& item, const std::string& de
   favorite->SetProperty(DIDL_QNAME_RINC "description", description.empty() ? album.empty() ? creator : album : description);
   // make r:resMD
   DigitalItem obj(DigitalItem::Type_item, DigitalItem::SubType_unknown);
-  // make the sonos itemId for this resource
-  std::string objId = System::MakeItemIdFromMediaUri(item->GetValue("res"));
-  obj.SetObjectID(objId);
-  obj.SetParentID(objId);
+  obj.SetObjectID(System::MakeItemIdFromMediaUri(item->GetValue("res")));
+  obj.SetParentID("");
   obj.SetRestricted(item->GetRestricted());
   obj.SetProperty(item->GetProperty(DIDL_QNAME_UPNP "class"));
   obj.SetProperty(item->GetProperty(DIDL_QNAME_DC "title"));
-  // make desc
-  SMServicePtr svc = GetServiceForMedia(item->GetValue("res"));
-  if (svc)
-  {
-    ElementPtr desc(new Element("desc", svc->GetServiceDesc()));
-    desc->SetAttribut("id", "cdudn");
-    desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
-    obj.SetProperty(desc);
-  }
+  if (!item->GetValue("desc").empty())
+    obj.SetProperty(item->GetProperty("desc"));
   else
   {
     ElementPtr desc(new Element("desc", ServiceDescTable[ServiceDesc_default]));
@@ -642,11 +634,15 @@ void Player::HandleEventMessage(EventMessagePtr msg)
 
 SMServiceList Player::GetAvailableServices()
 {
-  //@FIXME OpenAuth doesn't work, so reject service uses it
   SMServiceList list;
   for (SMServiceList::iterator it = m_smservices.begin(); it != m_smservices.end(); ++it)
-    if ((*it)->GetAccount()->GetOACredentials().devId.empty())
+  {
+    //@FIXME AppLink not supported, so reject service uses it
+    const std::string& auth = (*it)->GetPolicy()->GetAttribut("Auth");
+    if ((*it)->GetContainerType() == "MService" &&
+            (auth == "Anonymous" || auth == "UserId" || auth == "DeviceLink"))
       list.push_back(*it);
+  }
   return list;
 }
 

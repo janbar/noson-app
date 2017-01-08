@@ -216,6 +216,8 @@ bool System::CanQueueItem(const DigitalItemPtr& item)
         return true;
       if (strcmp(ProtocolTable[Protocol_xSonosSpotify], parser.Scheme()) == 0)
         return true;
+      if (strcmp(ProtocolTable[Protocol_xSonosMms], parser.Scheme()) == 0)
+        return true;
       if (strcmp(ProtocolTable[Protocol_xSonosApiRTRecent], parser.Scheme()) == 0)
         return true;
       if (strcmp(ProtocolTable[Protocol_xRinconCpcontainer], parser.Scheme()) == 0)
@@ -243,20 +245,42 @@ std::string System::MakeItemIdFromMediaUri(const std::string& mediaUri)
     DBG(DBG_ERROR, "%s: invalid uri (%s)\n", __FUNCTION__, mediaUri.c_str());
     return "";
   }
-  // check is service item
+
   std::string itemId;
+
+  //
+  // service item: track/stream has servive identifier in uri
+  //
   const char* p = strchr(parser.Path(), '?');
   if (p && strstr(p, "sid="))
   {
-    std::string tmp(parser.Path(), p - parser.Path());
-    std::string id = tmp.substr(0, tmp.find_last_of("."));
-    // schema x-sonosapi-rtrecent for podcast
-    if (strcmp(ProtocolTable[Protocol_xSonosApiRTRecent], parser.Scheme()) == 0)
-      itemId.append("F00032020").append(id);
-    // other scheme for a track
+    std::string tmp(parser.Path(), p - parser.Path()); // remove args
+    std::string id = tmp.substr(0, tmp.find_last_of(".")); // remove mime extension
+    if (strstr(p, "sid=254"))
+    {
+      if (strcmp(ProtocolTable[Protocol_xSonosApiStream], parser.Scheme()) == 0)
+        itemId.append("F00092020").append(id);
+      else
+        itemId.append("F00032020").append(id);
+    }
     else
-      itemId.append("00032020").append(id);
+    {
+      if (strcmp(ProtocolTable[Protocol_xSonosApiStream], parser.Scheme()) == 0)
+        itemId.append("00092020").append(id);
+      else
+        itemId.append("00032020").append(id);
+    }
   }
+  //
+  // service container: protocol x-rincon-cpcontainer
+  //
+  else if (strcmp(ProtocolTable[Protocol_xRinconCpcontainer], parser.Scheme()) == 0)
+  {
+    itemId.assign(parser.Path());
+  }
+  //
+  // sonos music library: uri x-rincon-playlist:RINCON_XXXXXXXXXXXXXXXXX
+  //
   else if (strcmp(ProtocolTable[Protocol_xRinconPlaylist], parser.Scheme()) == 0)
   {
     if (!parser.Fragment())
@@ -266,6 +290,9 @@ std::string System::MakeItemIdFromMediaUri(const std::string& mediaUri)
     }
     itemId.assign(parser.Fragment());
   }
+  //
+  // sonos playlist: uri file:///jffs/settings/savedqueues.rsq
+  //
   else if (strcmp(ProtocolTable[Protocol_file], parser.Scheme()) == 0 && strcmp("jffs/settings/savedqueues.rsq", parser.Path()) == 0)
   {
     if (!parser.Fragment())
@@ -275,6 +302,9 @@ std::string System::MakeItemIdFromMediaUri(const std::string& mediaUri)
     }
     itemId.assign("SQ:").append(parser.Fragment());
   }
+  //
+  // any other
+  //
   else
     itemId.assign(mediaUri);
 

@@ -340,7 +340,7 @@ bool MusicServices::LoadAccounts(SMAccountList& accounts, std::string& agentStr)
     <MD>1</MD>
     <NN>nickname</NN>
     <OADevID></OADevID>
-    <Key></Key>
+    <Hash></Hash>
     </Account>
     </Accounts>
     </ZPSupportInfo>

@@ -32,6 +32,7 @@ const char* NSROOT::ProtocolTable[Protocol_unknown + 1] = {
   "x-sonos-htastream",
   "x-sonos-http",
   "x-sonos-spotify",
+  "x-sonos-mms",
   "x-sonosapi-stream",
   "x-sonosapi-radio",
   "x-sonosapi-rtrecent",

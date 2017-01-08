@@ -138,7 +138,7 @@ bool SMAPI::GetMetadata(const std::string& id, int index, int count, bool recurs
 {
   char buf[20];
   ElementList args;
-  args.push_back(ElementPtr(new Element("id", id)));
+  args.push_back(ElementPtr(new Element("id", UrlDecode(id)))); // id is url encoded
   int32_to_string(index, buf);
   args.push_back(ElementPtr(new Element("index", buf)));
   int32_to_string(count, buf);
@@ -152,7 +152,7 @@ bool SMAPI::GetMetadata(const std::string& id, int index, int count, bool recurs
 bool SMAPI::GetMediaMetadata(const std::string& id, SMAPIMetadata& metadata)
 {
   ElementList args;
-  args.push_back(ElementPtr(new Element("id", id)));
+  args.push_back(ElementPtr(new Element("id", UrlDecode(id)))); // id is url encoded
 
   metadata.Reset(m_service, Request("getMediaMetadata", args).GetValue("getMediaMetadataResult"), id);
   return metadata.IsValid();
@@ -174,6 +174,26 @@ bool SMAPI::Search(const std::string& searchId, const std::string& term, int ind
 
   metadata.Reset(m_service, Request("search", args).GetValue("searchResult"), mappedId);
   return metadata.IsValid();
+}
+
+std::string SMAPI::UrlDecode(const std::string& str)
+{
+  std::string ret;
+  char ch;
+  int ii;
+  for (unsigned i = 0; i < str.length(); ++i)
+  {
+    if (str[i] == '%')
+    {
+      sscanf(str.substr(i + 1, 2).c_str(), "%x", &ii);
+      ch = static_cast<char>(ii);
+      ret.push_back(ch);
+      i += 2;
+    } else {
+      ret.push_back(str[i]);
+    }
+  }
+  return ret;
 }
 
 bool SMAPI::parsePresentationMap(const std::string& xml)
@@ -281,14 +301,14 @@ bool SMAPI::makeSoapHeader()
   m_soapHeader.append("<credentials xmlns=\"" SMAPI_NAMESPACE "\">");
 
   SMAccount::OACredentials auth = m_service->GetAccount()->GetOACredentials();
-  if (!auth.token.empty())
+  if (!auth.devId.empty())
   {
     m_soapHeader.append("<deviceId>").append(m_deviceSerialNumber).append("</deviceId>");
     m_soapHeader.append("<deviceProvider>" DEVICE_PROVIDER "</deviceProvider>");
     m_soapHeader.append("<loginToken>");
-    m_soapHeader.append("<token>").append(auth.token).append("</token>");
+    m_soapHeader.append("<token>").append(auth.token.empty() ? auth.devId : auth.token).append("</token>");
     m_soapHeader.append("<key>").append(auth.key).append("</key>");
-    m_soapHeader.append("<householdId>").append(auth.devId).append("</householdId>");
+    m_soapHeader.append("<householdId>").append(m_deviceHouseholdID).append("</householdId>");
     m_soapHeader.append("</loginToken>");
   }
   else

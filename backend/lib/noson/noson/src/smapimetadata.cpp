@@ -65,13 +65,15 @@ SMAPIItemList SMAPIMetadata::GetItems()
   SMAPIItemList list;
   if (!m_valid)
     return list;
+
+  const std::string& sid = m_service->GetId(); // service id
+
   unsigned count = 0;
   for (ElementList::const_iterator it = m_list.begin(); it != m_list.end(); ++it)
   {
     const Element& media = **it;
     const std::string& itemType = media.GetAttribut("itemType");
-    const std::string& mimeType = media.GetAttribut("mimeType");
-    DBG(DBG_PROTO, "%s: [%u] %s (%s)(%s)\n", __FUNCTION__, count++, media.GetKey().c_str(), itemType.c_str(), mimeType.c_str());
+    //const std::string& mimeType = media.GetAttribut("mimeType");
 
     // initialize the item
     SMAPIItem data;
@@ -154,8 +156,11 @@ SMAPIItemList SMAPIMetadata::GetItems()
       data.item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
     }
 
-    data.item->SetObjectID(media.GetAttribut("id"));
+    std::string itemId = UrlEncode(media.GetAttribut("id"));
+    data.item->SetObjectID(itemId); // encode id
     data.item->SetParentID(m_root);
+
+    DBG(DBG_PROTO, "%s: [%u] %s (%s)(%s)\n", __FUNCTION__, count++, media.GetKey().c_str(), itemType.c_str(), itemId.c_str());
 
     // overriding default display type
     const std::string& itemDisplayType = media.GetAttribut("displayType");
@@ -168,26 +173,53 @@ SMAPIItemList SMAPIMetadata::GetItems()
 
     if (media.GetAttribut("canPlay") == "true")
     {
+      //
+      // playable items
+      //
       if (itemType == "stream")
       {
-        // clone the item as skeleton for uri metadata
-        data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
-        data.item->Clone(*(data.uriMetadata));
-        // tag <res>
-        std::string rval(ProtocolTable[Protocol_xSonosApiStream]);
-        rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
-        rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
-        ElementPtr res(new Element("res", rval));
-        data.uriMetadata->SetProperty(res);
-        // tag <desc>
-        ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
-        desc->SetAttribut("id", "cdudn");
-        desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
-        data.uriMetadata->SetProperty(desc);
+        if (sid == "254")
+        {
+          // clone the item as skeleton for uri metadata
+          data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
+          data.item->Clone(*(data.uriMetadata));
+          // tag <res>
+          std::string rval(ProtocolTable[Protocol_xSonosApiStream]);
+          rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
+          rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
+          ElementPtr res(new Element("res", rval));
+          data.uriMetadata->SetProperty(res);
+          // tag <desc>
+          ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
+          desc->SetAttribut("id", "cdudn");
+          desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
+          data.uriMetadata->SetProperty(desc);
+          data.uriMetadata->SetObjectID(std::string("F00092020").append(data.item->GetObjectID()));
+          data.uriMetadata->SetParentID(std::string("F00082064").append(data.item->GetParentID()));
+        }
+        else
+        {
+          // clone the item as skeleton for uri metadata
+          data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
+          data.item->Clone(*(data.uriMetadata));
+          // tag <res>
+          std::string rval(ProtocolTable[Protocol_xSonosApiStream]);
+          rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
+          rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
+          ElementPtr res(new Element("res", rval));
+          data.uriMetadata->SetProperty(res);
+          // tag <desc>
+          ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
+          desc->SetAttribut("id", "cdudn");
+          desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
+          data.uriMetadata->SetProperty(desc);
+          data.uriMetadata->SetObjectID(std::string("00092020").append(data.item->GetObjectID()));
+          data.uriMetadata->SetParentID(std::string("00082064").append(data.item->GetParentID()));
+        }
       }
       else if (itemType == "track")
       {
-        if (mimeType == "audio/vnd.radiotime")
+        if (sid == "254") // mimeType = audio/vnd.radiotime
         {
           // clone the item as skeleton for uri metadata
           data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
@@ -197,6 +229,7 @@ SMAPIItemList SMAPIMetadata::GetItems()
           rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
           rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
           ElementPtr res(new Element("res", rval));
+          res->SetAttribut("protocolInfo", "sonos.com-rtrecent:*:audio/x-sonos-recent:*");
           data.uriMetadata->SetProperty(res);
           // tag <desc>
           ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
@@ -245,12 +278,95 @@ SMAPIItemList SMAPIMetadata::GetItems()
         data.uriMetadata->SetObjectID(std::string("000c206c").append(data.item->GetObjectID()));
         data.uriMetadata->SetParentID("0");
       }
+      //
+      // playable containers
+      //
+      else if (itemType == "album")
+      {
+        // clone the item as skeleton for uri metadata
+        data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
+        data.item->Clone(*(data.uriMetadata));
+        data.uriMetadata->SetObjectID(std::string("0004206c").append(data.item->GetObjectID()));
+        data.uriMetadata->SetParentID(std::string("1008006c").append(data.item->GetParentID()));
+        // fake tag <res> x-rincon-cpcontainer:0004206cITEMID
+        std::string rval(ProtocolTable[Protocol_xRinconCpcontainer]);
+        rval.append(":").append(data.uriMetadata->GetObjectID());
+        ElementPtr res(new Element("res", rval));
+        std::string proto(ProtocolTable[Protocol_xRinconCpcontainer]);
+        proto.append(":*:*:*");
+        res->SetAttribut("protocolInfo", proto);
+        data.uriMetadata->SetProperty(res);
+        // tag <desc>
+        ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
+        desc->SetAttribut("id", "cdudn");
+        desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
+        data.uriMetadata->SetProperty(desc);
+      }
+      else if (itemType == "playlist")
+      {
+        // clone the item as skeleton for uri metadata
+        data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
+        data.item->Clone(*(data.uriMetadata));
+        data.uriMetadata->SetObjectID(std::string("0006206c").append(data.item->GetObjectID()));
+        data.uriMetadata->SetParentID(std::string("1008006c").append(data.item->GetParentID()));
+        // tag <res> x-rincon-cpcontainer:0006206cITEMID
+        std::string rval(ProtocolTable[Protocol_xRinconCpcontainer]);
+        rval.append(":").append(data.uriMetadata->GetObjectID());
+        ElementPtr res(new Element("res", rval));
+        std::string proto(ProtocolTable[Protocol_xRinconCpcontainer]);
+        proto.append(":*:*:*");
+        res->SetAttribut("protocolInfo", proto);
+        data.uriMetadata->SetProperty(res);
+        // tag <desc>
+        ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
+        desc->SetAttribut("id", "cdudn");
+        desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
+        data.uriMetadata->SetProperty(desc);
+      }
+      else if (itemType == "artistTrackList")
+      {
+        // clone the item as skeleton for uri metadata
+        data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
+        data.item->Clone(*(data.uriMetadata));
+        data.uriMetadata->SetObjectID(std::string("100f006c").append(data.item->GetObjectID()));
+        data.uriMetadata->SetParentID(std::string("1008006c").append(data.item->GetParentID()));
+        // tag <res> x-rincon-cpcontainer:100f006cITEMID
+        std::string rval(ProtocolTable[Protocol_xRinconCpcontainer]);
+        rval.append(":").append(data.uriMetadata->GetObjectID());
+        ElementPtr res(new Element("res", rval));
+        std::string proto(ProtocolTable[Protocol_xRinconCpcontainer]);
+        proto.append(":*:*:*");
+        res->SetAttribut("protocolInfo", proto);
+        data.uriMetadata->SetProperty(res);
+        // tag <desc>
+        ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
+        desc->SetAttribut("id", "cdudn");
+        desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
+        data.uriMetadata->SetProperty(desc);
+      }
       else
         DBG(DBG_DEBUG, "%s: playable type (%s) isn't handled\n", __FUNCTION__, itemType.c_str());
     }
     list.push_back(data);
   }
   return list;
+}
+
+std::string SMAPIMetadata::UrlEncode(const std::string& str)
+{
+  std::string out;
+  out.reserve(2 * str.length());
+  for (std::string::const_iterator it = str.begin(); it != str.end(); ++it)
+  {
+    if (isalnum(*it) || *it == '-' || *it == '_' || *it == '.' || *it == '~')
+      out.push_back(*it);
+    else {
+      char buf[4];
+      sprintf(buf, "%%%.2x", (unsigned char)(*it));
+      out.append(buf);
+    }
+  }
+  return out;
 }
 
 bool SMAPIMetadata::ParseMessage(const std::string& data)

@@ -65,6 +65,8 @@ namespace NSROOT
     std::string m_root;
     SMServicePtr m_service;
 
+    static std::string UrlEncode(const std::string& str);
+
     bool ParseMessage(const std::string& data);
 
     ElementPtr ParseMediaCollection(const void*);
