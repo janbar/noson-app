@@ -275,11 +275,12 @@ void FavoritesModel::handleDataUpdate()
 QString FavoritesModel::findFavorite(const QVariant& payload) const
 {
   SONOS::DigitalItemPtr ptr = payload.value<SONOS::DigitalItemPtr>();
-  if (ptr)
+  SONOS::PlayerPtr player = m_provider->getPlayer();
+  if (ptr && player)
   {
     SONOS::LockGuard lock(m_lock);
     //@FIXME handle queued item
-    QString objId = QString::fromUtf8(SONOS::System::MakeItemIdFromMediaUri(ptr->GetValue("res")).c_str());
+    QString objId = QString::fromUtf8(player->GetItemIdFromUriMetadata(ptr).c_str());
     for (QList<FavoriteItem*>::const_iterator it = m_items.begin(); it != m_items.end(); ++it)
     {
       if ((*it)->objectId() == objId)
