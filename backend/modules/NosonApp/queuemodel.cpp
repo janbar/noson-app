@@ -74,6 +74,8 @@ QVariant QueueModel::data(const QModelIndex& index, int role) const
     return item->albumTrackNo();
   case ArtRole:
     return item->art();
+  case IsServiceRole:
+    return item->isService();
   default:
     return QVariant();
   }
@@ -89,6 +91,7 @@ QHash<int, QByteArray> QueueModel::roleNames() const
   roles[AlbumRole] = "album";
   roles[AlbumTrackNoRole] = "albumTrackNo";
   roles[ArtRole] = "art";
+  roles[IsServiceRole] = "isService";
   return roles;
 }
 
@@ -107,6 +110,7 @@ QVariantMap QueueModel::get(int row)
   model[roles[AlbumRole]] = item->album();
   model[roles[AlbumTrackNoRole]] = item->albumTrackNo();
   model[roles[ArtRole]] = item->art();
+  model[roles[IsServiceRole]] = item->isService();
   return model;
 }
 

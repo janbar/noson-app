@@ -28,6 +28,7 @@
 TrackItem::TrackItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
 : m_ptr(ptr)
 , m_valid(false)
+, m_isService(false)
 {
   m_id = QString::fromUtf8(ptr->GetObjectID().c_str());
   if (ptr->subType() == SONOS::DigitalItem::SubType_audioItem)
@@ -39,6 +40,7 @@ TrackItem::TrackItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
     QString uri = QString::fromUtf8(ptr->GetValue("upnp:albumArtURI").c_str());
     if (!uri.isEmpty())
       m_art.append(baseURL).append(uri);
+    m_isService = SONOS::System::IsItemFromService(ptr);
     m_valid = true;
   }
   else
@@ -110,6 +112,8 @@ QVariant TracksModel::data(const QModelIndex& index, int role) const
     return item->albumTrackNo();
   case ArtRole:
     return item->art();
+  case IsServiceRole:
+    return item->isService();
   default:
     return QVariant();
   }
@@ -125,6 +129,7 @@ QHash<int, QByteArray> TracksModel::roleNames() const
   roles[AlbumRole] = "album";
   roles[AlbumTrackNoRole] = "albumTrackNo";
   roles[ArtRole] = "art";
+  roles[IsServiceRole] = "isService";
   return roles;
 }
 
@@ -143,6 +148,7 @@ QVariantMap TracksModel::get(int row)
   model[roles[AlbumRole]] = item->album();
   model[roles[AlbumTrackNoRole]] = item->albumTrackNo();
   model[roles[ArtRole]] = item->art();
+  model[roles[IsServiceRole]] = item->isService();
   return model;
 }
 

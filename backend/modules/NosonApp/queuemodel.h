@@ -40,6 +40,7 @@ public:
     AlbumRole,
     AlbumTrackNoRole,
     ArtRole,
+    IsServiceRole,
   };
 
   QueueModel(QObject* parent = 0);

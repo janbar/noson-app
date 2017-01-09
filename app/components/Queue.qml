@@ -88,6 +88,8 @@ Item {
                     ShowInfo {
                     },
                     AddToPlaylist {
+                        //@FIXME add to playlist service item doesn't work
+                        visible: model.isService ? false : true
                     },
                     AddToFavorites {
                         description: i18n.tr("Song")

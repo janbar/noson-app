@@ -50,6 +50,8 @@ public:
 
   const QString& art() const { return m_art; }
 
+  bool isService() const { return m_isService; }
+
 private:
   SONOS::DigitalItemPtr m_ptr;
   bool m_valid;
@@ -59,6 +61,7 @@ private:
   QString m_album;
   QString m_albumTrackNo;
   QString m_art;
+  bool m_isService;
 };
 
 class TracksModel : public QAbstractListModel, public ListModel
@@ -77,6 +80,7 @@ public:
     AlbumRole,
     AlbumTrackNoRole,
     ArtRole,
+    IsServiceRole,
   };
 
   TracksModel(QObject* parent = 0);
