@@ -53,8 +53,15 @@ State {
                     }
                 },
                 Action {
+                    id: homeAction
+                    iconName: "home"
+                    visible: thisPage.isRoot ? false : true
+                    onTriggered: mainPageStack.goBack()
+                },
+                Action {
                     id: searchAction
                     iconName: "search"
+                    visible: searchEnabled
                     onTriggered: {
                         thisPage.state = "search";
                         thisPage.header.contents.forceActiveFocus();

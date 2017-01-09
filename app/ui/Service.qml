@@ -114,6 +114,16 @@ MusicPage {
         }
     }
 
+    Timer {
+        id: delayLoadRootModel
+        interval: 100
+        onTriggered: {
+            mediaModel.loadRoot();
+            servicePage.taintedView = false; // reset
+            mainView.currentlyWorking = false;
+        }
+    }
+
     Connections {
         target: mediaModel
         onDataUpdated: {
