@@ -188,6 +188,8 @@ SMAPIItemList SMAPIMetadata::GetItems()
           rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
           rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
           ElementPtr res(new Element("res", rval));
+          std::string proto = std::string("x-sonosapi-stream:*:*:*");
+          res->SetAttribut("protocolInfo", proto);
           data.uriMetadata->SetProperty(res);
           // tag <desc>
           ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
@@ -207,6 +209,8 @@ SMAPIItemList SMAPIMetadata::GetItems()
           rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
           rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
           ElementPtr res(new Element("res", rval));
+          std::string proto = std::string("x-sonosapi-stream:*:*:*");
+          res->SetAttribut("protocolInfo", proto);
           data.uriMetadata->SetProperty(res);
           // tag <desc>
           ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
@@ -229,7 +233,8 @@ SMAPIItemList SMAPIMetadata::GetItems()
           rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
           rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
           ElementPtr res(new Element("res", rval));
-          res->SetAttribut("protocolInfo", "sonos.com-rtrecent:*:audio/x-sonos-recent:*");
+          std::string proto = std::string("sonos.com-rtrecent:*:audio/x-sonos-recent:*");
+          res->SetAttribut("protocolInfo", proto);
           data.uriMetadata->SetProperty(res);
           // tag <desc>
           ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
@@ -249,6 +254,8 @@ SMAPIItemList SMAPIMetadata::GetItems()
           rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
           rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
           ElementPtr res(new Element("res", rval));
+          std::string proto = std::string("sonos.com-http:*:audio/mp4:*");
+          res->SetAttribut("protocolInfo", proto);
           data.uriMetadata->SetProperty(res);
           // tag <desc>
           ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
@@ -269,6 +276,8 @@ SMAPIItemList SMAPIMetadata::GetItems()
         rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
         rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
         ElementPtr res(new Element("res", rval));
+        std::string proto = std::string("x-sonosapi-radio:*:*:*");
+        res->SetAttribut("protocolInfo", proto);
         data.uriMetadata->SetProperty(res);
         // tag <desc>
         ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
@@ -292,8 +301,7 @@ SMAPIItemList SMAPIMetadata::GetItems()
         std::string rval(ProtocolTable[Protocol_xRinconCpcontainer]);
         rval.append(":").append(data.uriMetadata->GetObjectID());
         ElementPtr res(new Element("res", rval));
-        std::string proto(ProtocolTable[Protocol_xRinconCpcontainer]);
-        proto.append(":*:*:*");
+        std::string proto("x-rincon-cpcontainer:*:*:*");
         res->SetAttribut("protocolInfo", proto);
         data.uriMetadata->SetProperty(res);
         // tag <desc>
@@ -313,8 +321,7 @@ SMAPIItemList SMAPIMetadata::GetItems()
         std::string rval(ProtocolTable[Protocol_xRinconCpcontainer]);
         rval.append(":").append(data.uriMetadata->GetObjectID());
         ElementPtr res(new Element("res", rval));
-        std::string proto(ProtocolTable[Protocol_xRinconCpcontainer]);
-        proto.append(":*:*:*");
+        std::string proto("x-rincon-cpcontainer:*:*:*");
         res->SetAttribut("protocolInfo", proto);
         data.uriMetadata->SetProperty(res);
         // tag <desc>
@@ -334,8 +341,7 @@ SMAPIItemList SMAPIMetadata::GetItems()
         std::string rval(ProtocolTable[Protocol_xRinconCpcontainer]);
         rval.append(":").append(data.uriMetadata->GetObjectID());
         ElementPtr res(new Element("res", rval));
-        std::string proto(ProtocolTable[Protocol_xRinconCpcontainer]);
-        proto.append(":*:*:*");
+        std::string proto("x-rincon-cpcontainer:*:*:*");
         res->SetAttribut("protocolInfo", proto);
         data.uriMetadata->SetProperty(res);
         // tag <desc>
