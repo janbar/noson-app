@@ -5,20 +5,10 @@ language: cpp
 
 os:
   - linux
-  - osx
 
 compiler:
   - gcc
   - clang
-
-matrix:
-  exclude:
-     - os: osx
-       compiler: gcc
-     - os: linux
-       compiler: clang
-
-  fast_finish: true
 
 install:
         - if [ "$TRAVIS_OS_NAME" = "linux" ]; then mkdir $HOME/cmake && curl https://cmake.org/files/v3.3/cmake-3.3.0-Linux-x86_64.tar.gz | tar -xz --strip-components=1 -C $HOME/cmake && export PATH=$HOME/cmake/bin:$PATH ; fi

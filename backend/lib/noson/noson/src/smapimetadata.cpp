@@ -24,6 +24,7 @@
 #include "private/builtin.h"
 #include "private/tinyxml2.h"
 #include "private/xmldict.h"
+#include "private/urlencoder.h"
 #include "didlparser.h"
 #include "sonostypes.h"
 
@@ -66,41 +67,73 @@ SMAPIItemList SMAPIMetadata::GetItems()
   if (!m_valid)
     return list;
 
-  const std::string& sid = m_service->GetId(); // service id
-
   unsigned count = 0;
   for (ElementList::const_iterator it = m_list.begin(); it != m_list.end(); ++it)
   {
     const Element& media = **it;
-    const std::string& itemType = media.GetAttribut("itemType");
+    const std::string& mediaType = media.GetAttribut("itemType");
     //const std::string& mimeType = media.GetAttribut("mimeType");
 
     // initialize the item
     SMAPIItem data;
     data.displayType = SMAPIItem::Grid;
 
-    if (itemType == "track")
+    ItemType itemType = other;
+    if (mediaType == "track")
+    {
+      itemType = track;
       data.item.reset(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
-    else if (itemType == "stream")
+    }
+    else if (mediaType == "stream")
+    {
+      itemType = stream;
       data.item.reset(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
-    else if (itemType == "program")
+    }
+    else if (mediaType == "program")
+    {
+      itemType = program;
       data.item.reset(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
-    else if (itemType == "show")
+    }
+    else if (mediaType == "show")
+    {
+      itemType = show;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_playlistContainer));
-    else if (itemType == "album")
+    }
+    else if (mediaType == "album")
+    {
+      itemType = album;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_album));
-    else if (itemType == "albumList")
+    }
+    else if (mediaType == "albumList")
+    {
+      itemType = albumList;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_storageFolder));
-    else if (itemType == "artist")
+    }
+    else if (mediaType == "artist")
+    {
+      itemType = artist;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_person));
-    else if (itemType == "artistTrackList")
+    }
+    else if (mediaType == "artistTrackList")
+    {
+      itemType = artistTrackList;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_playlistContainer));
-    else if (itemType == "genre")
+    }
+    else if (mediaType == "genre")
+    {
+      itemType = genre;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_genre));
-    else if (itemType == "playlist")
+    }
+    else if (mediaType == "playlist")
+    {
+      itemType = playlist;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_playlistContainer));
+    }
     else if (media.GetKey() == "mediaCollection")
+    {
+      itemType = mediaCollection;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_storageFolder));
+    }
     else
       data.item.reset(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_unknown));
 
@@ -136,7 +169,7 @@ SMAPIItemList SMAPIMetadata::GetItems()
     // item
     case DigitalItem::SubType_audioItem:
       data.item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
-      if (itemType == "track")
+      if (itemType == track)
       {
         data.item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
         data.item->SetProperty(DIDL_QNAME_DC "creator", media.GetAttribut("composer"));
@@ -156,11 +189,12 @@ SMAPIItemList SMAPIMetadata::GetItems()
       data.item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
     }
 
-    std::string itemId = UrlEncode(media.GetAttribut("id"));
+    // according to sonos rule item ID is encoded as url
+    std::string itemId = urlencode(media.GetAttribut("id"));
     data.item->SetObjectID(itemId); // encode id
     data.item->SetParentID(m_root);
 
-    DBG(DBG_PROTO, "%s: [%u] %s (%s)(%s)\n", __FUNCTION__, count++, media.GetKey().c_str(), itemType.c_str(), itemId.c_str());
+    DBG(DBG_DEBUG, "%s: [%u] %s (%s)(%s)\n", __FUNCTION__, count++, media.GetKey().c_str(), mediaType.c_str(), itemId.c_str());
 
     // overriding default display type
     const std::string& itemDisplayType = media.GetAttribut("displayType");
@@ -172,207 +206,141 @@ SMAPIItemList SMAPIMetadata::GetItems()
       data.displayType = SMAPIItem::Editorial;
 
     if (media.GetAttribut("canPlay") == "true")
-    {
-      //
-      // playable items
-      //
-      if (itemType == "stream")
-      {
-        if (sid == "254")
-        {
-          // clone the item as skeleton for uri metadata
-          data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
-          data.item->Clone(*(data.uriMetadata));
-          // tag <res>
-          std::string rval(ProtocolTable[Protocol_xSonosApiStream]);
-          rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
-          rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
-          ElementPtr res(new Element("res", rval));
-          std::string proto = std::string("x-sonosapi-stream:*:*:*");
-          res->SetAttribut("protocolInfo", proto);
-          data.uriMetadata->SetProperty(res);
-          // tag <desc>
-          ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
-          desc->SetAttribut("id", "cdudn");
-          desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
-          data.uriMetadata->SetProperty(desc);
-          data.uriMetadata->SetObjectID(std::string("F00092020").append(data.item->GetObjectID()));
-          data.uriMetadata->SetParentID(std::string("F00082064").append(data.item->GetParentID()));
-        }
-        else
-        {
-          // clone the item as skeleton for uri metadata
-          data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
-          data.item->Clone(*(data.uriMetadata));
-          // tag <res>
-          std::string rval(ProtocolTable[Protocol_xSonosApiStream]);
-          rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
-          rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
-          ElementPtr res(new Element("res", rval));
-          std::string proto = std::string("x-sonosapi-stream:*:*:*");
-          res->SetAttribut("protocolInfo", proto);
-          data.uriMetadata->SetProperty(res);
-          // tag <desc>
-          ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
-          desc->SetAttribut("id", "cdudn");
-          desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
-          data.uriMetadata->SetProperty(desc);
-          data.uriMetadata->SetObjectID(std::string("00092020").append(data.item->GetObjectID()));
-          data.uriMetadata->SetParentID(std::string("00082064").append(data.item->GetParentID()));
-        }
-      }
-      else if (itemType == "track")
-      {
-        if (sid == "254") // mimeType = audio/vnd.radiotime
-        {
-          // clone the item as skeleton for uri metadata
-          data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
-          data.item->Clone(*(data.uriMetadata));
-          // tag <res>
-          std::string rval(ProtocolTable[Protocol_xSonosApiRTRecent]);
-          rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
-          rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
-          ElementPtr res(new Element("res", rval));
-          std::string proto = std::string("sonos.com-rtrecent:*:audio/x-sonos-recent:*");
-          res->SetAttribut("protocolInfo", proto);
-          data.uriMetadata->SetProperty(res);
-          // tag <desc>
-          ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
-          desc->SetAttribut("id", "cdudn");
-          desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
-          data.uriMetadata->SetProperty(desc);
-          data.uriMetadata->SetObjectID(std::string("F00032020").append(data.item->GetObjectID()));
-          data.uriMetadata->SetParentID(std::string("F000b2064").append(data.item->GetParentID()));
-        }
-        else
-        {
-          // clone the item as skeleton for uri metadata
-          data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
-          data.item->Clone(*(data.uriMetadata));
-          // tag <res>
-          std::string rval(ProtocolTable[Protocol_xSonosHttp]);
-          rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
-          rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
-          ElementPtr res(new Element("res", rval));
-          std::string proto = std::string("sonos.com-http:*:audio/mp4:*");
-          res->SetAttribut("protocolInfo", proto);
-          data.uriMetadata->SetProperty(res);
-          // tag <desc>
-          ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
-          desc->SetAttribut("id", "cdudn");
-          desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
-          data.uriMetadata->SetProperty(desc);
-          data.uriMetadata->SetObjectID(std::string("00032020").append(data.item->GetObjectID()));
-          data.uriMetadata->SetParentID(std::string("0004206c").append(data.item->GetParentID()));
-        }
-      }
-      else if (itemType == "program")
-      {
-        // clone the item as skeleton for uri metadata
-        data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
-        data.item->Clone(*(data.uriMetadata));
-        // tag <res>
-        std::string rval(ProtocolTable[Protocol_xSonosApiRadio]);
-        rval.append(":").append(data.item->GetObjectID()).append("?sid=").append(m_service->GetId());
-        rval.append("&sn=").append(m_service->GetAccount()->GetSerialNum());
-        ElementPtr res(new Element("res", rval));
-        std::string proto = std::string("x-sonosapi-radio:*:*:*");
-        res->SetAttribut("protocolInfo", proto);
-        data.uriMetadata->SetProperty(res);
-        // tag <desc>
-        ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
-        desc->SetAttribut("id", "cdudn");
-        desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
-        data.uriMetadata->SetProperty(desc);
-        data.uriMetadata->SetObjectID(std::string("000c206c").append(data.item->GetObjectID()));
-        data.uriMetadata->SetParentID("0");
-      }
-      //
-      // playable containers
-      //
-      else if (itemType == "album")
-      {
-        // clone the item as skeleton for uri metadata
-        data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
-        data.item->Clone(*(data.uriMetadata));
-        data.uriMetadata->SetObjectID(std::string("0004206c").append(data.item->GetObjectID()));
-        data.uriMetadata->SetParentID(std::string("1008006c").append(data.item->GetParentID()));
-        // fake tag <res> x-rincon-cpcontainer:0004206cITEMID
-        std::string rval(ProtocolTable[Protocol_xRinconCpcontainer]);
-        rval.append(":").append(data.uriMetadata->GetObjectID());
-        ElementPtr res(new Element("res", rval));
-        std::string proto("x-rincon-cpcontainer:*:*:*");
-        res->SetAttribut("protocolInfo", proto);
-        data.uriMetadata->SetProperty(res);
-        // tag <desc>
-        ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
-        desc->SetAttribut("id", "cdudn");
-        desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
-        data.uriMetadata->SetProperty(desc);
-      }
-      else if (itemType == "playlist")
-      {
-        // clone the item as skeleton for uri metadata
-        data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
-        data.item->Clone(*(data.uriMetadata));
-        data.uriMetadata->SetObjectID(std::string("0006206c").append(data.item->GetObjectID()));
-        data.uriMetadata->SetParentID(std::string("1008006c").append(data.item->GetParentID()));
-        // tag <res> x-rincon-cpcontainer:0006206cITEMID
-        std::string rval(ProtocolTable[Protocol_xRinconCpcontainer]);
-        rval.append(":").append(data.uriMetadata->GetObjectID());
-        ElementPtr res(new Element("res", rval));
-        std::string proto("x-rincon-cpcontainer:*:*:*");
-        res->SetAttribut("protocolInfo", proto);
-        data.uriMetadata->SetProperty(res);
-        // tag <desc>
-        ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
-        desc->SetAttribut("id", "cdudn");
-        desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
-        data.uriMetadata->SetProperty(desc);
-      }
-      else if (itemType == "artistTrackList")
-      {
-        // clone the item as skeleton for uri metadata
-        data.uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
-        data.item->Clone(*(data.uriMetadata));
-        data.uriMetadata->SetObjectID(std::string("100f006c").append(data.item->GetObjectID()));
-        data.uriMetadata->SetParentID(std::string("1008006c").append(data.item->GetParentID()));
-        // tag <res> x-rincon-cpcontainer:100f006cITEMID
-        std::string rval(ProtocolTable[Protocol_xRinconCpcontainer]);
-        rval.append(":").append(data.uriMetadata->GetObjectID());
-        ElementPtr res(new Element("res", rval));
-        std::string proto("x-rincon-cpcontainer:*:*:*");
-        res->SetAttribut("protocolInfo", proto);
-        data.uriMetadata->SetProperty(res);
-        // tag <desc>
-        ElementPtr desc(new Element("desc", m_service->GetServiceDesc()));
-        desc->SetAttribut("id", "cdudn");
-        desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
-        data.uriMetadata->SetProperty(desc);
-      }
-      else
-        DBG(DBG_DEBUG, "%s: playable type (%s) isn't handled\n", __FUNCTION__, itemType.c_str());
-    }
+      MakeUriMetadata(m_service, itemType, data.item, data.uriMetadata);
+
     list.push_back(data);
   }
   return list;
 }
 
-std::string SMAPIMetadata::UrlEncode(const std::string& str)
+void SMAPIMetadata::MakeUriMetadata(const SMServicePtr& service, ItemType itemType, const DigitalItemPtr& item, DigitalItemPtr& uriMetadata)
 {
-  std::string out;
-  out.reserve(2 * str.length());
-  for (std::string::const_iterator it = str.begin(); it != str.end(); ++it)
+  const std::string& itemId = item->GetObjectID();
+  const std::string& parentId = item->GetParentID();
+  const std::string& sid = service->GetId();
+  const std::string& sn = service->GetAccount()->GetSerialNum();
+  ElementPtr desc(new Element("desc", service->GetServiceDesc()));
+  desc->SetAttribut("id", "cdudn");
+  desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
+
+  // clone the item as skeleton for uri metadata
+  uriMetadata.reset(new DigitalItem(DigitalItem::Type_unknown, DigitalItem::SubType_unknown));
+  item->Clone(*(uriMetadata));
+
+  // set tag <desc>
+  uriMetadata->SetProperty(desc);
+
+  //
+  // fill playable items
+  //
+  if (itemType == stream)
   {
-    if (isalnum(*it) || *it == '-' || *it == '_' || *it == '.' || *it == '~')
-      out.push_back(*it);
-    else {
-      char buf[4];
-      sprintf(buf, "%%%.2x", (unsigned char)(*it));
-      out.append(buf);
+    // special rule for stream from service TuneIn
+    // prefix F00092020
+    if (sid == "254")
+    {
+      // tag <res>
+      std::string rval(ProtocolTable[Protocol_xSonosApiStream]);
+      rval.append(":").append(itemId).append("?sid=").append(sid).append("&sn=").append(sn);
+      ElementPtr res(new Element("res", rval));
+      res->SetAttribut("protocolInfo", "x-sonosapi-stream:*:*:*");
+      uriMetadata->SetProperty(res);
+      uriMetadata->SetObjectID(std::string("F00092020").append(itemId));
+      uriMetadata->SetParentID(std::string("F00082064").append(parentId));
+    }
+    // other stream
+    // prefix 00092020
+    else
+    {
+      // tag <res>
+      std::string rval(ProtocolTable[Protocol_xSonosApiStream]);
+      rval.append(":").append(itemId).append("?sid=").append(sid).append("&sn=").append(sn);
+      ElementPtr res(new Element("res", rval));
+      res->SetAttribut("protocolInfo", "x-sonosapi-stream:*:*:*");
+      uriMetadata->SetProperty(res);
+      uriMetadata->SetObjectID(std::string("00092020").append(itemId));
+      uriMetadata->SetParentID(std::string("00082064").append(parentId));
     }
   }
-  return out;
+  else if (itemType == track)
+  {
+    // special rule for podcast (mime = audio/vnd.radiotime) from service TuneIn
+    // prefix F00032020
+    if (sid == "254") // mimeType = 
+    {
+      // tag <res>
+      std::string rval(ProtocolTable[Protocol_xSonosApiRTRecent]);
+      rval.append(":").append(itemId).append("?sid=").append(sid).append("&sn=").append(sn);
+      ElementPtr res(new Element("res", rval));
+      res->SetAttribut("protocolInfo", "sonos.com-rtrecent:*:audio/x-sonos-recent:*");
+      uriMetadata->SetProperty(res);
+      uriMetadata->SetObjectID(std::string("F00032020").append(itemId));
+      uriMetadata->SetParentID(std::string("F000b2064").append(parentId));
+    }
+    // other track
+    // prefix 00032020
+    else
+    {
+      // tag <res>
+      std::string rval(ProtocolTable[Protocol_xSonosHttp]);
+      rval.append(":").append(itemId).append("?sid=").append(sid).append("&sn=").append(sn);
+      ElementPtr res(new Element("res", rval));
+      res->SetAttribut("protocolInfo", "sonos.com-http:*:audio/mp4:*");
+      uriMetadata->SetProperty(res);
+      uriMetadata->SetObjectID(std::string("00032020").append(itemId));
+      uriMetadata->SetParentID(std::string("0004206c").append(parentId));
+    }
+  }
+  else if (itemType == program)
+  {
+    // tag <res>
+    std::string rval(ProtocolTable[Protocol_xSonosApiRadio]);
+    rval.append(":").append(itemId).append("?sid=").append(sid).append("&sn=").append(sn);
+    ElementPtr res(new Element("res", rval));
+    res->SetAttribut("protocolInfo", "x-sonosapi-radio:*:*:*");
+    uriMetadata->SetProperty(res);
+    uriMetadata->SetObjectID(std::string("000c206c").append(itemId));
+    uriMetadata->SetParentID("0");
+  }
+  //
+  // fill playable containers
+  //
+  else if (itemType == album)
+  {
+    uriMetadata->SetObjectID(std::string("0004206c").append(itemId));
+    uriMetadata->SetParentID(std::string("1008006c").append(parentId));
+    // tag <res>
+    std::string rval(ProtocolTable[Protocol_xRinconCpcontainer]);
+    rval.append(":").append(uriMetadata->GetObjectID());
+    ElementPtr res(new Element("res", rval));
+    res->SetAttribut("protocolInfo", "x-rincon-cpcontainer:*:*:*");
+    uriMetadata->SetProperty(res);
+  }
+  else if (itemType == playlist)
+  {
+    uriMetadata->SetObjectID(std::string("0006206c").append(itemId));
+    uriMetadata->SetParentID(std::string("1008006c").append(parentId));
+    // tag <res>
+    std::string rval(ProtocolTable[Protocol_xRinconCpcontainer]);
+    rval.append(":").append(uriMetadata->GetObjectID());
+    ElementPtr res(new Element("res", rval));
+    res->SetAttribut("protocolInfo", "x-rincon-cpcontainer:*:*:*");
+    uriMetadata->SetProperty(res);
+  }
+  else if (itemType == artistTrackList)
+  {
+    uriMetadata->SetObjectID(std::string("100f006c").append(itemId));
+    uriMetadata->SetParentID(std::string("1008006c").append(parentId));
+    // tag <res>
+    std::string rval(ProtocolTable[Protocol_xRinconCpcontainer]);
+    rval.append(":").append(uriMetadata->GetObjectID());
+    ElementPtr res(new Element("res", rval));
+    res->SetAttribut("protocolInfo", "x-rincon-cpcontainer:*:*:*");
+    uriMetadata->SetProperty(res);
+  }
+  else
+    DBG(DBG_DEBUG, "%s: playable type %d isn't handled\n", __FUNCTION__, itemType);
+  DBG(DBG_DEBUG, "%s: sid %s (%s)(%s)\n", __FUNCTION__, sid.c_str(), uriMetadata->GetObjectID().c_str(), uriMetadata->GetParentID().c_str());
 }
 
 bool SMAPIMetadata::ParseMessage(const std::string& data)

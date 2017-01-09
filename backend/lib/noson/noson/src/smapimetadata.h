@@ -56,6 +56,23 @@ namespace NSROOT
 
     const ElementList& GetElements() const { return m_list; }
 
+    typedef enum {
+      track,
+      stream,
+      program,
+      show,
+      album,
+      albumList,
+      artist,
+      artistTrackList,
+      genre,
+      playlist,
+      mediaCollection,
+      other,
+    } ItemType;
+
+    static void MakeUriMetadata(const SMServicePtr& service, ItemType itemType, const DigitalItemPtr& item, DigitalItemPtr& uriMetadata);
+
   private:
     uint32_t m_startIndex;
     uint32_t m_itemCount;
@@ -64,8 +81,6 @@ namespace NSROOT
     ElementList m_list;
     std::string m_root;
     SMServicePtr m_service;
-
-    static std::string UrlEncode(const std::string& str);
 
     bool ParseMessage(const std::string& data);
 

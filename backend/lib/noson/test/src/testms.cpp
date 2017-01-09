@@ -107,13 +107,14 @@ int main(int argc, char** argv)
             if (!sm.GetMetadata(tstServiceMediaId, 0, 50, false, meta))
               sm.GetMediaMetadata(tstServiceMediaId, meta);
             //sm.Search("stations", "jazz", 0, 10, meta);
-            SONOS::DBGLevel(2);
+            SONOS::DBGLevel(3);
+            PRINT1("%s", "\n");
             for (auto&& data : meta.GetItems())
             {
               if (data.uriMetadata)
-                PRINT1("%s\n", data.uriMetadata->DIDL().c_str());
+                PRINT1("%s\n\n", data.uriMetadata->DIDL().c_str());
               else
-                PRINT1("%s\n", data.item->DIDL().c_str());
+                PRINT1("%s\n\n", data.item->DIDL().c_str());
             }
           }
         }

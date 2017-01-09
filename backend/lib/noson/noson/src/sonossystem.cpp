@@ -232,83 +232,15 @@ bool System::IsItemFromService(const DigitalItemPtr& item)
   if (!item)
     return false;
   const std::string& desc = item->GetValue("desc");
-  if (desc.empty() || desc == ServiceDescTable[ServiceDesc_default])
+  if (desc.empty())
+  {
+    if (item->GetValue("res").find("sid=") != std::string::npos)
+      return true;
     return false;
-  return true;
-}
-
-std::string System::MakeItemIdFromMediaUri(const std::string& mediaUri)
-{
-  URIParser parser(mediaUri);
-  if (!parser.Scheme() || !parser.Path())
-  {
-    DBG(DBG_ERROR, "%s: invalid uri (%s)\n", __FUNCTION__, mediaUri.c_str());
-    return "";
   }
-
-  std::string itemId;
-
-  //
-  // service item: track/stream has servive identifier in uri
-  //
-  const char* p = strchr(parser.Path(), '?');
-  if (p && strstr(p, "sid="))
-  {
-    std::string tmp(parser.Path(), p - parser.Path()); // remove args
-    std::string id = tmp.substr(0, tmp.find_last_of(".")); // remove mime extension
-    if (strstr(p, "sid=254"))
-    {
-      if (strcmp(ProtocolTable[Protocol_xSonosApiStream], parser.Scheme()) == 0)
-        itemId.append("F00092020").append(id);
-      else
-        itemId.append("F00032020").append(id);
-    }
-    else
-    {
-      if (strcmp(ProtocolTable[Protocol_xSonosApiStream], parser.Scheme()) == 0)
-        itemId.append("00092020").append(id);
-      else
-        itemId.append("00032020").append(id);
-    }
-  }
-  //
-  // service container: protocol x-rincon-cpcontainer
-  //
-  else if (strcmp(ProtocolTable[Protocol_xRinconCpcontainer], parser.Scheme()) == 0)
-  {
-    itemId.assign(parser.Path());
-  }
-  //
-  // sonos music library: uri x-rincon-playlist:RINCON_XXXXXXXXXXXXXXXXX
-  //
-  else if (strcmp(ProtocolTable[Protocol_xRinconPlaylist], parser.Scheme()) == 0)
-  {
-    if (!parser.Fragment())
-    {
-      DBG(DBG_ERROR, "%s: invalid uri (%s)\n", __FUNCTION__, mediaUri.c_str());
-      return "";
-    }
-    itemId.assign(parser.Fragment());
-  }
-  //
-  // sonos playlist: uri file:///jffs/settings/savedqueues.rsq
-  //
-  else if (strcmp(ProtocolTable[Protocol_file], parser.Scheme()) == 0 && strcmp("jffs/settings/savedqueues.rsq", parser.Path()) == 0)
-  {
-    if (!parser.Fragment())
-    {
-      DBG(DBG_ERROR, "%s: invalid uri (%s)\n", __FUNCTION__, mediaUri.c_str());
-      return "";
-    }
-    itemId.assign("SQ:").append(parser.Fragment());
-  }
-  //
-  // any other
-  //
-  else
-    itemId.assign(mediaUri);
-
-  return itemId;
+  if (desc != ServiceDescTable[ServiceDesc_default])
+    return true;
+  return false;
 }
 
 std::string System::GetLogoForService(const SMServicePtr& service, const std::string& placement)

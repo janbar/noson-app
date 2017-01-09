@@ -93,8 +93,6 @@ namespace NSROOT
     URIParser* m_uri;
     bool m_valid;
 
-    static std::string UrlDecode(const std::string& str);
-
     bool parsePresentationMap(const std::string& xml);
 
     bool makeSoapHeader();

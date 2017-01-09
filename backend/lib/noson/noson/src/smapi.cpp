@@ -27,6 +27,7 @@
 #include "private/wsresponse.h"
 #include "private/builtin.h"
 #include "private/cppdef.h"
+#include "private/urlencoder.h"
 
 #define DEVICE_PROVIDER         "Sonos"
 #define SMAPI_NAMESPACE         "http://www.sonos.com/Services/1.1"
@@ -138,7 +139,7 @@ bool SMAPI::GetMetadata(const std::string& id, int index, int count, bool recurs
 {
   char buf[20];
   ElementList args;
-  args.push_back(ElementPtr(new Element("id", UrlDecode(id)))); // id is url encoded
+  args.push_back(ElementPtr(new Element("id", urldecode(id)))); // id is url encoded
   int32_to_string(index, buf);
   args.push_back(ElementPtr(new Element("index", buf)));
   int32_to_string(count, buf);
@@ -152,7 +153,7 @@ bool SMAPI::GetMetadata(const std::string& id, int index, int count, bool recurs
 bool SMAPI::GetMediaMetadata(const std::string& id, SMAPIMetadata& metadata)
 {
   ElementList args;
-  args.push_back(ElementPtr(new Element("id", UrlDecode(id)))); // id is url encoded
+  args.push_back(ElementPtr(new Element("id", urldecode(id)))); // id is url encoded
 
   metadata.Reset(m_service, Request("getMediaMetadata", args).GetValue("getMediaMetadataResult"), id);
   return metadata.IsValid();
@@ -174,26 +175,6 @@ bool SMAPI::Search(const std::string& searchId, const std::string& term, int ind
 
   metadata.Reset(m_service, Request("search", args).GetValue("searchResult"), mappedId);
   return metadata.IsValid();
-}
-
-std::string SMAPI::UrlDecode(const std::string& str)
-{
-  std::string ret;
-  char ch;
-  int ii;
-  for (unsigned i = 0; i < str.length(); ++i)
-  {
-    if (str[i] == '%')
-    {
-      sscanf(str.substr(i + 1, 2).c_str(), "%x", &ii);
-      ch = static_cast<char>(ii);
-      ret.push_back(ch);
-      i += 2;
-    } else {
-      ret.push_back(str[i]);
-    }
-  }
-  return ret;
 }
 
 bool SMAPI::parsePresentationMap(const std::string& xml)

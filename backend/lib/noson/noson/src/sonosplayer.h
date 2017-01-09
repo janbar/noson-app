@@ -153,6 +153,9 @@ namespace NSROOT
     SMServiceList GetAvailableServices();
     SMServicePtr GetServiceForMedia(const std::string& mediaUri);
 
+    // Helpers
+    std::string GetItemIdFromUriMetadata(const DigitalItemPtr& uriMetadata);
+
   private:
     bool m_valid;
     std::string m_uuid;
