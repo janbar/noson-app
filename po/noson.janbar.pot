@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-09 01:28+0100\n"
+"POT-Creation-Date: 2017-01-10 00:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -373,7 +373,7 @@ msgid ""
 "every mood and occasion."
 msgstr ""
 
-#: ../app/components/Queue.qml:93 ../app/ui/Favorites.qml:129
+#: ../app/components/Queue.qml:95 ../app/ui/Favorites.qml:129
 #: ../app/ui/Favorites.qml:225 ../app/ui/Service.qml:180
 #: ../app/ui/Service.qml:305 ../app/ui/SongsView.qml:292
 msgid "Song"
