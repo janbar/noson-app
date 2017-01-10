@@ -132,6 +132,8 @@ MainView {
         currentlyWorking = true
         if (args.values.debug) { debugLevel = 4 }
         delayStartup.start()
+
+        customdebug("LANG=" + Qt.locale().name);
     }
 
     Timer {
@@ -388,6 +390,7 @@ MainView {
     // On failure: noZone is set to true
     function connectSonos() {
         if (Sonos.init(debugLevel)) {
+            Sonos.setLocale(Qt.locale().name);
             AllAlbumsModel.init(Sonos, "");
             AllArtistsModel.init(Sonos, "");
             AllGenresModel.init(Sonos, "");

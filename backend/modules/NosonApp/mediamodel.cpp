@@ -222,7 +222,7 @@ bool MediaModel::init(QObject* sonos, const QVariant& service, bool fill)
     return false;
   SAFE_DELETE(m_smapi);
   m_smapi = new SONOS::SMAPI(player);
-  if (!m_smapi || !m_smapi->Init(service.value<SONOS::SMServicePtr>()))
+  if (!m_smapi || !m_smapi->Init(service.value<SONOS::SMServicePtr>(), _sonos->getLocale().toUtf8().constData()))
     return false;
   m_path.clear();
   return ListModel::init(sonos, "", fill);
