@@ -54,6 +54,10 @@ public:
 
   Q_INVOKABLE bool init(int debug = 0);
 
+  Q_INVOKABLE void setLocale(const QString& locale);
+
+  Q_INVOKABLE QString getLocale();
+
   Q_INVOKABLE void renewSubscriptions();
 
   Q_INVOKABLE ZonesModel* getZones();
@@ -176,6 +180,8 @@ private:
 
   SONOS::System m_system;
   SONOS::OS::CThreadPool m_threadpool;
+
+  SONOS::Locked<QString> m_locale; // language_COUNTRY
 
   static void playerEventCB(void* handle);
   static void topologyEventCB(void* handle);

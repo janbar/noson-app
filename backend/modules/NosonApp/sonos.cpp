@@ -53,6 +53,7 @@ Sonos::Sonos(QObject* parent)
 , m_shareUpdateID(0)
 , m_system(this, topologyEventCB)
 , m_threadpool(5)
+, m_locale("en_US")
 {
   SONOS::DBGLevel(2);
 }
@@ -70,6 +71,16 @@ bool Sonos::init(int debug)
 {
   SONOS::DBGLevel(debug);
   return m_system.Discover();
+}
+
+void Sonos::setLocale(const QString& locale)
+{
+  m_locale.Store(locale);
+}
+
+QString Sonos::getLocale()
+{
+  return m_locale.Load();
 }
 
 void Sonos::renewSubscriptions()
