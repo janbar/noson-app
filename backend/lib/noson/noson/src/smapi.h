@@ -46,7 +46,7 @@ namespace NSROOT
     SMAPI(const PlayerPtr& player);
     virtual ~SMAPI();
 
-    bool Init(const SMServicePtr& smsvc);
+    bool Init(const SMServicePtr& smsvc, const std::string& locale);
     
     const ElementList& AvailableSearchCategories() const { return m_searchCategories; }
 
@@ -83,6 +83,7 @@ namespace NSROOT
   private:
     OS::CMutex* m_mutex;
     PlayerPtr m_player;
+    std::string m_locale;
     std::string m_deviceSerialNumber;
     std::string m_deviceHouseholdID;
     std::string m_soapHeader;

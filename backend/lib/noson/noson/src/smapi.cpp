@@ -79,7 +79,7 @@ SMAPI::~SMAPI()
   SAFE_DELETE(m_mutex);
 }
 
-bool SMAPI::Init(const SMServicePtr& smsvc)
+bool SMAPI::Init(const SMServicePtr& smsvc, const std::string& locale)
 {
   OS::CLockGuard lock(*m_mutex);
   m_valid = false;
@@ -87,6 +87,7 @@ bool SMAPI::Init(const SMServicePtr& smsvc)
   m_service = smsvc;
   if (!m_service)
     return false;
+  m_locale.assign(locale);
   if (!m_service->GetPresentationMap())
   {
     m_presentation.clear();
@@ -335,6 +336,8 @@ ElementList SMAPI::DoCall(const std::string& action, const ElementList& args)
 
   WSRequest request(*m_uri, HRM_POST);
   request.SetUserAgent(m_service->GetAgent());
+  if (!m_locale.empty())
+    request.SetHeader("Accept-Language", std::string(m_locale).append(", en-US;q=0.9"));
   request.SetHeader("SOAPAction", soapaction);
   request.SetContentCustom(CT_XML, content.c_str());
   WSResponse response(request);
