@@ -129,12 +129,38 @@ SMAPIItemList SMAPIMetadata::GetItems()
       itemType = playlist;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_playlistContainer));
     }
-    else if (media.GetKey() == "mediaCollection")
+    else if (mediaType == "streamList")
     {
-      itemType = mediaCollection;
+      itemType = streamList;
+      data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_playlistContainer));
+    }
+    else if (mediaType == "trackList")
+    {
+      itemType = trackList;
+      data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_playlistContainer));
+    }
+    else if (mediaType == "container")
+    {
+      itemType = container;
+      data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_storageFolder));
+    }
+    else if (mediaType == "collection")
+    {
+      itemType = collection;
+      data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_storageFolder));
+    }
+    else if (mediaType == "favorites")
+    {
+      itemType = favorites;
+      data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_storageFolder));
+    }
+    else if (mediaType == "search")
+    {
+      itemType = search;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_storageFolder));
     }
     else
+      // no browsable
       data.item.reset(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_unknown));
 
     switch (data.item->subType())
@@ -316,7 +342,7 @@ void SMAPIMetadata::MakeUriMetadata(const SMServicePtr& service, ItemType itemTy
     res->SetAttribut("protocolInfo", "x-rincon-cpcontainer:*:*:*");
     uriMetadata->SetProperty(res);
   }
-  else if (itemType == playlist)
+  else if (itemType == playlist || itemType == trackList)
   {
     uriMetadata->SetObjectID(std::string("0006206c").append(itemId));
     uriMetadata->SetParentID(std::string("1008006c").append(parentId));

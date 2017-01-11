@@ -57,17 +57,10 @@ namespace NSROOT
     const ElementList& GetElements() const { return m_list; }
 
     typedef enum {
-      track,
-      stream,
-      program,
-      show,
-      album,
-      albumList,
-      artist,
-      artistTrackList,
-      genre,
-      playlist,
-      mediaCollection,
+      track, stream, program,
+      show, album, albumList, artist, artistTrackList, genre, playlist,
+      streamList, trackList, search, favorites, collection, container,
+      favorite, audiobook,
       other,
     } ItemType;
 

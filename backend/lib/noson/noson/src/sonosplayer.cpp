@@ -689,7 +689,7 @@ std::string Player::GetItemIdFromUriMetadata(const DigitalItemPtr& uriMetadata)
   // the id should be here for many cases
   const std::string& itemId = uriMetadata->GetObjectID();
 
-  if (itemId.compare(0, 2, "Q:") == 0)
+  if (itemId.compare(0, 2, "Q:") == 0 || itemId.compare(0, 3, "SQ:") == 0)
   {
     const std::string& uri = uriMetadata->GetValue("res");
     URIParser parser(uri);

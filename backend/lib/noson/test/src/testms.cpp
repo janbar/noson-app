@@ -97,25 +97,48 @@ int main(int argc, char** argv)
           PRINT1("square icon = %s\n", SONOS::System::GetLogoForService(item, "square").c_str());
           PRINT("\n");
 
-          if (item->GetName() == tstServiceName)
+          if (tstServiceName.empty() && item->GetName() == "TuneIn")
           {
+            SONOS::DBGLevel(3);
             PRINT1("Testing service %s ...\n", item->GetName().c_str());
             SONOS::SMAPI sm(playerPtr);
-            sm.Init(item);
+            sm.Init(item, "fr_FR");
             SONOS::SMAPIMetadata meta;
-            SONOS::DBGLevel(2);
-            if (!sm.GetMetadata(tstServiceMediaId, 0, 50, false, meta))
-              sm.GetMediaMetadata(tstServiceMediaId, meta);
-            //sm.Search("stations", "jazz", 0, 10, meta);
-            SONOS::DBGLevel(3);
-            PRINT1("%s", "\n");
+            PRINT1("\n...search stations for term '%s'\n", "jazz");
+            sm.Search("stations", "jazz", 0, 10, meta);
             for (auto&& data : meta.GetItems())
             {
+              PRINT2("item: %s, %s\n", data.item->GetObjectID().c_str(), data.item->GetValue("dc:title").c_str());
               if (data.uriMetadata)
                 PRINT1("%s\n\n", data.uriMetadata->DIDL().c_str());
               else
                 PRINT1("%s\n\n", data.item->DIDL().c_str());
             }
+            SONOS::DBGLevel(2);
+          }
+          if (item->GetName() == tstServiceName)
+          {
+            SONOS::DBGLevel(3);
+            PRINT1("Testing service %s ...\n", item->GetName().c_str());
+            SONOS::SMAPI sm(playerPtr);
+            sm.Init(item, "fr_FR");
+
+            for (auto&& search : sm.AvailableSearchCategories())
+              PRINT2("Search category: %s, %s\n", search->GetKey().c_str(), search->c_str());
+
+            SONOS::SMAPIMetadata meta;
+            PRINT1("\n...browse id '%s'\n", tstServiceMediaId.c_str());
+            if (!sm.GetMetadata(tstServiceMediaId, 0, 10, false, meta))
+              sm.GetMediaMetadata(tstServiceMediaId, meta);
+            for (auto&& data : meta.GetItems())
+            {
+              PRINT2("item: %s, %s\n", data.item->GetObjectID().c_str(), data.item->GetValue("dc:title").c_str());
+              if (data.uriMetadata)
+                PRINT1("%s\n\n", data.uriMetadata->DIDL().c_str());
+              else
+                PRINT1("%s\n\n", data.item->DIDL().c_str());
+            }
+            SONOS::DBGLevel(2);
           }
         }
       }
