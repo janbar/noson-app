@@ -221,7 +221,7 @@ SMServiceList MusicServices::GetEnabledServices()
       {
         SMAccountList la = GetAccountsForService(accounts, serviceType);
         for (SMAccountList::iterator ita = la.begin(); ita != la.end(); ++ita)
-            list.push_back(SMServicePtr(new SMService(agent, *ita, *it)));
+          list.push_back(SMServicePtr(new SMService(agent, *ita, *it)));
       }
     }
   }
@@ -339,7 +339,7 @@ bool MusicServices::LoadAccounts(SMAccountList& accounts, std::string& agentStr)
     <MD>1</MD>
     <NN>nickname</NN>
     <OADevID></OADevID>
-    <Hash></Hash>
+    <Key></Key>
     </Account>
     </Accounts>
     </ZPSupportInfo>
@@ -385,6 +385,7 @@ bool MusicServices::LoadAccounts(SMAccountList& accounts, std::string& agentStr)
     else
     {
       DBG(DBG_DEBUG, "%s: account %s (%s) is available\n", __FUNCTION__, item->GetSerialNum().c_str(), item->GetType().c_str());
+      SMOAKeyring::Load(*item); // load auth from keyring if exist
       accounts.push_back(item);
     }
     elem = elem->NextSiblingElement(NULL);
@@ -398,7 +399,54 @@ SMAccountList MusicServices::GetAccountsForService(const SMAccountList& accounts
   for (SMAccountList::const_iterator it = accounts.begin(); it != accounts.end(); ++it)
   {
     if ((*it)->GetType() == serviceType)
-    list.push_back((*it));
+      list.push_back((*it));
   }
   return list;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////
+//// Store for AppLink keyring
+////
+SMOAKeyring::keyring new_keyring;
+Locked<SMOAKeyring::keyring> SMOAKeyring::g_keyring(new_keyring);
+
+void SMOAKeyring::Store(const std::string& type, const std::string& serialNum, const std::string& key, const std::string& token)
+{
+  // hold keyring lock until return
+  Locked<SMOAKeyring::keyring>::pointer p = g_keyring.Get();
+  for (keyring::iterator it = p->begin(); it != p->end(); ++it)
+  {
+    if (it->type == type && it->serialNum == serialNum)
+    {
+      it->key.assign(key);
+      it->token.assign(token);
+      return;
+    }
+  }
+  p->push_back(OAuth(type, serialNum, key, token));
+}
+
+void SMOAKeyring::Load(SMAccount& account)
+{
+  const std::string& type = account.GetType();
+  const std::string& serialNum = account.GetSerialNum();
+  // hold keyring lock until return
+  Locked<SMOAKeyring::keyring>::pointer p = g_keyring.Get();
+  for (keyring::iterator it = p->begin(); it != p->end(); ++it)
+  {
+    if (it->type == type && it->serialNum == serialNum)
+    {
+      SMAccount::OACredentials oa = account.GetOACredentials();
+      oa.key.assign(it->key);
+      oa.token.assign(it->token);
+      account.SetOACredentials(oa);
+      return;
+    }
+  }
+}
+
+void SMOAKeyring::Reset()
+{
+  g_keyring.Store(new_keyring);
 }

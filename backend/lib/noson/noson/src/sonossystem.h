@@ -64,7 +64,7 @@ namespace NSROOT
     bool IsConnected() const;
 
     const ZonePtr& GetConnectedZone() const { return m_connectedZone.zone; }
-    
+
     const PlayerPtr& GetPlayer() const { return m_connectedZone.player; }
 
     // Implements EventSubscriber
@@ -82,6 +82,15 @@ namespace NSROOT
      * @return uri string for the requested logo
      */
     static std::string GetLogoForService(const SMServicePtr& service, const std::string& placement);
+
+    /**
+     * Register OAuth data for service using AppLink policy
+     * @param type The service type
+     * @param sn The serial of account
+     * @param key The key required to refresh token
+     * @param token The current token (optional)
+     */
+    static void AddServiceOAuth(const std::string& type, const std::string& sn, const std::string& key, const std::string& token = "");
 
   private:
     mutable OS::CMutex* m_mutex;

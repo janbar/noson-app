@@ -75,7 +75,7 @@ SMAPIItemList SMAPIMetadata::GetItems()
 
     // initialize the item
     SMAPIItem data;
-    data.displayType = SMAPIItem::Grid;
+    data.displayType = SMAPIItem::Editorial;
 
     ItemType itemType = other;
     if (mediaType == "track")
@@ -97,16 +97,19 @@ SMAPIItemList SMAPIMetadata::GetItems()
     {
       itemType = show;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_playlistContainer));
+      data.displayType = SMAPIItem::List;
     }
     else if (mediaType == "album")
     {
       itemType = album;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_album));
+      data.displayType = SMAPIItem::List;
     }
     else if (mediaType == "albumList")
     {
       itemType = albumList;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_storageFolder));
+      data.displayType = SMAPIItem::Grid;
     }
     else if (mediaType == "artist")
     {
@@ -117,6 +120,7 @@ SMAPIItemList SMAPIMetadata::GetItems()
     {
       itemType = artistTrackList;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_playlistContainer));
+      data.displayType = SMAPIItem::List;
     }
     else if (mediaType == "genre")
     {
@@ -127,16 +131,19 @@ SMAPIItemList SMAPIMetadata::GetItems()
     {
       itemType = playlist;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_playlistContainer));
+      data.displayType = SMAPIItem::List;
     }
     else if (mediaType == "streamList")
     {
       itemType = streamList;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_playlistContainer));
+      data.displayType = SMAPIItem::List;
     }
     else if (mediaType == "trackList")
     {
       itemType = trackList;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_playlistContainer));
+      data.displayType = SMAPIItem::List;
     }
     else if (mediaType == "container")
     {
@@ -169,7 +176,6 @@ SMAPIItemList SMAPIMetadata::GetItems()
       data.item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
       data.item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
       data.item->SetProperty(DIDL_QNAME_RINC "description", media.GetAttribut("summary"));
-      data.displayType = SMAPIItem::List;
       break;
     case DigitalItem::SubType_storageFolder:
       data.item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
@@ -181,7 +187,6 @@ SMAPIItemList SMAPIMetadata::GetItems()
       data.item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
       data.item->SetProperty(DIDL_QNAME_DC "creator", media.GetAttribut("author"));
       data.item->SetProperty(DIDL_QNAME_DC "contributor", media.GetAttribut("artist"));
-      data.displayType = SMAPIItem::List;
       break;
     case DigitalItem::SubType_genre:
       data.item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
@@ -223,11 +228,13 @@ SMAPIItemList SMAPIMetadata::GetItems()
 
     // overriding default display type
     const std::string& itemDisplayType = media.GetAttribut("displayType");
-    if (itemDisplayType == "List")
+    if (itemDisplayType == "GRID")
+      data.displayType = SMAPIItem::Grid;
+    else if (itemDisplayType == "LIST")
       data.displayType = SMAPIItem::List;
-    else if (itemDisplayType == "Hero")
+    else if (itemDisplayType == "HERO")
       data.displayType = SMAPIItem::Hero;
-    else if (itemDisplayType == "Editorial")
+    else if (itemDisplayType == "EDITORIAL")
       data.displayType = SMAPIItem::Editorial;
 
     if (media.GetAttribut("canPlay") == "true")
@@ -291,7 +298,7 @@ void SMAPIMetadata::MakeUriMetadata(const SMServicePtr& service, ItemType itemTy
   {
     // special rule for podcast (mime = audio/vnd.radiotime) from service TuneIn
     // prefix F00032020
-    if (sid == "254") // mimeType = 
+    if (sid == "254")
     {
       // tag <res>
       std::string rval(ProtocolTable[Protocol_xSonosApiRTRecent]);

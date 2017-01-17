@@ -22,6 +22,7 @@
 #include "zonegrouptopology.h"
 #include "digitalitem.h"
 #include "didlparser.h"
+#include "musicservices.h"
 #include "private/socket.h"
 #include "private/wsresponse.h"
 #include "private/os/threads/timeout.h"
@@ -259,6 +260,11 @@ std::string System::GetLogoForService(const SMServicePtr& service, const std::st
     if ((*it)->GetKey() == typeId && (*it)->GetAttribut("placement") == placement)
       return (**it);
   return Element::Nil();
+}
+
+void System::AddServiceOAuth(const std::string& type, const std::string& sn, const std::string& key, const std::string& token)
+{
+  SMOAKeyring::Store(type, sn, key, token);
 }
 
 bool System::FindDeviceDescription(std::string& url)

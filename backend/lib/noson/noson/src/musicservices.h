@@ -48,6 +48,8 @@ namespace NSROOT
     const std::string& GetMetadata() const { return GetAttribut("MD"); }
     const std::string& GetNickname() const { return GetAttribut("NN"); }
 
+    bool HasOACredentials() const { return !GetAttribut("Key").empty(); }
+
     struct OACredentials
     {
       OACredentials(const std::string& _devId, const std::string& _token, const std::string& _key)
@@ -158,6 +160,54 @@ namespace NSROOT
 
     static SMAccountList GetAccountsForService(const SMAccountList& accounts, const std::string& serviceType);
 
+  };
+
+  //////////////////////////////////////////////////////////////////////////////
+  ////
+  //// Store for AppLink keyring
+  ////
+  class SMOAKeyring
+  {
+  public:
+    /**
+     * Add AppLink auth in keyring.
+     * Known auth must be registered before getting enabled services. In other cases AppLink account won't be valid.
+     * @param type The related account type
+     * @param serialNum The account serial
+     * @param key The key required to initiate handshake and to refresh the token
+     * @param token The current token (optional)
+     */
+    static void Store(const std::string& type, const std::string& serialNum, const std::string& key, const std::string& token = "");
+
+    /**
+     * Load auth with keyring data for related account.
+     * @param type The related account type
+     * @param serialNum The account serial
+     * @param key (out) key to fill
+     * @param token (out) token to fill
+     */
+    static void Load(SMAccount& account);
+
+    /**
+     * Reset keyring data.
+     */
+    static void Reset();
+
+    struct OAuth
+    {
+      OAuth(  const std::string& _type, const std::string& _sn,
+              const std::string& _key, const std::string& _token)
+      : type(_type), serialNum(_sn), key(_key), token(_token) { }
+      std::string type;
+      std::string serialNum;
+      std::string key;
+      std::string token;
+    };
+
+    typedef std::vector<OAuth> keyring;
+
+  private:
+    static Locked<keyring> g_keyring;
   };
 }
 

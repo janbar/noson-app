@@ -281,9 +281,9 @@ bool SMAPI::makeSoapHeader()
 {
   m_soapHeader.append("<credentials xmlns=\"" SMAPI_NAMESPACE "\">");
 
-  SMAccount::OACredentials auth = m_service->GetAccount()->GetOACredentials();
-  if (!auth.devId.empty())
+  if (m_service->GetAccount()->HasOACredentials())
   {
+    SMAccount::OACredentials auth = m_service->GetAccount()->GetOACredentials();
     m_soapHeader.append("<deviceId>").append(m_deviceSerialNumber).append("</deviceId>");
     m_soapHeader.append("<deviceProvider>" DEVICE_PROVIDER "</deviceProvider>");
     m_soapHeader.append("<loginToken>");
@@ -438,7 +438,7 @@ void SMAPI::SetFault(const ElementList& vars)
   OS::CLockGuard lock(*m_mutex);
   m_fault = vars;
   for (ElementList::const_iterator it = vars.begin(); it != vars.end(); ++it)
-    DBG(DBG_ERROR, "%s: %s (%s)\n", __FUNCTION__, (*it)->GetKey().c_str(), (*it)->c_str());
+    DBG(DBG_DEBUG, "%s: %s (%s)\n", __FUNCTION__, (*it)->GetKey().c_str(), (*it)->c_str());
 }
 
 ElementList SMAPI::Request(const std::string& action, const ElementList& args)

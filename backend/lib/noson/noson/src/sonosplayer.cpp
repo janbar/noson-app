@@ -629,10 +629,12 @@ SMServiceList Player::GetAvailableServices()
   SMServiceList list;
   for (SMServiceList::iterator it = m_smservices.begin(); it != m_smservices.end(); ++it)
   {
-    //@FIXME AppLink not supported, so reject service uses it
     const std::string& auth = (*it)->GetPolicy()->GetAttribut("Auth");
-    if ((*it)->GetContainerType() == "MService" &&
-            (auth == "Anonymous" || auth == "UserId" || auth == "DeviceLink"))
+    if ((*it)->GetContainerType() != "MService")
+      continue;
+    if (auth == "Anonymous" || auth == "UserId" || auth == "DeviceLink")
+      list.push_back(*it);
+    else if (auth == "AppLink" && (*it)->GetAccount()->HasOACredentials())
       list.push_back(*it);
   }
   return list;
