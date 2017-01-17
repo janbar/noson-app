@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the  package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-11 23:21+0000\n"
+"POT-Creation-Date: 2017-01-18 00:38+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,22 +18,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ../app/Main.qml:86
-#: /home/jlb/src/janbar/QML/build-noson-app-armhf-15-release/po/noson.desktop.in.h:1
+#: ../app/Main.qml:87
+#: /home/jlb/src/janbar/QML/build-noson-app/po/noson.desktop.in.h:1
 msgid "Noson"
 msgstr ""
 
-#: ../app/Main.qml:240
+#: ../app/Main.qml:244
 msgid "Index loaded"
 msgstr ""
 
-#: ../app/Main.qml:368 ../app/Main.qml:442 ../app/Main.qml:461
-#: ../app/Main.qml:469 ../app/Main.qml:479 ../app/Main.qml:484
-#: ../app/Main.qml:516 ../app/Main.qml:530 ../app/Main.qml:542
-#: ../app/Main.qml:553 ../app/Main.qml:561 ../app/Main.qml:571
-#: ../app/Main.qml:581 ../app/Main.qml:588 ../app/Main.qml:595
-#: ../app/Main.qml:604 ../app/Main.qml:613 ../app/Main.qml:621
-#: ../app/Main.qml:628 ../app/Main.qml:635 ../app/Main.qml:645
+#: ../app/Main.qml:372 ../app/Main.qml:451 ../app/Main.qml:470
+#: ../app/Main.qml:478 ../app/Main.qml:488 ../app/Main.qml:493
+#: ../app/Main.qml:525 ../app/Main.qml:539 ../app/Main.qml:551
+#: ../app/Main.qml:562 ../app/Main.qml:570 ../app/Main.qml:580
+#: ../app/Main.qml:590 ../app/Main.qml:597 ../app/Main.qml:604
+#: ../app/Main.qml:613 ../app/Main.qml:622 ../app/Main.qml:630
+#: ../app/Main.qml:637 ../app/Main.qml:644 ../app/Main.qml:654
 #: ../app/components/Dialog/DialogSelectSource.qml:94
 #: ../app/components/Dialog/DialogSelectSource.qml:105
 #: ../app/components/Dialog/DialogSelectSource.qml:116
@@ -41,31 +41,31 @@ msgstr ""
 msgid "Action can't be performed"
 msgstr ""
 
-#: ../app/Main.qml:385
+#: ../app/Main.qml:389
 msgid "Debug: "
 msgstr ""
 
-#: ../app/Main.qml:439
+#: ../app/Main.qml:448
 msgid "Refreshing of index is running"
 msgstr ""
 
-#: ../app/Main.qml:466 ../app/Main.qml:527 ../app/Main.qml:539
-#: ../app/Main.qml:601 ../app/ui/AddToPlaylist.qml:138
+#: ../app/Main.qml:475 ../app/Main.qml:536 ../app/Main.qml:548
+#: ../app/Main.qml:610 ../app/ui/AddToPlaylist.qml:138
 msgid "song added"
 msgstr ""
 
-#: ../app/Main.qml:513
+#: ../app/Main.qml:522
 #, qt-format
 msgid "%1 song added"
 msgid_plural "%1 songs added"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/Main.qml:550
+#: ../app/Main.qml:559
 msgid "Queue cleared"
 msgstr ""
 
-#: ../app/Main.qml:610
+#: ../app/Main.qml:619
 #, qt-format
 msgid "%1 song removed"
 msgid_plural "%1 songs removed"
@@ -450,8 +450,7 @@ msgstr ""
 
 #: ../app/ui/Favorites.qml:127 ../app/ui/Favorites.qml:223
 #: ../app/ui/Favorites.qml:295 ../app/ui/Genres.qml:144
-#: ../app/ui/Genres.qml:152 ../app/ui/Service.qml:178
-#: ../app/ui/Service.qml:303
+#: ../app/ui/Genres.qml:152 ../app/ui/Service.qml:178 ../app/ui/Service.qml:303
 msgid "Genre"
 msgstr ""
 
