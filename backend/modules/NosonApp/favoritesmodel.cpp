@@ -24,7 +24,8 @@
 #include "../../lib/noson/noson/src/contentdirectory.h"
 
 #include <cstdio> // for strncpy
-#include <cctype> // for isdigit
+#include <cctype>
+#include <qt5/QtCore/qset.h> // for isdigit
 
 FavoriteItem::FavoriteItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
 : m_ptr(ptr)
@@ -107,6 +108,7 @@ void FavoritesModel::addItem(FavoriteItem* item)
     SONOS::LockGuard lock(m_lock);
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     m_items << item;
+    m_objectIDs.insert(item->objectId(), item->id());
     endInsertRows();
   }
   emit countChanged();
@@ -219,6 +221,7 @@ void FavoritesModel::clear()
     beginRemoveRows(QModelIndex(), 0, m_items.count());
     qDeleteAll(m_items);
     m_items.clear();
+    m_objectIDs.clear();
     endRemoveRows();
   }
   emit countChanged();
@@ -280,11 +283,9 @@ QString FavoritesModel::findFavorite(const QVariant& payload) const
     SONOS::LockGuard lock(m_lock);
     //@FIXME handle queued item
     QString objId = QString::fromUtf8(player->GetItemIdFromUriMetadata(ptr).c_str());
-    for (QList<FavoriteItem*>::const_iterator it = m_items.begin(); it != m_items.end(); ++it)
-    {
-      if ((*it)->objectId() == objId)
-        return (*it)->id();
-    }
+    QMap<QString, QString>::ConstIterator it = m_objectIDs.find(objId);
+    if (it != m_objectIDs.end())
+      return it.value();
   }
   return "";
 }

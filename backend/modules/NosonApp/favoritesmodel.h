@@ -24,6 +24,7 @@
 #include "listmodel.h"
 
 #include <QAbstractListModel>
+#include <QMap>
 
 class FavoriteType : public QObject
 {
@@ -151,6 +152,7 @@ protected:
 
 private:
   QList<FavoriteItem*> m_items;
+  QMap<QString, QString> m_objectIDs;
 };
 
 #endif /* FAVORITESMODEL_H */
