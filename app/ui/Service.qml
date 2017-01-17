@@ -34,7 +34,7 @@ MusicPage {
     property var serviceItem: null
     property bool loaded: false  // used to detect difference between first and further loads
     property bool isRoot: mediaModel.isRoot
-    property int displayType: 0 /*Grid*/
+    property int displayType: 3 /*Editorial*/
     property bool isListView: false
 
     // used to detect view has updated properties since first load.
@@ -280,7 +280,7 @@ MusicPage {
 
     MusicGridView {
         id: mediaGrid
-        itemWidth: units.gu(15)
+        itemWidth: displayType == 3 /*Editorial*/ ? units.gu(12) : units.gu(15)
         heightOffset: units.gu(9.5)
 
         model: mediaModel
