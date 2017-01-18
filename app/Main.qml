@@ -156,7 +156,7 @@ MainView {
 
             // if a tab index exists restore it, otherwise goto Recent if there are items otherwise go to Albums
             tabs.selectedTabIndex = startupSettings.tabIndex === -1
-                    ? albumsTab.index
+                    ? servicesTab.index
                     : (startupSettings.tabIndex > tabs.count - 1
                        ? tabs.count - 1 : startupSettings.tabIndex)
 
