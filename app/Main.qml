@@ -75,6 +75,7 @@ MainView {
         property bool firstRun: true
         property string zoneName: ""
         property int tabIndex: -1
+        property string accounts: ""
     }
 
     // The player handles all actions to control the music
@@ -134,6 +135,13 @@ MainView {
         delayStartup.start()
 
         customdebug("LANG=" + Qt.locale().name);
+
+        // init SMAPI third party accounts (AppLink)
+        var acls = deserializeACLS(startupSettings.accounts);
+        for (var i = 0; i < acls.length; ++i) {
+            customdebug("register account: type=" + acls[i].type + " sn=" + acls[i].sn + " key=" + acls[i].key.substr(0, 1) + "...");
+            Sonos.addServiceOAuth(acls[i].type, acls[i].sn, acls[i].key);
+        }
     }
 
     Timer {
@@ -384,6 +392,38 @@ MainView {
         if (debug) {
             console.debug(i18n.tr("Debug: ")+text);
         }
+    }
+
+    // ACLS is array as [{type, sn, key}]
+    function serializeACLS(acls) {
+        var str = "";
+        for (var i = 0; i < acls.length; ++i) {
+            if (i > 0)
+                str += "|";
+            str += acls[i].type + "," + acls[i].sn + "," + acls[i].key;
+        }
+        return str;
+    }
+
+    // str format look like 'type0,sn0,key0|type1,sn1,key1'
+    function deserializeACLS(str) {
+        var acls = [];
+        var rows = str.split("|");
+        for (var r = 0; r < rows.length; ++r) {
+            var attrs = rows[r].split(",");
+            if (attrs.length >= 3) {
+                var acl = {
+                    type: attrs[0],
+                    sn  : attrs[1],
+                    key : attrs[2] };
+                if (attrs.length > 3) {
+                    for (var i = 3; i < attrs.length; ++i)
+                        acl.key += "," + attrs[i];
+                }
+                acls.push(acl);
+            }
+        }
+        return acls;
     }
 
     // Try to connect to SONOS system
