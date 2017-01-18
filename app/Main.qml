@@ -431,13 +431,13 @@ MainView {
     function connectSonos() {
         if (Sonos.init(debugLevel)) {
             Sonos.setLocale(Qt.locale().name);
+            AllFavoritesModel.init(Sonos, "");
+            AllServicesModel.init(Sonos);
             AllAlbumsModel.init(Sonos, "");
             AllArtistsModel.init(Sonos, "");
             AllGenresModel.init(Sonos, "");
             AllRadiosModel.init(Sonos, "R:0/0");
             AllPlaylistsModel.init(Sonos, "");
-            AllFavoritesModel.init(Sonos, "");
-            AllServicesModel.init(Sonos);
             // enable info on index loaded
             infoLoadedIndex = true;
             return true;
