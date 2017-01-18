@@ -39,6 +39,7 @@ namespace NSROOT
   class SMAccount : protected Element
   {
     friend class MusicServices;
+    friend class SMOAKeyring;
   public:
     SMAccount();
     virtual ~SMAccount();

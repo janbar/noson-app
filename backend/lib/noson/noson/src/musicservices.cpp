@@ -58,6 +58,8 @@ void SMAccount::SetOACredentials(const OACredentials& auth)
   SetAttribut("OADevID", auth.devId);
   SetAttribut("Token", auth.token);
   SetAttribut("Key", auth.key);
+  // update keyring store for reuse on account reload
+  SMOAKeyring::Store(GetType(), GetSerialNum(), auth.key, auth.token);
 }
 
 SMService::SMService(const std::string& agent, const SMAccountPtr& account, const ElementList& vars)
@@ -385,7 +387,8 @@ bool MusicServices::LoadAccounts(SMAccountList& accounts, std::string& agentStr)
     else
     {
       DBG(DBG_DEBUG, "%s: account %s (%s) is available\n", __FUNCTION__, item->GetSerialNum().c_str(), item->GetType().c_str());
-      SMOAKeyring::Load(*item); // load auth from keyring if exist
+      if (!item->GetAttribut("OADevID").empty())
+        SMOAKeyring::Load(*item); // load OAuth data from keyring if exist
       accounts.push_back(item);
     }
     elem = elem->NextSiblingElement(NULL);
@@ -437,10 +440,8 @@ void SMOAKeyring::Load(SMAccount& account)
   {
     if (it->type == type && it->serialNum == serialNum)
     {
-      SMAccount::OACredentials oa = account.GetOACredentials();
-      oa.key.assign(it->key);
-      oa.token.assign(it->token);
-      account.SetOACredentials(oa);
+      account.SetAttribut("Key", it->key);
+      account.SetAttribut("Token", it->token);
       return;
     }
   }
