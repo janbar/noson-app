@@ -297,7 +297,7 @@ bool SMAPI::makeSoapHeader()
     m_soapHeader.append("<deviceId>").append(m_deviceSerialNumber).append("</deviceId>");
     m_soapHeader.append("<deviceProvider>" DEVICE_PROVIDER "</deviceProvider>");
     std::string policyAuth = m_service->GetPolicy()->GetAttribut("Auth");
-    if (policyAuth == "UserId" || policyAuth == "DeviceLink")
+    if (policyAuth != "Anonymous")
     {
       ElementList vars;
       m_player->GetSessionId(m_service->GetId(), m_service->GetAccount()->GetUserName(), vars);
