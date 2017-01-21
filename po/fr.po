@@ -369,6 +369,25 @@ msgid ""
 "every mood and occasion."
 msgstr "Profitez pleinement de Sonos en appuyant sur l'icône %1 pour commencer à créer des listes de lecture pour chaque humeur et chaque occasion."
 
+#: ../app/components/ServiceRegistration.qml:44
+msgid "Registering the service"
+msgstr "Activation du service"
+
+#: ../app/components/ServiceRegistration.qml:56
+msgid ""
+"This will require to authenticate against the music service again, as "
+"credentials cannot be retrieved from Sonos device."
+msgstr "Cela nécessitera de s'authentifier à nouveau au près du service de musique, car les informations d'identification ne peuvent pas être récupérées à partir du dispositif Sonos."
+
+#. TRANSLATORS: this appears in a button with limited space (around 30 characters)
+#: ../app/components/ServiceRegistration.qml:81
+msgid "Start service registration"
+msgstr "Démarrer l'activation du service"
+
+#: ../app/components/ServiceRegistration.qml:97
+msgid "Click the link below to authorize this application to use the service."
+msgstr "Cliquez sur le lien ci-dessous pour autoriser cette application à utiliser le service."
+
 #. TRANSLATORS: this appears in a button with limited space (around 14
 #. characters)
 #: ../app/components/ViewButton/PlayAllButton.qml:29
@@ -456,6 +475,10 @@ msgstr "<Non Défini>"
 #: ../app/ui/Group.qml:31 ../app/ui/Zones.qml:210
 msgid "Group"
 msgstr "Groupe"
+
+#: ../app/ui/MusicServices.qml:35
+msgid "My services"
+msgstr "Mes services"
 
 #: ../app/ui/NoZoneState.qml:109
 msgid "No Sonos zone found"
