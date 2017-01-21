@@ -104,12 +104,36 @@ private:
   bool m_isContainer;
 };
 
+class MediaAuth : public QObject
+{
+  Q_OBJECT
+  Q_PROPERTY(QString type READ type)
+  Q_PROPERTY(QString serialNum READ serialNum)
+  Q_PROPERTY(QString key READ key)
+  Q_PROPERTY(QString token READ token)
+
+public:
+  MediaAuth(QObject* parent = 0) : QObject(parent) { }
+  virtual ~MediaAuth() { }
+
+  QString type() { return QString::fromUtf8(m_auth.type.c_str()); }
+  QString serialNum() { return QString::fromUtf8(m_auth.serialNum.c_str()); }
+  QString key() { return QString::fromUtf8(m_auth.key.c_str()); }
+  QString token() { return QString::fromUtf8(m_auth.token.c_str()); }
+
+  void resetAuth(const SONOS::SMOAKeyring::OAuth& auth) { m_auth = auth; }
+
+private:
+  SONOS::SMOAKeyring::OAuth m_auth;
+};
+
 class MediaModel : public QAbstractListModel, public ListModel
 {
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
   Q_PROPERTY(int totalCount READ totalCount NOTIFY totalCountChanged)
   Q_PROPERTY(bool isRoot READ isRoot NOTIFY isRootChanged)
+  Q_PROPERTY(bool isAuthExpired READ isAuthExpired NOTIFY authStatusChanged())
 
 public:
   enum AnyRoles
@@ -164,6 +188,14 @@ public:
 
   Q_INVOKABLE int previousDisplayType() const;
 
+  bool isAuthExpired() const;
+
+  Q_INVOKABLE QString beginDeviceRegistration();
+
+  Q_INVOKABLE int requestDeviceAuth(); // 0: retry, 1: succeeded, 2: failed
+
+  Q_INVOKABLE MediaAuth* getDeviceAuth();
+
   Q_INVOKABLE bool asyncLoad();
 
   virtual void handleDataUpdate();
@@ -175,6 +207,7 @@ signals:
   void countChanged();
   void totalCountChanged();
   void isRootChanged();
+  void authStatusChanged();
 
 protected:
   QHash<int, QByteArray> roleNames() const;
@@ -183,6 +216,7 @@ private:
   QList<MediaItem*> m_items;
 
   SONOS::SMAPI* m_smapi;
+  SONOS::SMOAKeyring::OAuth m_auth;
 
   struct Path
   {

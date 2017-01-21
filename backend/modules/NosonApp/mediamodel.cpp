@@ -252,6 +252,8 @@ bool MediaModel::load()
   if (!m_smapi->GetMetadata(pathId().toUtf8().constData(), m_nextIndex, LOAD_BULKSIZE, false, meta))
   {
     emit totalCountChanged();
+    if (m_smapi->AuthTokenExpired())
+      emit authStatusChanged();
     return false;
   }
   m_totalCount = meta.TotalCount();
@@ -281,7 +283,11 @@ bool MediaModel::loadMore()
 
   SONOS::SMAPIMetadata meta;
   if (!m_smapi->GetMetadata(pathId().toUtf8().constData(), m_nextIndex, LOAD_BULKSIZE, false, meta))
+  {
+    if (m_smapi->AuthTokenExpired())
+      emit authStatusChanged();
     return false;
+  }
   if (m_totalCount != meta.TotalCount())
   {
     m_totalCount = meta.TotalCount();
@@ -346,6 +352,48 @@ int MediaModel::previousDisplayType() const
     return 0; // Grid
   else
     return m_path.top().displayType;
+}
+
+bool MediaModel::isAuthExpired() const
+{
+  return (m_smapi ? m_smapi->AuthTokenExpired() : false);
+}
+
+QString MediaModel::beginDeviceRegistration()
+{
+  if (m_smapi && m_smapi->AuthTokenExpired())
+  {
+    std::string regUrl;
+    if (m_smapi->GetDeviceLinkCode(regUrl))
+      return QString::fromUtf8(regUrl.c_str());
+  }
+  return QString::null;
+}
+
+int MediaModel::requestDeviceAuth()
+{
+  if (m_smapi)
+  {
+    SONOS::SMOAKeyring::OAuth auth;
+    if (m_smapi->GetDeviceAuthToken(auth))
+      return 0; // retry
+    if (!auth.key.empty())
+    {
+      m_auth = auth;
+      emit authStatusChanged();
+      return 1; // succeeded
+    }
+  }
+  // signal to reset existing registration instance
+  emit authStatusChanged();
+  return 2;
+}
+
+MediaAuth* MediaModel::getDeviceAuth()
+{
+  MediaAuth* _auth = new MediaAuth();
+  _auth->resetAuth(m_auth);
+  return _auth;
 }
 
 bool MediaModel::asyncLoad()

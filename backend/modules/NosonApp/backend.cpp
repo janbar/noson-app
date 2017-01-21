@@ -56,6 +56,7 @@ void BackendPlugin::registerTypes(const char *uri)
   //qmlRegisterUncreatableType<FavoriteType>(uri, 1, 0, "FavoriteType", "enums");
   qmlRegisterType<ServicesModel>(uri, 1, 0, "ServicesModel");
   qmlRegisterType<MediaModel>(uri, 1, 0, "MediaModel");
+  qmlRegisterType<MediaAuth>(uri, 1, 0, "MediaAuth");
 }
 
 void BackendPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
