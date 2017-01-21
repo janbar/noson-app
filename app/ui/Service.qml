@@ -341,8 +341,8 @@ MusicPage {
     }
 
     Component.onCompleted: {
-        mainView.currentlyWorking = true
-        delayInitModel.start()
+        mainView.currentlyWorking = true;
+        delayInitModel.start();
     }
 
     Timer {
@@ -406,5 +406,46 @@ MusicPage {
         delayPlayMedia.model = model
         delayPlayMedia.start()
     }
-}
 
+    ////////////////////////////////////////////////////////////////////////////
+    ////
+    //// Service registration
+    ////
+
+    Loader {
+        id: registeringService
+        anchors.fill: parent
+        source: "../components/ServiceRegistration.qml"
+        active: false
+    }
+
+    Connections {
+        target: mediaModel
+        onIsAuthExpiredChanged: {
+            if (mediaModel.isAuthExpired) {
+                if (registeringService.active)
+                    registeringService.active = false; // restart new registration
+                else
+                    mediaModel.clear();
+                registeringService.active = true;
+            } else if (registeringService.active) {
+                registeringService.active = false;
+                mainView.currentlyWorking = true;
+                // save new incarnation of accounts settings
+                var auth = mediaModel.getDeviceAuth();
+                var acls = deserializeACLS(startupSettings.accounts);
+                var _acls = [];
+                for (var i = 0; i < acls.length; ++i) {
+                    if (acls[i].type === auth.type && acls[i].sn === auth.serialNum)
+                        continue;
+                    else
+                        _acls.push(acls[i]);
+                }
+                _acls.push({type: auth.type, sn: auth.serialNum, key: auth.key });
+                startupSettings.accounts = serializeACLS(_acls);
+                // refresh the model
+                delayLoadModel.start();
+            }
+        }
+    }
+}
