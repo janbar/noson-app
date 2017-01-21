@@ -21,6 +21,7 @@
 #include "smapi.h"
 #include "private/debug.h"
 #include "private/os/threads/mutex.h"
+#include "private/os/threads/timeout.h"
 #include "private/tinyxml2.h"
 #include "private/xmldict.h"
 #include "private/wsresponse.h"
@@ -63,6 +64,8 @@ SMAPI::SMAPI(const PlayerPtr& player)
 , m_service(0)
 , m_uri(0)
 , m_valid(false)
+, m_authTokenExpired(false)
+, m_authLinkTimeout(0)
 {
   ElementList vars;
   ElementList::const_iterator it;
@@ -74,6 +77,7 @@ SMAPI::SMAPI(const PlayerPtr& player)
 
 SMAPI::~SMAPI()
 {
+  SAFE_DELETE(m_authLinkTimeout);
   SAFE_DELETE(m_uri);
   SAFE_DELETE(m_mutex);
 }
@@ -132,6 +136,14 @@ bool SMAPI::Init(const SMServicePtr& smsvc, const std::string& locale)
   if (!makeSoapHeader())
     return false;
 
+  // Check credentials status
+  const std::string& auth = smsvc->GetPolicy()->GetAttribut("Auth");
+  if ((auth == "DeviceLink" || auth == "AppLink"))
+  {
+    if (!smsvc->GetAccount()->HasOACredentials())
+      m_authTokenExpired = true;
+  }
+
   return m_valid = true;
 }
 
@@ -175,6 +187,111 @@ bool SMAPI::Search(const std::string& searchId, const std::string& term, int ind
 
   metadata.Reset(m_service, Request("search", args).GetValue("searchResult"), mappedId);
   return metadata.IsValid();
+}
+
+bool SMAPI::GetDeviceLinkCode(std::string& regUrl)
+{
+  OS::CLockGuard lock(*m_mutex);
+  SMAccount::OACredentials oa = m_service->GetAccount()->GetOACredentials();
+  ElementList vars;
+  ElementList args;
+  args.push_back(ElementPtr(new Element("householdId", oa.devId)));
+  ElementList resp = DoCall("getDeviceLinkCode", args);
+
+  const std::string& data = resp.GetValue("getDeviceLinkCodeResult");
+  // Parse xml content
+  tinyxml2::XMLDocument rootdoc;
+  if (rootdoc.Parse(data.c_str(), data.length()) != tinyxml2::XML_SUCCESS)
+  {
+    DBG(DBG_ERROR, "%s: parse xml failed\n", __FUNCTION__);
+    return false;
+  }
+  const tinyxml2::XMLElement* elem = rootdoc.RootElement();
+  if (!elem || !(elem = elem->FirstChildElement(NULL)))
+  {
+    __dumpInvalidResponse(rootdoc);
+    return false;
+  }
+  while (elem)
+  {
+    if (elem->GetText())
+    {
+      vars.push_back(ElementPtr(new Element(XMLNS::LocalName(elem->Name()), elem->GetText())));
+      DBG(DBG_PROTO, "%s: %s = %s\n", __FUNCTION__, vars.back()->GetKey().c_str(), vars.back()->c_str());
+    }
+    elem = elem->NextSiblingElement(NULL);
+  }
+  uint16_t poll = 0;
+  string_to_uint16(m_service->GetPolicy()->GetAttribut("PollInterval").c_str(), &poll);
+  if (!m_authLinkTimeout)
+    m_authLinkTimeout = new OS::CTimeout();
+  m_authLinkTimeout->Set(poll * 1000);
+  m_authLinkCode = vars.GetValue("linkCode");
+  m_authLinkDeviceId = vars.GetValue("linkDeviceId");
+  regUrl = vars.GetValue("regUrl");
+  return true;
+}
+
+bool SMAPI::GetDeviceAuthToken(SMOAKeyring::OAuth& auth)
+{
+  auth = SMOAKeyring::OAuth();
+  if (!m_authLinkTimeout || !m_authLinkTimeout->TimeLeft())
+    return false;
+
+  SMAccount::OACredentials oa = m_service->GetAccount()->GetOACredentials();
+  ElementList vars;
+  ElementList args;
+  args.push_back(ElementPtr(new Element("householdId", oa.devId)));
+  args.push_back(ElementPtr(new Element("linkCode", m_authLinkCode)));
+  args.push_back(ElementPtr(new Element("linkDeviceId", m_authLinkDeviceId)));
+  ElementList resp = DoCall("getDeviceAuthToken", args);
+
+  const std::string& tag = resp.GetValue("TAG");
+  if (tag == "Fault" && resp.GetValue("faultcode").find("NOT_LINKED_RETRY") != std::string::npos)
+    return true;
+  else if (tag == "getDeviceAuthTokenResponse")
+  {
+    const std::string& data = resp.GetValue("getDeviceAuthTokenResult");
+    // Parse xml content
+    tinyxml2::XMLDocument rootdoc;
+    if (rootdoc.Parse(data.c_str(), data.length()) != tinyxml2::XML_SUCCESS)
+    {
+      DBG(DBG_ERROR, "%s: parse xml failed\n", __FUNCTION__);
+      return false;
+    }
+    const tinyxml2::XMLElement* elem = rootdoc.RootElement();
+    if (!elem || !(elem = elem->FirstChildElement(NULL)))
+    {
+      __dumpInvalidResponse(rootdoc);
+      return false;
+    }
+    while (elem)
+    {
+      if (elem->GetText())
+      {
+        vars.push_back(ElementPtr(new Element(XMLNS::LocalName(elem->Name()), elem->GetText())));
+        DBG(DBG_PROTO, "%s: %s = %s\n", __FUNCTION__, vars.back()->GetKey().c_str(), vars.back()->c_str());
+      }
+      elem = elem->NextSiblingElement(NULL);
+    }
+    SMAccount::OACredentials oa = m_service->GetAccount()->GetOACredentials();
+    oa.token = vars.GetValue("authToken");
+    oa.key = vars.GetValue("privateKey");
+    if (!oa.key.empty())
+    {
+      // register new credentials
+      m_service->GetAccount()->SetOACredentials(oa);
+      // rebuild cache of the SOAP header
+      makeSoapHeader();
+      // reset auth expiration
+      m_authTokenExpired = false;
+    }
+    auth.type = m_service->GetAccount()->GetType();
+    auth.serialNum = m_service->GetAccount()->GetSerialNum();
+    auth.key = oa.key;
+    auth.token = oa.token;
+  }
+  return false;
 }
 
 bool SMAPI::parsePresentationMap(const std::string& xml)
@@ -297,7 +414,7 @@ bool SMAPI::makeSoapHeader()
     m_soapHeader.append("<deviceId>").append(m_deviceSerialNumber).append("</deviceId>");
     m_soapHeader.append("<deviceProvider>" DEVICE_PROVIDER "</deviceProvider>");
     std::string policyAuth = m_service->GetPolicy()->GetAttribut("Auth");
-    if (policyAuth != "Anonymous")
+    if (policyAuth == "UserId")
     {
       ElementList vars;
       m_player->GetSessionId(m_service->GetId(), m_service->GetAccount()->GetUserName(), vars);
@@ -443,30 +560,41 @@ void SMAPI::SetFault(const ElementList& vars)
 
 ElementList SMAPI::Request(const std::string& action, const ElementList& args)
 {
-  ElementList vars = DoCall(action, args);
+  ElementList vars;
+  // don't request without a valid token
+  if (m_authTokenExpired)
+    return vars;
+
+  vars = DoCall(action, args);
 
   // Rebuild the soap header using fresh token which is filled in fault
-  if (vars.GetValue("TAG") == "Fault" && vars.GetValue("faultstring") == "TokenRefreshRequired")
+  if (vars.GetValue("TAG") == "Fault")
   {
-    /*
-     <s:Fault>
-     <faultcode>s:Client.TokenRefreshRequired</faultcode>
-     <faultstring>TokenRefreshRequired</faultstring>
-     <detail>
-     <ns:refreshAuthTokenResult>
-     <ns:authToken>NEW_TOKEN</ns:authToken>
-     <ns:privateKey>REFRESH_TOKEN</ns:privateKey>
-     </ns:refreshAuthTokenResult>
-     </detail>
-     </s:Fault>
-    */
-    SMAccount::OACredentials cr = m_service->GetAccount()->GetOACredentials();
-    cr.token = vars.GetValue("authToken");
-    cr.key = vars.GetValue("privateKey");
-    m_service->GetAccount()->SetOACredentials(cr);
-    makeSoapHeader();
-    // Retry the request
-    vars = DoCall(action, args);
+    const std::string& str = vars.GetValue("faultstring");
+    if (str == "TokenRefreshRequired")
+    {
+      /*
+       <s:Fault>
+       <faultcode>s:Client.TokenRefreshRequired</faultcode>
+       <faultstring>TokenRefreshRequired</faultstring>
+       <detail>
+       <ns:refreshAuthTokenResult>
+       <ns:authToken>NEW_TOKEN</ns:authToken>
+       <ns:privateKey>REFRESH_TOKEN</ns:privateKey>
+       </ns:refreshAuthTokenResult>
+       </detail>
+       </s:Fault>
+      */
+      SMAccount::OACredentials cr = m_service->GetAccount()->GetOACredentials();
+      cr.token = vars.GetValue("authToken");
+      cr.key = vars.GetValue("privateKey");
+      m_service->GetAccount()->SetOACredentials(cr);
+      makeSoapHeader();
+      // Retry the request
+      vars = DoCall(action, args);
+    }
+    else if (str == "AuthTokenExpired")
+      m_authTokenExpired = true;
   }
   return vars;
 }

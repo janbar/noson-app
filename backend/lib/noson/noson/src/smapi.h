@@ -26,6 +26,7 @@
 #include "musicservices.h"
 #include "sonosplayer.h"
 #include "element.h"
+#include "private/os/threads/timeout.h"
 
 #include <list>
 
@@ -35,6 +36,7 @@ namespace NSROOT
   namespace OS
   {
     class CMutex;
+    class CTimeout;
   };
 
   class URIParser;
@@ -79,6 +81,22 @@ namespace NSROOT
      */
     bool Search(const std::string& searchId, const std::string& term, int index, int count, SMAPIMetadata& metadata);
 
+    bool AuthTokenExpired() const { return m_authTokenExpired; }
+
+    /**
+     * Initialize device link request.
+     * @param regUrl The URL for manual registration
+     * @return succeeded
+     */
+    bool GetDeviceLinkCode(std::string& regUrl);
+
+    /**
+     * Try to retrieve auth credentials.
+     * @param (out) Copy of auth data
+     * @return retry (not linked)
+     */
+    bool GetDeviceAuthToken(SMOAKeyring::OAuth& auth);
+
   private:
     OS::CMutex* m_mutex;
     PlayerPtr m_player;
@@ -92,6 +110,11 @@ namespace NSROOT
     std::list<std::pair<ElementPtr, ElementList> > m_presentation;
     URIParser* m_uri;
     bool m_valid;
+
+    bool m_authTokenExpired;
+    OS::CTimeout* m_authLinkTimeout;
+    std::string m_authLinkCode;
+    std::string m_authLinkDeviceId;
 
     bool parsePresentationMap(const std::string& xml);
 

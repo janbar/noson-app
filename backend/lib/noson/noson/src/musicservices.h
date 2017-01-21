@@ -196,6 +196,7 @@ namespace NSROOT
 
     struct OAuth
     {
+      OAuth() { /* empty auth */ }
       OAuth(  const std::string& _type, const std::string& _sn,
               const std::string& _key, const std::string& _token)
       : type(_type), serialNum(_sn), key(_key), token(_token) { }

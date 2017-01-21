@@ -126,10 +126,30 @@ int main(int argc, char** argv)
             for (auto&& search : sm.AvailableSearchCategories())
               PRINT2("Search category: %s, %s\n", search->GetKey().c_str(), search->c_str());
 
+            bool rs;
             SONOS::SMAPIMetadata meta;
             PRINT1("\n...browse id '%s'\n", tstServiceMediaId.c_str());
-            if (!sm.GetMetadata(tstServiceMediaId, 0, 10, false, meta))
-              sm.GetMediaMetadata(tstServiceMediaId, meta);
+            if (!(rs = sm.GetMetadata(tstServiceMediaId, 0, 10, false, meta)))
+              rs = sm.GetMediaMetadata(tstServiceMediaId, meta);
+            if (!rs)
+            {
+              std::string regUrl;
+              if (sm.AuthTokenExpired() && sm.GetDeviceLinkCode(regUrl))
+              {
+                PRINT1("Go to manual registration URL: %s\n", regUrl.c_str());
+                SONOS::SMOAKeyring::OAuth auth;
+                while (sm.GetDeviceAuthToken(auth))
+                  PRINT1("retrying %s\n", "...");
+                PRINT1("OAuth token = %s\n", auth.token.c_str());
+                if (!auth.key.empty())
+                {
+                  if (!(rs = sm.GetMetadata(tstServiceMediaId, 0, 10, false, meta)))
+                    rs = sm.GetMediaMetadata(tstServiceMediaId, meta);
+                }
+                else
+                  PRINT1("!!! Getting auth token failed for service %s !!!\n", item->GetName().c_str());
+              }
+            }
             for (auto&& data : meta.GetItems())
             {
               PRINT2("item: %s, %s\n", data.item->GetObjectID().c_str(), data.item->GetValue("dc:title").c_str());

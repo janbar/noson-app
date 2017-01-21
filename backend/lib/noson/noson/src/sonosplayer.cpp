@@ -632,10 +632,10 @@ SMServiceList Player::GetAvailableServices()
     const std::string& auth = (*it)->GetPolicy()->GetAttribut("Auth");
     if ((*it)->GetContainerType() != "MService")
       continue;
-    if (auth == "Anonymous" || auth == "UserId")
+    if (auth == "Anonymous" || auth == "UserId" || auth == "DeviceLink" || auth == "AppLink")
       list.push_back(*it);
-    else if ((auth == "DeviceLink" || auth == "AppLink") && (*it)->GetAccount()->HasOACredentials())
-      list.push_back(*it);
+    //else if ((auth == "DeviceLink" || auth == "AppLink") && (*it)->GetAccount()->HasOACredentials())
+    //  list.push_back(*it);
   }
   return list;
 }
