@@ -1,4 +1,8 @@
-noson-app (2.1) UNRELEASED; urgency=low
+noson-app (2.2) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 2.2
+  * Handle service registration for Spotify and others use device link
 
   [ janbar ]
   * Release 2.1
