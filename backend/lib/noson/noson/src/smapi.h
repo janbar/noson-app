@@ -72,27 +72,34 @@ namespace NSROOT
 
     /**
      * Search metadata for items in a category.
-     * @param searchId
-     * @param term
-     * @param index
-     * @param count
-     * @param metadata
-     * @return
+     * @param searchId The search category
+     * @param term Term to search
+     * @param index The zero-based index at which to start retrieving metadata items
+     * @param count The number of items requested
+     * @param metadata (out) Wrapper containing the retrieved content
+     * @return succeeded
      */
     bool Search(const std::string& searchId, const std::string& term, int index, int count, SMAPIMetadata& metadata);
 
+    /**
+     * Return status of OAuth credentials after SMAPI call failed.
+     * @return status of credentials
+     */
     bool AuthTokenExpired() const { return m_authTokenExpired; }
 
     /**
      * Initialize device link request.
-     * @param regUrl The URL for manual registration
+     * @param (out) regUrl The URL for manual registration
      * @return succeeded
      */
     bool GetDeviceLinkCode(std::string& regUrl);
 
     /**
-     * Try to retrieve auth credentials.
-     * @param (out) Copy of auth data
+     * Try to retrieve auth credentials after a device link request.
+     * While returns 'true', you have to retry call with interval of 5 sec.
+     * It will return 'false' if new auth data have been successfully received,
+     * or poll interval is reached.
+     * @param (out) Fill a copy of received auth data
      * @return retry (not linked)
      */
     bool GetDeviceAuthToken(SMOAKeyring::OAuth& auth);

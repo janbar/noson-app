@@ -139,7 +139,10 @@ int main(int argc, char** argv)
                 PRINT1("Go to manual registration URL: %s\n", regUrl.c_str());
                 SONOS::SMOAKeyring::OAuth auth;
                 while (sm.GetDeviceAuthToken(auth))
-                  PRINT1("retrying %s\n", "...");
+                {
+                  PRINT1("Retrying %s\n", "...");
+                  sleep(5);
+                }
                 PRINT1("OAuth token = %s\n", auth.token.c_str());
                 if (!auth.key.empty())
                 {
