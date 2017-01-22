@@ -21,7 +21,7 @@ endif ()
 
 ###############################################################################
 # set lib version here
-set (NOSON_LIB_VERSION "1.2.1")
+set (NOSON_LIB_VERSION "1.3.0")
 set (NOSON_LIB_SOVERSION "1")
 
 ###############################################################################
@@ -274,4 +274,8 @@ install (FILES
   ${CMAKE_CURRENT_BINARY_DIR}/include/sonostypes.h
   ${CMAKE_CURRENT_BINARY_DIR}/include/sonoszone.h
   ${CMAKE_CURRENT_BINARY_DIR}/include/zonegrouptopology.h
+  ${CMAKE_CURRENT_BINARY_DIR}/include/musicservices.h
+  ${CMAKE_CURRENT_BINARY_DIR}/include/smapi.h
+  ${CMAKE_CURRENT_BINARY_DIR}/include/smapimetadata.h
+
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/noson/)
