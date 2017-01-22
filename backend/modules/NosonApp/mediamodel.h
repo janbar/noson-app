@@ -186,7 +186,7 @@ public:
 
   Q_INVOKABLE QString pathId() const;
 
-  Q_INVOKABLE int previousDisplayType() const;
+  Q_INVOKABLE int parentDisplayType() const;
 
   bool isAuthExpired() const;
 

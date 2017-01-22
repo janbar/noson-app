@@ -345,7 +345,7 @@ QString MediaModel::pathId() const
     return m_path.top().id;
 }
 
-int MediaModel::previousDisplayType() const
+int MediaModel::parentDisplayType() const
 {
   SONOS::LockGuard lock(m_lock);
   if (m_path.empty())

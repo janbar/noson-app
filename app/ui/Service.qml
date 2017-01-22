@@ -349,8 +349,8 @@ MusicPage {
         id: delayGoUp
         interval: 100
         onTriggered: {
-            // change view depending of previous display type
-            servicePage.displayType = mediaModel.previousDisplayType();
+            // change view depending of parent display type
+            servicePage.displayType = mediaModel.parentDisplayType();
             mediaModel.loadParent();
             mainView.currentlyWorking = false
         }
