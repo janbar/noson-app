@@ -53,7 +53,7 @@ MainView {
 
     // Design stuff
     Style { id: styleMusic }
-    width: units.gu(100)
+    width: units.gu(142)
     height: units.gu(80)
 
     // Arguments during startup
@@ -75,6 +75,7 @@ MainView {
         property bool firstRun: true
         property string zoneName: ""
         property int tabIndex: -1
+        property double width: mainView.width
         property string accounts: ""
     }
 
@@ -136,12 +137,20 @@ MainView {
 
         customdebug("LANG=" + Qt.locale().name);
 
+        // resize main view according to user settings
+        mainView.width = (startupSettings.width >= units.gu(44) ? startupSettings.width : units.gu(44));
+
         // init SMAPI third party accounts (AppLink)
         var acls = deserializeACLS(startupSettings.accounts);
         for (var i = 0; i < acls.length; ++i) {
             customdebug("register account: type=" + acls[i].type + " sn=" + acls[i].sn + " key=" + acls[i].key.substr(0, 1) + "...");
             Sonos.addServiceOAuth(acls[i].type, acls[i].sn, acls[i].key);
         }
+    }
+
+    Component.onDestruction: {
+        // save current width to settings
+        startupSettings.width = witdh;
     }
 
     Timer {
