@@ -188,6 +188,10 @@ public:
 
   Q_INVOKABLE int parentDisplayType() const;
 
+  Q_INVOKABLE QList<QString> listSearchCategories() const;
+
+  Q_INVOKABLE bool loadSearch(const QString& category, const QString& term);
+
   bool isAuthExpired() const;
 
   Q_INVOKABLE QString beginDeviceRegistration();
@@ -230,6 +234,9 @@ private:
   QStack<Path> m_path;
   unsigned m_nextIndex;
   unsigned m_totalCount;
+  bool m_searching;
+  std::string m_searchCategory;
+  std::string m_searchTerm;
 };
 
 #endif /* MEDIAMODEL_H */

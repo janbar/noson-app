@@ -93,6 +93,7 @@ MediaModel::MediaModel(QObject* parent)
 , m_smapi(0)
 , m_nextIndex(0)
 , m_totalCount(0)
+, m_searching(false)
 {
 }
 
@@ -247,6 +248,7 @@ bool MediaModel::load()
     return false;
 
   clear();
+  m_searching = false; // enable browse state
   m_nextIndex = m_totalCount = 0;
   SONOS::SMAPIMetadata meta;
   if (!m_smapi->GetMetadata(pathId().toUtf8().constData(), m_nextIndex, LOAD_BULKSIZE, false, meta))
@@ -282,7 +284,9 @@ bool MediaModel::loadMore()
     return false;
 
   SONOS::SMAPIMetadata meta;
-  if (!m_smapi->GetMetadata(pathId().toUtf8().constData(), m_nextIndex, LOAD_BULKSIZE, false, meta))
+  // browse or search for next items depending of current state
+  if ((!m_searching && !m_smapi->GetMetadata(pathId().toUtf8().constData(), m_nextIndex, LOAD_BULKSIZE, false, meta)) ||
+      (m_searching && !m_smapi->Search(m_searchCategory, m_searchTerm, m_nextIndex, LOAD_BULKSIZE, meta)))
   {
     if (m_smapi->AuthTokenExpired())
       emit authStatusChanged();
@@ -352,6 +356,55 @@ int MediaModel::parentDisplayType() const
     return 0; // Grid
   else
     return m_path.top().displayType;
+}
+
+QList<QString> MediaModel::listSearchCategories() const
+{
+  QList<QString> list;
+  SONOS::LockGuard lock(m_lock);
+  if (m_smapi)
+  {
+    SONOS::ElementList el = m_smapi->AvailableSearchCategories();
+    for (SONOS::ElementList::const_iterator it = el.begin(); it != el.end(); ++it)
+      list << QString::fromUtf8((*it)->GetKey().c_str());
+  }
+  return list;
+}
+
+bool MediaModel::loadSearch(const QString &category, const QString &term)
+{
+  SONOS::LockGuard lock(m_lock);
+  if (!m_smapi)
+    return false;
+
+  m_searchCategory = category.toUtf8().constData();
+  m_searchTerm = term.toUtf8().constData();
+  SONOS::SMAPIMetadata meta;
+  if (!m_smapi->Search(m_searchCategory, m_searchTerm, 0, LOAD_BULKSIZE, meta))
+  {
+    emit totalCountChanged();
+    if (m_smapi->AuthTokenExpired())
+      emit authStatusChanged();
+    return false;
+  }
+  clear();
+  m_path.clear();
+  m_path.push(Path("", "SEARCH", 3 /*Editorial*/));
+  m_searching = true; // enable search state
+  m_totalCount = meta.TotalCount();
+  m_nextIndex = meta.ItemCount();
+  emit totalCountChanged();
+  SONOS::SMAPIItemList list = meta.GetItems();
+  for (SONOS::SMAPIItemList::const_iterator it = list.begin(); it != list.end(); ++it)
+  {
+    MediaItem* item = new MediaItem(*it);
+    if (item->isValid())
+      addItem(item);
+    else
+      delete item;
+  }
+  emit isRootChanged();
+  return m_loaded = true;
 }
 
 bool MediaModel::isAuthExpired() const
