@@ -148,11 +148,6 @@ MainView {
         }
     }
 
-    Component.onDestruction: {
-        // save current width to settings
-        startupSettings.width = witdh;
-    }
-
     Timer {
         id: delayStartup
         interval: 100
