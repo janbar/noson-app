@@ -138,7 +138,7 @@ MusicPage {
           if (mediaModel.isRoot)
             pageTitle = serviceItem.title;
           else
-            pageTitle = serviceItem.title + " : " + mediaModel.path();
+            pageTitle = serviceItem.title + " : " + mediaModel.pathName();
         }
     }
 

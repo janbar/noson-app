@@ -327,7 +327,7 @@ bool MediaModel::loadParent()
   return load();
 }
 
-QString MediaModel::path() const
+QString MediaModel::pathName() const
 {
   SONOS::LockGuard lock(m_lock);
   if (m_path.empty())

@@ -182,7 +182,7 @@ public:
 
   Q_INVOKABLE bool loadParent();
 
-  Q_INVOKABLE QString path() const;
+  Q_INVOKABLE QString pathName() const;
 
   Q_INVOKABLE QString pathId() const;
 
