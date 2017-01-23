@@ -91,9 +91,11 @@ DialogBase {
 
         onSelectedIndexChanged: {
             if (selectedIndex >= 0) {
-                remainingTime = model.get(selectedIndex).duration;
-            } else {
-                selectedIndex: -1 // Reset selection
+                var sec = model.get(selectedIndex).duration;
+                if (player.configureSleepTimer(sec))
+                    remainingTime = sec;
+                else
+                    selectedIndex = -1; // Reset selection
             }
         }
     }
