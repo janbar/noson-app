@@ -39,7 +39,7 @@ DialogBase {
                     var id = list[i];
                     var tr;
                     if (id === "artists")
-                        tr = i18n.tr("Artistes");
+                        tr = i18n.tr("Artists");
                     else if (id === "albums")
                         tr = i18n.tr("Albums");
                     else if (id === "tracks")

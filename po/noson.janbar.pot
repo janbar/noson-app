@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-23 22:39+0100\n"
+"POT-Creation-Date: 2017-01-23 23:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -163,8 +163,8 @@ msgstr ""
 msgid "Search music"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSearchMusic.qml:42
-msgid "Artistes"
+#: ../app/components/Dialog/DialogSearchMusic.qml:42 ../app/ui/Artists.qml:36
+msgid "Artists"
 msgstr ""
 
 #: ../app/components/Dialog/DialogSearchMusic.qml:44 ../app/ui/Albums.qml:33
@@ -489,10 +489,6 @@ msgid "%1 song"
 msgid_plural "%1 songs"
 msgstr[0] ""
 msgstr[1] ""
-
-#: ../app/ui/Artists.qml:36
-msgid "Artists"
-msgstr ""
 
 #: ../app/ui/Artists.qml:103 ../app/ui/Artists.qml:109
 #: ../app/ui/Favorites.qml:126 ../app/ui/Favorites.qml:222
