@@ -35,9 +35,11 @@ Item {
     property alias secondaryText: secondaryLabel.text
     property alias secondaryTextVisible: secondaryLabel.visible
     property bool isFavorite: false
+    property bool canPlay: false
 
     signal clicked(var mouse)
     signal pressAndHold(var mouse)
+    signal playClicked(var mouse)
 
     /* Animations */
     Behavior on height {
@@ -126,15 +128,40 @@ Item {
 
     /* Show starred */
     Icon {
+        id: starIcon
         name: "starred"
         anchors {
             bottom: bg.bottom
             right: bg.right
         }
         color: "#FFF"
-        height: (card.width * 0.25)
+        height: isFavorite ? (card.width * 0.25) : 0
         width: height
         visible: isFavorite
+    }
+
+    /* Show play */
+    Icon {
+        id: playIcon
+        name: "media-preview-start"
+        anchors {
+            bottom: starIcon.top
+            right: bg.right
+        }
+        color: "#FFF"
+        height: canPlay ? (card.width * 0.25) : 0
+        width: height
+        visible: canPlay
+
+        MouseArea {
+            id: playMouseArea
+            anchors {
+                fill: parent
+            }
+            enabled: canPlay
+            onClicked: card.playClicked(mouse)
+            onPressAndHold: card.pressAndHold(mouse)
+        }
     }
 
     /* Overlay for when card is pressed */
@@ -158,6 +185,7 @@ Item {
         id: cardMouseArea
         anchors {
             fill: parent
+            margins: parent.width * 0.25 // do not override action icons
         }
         onClicked: card.clicked(mouse)
         onPressAndHold: card.pressAndHold(mouse)

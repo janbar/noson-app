@@ -306,6 +306,7 @@ MusicPage {
                          : model.type === 5 ? i18n.tr("Radio")
                          : ""
             isFavorite: model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
+            canPlay: model.canPlay
 
             noCover: model.type === 2 ? Qt.resolvedUrl("../graphics/none.png")
                    : model.canPlay && !model.canQueue ? Qt.resolvedUrl("../graphics/radio.png")
@@ -328,6 +329,7 @@ MusicPage {
                     servicePage.isListView = true
                 }
             }
+            onPlayClicked: playItem(model)
         }
 
         visible: isListView ? false : true
