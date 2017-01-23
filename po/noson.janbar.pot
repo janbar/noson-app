@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the  package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-22 11:54+0000\n"
+"POT-Creation-Date: 2017-01-23 22:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,21 +19,21 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: ../app/Main.qml:88
-#: /home/jlb/src/janbar/QML/build-noson-app-armhf-15-release/po/noson.desktop.in.h:1
+#: /home/jlb/src/janbar/QML/noson-app-build-desktop/po/noson.desktop.in.h:1
 msgid "Noson"
 msgstr ""
 
-#: ../app/Main.qml:257
+#: ../app/Main.qml:252
 msgid "Index loaded"
 msgstr ""
 
-#: ../app/Main.qml:385 ../app/Main.qml:491 ../app/Main.qml:510
-#: ../app/Main.qml:518 ../app/Main.qml:528 ../app/Main.qml:533
-#: ../app/Main.qml:565 ../app/Main.qml:579 ../app/Main.qml:591
-#: ../app/Main.qml:602 ../app/Main.qml:610 ../app/Main.qml:620
-#: ../app/Main.qml:630 ../app/Main.qml:637 ../app/Main.qml:644
-#: ../app/Main.qml:653 ../app/Main.qml:662 ../app/Main.qml:670
-#: ../app/Main.qml:677 ../app/Main.qml:684 ../app/Main.qml:694
+#: ../app/Main.qml:380 ../app/Main.qml:486 ../app/Main.qml:505
+#: ../app/Main.qml:513 ../app/Main.qml:523 ../app/Main.qml:528
+#: ../app/Main.qml:560 ../app/Main.qml:574 ../app/Main.qml:586
+#: ../app/Main.qml:597 ../app/Main.qml:605 ../app/Main.qml:615
+#: ../app/Main.qml:625 ../app/Main.qml:632 ../app/Main.qml:639
+#: ../app/Main.qml:648 ../app/Main.qml:657 ../app/Main.qml:665
+#: ../app/Main.qml:672 ../app/Main.qml:679 ../app/Main.qml:689
 #: ../app/components/Dialog/DialogSelectSource.qml:94
 #: ../app/components/Dialog/DialogSelectSource.qml:105
 #: ../app/components/Dialog/DialogSelectSource.qml:116
@@ -41,31 +41,31 @@ msgstr ""
 msgid "Action can't be performed"
 msgstr ""
 
-#: ../app/Main.qml:402
+#: ../app/Main.qml:397
 msgid "Debug: "
 msgstr ""
 
-#: ../app/Main.qml:488
+#: ../app/Main.qml:483
 msgid "Refreshing of index is running"
 msgstr ""
 
-#: ../app/Main.qml:515 ../app/Main.qml:576 ../app/Main.qml:588
-#: ../app/Main.qml:650 ../app/ui/AddToPlaylist.qml:138
+#: ../app/Main.qml:510 ../app/Main.qml:571 ../app/Main.qml:583
+#: ../app/Main.qml:645 ../app/ui/AddToPlaylist.qml:138
 msgid "song added"
 msgstr ""
 
-#: ../app/Main.qml:562
+#: ../app/Main.qml:557
 #, qt-format
 msgid "%1 song added"
 msgid_plural "%1 songs added"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/Main.qml:599
+#: ../app/Main.qml:594
 msgid "Queue cleared"
 msgstr ""
 
-#: ../app/Main.qml:659
+#: ../app/Main.qml:654
 #, qt-format
 msgid "%1 song removed"
 msgid_plural "%1 songs removed"
@@ -96,6 +96,7 @@ msgstr ""
 #: ../app/components/Dialog/DialogEditPlaylist.qml:60
 #: ../app/components/Dialog/DialogNewPlaylist.qml:65
 #: ../app/components/Dialog/DialogRemovePlaylist.qml:60
+#: ../app/components/Dialog/DialogSearchMusic.qml:107
 msgid "Cancel"
 msgstr ""
 
@@ -129,7 +130,7 @@ msgstr ""
 #: ../app/components/Dialog/DialogManageQueue.qml:93
 #: ../app/components/Dialog/DialogSelectSource.qml:132
 #: ../app/components/Dialog/DialogSettings.qml:54
-#: ../app/components/Dialog/DialogSleepTimer.qml:118
+#: ../app/components/Dialog/DialogSleepTimer.qml:102
 msgid "Close"
 msgstr ""
 
@@ -153,6 +154,51 @@ msgstr ""
 #: ../app/components/Dialog/DialogRemovePlaylist.qml:44
 #: ../app/components/ListItemActions/Remove.qml:27
 msgid "Remove"
+msgstr ""
+
+#. TRANSLATORS: this is a title of a dialog to setup search
+#: ../app/components/Dialog/DialogSearchMusic.qml:26
+#: ../app/components/Dialog/DialogSearchMusic.qml:91
+#: ../app/components/HeadState/SearchHeadState.qml:38
+msgid "Search music"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSearchMusic.qml:42
+msgid "Artistes"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSearchMusic.qml:44 ../app/ui/Albums.qml:33
+msgid "Albums"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSearchMusic.qml:46
+msgid "Songs"
+msgstr ""
+
+#. TRANSLATORS: this is the name of the playlists page shown in the tab header.
+#. Remember to keep the translation short to fit the screen width
+#: ../app/components/Dialog/DialogSearchMusic.qml:48 ../app/ui/Playlists.qml:35
+msgid "Playlists"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSearchMusic.qml:50
+msgid "Radios"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSearchMusic.qml:52
+msgid "Podcasts"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSearchMusic.qml:54 ../app/ui/Genres.qml:34
+msgid "Genres"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSearchMusic.qml:56
+msgid "Composers"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSearchMusic.qml:96 ../app/ui/Service.qml:139
+msgid "Search"
 msgstr ""
 
 #. TRANSLATORS: this is a title of a dialog to select source
@@ -221,48 +267,48 @@ msgstr ""
 
 #. TRANSLATORS: this is a title of a dialog to configure standby timer
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-#: ../app/components/Dialog/DialogSleepTimer.qml:26
+#: ../app/components/Dialog/DialogSleepTimer.qml:27
 #: ../app/components/HeadState/QueueHeadState.qml:72
 msgid "Standby timer"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSleepTimer.qml:68
+#: ../app/components/Dialog/DialogSleepTimer.qml:32
 msgid "Disabled"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSleepTimer.qml:69
+#: ../app/components/Dialog/DialogSleepTimer.qml:33
 msgid "15 minutes"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSleepTimer.qml:70
+#: ../app/components/Dialog/DialogSleepTimer.qml:34
 msgid "30 minutes"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSleepTimer.qml:71
+#: ../app/components/Dialog/DialogSleepTimer.qml:35
 msgid "45 minutes"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSleepTimer.qml:72
+#: ../app/components/Dialog/DialogSleepTimer.qml:36
 msgid "1 hour"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSleepTimer.qml:73
+#: ../app/components/Dialog/DialogSleepTimer.qml:37
 msgid "2 hours"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSleepTimer.qml:74
+#: ../app/components/Dialog/DialogSleepTimer.qml:38
 msgid "3 hours"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSleepTimer.qml:75
+#: ../app/components/Dialog/DialogSleepTimer.qml:39
 msgid "4 hours"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSleepTimer.qml:76
+#: ../app/components/Dialog/DialogSleepTimer.qml:40
 msgid "5 hours"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSleepTimer.qml:77
+#: ../app/components/Dialog/DialogSleepTimer.qml:41
 msgid "6 hours"
 msgstr ""
 
@@ -311,10 +357,6 @@ msgstr ""
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
 #: ../app/components/HeadState/QueueHeadState.qml:50
 msgid "Show queue"
-msgstr ""
-
-#: ../app/components/HeadState/SearchHeadState.qml:38
-msgid "Search music"
 msgstr ""
 
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
@@ -426,10 +468,6 @@ msgstr ""
 msgid "Select playlist"
 msgstr ""
 
-#: ../app/ui/Albums.qml:33
-msgid "Albums"
-msgstr ""
-
 #: ../app/ui/Albums.qml:106 ../app/ui/Albums.qml:114
 #: ../app/ui/ArtistView.qml:187 ../app/ui/Favorites.qml:125
 #: ../app/ui/Favorites.qml:221 ../app/ui/Favorites.qml:272
@@ -469,8 +507,7 @@ msgstr ""
 
 #: ../app/ui/Favorites.qml:127 ../app/ui/Favorites.qml:223
 #: ../app/ui/Favorites.qml:295 ../app/ui/Genres.qml:144
-#: ../app/ui/Genres.qml:152 ../app/ui/Service.qml:178
-#: ../app/ui/Service.qml:303
+#: ../app/ui/Genres.qml:152 ../app/ui/Service.qml:178 ../app/ui/Service.qml:303
 msgid "Genre"
 msgstr ""
 
@@ -479,10 +516,6 @@ msgstr ""
 #: ../app/ui/Playlists.qml:120 ../app/ui/Service.qml:179
 #: ../app/ui/Service.qml:304
 msgid "Playlist"
-msgstr ""
-
-#: ../app/ui/Genres.qml:34
-msgid "Genres"
 msgstr ""
 
 #: ../app/ui/Genres.qml:107
@@ -515,12 +548,6 @@ msgstr ""
 #. TRANSLATORS: this appears in the header with limited space (around 20 characters)
 #: ../app/ui/NowPlaying.qml:36
 msgid "Full view"
-msgstr ""
-
-#. TRANSLATORS: this is the name of the playlists page shown in the tab header.
-#. Remember to keep the translation short to fit the screen width
-#: ../app/ui/Playlists.qml:35
-msgid "Playlists"
 msgstr ""
 
 #: ../app/ui/Radios.qml:39
