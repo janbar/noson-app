@@ -89,7 +89,6 @@ DialogBase {
         hasClearButton: true
         inputMethodHints: Qt.ImhNoPredictiveText
         placeholderText: i18n.tr("Search music")
-        font.pixelSize: 16
     }
 
     Button {
