@@ -37,6 +37,9 @@ MusicPage {
     property int displayType: 3 /*Editorial*/
     property bool isListView: false
 
+    // the model handles search
+    property alias searchableModel: mediaModel
+
     // used to detect view has updated properties since first load.
     // - isFavorite
     property bool taintedView: false
@@ -49,7 +52,7 @@ MusicPage {
     states: [
         ServiceHeadState {
             thisPage: servicePage
-            searchEnabled: false /*mediaModel.count > 0*/
+            searchEnabled: true
             thisHeader {
                 extension: DefaultSections { }
             }
@@ -60,13 +63,6 @@ MusicPage {
             addToQueue: false
             addToPlaylist: false
             removable: false
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        },
-        SearchHeadState {
-            id: searchHeader
-            thisPage: servicePage
             thisHeader {
                 extension: DefaultSections { }
             }
@@ -136,9 +132,14 @@ MusicPage {
         target: mediaModel
         onIsRootChanged: {
           if (mediaModel.isRoot)
-            pageTitle = serviceItem.title;
-          else
-            pageTitle = serviceItem.title + " : " + mediaModel.pathName();
+              pageTitle = serviceItem.title;
+          else {
+              var name = mediaModel.pathName();
+              if (name === "SEARCH")
+                  pageTitle = serviceItem.title + " : " + i18n.tr("Search");
+              else
+                pageTitle = serviceItem.title + " : " + name;
+          }
         }
     }
 
@@ -164,7 +165,6 @@ MusicPage {
             if (state === "multiselectable") {
                 servicePage.state = "selection"
             } else {
-                searchHeader.query = ""  // force query back to default
                 servicePage.state = "default"
             }
         }
@@ -306,7 +306,7 @@ MusicPage {
                          : model.type === 5 ? i18n.tr("Radio")
                          : ""
             isFavorite: model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
-            canPlay: model.canPlay
+            canPlay: model.isContainer && model.canPlay ? true : false
 
             noCover: model.type === 2 ? Qt.resolvedUrl("../graphics/none.png")
                    : model.canPlay && !model.canQueue ? Qt.resolvedUrl("../graphics/radio.png")

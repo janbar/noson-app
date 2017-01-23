@@ -63,8 +63,8 @@ State {
                     iconName: "search"
                     visible: searchEnabled
                     onTriggered: {
-                        thisPage.state = "search";
-                        thisPage.header.contents.forceActiveFocus();
+                        PopupUtils.open(Qt.resolvedUrl("../Dialog/DialogSearchMusic.qml"), mainView,
+                                        {'searchableModel': thisPage.searchableModel})
                     }
                 }
             ]
