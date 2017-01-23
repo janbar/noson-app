@@ -18,6 +18,7 @@
 import QtQuick 2.4
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
+import Ubuntu.Components.ListItems 1.3
 
 DialogBase {
     id: dialogSleepTimer
@@ -27,7 +28,20 @@ DialogBase {
 
     property int remainingTime: player.remainingSleepTimerDuration() // Load at startup
 
-    Component.onCompleted: remainingTimer.start()
+    Component.onCompleted: {
+        selectorModel.insert(0, {name: i18n.tr("Disabled"),     duration: 0});
+        selectorModel.insert(1, {name: i18n.tr("15 minutes"),   duration: 900});
+        selectorModel.insert(2, {name: i18n.tr("30 minutes"),   duration: 1800});
+        selectorModel.insert(3, {name: i18n.tr("45 minutes"),   duration: 2700});
+        selectorModel.insert(4, {name: i18n.tr("1 hour"),       duration: 3600});
+        selectorModel.insert(5, {name: i18n.tr("2 hours"),      duration: 7200});
+        selectorModel.insert(6, {name: i18n.tr("3 hours"),      duration: 10800});
+        selectorModel.insert(7, {name: i18n.tr("4 hours"),      duration: 14400});
+        selectorModel.insert(8, {name: i18n.tr("5 hours"),      duration: 18000});
+        selectorModel.insert(9, {name: i18n.tr("6 hours"),      duration: 21600});
+        // launch timer animation
+        remainingTimer.start()
+    }
 
     Timer {
         id: remainingTimer
@@ -57,59 +71,29 @@ DialogBase {
         opacity: 1.0
     }
 
-    Rectangle {
-        id: timeSelector
-        color: styleMusic.mainView.backgroundColor
-        height: selector.containerHeight
-        radius: units.gu(1.5)
+    ListModel {
+        id: selectorModel
+    }
 
-        OptionSelector {
-            id: selector
-            model: [i18n.tr("Disabled"),
-                    i18n.tr("15 minutes"),
-                    i18n.tr("30 minutes"),
-                    i18n.tr("45 minutes"),
-                    i18n.tr("1 hour"),
-                    i18n.tr("2 hours"),
-                    i18n.tr("3 hours"),
-                    i18n.tr("4 hours"),
-                    i18n.tr("5 hours"),
-                    i18n.tr("6 hours")]
-            containerHeight: mainView.height > units.gu(60) ? itemHeight * 6 : itemHeight * 2
-            selectedIndex: -1
-            expanded: true
-            multiSelection: false
-            onSelectedIndexChanged: {
-                if (selectedIndex >= 0) {
-                    var sec = 0;
-                    switch(selectedIndex)
-                    {
-                    case 9:
-                        sec += 3600;
-                    case 8:
-                        sec += 3600;
-                    case 7:
-                        sec += 3600;
-                    case 6:
-                        sec += 3600;
-                    case 5:
-                        sec += 3600;
-                    case 4:
-                        sec += 900;
-                    case 3:
-                        sec += 900;
-                    case 2:
-                        sec += 900;
-                    case 1:
-                        sec += 900;
-                    default:
-                        break;
-                    }
-                    if (player.configureSleepTimer(sec))
-                        remainingTime = sec
-                    else
-                        selectedIndex: -1 // Reset selection
-                }
+    ItemSelector {
+        id: selector
+        text: ""
+        model: selectorModel
+        containerHeight: itemHeight * 6
+        selectedIndex: -1
+        expanded: true
+        multiSelection: false
+
+        delegate: OptionSelectorDelegate {
+            text: selected ? "<font color=\"white\">" + i18n.tr(model.name) + "</font>"
+                           : "<font color=\"black\">" + model.name + "</font>"
+        }
+
+        onSelectedIndexChanged: {
+            if (selectedIndex >= 0) {
+                remainingTime = model.get(selectedIndex).duration;
+            } else {
+                selectedIndex: -1 // Reset selection
             }
         }
     }
