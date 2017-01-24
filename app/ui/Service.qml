@@ -74,7 +74,7 @@ MusicPage {
     BlurredBackground {
             id: blurredBackground
             height: parent.height
-            art: serviceItem.id == "SA_RINCON65031_" ? Qt.resolvedUrl("../graphics/tunein.png") : serviceItem.icon
+            art: serviceItem.id === "SA_RINCON65031_" ? Qt.resolvedUrl("../graphics/tunein.png") : serviceItem.icon
     }
 
     MediaModel {
