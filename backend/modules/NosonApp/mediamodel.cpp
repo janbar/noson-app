@@ -335,7 +335,7 @@ QString MediaModel::pathName() const
 {
   SONOS::LockGuard lock(m_lock);
   if (m_path.empty())
-    return QString("root");
+    return (m_searching ? "SEARCH" : "root");
   else
     return m_path.top().title;
 }
@@ -389,7 +389,6 @@ bool MediaModel::loadSearch(const QString &category, const QString &term)
   }
   clear();
   m_path.clear();
-  m_path.push(Path("", "SEARCH", 3 /*Editorial*/));
   m_searching = true; // enable search state
   m_totalCount = meta.TotalCount();
   m_nextIndex = meta.ItemCount();
