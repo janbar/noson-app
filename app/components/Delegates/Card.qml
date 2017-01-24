@@ -127,40 +127,46 @@ Item {
     }
 
     /* Show starred */
-    Icon {
-        id: starIcon
-        name: "starred"
+    MouseArea {
+        id: starMouseArea
         anchors {
             bottom: bg.bottom
             right: bg.right
         }
-        color: "#FFF"
         height: isFavorite ? (card.width * 0.25) : 0
         width: height
-        visible: isFavorite
+        enabled: isFavorite
+        onPressAndHold: card.pressAndHold(mouse)
+
+        Icon {
+            id: starIcon
+            name: "starred"
+            anchors.fill: parent
+            color: "#FFF"
+            visible: isFavorite
+        }
     }
 
     /* Show play */
-    Icon {
-        id: playIcon
-        name: "media-preview-start"
+    MouseArea {
+        id: playMouseArea
         anchors {
-            bottom: starIcon.top
+            bottom: starMouseArea.top
             right: bg.right
         }
-        color: "#FFF"
         height: canPlay ? (card.width * 0.25) : 0
         width: height
-        visible: canPlay
+        enabled: canPlay
+        opacity: 0.3
+        onClicked: card.playClicked(mouse)
+        onPressAndHold: card.pressAndHold(mouse)
 
-        MouseArea {
-            id: playMouseArea
-            anchors {
-                fill: parent
-            }
-            enabled: canPlay
-            onClicked: card.playClicked(mouse)
-            onPressAndHold: card.pressAndHold(mouse)
+        Icon {
+            id: playIcon
+            name: "media-preview-start"
+            anchors.fill: parent
+            color: "#FFF"
+            visible: canPlay
         }
     }
 
