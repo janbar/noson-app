@@ -34,7 +34,7 @@ MusicPage {
     property var serviceItem: null
     property bool loaded: false  // used to detect difference between first and further loads
     property bool isRoot: mediaModel.isRoot
-    property int displayType: 3 /*Editorial*/
+    property int displayType: 3  // display type for root
     property bool isListView: false
 
     // the model handles search

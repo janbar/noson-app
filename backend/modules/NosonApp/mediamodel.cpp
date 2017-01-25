@@ -355,7 +355,7 @@ int MediaModel::parentDisplayType() const
 {
   SONOS::LockGuard lock(m_lock);
   if (m_path.empty())
-    return 0; // Grid
+    return 3; // Editorial
   else
     return m_path.top().displayType;
 }
