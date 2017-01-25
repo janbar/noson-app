@@ -317,17 +317,19 @@ bool MediaModel::loadChild(const QString& id, const QString& title, int displayT
     return false;
   SONOS::LockGuard lock(m_lock);
   m_path.push(Path(id, title, displayType));
-  emit isRootChanged();
+  emit pathChanged();
   return load();
 }
 
 bool MediaModel::loadParent()
 {
   SONOS::LockGuard lock(m_lock);
+  m_searching = false;
   if (m_path.empty())
-    return false;
-  m_path.pop();
-  emit isRootChanged();
+    m_searching = false; // reset state before signal the change
+  else
+    m_path.pop();
+  emit pathChanged();
   return load();
 }
 
@@ -402,7 +404,7 @@ bool MediaModel::loadSearch(const QString &category, const QString &term)
     else
       delete item;
   }
-  emit isRootChanged();
+  emit pathChanged();
   return m_loaded = true;
 }
 

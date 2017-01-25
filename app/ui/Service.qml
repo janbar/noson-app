@@ -130,15 +130,15 @@ MusicPage {
 
     Connections {
         target: mediaModel
-        onIsRootChanged: {
-            var name = mediaModel.pathName();
+        onPathChanged: {
             if (mediaModel.isRoot) {
+                pageTitle = serviceItem.title;
+            } else {
+                var name = mediaModel.pathName();
                 if (name === "SEARCH")
                     pageTitle = serviceItem.title + " : " + i18n.tr("Search");
                 else
-                    pageTitle = serviceItem.title;
-            } else {
-                pageTitle = serviceItem.title + " : " + name;
+                    pageTitle = serviceItem.title + " : " + name;
             }
         }
     }

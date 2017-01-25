@@ -132,7 +132,7 @@ class MediaModel : public QAbstractListModel, public ListModel
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
   Q_PROPERTY(int totalCount READ totalCount NOTIFY totalCountChanged)
-  Q_PROPERTY(bool isRoot READ isRoot NOTIFY isRootChanged)
+  Q_PROPERTY(bool isRoot READ isRoot NOTIFY pathChanged)
   Q_PROPERTY(bool isAuthExpired READ isAuthExpired NOTIFY authStatusChanged())
 
 public:
@@ -174,7 +174,7 @@ public:
 
   int totalCount() const { return m_totalCount; }
 
-  bool isRoot() const { return m_path.empty(); }
+  bool isRoot() const { return (m_path.empty() && !m_searching); }
 
   Q_INVOKABLE bool loadMore();
 
@@ -210,7 +210,7 @@ signals:
   void dataUpdated();
   void countChanged();
   void totalCountChanged();
-  void isRootChanged();
+  void pathChanged();
   void authStatusChanged();
 
 protected:
