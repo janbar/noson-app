@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the  package.
+# This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-23 23:15+0100\n"
+"POT-Creation-Date: 2017-01-25 17:47+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: ../app/Main.qml:88
-#: /home/jlb/src/janbar/QML/noson-app-build-desktop/po/noson.desktop.in.h:1
+#: /home/jlb/src/janbar/build-noson-app-armhf-15/po/noson.desktop.in.h:1
 msgid "Noson"
 msgstr ""
 
@@ -96,7 +96,7 @@ msgstr ""
 #: ../app/components/Dialog/DialogEditPlaylist.qml:60
 #: ../app/components/Dialog/DialogNewPlaylist.qml:65
 #: ../app/components/Dialog/DialogRemovePlaylist.qml:60
-#: ../app/components/Dialog/DialogSearchMusic.qml:107
+#: ../app/components/Dialog/DialogSearchMusic.qml:106
 msgid "Cancel"
 msgstr ""
 
@@ -130,7 +130,7 @@ msgstr ""
 #: ../app/components/Dialog/DialogManageQueue.qml:93
 #: ../app/components/Dialog/DialogSelectSource.qml:132
 #: ../app/components/Dialog/DialogSettings.qml:54
-#: ../app/components/Dialog/DialogSleepTimer.qml:102
+#: ../app/components/Dialog/DialogSleepTimer.qml:104
 msgid "Close"
 msgstr ""
 
@@ -177,7 +177,8 @@ msgstr ""
 
 #. TRANSLATORS: this is the name of the playlists page shown in the tab header.
 #. Remember to keep the translation short to fit the screen width
-#: ../app/components/Dialog/DialogSearchMusic.qml:48 ../app/ui/Playlists.qml:35
+#: ../app/components/Dialog/DialogSearchMusic.qml:48
+#: ../app/ui/Playlists.qml:35
 msgid "Playlists"
 msgstr ""
 
@@ -197,7 +198,7 @@ msgstr ""
 msgid "Composers"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSearchMusic.qml:96 ../app/ui/Service.qml:139
+#: ../app/components/Dialog/DialogSearchMusic.qml:95 ../app/ui/Service.qml:137
 msgid "Search"
 msgstr ""
 
@@ -503,7 +504,8 @@ msgstr ""
 
 #: ../app/ui/Favorites.qml:127 ../app/ui/Favorites.qml:223
 #: ../app/ui/Favorites.qml:295 ../app/ui/Genres.qml:144
-#: ../app/ui/Genres.qml:152 ../app/ui/Service.qml:178 ../app/ui/Service.qml:303
+#: ../app/ui/Genres.qml:152 ../app/ui/Service.qml:178
+#: ../app/ui/Service.qml:303
 msgid "Genre"
 msgstr ""
 
