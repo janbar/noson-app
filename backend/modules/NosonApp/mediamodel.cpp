@@ -26,7 +26,10 @@
 #include <cstdio> // for strncpy
 #include <cctype> // for isdigit
 
-#define LOAD_BULKSIZE 100
+#define LOAD_BULKSIZE       100
+#define ROOT_DISPLAY_TYPE   SONOS::SMAPIItem::Editorial
+#define ROOT_TAG            "root"
+#define SEARCH_TAG          "SEARCH"
 
 MediaItem::MediaItem(const SONOS::SMAPIItem& data)
 : m_ptr(data.uriMetadata)
@@ -324,20 +327,28 @@ bool MediaModel::loadChild(const QString& id, const QString& title, int displayT
 bool MediaModel::loadParent()
 {
   SONOS::LockGuard lock(m_lock);
-  m_searching = false;
-  if (m_path.empty())
-    m_searching = false; // reset state before signal the change
-  else
+  if (!m_path.empty())
     m_path.pop();
-  emit pathChanged();
-  return load();
+  // reload current search else the parent item
+  if (pathName() == SEARCH_TAG)
+  {
+    m_searching = true; // reset state before signal the change
+    emit pathChanged();
+    return search();
+  }
+  else
+  {
+    m_searching = false; // reset state before signal the change
+    emit pathChanged();
+    return load();
+  }
 }
 
 QString MediaModel::pathName() const
 {
   SONOS::LockGuard lock(m_lock);
   if (m_path.empty())
-    return (m_searching ? "SEARCH" : "root");
+    return ROOT_TAG;
   else
     return m_path.top().title;
 }
@@ -346,7 +357,7 @@ QString MediaModel::pathId() const
 {
   SONOS::LockGuard lock(m_lock);
   if (m_path.empty())
-    return QString("root");
+    return ROOT_TAG;
   else
     return m_path.top().id;
 }
@@ -355,7 +366,7 @@ int MediaModel::parentDisplayType() const
 {
   SONOS::LockGuard lock(m_lock);
   if (m_path.empty())
-    return 3; // Editorial
+    return ROOT_DISPLAY_TYPE;
   else
     return m_path.top().displayType;
 }
@@ -376,11 +387,20 @@ QList<QString> MediaModel::listSearchCategories() const
 bool MediaModel::loadSearch(const QString &category, const QString &term)
 {
   SONOS::LockGuard lock(m_lock);
+  m_searchCategory = category.toUtf8().constData();
+  m_searchTerm = term.toUtf8().constData();
+  m_searching = true; // enable search state
+  m_path.clear();
+  m_path.push(Path("", SEARCH_TAG, ROOT_DISPLAY_TYPE));
+  emit pathChanged();
+  return search();
+}
+
+bool MediaModel::search()
+{
   if (!m_smapi)
     return false;
 
-  m_searchCategory = category.toUtf8().constData();
-  m_searchTerm = term.toUtf8().constData();
   SONOS::SMAPIMetadata meta;
   if (!m_smapi->Search(m_searchCategory, m_searchTerm, 0, LOAD_BULKSIZE, meta))
   {
@@ -390,8 +410,6 @@ bool MediaModel::loadSearch(const QString &category, const QString &term)
     return false;
   }
   clear();
-  m_path.clear();
-  m_searching = true; // enable search state
   m_totalCount = meta.TotalCount();
   m_nextIndex = meta.ItemCount();
   emit totalCountChanged();
@@ -404,7 +422,6 @@ bool MediaModel::loadSearch(const QString &category, const QString &term)
     else
       delete item;
   }
-  emit pathChanged();
   return m_loaded = true;
 }
 

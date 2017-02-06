@@ -174,7 +174,7 @@ public:
 
   int totalCount() const { return m_totalCount; }
 
-  bool isRoot() const { return (m_path.empty() && !m_searching); }
+  bool isRoot() const { return (m_path.empty()); }
 
   Q_INVOKABLE bool loadMore();
 
@@ -237,6 +237,8 @@ private:
   bool m_searching;
   std::string m_searchCategory;
   std::string m_searchTerm;
+
+  bool search();
 };
 
 #endif /* MEDIAMODEL_H */
