@@ -178,7 +178,7 @@ public:
 
   Q_INVOKABLE bool loadMore();
 
-  Q_INVOKABLE bool loadChild(const QString& id, const QString& title, int displayType);
+  Q_INVOKABLE bool loadChild(const QString& id, const QString& title, int displayType, int viewIndex = 0);
 
   Q_INVOKABLE bool loadParent();
 
@@ -187,6 +187,8 @@ public:
   Q_INVOKABLE QString pathId() const;
 
   Q_INVOKABLE int parentDisplayType() const;
+
+  Q_INVOKABLE int viewIndex() const;
 
   Q_INVOKABLE QList<QString> listSearchCategories() const;
 
@@ -224,11 +226,13 @@ private:
 
   struct Path
   {
-    Path(): id(), title(), displayType(0) {}
-    Path(const QString& _id, const QString& _title, int dt) : id(_id), title(_title), displayType(dt) {}
+    Path(): id(), title(), displayType(0), viewIndex(0) {}
+    Path(const QString& _id, const QString& _title, int dt)
+    : id(_id), title(_title), displayType(dt), viewIndex(0) {}
     QString id;
     QString title;
     int displayType;
+    int viewIndex;
   };
 
   QStack<Path> m_path;

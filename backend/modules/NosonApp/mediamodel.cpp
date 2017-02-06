@@ -314,11 +314,14 @@ bool MediaModel::loadMore()
   return true;
 }
 
-bool MediaModel::loadChild(const QString& id, const QString& title, int displayType)
+bool MediaModel::loadChild(const QString& id, const QString& title, int displayType, int viewIndex /*= 0*/)
 {
   if (id.isEmpty())
     return false;
   SONOS::LockGuard lock(m_lock);
+  // save current view index for this path item
+  if (!m_path.empty())
+    m_path.top().viewIndex = viewIndex;
   m_path.push(Path(id, title, displayType));
   emit pathChanged();
   return load();
@@ -369,6 +372,15 @@ int MediaModel::parentDisplayType() const
     return ROOT_DISPLAY_TYPE;
   else
     return m_path.top().displayType;
+}
+
+int MediaModel::viewIndex() const
+{
+  SONOS::LockGuard lock(m_lock);
+  if (m_path.empty())
+    return 0;
+  else
+    return m_path.top().viewIndex;
 }
 
 QList<QString> MediaModel::listSearchCategories() const
