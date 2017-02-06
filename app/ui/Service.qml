@@ -354,7 +354,17 @@ MusicPage {
             // change view depending of parent display type
             servicePage.displayType = mediaModel.parentDisplayType();
             mediaModel.loadParent();
-            mainView.currentlyWorking = false
+            // restore index position in view
+            var idx = mediaModel.viewIndex();
+            while (mediaModel.count <= idx && mediaModel.loadMore());
+            if (idx < mediaModel.count) {
+                mediaList.positionViewAtIndex(idx, ListView.Center);
+                mediaGrid.positionViewAtIndex(idx, GridView.Center);
+            } else {
+                mediaList.positionViewAtEnd();
+                mediaGrid.positionViewAtEnd();
+            }
+            mainView.currentlyWorking = false;
         }
     }
 
@@ -369,9 +379,11 @@ MusicPage {
         property QtObject model
         onTriggered: {
             if (model.isContainer) {
-                var old = servicePage.displayType;
+                var pdt = servicePage.displayType;
                 servicePage.displayType = model.displayType;
-                mediaModel.loadChild(model.id, model.title, old);
+                mediaModel.loadChild(model.id, model.title, pdt, model.index);
+                mediaList.positionViewAtIndex(0, ListView.Top);
+                mediaGrid.positionViewAtIndex(0, GridView.Top);
             } else if (model.canPlay) {
                 if (model.canQueue)
                   trackClicked(model);
