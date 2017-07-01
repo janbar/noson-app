@@ -68,12 +68,11 @@ namespace OS
       CLockGuard lock(m_handle->mutex);
       if (!m_handle->running)
       {
-        m_handle->started = false;
         m_handle->notifiedStop = false;
         if (thread_create(&(m_handle->nativeHandle), CThread::ThreadHandler, ((void*)static_cast<CThread*>(this))))
         {
           if (wait)
-            m_handle->condition.Wait(m_handle->mutex, m_handle->started);
+            m_handle->condition.Wait(m_handle->mutex, m_handle->running);
           return true;
         }
       }
@@ -111,7 +110,7 @@ namespace OS
     bool IsStopped()
     {
       CLockGuard lock(m_handle->mutex);
-      return m_handle->notifiedStop;
+      return m_handle->notifiedStop || m_handle->stopped;
     }
 
     void Sleep(unsigned timeout)
@@ -133,7 +132,6 @@ namespace OS
       volatile bool running;
       volatile bool stopped;
       volatile bool notifiedStop;
-      volatile bool started;
       CCondition<volatile bool> condition;
       CMutex        mutex;
 
@@ -142,7 +140,6 @@ namespace OS
       , running(false)
       , stopped(true)
       , notifiedStop(false)
-      , started(false)
       , condition()
       , mutex() { }
     };
@@ -159,7 +156,6 @@ namespace OS
         bool finalize = thread->m_finalizeOnStop;
         {
           CLockGuard lock(thread->m_handle->mutex);
-          thread->m_handle->started = true;
           thread->m_handle->running = true;
           thread->m_handle->stopped = false;
           thread->m_handle->condition.Broadcast();
