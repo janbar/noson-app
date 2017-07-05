@@ -115,9 +115,17 @@ namespace OS
 
     void Sleep(unsigned timeout)
     {
+      CTimeout _timeout(timeout);
       CLockGuard lock(m_handle->mutex);
-      if (!m_handle->notifiedStop)
-        m_handle->condition.Wait(m_handle->mutex, m_handle->notifiedStop, timeout);
+      while (!m_handle->notifiedStop && !m_handle->notifiedWake && m_handle->condition.Wait(m_handle->mutex, _timeout));
+      m_handle->notifiedWake = false; // Reset the wake flag
+    }
+
+    void WakeUp()
+    {
+      CLockGuard lock(m_handle->mutex);
+      m_handle->notifiedWake = true;
+      m_handle->condition.Broadcast();
     }
 
   protected:
@@ -132,6 +140,7 @@ namespace OS
       volatile bool running;
       volatile bool stopped;
       volatile bool notifiedStop;
+      volatile bool notifiedWake;
       CCondition<volatile bool> condition;
       CMutex        mutex;
 
@@ -140,6 +149,7 @@ namespace OS
       , running(false)
       , stopped(true)
       , notifiedStop(false)
+      , notifiedWake(false)
       , condition()
       , mutex() { }
     };

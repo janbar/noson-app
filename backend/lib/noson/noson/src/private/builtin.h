@@ -149,6 +149,10 @@ extern void time_to_iso8601(time_t time, char *str);
 #define time_to_isodate __time2isodate
 extern void time_to_isodate(time_t time, char *str);
 
+typedef struct { int tz_dir; int tz_hour; int tz_min; char tz_str[7]; } tz_t;
+#define time_tz __timetz
+extern tz_t *time_tz(time_t time, tz_t* tz);
+
 #ifdef __cplusplus
 }
 #endif

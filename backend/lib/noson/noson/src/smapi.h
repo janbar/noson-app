@@ -94,6 +94,8 @@ namespace NSROOT
      */
     bool GetDeviceLinkCode(std::string& regUrl);
 
+    bool GetAppLink(std::string& regUrl);
+
     /**
      * Try to retrieve auth credentials after a device link request.
      * While returns 'true', you have to retry call with interval of 5 sec.
@@ -111,6 +113,9 @@ namespace NSROOT
     std::string m_deviceSerialNumber;
     std::string m_deviceHouseholdID;
     std::string m_soapHeader;
+    std::string m_tz;
+    uint32_t m_capabilities;
+    enum { Auth_Anonymous, Auth_UserId, Auth_DeviceLink, Auth_AppLink } m_auth;
     
     SMServicePtr m_service;
     ElementList m_searchCategories;

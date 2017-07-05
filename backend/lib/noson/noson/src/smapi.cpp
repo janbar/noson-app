@@ -61,6 +61,10 @@ SMAPI::SMAPI(const PlayerPtr& player)
 , m_player(player)
 , m_deviceSerialNumber()
 , m_deviceHouseholdID()
+, m_soapHeader()
+, m_tz()
+, m_capabilities(0)
+, m_auth(Auth_Anonymous)
 , m_service(0)
 , m_uri(0)
 , m_valid(false)
@@ -91,6 +95,9 @@ bool SMAPI::Init(const SMServicePtr& smsvc, const std::string& locale)
   if (!m_service)
     return false;
   m_locale.assign(locale);
+  string_to_uint32(smsvc->GetCapabilities().c_str(), &m_capabilities);
+  tz_t tz;
+  m_tz.assign(time_tz(time(0), &tz)->tz_str);
   if (!m_service->GetPresentationMap())
   {
     m_presentation.clear();
@@ -136,13 +143,26 @@ bool SMAPI::Init(const SMServicePtr& smsvc, const std::string& locale)
   if (!makeSoapHeader())
     return false;
 
-  // Check credentials status
+  // setup policy auth
   const std::string& auth = smsvc->GetPolicy()->GetAttribut("Auth");
-  if ((auth == "DeviceLink" || auth == "AppLink"))
+  if (auth == "UserId")
+    m_auth = Auth_UserId;
+  else if (auth == "DeviceLink")
   {
+    m_auth = Auth_DeviceLink;
+    // Check credentials status
     if (!smsvc->GetAccount()->HasOACredentials())
       m_authTokenExpired = true;
   }
+  else if (auth == "AppLink")
+  {
+    m_auth = Auth_AppLink;
+    // Check credentials status
+    if (!smsvc->GetAccount()->HasOACredentials())
+      m_authTokenExpired = true;
+  }
+  else if (auth != "Anonymous")
+    return m_valid = false;
 
   return m_valid = true;
 }
@@ -191,6 +211,9 @@ bool SMAPI::Search(const std::string& searchId, const std::string& term, int ind
 
 bool SMAPI::GetDeviceLinkCode(std::string& regUrl)
 {
+  if (m_auth == Auth_AppLink)
+    return GetAppLink(regUrl);
+
   OS::CLockGuard lock(*m_mutex);
   SMAccount::OACredentials oa = m_service->GetAccount()->GetOACredentials();
   ElementList vars;
@@ -221,6 +244,61 @@ bool SMAPI::GetDeviceLinkCode(std::string& regUrl)
     }
     elem = elem->NextSiblingElement(NULL);
   }
+  uint16_t poll = 0;
+  string_to_uint16(m_service->GetPolicy()->GetAttribut("PollInterval").c_str(), &poll);
+  if (!m_authLinkTimeout)
+    m_authLinkTimeout = new OS::CTimeout();
+  m_authLinkTimeout->Set(poll * 1000);
+  m_authLinkCode = vars.GetValue("linkCode");
+  m_authLinkDeviceId = vars.GetValue("linkDeviceId");
+  regUrl = vars.GetValue("regUrl");
+  return true;
+}
+
+bool SMAPI::GetAppLink(std::string& regUrl)
+{
+  OS::CLockGuard lock(*m_mutex);
+  SMAccount::OACredentials oa = m_service->GetAccount()->GetOACredentials();
+  ElementList vars;
+  ElementList args;
+  args.push_back(ElementPtr(new Element("householdId", oa.devId)));
+  ElementList resp = DoCall("getAppLink", args);
+
+  const std::string& data = resp.GetValue("getAppLinkResult");
+  // Parse xml content
+  tinyxml2::XMLDocument rootdoc;
+  if (rootdoc.Parse(data.c_str(), data.length()) != tinyxml2::XML_SUCCESS)
+  {
+    DBG(DBG_ERROR, "%s: parse xml failed\n", __FUNCTION__);
+    return false;
+  }
+  const tinyxml2::XMLElement* elem = rootdoc.RootElement();
+  if (!elem || !(elem = elem->FirstChildElement(NULL)))
+  {
+    __dumpInvalidResponse(rootdoc);
+    return false;
+  }
+  while (elem && !XMLNS::NameEqual(elem->Name(), "authorizeAccount"))
+    elem = elem->NextSiblingElement(NULL);
+  if (!elem || !(elem = elem->FirstChildElement(NULL)))
+  {
+    __dumpInvalidResponse(rootdoc);
+    return false;
+  }
+  while (elem && !XMLNS::NameEqual(elem->Name(), "deviceLink"))
+    elem = elem->NextSiblingElement(NULL);
+  if (!elem || !(elem = elem->FirstChildElement(NULL)))
+  {
+    __dumpInvalidResponse(rootdoc);
+    return false;
+  }
+  while (elem)
+  {
+    vars.push_back(ElementPtr(new Element(XMLNS::LocalName(elem->Name()), elem->GetText())));
+    DBG(DBG_PROTO, "%s: %s = %s\n", __FUNCTION__, vars.back()->GetKey().c_str(), vars.back()->c_str());
+    elem = elem->NextSiblingElement(NULL);
+  }
+
   uint16_t poll = 0;
   string_to_uint16(m_service->GetPolicy()->GetAttribut("PollInterval").c_str(), &poll);
   if (!m_authLinkTimeout)
@@ -413,8 +491,7 @@ bool SMAPI::makeSoapHeader()
   {
     m_soapHeader.append("<deviceId>").append(m_deviceSerialNumber).append("</deviceId>");
     m_soapHeader.append("<deviceProvider>" DEVICE_PROVIDER "</deviceProvider>");
-    std::string policyAuth = m_service->GetPolicy()->GetAttribut("Auth");
-    if (policyAuth == "UserId")
+    if (m_auth == Auth_UserId)
     {
       ElementList vars;
       m_player->GetSessionId(m_service->GetId(), m_service->GetAccount()->GetUserName(), vars);

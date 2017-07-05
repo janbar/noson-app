@@ -92,6 +92,8 @@ int main(int argc, char** argv)
         for (auto&& item : playerPtr->GetAvailableServices())
        	{
           PRINT3("MusicService: %s : %s , %s\n", item->GetName().c_str(), item->GetServiceType().c_str(), (item->GetPresentationMap() ? item->GetPresentationMap()->GetAttribut("Uri").c_str() : "No presentation map"));
+          PRINT2("Policy      = Auth:%s , Poll:%s\n", item->GetPolicy()->GetAttribut("Auth").c_str(), item->GetPolicy()->GetAttribut("PollInterval").c_str());
+          PRINT1("Capabilities= %s\n", item->GetCapabilities().c_str());
           PRINT1("small icon  = %s\n", SONOS::System::GetLogoForService(item, "small").c_str());
           PRINT1("xlarge icon = %s\n", SONOS::System::GetLogoForService(item, "x-large").c_str());
           PRINT1("square icon = %s\n", SONOS::System::GetLogoForService(item, "square").c_str());

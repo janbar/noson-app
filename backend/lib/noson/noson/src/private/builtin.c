@@ -397,3 +397,16 @@ void time_to_isodate(time_t time, char *str)
           time_tm.tm_mon + 1,
           time_tm.tm_mday);
 }
+
+tz_t *time_tz(time_t time, tz_t* tz) {
+  struct tm loc;
+  localtime_r(&time, &loc);
+  struct tm gmt;
+  gmtime_r(&time, &gmt);
+  int minutes = ((loc.tm_hour * 60 + loc.tm_min) - (gmt.tm_hour * 60 + gmt.tm_min)) % 720;
+  tz->tz_dir = minutes < 0 ? (-1) : 1;
+  tz->tz_hour = tz->tz_dir * minutes / 60;
+  tz->tz_min  = tz->tz_dir * ( minutes - tz->tz_hour * 60 );
+  sprintf(tz->tz_str, "%+2.2d:%2.2d", tz->tz_dir * tz->tz_hour, tz->tz_min);
+  return tz;
+}

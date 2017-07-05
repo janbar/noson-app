@@ -74,6 +74,12 @@ namespace OS
       return true;
     }
 
+    bool Wait(CMutex& mutex, CTimeout& timeout)
+    {
+      cond_timedwait(&m_condition, mutex.NativeHandle(), timeout.TimeLeft());
+      return (timeout.TimeLeft() > 0 ? true : false);
+    }
+
   private:
     condition_t m_condition;
 
