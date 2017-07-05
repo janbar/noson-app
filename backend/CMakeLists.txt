@@ -1,3 +1,4 @@
+cmake_policy (VERSION 3.0)
 add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/lib/noson/noson)
 
 ###############################################################################
