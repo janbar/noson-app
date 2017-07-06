@@ -442,13 +442,44 @@ bool MediaModel::isAuthExpired() const
   return (m_smapi ? m_smapi->AuthTokenExpired() : false);
 }
 
+int MediaModel::policyAuth() const
+{
+  return (m_smapi ? m_smapi->GetPolicyAuth() : 0);
+}
+
+int MediaModel::requestSessionId(const QString& user, const QString& password)
+{
+  if (m_smapi)
+  {
+    SONOS::SMOAKeyring::Credentials auth;
+    if (m_smapi->GetSessionId(user.toUtf8().constData(), password.toUtf8().constData(), auth))
+    {
+      m_auth = auth;
+      emit authStatusChanged();
+      return 1; // succeeded
+    }
+  }
+  return 0;
+}
+
 QString MediaModel::beginDeviceRegistration()
 {
   if (m_smapi && m_smapi->AuthTokenExpired())
   {
     std::string regUrl;
-    if (m_smapi->GetDeviceLinkCode(regUrl))
-      return QString::fromUtf8(regUrl.c_str());
+    switch (policyAuth())
+    {
+    case 2:
+      if (m_smapi->GetDeviceLinkCode(regUrl))
+        return QString::fromUtf8(regUrl.c_str());
+      break;
+    case 3:
+      if (m_smapi->GetAppLink(regUrl))
+        return QString::fromUtf8(regUrl.c_str());
+      break;
+    default:
+      break;
+    }
   }
   return QString::null;
 }
@@ -457,7 +488,7 @@ int MediaModel::requestDeviceAuth()
 {
   if (m_smapi)
   {
-    SONOS::SMOAKeyring::OAuth auth;
+    SONOS::SMOAKeyring::Credentials auth;
     if (m_smapi->GetDeviceAuthToken(auth))
       return 0; // retry
     if (!auth.key.empty())

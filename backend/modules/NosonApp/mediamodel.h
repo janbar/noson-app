@@ -121,10 +121,10 @@ public:
   QString key() { return QString::fromUtf8(m_auth.key.c_str()); }
   QString token() { return QString::fromUtf8(m_auth.token.c_str()); }
 
-  void resetAuth(const SONOS::SMOAKeyring::OAuth& auth) { m_auth = auth; }
+  void resetAuth(const SONOS::SMOAKeyring::Credentials& auth) { m_auth = auth; }
 
 private:
-  SONOS::SMOAKeyring::OAuth m_auth;
+  SONOS::SMOAKeyring::Credentials m_auth;
 };
 
 class MediaModel : public QAbstractListModel, public ListModel
@@ -134,6 +134,7 @@ class MediaModel : public QAbstractListModel, public ListModel
   Q_PROPERTY(int totalCount READ totalCount NOTIFY totalCountChanged)
   Q_PROPERTY(bool isRoot READ isRoot NOTIFY pathChanged)
   Q_PROPERTY(bool isAuthExpired READ isAuthExpired NOTIFY authStatusChanged())
+  Q_PROPERTY(int policyAuth READ policyAuth)
 
 public:
   enum AnyRoles
@@ -196,6 +197,10 @@ public:
 
   bool isAuthExpired() const;
 
+  int policyAuth() const;
+
+  Q_INVOKABLE int requestSessionId(const QString& user, const QString& password);
+
   Q_INVOKABLE QString beginDeviceRegistration();
 
   Q_INVOKABLE int requestDeviceAuth(); // 0: retry, 1: succeeded, 2: failed
@@ -222,7 +227,7 @@ private:
   QList<MediaItem*> m_items;
 
   SONOS::SMAPI* m_smapi;
-  SONOS::SMOAKeyring::OAuth m_auth;
+  SONOS::SMOAKeyring::Credentials m_auth;
 
   struct Path
   {
