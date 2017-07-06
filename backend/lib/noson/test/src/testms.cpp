@@ -60,6 +60,13 @@ int main(int argc, char** argv)
     tstServiceMediaId.assign(argv[3]);
   else
     tstServiceMediaId.assign("root");
+  std::string username("");
+  std::string password("");
+  if (argc > 4)
+    username.assign(argv[4]);
+  if (argc > 5)
+    password.assign(argv[5]);
+
 
   SONOS::DBGLevel(2); // debug/proto
 
@@ -136,23 +143,69 @@ int main(int argc, char** argv)
             if (!rs)
             {
               std::string regUrl;
-              if (sm.AuthTokenExpired() && sm.GetDeviceLinkCode(regUrl))
+              if (!sm.AuthTokenExpired())
+                PRINT1("!!! Browsing failed for service %s !!!\n", item->GetName().c_str());
+              else
               {
-                PRINT1("Go to manual registration URL: %s\n", regUrl.c_str());
-                SONOS::SMOAKeyring::OAuth auth;
-                while (sm.GetDeviceAuthToken(auth))
+                SONOS::SMOAKeyring::Credentials auth;
+                switch (sm.GetPolicyAuth())
                 {
-                  PRINT1("Retrying %s\n", "...");
-                  sleep(5);
+                case SONOS::SMAPI::Auth_UserId:
+                  if (sm.GetSessionId(username, password, auth))
+                  {
+                    PRINT1("Session ID = %s\n", auth.key.c_str());
+                    if (!(rs = sm.GetMetadata(tstServiceMediaId, 0, 10, false, meta)))
+                      rs = sm.GetMediaMetadata(tstServiceMediaId, meta);
+                  }
+                  else
+                    PRINT1("!!! Getting session token failed for service %s !!!\n", item->GetName().c_str());
+                  break;
+
+                case SONOS::SMAPI::Auth_DeviceLink:
+                  if (sm.GetDeviceLinkCode(regUrl))
+                  {
+                    PRINT1("Go to manual registration URL: %s\n", regUrl.c_str());
+                    while (sm.GetDeviceAuthToken(auth))
+                    {
+                      PRINT1("Retrying %s\n", "...");
+                      sleep(5);
+                    }
+                    PRINT1("OAuth key   = %s\n", auth.key.c_str());
+                    PRINT1("OAuth token = %s\n", auth.token.c_str());
+                    if (!auth.key.empty())
+                    {
+                      if (!(rs = sm.GetMetadata(tstServiceMediaId, 0, 10, false, meta)))
+                        rs = sm.GetMediaMetadata(tstServiceMediaId, meta);
+                    }
+                    else
+                      PRINT1("!!! Getting auth token failed for service %s !!!\n", item->GetName().c_str());
+                  }
+                  break;
+
+                case SONOS::SMAPI::Auth_AppLink:
+                  if (sm.GetAppLink(regUrl))
+                  {
+                    PRINT1("Go to manual registration URL: %s\n", regUrl.c_str());
+                    while (sm.GetDeviceAuthToken(auth))
+                    {
+                      PRINT1("Retrying %s\n", "...");
+                      sleep(5);
+                    }
+                    PRINT1("OAuth key   = %s\n", auth.key.c_str());
+                    PRINT1("OAuth token = %s\n", auth.token.c_str());
+                    if (!auth.key.empty())
+                    {
+                      if (!(rs = sm.GetMetadata(tstServiceMediaId, 0, 10, false, meta)))
+                        rs = sm.GetMediaMetadata(tstServiceMediaId, meta);
+                    }
+                    else
+                      PRINT1("!!! Getting auth token failed for service %s !!!\n", item->GetName().c_str());
+                  }
+                  break;
+
+                default:
+                  break;
                 }
-                PRINT1("OAuth token = %s\n", auth.token.c_str());
-                if (!auth.key.empty())
-                {
-                  if (!(rs = sm.GetMetadata(tstServiceMediaId, 0, 10, false, meta)))
-                    rs = sm.GetMediaMetadata(tstServiceMediaId, meta);
-                }
-                else
-                  PRINT1("!!! Getting auth token failed for service %s !!!\n", item->GetName().c_str());
               }
             }
             for (auto&& data : meta.GetItems())

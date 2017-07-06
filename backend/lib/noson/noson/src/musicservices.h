@@ -49,22 +49,22 @@ namespace NSROOT
     const std::string& GetMetadata() const { return GetAttribut("MD"); }
     const std::string& GetNickname() const { return GetAttribut("NN"); }
 
-    bool HasOACredentials() const { return !GetAttribut("Key").empty(); }
+    bool HasCredentials() const { return !GetAttribut("Key").empty(); }
 
-    struct OACredentials
+    struct Credentials
     {
-      OACredentials(const std::string& _devId, const std::string& _token, const std::string& _key)
+      Credentials(const std::string& _devId, const std::string& _key, const std::string& _token)
       : devId(_devId)
-      , token(_token)
       , key(_key)
+      , token(_token)
       {}
       const std::string devId;  ///< unique account identifier: OADevID
-      std::string token;
       std::string key;
+      std::string token;
     };
 
-    OACredentials GetOACredentials() const;
-    void SetOACredentials(const OACredentials& auth);
+    Credentials GetCredentials() const;
+    void SetCredentials(const Credentials& auth);
 
   private:
     OS::CMutex* m_mutex;
@@ -194,10 +194,10 @@ namespace NSROOT
      */
     static void Reset();
 
-    struct OAuth
+    struct Credentials
     {
-      OAuth() { /* empty auth */ }
-      OAuth(  const std::string& _type, const std::string& _sn,
+      Credentials() { /* empty auth */ }
+      Credentials(  const std::string& _type, const std::string& _sn,
               const std::string& _key, const std::string& _token)
       : type(_type), serialNum(_sn), key(_key), token(_token) { }
       std::string type;
@@ -206,7 +206,7 @@ namespace NSROOT
       std::string token;
     };
 
-    typedef std::vector<OAuth> keyring;
+    typedef std::vector<Credentials> keyring;
 
   private:
     static Locked<keyring> g_keyring;

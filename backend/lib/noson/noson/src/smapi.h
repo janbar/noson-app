@@ -87,6 +87,17 @@ namespace NSROOT
      */
     bool AuthTokenExpired() const { return m_authTokenExpired; }
 
+    typedef enum {
+      Auth_Anonymous  = 0,
+      Auth_UserId     = 1,
+      Auth_DeviceLink = 2,
+      Auth_AppLink    = 3
+    } Auth_t;
+
+    Auth_t GetPolicyAuth() const { return m_policyAuth ; }
+
+    bool GetSessionId(const std::string& user, const std::string& password, SMOAKeyring::Credentials& auth);
+
     /**
      * Initialize device link request.
      * @param (out) regUrl The URL for manual registration
@@ -104,7 +115,7 @@ namespace NSROOT
      * @param (out) Fill a copy of received auth data
      * @return retry (not linked)
      */
-    bool GetDeviceAuthToken(SMOAKeyring::OAuth& auth);
+    bool GetDeviceAuthToken(SMOAKeyring::Credentials& auth);
 
   private:
     OS::CMutex* m_mutex;
@@ -115,7 +126,7 @@ namespace NSROOT
     std::string m_soapHeader;
     std::string m_tz;
     uint32_t m_capabilities;
-    enum { Auth_Anonymous, Auth_UserId, Auth_DeviceLink, Auth_AppLink } m_auth;
+    Auth_t m_policyAuth;
     
     SMServicePtr m_service;
     ElementList m_searchCategories;

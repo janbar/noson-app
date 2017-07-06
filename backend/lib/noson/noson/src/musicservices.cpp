@@ -46,18 +46,18 @@ SMAccount::~SMAccount()
   SAFE_DELETE(m_mutex);
 }
 
-SMAccount::OACredentials SMAccount::GetOACredentials() const
+SMAccount::Credentials SMAccount::GetCredentials() const
 {
   OS::CLockGuard lock(*m_mutex);
-  return OACredentials(GetAttribut("OADevID"), GetAttribut("Token"), GetAttribut("Key"));
+  return Credentials(GetAttribut("OADevID"), GetAttribut("Key"), GetAttribut("Token"));
 }
 
-void SMAccount::SetOACredentials(const OACredentials& auth)
+void SMAccount::SetCredentials(const Credentials& auth)
 {
   OS::CLockGuard lock(*m_mutex);
   SetAttribut("OADevID", auth.devId);
-  SetAttribut("Token", auth.token);
   SetAttribut("Key", auth.key);
+  SetAttribut("Token", auth.token);
   // update keyring store for reuse on account reload
   SMOAKeyring::Store(GetType(), GetSerialNum(), auth.key, auth.token);
 }
@@ -387,8 +387,7 @@ bool MusicServices::LoadAccounts(SMAccountList& accounts, std::string& agentStr)
     else
     {
       DBG(DBG_DEBUG, "%s: account %s (%s) is available\n", __FUNCTION__, item->GetSerialNum().c_str(), item->GetType().c_str());
-      if (!item->GetAttribut("OADevID").empty())
-        SMOAKeyring::Load(*item); // load OAuth data from keyring if exist
+      SMOAKeyring::Load(*item); // load Auth data from keyring if exist
       accounts.push_back(item);
     }
     elem = elem->NextSiblingElement(NULL);
@@ -427,7 +426,7 @@ void SMOAKeyring::Store(const std::string& type, const std::string& serialNum, c
       return;
     }
   }
-  p->push_back(OAuth(type, serialNum, key, token));
+  p->push_back(Credentials(type, serialNum, key, token));
 }
 
 void SMOAKeyring::Load(SMAccount& account)
