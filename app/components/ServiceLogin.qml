@@ -21,7 +21,7 @@ import NosonApp 1.0
 
 // Overlay to show when auth expired
 Rectangle {
-    id: registrationLauncher
+    id: loginLauncher
     anchors {
         fill: parent
     }
@@ -58,62 +58,71 @@ Rectangle {
         }
 
         Label {
-            id: regUrl
-            visible: text.length > 0
-            color: styleMusic.libraryEmpty.labelColor
-            elide: Text.ElideRight
-            fontSize: "large" //font.pointSize: 20
+            id: loginOutput
+            color: UbuntuColors.red
+            visible: false // should only be visible when an error is made.
+            anchors.left: parent.left
+            anchors.right: parent.right
             horizontalAlignment: Text.AlignHCenter
-            maximumLineCount: 6
-            text: ""
-            onLinkActivated: Qt.openUrlExternally(link)
-            linkColor: UbuntuColors.green
-            width: parent.width
-            wrapMode: Text.WordWrap
+            maximumLineCount: 1
+            font.weight: Font.Normal
+        }
+
+        TextField {
+            id: username
+            anchors {
+                left: parent.left
+                right: parent.right
+            }
+            color: theme.palette.selected.baseText
+            focus: true
+            hasClearButton: true
+            inputMethodHints: Qt.ImhNoPredictiveText
+            placeholderText: i18n.tr("User name")
+        }
+
+        TextField {
+            id: password
+            anchors {
+                left: parent.left
+                right: parent.right
+            }
+            color: theme.palette.selected.baseText
+            focus: true
+            hasClearButton: true
+            inputMethodHints: Qt.ImhNoPredictiveText
+            placeholderText: i18n.tr("Password")
+            echoMode: TextInput.Password
         }
 
         Button {
-            id: regStartButton
+            id: loginButton
             color: UbuntuColors.green
             height: units.gu(4)
             // TRANSLATORS: this appears in a button with limited space (around 30 characters)
-            text: i18n.tr("Start service registration")
+            text: i18n.tr("Submit")
             width: parent.width
 
             onClicked: {
                 mainView.currentlyWorking = true
-                delayRegisterService.start()
+                delayLoginService.start()
             }
         }
 
         Timer {
-            id: delayRegisterService
+            id: delayLoginService
             interval: 100
             onTriggered: {
-                var url = mediaModel.beginDeviceRegistration();
-                if (url.length > 0) {
-                    regStartButton.visible = false;
-                    regMessage.text = i18n.tr("Click the link below to authorize this application to use the service.")
-                    regUrl.text = "<a href='" + url + "'>" + url + "</a>";
-                    requestAuthForTime.start();
+                loginOutput.visible = false;
+                var ret = mediaModel.requestSessionId(username.text, password.text);
+                mainView.currentlyWorking = false;
+                if (ret === 0) {
+                    customdebug("Service login failed.");
+                    loginOutput.text = i18n.tr("Login failed.");
+                    loginOutput.visible = true;
                 }
-                mainView.currentlyWorking = false
             }
         }
 
-        Timer {
-            id: requestAuthForTime
-            triggeredOnStart: true
-            interval: 3000
-            repeat: true
-            onTriggered: {
-                var ret = mediaModel.requestDeviceAuth();
-                if (ret) {
-                    stop();
-                } else {
-                    customdebug("Retry request auth ...");
-                }
-            }
-        }
     }
 }

@@ -433,16 +433,32 @@ MusicPage {
         active: false
     }
 
+    Loader {
+        id: loginService
+        anchors.fill: parent
+        source: "../components/ServiceLogin.qml"
+        active: false
+    }
+
     Connections {
         target: mediaModel
         onIsAuthExpiredChanged: {
             if (mediaModel.isAuthExpired) {
-                if (registeringService.active)
-                    registeringService.active = false; // restart new registration
-                else
-                    mediaModel.clear();
-                registeringService.active = true;
-            } else if (registeringService.active) {
+                if (mediaModel.policyAuth == 1) {
+                    if (loginService.active)
+                        loginService.active = false; // restart new loginService
+                    else
+                        mediaModel.clear();
+                    loginService.active = true;
+                } else if (mediaModel.policyAuth == 2 || mediaModel.policyAuth == 3) {
+                    if (registeringService.active)
+                        registeringService.active = false; // restart new registration
+                    else
+                        mediaModel.clear();
+                    registeringService.active = true;
+                }
+            } else if (loginService.active || registeringService.active) {
+                loginService.active = false;
                 registeringService.active = false;
                 mainView.currentlyWorking = true;
                 // save new incarnation of accounts settings
