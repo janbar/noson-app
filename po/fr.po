@@ -430,15 +430,34 @@ msgstr "Profitez pleinement de Sonos en appuyant sur l'icône %1 pour commencer 
 msgid "Song"
 msgstr "Titre"
 
+#: ../app/components/ServiceLogin.qml:44
 #: ../app/components/ServiceRegistration.qml:44
 msgid "Registering the service"
 msgstr "Activation du service"
 
+#: ../app/components/ServiceLogin.qml:56
 #: ../app/components/ServiceRegistration.qml:56
 msgid ""
 "This will require to authenticate against the music service again, as "
 "credentials cannot be retrieved from Sonos device."
 msgstr "Cela nécessitera de s'authentifier à nouveau au près du service de musique, car les informations d'identification ne peuvent pas être récupérées à partir du dispositif Sonos."
+
+#: ../app/components/ServiceLogin.qml:82
+msgid "User name"
+msgstr "Nom d'utilisateur"
+
+#: ../app/components/ServiceLogin.qml:95
+msgid "Password"
+msgstr "Mot de passe"
+
+#. TRANSLATORS: this appears in a button with limited space (around 30 characters)
+#: ../app/components/ServiceLogin.qml:104
+msgid "Submit"
+msgstr "Soumettre"
+
+#: ../app/components/ServiceLogin.qml:122
+msgid "Login failed."
+msgstr "L'authentification a échoué."
 
 #. TRANSLATORS: this appears in a button with limited space (around 30
 #. characters)

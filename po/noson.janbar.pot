@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-07 00:16+0100\n"
+"POT-Creation-Date: 2017-07-06 13:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: ../app/Main.qml:88
-#: /home/jlb/src/janbar/QML/noson-app-build-desktop/po/noson.desktop.in.h:1
+#: /home/jlb/src/janbar/QML/build-noson-app/po/noson.desktop.in.h:1
 msgid "Noson"
 msgstr ""
 
@@ -421,14 +421,33 @@ msgstr ""
 msgid "Song"
 msgstr ""
 
+#: ../app/components/ServiceLogin.qml:44
 #: ../app/components/ServiceRegistration.qml:44
 msgid "Registering the service"
 msgstr ""
 
+#: ../app/components/ServiceLogin.qml:56
 #: ../app/components/ServiceRegistration.qml:56
 msgid ""
 "This will require to authenticate against the music service again, as "
 "credentials cannot be retrieved from Sonos device."
+msgstr ""
+
+#: ../app/components/ServiceLogin.qml:82
+msgid "User name"
+msgstr ""
+
+#: ../app/components/ServiceLogin.qml:95
+msgid "Password"
+msgstr ""
+
+#. TRANSLATORS: this appears in a button with limited space (around 30 characters)
+#: ../app/components/ServiceLogin.qml:104
+msgid "Submit"
+msgstr ""
+
+#: ../app/components/ServiceLogin.qml:122
+msgid "Login failed."
 msgstr ""
 
 #. TRANSLATORS: this appears in a button with limited space (around 30 characters)
