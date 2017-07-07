@@ -22,3 +22,11 @@ The build can be achieved on Ubuntu platform with the Ubuntu SDK for Qt/QML. See
 - `sudo make install`
 
 The noson-app files will be placed in `/usr/local/bin` `/usr/local/lib` `/usr/local/share` `/usr/local/include`.
+
+## Enabling debug output
+
+Launch the *Noson* application from command line as follows.
+
+- `noson-app --debug 2>&1 | tee noson.log`
+
+Also that will write debug output into the file `noson.log`. **Please be carefull to not paste debug log on public area before cleaning it from any credentials**. Debugging registration of music services will log entered credentials. Otherwise *Noson* doesn't store your personal credentials. Only auth tokens are kept in the property file `~/.config/noson.janbar/noson.janbar.conf`.
