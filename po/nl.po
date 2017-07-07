@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Noson\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-23 23:15+0100\n"
-"PO-Revision-Date: 2017-01-25 08:02+0000\n"
+"POT-Creation-Date: 2017-07-06 13:43+0200\n"
+"PO-Revision-Date: 2017-07-07 19:02+0000\n"
 "Last-Translator: Jean-Luc Barrière <jlbarriere68@gmail.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/janbar/noson/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../app/Main.qml:88
-#: /home/jlb/src/janbar/QML/noson-app-build-desktop/po/noson.desktop.in.h:1
+#: /home/jlb/src/janbar/QML/build-noson-app/po/noson.desktop.in.h:1
 msgid "Noson"
 msgstr "Noson"
 
@@ -96,7 +96,7 @@ msgstr "Voer een naam in."
 #: ../app/components/Dialog/DialogEditPlaylist.qml:60
 #: ../app/components/Dialog/DialogNewPlaylist.qml:65
 #: ../app/components/Dialog/DialogRemovePlaylist.qml:60
-#: ../app/components/Dialog/DialogSearchMusic.qml:107
+#: ../app/components/Dialog/DialogSearchMusic.qml:106
 msgid "Cancel"
 msgstr "Annuleren"
 
@@ -131,7 +131,7 @@ msgstr "Het wachtrijbeheerscherm sluiten."
 #: ../app/components/Dialog/DialogManageQueue.qml:93
 #: ../app/components/Dialog/DialogSelectSource.qml:132
 #: ../app/components/Dialog/DialogSettings.qml:54
-#: ../app/components/Dialog/DialogSleepTimer.qml:102
+#: ../app/components/Dialog/DialogSleepTimer.qml:104
 msgid "Close"
 msgstr "Sluiten"
 
@@ -200,7 +200,7 @@ msgstr "Genres"
 msgid "Composers"
 msgstr "Componisten"
 
-#: ../app/components/Dialog/DialogSearchMusic.qml:96 ../app/ui/Service.qml:139
+#: ../app/components/Dialog/DialogSearchMusic.qml:95 ../app/ui/Service.qml:139
 msgid "Search"
 msgstr "Zoeken"
 
@@ -430,15 +430,35 @@ msgstr "Haal meer uit Sonos door het %1-pictogram aan te raken en afspeellijsten
 msgid "Song"
 msgstr "Nummer"
 
+#: ../app/components/ServiceLogin.qml:44
 #: ../app/components/ServiceRegistration.qml:44
 msgid "Registering the service"
 msgstr "Bezig met registreren van de dienst"
 
+#: ../app/components/ServiceLogin.qml:56
 #: ../app/components/ServiceRegistration.qml:56
 msgid ""
 "This will require to authenticate against the music service again, as "
 "credentials cannot be retrieved from Sonos device."
 msgstr "Dit vereist herauthenticatie van de muziekdienst omdat de inloggegevens niet kunnen worden opgehaald van het Sonos-apparaat."
+
+#: ../app/components/ServiceLogin.qml:82
+msgid "User name"
+msgstr "Gebruikersnaam"
+
+#: ../app/components/ServiceLogin.qml:95
+msgid "Password"
+msgstr "Wachtwoord"
+
+#. TRANSLATORS: this appears in a button with limited space (around 30
+#. characters)
+#: ../app/components/ServiceLogin.qml:104
+msgid "Submit"
+msgstr "Versturen"
+
+#: ../app/components/ServiceLogin.qml:122
+msgid "Login failed."
+msgstr "Het inloggen is mislukt."
 
 #. TRANSLATORS: this appears in a button with limited space (around 30
 #. characters)
