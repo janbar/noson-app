@@ -38,6 +38,20 @@ void handleEventCB(void* handle)
   fprintf(stderr, "#########################\n");
 }
 
+void usage(const char* cmd)
+{
+  fprintf(stderr,
+        "Usage: %s [options]\n"
+        "  --zone <zone name>         Connect to zone\n"
+        "  --search <media id>        Testing search for id, default is 'Q:0'\n"
+        "  --debug                    Enable debug output\n"
+        "  --help                     print this help\n"
+        "\n", cmd
+        );
+}
+
+static int g_loglevel = 2;
+
 int main(int argc, char** argv)
 {
   int ret = 0;
@@ -49,13 +63,34 @@ int main(int argc, char** argv)
 #endif /* __WINDOWS__ */
 
   std::string tryzone;
-  if (argc > 1)
-    tryzone.assign(argv[1]);
   std::string search = "Q:0";
-  if (argc > 2)
-    search.assign(argv[2]);
 
-  SONOS::DBGLevel(3); // debug/proto
+  int i = 0;
+  while (++i < argc)
+  {
+    if (strcmp(argv[i], "--debug") == 0)
+    {
+      g_loglevel = 4;
+      fprintf(stderr, "debug=Yes, ");
+    }
+    else if (strcmp(argv[i], "--zone") == 0 && ++i < argc)
+    {
+      fprintf(stderr, "zone=%s, ", argv[i]);
+      tryzone.assign(argv[i]);
+    }
+    else if (strcmp(argv[i], "--search") == 0 && ++i < argc)
+    {
+      fprintf(stderr, "search=%s, ", argv[i]);
+      search.assign(argv[i]);
+    }
+    else if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0)
+    {
+      usage(argv[0]);
+      return 0;
+    }
+  }
+  fprintf(stderr, "\n");
+  SONOS::DBGLevel(g_loglevel);
 
   {
 

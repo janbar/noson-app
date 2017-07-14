@@ -24,6 +24,7 @@
 #include "xmldict.h"
 #include "cppdef.h"
 #include "debug.h"
+#include "builtin.h"
 
 #include <cstdio>
 
@@ -246,19 +247,36 @@ void EventBroker::Process()
     case HRM_HEAD:
     case HRM_GET:
     {
-      EventMessage msg;
-      msg.event = EVENT_UNKNOWN;
-      msg.subject.push_back("GET");
-      msg.subject.push_back(rb.GetParsedURI());
-      m_handler->DispatchEvent(msg);
-      status.Set(HSC_OK);
+      if (rb.GetParsedURI().compare("/") == 0)
+      {
+        static const char* version_string = "<html><h1>Noson Event Broker</h1><p>Version <b>" LIBVERSION "</b>, compiled on " __DATE__ " at " __TIME__ "</html>";
+        char buf[8];
+        uint32_to_string(strlen(version_string), buf);
+        status.Set(HSC_OK);
+        resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage()).append("\r\n");
+        resp.append("CONTENT-TYPE: text/html\r\n");
+        resp.append("CONTENT-LENGTH: ").append(buf).append("\r\n");
+        resp.append("\r\n");
+        resp.append(version_string);
+      }
+      else
+      {
+        EventMessage msg;
+        msg.event = EVENT_UNKNOWN;
+        msg.subject.push_back("GET");
+        msg.subject.push_back(rb.GetParsedURI());
+        m_handler->DispatchEvent(msg);
+        status.Set(HSC_OK);
+        resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage());
+        resp.append("\r\n\r\n");
+      }
       break;
     }
     default:
       status.Set(HSC_Internal_Server_Error);
+      resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage());
+      resp.append("\r\n\r\n");
   }
-  resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage());
-  resp.append("\r\n\r\n");
   m_sockPtr->SendData(resp.c_str(), resp.size());
   m_sockPtr->Disconnect();
 }

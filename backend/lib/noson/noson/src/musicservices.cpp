@@ -69,7 +69,7 @@ SMService::SMService(const std::string& agent, const SMAccountPtr& account, cons
 {
   ServiceType(GetId(), m_type);
   // make the sonos descriptor
-  m_desc.assign("SA_RINCON").append(m_type).append("_").append(account->GetUserName());
+  m_desc.assign("SA_RINCON").append(m_type).append("_").append(account->GetUsername());
 }
 
 const std::string& SMService::GetId() const

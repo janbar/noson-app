@@ -39,6 +39,24 @@ void handleEventCB(void* handle)
 //  fprintf(stderr, "#########################\n");
 }
 
+
+void usage(const char* cmd)
+{
+  fprintf(stderr,
+        "Usage: %s [options]\n"
+        "  --zone <zone name>         Connect to zone\n"
+        "  --service <service name>   Testing for music service, default is 'TuneIn'\n"
+        "  --search <media id>        Testing search for id, default is 'root'\n"
+        "  --username <user name>     If policy auth is UserId: username\n"
+        "  --password <password>      If policy auth is UserId: password\n"
+        "  --debug                    Enable debug output\n"
+        "  --help                     print this help\n"
+        "\n", cmd
+        );
+}
+
+static int g_loglevel = 2;
+
 int main(int argc, char** argv)
 {
   int ret = 0;
@@ -50,25 +68,52 @@ int main(int argc, char** argv)
 #endif /* __WINDOWS__ */
 
   std::string tryzone;
-  if (argc > 1)
-    tryzone.assign(argv[1]);
-  std::string tstServiceName;
-  std::string tstServiceMediaId;
-  if (argc > 2)
-    tstServiceName.assign(argv[2]);
-  if (argc > 3)
-    tstServiceMediaId.assign(argv[3]);
-  else
-    tstServiceMediaId.assign("root");
-  std::string username("");
-  std::string password("");
-  if (argc > 4)
-    username.assign(argv[4]);
-  if (argc > 5)
-    password.assign(argv[5]);
+  std::string tstServiceName = "TuneIn";
+  std::string tstServiceMediaId = "root";
+  std::string username = "";
+  std::string password = "";
 
-
-  SONOS::DBGLevel(2); // debug/proto
+  int i = 0;
+  while (++i < argc)
+  {
+    if (strcmp(argv[i], "--debug") == 0)
+    {
+      g_loglevel = 4;
+      fprintf(stderr, "debug=Yes, ");
+    }
+    else if (strcmp(argv[i], "--zone") == 0 && ++i < argc)
+    {
+      fprintf(stderr, "zone=%s, ", argv[i]);
+      tryzone.assign(argv[i]);
+    }
+    else if (strcmp(argv[i], "--service") == 0 && ++i < argc)
+    {
+      fprintf(stderr, "service=%s, ", argv[i]);
+      tstServiceName.assign(argv[i]);
+    }
+    else if (strcmp(argv[i], "--search") == 0 && ++i < argc)
+    {
+      fprintf(stderr, "search=%s, ", argv[i]);
+      tstServiceMediaId.assign(argv[i]);
+    }
+    else if (strcmp(argv[i], "--username") == 0 && ++i < argc)
+    {
+      fprintf(stderr, "username=%s, ", argv[i]);
+      username.assign(argv[i]);
+    }
+    else if (strcmp(argv[i], "--search") == 0 && ++i < argc)
+    {
+      fprintf(stderr, "password=%s, ", argv[i]);
+      password.assign(argv[i]);
+    }
+    else if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0)
+    {
+      usage(argv[0]);
+      return 0;
+    }
+  }
+  fprintf(stderr, "\n");
+  SONOS::DBGLevel(g_loglevel);
 
   {
 
@@ -108,7 +153,7 @@ int main(int argc, char** argv)
 
           if (tstServiceName.empty() && item->GetName() == "TuneIn")
           {
-            SONOS::DBGLevel(3);
+            SONOS::DBGLevel((g_loglevel < 3 ? 3 : g_loglevel));
             PRINT1("Testing service %s ...\n", item->GetName().c_str());
             SONOS::SMAPI sm(playerPtr);
             sm.Init(item, "fr_FR");
@@ -123,11 +168,11 @@ int main(int argc, char** argv)
               else
                 PRINT1("%s\n\n", data.item->DIDL().c_str());
             }
-            SONOS::DBGLevel(2);
+            SONOS::DBGLevel(g_loglevel);
           }
           if (item->GetName() == tstServiceName)
           {
-            SONOS::DBGLevel(3);
+            SONOS::DBGLevel((g_loglevel < 3 ? 3 : g_loglevel));
             PRINT1("Testing service %s ...\n", item->GetName().c_str());
             SONOS::SMAPI sm(playerPtr);
             sm.Init(item, "fr_FR");
@@ -216,7 +261,7 @@ int main(int argc, char** argv)
               else
                 PRINT1("%s\n\n", data.item->DIDL().c_str());
             }
-            SONOS::DBGLevel(2);
+            SONOS::DBGLevel(g_loglevel);
           }
         }
       }

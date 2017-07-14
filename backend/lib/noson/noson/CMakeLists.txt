@@ -21,13 +21,13 @@ endif ()
 
 ###############################################################################
 # set lib version here
-set (NOSON_LIB_VERSION "1.4.0")
+set (NOSON_LIB_VERSION "1.4.1")
 set (NOSON_LIB_SOVERSION "1")
 
 ###############################################################################
 # add definitions
 if (MSVC)
-  add_definitions ("/D_USE_32BIT_TIME_T /D_CRT_SECURE_NO_WARNINGS")
+  add_definitions ("/D_CRT_SECURE_NO_WARNINGS")
   if (STATIC_CRT)
     set (CMAKE_C_FLAGS_RELEASE "/MT")
     set (CMAKE_C_FLAGS_DEBUG "/MTd")

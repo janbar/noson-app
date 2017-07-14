@@ -26,4 +26,7 @@
 #undef LIBTAG
 #define LIBTAG "SONOS"
 
+#undef LIBVERSION
+#define LIBVERSION "@NOSON_LIB_VERSION@"
+
 #endif	/* LOCAL_CONFIG_H */

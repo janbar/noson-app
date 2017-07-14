@@ -45,7 +45,7 @@ namespace NSROOT
     virtual ~SMAccount();
     const std::string& GetType() const { return GetAttribut("Type"); }
     const std::string& GetSerialNum() const { return GetAttribut("SerialNum"); }
-    const std::string& GetUserName() const { return GetAttribut("UN"); }
+    const std::string& GetUsername() const { return GetAttribut("UN"); }
     const std::string& GetMetadata() const { return GetAttribut("MD"); }
     const std::string& GetNickname() const { return GetAttribut("NN"); }
 
