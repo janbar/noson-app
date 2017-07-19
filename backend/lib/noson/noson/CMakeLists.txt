@@ -1,6 +1,5 @@
 cmake_minimum_required (VERSION 2.8.9 FATAL_ERROR)
 cmake_policy (VERSION 2.8)
-#set(CMAKE_LEGACY_CYGWIN_WIN32 0) # Remove when CMake >= 2.8.4 is required
 
 project (noson)
 
@@ -15,13 +14,13 @@ if (MSVC)
   OPTION (STATIC_CRT "Link the static CRT libraries" OFF)
 endif ()
 
-if (NOT WIN32)
+if (NOT MSVC)
   OPTION (REQUIRE_CXX_98 "Require standard c++98" OFF)
 endif ()
 
 ###############################################################################
 # set lib version here
-set (NOSON_LIB_VERSION "1.4.1")
+set (NOSON_LIB_VERSION "1.4.2")
 set (NOSON_LIB_SOVERSION "1")
 
 ###############################################################################
@@ -40,7 +39,7 @@ if (MSVC)
   set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W3 /Od /RTC1 /EHsc /nologo")
 endif ()
 
-if (NOT WIN32)
+if (NOT MSVC)
   if (NOT CYGWIN)
     add_definitions ("-fPIC")
   endif ()
@@ -204,7 +203,7 @@ endif ()
 if (OPENSSL_FOUND)
   list (APPEND noson_LIBRARIES ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY})
 endif ()
-if (WIN32)
+if (MSVC)
   list (APPEND noson_LIBRARIES ws2_32)
 else ()
   list (APPEND noson_LIBRARIES m)
@@ -229,7 +228,7 @@ set_target_properties (noson PROPERTIES
 # Create pkg-conf file.
 # (We use the same files as ./configure does, so we
 #  have to defined the same variables used there).
-if (NOT WIN32)
+if (NOT MSVC)
   if (NOT DEFINED CMAKE_INSTALL_BINDIR)
     set (CMAKE_INSTALL_BINDIR bin)
   endif ()

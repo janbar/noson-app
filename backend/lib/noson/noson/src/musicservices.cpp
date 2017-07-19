@@ -321,8 +321,11 @@ bool MusicServices::LoadAccounts(SMAccountList& accounts, std::string& agentStr)
   WSRequest request(m_host, m_port);
   request.RequestService("/status/accounts");
   WSResponse response(request);
-  if (!response.IsSuccessful() || !response.GetHeaderValue("SERVER", agentStr))
+  if (!response.IsSuccessful())
     return false;
+  //@FIXME make the user agent string according to the template: Linux UPnP/1.0 Sonos/26.99-12345
+  //Resolved by SoCo: https://github.com/SoCo/SoCo/blob/18ee1ec11bba8463c4536aa7c2a25f5c20a051a4/soco/music_services/music_service.py#L55
+  agentStr.assign("Linux UPnP/1.0 Sonos/26.99-12345");
 
   size_t len = 0, l = 0;
   std::string data;

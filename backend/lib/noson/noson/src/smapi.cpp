@@ -357,7 +357,7 @@ bool SMAPI::GetDeviceAuthToken(SMOAKeyring::Credentials& auth)
   ElementList resp = DoCall("getDeviceAuthToken", args);
 
   const std::string& tag = resp.GetValue("TAG");
-  if (tag == "Fault" && resp.GetValue("faultcode").find("NOT_LINKED_RETRY") != std::string::npos)
+  if (tag == "Fault")
     return true;
   else if (tag == "getDeviceAuthTokenResponse")
   {

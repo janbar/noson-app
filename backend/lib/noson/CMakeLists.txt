@@ -1,5 +1,5 @@
-cmake_minimum_required (VERSION 2.6 FATAL_ERROR)
-cmake_policy (VERSION 2.6)
+cmake_minimum_required (VERSION 2.8.9 FATAL_ERROR)
+cmake_policy (VERSION 2.8)
 
 add_subdirectory (${CMAKE_SOURCE_DIR}/noson)
 add_subdirectory (${CMAKE_SOURCE_DIR}/test)
