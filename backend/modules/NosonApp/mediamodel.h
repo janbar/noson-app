@@ -135,6 +135,8 @@ class MediaModel : public QAbstractListModel, public ListModel
   Q_PROPERTY(bool isRoot READ isRoot NOTIFY pathChanged)
   Q_PROPERTY(bool isAuthExpired READ isAuthExpired NOTIFY authStatusChanged())
   Q_PROPERTY(int policyAuth READ policyAuth)
+  Q_PROPERTY(QString regURL READ regURL)
+  Q_PROPERTY(QString linkCode READ linkCode)
 
 public:
   enum AnyRoles
@@ -201,7 +203,11 @@ public:
 
   Q_INVOKABLE int requestSessionId(const QString& user, const QString& password);
 
-  Q_INVOKABLE QString beginDeviceRegistration();
+  Q_INVOKABLE bool beginDeviceRegistration();
+
+  QString regURL() const { return QString::fromUtf8(m_regURL.c_str()); }
+
+  QString linkCode() const { return QString::fromUtf8(m_linkCode.c_str()); }
 
   Q_INVOKABLE int requestDeviceAuth(); // 0: retry, 1: succeeded, 2: failed
 
@@ -228,6 +234,8 @@ private:
 
   SONOS::SMAPI* m_smapi;
   SONOS::SMOAKeyring::Credentials m_auth;
+  std::string m_regURL;
+  std::string m_linkCode;
 
   struct Path
   {

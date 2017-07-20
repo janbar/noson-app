@@ -47,11 +47,24 @@ Rectangle {
         }
 
         Label {
+            id: regCode
+            visible: text.length > 0
+            color: styleMusic.libraryEmpty.labelColor
+            elide: Text.ElideRight
+            fontSize: "large" //font.pointSize: 20
+            horizontalAlignment: Text.AlignHCenter
+            maximumLineCount: 2
+            text: ""
+            width: parent.width
+            wrapMode: Text.WordWrap
+        }
+
+        Label {
             id: regMessage
             color: styleMusic.libraryEmpty.labelColor
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignHCenter
-            maximumLineCount: 6
+            maximumLineCount: 4
             text: i18n.tr("This will require to authenticate against the music service again, as credentials cannot be retrieved from Sonos device.")
             width: parent.width
             wrapMode: Text.WordWrap
@@ -90,11 +103,11 @@ Rectangle {
             id: delayRegisterService
             interval: 100
             onTriggered: {
-                var url = mediaModel.beginDeviceRegistration();
-                if (url.length > 0) {
+                if (mediaModel.beginDeviceRegistration()) {
                     regStartButton.visible = false;
+                    regCode.text = mediaModel.linkCode;
                     regMessage.text = i18n.tr("Click the link below to authorize this application to use the service.")
-                    regUrl.text = "<a href='" + url + "'>" + url + "</a>";
+                    regUrl.text = "<a href='" + mediaModel.regURL + "'>" + mediaModel.regURL + "</a>";
                     requestAuthForTime.start();
                 }
                 mainView.currentlyWorking = false

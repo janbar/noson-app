@@ -462,26 +462,21 @@ int MediaModel::requestSessionId(const QString& user, const QString& password)
   return 0;
 }
 
-QString MediaModel::beginDeviceRegistration()
+bool MediaModel::beginDeviceRegistration()
 {
   if (m_smapi && m_smapi->AuthTokenExpired())
   {
-    std::string regUrl;
     switch (policyAuth())
     {
     case 2:
-      if (m_smapi->GetDeviceLinkCode(regUrl))
-        return QString::fromUtf8(regUrl.c_str());
-      break;
+      return m_smapi->GetDeviceLinkCode(m_regURL, m_linkCode);
     case 3:
-      if (m_smapi->GetAppLink(regUrl))
-        return QString::fromUtf8(regUrl.c_str());
-      break;
+      return m_smapi->GetAppLink(m_regURL, m_linkCode);
     default:
       break;
     }
   }
-  return QString::null;
+  return false;
 }
 
 int MediaModel::requestDeviceAuth()
