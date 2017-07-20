@@ -188,6 +188,7 @@ int main(int argc, char** argv)
             if (!rs)
             {
               std::string regUrl;
+              std::string linkCode;
               if (!sm.AuthTokenExpired())
                 PRINT1("!!! Browsing failed for service %s !!!\n", item->GetName().c_str());
               else
@@ -207,9 +208,11 @@ int main(int argc, char** argv)
                   break;
 
                 case SONOS::SMAPI::Auth_DeviceLink:
-                  if (sm.GetDeviceLinkCode(regUrl))
+                  if (sm.GetDeviceLinkCode(regUrl, linkCode))
                   {
                     PRINT1("Go to manual registration URL: %s\n", regUrl.c_str());
+                    if (!linkCode.empty())
+                      PRINT1("Link code: %s\n", linkCode.c_str());
                     while (sm.GetDeviceAuthToken(auth))
                     {
                       PRINT1("Retrying %s\n", "...");
@@ -228,9 +231,11 @@ int main(int argc, char** argv)
                   break;
 
                 case SONOS::SMAPI::Auth_AppLink:
-                  if (sm.GetAppLink(regUrl))
+                  if (sm.GetAppLink(regUrl, linkCode))
                   {
                     PRINT1("Go to manual registration URL: %s\n", regUrl.c_str());
+                    if (!linkCode.empty())
+                      PRINT1("Link code: %s\n", linkCode.c_str());
                     while (sm.GetDeviceAuthToken(auth))
                     {
                       PRINT1("Retrying %s\n", "...");

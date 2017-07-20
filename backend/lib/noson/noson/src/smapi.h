@@ -103,9 +103,9 @@ namespace NSROOT
      * @param (out) regUrl The URL for manual registration
      * @return succeeded
      */
-    bool GetDeviceLinkCode(std::string& regUrl);
+    bool GetDeviceLinkCode(std::string& regUrl, std::string& linkCode);
 
-    bool GetAppLink(std::string& regUrl);
+    bool GetAppLink(std::string& regUrl, std::string& linkCode);
 
     /**
      * Try to retrieve auth credentials after a device link request.

@@ -244,7 +244,7 @@ bool SMAPI::GetSessionId(const std::string& user, const std::string& password, S
   return true;
 }
 
-bool SMAPI::GetDeviceLinkCode(std::string& regUrl)
+bool SMAPI::GetDeviceLinkCode(std::string& regUrl, std::string& linkCode)
 {
   OS::CLockGuard lock(*m_mutex);
   SMAccount::Credentials oa = m_service->GetAccount()->GetCredentials();
@@ -284,10 +284,14 @@ bool SMAPI::GetDeviceLinkCode(std::string& regUrl)
   m_authLinkCode = vars.GetValue("linkCode");
   m_authLinkDeviceId = vars.GetValue("linkDeviceId");
   regUrl = vars.GetValue("regUrl");
+  if (vars.GetValue("showLinkCode") == "true")
+    linkCode = m_authLinkCode;
+  else
+    linkCode.clear();
   return true;
 }
 
-bool SMAPI::GetAppLink(std::string& regUrl)
+bool SMAPI::GetAppLink(std::string& regUrl, std::string& linkCode)
 {
   OS::CLockGuard lock(*m_mutex);
   SMAccount::Credentials oa = m_service->GetAccount()->GetCredentials();
@@ -339,6 +343,10 @@ bool SMAPI::GetAppLink(std::string& regUrl)
   m_authLinkCode = vars.GetValue("linkCode");
   m_authLinkDeviceId = vars.GetValue("linkDeviceId");
   regUrl = vars.GetValue("regUrl");
+  if (vars.GetValue("showLinkCode") == "true")
+    linkCode = m_authLinkCode;
+  else
+    linkCode.clear();
   return true;
 }
 
