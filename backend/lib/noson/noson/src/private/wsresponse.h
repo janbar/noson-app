@@ -36,7 +36,7 @@ namespace NSROOT
   class NetSocket;
   class TcpSocket;
   class Decompressor;
- 
+
   class WSResponse
   {
   public:

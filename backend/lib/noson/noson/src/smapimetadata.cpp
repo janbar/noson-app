@@ -169,6 +169,7 @@ SMAPIItemList SMAPIMetadata::GetItems()
       // no browsable
       data.item.reset(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_unknown));
 
+    std::string tmp; // a temporary string
     switch (data.item->subType())
     {
     // container
@@ -185,8 +186,14 @@ SMAPIItemList SMAPIMetadata::GetItems()
     case DigitalItem::SubType_album:
       data.item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
       data.item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
-      data.item->SetProperty(DIDL_QNAME_DC "creator", media.GetAttribut("author"));
-      data.item->SetProperty(DIDL_QNAME_DC "contributor", media.GetAttribut("artist"));
+      tmp = media.GetAttribut("author");
+      if (!tmp.empty())
+      {
+        data.item->SetProperty(DIDL_QNAME_DC "creator", tmp);
+        data.item->SetProperty(DIDL_QNAME_DC "contributor", media.GetAttribut("artist"));
+      }
+      else
+        data.item->SetProperty(DIDL_QNAME_DC "creator", media.GetAttribut("artist"));
       break;
     case DigitalItem::SubType_genre:
       data.item->SetProperty(DIDL_QNAME_DC "title", media.GetAttribut("title"));
@@ -202,8 +209,14 @@ SMAPIItemList SMAPIMetadata::GetItems()
       if (itemType == track)
       {
         data.item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", media.GetAttribut("albumArtURI"));
-        data.item->SetProperty(DIDL_QNAME_DC "creator", media.GetAttribut("composer"));
-        data.item->SetProperty(DIDL_QNAME_DC "contributor", media.GetAttribut("artist"));
+        tmp = media.GetAttribut("composer");
+        if (!tmp.empty())
+        {
+          data.item->SetProperty(DIDL_QNAME_DC "creator", tmp);
+          data.item->SetProperty(DIDL_QNAME_DC "contributor", media.GetAttribut("artist"));
+        }
+        else
+          data.item->SetProperty(DIDL_QNAME_DC "creator", media.GetAttribut("artist"));
         data.item->SetProperty(DIDL_QNAME_UPNP "album", media.GetAttribut("album"));
         data.item->SetProperty(DIDL_QNAME_UPNP "originalTrackNumber", media.GetAttribut("trackNumber"));
       }
