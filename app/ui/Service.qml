@@ -173,11 +173,11 @@ MusicPage {
             id: mediaItem
             color: "transparent"
             property string description: model.description.length > 0 ? model.description
-                                       : model.type === 1 ? i18n.tr("Album")
+                                       : model.type === 1 ? model.artist.length > 0 ? model.artist : i18n.tr("Album")
                                        : model.type === 2 ? i18n.tr("Artist")
                                        : model.type === 3 ? i18n.tr("Genre")
                                        : model.type === 4 ? i18n.tr("Playlist")
-                                       : model.type === 5 && model.canQueue ? i18n.tr("Song")
+                                       : model.type === 5 && model.canQueue ? model.artist.length > 0 ? model.artist : i18n.tr("Song")
                                        : model.type === 5 ? i18n.tr("Radio")
                                        : ""
             column: Column {
@@ -298,11 +298,11 @@ MusicPage {
             id: favoriteCard
             primaryText: model.title
             secondaryText: model.description.length > 0 ? model.description
-                         : model.type === 1 ? i18n.tr("Album")
+                         : model.type === 1 ? model.artist.length > 0 ? model.artist : i18n.tr("Album")
                          : model.type === 2 ? i18n.tr("Artist")
                          : model.type === 3 ? i18n.tr("Genre")
                          : model.type === 4 ? i18n.tr("Playlist")
-                         : model.type === 5 && model.canQueue ? i18n.tr("Song")
+                         : model.type === 5 && model.canQueue ? model.artist.length > 0 ? model.artist : i18n.tr("Song")
                          : model.type === 5 ? i18n.tr("Radio")
                          : ""
             isFavorite: model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
