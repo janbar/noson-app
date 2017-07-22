@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-06 13:43+0200\n"
+"POT-Creation-Date: 2017-07-22 19:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -426,36 +426,36 @@ msgstr ""
 msgid "Registering the service"
 msgstr ""
 
-#: ../app/components/ServiceLogin.qml:56
-#: ../app/components/ServiceRegistration.qml:56
+#: ../app/components/ServiceLogin.qml:55
+#: ../app/components/ServiceRegistration.qml:68
 msgid ""
 "This will require to authenticate against the music service again, as "
 "credentials cannot be retrieved from Sonos device."
 msgstr ""
 
-#: ../app/components/ServiceLogin.qml:82
+#: ../app/components/ServiceLogin.qml:81
 msgid "User name"
 msgstr ""
 
-#: ../app/components/ServiceLogin.qml:95
+#: ../app/components/ServiceLogin.qml:94
 msgid "Password"
 msgstr ""
 
 #. TRANSLATORS: this appears in a button with limited space (around 30 characters)
-#: ../app/components/ServiceLogin.qml:104
+#: ../app/components/ServiceLogin.qml:103
 msgid "Submit"
 msgstr ""
 
-#: ../app/components/ServiceLogin.qml:122
+#: ../app/components/ServiceLogin.qml:121
 msgid "Login failed."
 msgstr ""
 
 #. TRANSLATORS: this appears in a button with limited space (around 30 characters)
-#: ../app/components/ServiceRegistration.qml:81
+#: ../app/components/ServiceRegistration.qml:93
 msgid "Start service registration"
 msgstr ""
 
-#: ../app/components/ServiceRegistration.qml:97
+#: ../app/components/ServiceRegistration.qml:109
 msgid "Click the link below to authorize this application to use the service."
 msgstr ""
 
