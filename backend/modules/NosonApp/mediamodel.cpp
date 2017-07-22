@@ -51,11 +51,16 @@ MediaItem::MediaItem(const SONOS::SMAPIItem& data)
     m_canQueue = SONOS::System::CanQueueItem(data.uriMetadata);
     m_objectId = QString::fromUtf8(data.uriMetadata->GetObjectID().c_str());
   }
+  std::string tmp;
   switch (data.item->subType())
   {
   case SONOS::DigitalItem::SubType_album:
     m_type = MediaType::album;
-    m_artist = QString::fromUtf8(data.item->GetValue("dc:creator").c_str());
+    tmp = data.item->GetValue("dc:creator");
+    if (!tmp.empty())
+      m_artist = QString::fromUtf8(tmp.c_str());
+    else
+      m_artist = QString::fromUtf8(data.item->GetValue("dc:contributor").c_str());
     m_album = QString::fromUtf8(data.item->GetValue("dc:title").c_str());
     break;
   case SONOS::DigitalItem::SubType_person:
@@ -70,7 +75,11 @@ MediaItem::MediaItem(const SONOS::SMAPIItem& data)
     break;
   case SONOS::DigitalItem::SubType_audioItem:
     m_type = MediaType::audioItem;
-    m_artist = QString::fromUtf8(data.item->GetValue("dc:creator").c_str());
+    tmp = data.item->GetValue("dc:creator");
+    if (!tmp.empty())
+      m_artist = QString::fromUtf8(tmp.c_str());
+    else
+      m_artist = QString::fromUtf8(data.item->GetValue("dc:contributor").c_str());
     m_album = QString::fromUtf8(data.item->GetValue("upnp:album").c_str());
     break;
   case SONOS::DigitalItem::SubType_storageFolder:
