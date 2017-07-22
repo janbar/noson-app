@@ -54,7 +54,7 @@ namespace NSROOT
     bool GetHeaderValue(const std::string& header, std::string& value);
 
     static bool ReadHeaderLine(NetSocket *socket, const char *eol, std::string& line, size_t *len);
-    
+
   private:
     TcpSocket *m_socket;
     bool m_successful;

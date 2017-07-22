@@ -290,9 +290,9 @@ size_t WSResponse::ReadChunk(void *buf, size_t buflen)
   if (m_contentChunked)
   {
     // no more pending byte in chunk buffer
-    if (m_chunkPtr == NULL || m_chunkPtr >= m_chunkEOR)
+    if (m_chunkPtr >= m_chunkEnd)
     {
-      // process next chunk if all bytes have been read from the chunk buffer
+      // process next chunk
       SAFE_DELETE_ARRAY(m_chunkBuffer);
       m_chunkBuffer = m_chunkPtr = m_chunkEOR = m_chunkEnd = NULL;
       std::string strread;
@@ -310,6 +310,10 @@ size_t WSResponse::ReadChunk(void *buf, size_t buflen)
       }
       else
         return 0; // that's the end of chunks
+    }
+    // fill chunk buffer
+    if (m_chunkPtr >= m_chunkEOR)
+    {
       // ask for new data to fill in the chunk buffer
       // fill at last read position and until to the end
       m_chunkEOR += m_socket->ReceiveData(m_chunkEOR, m_chunkEnd - m_chunkEOR);
