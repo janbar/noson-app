@@ -139,27 +139,34 @@ bool SMAPI::Init(const SMServicePtr& smsvc, const std::string& locale)
   else
     m_uri = new URIParser(m_service->GetSecureUri());
 
-  // setup policy auth
+  // setup auth
   const std::string& auth = smsvc->GetPolicy()->GetAttribut("Auth");
+  SMAccount::Credentials credentials = smsvc->GetAccount()->GetCredentials();
   if (auth == "UserId") {
     m_policyAuth = Auth_UserId;
-    // Check credentials status
-    if (!smsvc->GetAccount()->HasCredentials())
+    // check credentials status
+    if (credentials.key.empty())
       m_authTokenExpired = true;
   }
   else if (auth == "DeviceLink")
   {
     m_policyAuth = Auth_DeviceLink;
-    // Check credentials status
-    if (!smsvc->GetAccount()->HasCredentials())
+    // check credentials status
+    if (credentials.key.empty())
       m_authTokenExpired = true;
+    // make sure devId is fulfilled
+    if (credentials.devId.empty())
+      smsvc->GetAccount()->SetCredentials(SMAccount::Credentials(m_deviceHouseholdID, credentials.key, credentials.token));
   }
   else if (auth == "AppLink")
   {
     m_policyAuth = Auth_AppLink;
-    // Check credentials status
-    if (!smsvc->GetAccount()->HasCredentials())
+    // check credentials status
+    if (credentials.key.empty())
       m_authTokenExpired = true;
+    // make sure devId is fulfilled
+    if (credentials.devId.empty())
+      smsvc->GetAccount()->SetCredentials(SMAccount::Credentials(m_deviceHouseholdID, credentials.key, credentials.token));
   }
   else if (auth != "Anonymous")
     return m_valid = false;

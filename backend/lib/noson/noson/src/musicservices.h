@@ -49,8 +49,6 @@ namespace NSROOT
     const std::string& GetMetadata() const { return GetAttribut("MD"); }
     const std::string& GetNickname() const { return GetAttribut("NN"); }
 
-    bool HasCredentials() const { return !GetAttribut("Key").empty(); }
-
     struct Credentials
     {
       Credentials(const std::string& _devId, const std::string& _key, const std::string& _token)
