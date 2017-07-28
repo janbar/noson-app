@@ -79,6 +79,7 @@ Rectangle {
             hasClearButton: true
             inputMethodHints: Qt.ImhNoPredictiveText
             placeholderText: i18n.tr("User name")
+            text: mediaModel.username
         }
 
         TextField {

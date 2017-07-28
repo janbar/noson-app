@@ -137,6 +137,7 @@ class MediaModel : public QAbstractListModel, public ListModel
   Q_PROPERTY(int policyAuth READ policyAuth)
   Q_PROPERTY(QString regURL READ regURL)
   Q_PROPERTY(QString linkCode READ linkCode)
+  Q_PROPERTY(QString username READ username)
 
 public:
   enum AnyRoles
@@ -208,6 +209,8 @@ public:
   QString regURL() const { return QString::fromUtf8(m_regURL.c_str()); }
 
   QString linkCode() const { return QString::fromUtf8(m_linkCode.c_str()); }
+
+  QString username() const { return QString::fromUtf8(m_smapi ? m_smapi->GetUsername().c_str() : ""); }
 
   Q_INVOKABLE int requestDeviceAuth(); // 0: retry, 1: succeeded, 2: failed
 
