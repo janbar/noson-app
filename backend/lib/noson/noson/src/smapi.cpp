@@ -218,6 +218,11 @@ bool SMAPI::Search(const std::string& searchId, const std::string& term, int ind
   return metadata.IsValid();
 }
 
+const std::string& SMAPI::GetUsername()
+{
+  return m_service->GetAccount()->GetUsername();
+}
+
 bool SMAPI::GetSessionId(const std::string& user, const std::string& password, SMOAKeyring::Credentials& auth)
 {
   OS::CLockGuard lock(*m_mutex);

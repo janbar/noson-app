@@ -96,6 +96,8 @@ namespace NSROOT
 
     Auth_t GetPolicyAuth() const { return m_policyAuth ; }
 
+    const std::string& GetUsername();
+
     bool GetSessionId(const std::string& user, const std::string& password, SMOAKeyring::Credentials& auth);
 
     /**
