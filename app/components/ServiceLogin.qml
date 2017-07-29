@@ -79,7 +79,6 @@ Rectangle {
             hasClearButton: true
             inputMethodHints: Qt.ImhNoPredictiveText
             placeholderText: i18n.tr("User name")
-            text: mediaModel.username
         }
 
         TextField {
@@ -94,6 +93,10 @@ Rectangle {
             inputMethodHints: Qt.ImhNoPredictiveText
             placeholderText: i18n.tr("Password")
             echoMode: TextInput.Password
+        }
+
+        Component.onCompleted: {
+           username.text = mediaModel.username;
         }
 
         Button {

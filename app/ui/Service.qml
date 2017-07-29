@@ -445,11 +445,17 @@ MusicPage {
         onIsAuthExpiredChanged: {
             if (mediaModel.isAuthExpired) {
                 if (mediaModel.policyAuth == 1) {
-                    if (loginService.active)
-                        loginService.active = false; // restart new loginService
-                    else
+                    if (!loginService.active) {
                         mediaModel.clear();
-                    loginService.active = true;
+                        // first try with saved login/password
+                        var auth = mediaModel.getDeviceAuth();
+                        if (auth.key.length === 0 || mediaModel.requestSessionId(mediaModel.username, auth.key) === 0)
+                            loginService.active = true; // show login registration
+                        else {
+                            // refresh the model
+                            delayLoadModel.start();
+                        }
+                    }
                 } else if (mediaModel.policyAuth == 2 || mediaModel.policyAuth == 3) {
                     if (registeringService.active)
                         registeringService.active = false; // restart new registration
@@ -457,7 +463,7 @@ MusicPage {
                         mediaModel.clear();
                     registeringService.active = true;
                 }
-            } else if (loginService.active || registeringService.active) {
+            } else {
                 loginService.active = false;
                 registeringService.active = false;
                 mainView.currentlyWorking = true;
@@ -471,7 +477,7 @@ MusicPage {
                     else
                         _acls.push(acls[i]);
                 }
-                _acls.push({type: auth.type, sn: auth.serialNum, key: auth.key });
+                _acls.push({type: auth.type, sn: auth.serialNum, key: auth.key, token: auth.token});
                 startupSettings.accounts = serializeACLS(_acls);
                 // refresh the model
                 delayLoadModel.start();

@@ -143,8 +143,8 @@ MainView {
         // init SMAPI third party accounts (AppLink)
         var acls = deserializeACLS(startupSettings.accounts);
         for (var i = 0; i < acls.length; ++i) {
-            customdebug("register account: type=" + acls[i].type + " sn=" + acls[i].sn + " key=" + acls[i].key.substr(0, 1) + "...");
-            Sonos.addServiceOAuth(acls[i].type, acls[i].sn, acls[i].key);
+            customdebug("register account: type=" + acls[i].type + " sn=" + acls[i].sn + " token=" + acls[i].token.substr(0, 1) + "...");
+            Sonos.addServiceOAuth(acls[i].type, acls[i].sn, acls[i].key, acls[i].token);
         }
     }
 
@@ -398,13 +398,13 @@ MainView {
         }
     }
 
-    // ACLS is array as [{type, sn, key}]
+    // ACLS is array as [{type, sn, key, token}]
     function serializeACLS(acls) {
         var str = "";
         for (var i = 0; i < acls.length; ++i) {
             if (i > 0)
                 str += "|";
-            str += acls[i].type + "," + acls[i].sn + "," + acls[i].key;
+            str += acls[i].type + "," + acls[i].sn + "," + Qt.btoa(acls[i].key) + "," + Qt.btoa(acls[i].token);
         }
         return str;
     }
@@ -415,17 +415,10 @@ MainView {
         var rows = str.split("|");
         for (var r = 0; r < rows.length; ++r) {
             var attrs = rows[r].split(",");
-            if (attrs.length >= 3) {
-                var acl = {
-                    type: attrs[0],
-                    sn  : attrs[1],
-                    key : attrs[2] };
-                if (attrs.length > 3) {
-                    for (var i = 3; i < attrs.length; ++i)
-                        acl.key += "," + attrs[i];
-                }
-                acls.push(acl);
-            }
+            if (attrs.length == 3) // <= 2.4.7
+                acls.push({type: attrs[0], sn: attrs[1], key: attrs[2], token: attrs[2]});
+            else if (attrs.length == 4) // >= 2.4.8
+                acls.push({type: attrs[0], sn: attrs[1], key: Qt.atob(attrs[2]), token: Qt.atob(attrs[3])});
         }
         return acls;
     }
