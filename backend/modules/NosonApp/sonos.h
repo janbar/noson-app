@@ -57,7 +57,7 @@ public:
 
   Q_INVOKABLE QString getLocale();
 
-  Q_INVOKABLE void addServiceOAuth(const QString& type, const QString& sn, const QString& key);
+  Q_INVOKABLE void addServiceOAuth(const QString& type, const QString& sn, const QString& key, const QString& token);
 
   Q_INVOKABLE void renewSubscriptions();
 

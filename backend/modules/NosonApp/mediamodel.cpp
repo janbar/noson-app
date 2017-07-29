@@ -234,8 +234,16 @@ bool MediaModel::init(QObject* sonos, const QVariant& service, bool fill)
     return false;
   SAFE_DELETE(m_smapi);
   m_smapi = new SONOS::SMAPI(player);
-  if (!m_smapi || !m_smapi->Init(service.value<SONOS::SMServicePtr>(), _sonos->getLocale().toUtf8().constData()))
+  SONOS::SMServicePtr msvc = service.value<SONOS::SMServicePtr>();
+  if (!m_smapi || !m_smapi->Init(msvc, _sonos->getLocale().toUtf8().constData()))
     return false;
+  // initialize auth for the service account
+  SONOS::SMAccount::Credentials oa = msvc->GetAccount()->GetCredentials();
+  m_auth.type = msvc->GetAccount()->GetType();
+  m_auth.serialNum = msvc->GetAccount()->GetSerialNum();
+  m_auth.key = oa.key;
+  m_auth.token = oa.token;
+  // initialize path to root
   m_path.clear();
   return ListModel::init(sonos, "", fill);
 }
