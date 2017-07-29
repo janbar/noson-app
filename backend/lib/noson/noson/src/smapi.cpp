@@ -241,8 +241,8 @@ bool SMAPI::GetSessionId(const std::string& user, const std::string& password, S
 
   // register new credentials
   SMAccount::Credentials oa = m_service->GetAccount()->GetCredentials();
-  oa.key = data;
-  oa.token.clear();
+  oa.key = password;
+  oa.token = data;
   // set credentials for the account and reset the auth expiration
   m_service->GetAccount()->SetCredentials(oa);
   m_authTokenExpired = false;
@@ -538,7 +538,7 @@ bool SMAPI::makeSoapHeader()
     if (!m_authTokenExpired)
     {
       SMAccount::Credentials auth = m_service->GetAccount()->GetCredentials();
-      m_soapHeader.append("<sessionId>").append(auth.key).append("</sessionId>");
+      m_soapHeader.append("<sessionId>").append(auth.token).append("</sessionId>");
     }
     break;
   case Auth_AppLink:
