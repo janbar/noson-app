@@ -722,13 +722,13 @@ MainView {
     }
 
     function makeCoverSource(art, artist, album) {
-        var uri = "";
+        var uri = undefined;
         if (art !== undefined && art !== "")
             uri = art;
-        else if (album !== undefined && artist !== undefined && album !== "" && artist !== "")
-            uri = "image://albumart/artist=" + encodeURIComponent(artist) + "&album=" + encodeURIComponent(album);
+        else if (album !== undefined && album !== "")
+            uri = Qt.resolvedUrl("graphics/no_cover.png");
         else if (artist !== undefined && artist !== "")
-            uri = "image://artistart/artist=" + encodeURIComponent(artist) + "&album=undefined";
+            uri = Qt.resolvedUrl("graphics/none.png");
         return uri;
     }
 
