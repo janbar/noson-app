@@ -1,6 +1,6 @@
 [Desktop Entry]
-_Name=Noson
-Comment=Sonos music
+Name=Noson
+_Comment=Sonos music
 Exec=@EXEC@
 Icon=@ICON@
 Terminal=false

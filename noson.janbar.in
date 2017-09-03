@@ -1,3 +1,4 @@
 #!/bin/bash
+export APP_ID=@APP_ID@
 export QT_SELECT=qt5
 exec qmlscene -I @CMAKE_INSTALL_PREFIX@/@QT_IMPORTS_DIR@ @NOSONAPP_DIR@/@MAIN_QML@ "$@"

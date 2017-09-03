@@ -60,7 +60,7 @@ if(CLICK_MODE)
 else(CLICK_MODE)
     # Standard install paths
     include(GNUInstallDirs)
-    set(APP_HARDCODE noson-app)
+    set(APP_HARDCODE ${APP_ID})
     set(DATA_DIR ${CMAKE_INSTALL_DATADIR}/${APP_HARDCODE})
     set(DESKTOP_DIR ${CMAKE_INSTALL_DATADIR}/applications)
     set(NOSONAPP_DIR ${CMAKE_INSTALL_PREFIX}/${DATA_DIR})
@@ -74,7 +74,7 @@ else(CLICK_MODE)
         DESTINATION ${CMAKE_INSTALL_BINDIR})
     configure_file(${DESKTOP_FILE_NAME}.in ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE_NAME}.in)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE_NAME}
-        DESTINATION ${DESKTOP_DIR} RENAME noson-app.desktop)
+        DESTINATION ${DESKTOP_DIR} RENAME ${APP_HARDCODE}.desktop)
     install(FILES noson-content.json DESTINATION ${CMAKE_INSTALL_DATADIR}/content-hub/peers/ RENAME ${APP_HARDCODE})
 endif(CLICK_MODE)
 
