@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Noson
+Name=noson
 _Comment=Sonos music
 Exec=@EXEC@
 Icon=@ICON@
