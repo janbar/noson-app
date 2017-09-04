@@ -27,7 +27,7 @@ option(CLICK_MODE "Installs to a contained location" on)
 
 set(APP_VERSION       2.4.9)
 set(APP_NAME          noson)
-set(APP_ID            "noson.janbar")
+set(APP_ID            "noson")
 set(MAIN_QML          "Main.qml")
 set(ICON              "noson.png")
 set(ICON_FILE         "app/graphics/noson.png")

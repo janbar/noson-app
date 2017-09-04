@@ -148,7 +148,8 @@ MusicPage {
 
             imageSource: model.type === 1 ? makeCoverSource(model.art, model.artist, model.title) :
                          model.type === 2 ? makeCoverSource(undefined, model.artist, undefined) :
-                         model.type === 5 ? makeCoverSource(model.art, model.author, model.album) :
+                         model.type === 5 && model.canQueue ? makeCoverSource(model.art, model.author, model.album) :
+                         model.type === 5 && model.art === "" ? Qt.resolvedUrl("../graphics/radio.png") :
                          makeCoverSource(model.art, undefined, undefined)
 
             multiselectable: false
@@ -230,7 +231,8 @@ MusicPage {
 
             coverSources: model.type === 1 ? [{art: makeCoverSource(model.art, model.artist, model.title)}, {art: makeCoverSource(undefined, model.artist, model.title)}]
                         : model.type === 2 ? [{art: makeCoverSource(undefined, model.artist, undefined)}]
-                        : model.type === 5 ? [{art: makeCoverSource(model.art, model.author, model.album)}, {art: makeCoverSource(undefined, model.author, model.album)}]
+                        : model.type === 5 && model.canQueue ? [{art: makeCoverSource(model.art, model.author, model.album)}, {art: makeCoverSource(undefined, model.author, model.album)}]
+                        : model.type === 5 && model.art === "" ? [{art: Qt.resolvedUrl("../graphics/radio.png")}]
                         : [{art: makeCoverSource(model.art, undefined, undefined)}]
 
             onClicked: clickItem(model)

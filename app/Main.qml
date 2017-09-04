@@ -36,7 +36,7 @@ import "./ui"
 
 MainView {
     objectName: "nosonMainView"
-    applicationName: "noson.janbar"
+    applicationName: "noson"
     id: mainView
 
     backgroundColor: styleMusic.mainView.backgroundColor
