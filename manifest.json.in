@@ -1,5 +1,5 @@
 {
-    "name": "@APP_ID@.janbar",
+    "name": "@APP_ID@",
     "description": "A fast and smart SONOS controller for Ubuntu platforms: phone, touch and desktop.",
     "architecture": "@CLICK_ARCH@",
     "title": "@APP_NAME@",
