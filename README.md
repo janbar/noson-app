@@ -11,7 +11,7 @@ Go to [project page](http://janbar.github.io/noson-app/index.html) for further d
 
 ## Build instructions
 
-The build can be achieved on Ubuntu platform with the Ubuntu SDK for Qt/QML. See `debian/control` file for more details about dependencies.
+The build can be achieved on Ubuntu platform with the Ubuntu SDK (15.04-16.10) for Qt/QML. See `debian/control` file for more details about dependencies.
 
 ### Ubuntu
 
