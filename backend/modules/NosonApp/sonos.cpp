@@ -68,8 +68,10 @@ Sonos::~Sonos()
 
 bool Sonos::init(int debug)
 {
+  SONOS::DBGLevel(debug > DBG_INFO ? debug : DBG_INFO);
+  bool ret = m_system.Discover();
   SONOS::DBGLevel(debug);
-  return m_system.Discover();
+  return ret;
 }
 
 void Sonos::setLocale(const QString& locale)
