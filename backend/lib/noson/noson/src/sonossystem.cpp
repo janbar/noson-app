@@ -307,7 +307,7 @@ bool System::FindDeviceDescription(std::string& url)
         int status = 0;
         if (1 == sscanf(line, "%*s %d", &status) && status == 200)
         {
-          DBG(DBG_DEBUG, "%s: starting new context\n", __FUNCTION__);
+          DBG(DBG_INFO, "%s: starting new context\n", __FUNCTION__);
           _context = 1; // new valid context
         }
         else
@@ -344,12 +344,12 @@ bool System::FindDeviceDescription(std::string& url)
               {
                 if (memcmp(val, DISCOVER_ST, value_len) == 0)
                 {
-                  DBG(DBG_DEBUG, "%s: search target matches (%s)\n", __FUNCTION__, val);
+                  DBG(DBG_INFO, "%s: search target matches (%s)\n", __FUNCTION__, val);
                   _context |= 0x2;
                 }
                 else
                 {
-                  DBG(DBG_DEBUG, "%s: search target not matches (%s)\n", __FUNCTION__, val);
+                  DBG(DBG_INFO, "%s: search target not matches (%s)\n", __FUNCTION__, val);
                   _context = 0; // reset context
                 }
               }
@@ -357,14 +357,14 @@ bool System::FindDeviceDescription(std::string& url)
             case 6:
               if (val && memcmp(token, "SERVER", token_len) == 0)
               {
-                DBG(DBG_DEBUG, "%s: server string found (%s)\n", __FUNCTION__, val);
+                DBG(DBG_INFO, "%s: server string found (%s)\n", __FUNCTION__, val);
                 _context |= 0x4;
               }
               break;
             case 8:
               if (val && memcmp(token, "LOCATION", token_len) == 0)
               {
-                DBG(DBG_DEBUG, "%s: location url found (%s)\n", __FUNCTION__, val);
+                DBG(DBG_INFO, "%s: location url found (%s)\n", __FUNCTION__, val);
                 _context |= 0x8;
                 url.assign(val);
               }
@@ -375,7 +375,7 @@ bool System::FindDeviceDescription(std::string& url)
         }
         else if (len == 0)
         {
-          DBG(DBG_DEBUG, "%s: reseting context\n", __FUNCTION__);
+          DBG(DBG_INFO, "%s: reseting context\n", __FUNCTION__);
           _context = 0; // reset context
         }
       }
