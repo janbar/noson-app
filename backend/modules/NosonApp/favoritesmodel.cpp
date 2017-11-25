@@ -24,8 +24,7 @@
 #include "../../lib/noson/noson/src/contentdirectory.h"
 
 #include <cstdio> // for strncpy
-#include <cctype>
-#include <qt5/QtCore/qset.h> // for isdigit
+#include <cctype> // for isdigit
 
 FavoriteItem::FavoriteItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
 : m_ptr(ptr)
