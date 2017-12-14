@@ -339,26 +339,21 @@ bool System::FindDeviceDescription(std::string& url)
         {
           switch (token_len)
           {
-            case 2:
-              if (val && memcmp(token, "ST", token_len) == 0)
-              {
-                if (memcmp(val, DISCOVER_ST, value_len) == 0)
-                {
-                  DBG(DBG_INFO, "%s: search target matches (%s)\n", __FUNCTION__, val);
-                  _context |= 0x2;
-                }
-                else
-                {
-                  DBG(DBG_INFO, "%s: search target not matches (%s)\n", __FUNCTION__, val);
-                  _context = 0; // reset context
-                }
-              }
-              break;
             case 6:
               if (val && memcmp(token, "SERVER", token_len) == 0)
               {
                 DBG(DBG_INFO, "%s: server string found (%s)\n", __FUNCTION__, val);
-                _context |= 0x4;
+                _context |= 0x2;
+                if (strstr(val, "Sonos/"))
+                {
+                  DBG(DBG_INFO, "%s: search target matches\n", __FUNCTION__);
+                  _context |= 0x4;
+                }
+                else
+                {
+                  DBG(DBG_INFO, "%s: search target not matches\n", __FUNCTION__);
+                  _context = 0; // reset context
+                }
               }
               break;
             case 8:
