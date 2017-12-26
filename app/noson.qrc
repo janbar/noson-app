@@ -129,5 +129,7 @@
         <file>components/Dialog/DialogSleepTimer.qml</file>
         <file>components/Dialog/DialogSongInfo.qml</file>
         <file>i18n/noson_en.qm</file>
+	<file>i18n/noson_fr.qm</file>
+	<file>i18n/noson_nl.qm</file>
     </qresource>
 </RCC>
