@@ -30,6 +30,8 @@ Item {
         id: dialog
         standardButtons: Dialog.Close
 
+        width: mainView.minimumWidth - units.gu(2)
+
         onOpened: {
             timer.restart();
             if (songInfo.model) {
@@ -86,6 +88,7 @@ Item {
                         radius: height / 2
                         color: styleMusic.dialog.backgroundColor
                         opacity: 0.5
+                        visible: songInfo.actionsVisible
                     }
 
                     /* Play button */
