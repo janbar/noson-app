@@ -15,6 +15,8 @@ ApplicationWindow {
     visible: true
     title: "noson"
 
+    readonly property string versionString: "3.0"
+
     // Design stuff
     width: 360
     height: 640
@@ -1118,12 +1120,24 @@ ApplicationWindow {
 
         standardButtons: Dialog.Close
 
-        Label {
-            anchors.fill: parent
+        contentSpacing: units.gu(0.5)
+
+        Text {
             width: aboutDialog.availableWidth
-            text: "The Noson project has been started in 2015 and is intented to make "
-            + "a SONOS controller for Linux platforms."
+            text: qsTr("The project has started in 2015 and is intented to make a fast and smart controller for your SONOS devices."
+                       + " You can browse your music library and play track or radio on any zones."
+                       + " You can manage grouping zones, queue, and playlists, and fully control the playback.")
             wrapMode: Label.Wrap
+            font.pointSize: units.fs("medium")
+        }
+        Text {
+            width: aboutDialog.availableWidth
+            text: qsTr("Author: %1").arg("Jean-Luc Barriere")
+            font.pointSize: units.fs("medium")
+        }
+        Text {
+            width: aboutDialog.availableWidth
+            text: qsTr("Version: %1").arg(versionString)
             font.pointSize: units.fs("medium")
         }
     }
