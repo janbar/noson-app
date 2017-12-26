@@ -55,7 +55,7 @@ private:
 
 };
 
-class RoomsModel : public QAbstractListModel, public ListModel
+class RoomsModel : public QAbstractListModel
 {
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
@@ -81,18 +81,17 @@ public:
 
   Q_INVOKABLE QVariantMap get(int row);
 
-  Q_INVOKABLE bool init(QObject* sonos, bool fill = false);
+  virtual void clearData();
 
-  Q_INVOKABLE void clear();
+  virtual bool loadData();
 
-  Q_INVOKABLE bool load();
+  Q_INVOKABLE bool load(QObject* sonos);
 
-  Q_INVOKABLE bool load(const QString& zoneId);
+  Q_INVOKABLE bool load(QObject* sonos, const QString& zoneId);
 
-  virtual void handleDataUpdate();
+  virtual void resetModel();
 
 signals:
-  void dataUpdated();
   void countChanged();
 
 protected:
@@ -100,6 +99,9 @@ protected:
 
 private:
   QList<RoomItem*> m_items;
+  QList<RoomItem*> m_data;
+  Sonos* m_provider;
+  QString m_zoneId;
 };
 
 #endif /* ROOMSMODEL_H */

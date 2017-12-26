@@ -37,7 +37,9 @@ RenderingModel::RenderingModel(QObject* parent)
 
 RenderingModel::~RenderingModel()
 {
-  clear();
+  clearData();
+  qDeleteAll(m_items);
+  m_items.clear();
 }
 
 void RenderingModel::addItem(RenderingItem* item)
@@ -106,26 +108,47 @@ QHash<int, QByteArray> RenderingModel::roleNames() const
   return roles;
 }
 
-void RenderingModel::clear()
+void RenderingModel::clearData()
 {
-  beginRemoveRows(QModelIndex(), 0, m_items.count());
   qDeleteAll(m_items);
   m_items.clear();
-  endRemoveRows();
-  emit countChanged();
+}
+
+bool RenderingModel::loadData()
+{
+  if (!m_player)
+    return false;
+
+  clearData();
+  const Player::RCTable& tab = m_player->renderingTable();
+  for (Player::RCTable::const_iterator it = tab.begin(); it != tab.end(); ++it)
+    m_data << new RenderingItem(*it);
+  return true;
 }
 
 bool RenderingModel::load(QObject* player)
 {
-  Player* _player = reinterpret_cast<Player*> (player);
-  if (!_player)
+  m_player = reinterpret_cast<Player*> (player);
+  if (!loadData())
     return false;
-
-  clear();
-  const Player::RCTable& tab = _player->renderingTable();
-  for (Player::RCTable::const_iterator it = tab.begin(); it != tab.end(); ++it)
-    addItem(new RenderingItem(*it));
+  resetModel();
   return true;
+}
+
+void RenderingModel::resetModel()
+{
+  beginResetModel();
+  beginRemoveRows(QModelIndex(), 0, m_items.count()-1);
+  qDeleteAll(m_items);
+  m_items.clear();
+  endRemoveRows();
+  beginInsertRows(QModelIndex(), 0, m_data.count()-1);
+  foreach (RenderingItem* item, m_data)
+      m_items << item;
+  m_data.clear();
+  endInsertRows();
+  endResetModel();
+  emit countChanged();
 }
 
 void RenderingModel::setVolume(int index, const QVariant& volume)

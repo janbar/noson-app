@@ -86,23 +86,27 @@ public:
 
   Q_INVOKABLE bool init(QObject* sonos, bool fill = false);
 
-  Q_INVOKABLE void clear();
+  virtual void clearData();
 
-  Q_INVOKABLE bool load();
+  virtual bool loadData();
 
   Q_INVOKABLE bool asyncLoad();
+
+  Q_INVOKABLE void resetModel();
 
   virtual void handleDataUpdate();
 
 signals:
   void dataUpdated();
   void countChanged();
+  void loaded(bool succeeded);
 
 protected:
   QHash<int, QByteArray> roleNames() const;
 
 private:
   QList<ServiceItem*> m_items;
+  QList<ServiceItem*> m_data;
 };
 
 #endif /* SERVICESMODEL_H */

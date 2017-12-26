@@ -72,6 +72,16 @@ bool Player::init(QObject* sonos)
   return false;
 }
 
+void Player::beginJob()
+{
+  m_sonos->beginJob();
+}
+
+void Player::endJob()
+{
+  m_sonos->endJob();
+}
+
 void Player::renewSubscriptions()
 {
   if (m_player)
@@ -109,6 +119,31 @@ int Player::remainingSleepTimerDuration()
       return (int)(hh * 3600 + hm * 60 + hs);
   }
   return 0;
+}
+
+class playSourceWorker : public SONOS::OS::CWorker
+{
+public:
+  playSourceWorker(Player& player, const QVariant& payload)
+  : m_player(player)
+  , m_payload(payload)
+  { }
+
+  virtual void Process()
+  {
+    m_player.beginJob();
+    if (!m_player.setSource(m_payload) || !m_player.play())
+      emit m_player.jobFailed();
+    m_player.endJob();
+  }
+private:
+  Player& m_player;
+  QVariant m_payload;
+};
+
+bool Player::startPlaySource(const QVariant& payload)
+{
+  return m_sonos->startJob(new playSourceWorker(*this, payload));
 }
 
 bool Player::play()
@@ -215,6 +250,33 @@ bool Player::toggleMute(const QString& uuid)
     }
   }
   return false;
+}
+
+class playStreamWorker : public SONOS::OS::CWorker
+{
+public:
+  playStreamWorker(Player& player, const QString& url, const QString& title)
+  : m_player(player)
+  , m_url(url)
+  , m_title(title)
+  { }
+
+  virtual void Process()
+  {
+    m_player.beginJob();
+    if (!m_player.playStream(m_url, m_title))
+      emit m_player.jobFailed();
+    m_player.endJob();
+  }
+private:
+  Player& m_player;
+  const QString m_url;
+  const QString m_title;
+};
+
+bool Player::startPlayStream(const QString& url, const QString& title)
+{
+  return m_sonos->startJob(new playStreamWorker(*this, url, title));
 }
 
 bool Player::playStream(const QString& url, const QString& title)
@@ -339,6 +401,31 @@ bool Player::addItemToFavorites(const QVariant& payload, const QString& descript
 bool Player::destroyFavorite(const QString& FVid)
 {
   return m_player ? m_player->DestroyFavorite(FVid.toUtf8().constData()) : false;
+}
+
+class playFavoriteWorker : public SONOS::OS::CWorker
+{
+public:
+  playFavoriteWorker(Player& player, const QVariant& payload)
+  : m_player(player)
+  , m_payload(payload)
+  { }
+
+  virtual void Process()
+  {
+    m_player.beginJob();
+    if (!m_player.playFavorite(m_payload))
+      emit m_player.jobFailed();
+    m_player.endJob();
+  }
+private:
+  Player& m_player;
+  QVariant m_payload;
+};
+
+bool Player::startPlayFavorite(const QVariant& payload)
+{
+  return m_sonos->startJob(new playFavoriteWorker(*this, payload));
 }
 
 bool Player::playFavorite(const QVariant& payload)

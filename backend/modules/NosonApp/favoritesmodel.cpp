@@ -98,7 +98,9 @@ FavoritesModel::FavoritesModel(QObject* parent)
 
 FavoritesModel::~FavoritesModel()
 {
-  clear();
+  clearData();
+  qDeleteAll(m_items);
+  m_items.clear();
 }
 
 void FavoritesModel::addItem(FavoriteItem* item)
@@ -213,30 +215,32 @@ bool FavoritesModel::init(QObject* sonos, const QString& root, bool fill)
   return ListModel::init(sonos, _root, fill);
 }
 
-void FavoritesModel::clear()
+void FavoritesModel::clearData()
 {
-  {
-    SONOS::LockGuard lock(m_lock);
-    beginRemoveRows(QModelIndex(), 0, m_items.count());
-    qDeleteAll(m_items);
-    m_items.clear();
-    m_objectIDs.clear();
-    endRemoveRows();
-  }
-  emit countChanged();
+  SONOS::LockGuard lock(m_lock);
+  qDeleteAll(m_data);
+  m_data.clear();
 }
 
-bool FavoritesModel::load()
+bool FavoritesModel::loadData()
 {
   setUpdateSignaled(false);
 
   if (!m_provider)
+  {
+    emit loaded(false);
     return false;
-  clear();
+  }
   const SONOS::PlayerPtr player = m_provider->getPlayer();
   if (!player)
+  {
+    emit loaded(false);
     return false;
+  }
 
+  SONOS::LockGuard lock(m_lock);
+  clearData();
+  m_dataState = ListModel::NoData;
   QString port;
   port.setNum(player->GetPort());
   QString url = "http://";
@@ -248,20 +252,54 @@ bool FavoritesModel::load()
   {
     FavoriteItem* item = new FavoriteItem(*it, url);
     if (item->isValid())
-      addItem(item);
+      m_data << item;
     else
       delete item;
   }
   if (cl.failure())
-    return m_loaded = false;
+  {
+    emit loaded(false);
+    return false;
+  }
   m_updateID = cl.GetUpdateID(); // sync new baseline
-  return m_loaded = true;
+  m_dataState = ListModel::Loaded;
+  emit loaded(true);
+  return true;
 }
 
 bool FavoritesModel::asyncLoad()
 {
   if (m_provider)
+  {
     m_provider->runModelLoader(this);
+    return true;
+  }
+  return false;
+}
+
+void FavoritesModel::resetModel()
+{
+  {
+    SONOS::LockGuard lock(m_lock);
+    if (m_dataState != ListModel::Loaded)
+        return;
+    beginResetModel();
+    beginRemoveRows(QModelIndex(), 0, m_items.count()-1);
+    qDeleteAll(m_items);
+    m_items.clear();
+    m_objectIDs.clear();
+    endRemoveRows();
+    beginInsertRows(QModelIndex(), 0, m_data.count()-1);
+    foreach (FavoriteItem* item, m_data) {
+        m_items << item;
+        m_objectIDs.insert(item->objectId(), item->id());
+    }
+    m_data.clear();
+    m_dataState = ListModel::Synced;
+    endInsertRows();
+    endResetModel();
+  }
+  emit countChanged();
 }
 
 void FavoritesModel::handleDataUpdate()
@@ -275,6 +313,8 @@ void FavoritesModel::handleDataUpdate()
 
 QString FavoritesModel::findFavorite(const QVariant& payload) const
 {
+  if (!m_provider)
+    return "";
   SONOS::DigitalItemPtr ptr = payload.value<SONOS::DigitalItemPtr>();
   SONOS::PlayerPtr player = m_provider->getPlayer();
   if (ptr && player)
