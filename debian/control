@@ -4,11 +4,12 @@ Priority: extra
 Maintainer: janbar <jlbarriere68@gmail.com>
 Build-Depends: cmake,
                debhelper (>= 9.0.0),
-               intltool,
-               qtbase5-dev,
-               qtdeclarative5-dev,
+               qtbase5-dev (>= 5.9.1),
                qttools5-dev,
                qttools5-dev-tools,
+               qtdeclarative5-dev,
+               qtdeclarative5-dev-tools,
+               qtquickcontrols2-5-dev,
                zlib1g-dev,
                libssl-dev
 Standards-Version: 3.9.6
@@ -16,22 +17,21 @@ Homepage: https://github.com/janbar/noson-app
 
 Package: noson-app
 Architecture: any
-Depends: qmlscene,
-         qml-module-qt-labs-settings,
-         qml-module-qtmultimedia,
-         qtdeclarative5-ubuntu-content1,
+Depends: qml-module-qt-labs-settings,
+         qml-module-qtgraphicaleffects,
+         qml-module-qtqml-models2,
+         qml-module-qtquick2,
+         qml-module-qtquick-controls2,
+         qml-module-qtquick-layouts,
+         qml-module-qtquick-particles2,
+         qml-module-qtquick-templates2,
+         qml-module-qtquick-window2,
          qtdeclarative5-particles-plugin,
-         qtdeclarative5-qtmultimedia-plugin,
          qtdeclarative5-qtquick2-plugin,
-         qtdeclarative5-ubuntu-thumbnailer0.1,
-         qtdeclarative5-ubuntu-ui-toolkit-plugin,
          qtdeclarative5-window-plugin,
-         thumbnailer-service,
-         suru-icon-theme,
-         ubuntu-mobile-icons,
          zlib1g,
          openssl,
          ${shlibs:Depends}, ${misc:Depends},
-Description: SONOS controller for Ubuntu Touch
- Touch enabled SONOS controller for Ubuntu
+Description: SONOS controller for Linux
+ Touch enabled SONOS controller for Linux
 

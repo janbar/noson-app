@@ -1,4 +1,8 @@
-noson-app (2.4) UNRELEASED; urgency=low
+noson-app (3.0) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 3.0
+  * Refactor the app using Qt Quick Controls 2
 
   [ janbar ]
   * Release 2.4
