@@ -96,7 +96,6 @@ DialogBase {
 
     ComboBox {
         id: selector
-        height: units.gu(6)
         textRole: "text"
         model: selectorModel
         Layout.fillWidth: true

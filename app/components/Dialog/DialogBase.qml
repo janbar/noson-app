@@ -56,7 +56,7 @@ Dialog {
 
     property real minimumWidth: units.gu(mainView.minSizeGU - 2)
     property real minimumHeight: Math.max(256, units.gu(32))
-    property real itemSpacing: units.gu(2)
+    property real contentSpacing: units.gu(1)
 
     x: Math.round((mainView.width - width) / 2)
     y: Math.round((mainView.height - (height + header.height + footer.height)) / 2)
@@ -85,7 +85,7 @@ Dialog {
 
         Column {
             id: contentsColumn
-            spacing: dialog.itemSpacing
+            spacing: dialog.contentSpacing
             width: background.width
             onWidthChanged: updateChildrenWidths();
 

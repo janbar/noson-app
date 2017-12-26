@@ -25,14 +25,14 @@ DialogBase {
     // TRANSLATORS: this is a title of a dialog with a prompt to delete a playlist
     standardButtons: Dialog.Cancel | Dialog.Ok
 
-    Text {
+    Label {
         anchors.left: parent.left
         anchors.right: parent.right
         text: qsTr("Permanently delete playlist ?")
-        wrapMode: Text.WordWrap
+        wrapMode: Label.WordWrap
         color: styleMusic.dialog.foregroundColor
         font.pointSize: units.fs("large")
-        font.weight: Font.Normal
+        font.bold: true
     }
 
     Text {
