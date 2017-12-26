@@ -18,8 +18,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 
 
 /* Full toolbar */
@@ -30,19 +30,16 @@ Item {
     }
 
     property bool mirror: false
-    property alias color: bg.color
+    property alias backgroundColor: bg.color
+    property alias backgroundOpacity: bg.opacity
     property alias bottomProgressHint: playerControlsProgressBar.visible
     readonly property real toolbarHeight: musicToolbarFullVolumeContainer.height + musicToolbarFullButtonContainer.height
 
     Rectangle {
         id: bg
         anchors.fill: parent
-        color: styleMusic.common.black
-        opacity: 0.3
-    }
-
-    RenderingBubble {
-        id: renderingBubble
+        color: styleMusic.playerControls.backgroundColor
+        opacity: 1.0
     }
 
     /* volume slider component */
@@ -58,50 +55,47 @@ Item {
         height: units.gu(6)
         width: parent.width
 
+        RenderingBubble {
+            id: renderingBubble
+            backgroundColor: "black"
+            labelColor: "white"
+        }
+
         /* Mute button */
-        MouseArea {
+        Icon {
             id: nowPlayingMuteButton
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
-            height: parent.height
+            height: units.gu(4)
+            width: height
+            source: player.mute ? "qrc:/images/audio-volume-muted.svg" : "qrc:/images/audio-volume.svg"
+            objectName: "muteShape"
             opacity: 1
-            width: units.gu(3)
             onClicked: {
                 player.toggleMuteGroup()
                 player.refreshRenderingGroup()
                 player.refreshRendering()
             }
-
-            Icon {
-                id: muteIcon
-                height: units.gu(3)
-                width: height
-                anchors.centerIn: parent
-                source: player.mute ? Qt.resolvedUrl("../graphics/audio_volume_muted.png") : Qt.resolvedUrl("../graphics/audio_volume.png")
-                objectName: "muteShape"
-                opacity: 1
-            }
         }
 
-        Slider {
+        StyledSlider {
             id: volumeGroupSlider
             anchors.left: nowPlayingMuteButton.right
             anchors.leftMargin: units.gu(2)
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
             live: true
-            minimumValue: 0
-            maximumValue: 100
+            from: 0
+            to: 100
             objectName: "volumeGroupSliderShape"
             value: player.volumeMaster // load value at startup
             opacity: 1.0
-            style: SoundSliderStyle {
-                thumbRadius: units.gu(1)
-                thumbSize: units.gu(2)
-                thumbColor: styleMusic.playerControls.volumeHandleColor
-                backgroundColor: styleMusic.playerControls.volumeBackgroundColor
-                foregroundColor: styleMusic.playerControls.volumeForegroundColor
-            }
+
+            handleSize: units.gu(2)
+            handleColor: styleMusic.playerControls.volumeHandleColor
+            handleBorderColor: handleColor
+            backgroundColor: styleMusic.playerControls.volumeBackgroundColor
+            foregroundColor: styleMusic.playerControls.volumeForegroundColor
 
             Timer {
                 interval: 200
@@ -144,42 +138,42 @@ Item {
         width: parent.width
 
         /* Repeat button */
-        MouseArea {
+        Rectangle {
             id: nowPlayingRepeatButton
             anchors.right: nowPlayingPreviousButton.left
             anchors.rightMargin: units.gu(1)
             anchors.verticalCenter: nowPlayingPlayButton.verticalCenter
             height: units.gu(6)
-            opacity: player.repeat ? 1 : .4
             width: height
-            onClicked: {
-                var old = player.repeat
-                if (player.toggleRepeat())
-                    player.repeat = !old
-            }
+            color: "transparent"
+
             Icon {
                 id: repeatIcon
                 height: units.gu(3)
                 width: height
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                color: "white"
-                name: "media-playlist-repeat"
+                color: styleMusic.playerControls.labelColor
+                source: "qrc:/images/media-playlist-repeat.svg"
                 objectName: "repeatShape"
-                opacity: player.repeat ? 1 : .4
+                opacity: player.repeat ? 1 : .3
+                onClicked: {
+                    var old = player.repeat
+                    if (player.toggleRepeat())
+                        player.repeat = !old
+                }
             }
         }
 
         /* Previous button */
-        MouseArea {
+        Rectangle {
             id: nowPlayingPreviousButton
             anchors.right: nowPlayingPlayButton.left
             anchors.rightMargin: units.gu(1)
             anchors.verticalCenter: nowPlayingPlayButton.verticalCenter
             height: units.gu(6)
-            opacity: player.trackQueue.model.count === 0  ? .4 : 1
             width: height
-            onClicked: player.previousSong()
+            color: "transparent"
 
             Icon {
                 id: nowPlayingPreviousIndicator
@@ -187,20 +181,20 @@ Item {
                 width: height
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                color: "white"
-                name: "media-skip-backward"
-                objectName: "previousShape"
-                opacity: 1
+                color: styleMusic.playerControls.labelColor
+                source: "qrc:/images/media-skip-backward.svg"
+                opacity: player.trackQueue.model.count > 0 && player.currentIndex > 0  ? 1 : .3
+                onClicked: player.previousSong()
             }
         }
 
         /* Play/Pause button */
-        MouseArea {
+        Rectangle {
             id: nowPlayingPlayButton
             anchors.centerIn: parent
             height: units.gu(6)
             width: height
-            onClicked: player.toggle()
+            color: "transparent"
 
             Icon {
                 id: nowPlayingPlayIndicator
@@ -208,22 +202,21 @@ Item {
                 width: height
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                color: "white"
-                name: player.isPlaying ? "media-playback-pause" : "media-playback-start"
-                objectName: "playShape"
+                color: styleMusic.playerControls.labelColor
+                source: player.isPlaying ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
+                onClicked: player.toggle()
             }
         }
 
         /* Next button */
-        MouseArea {
+        Rectangle {
             id: nowPlayingNextButton
             anchors.left: nowPlayingPlayButton.right
             anchors.leftMargin: units.gu(1)
             anchors.verticalCenter: nowPlayingPlayButton.verticalCenter
             height: units.gu(6)
-            opacity: player.trackQueue.model.count === 0 ? .4 : 1
             width: height
-            onClicked: player.nextSong()
+            color: "transparent"
 
             Icon {
                 id: nowPlayingNextIndicator
@@ -231,27 +224,23 @@ Item {
                 width: height
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                color: "white"
-                name: "media-skip-forward"
+                color: styleMusic.playerControls.labelColor
+                source: "qrc:/images/media-skip-forward.svg"
                 objectName: "forwardShape"
-                opacity: 1
+                opacity: player.trackQueue.model.count > 0 && (player.currentIndex + 1) < player.trackQueue.model.count ? 1 : .3
+                onClicked: player.nextSong()
             }
         }
 
         /* Shuffle button */
-        MouseArea {
+        Rectangle {
             id: nowPlayingShuffleButton
             anchors.left: nowPlayingNextButton.right
             anchors.leftMargin: units.gu(1)
             anchors.verticalCenter: nowPlayingPlayButton.verticalCenter
             height: units.gu(6)
-            opacity: player.shuffle ? 1 : .4
             width: height
-            onClicked: {
-                var old = player.shuffle
-                if (player.toggleShuffle())
-                    player.shuffle = !old
-            }
+            color: "transparent"
 
             Icon {
                 id: shuffleIcon
@@ -259,10 +248,15 @@ Item {
                 width: height
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                color: "white"
-                name: "media-playlist-shuffle"
+                color: styleMusic.playerControls.labelColor
+                source: "qrc:/images/media-playlist-shuffle.svg"
                 objectName: "shuffleShape"
-                opacity: player.shuffle ? 1 : .4
+                opacity: player.shuffle ? 1 : .3
+                onClicked: {
+                    var old = player.shuffle
+                    if (player.toggleShuffle())
+                        player.shuffle = !old
+                }
             }
         }
     }

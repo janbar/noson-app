@@ -17,58 +17,73 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 
 MusicListView {
-    // Can't access ViewItems externally
-    // so we need to expose if in multiselect mode for the header states
-    state: ViewItems.selectMode ? "multiselectable" : "normal"
 
-    signal clearSelection()
-    signal closeSelection()
-    signal reorder(int from, int to)
+    property bool hasSelection: false
+
+    state: "default"
+    states: [
+        State { name: "default" },
+        State { name: "selection" }
+    ]
+
+    property var selectedIndices: []
+
+    signal synchronizeChecked() // need item sync for CheckBox state
+    signal selectNone()
     signal selectAll()
 
-    onClearSelection: {
-        ViewItems.selectedIndices = []
-        ViewItems.selectMode = false
-        ViewItems.selectMode = true
-    }
-    onCloseSelection: {
-        ViewItems.selectedIndices = []
-        ViewItems.selectMode = false
-        ViewItems.dragMode = false
+    signal selected(int index)
+    signal deselected(int index)
+
+    onSelectNone: {
+        selectedIndices = []
+        synchronizeChecked()
+        //selectMode = false;
+        //selectMode = true;
+        //hasSelection = false;
     }
     onSelectAll: {
         var tmp = []
-
-        for (var i=0; i < model.count; i++) {
+        for (var i = 0; i < model.count; ++i) {
             tmp.push(i)
         }
-
-        ViewItems.selectedIndices = tmp
+        selectedIndices = tmp
+        synchronizeChecked()
+        //selectMode = false;
+        //selectMode = true;
+        //hasSelection = (tmp.length > 0);
+    }
+    onSynchronizeChecked: {
+        hasSelection = selectedIndices.length > 0
     }
 
-    // Can't access ViewItems externally
-    // so for the header actions we need to expose the selectedIndices
+    // Expose the selectedIndices
     function getSelectedIndices() {
-        var indicies = ViewItems.selectedIndices.slice();
-
+        var indicies = selectedIndices.slice();
         indicies.sort();  // ensure indicies are in-order
-
         return indicies;
     }
 
-    ViewItems.selectMode: false
-    ViewItems.dragMode: false
-    ViewItems.onDragUpdated: {
-        // Only update the model when the listitem is dropped, not 'live'
-        if (event.status == ListItemDrag.Moving) {
-            event.accept = false
-        } else if (event.status == ListItemDrag.Dropped) {
-            //model.move(event.from, event.to, 1);
-            reorder(event.from, event.to)
-        }
+    function isSelectedIndex(i) {
+        return selectedIndices.indexOf(i) >= 0
+    }
+
+    function selectIndex(i) {
+        selectedIndices.push(i)
+        if (hasSelection == false)
+            hasSelection = true;
+        selected(i);
+    }
+
+    function deselectIndex(i) {
+        var index = selectedIndices.indexOf(i)
+        selectedIndices.splice(index, 1)
+        if (selectedIndices.length === 0)
+            hasSelection = false;
+        deselected(i);
     }
 }

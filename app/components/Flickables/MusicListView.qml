@@ -17,16 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 
 ListView {
     Component.onCompleted: {
-        // FIXME: workaround for qtubuntu not returning values depending on the grid unit definition
+        // Return values depending on the grid unit definition
         // for Flickable.maximumFlickVelocity and Flickable.flickDeceleration
-        var scaleFactor = units.gridUnit / 8;
+        var scaleFactor = units.scaleFactor;
         maximumFlickVelocity = maximumFlickVelocity * scaleFactor;
         flickDeceleration = flickDeceleration * scaleFactor;
     }
+
+    ScrollBar.vertical: ScrollBar { }
 }

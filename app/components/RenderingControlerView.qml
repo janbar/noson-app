@@ -15,22 +15,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 import "Delegates"
 import "Flickables"
 
 MusicListView {
     id: renderingControlList
-    anchors {
-        fill: parent
-    }
+    anchors.fill: parent
+    clip: true
+
     model: player.renderingModel
     objectName: "renderingControlList"
 
     property color backgroundColor: styleMusic.mainView.backgroundColor
-    property color labelColor: styleMusic.mainview.labelColor
-    property bool isHeld: false
+    property color foregroundColor: styleMusic.mainView.foregroundColor
+    property color labelColor: styleMusic.mainView.labelColor
+    property bool held: false
 
     signal finger(bool isHeld)
 
@@ -47,7 +48,7 @@ MusicListView {
 
             Label {
                 id: nameLabel
-                fontSize: "small"
+                font.pointSize: units.fs("medium")
                 font.weight: Font.Normal
                 text: model.name
                 color: renderingControlList.labelColor
@@ -73,46 +74,41 @@ MusicListView {
                 width: parent.width
 
                 /* Mute button */
-                MouseArea {
+                Icon {
                     id: muteButton
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
-                    height: parent.height
-                    opacity: 1
+                    height: units.gu(4)
                     width: height
+                    source: model.mute ? "qrc:/images/audio-volume-muted.svg" : "qrc:/images/audio-volume.svg"
+                    opacity: model.mute ? 1.0 : 0.6
+                    color: renderingControlList.foregroundColor
                     onClicked: {
                         if (player.toggleMute(model.uuid))
                             player.renderingModel.setMute(index, !model.mute)
-                        finger(isHeld)
-                    }
-
-                    Icon {
-                        id: muteIcon
-                        height: units.gu(3)
-                        width: height
-                        anchors.left: parent.left
-                        anchors.verticalCenter: parent.verticalCenter
-                        source: Qt.resolvedUrl("../graphics/volume_muted.png")
-                        objectName: "muteShape"
-                        opacity: model.mute ? 1.0 : 0.2
+                        finger(held)
                     }
                 }
 
-                Slider {
+                StyledSlider {
                     id: volumeSlider
+                    anchors.leftMargin: units.gu(2)
                     anchors.left: muteButton.right
                     anchors.rightMargin: units.gu(2)
                     anchors.right: gripButton.left
                     anchors.verticalCenter: parent.verticalCenter
                     live: true
-                    minimumValue: 0
-                    maximumValue: 100
+                    from: 0
+                    to: 100
                     objectName: "volumeSliderShape"
                     value: model.volume // load value at startup
                     opacity: 1.0
 
-                    style: SoundSliderStyle {
-                    }
+                    handleSize: units.gu(2)
+                    handleColor: labelColor
+                    handleBorderColor: handleColor
+                    backgroundColor: styleMusic.playerControls.volumeBackgroundColor
+                    foregroundColor: styleMusic.playerControls.volumeForegroundColor
 
                     Timer {
                         interval: 200
@@ -121,7 +117,7 @@ MusicListView {
                         onTriggered: {
                             if (player.setVolume(model.uuid, volumeSlider.value))
                                 player.renderingModel.setVolume(index, volumeSlider.value)
-                            finger(isHeld)
+                            finger(held)
                         }
                     }
 
@@ -131,32 +127,24 @@ MusicListView {
                                 player.renderingModel.setVolume(index, volumeSlider.value)
                         }
                         else
-                            finger(isHeld)
+                            finger(held)
                     }
                 }
 
                 /* Grip button */
-                MouseArea {
+                Icon {
                     id: gripButton
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
-                    height: parent.height
-                    opacity: 1
+                    source: "qrc:/images/grip.svg"
                     width: units.gu(3)
-                    onPressed: finger(isHeld)
+                    height: width
+                    opacity: renderingControlList.held ? 1.0 : 0.6
+                    color: renderingControlList.foregroundColor
+                    onPressed: finger(held)
                     onPressAndHold: {
-                        isHeld = !isHeld
-                        finger(isHeld)
-                    }
-
-                    Icon {
-                        id: grip
-                        anchors.right: parent.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        source: Qt.resolvedUrl("../graphics/grip.svg")
-                        width: units.gu(3)
-                        height: width
-                        opacity: renderingControlList.isHeld ? 1.0 : 0.3
+                        held = !held
+                        finger(held)
                     }
                 }
             }

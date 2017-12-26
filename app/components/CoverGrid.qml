@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013, 2014, 2015, 2016
+ * Copyright (C) 2013, 2014, 2015, 2016, 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *      Andrew Hayzen <ahayzen@gmail.com>
  *      Daniel Holm <d.holmen@gmail.com>
@@ -18,8 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
+import QtQuick 2.9
 
 Item {
     id: coverGrid
@@ -39,7 +38,7 @@ Item {
     property bool useFallbackArt: true
 
     // Property to set source of default cover image
-    property string noCover: Qt.resolvedUrl("../graphics/no_cover.png")
+    property string noCover: Qt.resolvedUrl("../images/no_cover.png")
 
     property string firstSource
 
@@ -94,7 +93,7 @@ Item {
                 }
                 opacity: status == Image.Ready ? 1.0 : 0.0
                 Behavior on opacity {
-                    UbuntuNumberAnimation {}
+                    NumberAnimation {}
                 }
             }
         }

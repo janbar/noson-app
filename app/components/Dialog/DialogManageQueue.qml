@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016
+ * Copyright (C) 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,48 +15,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
+
 
 DialogBase {
     id: dialogManageQueue
-    objectName: "dialogManageQueue"
     // TRANSLATORS: this is a title of a dialog to manage queue
-    title: i18n.tr("Manage queue")
+    title: qsTr("Manage queue")
+    standardButtons: Dialog.Close
 
     Label {
         id: newplaylistoutput
         anchors.left: parent.left
         anchors.right: parent.right
         wrapMode: Text.WordWrap
-        color: UbuntuColors.red
-        fontSize: "x-small"
+        color: "red"
+        font.pointSize: units.fs("small")
         font.weight: Font.Normal
         visible: false // should only be visible when an error is made.
     }
+
     TextField {
         id: playlistName
-        placeholderText: i18n.tr("Enter playlist name")
+        placeholderText: qsTr("Enter playlist name")
         inputMethodHints: Qt.ImhNoPredictiveText
-        color: theme.palette.selected.baseText
+        color: styleMusic.mainView.selectedTextBaseColor
     }
+
     Button {
-        text: i18n.tr("Save queue")
-        color: UbuntuColors.green
+        height: units.gu(6)
+        text: qsTr("Save queue")
         onClicked: {
             newplaylistoutput.visible = false // make sure its hidden now if there was an error last time
             if (playlistName.text.length > 0) { // make sure something is acually inputed
-                if (saveQueue(playlistName.text))
-                    PopupUtils.close(dialogManageQueue);
-                else {
-                    newplaylistoutput.color = UbuntuColors.red
-                    newplaylistoutput.text = i18n.tr("Saving failed.")
+                if (!saveQueue(playlistName.text)) {
+                    newplaylistoutput.color = "red"
+                    newplaylistoutput.text = qsTr("Saving failed.")
+                } else {
+                    dialogManageQueue.accept()
                 }
-            }
-            else {
+            } else {
                 newplaylistoutput.visible = true
-                newplaylistoutput.text = i18n.tr("Please type in a name.")
+                newplaylistoutput.text = qsTr("Please type in a name.")
             }
         }
     }
@@ -64,34 +65,22 @@ DialogBase {
     Label {
         anchors.left: parent.left
         anchors.right: parent.right
-        text: i18n.tr("Clearing the queue cannot be undone.")
+        text: qsTr("Clearing the queue cannot be undone.")
         wrapMode: Text.WordWrap
-        color: styleMusic.dialog.labelColor
-        fontSize: "x-small"
+        color: styleMusic.dialog.foregroundColor
+        font.pointSize: units.fs("small")
         font.weight: Font.Normal
     }
+
     Button {
-        text: i18n.tr("Clear queue")
-        color: styleMusic.dialog.confirmRemoveButtonColor
+        height: units.gu(6)
+        text: qsTr("Clear queue")
         onClicked: {
             // clearing queue
             removeAllTracksFromQueue()
-            PopupUtils.close(dialogManageQueue)
+            dialogManageQueue.accept()
         }
     }
 
-    Label {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        text: i18n.tr("Close the queue management screen.")
-        wrapMode: Text.WordWrap
-        color: styleMusic.dialog.labelColor
-        fontSize: "x-small"
-        font.weight: Font.Normal
-    }
-    Button {
-        text: i18n.tr("Close")
-        color: styleMusic.dialog.cancelButtonColor
-        onClicked: PopupUtils.close(dialogManageQueue)
-    }
+    Component.onCompleted: playlistName.forceActiveFocus()
 }

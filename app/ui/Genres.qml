@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2013, 2014, 2015, 2016
+ * Copyright (C) 2016, 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
- *      Andrew Hayzen <ahayzen@gmail.com>
- *      Daniel Holm <d.holmen@gmail.com>
- *      Victor Thompson <victor.thompson@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,53 +15,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-//import Ubuntu.Thumbnailer 0.1
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 import NosonApp 1.0
 import "../components"
 import "../components/Delegates"
 import "../components/Flickables"
-import "../components/HeadState"
 
 
 MusicPage {
     id: genresPage
     objectName: "genresPage"
-    pageTitle: i18n.tr("Genres")
+    pageTitle: qsTr("Genres")
     pageFlickable: genreGridView
     searchable: true
-    searchResultsCount: genresModelFilter.count
-    state: "default"
-    states: [
-        SearchableHeadState {
-            thisPage: genresPage
-            searchEnabled: genresModelFilter.count > 0
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        },
-        SearchHeadState {
-            id: searchHeader
-            thisPage: genresPage
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        }
-    ]
-
-    width: mainPageStack.width
-
-    // Hack for autopilot otherwise Albums appears as MusicPage
-    // due to bug 1341671 it is required that there is a property so that
-    // qml doesn't optimise using the parent type
-    property bool bug1341671workaround: true
 
     MusicGridView {
         id: genreGridView
         itemWidth: units.gu(12)
         heightOffset: units.gu(7)
-        model: SortFilterModel {
+        model: AllGenresModel
+/*        model: SortFilterModel {
             id: genresModelFilter
             model: AllGenresModel
             filter.property: "normalized"
@@ -73,7 +44,7 @@ MusicPage {
             sort.property: "genre"
             sort.order: Qt.AscendingOrder
             sortCaseSensitivity: Qt.CaseInsensitive
-        }
+        }*/
 
         AlbumsModel {
             id: childModel
@@ -85,6 +56,7 @@ MusicPage {
             var root = modelItem.id + "/";
             // register and load directory content for root
             childModel.init(Sonos, root, true);
+            childModel.resetModel();
             var count = childModel.count;
             var index = 0;
             while (index < count && index < 4) {
@@ -104,19 +76,19 @@ MusicPage {
             coverSources: []
             coverFlow: 4
             objectName: "genresPageGridItem" + index
-            primaryText: model.genre || i18n.tr("<Undefined>")
+            primaryText: model.genre || qsTr("<Undefined>")
             secondaryTextVisible: false
-            isFavorite: (AllFavoritesModel.findFavorite(model.payload).length > 0)
 
-            // check favorite on data updated
+            // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
-                onDataUpdated: {
-                    isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
+                onCountChanged: {
+                    genreCard.isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
                 }
             }
 
             Component.onCompleted: {
+                isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
                 // read from artworks cache
                 var covers = genreGridView.artworks[model.genre];
                 if (covers !== undefined)
@@ -127,21 +99,21 @@ MusicPage {
 
             Timer {
                 id: delayArtwork
-                interval: 1000
+                interval: 500
                 onTriggered: {
                     coverSources = genreGridView.findCoverSources(model);
                 }
             }
 
             onClicked: {
-                mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
+                stackView.push("qrc:/ui/SongsView.qml",
                                    {
                                        "containerItem": makeContainerItem(model),
                                        "songSearch": model.id + "//",
                                        "covers": coverSources,
                                        "album": "",
                                        "genre": model.genre,
-                                       "pageTitle": i18n.tr("Genre"),
+                                       "pageTitle": qsTr("Genre"),
                                        "line1": "",
                                        "line2": model.genre
                                    })
@@ -149,7 +121,7 @@ MusicPage {
             onPressAndHold: {
                 if (isFavorite && removeFromFavorites(model.payload))
                     isFavorite = false
-                else if (!isFavorite && addItemToFavorites(model, i18n.tr("Genre"), imageSource))
+                else if (!isFavorite && addItemToFavorites(model, qsTr("Genre"), imageSource))
                     isFavorite = true
             }
         }

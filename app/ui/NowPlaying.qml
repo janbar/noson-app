@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2013, 2014, 2015, 2016
+ * Copyright (C) 2016, 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
- *      Andrew Hayzen <ahayzen@gmail.com>
- *      Daniel Holm <d.holmen@gmail.com>
- *      Victor Thompson <victor.thompson@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,30 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 import "../components"
-import "../components/HeadState"
+import "../components/Dialog"
 
 MusicPage {
     id: nowPlaying
     objectName: "nowPlayingPage"
+
+    pageTitle: qsTr("Now playing")
+    pageFlickable: fullViewLoader.item
+    isListView: false
     showToolbar: false
 
-    property bool isListView: false
-    // TRANSLATORS: this appears in the header with limited space (around 20 characters)
-    property string nowPlayingTitle: i18n.tr("Now playing")
-    // TRANSLATORS: this appears in the header with limited space (around 20 characters)
-    property string fullViewTitle: i18n.tr("Full view")
-    // TRANSLATORS: this appears in the header with limited space (around 20 characters)
-    property string queueTitle: i18n.tr("Queue")
-
-    pageTitle: nowPlayingTitle
-    pageFlickable: fullViewLoader.item
-
     onIsListViewChanged: {
-        if (isListView) {  // When changing to the queue positionAt the currentIndex
+        if (isListView) {
+            listview = queueLoader.item.listview;
+            // When changing to the queue positionAt the currentIndex
             // ensure the loader and listview is ready
             if (queueLoader.status === Loader.Ready) {
                 ensureListViewLoaded()
@@ -53,22 +44,15 @@ MusicPage {
                 })
             }
         } else {
-            // Close multiselection mode.
-            if (queueLoader.status === Loader.Ready)
-                queueLoader.item.listview.closeSelection()
+            listview = null;
         }
     }
 
     Connections {
         target: mainView
         onWideAspectChanged: {
-            // Do not pop if not visible (eg on AddToPlaylist)
-            if (wideAspect && nowPlaying.visible) {
-                if (currentDialog)
-                    PopupUtils.close(currentDialog);
-                mainPageStack.popPage(nowPlaying);
-                mainView.nowPlayingPage = null;
-            }
+            if (wideAspect)
+                stackView.pop()
         }
     }
 
@@ -83,8 +67,10 @@ MusicPage {
         id: popWaitTimer
         interval: 250
         onTriggered: {
-            mainPageStack.popPage(nowPlaying);
-            mainView.nowPlayingPage = null;
+            if (StackView.currentItem === nowPlaying) {
+                stackView.pop();
+                mainView.nowPlayingPage = null;
+            }
         }
     }
 
@@ -103,51 +89,9 @@ MusicPage {
 
     // Position the view at the index
     function positionAt(index) {
-        queueLoader.item.listview.positionViewAtIndex(index, ListView.Center);
+        customdebug("Set queue position view at " + index);
+        queueLoader.item.listview.positionViewAtIndex(index > 0 ? index - 1 : 0, ListView.Beginning);
     }
-
-    function setListView(listView) {
-        isListView = listView;
-    }
-
-    state: {
-        if (isListView) {
-            if (queueLoader.item.listview.state === "multiselectable") {
-                "selection"
-            } else {
-                "default"
-            }
-        } else {
-            "fullview"
-        }
-    }
-    states: [
-        QueueHeadState {
-            stateName: "fullview"
-            thisPage: nowPlaying
-            thisHeader {
-                flickable: thisPage.pageFlickable
-                extension: DefaultSections { }
-            }
-        },
-        QueueHeadState {
-            stateName: "default"
-            thisPage: nowPlaying
-            thisHeader {
-                flickable: thisPage.pageFlickable
-                extension: DefaultSections { }
-            }
-        },
-        MultiSelectHeadState {
-            addToQueue: false
-            listview: queueLoader.item.listview
-            removable: true
-            thisPage: nowPlaying
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        }
-    ]
 
     BlurredBackground {
         id: nowPlayingBackground
@@ -157,7 +101,7 @@ MusicPage {
     Loader {
         id: fullViewLoader
         anchors {
-            bottomMargin: nowPlayingToolbarLoader.height + units.gu(10)
+            bottomMargin: nowPlayingToolbarLoader.height + units.gu(0)
             fill: parent
             topMargin: units.gu(1)
         }
@@ -173,7 +117,7 @@ MusicPage {
         id: nowPlayingToolbarLoader
         anchors {
             bottom: parent.bottom
-            bottomMargin: isListView ? nowPlaying.height - units.gu(10) - height : 0
+            bottomMargin: isListView ? nowPlaying.height - nowPlaying.footer.height - height : 0
         }
         height: units.gu(14)
         width: parent.width
@@ -192,11 +136,36 @@ MusicPage {
             right: parent.right
         }
         asynchronous: true
-        source: "../components/Queue.qml"
+        source: "qrc:/components/Queue.qml"
     }
 
+    DialogManageQueue {
+        id: dialogManageQueue
+    }
+
+    DialogSelectSource {
+        id: dialogSelectSource
+    }
+
+    // Page actions
+    optionsMenuVisible: true
+    optionsMenuContentItems: [
+        MenuItem {
+            visible: (queueLoader.item.listview.count > 0)
+            height: (visible ? implicitHeight : 0)
+            text: qsTr("Manage queue")
+            font.pointSize: units.fs("medium")
+            onTriggered: dialogManageQueue.open()
+        },
+        MenuItem {
+            text: qsTr("Select source")
+            font.pointSize: units.fs("medium")
+            onTriggered: dialogSelectSource.open()
+        }
+    ]
+
     Component.onCompleted: {
-        fullViewLoader.setSource("../components/NowPlayingFullView.qml", { "color": "transparent" })
-        nowPlayingToolbarLoader.setSource("../components/NowPlayingToolbar.qml", { "color": "transparent" })
+        fullViewLoader.setSource("qrc:/components/NowPlayingFullView.qml", { "color": "transparent" })
+        nowPlayingToolbarLoader.setSource("qrc:/components/NowPlayingToolbar.qml", { "backgroundColor": styleMusic.playerControls.backgroundColor, "backgroundOpacity": 0.3 })
     }
 }

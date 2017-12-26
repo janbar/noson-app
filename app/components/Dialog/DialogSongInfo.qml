@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016
+ * Copyright (C) 2016, 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,9 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 import NosonApp 1.0
 import "../Delegates"
 import "../"
@@ -25,262 +24,169 @@ import "../"
 Item {
     id: songInfo
     property var model: null
-    property bool showActions: false
+    property bool actionsVisible: false
 
-    Component {
-        id: dialogComponent
-        DialogBase {
-            id: dialog
+    DialogBase {
+        id: dialog
+        standardButtons: Dialog.Close
 
-            Component.onCompleted: {
-                if (songInfo.model) {
-                    card.coverSources = [{art: makeCoverSource(songInfo.model.art, songInfo.model.author, songInfo.model.album)}];
-                    card.primaryText = songInfo.model.title !== "" ? songInfo.model.title : i18n.tr("Unknown Album");
-                    card.secondaryText = songInfo.model.author !== "" ? songInfo.model.author : i18n.tr("Unknown Artist");
-                    card.tertiaryLabelVisible = songInfo.model.album.length !== "";
-                    card.tertiaryText = i18n.tr("%1 - track #%2").arg(songInfo.model.album).arg(songInfo.model.albumTrackNo);
-                    card.actionsVisible = showActions
-                }
+        onOpened: {
+            timer.restart();
+            if (songInfo.model) {
+                card.coverSources = [{art: makeCoverSource(songInfo.model.art, songInfo.model.author, songInfo.model.album)}];
+                card.primaryText = songInfo.model.title !== "" ? songInfo.model.title : i18n.tr("Unknown Album");
+                card.secondaryText = songInfo.model.author !== "" ? songInfo.model.author : i18n.tr("Unknown Artist");
+                card.tertiaryLabelVisible = songInfo.model.album.length !== "";
+                card.tertiaryText = qsTr("%1 - track #%2").arg(songInfo.model.album).arg(songInfo.model.albumTrackNo);
             }
+        }
 
-            Item {
-                id: card
-                height: cardColumn.childrenRect.height + actions.height
+        onClosed: {
+            timer.stop()
+            card.coverSources = [];
+            card.primaryText = "";
+            card.secondaryText = "";
+            card.tertiaryLabelVisible = "";
+            card.tertiaryText = "";
+        }
 
-                property alias coverSources: coverGrid.covers
-                property alias primaryText: primaryLabel.text
-                property alias secondaryText: secondaryLabel.text
-                property alias tertiaryText: tertiaryLabel.text
-                property alias tertiaryLabelVisible: tertiaryLabel.visible
-                property alias actionsVisible: actions.visible
+        Item {
+            id: card
+            height: cardColumn.childrenRect.height
 
-                signal clicked(var mouse)
-                signal pressAndHold(var mouse)
+            property alias coverSources: coverGrid.covers
+            property alias primaryText: primaryLabel.text
+            property alias secondaryText: secondaryLabel.text
+            property alias tertiaryText: tertiaryLabel.text
+            property alias tertiaryLabelVisible: tertiaryLabel.visible
 
-                /* Animations */
-                Behavior on height {
-                    UbuntuNumberAnimation {
+            /* Column containing image and labels */
+            Column {
+                id: cardColumn
+                spacing: units.gu(0.5)
+                anchors.top: parent.top
+                width: parent.width
 
-                    }
-                }
-
-                Behavior on width {
-                    UbuntuNumberAnimation {
-
-                    }
-                }
-
-                Behavior on x {
-                    UbuntuNumberAnimation {
-
-                    }
-                }
-
-                Behavior on y {
-                    UbuntuNumberAnimation {
-
-                    }
-                }
-
-                /* Background for card */
-                Rectangle {
-                    id: bg
-                    anchors {
-                        fill: cardColumn
-                    }
-                    color: "transparent"
-                }
-
-                /* Column containing image and labels */
-                Column {
-                    id: cardColumn
-                    anchors {
-                        top: parent.top
-                    }
+                Item {
                     width: parent.width
-                    spacing: units.gu(0.5)
+                    height: coverGrid.height
 
                     CoverGrid {
                         id: coverGrid
                         size: parent.width
                     }
 
-                    Item {
-                        height: units.gu(1)
-                        width: units.gu(1)
+                    Rectangle {
+                        id: iconBg
+                        anchors.bottom: coverGrid.bottom
+                        anchors.right: coverGrid.right
+                        anchors.margins: units.gu(1)
+                        height: coverGrid.height * 0.20
+                        width: height
+                        radius: height / 2
+                        color: styleMusic.dialog.backgroundColor
+                        opacity: 0.5
                     }
-
-                    Label {
-                        id: primaryLabel
-                        anchors {
-                            left: parent.left
-                            leftMargin: units.gu(1)
-                            right: parent.right
-                            rightMargin: units.gu(1)
-                        }
-                        color: styleMusic.popover.labelColor
-                        elide: Text.ElideRight
-                        fontSize: "large"
-                        opacity: 1.0
-                        wrapMode: Text.WordWrap
-                    }
-
-                    Label {
-                        id: secondaryLabel
-                        anchors {
-                            left: parent.left
-                            leftMargin: units.gu(1)
-                            right: parent.right
-                            rightMargin: units.gu(1)
-                        }
-                        color: styleMusic.popover.labelColor
-                        elide: Text.ElideRight
-                        fontSize: "small"
-                        opacity: 0.8
-                        wrapMode: Text.WordWrap
-                    }
-
-                    Label {
-                        id: tertiaryLabel
-                        anchors {
-                            left: parent.left
-                            leftMargin: units.gu(1)
-                            right: parent.right
-                            rightMargin: units.gu(1)
-                        }
-                        color: styleMusic.popover.labelColor
-                        elide: Text.ElideRight
-                        fontSize: "small"
-                        opacity: 0.8
-                        wrapMode: Text.WordWrap
-                    }
-
-                    Item {
-                        height: units.gu(1.5)
-                        width: units.gu(1)
-                    }
-                }
-
-                /* Overlay for when card is pressed */
-                Rectangle {
-                    id: overlay
-                    anchors {
-                        fill: bg
-                    }
-                    color: styleMusic.popover.foregroundColor
-                    opacity: 0
-
-                    Behavior on opacity {
-                        UbuntuNumberAnimation {
-
-                        }
-                    }
-                }
-
-                /* Capture mouse events */
-                MouseArea {
-                    anchors {
-                        fill: bg
-                    }
-                    onClicked: card.clicked(mouse)
-                    onPressAndHold: card.pressAndHold(mouse)
-                    onPressedChanged: overlay.opacity = pressed ? 0.3 : 0
-                }
-
-                onClicked: {
-                    timer.stop();
-                    PopupUtils.close(dialog);
-                }
-
-                /* Actions area */
-                Rectangle {
-                    id: actions
-                    anchors {
-                        top: cardColumn.bottom
-                        left: parent.left
-                        right: parent.right
-                    }
-                    visible: false
-                    height: visible ? units.gu(8) : units.gu(0)
-                    color: "transparent"
 
                     /* Play button */
                     Icon {
                         id: playerControlsPlayButton
-                       anchors {
-                           horizontalCenter: parent.horizontalCenter
-                           verticalCenter: parent.verticalCenter
-                        }
-                        color: styleMusic.popover.labelColor
-                        height: units.gu(6)
-                        name: "media-playback-start"
-                        objectName: "playShape"
+                        anchors.bottom: coverGrid.bottom
+                        anchors.right: coverGrid.right
+                        anchors.rightMargin: units.gu(1) * 1.6
+                        anchors.bottomMargin: units.gu(1) * 1.7
+                        visible: songInfo.actionsVisible
+                        color: styleMusic.dialog.foregroundColor
+                        height: coverGrid.height * 0.15
                         width: height
-                    }
-
-                    /* Mouse area for the play button (ontop of the jump to now playing) */
-                    MouseArea {
-                        anchors {
-                            top: parent.top
-                            bottom: parent.bottom
-                            horizontalCenter: playerControlsPlayButton.horizontalCenter
-                        }
+                        source: "qrc:/images/media-playback-start.svg"
                         onClicked: {
-                            timer.stop();
-                            PopupUtils.close(dialog);
                             trackClicked(songInfo.model); // play track
-                        }
-                        width: playerControlsPlayButton.width + units.gu(2)
-
-                        Rectangle {
-                            anchors {
-                                fill: parent
-                            }
-                            color: styleMusic.popover.backgroundColor
-                            opacity: parent.pressed ? 0.1 : 0
-
-                            Behavior on opacity {
-                                UbuntuNumberAnimation {
-                                    duration: UbuntuAnimation.FastDuration
-                                }
-                            }
+                            dialog.accept();
                         }
                     }
                 }
 
-            } // Item
-
-            Behavior on opacity {
-                NumberAnimation { duration: 500 }
-            }
-
-            Timer {
-                id: timer
-                interval: 10000
-
-                Component.onCompleted: start()
-
-                onTriggered: {
-                    opacity = 0
-                    closingDialogTimer.start()
+                Item {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    height: units.gu(1)
                 }
-            }
 
-            Timer {
-                id: closingDialogTimer
-                interval: 500
+                Label {
+                    id: primaryLabel
+                    anchors {
+                        left: parent.left
+                        leftMargin: units.gu(1)
+                        right: parent.right
+                        rightMargin: units.gu(1)
+                    }
+                    color: styleMusic.dialog.foregroundColor
+                    elide: Text.ElideRight
+                    font.pointSize: units.fs("large")
+                    opacity: 1.0
+                    wrapMode: Text.WordWrap
+                }
 
-                onTriggered: {
-                    visible = false
-                    PopupUtils.close(dialog)
+                Label {
+                    id: secondaryLabel
+                    anchors {
+                        left: parent.left
+                        leftMargin: units.gu(1)
+                        right: parent.right
+                        rightMargin: units.gu(1)
+                    }
+                    color: styleMusic.dialog.foregroundColor
+                    elide: Text.ElideRight
+                    font.pointSize: units.fs("medium")
+                    opacity: 0.9
+                    wrapMode: Text.WordWrap
+                }
+
+                Label {
+                    id: tertiaryLabel
+                    anchors {
+                        left: parent.left
+                        leftMargin: units.gu(1)
+                        right: parent.right
+                        rightMargin: units.gu(1)
+                    }
+                    color: styleMusic.dialog.foregroundColor
+                    elide: Text.ElideRight
+                    font.pointSize: units.fs("medium")
+                    opacity: 0.9
+                    wrapMode: Text.WordWrap
                 }
             }
         }
+
+        Behavior on opacity {
+            NumberAnimation { duration: 500 }
+        }
+
+        Timer {
+            id: closingDialogTimer
+            interval: 1000
+            onTriggered: {
+                visible = false
+                dialog.close()
+            }
+        }
+
+        Timer {
+            id: timer
+            interval: 10000
+            onTriggered: {
+                opacity = 0
+                closingDialogTimer.start()
+            }
+        }
+
     }
 
     function open(model, showActions) {
         songInfo.model = model;
-        songInfo.showActions = showActions;
-        return PopupUtils.open(dialogComponent);
+        songInfo.actionsVisible = showActions;
+        return dialog.open();
     }
 }

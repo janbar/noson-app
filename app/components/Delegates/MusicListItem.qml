@@ -1,8 +1,6 @@
 /*
- * Copyright (C) 2013, 2014, 2015
- *      Andrew Hayzen <ahayzen@gmail.com>
- *      Nekhelesh Ramananthan <krnekhelesh@gmail.com>
- *      Victor Thompson <victor.thompson@gmail.com>
+ * Copyright (C) 2017
+ *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,69 +15,84 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
+import QtQml.Models 2.2
 import "../"
 
-ListItem {
-    color: styleMusic.mainView.backgroundColor
-    highlightColor: Qt.lighter(color, 1.2)
+MouseArea {
+    id: area
 
-    // Store the currentColor so that actions can bind to it
-    property var currentColor: highlighted ? highlightColor : color
+    property color color: "white"
+    property color highlightedColor: "lightgray"
+    property var currentColor: highlighted ? highlightedColor : color
+    property bool highlighted: false
 
-    property alias column: musicRow.column
-    property alias imageSource: musicRow.imageSource
-    property alias noCover: musicRow.noCover
+    signal swipe
+    signal actionPressed
 
-    property bool multiselectable: false
-    property bool reorderable: false
+    Connections {
+        target: row
+        onActionPressed: actionPressed()
+    }
 
-    signal itemClicked()
+    property alias contentHeight: row.contentHeight
+    property alias column: row.column
+    property alias description: row.description
+    property alias isFavorite: row.isFavorite
+    property alias imageSource: row.imageSource
+    property alias noCover: row.noCover
+    property alias actionVisible: row.actionVisible
+    property alias actionIconSource: row.actionIconSource
+    property alias action2Visible: row.action2Visible
+    property alias action2IconSource: row.action2IconSource
+    property alias menuVisible: row.menuVisible
+    property alias menuItems: row.menuItems
 
-    onClicked: {
-        if (selectMode) {
-            selected = !selected;
-        } else {
-            itemClicked()
+    anchors { left: parent.left; right: parent.right }
+    height: content.height
+
+    /* Detect row swipe */
+    property string direction: "None"
+    property real lastX: -1
+    property real lastY: -1
+
+    onPressed: {
+        lastX = mouse.x
+        lastY = mouse.y
+    }
+
+    onReleased: {
+        var diffX = mouse.x - lastX;
+        if (Math.abs(diffX) > units.gu(15)) {
+            swipe();
         }
     }
 
-    onPressAndHold: {
-        if (reorderable) {
-            ListView.view.ViewItems.dragMode = !ListView.view.ViewItems.dragMode
-        }
-
-        if (multiselectable) {
-            ListView.view.ViewItems.selectMode = !ListView.view.ViewItems.selectMode
-        }
-    }
-
-    divider {
-        visible: false
-    }
-
-    MusicRow {
-        id: musicRow
+    Rectangle {
+        id: content
         anchors {
-            fill: parent
-            // When not in selectMode we want a margin between the Image and the left edge
-            // when in selectMode the checkbox has its own margin so we don't want a double margin
-            leftMargin: selectMode ? 0 : units.gu(2)
-            rightMargin: selectMode ? 0 : units.gu(2)
+            horizontalCenter: parent.horizontalCenter
+            verticalCenter: parent.verticalCenter
+        }
+        width: area.width; height: row.implicitHeight + units.dp(4)
+
+        color: area.color
+        Behavior on color { ColorAnimation { duration: 100 } }
+
+        // highlight the current position
+        Rectangle {
+            anchors.centerIn: parent
+            width: area.width
+            height: area.height
+            visible: area.highlighted
+            color: area.highlightedColor
+            opacity: 0.4
         }
 
-        // Animate margin changes so it isn't noticible
-        Behavior on anchors.leftMargin {
-            NumberAnimation {
-
-            }
-        }
-
-        Behavior on anchors.rightMargin {
-            NumberAnimation {
-
-            }
+        MusicRow {
+            id: row
+            anchors.fill: parent
         }
     }
 }

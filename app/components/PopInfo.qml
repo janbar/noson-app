@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016
+ * Copyright (C) 2016, 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,70 +15,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 
 Item {
     property string message: ""
+    property alias backgroundColor: containerLayoutBackground.color
+    property alias labelColor: label.color
 
-    Rectangle {
-        id: popCaller
-        color: "transparent"
-        anchors {
-            top: parent.bottom
-            topMargin: -units.gu(1)
-            bottom: parent.bottom
-            left: parent.left
-            right: parent.right
-        }
-        height: units.gu(8)
-    }
+    y: units.gu(2)
+    x: (parent.width - popover.width) / 2
 
-    Component {
-        id: popoverComponent
-        Popover {
-            id: popover
-            width: label.paintedWidth + units.gu(6)
+    Popup {
+        id: popover
+        width: label.paintedWidth + units.gu(6)
 
-            Rectangle {
+        background: Rectangle {
                 id: containerLayoutBackground
                 anchors.fill: parent
-                color: styleMusic.popover.backgroundColor
+                color: "transparent"
+                radius: units.gu(1)
+                opacity: 0.7
             }
 
-            Label {
-                id: label
-                text: message
-                height: units.gu(4)
-                anchors {
-                    top: parent.top
-                    left: parent.left
-                    right: parent.right
-                }
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
-                color: styleMusic.popover.labelColor
-                fontSize: "small"
-                font.weight: Font.Normal
-            }
+        Label {
+            id: label
+            text: message
+            anchors.centerIn: parent
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+            color: "black"
+            font.pointSize: units.fs("small")
+            font.weight: Font.Normal
+        }
 
-            Timer {
-                id: timer
-                interval: 1500
+        onOpened: timer.start()
+    }
 
-                Component.onCompleted: start();
-
-                onTriggered: {
-                    stop();
-                    PopupUtils.close(popover);
-                }
-            }
+    Timer {
+        id: timer
+        interval: 3000
+        onTriggered: {
+            popover.close();
         }
     }
 
     function open(msgtxt) {
         message = msgtxt;
-        PopupUtils.open(popoverComponent, popCaller);
+        popover.open();
     }
+
 }

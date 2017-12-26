@@ -28,6 +28,7 @@ import NosonApp 1.0
 Item {
     id: player
     objectName: "controller"
+    property alias zonePlayer: playerLoader.item
     property bool connected: false
     property string currentMetaAlbum: ""
     property string currentMetaArt: ""
@@ -72,7 +73,8 @@ Item {
             if (trackQueue.canLoad) {
                 // When switching zone, updateid cannot drive correctly the queue refreshing
                 // so new force refreshing of queue
-                return trackQueue.loadQueue();
+                trackQueue.loadQueue();
+                return true;
             }
             return trackQueue.canLoad = true;
         }
@@ -118,8 +120,12 @@ Item {
             return play();
     }
 
+    function playSource(modelItem) {
+        return playerLoader.item.startPlaySource(modelItem.payload);
+    }
+
     function playSong(modelItem) {
-        return (setSource(modelItem) && play());
+        return playSource(modelItem);
     }
 
     function previousSong(startPlaying) {
@@ -260,7 +266,7 @@ Item {
     }
 
     function playStream(url, title) {
-        return playerLoader.item.playStream(url, (title === "" ? i18n.tr("Untitled") : title))
+        return playerLoader.item.startPlayStream(url, (title === "" ? qsTr("Untitled") : title))
     }
 
     function playLineIN() {
@@ -280,7 +286,7 @@ Item {
     }
 
     function playFavorite(modelItem) {
-        return playerLoader.item.playFavorite(modelItem.payload);
+        return playerLoader.item.startPlayFavorite(modelItem.payload);
     }
 
     property alias renderingModel: renderingModelLoader.item
@@ -299,6 +305,7 @@ Item {
         asynchronous: true
         sourceComponent: Component {
             ZonePlayer {
+                onJobFailed: popInfo.open(qsTr("Action can't be performed"));
                 onConnectedChanged: player.connected = connected
                 onRenderingGroupChanged: player.refreshRenderingGroup()
                 onRenderingChanged: player.refreshRendering()

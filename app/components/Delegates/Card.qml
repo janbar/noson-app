@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 import "../"
 
 
@@ -44,13 +44,13 @@ Item {
     /* Animations */
     Behavior on height {
         NumberAnimation {
-            duration: UbuntuAnimation.FastDuration
+            duration: 250
         }
     }
 
     Behavior on width {
         NumberAnimation {
-            duration: UbuntuAnimation.FastDuration
+            duration: 250
         }
     }
 
@@ -80,7 +80,7 @@ Item {
         }
 
         Item {
-            height: units.gu(.5)
+            height: units.gu(0.5)
             width: units.gu(1)
         }
 
@@ -95,10 +95,9 @@ Item {
                 right: parent.right
                 rightMargin: units.gu(1)
             }
-            color: "#FFF"
+            color: styleMusic.common.music
             elide: Text.ElideRight
-            fontSize: "small"
-            opacity: 1.0
+            font.pointSize: units.fs("small")
             maximumLineCount: 2
             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
         }
@@ -111,47 +110,25 @@ Item {
                 right: parent.right
                 rightMargin: units.gu(1)
             }
-            color: "#FFF"
+            color: styleMusic.common.subtitle
             elide: Text.ElideRight
-            fontSize: "small"
+            font.pointSize: units.fs("small")
             // Allow wrapping of 2 lines unless primary has been wrapped
             maximumLineCount: primaryLabel.lineCount > 1 ? 1 : 2
-            opacity: 0.4
             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
         }
 
         Item {
-            height: units.gu(1) + cardColumn.spacing
+            height: cardColumn.spacing + units.gu(1)
             width: units.gu(1)
         }
     }
 
-    /* Show starred */
-    MouseArea {
-        id: starMouseArea
-        anchors {
-            bottom: bg.bottom
-            right: bg.right
-        }
-        height: isFavorite ? (card.width * 0.25) : 0
-        width: height
-        enabled: isFavorite
-        onPressAndHold: card.pressAndHold(mouse)
-
-        Icon {
-            id: starIcon
-            name: "starred"
-            anchors.fill: parent
-            color: "#FFF"
-            visible: isFavorite
-        }
-    }
-
     /* Show play */
-    MouseArea {
+    Icon {
         id: playMouseArea
         anchors {
-            bottom: starMouseArea.top
+            bottom: bg.bottom
             right: bg.right
         }
         height: canPlay ? (card.width * 0.25) : 0
@@ -160,14 +137,22 @@ Item {
         opacity: 0.3
         onClicked: card.playClicked(mouse)
         onPressAndHold: card.pressAndHold(mouse)
+        source: "qrc:/images/media-preview-start.svg"
+        color: styleMusic.card.labelColor
+    }
 
-        Icon {
-            id: playIcon
-            name: "media-preview-start"
-            anchors.fill: parent
-            color: "#FFF"
-            visible: canPlay
+    /* Show starred */
+    Icon {
+        id: starMouseArea
+        anchors {
+            bottom: playMouseArea.top
+            right: bg.right
         }
+        height: isFavorite ? (card.width * 0.25) : 0
+        width: height
+        enabled: isFavorite
+        source: "qrc:/images/starred.svg"
+        color: styleMusic.card.labelColor
     }
 
     /* Overlay for when card is pressed */
@@ -176,12 +161,12 @@ Item {
         anchors {
             fill: bg
         }
-        color: "#000"
+        color: styleMusic.mainView.backgroundColor
         opacity: cardMouseArea.pressed ? 0.3 : 0
 
         Behavior on opacity {
             NumberAnimation {
-                duration: UbuntuAnimation.FastDuration
+                duration: 250
             }
         }
     }
@@ -191,7 +176,7 @@ Item {
         id: cardMouseArea
         anchors {
             fill: parent
-            margins: parent.width * 0.25 // do not override action icons
+            bottomMargin: parent.height * 0.25 // do not override action icons
         }
         onClicked: card.clicked(mouse)
         onPressAndHold: card.pressAndHold(mouse)

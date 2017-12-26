@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016
+ * Copyright (C) 2016, 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,133 +15,107 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
+import QtQml.Models 2.2
 import NosonApp 1.0
 import "../components"
 import "../components/Delegates"
 import "../components/Flickables"
-import "../components/ListItemActions"
-import "../components/HeadState"
-import "../components/BottomEdge"
 
-Page {
+MusicPage {
     id: groupPage
+    objectName: "groupPage"
+    pageTitle: qsTr("Group")
+    pageFlickable: groupList
+    isListView: true
+    listview: groupList
 
-    property string pageTitle: i18n.tr("Group")
-    property Item pageFlickable: groupList
+    state: "group"
+
     property string zoneId: ""
 
-    header: PageHeader {
-        flickable: groupPage.pageFlickable
-        title: groupPage.pageTitle
-
-        leadingActionBar {
-            actions: [
-                Action {
-                    id: leaveGroup
-                    iconName: "back"
-                    objectName: "backAction"
-                    onTriggered: {
-                        mainView.currentlyWorking = true
-                        delayHandleGroupChanges.start()
-                    }
-                }
-            ]
-            objectName: "groupLeadingActionBar"
-        }
-        trailingActionBar {
-            actions: [
-                Action {
-                    iconName: "select"
-                    text: i18n.tr("Select All")
-                    visible: true
-
-                    onTriggered: {
-                        if (groupList.getSelectedIndices().length > 0) {
-                            groupList.clearSelection()
-                        } else {
-                            groupList.selectAll()
-                        }
-                    }
-                }
-            ]
-            objectName: "groupTrailingActionBar"
-        }
-
-        StyleHints {
-            backgroundColor: mainView.headerColor
-            dividerColor: Qt.darker(mainView.headerColor, 1.1)
-        }
+    onGroupNoneRoomClicked: {
+        groupList.selectNone()
     }
 
-    Timer {
-        id: delayHandleGroupChanges
-        interval: 100
-        onTriggered: {
-            var failure = false;
-            var items = [];
-            var indicies = groupList.getSelectedIndices();
-            for (var i = 0; i < groupList.model.count; ++i) {
-                var keep = false;
-                for (var j = 0; j < indicies.length; j++) {
-                    if (indicies[j] === i) {
-                        keep = true;
-                        break;
-                    }
-                }
-                if (!keep) {
-                    items.push(groupList.model.get(i));
+    onGroupRoomClicked: {
+        if (handleUnjoinRooms())
+            stackView.pop();
+    }
+
+    function handleUnjoinRooms() {
+        // keep back unselected rooms
+        var rooms = [];
+        var indicies = groupList.getSelectedIndices();
+        var keep = false;
+        for (var i = 0; i < roomsModel.count; ++i) {
+            keep = false;
+            for (var j = 0; j < indicies.length; j++) {
+                if (indicies[j] === i) {
+                    keep = true;
+                    break;
                 }
             }
-            if (items.length == 0) {
-                mainView.currentlyWorking = false;
+            if (!keep) {
+                rooms.push(roomsModel.get(i).payload);
             }
-            else {
-                for (var i = 0; i < items.length; ++i) {
-                    if (!Sonos.unjoinRoom(items[i].payload)) {
-                        failure = true;
-                        break;
-                    }
-                }
-                // Zones will be reloaded on signal topologyChanged
-                // Signal is handled in MainView
-                mainView.currentlyWorking = false
-            }
-            mainPageStack.pop()
         }
+        // start unjoin rooms
+        if (rooms.length > 0) {
+            if (!Sonos.startUnjoinRooms(rooms))
+                return false;
+        }
+        return true;
+    }
+
+    RoomsModel {
+        id: roomsModel
+    }
+
+    BlurredBackground {
+        id: blurredBackground
+        height: parent.height
     }
 
     MultiSelectListView {
         id: groupList
-        anchors {
-            fill: parent
-        }
-        footer: Item {
-            height: mainView.height - (styleMusic.common.expandHeight + groupList.currentHeight) + units.gu(8)
-        }
-        model: RoomsModel {
+        anchors.fill: parent
+
+        state: "selection"
+
+        model: DelegateModel {
+            id: visualModel
+            model: roomsModel
+
+            delegate: SelectMusicListItem {
+                id: listItem
+                listview: groupList
+                reorderable: false
+                selectable: true
+                highlighted: false
+
+                color: "transparent"
+                description: qsTr("Room")
+                actionVisible: false
+                action2Visible: false
+                menuVisible: false
+
+                column: Column {
+                    Label {
+                        id: roomName
+                        color: model.coordinator ? "#19b1e9" : styleMusic.common.music
+                        font.pointSize: units.fs("large")
+                        objectName: "nameLabel"
+                        text: model.name
+                    }
+                }
+            }
         }
 
         Component.onCompleted: {
-            model.init(Sonos, false)
-            model.load(zoneId)
+            roomsModel.load(Sonos, zoneId)
             selectAll()
-        }
-
-        delegate: SelectListItem {
-            id: groupListItem
-            color: styleMusic.mainView.backgroundColor
-            column: Column {
-                Label {
-                    id: roomName
-                    color: model.coordinator ? UbuntuColors.blue : styleMusic.common.music
-                    fontSize: "medium"
-                    objectName: "nameLabel"
-                    text: model.name
-                }
-            }
         }
     }
 }

@@ -48,11 +48,11 @@ QtObject {
 
     property QtObject dialog: QtObject {
         property color backgroungColor: common.white
-        property color foregroundColor: UbuntuColors.warmGrey
-        property color labelColor: UbuntuColors.darkGrey
+        property color foregroundColor: "darkgray"
+        property color labelColor: "dimgray"
         property color confirmButtonColor: UbuntuColors.green
         property color confirmRemoveButtonColor: UbuntuColors.red
-        property color cancelButtonColor: UbuntuColors.warmGrey
+        property color cancelButtonColor: "darkgray"
     }
 
     property QtObject libraryEmpty: QtObject {
@@ -75,9 +75,9 @@ QtObject {
         property color headerColor: backgroundColor
         property color labelColor: common.white
         property color normalTextFieldColor: common.white
-        property color normalTextBaseColor: UbuntuColors.darkGrey
+        property color normalTextBaseColor: "lightgray"
         property color selectedTextFieldColor: common.white
-        property color selectedTextBaseColor: UbuntuColors.darkGrey
+        property color selectedTextBaseColor: "lightgray"
     }
 
     property QtObject nowPlaying: QtObject {
@@ -101,9 +101,9 @@ QtObject {
     }
 
     property QtObject popover: QtObject {
-        property color backgroundColor: common.white
-        property color foregroundColor: UbuntuColors.warmGrey
-        property color labelColor: UbuntuColors.coolGrey
+        property color backgroundColor: "black"
+        property color foregroundColor: "lightgray"
+        property color labelColor: "white"
     }
 
     property QtObject playlist: QtObject {
@@ -129,11 +129,11 @@ QtObject {
     }
 
     Component.onCompleted: {
-        theme.palette.normal.background = mainView.backgroundColor
+/*        theme.palette.normal.background = mainView.backgroundColor
         theme.palette.normal.base = common.subtitle
         theme.palette.normal.field = mainView.normalTextFieldColor
         theme.palette.normal.baseText = mainView.normalTextBaseColor
         theme.palette.selected.field = mainView.selectedTextFieldColor
-        theme.palette.selected.baseText = mainView.selectedTextBaseColor
+        theme.palette.selected.baseText = mainView.selectedTextBaseColor*/
     }
 }

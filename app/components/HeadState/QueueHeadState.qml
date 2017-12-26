@@ -16,9 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
+import QtQuick 2.9
 
 State {
     id: state
@@ -26,7 +24,7 @@ State {
 
     // Need to be able to change state name and State.name is not notifyable
     property string stateName: "default"
-    property PageHeader thisHeader: PageHeader {
+/*    property PageHeader thisHeader: PageHeader {
         id: headerState
         flickable: thisPage.pageFlickable
         leadingActionBar {
@@ -101,7 +99,7 @@ State {
             backgroundColor: mainView.headerColor
             dividerColor: Qt.darker(mainView.headerColor, 1.1)
         }
-    }
+    }*/
     property Item thisPage
 
     PropertyChanges {

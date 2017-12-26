@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2013, 2014, 2015, 2016
+ * Copyright (C) 2016, 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
- *      Andrew Hayzen <ahayzen@gmail.com>
- *      Daniel Holm <d.holmen@gmail.com>
- *      Victor Thompson <victor.thompson@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,47 +15,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
+import QtQuick 2.9
+import QtQuick.Layouts 1.3
+import QtQuick.Controls 2.2
+import QtQml.Models 2.3
 
 DialogBase {
     id: dialogRemovePlaylist
-    objectName: "dialogRemovePlaylist"
     // TRANSLATORS: this is a title of a dialog with a prompt to delete a playlist
-    title: i18n.tr("Permanently delete playlist ?")
+    standardButtons: Dialog.Cancel | Dialog.Ok
 
-    Label {
+    Text {
         anchors.left: parent.left
         anchors.right: parent.right
-        text: i18n.tr("This cannot be undone")
+        text: qsTr("Permanently delete playlist ?")
         wrapMode: Text.WordWrap
-        color: styleMusic.dialog.labelColor
-        fontSize: "x-small"
+        color: styleMusic.dialog.foregroundColor
+        font.pointSize: units.fs("large")
         font.weight: Font.Normal
     }
 
-    property var model
-
-    Button {
-        text: i18n.tr("Remove")
-        color: styleMusic.dialog.confirmRemoveButtonColor
-        objectName: "removePlaylistDialogRemoveButton"
-        onClicked: {
-            // removing playlist
-            removeFromFavorites(dialogRemovePlaylist.model.payload)
-            removePlaylist(dialogRemovePlaylist.model.id)
-            PopupUtils.close(dialogRemovePlaylist)
-
-            // need to destroy the dialog before popping fixes pad.lv/1428450
-            dialogRemovePlaylist.destroy()
-
-            mainPageStack.goBack()
-        }
-    }
-    Button {
-        text: i18n.tr("Cancel")
-        color: styleMusic.dialog.cancelButtonColor
-        onClicked: PopupUtils.close(dialogRemovePlaylist)
+    Text {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        text: qsTr("This cannot be undone.")
+        wrapMode: Text.WordWrap
+        color: styleMusic.dialog.foregroundColor
+        font.pointSize: units.fs("medium")
+        font.weight: Font.Normal
     }
 }

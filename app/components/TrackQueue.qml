@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
+import QtQuick 2.9
 import NosonApp 1.0
 
 Item {
@@ -26,37 +26,33 @@ Item {
         Component.onCompleted: init(Sonos, "", false)
     }
 
+    // Force refreshing of queue
     function loadQueue() {
-        if (canLoad) {
-            if (model.load()) {
-                player.currentCount = model.count
-                return completed = true
-            }
-            player.currentCount = 0
-            return completed = false
-        }
-        return false
+        if (canLoad)
+            model.asyncLoad()
     }
 
     onCanLoadChanged: {
-        mainView.currentlyWorking = true
-        delayLoadQueue.start()
-    }
-
-    Timer {
-        id: delayLoadQueue
-        interval: 100
-        onTriggered: {
-            loadQueue()
-            mainView.currentlyWorking = false
-        }
+        if (canLoad)
+            model.asyncLoad()
     }
 
     Connections {
         target: model
         onDataUpdated: {
-            mainView.currentlyWorking = true
-            delayLoadQueue.start()
+            if (canLoad)
+                model.asyncLoad()
+        }
+        onLoaded: {
+            if (succeeded) {
+                model.resetModel()
+                player.currentCount = model.count
+                completed = true
+            } else {
+                model.resetModel()
+                player.currentCount = 0
+                completed = false
+            }
         }
     }
 }

@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2013, 2014, 2015, 2016
+ * Copyright (C) 2016, 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
- *      Andrew Hayzen <ahayzen@gmail.com>
- *      Daniel Holm <d.holmen@gmail.com>
- *      Victor Thompson <victor.thompson@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,64 +15,58 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 import NosonApp 1.0
 import "../components"
 import "../components/Delegates"
 import "../components/Flickables"
-import "../components/HeadState"
-
+import "../components/Dialog"
 
 MusicPage {
     id: playlistsPage
     objectName: "playlistsPage"
-    // TRANSLATORS: this is the name of the playlists page shown in the tab header.
-    // Remember to keep the translation short to fit the screen width
-    pageTitle: i18n.tr("Playlists")
-    pageFlickable: playlistslist
+    pageTitle: qsTr("Playlists")
+    pageFlickable: playlistsGrid
     searchable: true
-    searchResultsCount: playlistModelFilter.count
-    state: "default"
-    states: [
-        PlaylistsHeadState {
-            newPlaylistEnabled: true
-            searchEnabled: AllPlaylistsModel.count > 0
-            thisPage: playlistsPage
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        },
-        SearchHeadState {
-            id: searchHeader
-            thisPage: playlistsPage
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        }
-    ]
-
-    width: mainPageStack.width
+    addVisible: true
 
     property bool changed: false
     property bool childrenChanged: false
 
+/*    SortFilterModel {
+        id: playlistsModelFilter
+        // Sorting disabled as it is incorrect on first run (due to workers?)
+        // and SQL sorts the data correctly
+        id: playlistModelFilter
+        model: AllPlaylistsModel
+        filter.property: "normalized"
+        filter.pattern: new RegExp(normalizedInput(searchHeader.query), "i")
+        filterCaseSensitivity: Qt.CaseInsensitive
+    }*/
+
     MusicGridView {
-        id: playlistslist
+        id: playlistsGrid
         itemWidth: units.gu(15)
         heightOffset: units.gu(9.5)
-        model: SortFilterModel {
-            // Sorting disabled as it is incorrect on first run (due to workers?)
-            // and SQL sorts the data correctly
-            id: playlistModelFilter
-            model: AllPlaylistsModel
-            filter.property: "normalized"
-            filter.pattern: new RegExp(normalizedInput(searchHeader.query), "i")
-            filterCaseSensitivity: Qt.CaseInsensitive
-        }
-        objectName: "playlistsGridView"
+
+        model: AllPlaylistsModel
+
         delegate: Card {
             id: playlistCard
+            primaryText: model.title
+            secondaryTextVisible: false
+
+            isFavorite: (AllFavoritesModel.findFavorite(model.payload).length > 0)
+
+            // check favorite on data loaded
+            Connections {
+                target: AllFavoritesModel
+                onLoaded: {
+                    isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
+                }
+            }
+
             coverSources: makeCoverSources()
 
             function makeCoverSources() {
@@ -86,21 +77,9 @@ MusicPage {
             }
 
             coverFlow: 4
-            objectName: "playlistCardItem" + index
-            primaryText: model.title
-            secondaryTextVisible: false
-            isFavorite: (AllFavoritesModel.findFavorite(model.payload).length > 0)
-
-            // check favorite on data updated
-            Connections {
-                target: AllFavoritesModel
-                onDataUpdated: {
-                    isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
-                }
-            }
 
             onClicked: {
-                mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
+                stackView.push("qrc:/ui/SongsView.qml",
                                    {
                                        "containerItem": makeContainerItem(model),
                                        "songSearch": model.id,
@@ -109,7 +88,7 @@ MusicPage {
                                        "isPlaylist": true,
                                        "genre": undefined,
                                        "page": playlistsPage,
-                                       "pageTitle": i18n.tr("Playlist"),
+                                       "pageTitle": qsTr("Playlist"),
                                        "line1": "",
                                        "line2": model.title,
                                    })
@@ -117,7 +96,7 @@ MusicPage {
             onPressAndHold: {
                 if (isFavorite && removeFromFavorites(model.payload))
                     isFavorite = false
-                else if (!isFavorite && addItemToFavorites(model, i18n.tr("Playlist"), imageSource))
+                else if (!isFavorite && addItemToFavorites(model, qsTr("Playlist"), imageSource))
                     isFavorite = true
             }
         }
@@ -125,13 +104,16 @@ MusicPage {
 
     // Overlay to show when no playlists are on the device
     Loader {
-        anchors {
-            fill: parent
-            topMargin: -units.gu(6.125)  // FIXME: 6.125 is the header.height
-        }
+        anchors.fill: parent
         active: AllPlaylistsModel.count === 0 && !infoLoadedIndex
         asynchronous: true
-        source: "../components/PlaylistsEmptyState.qml"
+        source: "qrc:/components/PlaylistsEmptyState.qml"
         visible: active
     }
+
+    DialogNewPlaylist {
+        id: dialogNewPlaylist
+    }
+
+    onAddClicked: dialogNewPlaylist.open()
 }

@@ -18,10 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Thumbnailer 0.1
-import "../components/Themes/Ambiance"
+import QtQuick 2.9
+import QtQuick.Controls 2.2
+//import "../components/Themes/Ambiance"
 
 
 Flickable {
@@ -59,7 +58,7 @@ Flickable {
             anchors.bottom: albumImageContainer.bottom
             height: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(10) : units.gu(13)
             width: parent.width
-            color: styleMusic.common.black
+            color: styleMusic.playerControls.backgroundColor
             opacity: 0.3
         }
 
@@ -87,7 +86,7 @@ Flickable {
                 }
                 color: styleMusic.playerControls.labelColor
                 elide: Text.ElideRight
-                fontSize: "large"
+                font.pointSize: units.fs("large")
                 font.weight: Font.DemiBold
                 maximumLineCount: 2
                 objectName: "playercontroltitle"
@@ -106,7 +105,7 @@ Flickable {
                 }
                 color: styleMusic.nowPlaying.labelColor
                 elide: Text.ElideRight
-                fontSize: "small"
+                font.pointSize: units.fs("small")
                 font.weight: Font.DemiBold
                 text: player.currentMetaArtist
             }
@@ -114,12 +113,12 @@ Flickable {
 
         /* Show sleep timer state */
         Icon {
-            source: Qt.resolvedUrl("../graphics/timer.svg")
+            source: "qrc:/images/timer.svg"
             anchors {
                 top: nowPlayingWideAspectLabels.top
                 right: nowPlayingWideAspectLabels.right
             }
-            color: UbuntuColors.orange
+            color: styleMusic.mainView.highlightedColor
             height: units.gu(3)
             width: height
             visible: player.sleepTimerEnabled
@@ -149,7 +148,7 @@ Flickable {
                 var diffY = mouse.y - lastY
                 if (Math.abs(diffY) > units.gu(4)) {
                     if (diffY < 0 && mainView.nowPlayingPage !== null) {
-                        mainView.nowPlayingPage.isListView = true
+                        mainView.nowPlayingPage.isListView = true;
                     }
                 }
             }
@@ -162,7 +161,8 @@ Flickable {
         anchors.bottom: fullviewBackground.bottom
         height: units.gu(3)
         width: parent.width
-        color: fullviewBackground.color
+        color: styleMusic.playerControls.backgroundColor
+        opacity: 0.3
     }
 
     /* Progress bar component */
@@ -184,28 +184,34 @@ Flickable {
                 top: progressSliderMusic.bottom
                 topMargin: units.gu(-2)
                 left: parent.left
-                leftMargin: units.gu(0.25)
+                leftMargin: units.gu(1)
             }
             color: styleMusic.nowPlaying.labelSecondaryColor
-            fontSize: "small"
+            font.pointSize: units.fs("small")
             height: parent.height
-            horizontalAlignment: Text.AlignHCenter
+            horizontalAlignment: Text.AlignLeft
             text: durationToString(player.position)
             verticalAlignment: Text.AlignVCenter
             width: units.gu(3)
         }
 
-        Slider {
+        StyledSlider {
             id: progressSliderMusic
             anchors {
                 left: parent.left
                 right: parent.right
                 top: parent.top
             }
-            maximumValue: player.duration  // load value at startup
+            to: player.duration  // load value at startup
             objectName: "progressSliderShape"
-            style: UbuntuBlueSliderStyle {}
             value: player.position  // load value at startup
+
+            foregroundColor: styleMusic.nowPlaying.progressForegroundColor
+            backgroundColor: styleMusic.nowPlaying.progressBackgroundColor
+            handleColor: styleMusic.nowPlaying.progressForegroundColor
+            handleColorPressed: backgroundColor
+            handleBorderColor: handleColor
+            handleSize: units.gu(1.5)
 
             function formatValue(v) {
                 if (seeking) {  // update position label while dragging
@@ -244,7 +250,7 @@ Flickable {
                         fullviewDurationLabel.text = durationToString(player.duration)
 
                         progressSliderMusic.value = player.position
-                        progressSliderMusic.maximumValue = player.duration
+                        progressSliderMusic.to = player.duration
                     }
 
                     progressSliderMusic.seeked = false;
@@ -263,12 +269,12 @@ Flickable {
                 top: progressSliderMusic.bottom
                 topMargin: units.gu(-2)
                 right: parent.right
-                rightMargin: units.gu(0.25)
+                rightMargin: units.gu(1)
             }
             color: styleMusic.nowPlaying.labelSecondaryColor
-            fontSize: "small"
+            font.pointSize: units.fs("small")
             height: parent.height
-            horizontalAlignment: Text.AlignHCenter
+            horizontalAlignment: Text.AlignRight
             text: durationToString(player.duration)
             verticalAlignment: Text.AlignVCenter
             width: units.gu(3)

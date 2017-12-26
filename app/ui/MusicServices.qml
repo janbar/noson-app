@@ -15,57 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Thumbnailer 0.1
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 import NosonApp 1.0
 import "../components"
 import "../components/Delegates"
 import "../components/Flickables"
-import "../components/HeadState"
-import "../components/ListItemActions"
 
 
 MusicPage {
     id: servicesPage
     objectName: "servicesPage"
-
-    property bool isListView: false
-
-    pageTitle: i18n.tr("My services")
-    pageFlickable: serviceGrid.visible ? serviceGrid : serviceList
-    searchable: true
-    searchResultsCount: servicesModelFilter.count
-    state: "default"
-    states: [
-        SearchableHeadState {
-            thisPage: servicesPage
-            searchEnabled: servicesModelFilter.count > 0
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        },
-        MultiSelectHeadState {
-            listview: serviceList
-            thisPage: servicesPage
-            addToQueue: false
-            addToPlaylist: false
-            removable: false
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        },
-        SearchHeadState {
-            id: searchHeader
-            thisPage: servicesPage
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        }
-    ]
-
-    width: mainPageStack.width
-
+    pageTitle: qsTr("My services")
+    pageFlickable: serviceGrid //serviceGrid.visible ? serviceGrid : serviceList
+/*
     SortFilterModel {
         id: servicesModelFilter
         model: AllServicesModel
@@ -76,18 +39,12 @@ MusicPage {
         filter.pattern: new RegExp(normalizedInput(searchHeader.query), "i")
         filterCaseSensitivity: Qt.CaseInsensitive
     }
-
-    // Hack for autopilot otherwise Albums appears as MusicPage
-    // due to bug 1341671 it is required that there is a property so that
-    // qml doesn't optimise using the parent type
-    property bool bug1341671workaround: true
-
+*/
+/*
     MultiSelectListView {
         id: serviceList
         anchors {
             fill: parent
-            topMargin: units.gu(2)
-            bottomMargin: units.gu(2)
         }
         model: servicesModelFilter
 
@@ -143,13 +100,14 @@ MusicPage {
             NumberAnimation { duration: 250 }
         }
     }
-
+*/
     MusicGridView {
         id: serviceGrid
         itemWidth: units.gu(15)
         heightOffset: units.gu(9.5)
 
-        model: servicesModelFilter
+        model: AllServicesModel
+        //model: servicesModelFilter
 
         onStateChanged: {
             if (state === "multiselectable") {
@@ -166,11 +124,11 @@ MusicPage {
             secondaryText: model.nickName
             isFavorite: false
 
-            noCover: Qt.resolvedUrl("../graphics/radio.png")
-            coverSources: [{art: model.id === "SA_RINCON65031_" ? Qt.resolvedUrl("../graphics/tunein.png") : model.icon}]
+            noCover: "qrc:/images/radio.png"
+            coverSources: [{art: model.id === "SA_RINCON65031_" ? "qrc:/images/tunein.png" : model.icon}]
 
             onClicked: {
-                mainPageStack.push(Qt.resolvedUrl("Service.qml"),
+                stackView.push("qrc:/ui/Service.qml",
                                    {
                                        "serviceItem": model,
                                        "pageTitle": model.title
