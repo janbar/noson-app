@@ -89,11 +89,15 @@ public:
 
   Q_INVOKABLE bool init(QObject* sonos, const QString& root, bool fill = false);
 
-  Q_INVOKABLE void clear();
+  virtual void clearData();
 
-  Q_INVOKABLE bool load();
+  virtual bool loadData();
 
   Q_INVOKABLE bool asyncLoad();
+
+  Q_INVOKABLE void resetModel();
+
+  Q_INVOKABLE void appendModel() { }
 
   virtual void handleDataUpdate();
 
@@ -102,12 +106,14 @@ public:
 signals:
   void dataUpdated();
   void countChanged();
+  void loaded(bool succeeded);
 
 protected:
   QHash<int, QByteArray> roleNames() const;
 
 private:
   QList<RadioItem*> m_items;
+  QList<RadioItem*> m_data;
 };
 
 #endif /* RADIOSMODEL_H */

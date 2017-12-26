@@ -42,11 +42,17 @@ public:
   ListModel();
   virtual ~ListModel();
 
-  virtual void clear() = 0;
+  virtual void clearData() = 0;
 
-  virtual bool load() = 0;
+  virtual bool loadData() = 0;
 
   virtual void handleDataUpdate() = 0;
+
+  enum dataState {
+    NoData  = 0,
+    Loaded  = 1,
+    Synced  = 2
+  };
 
 protected:
   SONOS::LockGuard::Lockable* m_lock;
@@ -54,12 +60,14 @@ protected:
   unsigned m_updateID;
   QString m_root;
   bool m_pending;
-  bool m_loaded;
+  dataState m_dataState;
 
   virtual bool init(QObject* sonos, const QString& root, bool fill = false);
 
   bool updateSignaled() { return m_updateSignaled.Load(); }
   void setUpdateSignaled(bool val) { m_updateSignaled.Store(val); }
+
+  virtual bool customizedLoad(int id) { return false; }
 
 private:
   SONOS::Locked<bool> m_updateSignaled;

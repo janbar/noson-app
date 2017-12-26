@@ -46,11 +46,13 @@
 class Sonos : public QObject
 {
   Q_OBJECT
+  Q_PROPERTY(int jobCount READ jobCount NOTIFY jobCountChanged)
 
 public:
   explicit Sonos(QObject *parent = 0);
   ~Sonos();
 
+  Q_INVOKABLE bool startInit(int debug = 0); // asynchronous
   Q_INVOKABLE bool init(int debug = 0);
 
   Q_INVOKABLE void setLocale(const QString& locale);
@@ -72,10 +74,15 @@ public:
   Q_INVOKABLE bool joinRoom(const QVariant& roomPayload, const QVariant& toZonePayload);
 
   Q_INVOKABLE bool joinZone(const QVariant& zonePayload, const QVariant& toZonePayload);
+  Q_INVOKABLE bool joinZones(const QVariantList& zonePayloads, const QVariant& toZonePayload);
+  Q_INVOKABLE bool startJoinZones(const QVariantList& zonePayloads, const QVariant& toZonePayload);
 
   Q_INVOKABLE bool unjoinRoom(const QVariant& roomPayload);
+  Q_INVOKABLE bool unjoinRooms(const QVariantList& roomPayloads);
+  Q_INVOKABLE bool startUnjoinRooms(const QVariantList& roomPayloads);
 
   Q_INVOKABLE bool unjoinZone(const QVariant& zonePayload);
+  Q_INVOKABLE bool startUnjoinZone(const QVariant& zonePayload);
 
   const SONOS::System& getSystem() const;
   const SONOS::PlayerPtr& getPlayer() const;
@@ -86,8 +93,16 @@ public:
   void runModelLoader(ListModel* model);
   void loadModel(ListModel* model);
 
+  void runCustomizedModelLoader(ListModel* model, int id);
+  void customizedLoadModel(ListModel* model, int id);
+
   void registerModel(ListModel* model, const QString& root);
   void unregisterModel(ListModel* model);
+
+  bool startJob(SONOS::OS::CWorker* worker);
+  int jobCount() { return *(m_jobCount.Get()); }
+  void beginJob();
+  void endJob();
 
   // Define singleton provider functions
   static QObject* sonos_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
@@ -160,11 +175,14 @@ public:
   }
 
 signals:
+  void initDone(bool succeeded);
   void loadingStarted();
   void loadingFinished();
   void transportChanged();
   void renderingControlChanged();
   void topologyChanged();
+
+  void jobCountChanged();
 
 private:
   struct RegisteredContent
@@ -181,6 +199,7 @@ private:
 
   SONOS::System m_system;
   SONOS::OS::CThreadPool m_threadpool;
+  SONOS::LockedNumber<int> m_jobCount;
 
   SONOS::Locked<QString> m_locale; // language_COUNTRY
 

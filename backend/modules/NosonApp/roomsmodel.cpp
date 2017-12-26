@@ -42,23 +42,15 @@ QVariant RoomItem::payload() const
 
 RoomsModel::RoomsModel(QObject* parent)
 : QAbstractListModel(parent)
+, m_zoneId("")
 {
 }
 
 RoomsModel::~RoomsModel()
 {
-  clear();
-}
-
-void RoomsModel::addItem(RoomItem* item)
-{
-  {
-    SONOS::LockGuard lock(m_lock);
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    m_items << item;
-    endInsertRows();
-  }
-  emit countChanged();
+  clearData();
+  qDeleteAll(m_items);
+  m_items.clear();
 }
 
 int RoomsModel::rowCount(const QModelIndex& parent) const
@@ -103,7 +95,6 @@ QHash<int, QByteArray> RoomsModel::roleNames() const
 
 QVariantMap RoomsModel::get(int row)
 {
-  SONOS::LockGuard lock(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const RoomItem* item = m_items[row];
@@ -117,71 +108,82 @@ QVariantMap RoomsModel::get(int row)
   return model;
 }
 
-bool RoomsModel::init(QObject* sonos, bool fill)
+void RoomsModel::clearData()
 {
-  return ListModel::init(sonos, "", fill);
+  qDeleteAll(m_data);
+  m_data.clear();
 }
 
-void RoomsModel::clear()
+bool RoomsModel::loadData()
 {
-  {
-    SONOS::LockGuard lock(m_lock);
-    beginRemoveRows(QModelIndex(), 0, m_items.count());
-    qDeleteAll(m_items);
-    m_items.clear();
-    endRemoveRows();
-  }
-  emit countChanged();
-}
-
-bool RoomsModel::load()
-{
-  setUpdateSignaled(false);
-
   if (!m_provider)
     return false;
-  clear();
-  SONOS::ZonePlayerList zonePlayers = m_provider->getSystem().GetZonePlayerList();
 
-  for (SONOS::ZonePlayerList::iterator it = zonePlayers.begin(); it != zonePlayers.end(); ++it)
+  clearData();
+
+  if (m_zoneId.isNull())
   {
-    RoomItem* item = new RoomItem(it->second);
-    if (item->isValid())
-      addItem(item);
-    else
-      delete item;
-  }
-  return m_loaded = true;
-}
-
-bool RoomsModel::load(const QString& zoneId)
-{
-  setUpdateSignaled(false);
-
-  if (!m_provider)
-    return false;
-  clear();
-  SONOS::ZoneList zones = m_provider->getSystem().GetZoneList();
-  SONOS::ZoneList::const_iterator itz = zones.find(zoneId.toUtf8().constData());
-  if (itz != zones.end())
-  {
-    for (std::vector<SONOS::ZonePlayerPtr>::iterator it = itz->second->begin(); it != itz->second->end(); ++it)
+    SONOS::ZonePlayerList zonePlayers = m_provider->getSystem().GetZonePlayerList();
+    for (SONOS::ZonePlayerList::iterator it = zonePlayers.begin(); it != zonePlayers.end(); ++it)
     {
-      RoomItem* item = new RoomItem(*it);
+      RoomItem* item = new RoomItem(it->second);
       if (item->isValid())
-        addItem(item);
+        m_data << item;
       else
         delete item;
     }
   }
-  return m_loaded = true;
+  else
+  {
+    SONOS::ZoneList zones = m_provider->getSystem().GetZoneList();
+    SONOS::ZoneList::const_iterator itz = zones.find(m_zoneId.toUtf8().constData());
+    if (itz != zones.end())
+    {
+      for (std::vector<SONOS::ZonePlayerPtr>::iterator it = itz->second->begin(); it != itz->second->end(); ++it)
+      {
+        RoomItem* item = new RoomItem(*it);
+        if (item->isValid())
+          m_data << item;
+        else
+          delete item;
+      }
+    }
+  }
+  return true;
 }
 
-void RoomsModel::handleDataUpdate()
+bool RoomsModel::load(QObject* sonos)
 {
-  if (!updateSignaled())
-  {
-    setUpdateSignaled(true);
-    dataUpdated();
-  }
+  m_provider = reinterpret_cast<Sonos*> (sonos);
+  m_zoneId = QString::null;
+  if (!loadData())
+    return false;
+  resetModel();
+  return true;
+}
+
+bool RoomsModel::load(QObject* sonos, const QString& zoneId)
+{
+  m_provider = reinterpret_cast<Sonos*> (sonos);
+  m_zoneId = zoneId;
+  if (!loadData())
+    return false;
+  resetModel();
+  return true;
+}
+
+void RoomsModel::resetModel()
+{
+  beginResetModel();
+  beginRemoveRows(QModelIndex(), 0, m_items.count()-1);
+  qDeleteAll(m_items);
+  m_items.clear();
+  endRemoveRows();
+  beginInsertRows(QModelIndex(), 0, m_data.count()-1);
+  foreach (RoomItem* item, m_data)
+      m_items << item;
+  m_data.clear();
+  endInsertRows();
+  endResetModel();
+  emit countChanged();
 }

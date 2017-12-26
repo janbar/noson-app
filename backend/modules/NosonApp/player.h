@@ -21,6 +21,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "../../lib/noson/noson/src/private/os/threads/threadpool.h"
 #include "../../lib/noson/noson/src/sonosplayer.h"
 
 #include <QObject>
@@ -53,6 +54,8 @@ public:
 
   Q_INVOKABLE bool init(QObject* sonos);
   bool connected() const { return m_connected; }
+  void beginJob();
+  void endJob();
   Q_INVOKABLE void renewSubscriptions();
   Q_INVOKABLE bool ping();
 
@@ -60,6 +63,7 @@ public:
   Q_INVOKABLE bool configureSleepTimer(int seconds);
   Q_INVOKABLE int remainingSleepTimerDuration();
 
+  Q_INVOKABLE bool startPlaySource(const QVariant& payload); // asynchronous
   Q_INVOKABLE bool play();
   Q_INVOKABLE bool stop();
   Q_INVOKABLE bool pause();
@@ -71,6 +75,7 @@ public:
   Q_INVOKABLE bool toggleMute();
   Q_INVOKABLE bool toggleMute(const QString& uuid);
 
+  Q_INVOKABLE bool startPlayStream(const QString& url, const QString& title); // asynchonous
   Q_INVOKABLE bool playStream(const QString& url, const QString& title);
   Q_INVOKABLE bool playLineIN();
   Q_INVOKABLE bool playDigitalIN();
@@ -92,6 +97,7 @@ public:
 
   Q_INVOKABLE bool addItemToFavorites(const QVariant& payload, const QString& description, const QString& artURI);
   Q_INVOKABLE bool destroyFavorite(const QString& FVid);
+  Q_INVOKABLE bool startPlayFavorite(const QVariant& payload); // asynchronous
   Q_INVOKABLE bool playFavorite(const QVariant& payload);
 
   bool muteMaster() const { return m_RCGroup.mute; }
@@ -132,6 +138,7 @@ public:
   QString playMode() const { return QString::fromUtf8(m_AVTProperty.CurrentPlayMode.c_str()); }
 
 signals:
+  void jobFailed();
   void connectedChanged();
   void renderingChanged();
   void renderingGroupChanged();

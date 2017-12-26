@@ -65,7 +65,9 @@ TracksModel::TracksModel(QObject* parent)
 
 TracksModel::~TracksModel()
 {
-  clear();
+  clearData();
+  qDeleteAll(m_items);
+  m_items.clear();
   SAFE_DELETE(m_contentList)
   SAFE_DELETE(m_contentDirectory);
 }
@@ -161,122 +163,198 @@ bool TracksModel::init(QObject* sonos, const QString& root, bool fill)
   return ListModel::init(sonos, _root, fill);
 }
 
-void TracksModel::clear()
+void TracksModel::clearData()
 {
-  {
-    SONOS::LockGuard lock(m_lock);
-    beginRemoveRows(QModelIndex(), 0, m_items.count());
-    qDeleteAll(m_items);
-    m_items.clear();
-    m_totalCount = 0;
-    endRemoveRows();
-  }
-  emit countChanged();
+  SONOS::LockGuard lock(m_lock);
+  qDeleteAll(m_data);
+  m_data.clear();
 }
 
-bool TracksModel::load()
+bool TracksModel::loadData()
 {
   setUpdateSignaled(false);
 
   if (!m_provider)
-    return false;
-  clear();
   {
-    SONOS::LockGuard lock(m_lock);
-    SAFE_DELETE(m_contentList);
-    SAFE_DELETE(m_contentDirectory);
+    emit loaded(false);
+    return false;
   }
   const SONOS::PlayerPtr player = m_provider->getPlayer();
   if (!player)
+  {
+    emit loaded(false);
     return false;
-  {
-    SONOS::LockGuard lock(m_lock);
-    m_contentDirectory = new SONOS::ContentDirectory(player->GetHost(), player->GetPort());
-    if (m_contentDirectory)
-      m_contentList = new SONOS::ContentList(*m_contentDirectory, m_root.isEmpty() ? SONOS::ContentSearch(SONOS::SearchTrack,"").Root() : m_root.toUtf8().constData());
-    if (!m_contentList)
-      return false;
-    m_totalCount = m_contentList->size();
-    m_iterator = m_contentList->begin();
   }
-  emit totalCountChanged();
 
-  QString port;
-  port.setNum(m_contentDirectory->GetPort());
-  QString url = "http://";
-  url.append(m_contentDirectory->GetHost().c_str()).append(":").append(port);
-
-  unsigned cnt = 0;
-  while (cnt < LOAD_BULKSIZE && m_iterator != m_contentList->end())
-  {
-    TrackItem* item = new TrackItem(*m_iterator, url);
-    if (item->isValid())
-    {
-      addItem(item);
-      ++cnt;
-    }
-    else
-    {
-      delete item;
-      // Also decrease total count
-      if (m_totalCount)
-      {
-        --m_totalCount;
-        emit totalCountChanged();
-      }
-    }
-    ++m_iterator;
-  }
-  if (m_contentList->failure())
-    return m_loaded = false;
-  m_updateID = m_contentList->GetUpdateID(); // sync new baseline
-  return m_loaded = true;
-}
-
-bool TracksModel::loadMore()
-{
   SONOS::LockGuard lock(m_lock);
-  if (!m_contentDirectory || !m_contentList)
+  SAFE_DELETE(m_contentList);
+  SAFE_DELETE(m_contentDirectory);
+  m_contentDirectory = new SONOS::ContentDirectory(player->GetHost(), player->GetPort());
+  if (m_contentDirectory)
+    m_contentList = new SONOS::ContentList(*m_contentDirectory, m_root.isEmpty() ? SONOS::ContentSearch(SONOS::SearchTrack,"").Root() : m_root.toUtf8().constData());
+  if (!m_contentList)
+  {
+    emit loaded(false);
     return false;
-  // At end return false
-  if (m_iterator == m_contentList->end())
-    return false;
+  }
+  m_totalCount = m_contentList->size();
+  m_iterator = m_contentList->begin();
 
   QString port;
   port.setNum(m_contentDirectory->GetPort());
   QString url = "http://";
   url.append(m_contentDirectory->GetHost().c_str()).append(":").append(port);
 
+  clearData();
+  m_dataState = ListModel::NoData;
   unsigned cnt = 0;
   while (cnt < LOAD_BULKSIZE && m_iterator != m_contentList->end())
   {
     TrackItem* item = new TrackItem(*m_iterator, url);
     if (item->isValid())
     {
-      addItem(item);
+      m_data << item;
       ++cnt;
     }
     else
     {
       delete item;
       // Also decrease total count
-      if (m_totalCount)
-      {
+      if (m_totalCount > 0)
         --m_totalCount;
-        emit totalCountChanged();
-      }
     }
     ++m_iterator;
   }
   if (m_contentList->failure())
+  {
+    emit loaded(false);
     return false;
+  }
+  m_updateID = m_contentList->GetUpdateID(); // sync new baseline
+  emit totalCountChanged();
+  m_dataState = ListModel::Loaded;
+  emit loaded(true);
   return true;
 }
 
 bool TracksModel::asyncLoad()
 {
   if (m_provider)
+  {
     m_provider->runModelLoader(this);
+    return true;
+  }
+  return false;
+}
+
+bool TracksModel::loadMoreData()
+{
+  SONOS::LockGuard lock(m_lock);
+  if (!m_contentDirectory || !m_contentList)
+  {
+    emit loadedMore(false);
+    return false;
+  }
+  // At end return false
+  if (m_iterator == m_contentList->end())
+  {
+    emit loadedMore(false);
+    return false;
+  }
+
+  QString port;
+  port.setNum(m_contentDirectory->GetPort());
+  QString url = "http://";
+  url.append(m_contentDirectory->GetHost().c_str()).append(":").append(port);
+
+  unsigned cnt = 0;
+  while (cnt < LOAD_BULKSIZE && m_iterator != m_contentList->end())
+  {
+    TrackItem* item = new TrackItem(*m_iterator, url);
+    if (item->isValid())
+    {
+      m_data << item;
+      ++cnt;
+    }
+    else
+    {
+      delete item;
+      // Also decrease total count
+      if (m_totalCount) {
+        --m_totalCount;
+        emit totalCountChanged();
+      }
+    }
+    ++m_iterator;
+  }
+  if (m_contentList->failure())
+  {
+    emit loadedMore(false);
+    return false;
+  }
+  m_dataState = ListModel::Loaded;
+  emit loadedMore(true);
+  return true;
+}
+
+bool TracksModel::asyncLoadMore()
+{
+  if (!m_provider)
+    return false;
+  m_provider->runCustomizedModelLoader(this, 1);
+  return true;
+}
+
+void TracksModel::resetModel()
+{
+  {
+    SONOS::LockGuard lock(m_lock);
+    if (m_dataState != ListModel::Loaded)
+        return;
+    beginResetModel();
+    beginRemoveRows(QModelIndex(), 0, m_items.count()-1);
+    qDeleteAll(m_items);
+    m_items.clear();
+    endRemoveRows();
+    beginInsertRows(QModelIndex(), 0, m_data.count()-1);
+    foreach (TrackItem* item, m_data)
+        m_items << item;
+    m_data.clear();
+    m_dataState = ListModel::Synced;
+    endInsertRows();
+    endResetModel();
+  }
+  emit countChanged();
+}
+
+void TracksModel::appendModel()
+{
+  {
+    SONOS::LockGuard lock(m_lock);
+    if (m_dataState != ListModel::Loaded)
+      return;
+    int cnt = m_items.count();
+    beginInsertRows(QModelIndex(), cnt, cnt + m_data.count()-1);
+    foreach (TrackItem* item, m_data)
+        m_items << item;
+    m_data.clear();
+    m_dataState = ListModel::Synced;
+    endInsertRows();
+  }
+  emit countChanged();
+}
+
+bool TracksModel::customizedLoad(int id)
+{
+  switch (id)
+  {
+    case 0:
+      return loadData();
+    case 1:
+      return loadMoreData();
+    default:
+      return false;
+  }
 }
 
 void TracksModel::handleDataUpdate()
