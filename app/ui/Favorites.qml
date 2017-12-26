@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016
+ * Copyright (C) 2016, 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,63 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
-import Ubuntu.Thumbnailer 0.1
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 import NosonApp 1.0
 import "../components"
 import "../components/Delegates"
 import "../components/Flickables"
-import "../components/HeadState"
 import "../components/ListItemActions"
 
 
 MusicPage {
     id: favoritesPage
     objectName: "favoritesPage"
-
-    property bool isListView: false
-
-    pageTitle: i18n.tr("Favorites")
+    pageTitle: qsTr("Favorites")
     pageFlickable: favoriteGrid.visible ? favoriteGrid : favoriteList
+    multiView: true
     searchable: true
-    searchResultsCount: favoritesModelFilter.count
-    state: "default"
-    states: [
-        SearchableHeadState {
-            thisPage: favoritesPage
-            searchEnabled: favoritesModelFilter.count > 0
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        },
-        MultiSelectHeadState {
-            listview: favoriteList
-            thisPage: favoritesPage
-            addToQueue: false
-            addToPlaylist: false
-            removable: true
-            thisHeader {
-                extension: DefaultSections { }
-            }
 
-            onRemoved: {
-                customdebug("remove selected indices from favorites");
-            }
-        },
-        SearchHeadState {
-            id: searchHeader
-            thisPage: favoritesPage
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        }
-    ]
-
-    width: mainPageStack.width
-
-    SortFilterModel {
+/*    SortFilterModel {
         id: favoritesModelFilter
         model: AllFavoritesModel
         sort.property: "title"
@@ -80,102 +41,78 @@ MusicPage {
         filter.property: "normalized"
         filter.pattern: new RegExp(normalizedInput(searchHeader.query), "i")
         filterCaseSensitivity: Qt.CaseInsensitive
-    }
+    }*/
 
-    // Hack for autopilot otherwise Albums appears as MusicPage
-    // due to bug 1341671 it is required that there is a property so that
-    // qml doesn't optimise using the parent type
-    property bool bug1341671workaround: true
-
-    MultiSelectListView {
+    MusicListView {
         id: favoriteList
-        anchors {
-            bottomMargin: units.gu(2)
-            fill: parent
-            topMargin: units.gu(2)
-        }
-        model: favoritesModelFilter
-
-        onStateChanged: {
-            if (state === "multiselectable") {
-                favoritesPage.state = "selection"
-            } else {
-                searchHeader.query = ""  // force query back to default
-                favoritesPage.state = "default"
-            }
-        }
-
+        anchors.fill: parent
+        model: AllFavoritesModel
         delegate: MusicListItem {
-            id: favoriteItem
-            objectName: "favoritesPageListItem" + index
+            id: listItem
+
+            onSwipe: {
+                favoriteList.focusIndex = model.index > 0 ? model.index - 1 : 0;
+                delayRemoveFavorite.start();
+                color = "red";
+            }
+
+            property bool held: false
+            onPressAndHold: held = true
+            onReleased: held = false
+
+            color: listItem.held ? "lightgrey" : "transparent"
+
+            noCover: model.type === 5 && !model.canQueue ? "qrc:/images/radio.png"
+                   : model.type === 2 ? "qrc:/images/none.png"
+                   : "qrc:/images/no_cover.png"
+            imageSource: model.type === 1 ? makeCoverSource(model.art, model.artist, model.title)
+                       : model.type === 2 ? makeCoverSource(undefined, model.artist, undefined)
+                       : model.type === 5 && model.canQueue ? makeCoverSource(model.art, model.author, model.album)
+                       : model.type === 5 && model.art === "" ? "qrc:/images/radio.png"
+                       : makeCoverSource(model.art, undefined, undefined)
+            description:  model.description.length > 0 ? model.description
+                       : model.type === 1 ? qsTr("Album")
+                       : model.type === 2 ? qsTr("Artist")
+                       : model.type === 3 ? qsTr("Genre")
+                       : model.type === 4 ? qsTr("Playlist")
+                       : model.type === 5 ? qsTr("Song")
+                       : "";
+            onActionPressed: clickItem(model)
+            actionVisible: true
+            actionIconSource: "qrc:/images/media-preview-start.svg"
+            menuVisible: true
+
+            menuItems: [
+                AddToQueue {
+                    enabled: model.canQueue
+                    visible: enabled
+                },
+                AddToPlaylist {
+                    enabled: model.canQueue
+                    visible: enabled
+                },
+                Remove {
+                    onTriggered: {
+                        favoriteList.focusIndex = model.index > 0 ? model.index - 1 : 0;
+                        delayRemoveFavorite.start();
+                        color: "red";
+                    }
+                }
+            ]
+
             column: Column {
                 Label {
                     id: favoriteTitle
                     color: styleMusic.common.music
-                    fontSize: "small"
-                    objectName: "itemtitle"
+                    font.pointSize: units.fs("small")
                     text: model.title
                 }
 
                 Label {
                     id: favoriteDescription
                     color: styleMusic.common.subtitle
-                    fontSize: "x-small"
-                    text: model.description.length > 0 ? model.description :
-                          model.type === 1 ? i18n.tr("Album") :
-                          model.type === 2 ? i18n.tr("Artist") :
-                          model.type === 3 ? i18n.tr("Genre") :
-                          model.type === 4 ? i18n.tr("Playlist") :
-                          model.type === 5 ? i18n.tr("Song") :
-                          "";
-                }
-            }
-            leadingActions: ListItemActions {
-                actions: [
-                    Remove {
-                        onTriggered: {
-                            mainView.currentlyWorking = true
-                            delayRemoveFavorite.start()
-                        }
-                    }
-                ]
-            }
-
-            height: units.gu(7)
-
-            noCover: model.type === 5 && !model.canQueue ? Qt.resolvedUrl("../graphics/radio.png") :
-                     model.type === 2 ? Qt.resolvedUrl("../graphics/none.png") :
-                     Qt.resolvedUrl("../graphics/no_cover.png")
-
-            imageSource: model.type === 1 ? makeCoverSource(model.art, model.artist, model.title) :
-                         model.type === 2 ? makeCoverSource(undefined, model.artist, undefined) :
-                         model.type === 5 && model.canQueue ? makeCoverSource(model.art, model.author, model.album) :
-                         model.type === 5 && model.art === "" ? Qt.resolvedUrl("../graphics/radio.png") :
-                         makeCoverSource(model.art, undefined, undefined)
-
-            multiselectable: false
-
-            trailingActions: ListItemActions {
-                actions: [
-                    Action {
-                        iconName: "add"
-                        objectName: "addToQueueAction"
-                        text: i18n.tr("Add to queue")
-                        visible: model.canQueue
-                        onTriggered: addQueue({id: model.objectId, payload: model.object})
-                    },
-                    Action {
-                        iconName: "add-to-playlist"
-                        objectName: "addToPlaylistAction"
-                        text: i18n.tr("Add to playlist")
-                        visible: model.canQueue
-                        onTriggered: {
-                            mainPageStack.push(Qt.resolvedUrl("AddToPlaylist.qml"),
-                                               {"chosenElements": [{id: model.objectId, payload: model.object}]})
-                        }
-                    }
-                ]
-                delegate: ActionDelegate {
+                    font.pointSize: units.fs("x-small")
+                    text: listItem.description
                 }
             }
 
@@ -183,13 +120,23 @@ MusicPage {
                 id: delayRemoveFavorite
                 interval: 100
                 onTriggered: {
-                    if (!player.removeFavorite(model.id))
-                        popInfo.open(i18n.tr("Action can't be performed"));
-                    mainView.currentlyWorking = false
+                    if (!player.removeFavorite(model.id)) {
+                        popInfo.open(qsTr("Action can't be performed"));
+                    }
                 }
             }
+        }
 
-            onItemClicked: clickItem(model)
+        property int focusIndex: 0
+
+        Connections {
+            target: AllFavoritesModel
+            onLoaded: {
+                if (favoriteList.focusIndex > 0) {
+                    favoriteList.positionViewAtIndex(favoriteList.focusIndex, ListView.Center);
+                    favoriteList.focusIndex = 0;
+                }
+            }
         }
 
         opacity: isListView ? 1.0 : 0.0
@@ -204,42 +151,28 @@ MusicPage {
         itemWidth: units.gu(15)
         heightOffset: units.gu(9.5)
 
-        model: favoritesModelFilter
-
-        onStateChanged: {
-            if (state === "multiselectable") {
-                favoritesPage.state = "selection"
-            } else {
-                searchHeader.query = ""  // force query back to default
-                favoritesPage.state = "default"
-            }
-        }
+        model: AllFavoritesModel
 
         delegate: Card {
             id: favoriteCard
             primaryText: model.title
-            secondaryText: model.description.length > 0 ? model.description :
-                           model.type === 1 ? i18n.tr("Album") :
-                           model.type === 2 ? i18n.tr("Artist") :
-                           model.type === 3 ? i18n.tr("Genre") :
-                           model.type === 4 ? i18n.tr("Playlist") :
-                           model.type === 5 ? i18n.tr("Song") :
-                           ""
-
-            noCover: model.type === 5 && !model.canQueue ? Qt.resolvedUrl("../graphics/radio.png") :
-                     model.type === 2 ? Qt.resolvedUrl("../graphics/none.png") :
-                     Qt.resolvedUrl("../graphics/no_cover.png")
-
+            secondaryText: model.description.length > 0 ? model.description
+                         : model.type === 1 ? qsTr("Album")
+                         : model.type === 2 ? qsTr("Artist")
+                         : model.type === 3 ? qsTr("Genre")
+                         : model.type === 4 ? qsTr("Playlist")
+                         : model.type === 5 ? qsTr("Song")
+                         : ""
+            noCover: model.type === 5 && !model.canQueue ? "qrc:/images/radio.png"
+                   : model.type === 2 ? "qrc:/images/none.png"
+                   : "qrc:/images/no_cover.png"
             coverSources: model.type === 1 ? [{art: makeCoverSource(model.art, model.artist, model.title)}, {art: makeCoverSource(undefined, model.artist, model.title)}]
                         : model.type === 2 ? [{art: makeCoverSource(undefined, model.artist, undefined)}]
                         : model.type === 5 && model.canQueue ? [{art: makeCoverSource(model.art, model.author, model.album)}, {art: makeCoverSource(undefined, model.author, model.album)}]
-                        : model.type === 5 && model.art === "" ? [{art: Qt.resolvedUrl("../graphics/radio.png")}]
+                        : model.type === 5 && model.art === "" ? [{art: "qrc:/images/radio.png"}]
                         : [{art: makeCoverSource(model.art, undefined, undefined)}]
 
             onClicked: clickItem(model)
-            onPressAndHold: {
-                favoritesPage.isListView = true
-            }
         }
 
         opacity: isListView ? 0.0 : 1.0
@@ -255,14 +188,13 @@ MusicPage {
         property QtObject model
         onTriggered: {
             player.playFavorite(model) // play favorite
-            mainView.currentlyWorking = false
         }
     }
 
     function clickItem(model) {
         if (!model.isService) {
             if (model.type === 1) {
-                mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
+                stackView.push("qrc:/ui/SongsView.qml",
                                    {
                                        "containerItem": {id: model.objectId, payload: model.object},
                                        "songSearch": model.objectId,
@@ -271,36 +203,36 @@ MusicPage {
                                        "covers": [{art: makeCoverSource(model.art, model.artist, model.album)}],
                                        "isAlbum": true,
                                        "genre": "",
-                                       "pageTitle": i18n.tr("Album"),
+                                       "pageTitle": qsTr("Album"),
                                        "line1": model.artist !== undefined ? model.artist : "",
-                                       "line2": model.album !== undefined ? model.album : i18n.tr("Unknown Album")
+                                       "line2": model.album !== undefined ? model.album : qsTr("Unknown Album")
                                    })
             }
             else if (model.type === 2) {
-                mainPageStack.push(Qt.resolvedUrl("ArtistView.qml"),
+                stackView.push("qrc:/ui/ArtistView.qml",
                                    {
                                        "containerItem": {id: model.objectId, payload: model.object},
                                        "artistSearch": model.objectId,
                                        "artist": model.artist,
                                        "covers": [{art: makeCoverSource(undefined, model.artist, undefined)}],
-                                       "pageTitle": i18n.tr("Artist")
+                                       "pageTitle": qsTr("Artist")
                                    })
             }
             else if (model.type === 3) {
-                mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
+                stackView.push("qrc:/ui/SongsView.qml",
                                    {
                                        "containerItem": {id: model.objectId, payload: model.object},
                                        "songSearch": model.objectId + "//",
                                        "covers": [],
                                        "album": "",
                                        "genre": model.title,
-                                       "pageTitle": i18n.tr("Genre"),
+                                       "pageTitle": qsTr("Genre"),
                                        "line1": "",
                                        "line2": model.title
                                    })
             }
             else if (model.type === 4) {
-                mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
+                stackView.push("qrc:/ui/SongsView.qml",
                                    {
                                        "containerItem": {id: model.objectId, payload: model.object},
                                        "songSearch": model.objectId,
@@ -308,22 +240,18 @@ MusicPage {
                                        "covers": [{art: makeCoverSource(model.art, model.artist, model.album)}],
                                        "isPlaylist": true,
                                        "genre": "",
-                                       "page": playlistsPage,
-                                       "pageTitle": i18n.tr("Playlist"),
+                                       "pageTitle": qsTr("Playlist"),
                                        "line1": "",
                                        "line2": model.title
                                    })
             }
             else if (model.type === 5) {
-                mainView.currentlyWorking = true
                 delayfavoriteClicked.model = model
                 delayfavoriteClicked.start()
             }
         } else {
-            mainView.currentlyWorking = true
             delayfavoriteClicked.model = model
             delayfavoriteClicked.start()
         }
     }
 }
-

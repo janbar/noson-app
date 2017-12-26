@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016
+ * Copyright (C) 2016, 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,89 +15,101 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
+
 
 Item {
+    id: renderingBubble
+    anchors {
+        left: parent.left
+        right: parent.right
+        margins: units.gu(2)
+    }
     property bool opened: false
+    property color backgroundColor: "black"
+    property color labelColor: "white"
+    readonly property bool displayable: containerLayout.height >= containerLayout.rowHeight
 
-    Component {
-        id: popoverComponent
-        Popover {
-            id: popover
-            autoClose: false
-            callerMargin: units.gu(0)
+    Popup {
+        id: popover
+        width: parent.width
+        height: containerLayout.height
 
-            Item {
-                id: containerLayout
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                }
-                readonly property double rowHeight: units.gu(7)
-                readonly property double maxHeight: mainView.height - /*footer*/units.gu(15)
-                property int contentHeight: player.renderingModel.count * rowHeight + /*margins*/units.gu(4)
-                height: contentHeight > maxHeight ? maxHeight : contentHeight
-
-                Rectangle {
-                    id: containerLayoutBackground
-                    anchors.fill: parent
-                    color: styleMusic.popover.backgroundColor
-                }
-
-                RenderingControlerView {
-                    id: renderingControlerView
-                    backgroundColor: styleMusic.popover.backgroundColor
-                    labelColor: styleMusic.popover.labelColor
-                    anchors.topMargin: units.gu(2)
-                }
-
-                Connections {
-                    target: renderingControlerView
-                    onFinger: {
-                        if (isHeld && bubbleTimer.running)
-                            bubbleTimer.stop()
-                        else if (!isHeld)
-                            bubbleTimer.restart()
-                    }
-                }
+        background: Rectangle {
+                id: containerLayoutBackground
+                anchors.fill: parent
+                color: renderingBubble.backgroundColor
+                radius: units.gu(1)
+                opacity: 0.9
             }
 
-            Behavior on opacity {
-                NumberAnimation { duration: 500 }
+        Item {
+            id: containerLayout
+            anchors.centerIn: parent
+            readonly property double rowHeight: units.gu(7)
+            readonly property double minHeight: rowHeight + units.gu(4)
+            readonly property double maxHeight: mainView.height - /*header-footer*/units.gu(15)
+            property int contentHeight: player.renderingModel.count * rowHeight + /*margins*/units.gu(6)
+            width: parent.width
+            height: contentHeight > maxHeight ? maxHeight : contentHeight
+
+            RenderingControlerView {
+                id: renderingControlerView
+                backgroundColor: "transparent"
+                labelColor: renderingBubble.labelColor
+                anchors.topMargin: units.gu(2)
+                anchors.bottomMargin: units.gu(2)
             }
 
-            Timer {
-                id: bubbleTimer
-                interval: 5000
-
-                Component.onCompleted: start()
-
-                onTriggered: {
-                    opened = false
-                    popover.opacity = 0
-                    closingBubbleTimer.start()
+            Connections {
+                target: renderingControlerView
+                onFinger: {
+                    if (isHeld && bubbleTimer.running)
+                        timer.stop()
+                    else if (!isHeld)
+                        timer.restart()
                 }
             }
+        }
 
-            Timer {
-                id: closingBubbleTimer
-                interval: 500
+        Behavior on opacity {
+            NumberAnimation { duration: 500 }
+        }
 
-                onTriggered: {
-                    popover.visible = false
-                    PopupUtils.close(popover)
-                }
+        onOpened: timer.start()
+    }
+
+    Timer {
+        id: timer
+        interval: 5000
+        onTriggered: {
+            opened = false
+            popover.close()
+        }
+    }
+
+    Connections {
+        target: popover
+        onClosed: {
+            if (renderingBubble.opened) {
+                renderingBubble.opened = false
+                timer.stop()
             }
         }
     }
 
     function open(caller) {
-        if (!opened) {
+        if (!renderingBubble.opened && containerLayout.height > containerLayout.minHeight) {
+            var gc = renderingBubble.parent.mapToItem(null, 0, 0)
+            if (gc.y > (mainView.height - mainView.header.height) / 2) {
+                popover.y = - (popover.height + units.gu(2))
+            } else {
+                popover.y = parent.height + units.gu(2)
+            }
             player.refreshRendering()
-            opened = true
-            PopupUtils.open(popoverComponent, caller)
+            renderingBubble.opened = true
+            popover.open()
         }
     }
 }

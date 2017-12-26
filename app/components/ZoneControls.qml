@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016
+ * Copyright (C) 2016, 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,14 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import NosonApp 1.0
-import "../components"
-import "../components/Delegates"
-import "../components/Flickables"
-import "../components/ListItemActions"
-import "../components/HeadState"
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 
 Item {
     property string controlledZone: ""
@@ -36,7 +30,7 @@ Item {
         anchors {
             fill: parent
         }
-        color: mainView.backgroundColor
+        color: styleMusic.mainView.backgroundColor
 
         Column {
             anchors.centerIn: parent
@@ -44,23 +38,23 @@ Item {
             width: units.gu(36)
 
             Label {
-                color: styleMusic.libraryEmpty.labelColor
+                color: styleMusic.mainView.labelColor
                 elide: Text.ElideRight
-                fontSize: "x-large"
+                font.pointSize: units.fs("x-large")
                 horizontalAlignment: Text.AlignHCenter
                 maximumLineCount: 2
-                text: i18n.tr("Under construction")
+                text: qsTr("Under construction")
                 width: parent.width
                 wrapMode: Text.WordWrap
             }
 
             Label {
-                color: styleMusic.libraryEmpty.labelColor
+                color: styleMusic.mainView.labelColor
                 elide: Text.ElideRight
-                fontSize: "large"
+                font.pointSize: units.fs("large")
                 horizontalAlignment: Text.AlignLeft
                 maximumLineCount: 8
-                text: i18n.tr("This feature will be added in a next version. Please rate the App.")
+                text: qsTr("This feature will be added in a next version. Please rate the App.")
                 width: parent.width
                 wrapMode: Text.WordWrap
             }

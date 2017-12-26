@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016
+ * Copyright (C) 2016, 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,39 +15,58 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
+import QtQml.Models 2.2
 import "../"
 
-ListItem {
-    color: styleMusic.mainView.backgroundColor
-    highlightColor: Qt.lighter(color, 1.2)
+MouseArea {
+    id: area
 
-    // Store the currentColor so that actions can bind to it
-    property var currentColor: highlighted ? highlightColor : color
+    property color color: "white"
+    property color highlightedColor: "lightgray"
+    property var currentColor: highlighted ? highlightedColor : color
+    property bool highlighted: false
 
-    property alias column: simpleRow.column
+    property alias column: row.column
 
-    divider {
-        visible: false
-    }
+    anchors { left: parent.left; right: parent.right }
+    height: content.height
 
-    SimpleRow {
-        id: simpleRow
+    Rectangle {
+        id: content
         anchors {
-            fill: parent
+            horizontalCenter: parent.horizontalCenter
+            verticalCenter: parent.verticalCenter
+        }
+        width: area.width; height: row.implicitHeight + units.dp(4)
+
+        color: area.color
+        Behavior on color { ColorAnimation { duration: 100 } }
+
+        // highlight the current position
+        Rectangle {
+            anchors.fill: row
+            visible: area.highlighted
+            color: area.highlightedColor
+            opacity: 0.2
         }
 
-        // Animate margin changes so it isn't noticible
-        Behavior on anchors.leftMargin {
-            NumberAnimation {
+        SimpleRow {
+            id: row
+            anchors.fill: parent
 
+            // Animate margin changes so it isn't noticible
+            Behavior on anchors.leftMargin {
+                NumberAnimation {
+
+                }
             }
-        }
 
-        Behavior on anchors.rightMargin {
-            NumberAnimation {
+            Behavior on anchors.rightMargin {
+                NumberAnimation {
 
+                }
             }
         }
     }

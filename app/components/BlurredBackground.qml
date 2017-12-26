@@ -17,22 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
+import QtQuick 2.9
 import QtGraphicalEffects 1.0
 
 // Blurred background
 Item {
     width: parent.width
 
-    property string art: player.currentMetaArt === "" ? Qt.resolvedUrl("../graphics/no_cover.png") : player.currentMetaArt
+    property string art: player.currentMetaArt === "" ? Qt.resolvedUrl("../images/no_cover.png") : player.currentMetaArt
 
     // dark layer
     Rectangle {
         anchors {
             fill: parent
         }
-        color: "black" 
+        color: styleMusic.playerControls.backgroundColor
     }
 
     // the album art

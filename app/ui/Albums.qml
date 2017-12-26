@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2013, 2014, 2015, 2016
+ * Copyright (C) 2016, 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
- *      Andrew Hayzen <ahayzen@gmail.com>
- *      Daniel Holm <d.holmen@gmail.com>
- *      Victor Thompson <victor.thompson@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,53 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 import NosonApp 1.0
 import "../components"
 import "../components/Delegates"
 import "../components/Flickables"
-import "../components/HeadState"
 
 
 MusicPage {
     id: albumsPage
     objectName: "albumsPage"
-    pageTitle: i18n.tr("Albums")
+    pageTitle: qsTr("Albums")
     pageFlickable: albumGridView
     searchable: true
-    searchResultsCount: albumsModelFilter.count
-    state: "default"
-    states: [
-        SearchableHeadState {
-            thisPage: albumsPage
-            searchEnabled: albumsModelFilter.count > 0
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        },
-        SearchHeadState {
-            id: searchHeader
-            thisPage: albumsPage
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        }
-    ]
-
-    width: mainPageStack.width
-
-    // Hack for autopilot otherwise Albums appears as MusicPage
-    // due to bug 1341671 it is required that there is a property so that
-    // qml doesn't optimise using the parent type
-    property bool bug1341671workaround: true
 
     MusicGridView {
         id: albumGridView
         itemWidth: units.gu(15)
         heightOffset: units.gu(9.5)
 
-        model: SortFilterModel {
+        model: AllAlbumsModel
+/*        model: SortFilterModel {
             id: albumsModelFilter
             model: AllAlbumsModel
             sort.property: "title"
@@ -73,7 +45,7 @@ MusicPage {
             filter.property: "normalized"
             filter.pattern: new RegExp(normalizedInput(searchHeader.query), "i")
             filterCaseSensitivity: Qt.CaseInsensitive
-        }
+        }*/
         delegate: Card {
             id: albumCard
             coverSources: [
@@ -81,38 +53,41 @@ MusicPage {
                 {art: makeCoverSource(undefined, model.artist, model.title)}
             ]
             objectName: "albumsPageGridItem" + index
-            primaryText: model.title !== undefined && model.title !== "" ? model.title : i18n.tr("Unknown Album")
-            secondaryText: model.artist !== undefined && model.artist !== "" ? model.artist : i18n.tr("Unknown Artist")
-            isFavorite: (AllFavoritesModel.findFavorite(model.payload).length > 0)
+            primaryText: model.title !== undefined && model.title !== "" ? model.title : qsTr("Unknown Album")
+            secondaryText: model.artist !== undefined && model.artist !== "" ? model.artist : qsTr("Unknown Artist")
 
-            // check favorite on data updated
+            // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
-                onDataUpdated: {
-                    isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
+                onCountChanged: {
+                    albumCard.isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
                 }
             }
 
             onClicked: {
-                mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
+                stackView.push("qrc:/ui/SongsView.qml",
                                    {
                                        "containerItem": makeContainerItem(model),
                                        "songSearch": model.id,
                                        "album": model.title,
                                        "artist": model.artist,
-                                       "covers": [{art: albumCard.imageSource}],
+                                       "covers": [{art: (albumCard.imageSource != "" ? albumCard.imageSource : model.art)}],
                                        "isAlbum": true,
                                        "genre": "",
-                                       "pageTitle": i18n.tr("Album"),
-                                       "line1": model.artist !== undefined && model.artist !== "" ? model.artist : i18n.tr("Unknown Artist"),
-                                       "line2": model.title !== undefined && model.title !== "" ? model.title : i18n.tr("Unknown Album")
+                                       "pageTitle": qsTr("Album"),
+                                       "line1": model.artist !== undefined && model.artist !== "" ? model.artist : qsTr("Unknown Artist"),
+                                       "line2": model.title !== undefined && model.title !== "" ? model.title : qsTr("Unknown Album")
                                    })
             }
             onPressAndHold: {
                 if (isFavorite && removeFromFavorites(model.payload))
                     isFavorite = false
-                else if (!isFavorite && addItemToFavorites(model, i18n.tr("Album"), imageSource))
+                else if (!isFavorite && addItemToFavorites(model, qsTr("Album"), imageSource))
                     isFavorite = true
+            }
+
+            Component.onCompleted: {
+                isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
             }
         }
     }

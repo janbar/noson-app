@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2013, 2014, 2015, 2016
+ * Copyright (C) 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
- *      Andrew Hayzen <ahayzen@gmail.com>
- *      Daniel Holm <d.holmen@gmail.com>
- *      Victor Thompson <victor.thompson@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 
 Item {
+    id: toolBar
     property alias color: bg.color
     height: units.gu(7.25)
     objectName: "musicToolbarObject"
@@ -30,14 +27,9 @@ Item {
     Rectangle {
         id: bg
         anchors.fill: parent
-        color: styleMusic.common.black
-        opacity: 0.9
+        color: styleMusic.playerControls.backgroundColor
+        opacity: 1.0
     }
-
-    // Hack for autopilot otherwise MusicToolbar appears as QQuickRectangle
-    // due to bug 1341671 it is required that there is a property so that
-    // qml doesn't optimise using the parent type
-    property bool bug1341671workaround: true
 
     /* Toolbar controls */
     Item {
@@ -91,8 +83,8 @@ Item {
                     verticalCenter: parent.verticalCenter
                 }
                 color: styleMusic.playerControls.labelColor
-                text: player.currentCount === 0 ? i18n.tr("No music in queue") : i18n.tr("Tap to play music")
-                fontSize: "large"
+                text: player.currentCount === 0 ? qsTr("No music in queue") : qsTr("Tap to play music")
+                font.pointSize: units.fs("large")
                 wrapMode: Text.WordWrap
                 maximumLineCount: 2
             }
@@ -106,9 +98,9 @@ Item {
                     verticalCenter: parent.verticalCenter
                 }
                 visible: player.currentCount > 0
-                color: "white"
+                color: styleMusic.playerControls.labelColor
                 height: units.gu(4)
-                name: player.isPlaying ? "media-playback-pause" : "media-playback-start"
+                source: player.isPlaying ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
                 width: height
             }
 
@@ -121,9 +113,9 @@ Item {
                     verticalCenter: parent.verticalCenter
                 }
                 visible: player.currentCount === 0
-                color: "white"
+                color: styleMusic.playerControls.labelColor
                 height: units.gu(4)
-                source: Qt.resolvedUrl("../graphics/input.svg")
+                source: "qrc:/images/input.svg"
                 width: height
             }
 
@@ -136,7 +128,7 @@ Item {
                     if (player.currentCount > 0)
                         player.playQueue(true)
                     else
-                        PopupUtils.open(Qt.resolvedUrl("../components/Dialog/DialogSelectSource.qml"), mainView)
+                        mainView.dialogSelectSource.open()
                 }
             }
         }
@@ -185,7 +177,7 @@ Item {
                     }
                     color: styleMusic.common.music
                     elide: Text.ElideRight
-                    fontSize: "small"
+                    font.pointSize: units.fs("medium")
                     font.weight: Font.DemiBold
                     text: player.currentMetaTitle
                 }
@@ -197,9 +189,9 @@ Item {
                         left: parent.left
                         right: parent.right
                     }
-                    color: styleMusic.common.music
+                    color: styleMusic.common.subtitle
                     elide: Text.ElideRight
-                    fontSize: "small"
+                    font.pointSize: units.fs("small")
                     text: player.currentMetaArtist
                 }
             }
@@ -212,9 +204,9 @@ Item {
                     rightMargin: units.gu(3)
                     verticalCenter: parent.verticalCenter
                 }
-                color: "white"
+                color: styleMusic.playerControls.labelColor
                 height: units.gu(4)
-                name: player.playbackState === "PLAYING" ? "media-playback-pause" : "media-playback-start"
+                source: player.playbackState === "PLAYING" ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
                 objectName: "playShape"
                 width: height
             }
@@ -228,8 +220,8 @@ Item {
                 enabled: true
                 onClicked: {
                     if (mainView.nowPlayingPage !== null) {
-                        while (mainPageStack.depth > 1 && mainPageStack.currentPage !== mainView.nowPlayingPage) {
-                            mainPageStack.goBack();
+                        while (stackView.depth > 1 && stackView.currentItem !== mainView.nowPlayingPage) {
+                            stackView.pop();
                         }
                     } else {
                         tabs.pushNowPlaying();
@@ -251,12 +243,12 @@ Item {
                     anchors {
                         fill: parent
                     }
-                    color: "white"
+                    color: styleMusic.playerControls.labelColor
                     opacity: parent.pressed ? 0.1 : 0
 
                     Behavior on opacity {
-                        UbuntuNumberAnimation {
-                            duration: UbuntuAnimation.FastDuration
+                        NumberAnimation {
+                            duration: 250
                         }
                     }
                 }
@@ -271,7 +263,7 @@ Item {
                 left: parent.left
                 right: parent.right
             }
-            color: styleMusic.common.black
+            color: styleMusic.playerControls.backgroundColor
             height: units.gu(0.25)
 
             Rectangle {

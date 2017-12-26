@@ -18,45 +18,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 import NosonApp 1.0
 import "../components"
 import "../components/Delegates"
 import "../components/Flickables"
-import "../components/HeadState"
+import "../components/Dialog"
 
 
 MusicPage {
     id: addToPlaylistPage
     objectName: "addToPlaylistPage"
+
     // TRANSLATORS: this appears in the header with limited space (around 20 characters)
-    pageTitle: i18n.tr("Select playlist")
+    pageTitle: qsTr("Select playlist")
     pageFlickable: addtoPlaylistView
     searchable: true
-    searchResultsCount: addToPlaylistModelFilter.count
-    showToolbar: false
-    state: "default"
-    states: [
-        PlaylistsHeadState {
-            newPlaylistEnabled: true
-            searchEnabled: AllPlaylistsModel.count > 0
-            thisPage: addToPlaylistPage
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        },
-        SearchHeadState {
-            id: searchHeader
-            thisPage: addToPlaylistPage
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        }
-    ]
+    searchResultsCount: AllPlaylistsModel.count
 
-    height: mainPageStack.height + musicToolbar.height
-    width: mainPageStack.width
+    state: "selector"
 
     property var chosenElements: []
 
@@ -64,14 +45,11 @@ MusicPage {
         // Load the playlistmodel if it hasn't loaded or is empty
         if (visible && (AllPlaylistsModel.count === 0)) {
             customdebug("AllPlaylistsModel is empty !!!")
+            AllPlaylistsModel.asyncLoad()
         }
     }
 
-    MusicGridView {
-        id: addtoPlaylistView
-        itemWidth: units.gu(12)
-        heightOffset: units.gu(9.5)
-        model: SortFilterModel {
+    /*SortFilterModel {
             // Sorting disabled as it is incorrect on first run (due to workers?)
             // and SQL sorts the data correctly
             id: addToPlaylistModelFilter
@@ -79,24 +57,79 @@ MusicPage {
             filter.property: "title"
             filter.pattern: new RegExp(searchHeader.query, "i")
             filterCaseSensitivity: Qt.CaseInsensitive
-        }
-        objectName: "addToPlaylistGridView"
+        }*/
+
+    MusicGridView {
+        id: addtoPlaylistView
+        itemWidth: units.gu(12)
+        heightOffset: units.gu(9.5)
+        model: AllPlaylistsModel
         delegate: Card {
             id: playlist
             coverSources: [{art: model.art}]
-            objectName: "addToPlaylistCardItem" + index
-
             primaryText: model.title
             secondaryTextVisible: false
 
             onClicked: {
                 songPlaylistLoader.model = model;
                 addToPlaylistPage.addItemList(model.id, chosenElements, songPlaylistLoader.item.containerUpdateID());
-
-                mainPageStack.goBack();  // go back to the previous page
+                songPlaylistLoader.sourceComponent = null;
+                stackView.pop();
             }
         }
     }
+
+    footer: Item {
+        height: units.gu(6)
+        width: parent.width
+
+        Rectangle {
+            id: selectorToolBar
+            anchors.fill: parent
+            color: styleMusic.playerControls.backgroundColor
+            opacity: addToPlaylistPage.state === "selector" ? 1.0 : 0.0
+            enabled: opacity > 0
+
+            Rectangle {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.topMargin: units.gu(1.5)
+                anchors.rightMargin: units.gu(1)
+                anchors.leftMargin: units.gu(1)
+                height: units.gu(3)
+                color: "transparent"
+
+                Row {
+                    spacing: units.gu(3)
+
+                    Icon {
+                        id: selectorFind
+                        visible: true
+                        source: "qrc:/images/find.svg"
+                        height: units.gu(3)
+                        onClicked: searchClicked()
+                    }
+
+                    Icon {
+                        id: add
+                        visible: true
+                        source: "qrc:/images/add.svg"
+                        height: units.gu(3)
+                        label.text: qsTr("Add")
+                        label.font.pointSize: units.fs("x-small")
+                        onClicked: addClicked()
+                    }
+                }
+            }
+        }
+    }
+
+    DialogNewPlaylist {
+        id: dialogNewPlaylist
+    }
+
+    onAddClicked: dialogNewPlaylist.open()
 
     // Load selected container playlist
     Loader {
@@ -115,10 +148,7 @@ MusicPage {
 
     // Overlay to show when no playlists are on the device
     Loader {
-        anchors {
-            fill: parent
-            topMargin: -units.gu(6.125)  // FIXME: 6.125 is the header.height
-        }
+        anchors.fill: parent
         active: AllPlaylistsModel.count === 0 && loadedIndex
         asynchronous: true
         source: "../components/PlaylistsEmptyState.qml"
@@ -135,10 +165,10 @@ MusicPage {
                     break;
             }
             if (eqcount > 0) {
-                popInfo.open(i18n.tr("song added"));
+                popInfo.open(qsTr("song added"));
                 return true;
             }
-            popInfo.open(i18n.tr("Action can't be performed"));
+            popInfo.open(qsTr("Action can't be performed"));
             return false;
         }
     }

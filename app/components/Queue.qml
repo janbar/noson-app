@@ -18,134 +18,133 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
+import QtQml.Models 2.2
 import "Delegates"
 import "Flickables"
 import "ListItemActions"
 
 Item {
+    id: queue
     property alias listview: queueList
     property alias header: queueList.header
-
+    property alias headerItem: queueList.headerItem
+    property alias backgroundColor: bg.color
     clip: true
 
-    MultiSelectListView {
-        id: queueList
-        anchors {
-            fill: parent
-        }
-        footer: Item {
-            height: mainView.height - (styleMusic.common.expandHeight + queueList.currentHeight) + units.gu(8)
-        }
-        model: player.trackQueue.model
-        objectName: "nowPlayingqueueList"
+    Rectangle {
+        id: bg
+        anchors.fill: parent
+        color: "white"
+    }
 
-        delegate: MusicListItem {
-            id: queueListItem
-            color: "transparent"
+    Component {
+        id: dragDelegate
 
-            Rectangle {
-                anchors.fill: parent
-                visible: (player.currentIndex === index)
-                color: "#FFF"
-                opacity: 0.1
+        DragMusicListItem {
+            id: listItem
+            listview: queueList
+            color: bg.color
+            highlightedColor: "lightgray"
+            highlighted: (player.currentIndex === index)
+
+            onSwipe: {
+                listview.focusIndex = index > 0 ? index - 1 : 0;
+                removeTrackFromQueue(model);
+                color = "red";
             }
 
+            onReorder: {
+                listview.reorder(from, to)
+            }
+
+            onClicked: dialogSongInfo.open(model, false) // don't show actions
+
             imageSource: makeCoverSource(model.art, model.author, model.album)
+            description: qsTr("Song")
+            onActionPressed: indexQueueClicked(model.index)
+            actionVisible: true
+            actionIconSource: (player.isPlaying && player.currentIndex === index ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-preview-start.svg")
+            menuVisible: true
+
+            menuItems: [
+                AddToFavorites {
+                    description: listItem.description
+                    art: model.art
+                },
+                //@FIXME add to playlist service item doesn't work
+                AddToPlaylist {
+                    enabled: model.isService
+                    visible: enabled
+                },
+                Remove {
+                    onTriggered: {
+                        listview.focusIndex = index > 0 ? index - 1 : 0;
+                        removeTrackFromQueue(model);
+                        color = "red";
+                    }
+                }
+            ]
+
             column: Column {
                 Label {
                     id: trackTitle
-                    color: player.currentIndex === index ? UbuntuColors.blue : styleMusic.common.music
-                    fontSize: "small"
-                    objectName: "titleLabel"
+                    color: player.currentIndex === index ? "#19b1e9" : styleMusic.common.music
+                    font.pointSize: units.fs("small")
                     text: model.title
                 }
 
                 Label {
                     id: trackArtist
                     color: styleMusic.common.subtitle
-                    fontSize: "x-small"
-                    objectName: "artistLabel"
+                    font.pointSize: units.fs("x-small")
                     text: model.author
                 }
-            }
-            leadingActions: ListItemActions {
-                actions: [
-                    Remove {
-                        onTriggered: {
-                            mainView.currentlyWorking = true
-                            delayRemoveTrackFromQueue.start()
-                        }
-                    }
-                ]
-            }
-            multiselectable: false
-            objectName: "nowPlayingListItem" + index
-            reorderable: true
-            trailingActions: ListItemActions {
-                actions: [
-                    ShowInfo {
-                    },
-                    AddToPlaylist {
-                        //@FIXME add to playlist service item doesn't work
-                        visible: model.isService ? false : true
-                    },
-                    AddToFavorites {
-                        description: i18n.tr("Song")
-                        art: model.art
-                    }
-                ]
-                delegate: ActionDelegate {
-                }
+
             }
 
-            Timer {
-                id: delayRemoveTrackFromQueue
-                interval: 100
-                onTriggered: {
-                    removeTrackFromQueue(model)
-                    mainView.currentlyWorking = false
-                }
-            }
+        }
 
-            onItemClicked: {
-                mainView.currentlyWorking = true
-                delayIndexQueueClicked.start()
-            }
+    }
 
-            Timer {
-                id: delayIndexQueueClicked
-                interval: 100
-                onTriggered: {
-                    indexQueueClicked(index) // toggle track state
-                    mainView.currentlyWorking = false
+    MusicListView {
+        id: queueList
+        objectName: "queueList"
+        anchors.fill: parent
+
+        footer: Item {
+            height: mainView.height - (styleMusic.common.expandHeight + queueList.currentHeight) + units.gu(8)
+        }
+
+        model: DelegateModel {
+            id: visualModel
+            model: player.trackQueue.model
+            delegate: dragDelegate
+        }
+
+        property int focusIndex: 0
+
+        Connections {
+            target: player.trackQueue.model
+            onLoaded: {
+                if (queueList.focusIndex > 0) {
+                    queueList.positionViewAtIndex(queueList.focusIndex, ListView.Center);
+                    queueList.focusIndex = 0;
+                } else {
+                    queueList.positionViewAtIndex(player.currentIndex > 0 ? player.currentIndex - 1 : 0, ListView.Beginning);
                 }
             }
         }
+
+        signal reorder(int from, int to)
 
         onReorder: {
-            delayReorderTrackInQueue.argFrom = from
-            delayReorderTrackInQueue.argTo = to
-            mainView.currentlyWorking = true
-            delayReorderTrackInQueue.start()
-        }
-
-        Timer {
-            id: delayReorderTrackInQueue
-            interval: 100
-            property int argFrom: 0
-            property int argTo: 0
-            onTriggered: {
-                reorderTrackInQueue(argFrom, argTo)
-                mainView.currentlyWorking = false
-            }
+            customdebug("Reorder queue item " + from + " to " + to);
+            queueList.focusIndex = to;
+            reorderTrackInQueue(from, to);
         }
 
     }
 
-    Scrollbar {
-        flickableItem: queueList
-        align: Qt.AlignTrailing
-    }
 }

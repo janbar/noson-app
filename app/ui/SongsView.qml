@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2013, 2014, 2015, 2016
+ * Copyright (C) 2016, 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
- *      Andrew Hayzen <ahayzen@gmail.com>
- *      Daniel Holm <d.holmen@gmail.com>
- *      Victor Thompson <victor.thompson@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,15 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
-import Ubuntu.Thumbnailer 0.1
+import QtQuick 2.9
+import QtQuick.Controls 2.2
+import QtQml.Models 2.2
 import NosonApp 1.0
 import "../components"
 import "../components/Delegates"
 import "../components/Flickables"
-import "../components/HeadState"
 import "../components/ListItemActions"
 import "../components/ViewButton"
 import "../components/Dialog"
@@ -35,7 +30,9 @@ MusicPage {
     id: songStackPage
     objectName: "songsPage"
     visible: false
-    pageFlickable: albumtrackslist
+    pageFlickable: songList
+    isListView: true
+    listview: songList
 
     property string line1: ""
     property string line2: ""
@@ -51,89 +48,74 @@ MusicPage {
     property string artist: ""
     property string genre: ""
 
-    property bool loaded: false  // used to detect difference between first and further loads
-
-    width: mainPageStack.width
-
     property bool isFavorite: false
 
-    state: albumtrackslist.state === "multiselectable" ? "selection" : (isPlaylist ? "playlist" : "album")
-    states: [
-        AlbumSongsHeadState {
-            thisPage: songStackPage
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        },
-        PlaylistHeadState {
-            thisPage: songStackPage
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        },
-        MultiSelectHeadState {
-            containerItem: songStackPage.containerItem
-            listview: albumtrackslist
-            removable: isPlaylist
-            thisPage: songStackPage
-            thisHeader {
-                extension: DefaultSections { }
-            }
+    // enable selection toolbar
+    selectable: true
 
-            onRemoved: {
-                mainView.currentlyWorking = false
-                delayRemoveSelectedFromPlaylist.selectedIndices = selectedIndices
-                delayRemoveSelectedFromPlaylist.start()
-            }
-        }
-    ]
+    onStateChanged: {
+        if (state === "selection")
+            songList.state = "selection"
+        else
+            songList.state = "default"
+    }
 
     Timer {
         id: delayRemoveSelectedFromPlaylist
         interval: 100
         property var selectedIndices: []
         onTriggered: {
-            var cnt = songsModel.count;
+            songList.focusIndex = selectedIndices[selectedIndices.length-1];
             if (removeTracksFromPlaylist(containerItem.id, selectedIndices, songsModel.containerUpdateID())) {
-                songsModel.load();
-                while (songsModel.count < cnt && songsModel.loadMore());
+                songsModel.asyncLoad();
             }
-            mainView.currentlyWorking = false
         }
     }
 
     TracksModel {
         id: songsModel
+        onDataUpdated: songsModel.asyncLoad()
+        onLoaded: songsModel.resetModel()
+        Component.onCompleted: {
+            songsModel.init(Sonos, songSearch, false)
+            songsModel.asyncLoad()
+        }
     }
 
-    Timer {
-        id: delayInitModel
-        interval: 100
-        onTriggered: {
-            isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
-            songsModel.init(Sonos, songSearch, true)
-            mainView.currentlyWorking = false
-            songStackPage.loaded = true;
+    function restoreFocusIndex() {
+        if (songsModel.count <= songList.focusIndex) {
+            songsModel.asyncLoadMore() // load more !!!
+        } else {
+            songList.positionViewAtIndex(songList.focusIndex, ListView.Center);
+            songList.focusIndex = -1
         }
     }
 
     Connections {
         target: songsModel
-        onDataUpdated: {
-            mainView.currentlyWorking = true
-            delayLoadTrackModel.start()
+        onDataUpdated: songsModel.asyncLoad()
+        onLoaded: {
+            songsModel.resetModel()
+            if (succeeded) {
+                if (songList.focusIndex > 0) {
+                    // restore index position in view
+                    restoreFocusIndex()
+                }
+            }
         }
-    }
+        onLoadedMore: {
+            if (succeeded) {
+                songsModel.appendModel();
+                if (songList.focusIndex > 0) {
+                    // restore index position in view
+                    restoreFocusIndex()
+                }
+            } else if (songList.focusIndex > 0) {
+                songList.positionViewAtEnd();
+                songList.focusIndex = -1;
+            }
+        }
 
-    Timer {
-        id: delayLoadTrackModel
-        interval: 100
-        onTriggered: {
-            var cnt = songsModel.count;
-            songsModel.load();
-            while (songsModel.count < cnt && songsModel.loadMore());
-            mainView.currentlyWorking = false
-        }
     }
 
     Repeater {
@@ -156,42 +138,133 @@ MusicPage {
     }
 
     BlurredBackground {
-            id: blurredBackground
-            height: parent.height
+        id: blurredBackground
+        height: parent.height
+    }
+
+    Component {
+        id: dragDelegate
+
+        SelectMusicListItem {
+            id: listItem
+            listview: songList
+            reorderable: isPlaylist
+            selectable: true
+
+            onSwipe: {
+                if (isPlaylist) {
+                    listview.focusIndex = index > 0 ? index - 1 : 0;
+                    mainView.jobRunning = true
+                    delayRemoveSelectedFromPlaylist.selectedIndices = [index]
+                    delayRemoveSelectedFromPlaylist.start()
+                    color = "red";
+                }
+            }
+
+            onReorder: {
+                listview.reorder(from, to)
+            }
+
+            onClicked: dialogSongInfo.open(model, true) // show action play
+
+            color: "transparent"
+
+            // check favorite on data loaded
+            Connections {
+                target: AllFavoritesModel
+                onCountChanged: {
+                    listItem.isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
+                }
+            }
+
+            noCover: !songStackPage.isAlbum ? "qrc:/images/no_cover.png" : "qrc:/images/no_cover.png"
+            imageSource: !songStackPage.isAlbum ? makeCoverSource(model.art, model.author, model.album) : "qrc:/images/no_cover.png"
+            description: qsTr("Song")
+
+            onActionPressed: trackClicked(model) // play track
+            actionVisible: true
+            actionIconSource: "qrc:/images/media-preview-start.svg"
+            menuVisible: true
+
+            menuItems: [
+                AddToFavorites {
+                    isFavorite: listItem.isFavorite
+                    description: listItem.description
+                    art: model.art
+                },
+                AddToPlaylist {
+                },
+                AddToQueue {
+                },
+                Remove {
+                    enabled: isPlaylist
+                    visible: enabled
+                    onTriggered: {
+                        listview.focusIndex = index > 0 ? index - 1 : 0;
+                        mainView.jobRunning = true
+                        delayRemoveSelectedFromPlaylist.selectedIndices = [index]
+                        delayRemoveSelectedFromPlaylist.start()
+                        color = "red";
+                    }
+                }
+            ]
+
+            column: Column {
+                Label {
+                    id: trackTitle
+                    color: styleMusic.common.music
+                    font.pointSize: !songStackPage.isAlbum ? units.fs("small") : units.fs("medium")
+                    text: model.title
+                }
+
+                Label {
+                    id: trackArtist
+                    color: styleMusic.common.subtitle
+                    font.pointSize: !songStackPage.isAlbum ? units.fs("x-small") : units.fs("small")
+                    text: model.author
+                }
+            }
+
+            Component.onCompleted: {
+                isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
+                if (model.date !== undefined) {
+                    songStackPage.year = new Date(model.date).toLocaleString(Qt.locale(),'yyyy')
+                }
+            }
+        }
     }
 
     MultiSelectListView {
-        id: albumtrackslist
-        anchors {
-            fill: parent
-        }
-        width: parent.width
+        id: songList
+        anchors.fill: parent
+
         header: MusicHeader {
             id: blurredHeader
+            isFavorite: songStackPage.isFavorite
             rightColumn: Column {
                 spacing: units.gu(2)
                 ShuffleButton {
-                    model: albumtrackslist.model
-                    width: blurredHeader.width > units.gu(60) ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
+                    model: songsModel
+                    width: blurredHeader.width > mainView.wideSongView ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
                 }
                 QueueAllButton {
                     containerItem: songStackPage.containerItem
-                    width: blurredHeader.width > units.gu(60) ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
+                    width: blurredHeader.width > mainView.wideSongView ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
                     visible: containerItem ? true : false
                 }
                 PlayAllButton {
                     containerItem: songStackPage.containerItem
-                    width: blurredHeader.width > units.gu(60) ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
+                    width: blurredHeader.width > mainView.wideSongView ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
                     visible: containerItem ? true : false
 
                 }
             }
-            property int baseHeight: songStackPage.width > units.gu(60) ? units.gu(33.5) : ((songStackPage.width - units.gu(5)) / 2) + units.gu(12)
+            height: contentHeight
             coverSources: songStackPage.covers
             coverFlow: 4
-            height: isAlbum && songStackPage.width <= units.gu(60) ?
-                        baseHeight + units.gu(3) : baseHeight
-            bottomColumn: Column {
+            titleColumn: Column {
+                spacing: units.gu(1)
+
                 Label {
                     id: albumLabel
                     anchors {
@@ -200,16 +273,10 @@ MusicPage {
                     }
                     color: styleMusic.common.music
                     elide: Text.ElideRight
-                    fontSize: "x-large"
+                    font.pointSize: units.fs("x-large")
                     maximumLineCount: 1
                     text: line2
                     wrapMode: Text.NoWrap
-                }
-
-                Item {
-                    height: units.gu(0.75)
-                    width: parent.width
-                    visible: albumArtist.visible
                 }
 
                 Label {
@@ -220,16 +287,11 @@ MusicPage {
                     }
                     color: styleMusic.common.subtitle
                     elide: Text.ElideRight
-                    fontSize: "small"
+                    font.pointSize: units.fs("small")
                     maximumLineCount: 1
                     text: line1
                     visible: line1 !== ""
                     wrapMode: Text.NoWrap
-                }
-
-                Item {
-                    height: units.gu(1)
-                    width: parent.width
                 }
 
                 Label {
@@ -240,101 +302,40 @@ MusicPage {
                     }
                     color: styleMusic.common.subtitle
                     elide: Text.ElideRight
-                    fontSize: "small"
+                    font.pointSize: units.fs("small")
                     maximumLineCount: 1
                     text: isAlbum
-                          ? (year !== "" ? year + " | " : "") + i18n.tr("%1 song", "%1 songs", songsModel.totalCount).arg(songsModel.totalCount)
-                          : i18n.tr("%1 song", "%1 songs", songsModel.totalCount).arg(songsModel.totalCount)
+                          ? (year !== "" ? year + " | " : "") + qsTr("%n song(s)", "", songsModel.totalCount)
+                          : qsTr("%n song(s)", "", songsModel.totalCount)
                     wrapMode: Text.NoWrap
+                }
+
+                Item {
+                    id: spacer
+                    width: parent.width
+                    height: units.gu(1)
                 }
             }
 
             onFirstSourceChanged: {
                 blurredBackground.art = firstSource
-            }
+            }            
         }
 
-        model: songsModel
-
-        delegate: MusicListItem {
-            id: track
-            color: "transparent"
-            noCover: !songStackPage.isAlbum ? Qt.resolvedUrl("../graphics/no_cover.png") : ""
-            imageSource: !songStackPage.isAlbum ? makeCoverSource(model.art, model.author, model.album) : ""
-            column: Column {
-                Label {
-                    id: trackTitle
-                    color: styleMusic.common.music
-                    fontSize: !songStackPage.isAlbum ? "small" : "medium"
-                    objectName: "songspage-tracktitle"
-                    text: model.title
-                }
-
-                Label {
-                    id: trackArtist
-                    color: styleMusic.common.subtitle
-                    fontSize: !songStackPage.isAlbum ? "x-small" : "small"
-                    text: model.author
-                }
-            }
-            leadingActions: isPlaylist ? playlistRemoveAction.item : null
-            multiselectable: true
-            reorderable: isPlaylist
-            trailingActions: ListItemActions {
-                actions: [
-                    PlaySong {
-                    },
-                    AddToQueue {
-                    },
-                    AddToPlaylist {
-                    },
-                    AddToFavorites {
-                        description: i18n.tr("Song")
-                        art: model.art
-                    }
-                ]
-                delegate: ActionDelegate {
-                }
-            }
-
-            onItemClicked: currentDialog = dialogSongInfo.open(model, true) // show actions play...
-
-            Loader {
-                id: playlistRemoveAction
-                sourceComponent: ListItemActions {
-                    actions: [
-                        Remove {
-                            onTriggered: {
-                                mainView.currentlyWorking = true
-                                delayRemoveTrackFromPlaylist.start()
-                            }
-                        }
-                    ]
-                }
-            }
-
-            Timer {
-                id: delayRemoveTrackFromPlaylist
-                interval: 100
-                onTriggered: {
-                    var cnt = songsModel.count;
-                    if (removeTracksFromPlaylist(containerItem.id, [index], songsModel.containerUpdateID())) {
-                        songsModel.load();
-                        while (songsModel.count < cnt && songsModel.loadMore());
-                    }
-                    mainView.currentlyWorking = false
-                }
-            }
-
-            Component.onCompleted: {
-                if (model.date !== undefined) {
-                    songStackPage.year = new Date(model.date).toLocaleString(Qt.locale(),'yyyy');
-                }
-            }
+        model: DelegateModel {
+            id: visualModel
+            model: songsModel
+            delegate: dragDelegate
         }
+
+        property int focusIndex: 0
+
+        signal reorder(int from, int to)
 
         onReorder: {
-            mainView.currentlyWorking = true
+            customdebug("Reorder queue item " + from + " to " + to);
+            songList.focusIndex = to;
+            mainView.jobRunning = true
             delayReorderTrackInPlaylist.argFrom = from
             delayReorderTrackInPlaylist.argTo = to
             delayReorderTrackInPlaylist.start()
@@ -347,32 +348,149 @@ MusicPage {
             property int argTo: 0
             onTriggered: {
                 if (reorderTrackInPlaylist(containerItem.id, argFrom, argTo, songsModel.containerUpdateID())) {
-                    songsModel.load();
+                    songsModel.asyncLoad();
                 }
-                mainView.currentlyWorking = false
             }
         }
 
         onAtYEndChanged: {
-            if (albumtrackslist.atYEnd && songsModel.totalCount > songsModel.count) {
-                mainView.currentlyWorking = true
-                delayLoadMoreTracks.start()
+            if (songList.atYEnd && songsModel.totalCount > songsModel.count) {
+                songsModel.asyncLoadMore()
             }
         }
 
-        Timer {
-            id: delayLoadMoreTracks
-            interval: 100
+        Connections {
+            target: songStackPage
+            onSelectAllClicked: songList.selectAll()
+            onSelectNoneClicked: songList.selectNone()
+            onAddToQueueClicked: {
+                var indicies = songList.getSelectedIndices();
+                // when select all then add the container if exists
+                if (containerItem && indicies.length === songsModel.count) {
+                    if (addQueue(containerItem)) {
+                        songList.selectNone()
+                        songStackPage.state = "default"
+                    }
+                }
+                else {
+                    var items = [];
+                    for (var i = 0; i < indicies.length; i++) {
+                        items.push(songsModel.get(indicies[i]));
+                    }
+                    if (addMultipleItemsToQueue(items)) {
+                        songList.selectNone()
+                        songStackPage.state = "default"
+                    }
+                }
+            }
+            onAddToPlaylistClicked: {
+                var items = []
+                var indicies = songList.getSelectedIndices();
+                // when select all then add the container if exists
+                if (containerItem && indicies.length === songsModel.count)
+                    items.push(containerItem);
+                else {
+                    for (var i = 0; i < indicies.length; i++) {
+                        items.push({"payload": songsModel.get(indicies[i]).payload});
+                    }
+                }
+                stackView.push("qrc:/ui/AddToPlaylist.qml", {"chosenElements": items})
+                songList.selectNone()
+                songStackPage.state = "default"
+            }
+
+            onRemoveSelectedClicked: {
+                mainView.jobRunning = true
+                delayRemoveSelectedFromPlaylist.selectedIndices = songList.getSelectedIndices()
+                if (delayRemoveSelectedFromPlaylist.selectedIndices.length > 0)
+                    songList.focusIndex = delayRemoveSelectedFromPlaylist.selectedIndices[delayRemoveSelectedFromPlaylist.selectedIndices.length - 1]
+                delayRemoveSelectedFromPlaylist.start()
+                songList.selectNone()
+                songStackPage.state = "default"
+            }
+        }
+
+        onHasSelectionChanged: {
+            songStackPage.selectAllVisible = !hasSelection
+            songStackPage.selectNoneVisible = hasSelection
+            songStackPage.addToQueueVisible = hasSelection
+            songStackPage.addToPlaylistVisible = hasSelection
+            songStackPage.removeSelectedVisible = isPlaylist && hasSelection
+        }
+
+        Component.onCompleted: {
+            songStackPage.selectAllVisible = !hasSelection
+            songStackPage.selectNoneVisible = hasSelection
+            songStackPage.addToQueueVisible = hasSelection
+            songStackPage.addToPlaylistVisible = hasSelection
+            songStackPage.removeSelectedVisible = isPlaylist && hasSelection
+        }
+    }
+
+    DialogRemovePlaylist {
+        id: dialogRemovePlaylist
+
+        onAccepted: {
+            if (songStackPage.isPlaylist) {
+                // removing playlist
+                removeFromFavorites(songStackPage.containerItem.payload)
+                removePlaylist(songStackPage.containerItem.id)
+                stackView.pop()
+            }
+        }
+    }
+
+    /*DialogEditPlaylist {
+        id: dialogEditPlaylist
+    }*/
+
+    // Page actions
+    optionsMenuVisible: true
+    optionsMenuContentItems: [
+        MenuItem {
+            text: songStackPage.isFavorite ?  qsTr("Remove from favorites") : qsTr("Add to favorites")
+            font.pointSize: units.fs("medium")
             onTriggered: {
-                songsModel.loadMore()
-                mainView.currentlyWorking = false
+                if (!songStackPage.isFavorite) {
+                    if (addItemToFavorites(containerItem, pageTitle, songList.headerItem.firstSource))
+                        songStackPage.isFavorite = true
+                } else {
+                    if (removeFromFavorites(containerItem.payload))
+                        songStackPage.isFavorite = false
+                }
+            }
+        },
+        /*MenuItem {
+            visible: songStackPage.isPlaylist
+            height: (visible ? implicitHeight : 0)
+            text: qsTr("Rename")
+            font.pointSize: units.fs("medium")
+            onTriggered: {
+                if (isPlaylist)
+                    dialogEditPlaylist.open()
+            }
+        },*/
+        MenuItem {
+            visible: songStackPage.isPlaylist
+            height: (visible ? implicitHeight : 0)
+            text: qsTr("Delete")
+            font.pointSize: units.fs("medium")
+            onTriggered: {
+                if (isPlaylist)
+                    dialogRemovePlaylist.open()
             }
         }
+    ]
 
+    // check favorite on data loaded
+    Connections {
+        target: AllFavoritesModel
+        onCountChanged: {
+            isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
+        }
     }
 
     Component.onCompleted: {
-        mainView.currentlyWorking = true
-        delayInitModel.start()
+        isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
     }
 }

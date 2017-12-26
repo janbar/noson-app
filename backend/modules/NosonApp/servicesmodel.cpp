@@ -51,7 +51,9 @@ ServicesModel::ServicesModel(QObject* parent)
 
 ServicesModel::~ServicesModel()
 {
-  clear();
+  clearData();
+  qDeleteAll(m_items);
+  m_items.clear();
 }
 
 void ServicesModel::addItem(ServiceItem* item)
@@ -132,44 +134,76 @@ bool ServicesModel::init(QObject* sonos, bool fill)
   return ListModel::init(sonos, "", fill);
 }
 
-void ServicesModel::clear()
+void ServicesModel::clearData()
 {
-  {
-    SONOS::LockGuard lock(m_lock);
-    beginRemoveRows(QModelIndex(), 0, m_items.count());
-    qDeleteAll(m_items);
-    m_items.clear();
-    endRemoveRows();
-  }
-  emit countChanged();
+  SONOS::LockGuard lock(m_lock);
+  qDeleteAll(m_data);
+  m_data.clear();
 }
 
-bool ServicesModel::load()
+bool ServicesModel::loadData()
 {
   setUpdateSignaled(false);
   
   if (!m_provider)
+  {
+    emit loaded(false);
     return false;
-  clear();
+  }
   const SONOS::PlayerPtr player = m_provider->getPlayer();
   if (!player)
+  {
+    emit loaded(false);
     return false;
+  }
+  
+  SONOS::LockGuard lock(m_lock);
+  clearData();
+  m_dataState = ListModel::NoData;
   SONOS::SMServiceList list = player->GetAvailableServices();
   for (SONOS::SMServiceList::const_iterator it = list.begin(); it != list.end(); ++it)
   {
     ServiceItem* item = new ServiceItem(*it);
     if (item->isValid())
-      addItem(item);
+      m_data << item;
     else
       delete item;
   }
-  return m_loaded = true;
+  m_dataState = ListModel::Loaded;
+  emit loaded(true);
+  return true;
 }
 
 bool ServicesModel::asyncLoad()
 {
   if (m_provider)
+  {
     m_provider->runModelLoader(this);
+    return true;
+  }
+  return false;
+}
+
+void ServicesModel::resetModel()
+{
+  {
+    SONOS::LockGuard lock(m_lock);
+    if (m_dataState != ListModel::Loaded)
+        return;
+    beginResetModel();
+    beginRemoveRows(QModelIndex(), 0, m_items.count()-1);
+    qDeleteAll(m_items);
+    m_items.clear();
+    endRemoveRows();
+    beginInsertRows(QModelIndex(), 0, m_data.count()-1);
+    foreach (ServiceItem* item, m_data)
+        m_items << item;
+    m_data.clear();
+    m_dataState = ListModel::Synced;
+    endInsertRows();
+    endResetModel();
+  }
+  emit countChanged();
 }
 
 void ServicesModel::handleDataUpdate()

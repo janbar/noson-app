@@ -15,57 +15,55 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 import NosonApp 1.0
 
 // Overlay to show when auth expired
 Rectangle {
     id: loginLauncher
-    anchors {
-        fill: parent
-    }
-    color: mainView.backgroundColor
+    anchors.fill: parent
+    color: styleMusic.mainView.backgroundColor
 
     Column {
         id: noMusicTextColumn
-        anchors {
-            centerIn: parent
-        }
+        anchors.centerIn: parent
         spacing: units.gu(4)
         width: parent.width > units.gu(44) ? parent.width - units.gu(8) : units.gu(36)
 
         Label {
-            color: styleMusic.libraryEmpty.labelColor
+            color: styleMusic.mainView.labelColor
             elide: Text.ElideRight
-            fontSize: "large"
+            font.pointSize: units.fs("large")
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 2
-            text: i18n.tr("Registering the service")
+            text: qsTr("Registering the service")
             width: parent.width
             wrapMode: Text.WordWrap
         }
 
         Label {
             id: regMessage
-            color: styleMusic.libraryEmpty.labelColor
+            color: styleMusic.mainView.labelColor
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 6
-            text: i18n.tr("This will require to authenticate against the music service again, as credentials cannot be retrieved from Sonos device.")
+            text: qsTr("This will require to authenticate against the music service again, as credentials cannot be retrieved from Sonos device.")
             width: parent.width
             wrapMode: Text.WordWrap
+            font.pointSize: units.fs("medium")
         }
 
         Label {
             id: loginOutput
-            color: UbuntuColors.red
+            color: "red"
             visible: false // should only be visible when an error is made.
             anchors.left: parent.left
             anchors.right: parent.right
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 1
             font.weight: Font.Normal
+            font.pointSize: units.fs("medium")
         }
 
         TextField {
@@ -74,11 +72,11 @@ Rectangle {
                 left: parent.left
                 right: parent.right
             }
-            color: theme.palette.selected.baseText
+            color: styleMusic.mainView.normalTextBaseColor
             focus: true
-            hasClearButton: true
             inputMethodHints: Qt.ImhNoPredictiveText
-            placeholderText: i18n.tr("User name")
+            placeholderText: qsTr("User name")
+            font.pointSize: units.fs("medium")
         }
 
         TextField {
@@ -87,12 +85,12 @@ Rectangle {
                 left: parent.left
                 right: parent.right
             }
-            color: theme.palette.selected.baseText
+            color: styleMusic.mainView.normalTextBaseColor
             focus: true
-            hasClearButton: true
             inputMethodHints: Qt.ImhNoPredictiveText
-            placeholderText: i18n.tr("Password")
+            placeholderText: qsTr("Password")
             echoMode: TextInput.Password
+            font.pointSize: units.fs("medium")
         }
 
         Component.onCompleted: {
@@ -101,14 +99,13 @@ Rectangle {
 
         Button {
             id: loginButton
-            color: UbuntuColors.green
-            height: units.gu(4)
+            height: units.gu(6)
             // TRANSLATORS: this appears in a button with limited space (around 30 characters)
-            text: i18n.tr("Submit")
+            text: qsTr("Submit")
             width: parent.width
 
             onClicked: {
-                mainView.currentlyWorking = true
+                mainView.jobRunning = true
                 delayLoginService.start()
             }
         }
@@ -119,10 +116,10 @@ Rectangle {
             onTriggered: {
                 loginOutput.visible = false;
                 var ret = mediaModel.requestSessionId(username.text, password.text);
-                mainView.currentlyWorking = false;
+                mainView.jobRunning = false;
                 if (ret === 0) {
                     customdebug("Service login failed.");
-                    loginOutput.text = i18n.tr("Login failed.");
+                    loginOutput.text = qsTr("Login failed.");
                     loginOutput.visible = true;
                 }
             }

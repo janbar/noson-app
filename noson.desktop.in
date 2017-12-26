@@ -5,5 +5,4 @@ Exec=@EXEC@
 Icon=@ICON@
 Terminal=false
 Type=Application
-X-Ubuntu-Touch=true
 

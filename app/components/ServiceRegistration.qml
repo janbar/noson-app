@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
 import NosonApp 1.0
 
 // Overlay to show when auth expired
@@ -36,12 +36,12 @@ Rectangle {
         width: parent.width > units.gu(44) ? parent.width - units.gu(8) : units.gu(36)
 
         Label {
-            color: styleMusic.libraryEmpty.labelColor
+            color: styleMusic.mainView.labelColor
             elide: Text.ElideRight
-            fontSize: "large"
+            font.pointSize: units.fs("large")
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 2
-            text: i18n.tr("Registering the service")
+            text: qsTr("Registering the service")
             width: parent.width
             wrapMode: Text.WordWrap
         }
@@ -49,9 +49,9 @@ Rectangle {
         Label {
             id: regCode
             visible: text.length > 0
-            color: styleMusic.libraryEmpty.labelColor
+            color: styleMusic.mainView.labelColor
             elide: Text.ElideRight
-            fontSize: "large" //font.pointSize: 20
+            font.pointSize: units.fs("large")
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 2
             text: ""
@@ -61,21 +61,22 @@ Rectangle {
 
         Label {
             id: regMessage
-            color: styleMusic.libraryEmpty.labelColor
+            color: styleMusic.mainView.labelColor
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 4
-            text: i18n.tr("This will require to authenticate against the music service again, as credentials cannot be retrieved from Sonos device.")
+            text: qsTr("This will require to authenticate against the music service again, as credentials cannot be retrieved from Sonos device.")
             width: parent.width
             wrapMode: Text.WordWrap
+            font.pointSize: units.fs("medium")
         }
 
         Label {
             id: regUrl
             visible: text.length > 0
-            color: styleMusic.libraryEmpty.labelColor
+            color: styleMusic.mainView.labelColor
             elide: Text.ElideRight
-            fontSize: "large" //font.pointSize: 20
+            font.pointSize: units.fs("large")
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 6
             text: ""
@@ -87,14 +88,13 @@ Rectangle {
 
         Button {
             id: regStartButton
-            color: UbuntuColors.green
-            height: units.gu(4)
+            height: units.gu(6)
             // TRANSLATORS: this appears in a button with limited space (around 30 characters)
-            text: i18n.tr("Start service registration")
+            text: qsTr("Start service registration")
             width: parent.width
 
             onClicked: {
-                mainView.currentlyWorking = true
+                mainView.jobRunning = true
                 delayRegisterService.start()
             }
         }
@@ -106,11 +106,11 @@ Rectangle {
                 if (mediaModel.beginDeviceRegistration()) {
                     regStartButton.visible = false;
                     regCode.text = mediaModel.linkCode;
-                    regMessage.text = i18n.tr("Click the link below to authorize this application to use the service.")
+                    regMessage.text = qsTr("Click the link below to authorize this application to use the service.")
                     regUrl.text = "<a href='" + mediaModel.regURL + "'>" + mediaModel.regURL + "</a>";
                     requestAuthForTime.start();
                 }
-                mainView.currentlyWorking = false
+                mainView.jobRunning = false
             }
         }
 

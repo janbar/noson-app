@@ -25,6 +25,8 @@
 
 #include <QString>
 
+#define JOB_THREADPOOL_SIZE 16
+
 class ContentLoader : public SONOS::OS::CWorker
 {
 public:
@@ -36,14 +38,37 @@ public:
 
   virtual void Process()
   {
+    m_sonos.beginJob();
     if (m_payload)
       m_sonos.loadModel(m_payload);
     else
       m_sonos.loadEmptyModels();
+    m_sonos.endJob();
   }
 private:
   Sonos& m_sonos;
   ListModel* m_payload;
+};
+
+class CustomizedContentLoader : public SONOS::OS::CWorker
+{
+public:
+  CustomizedContentLoader(Sonos& sonos, ListModel* payload, int id)
+  : m_sonos(sonos)
+  , m_payload(payload)
+  , m_id(id) { }
+
+  virtual void Process()
+  {
+    m_sonos.beginJob();
+    if (m_payload)
+      m_sonos.customizedLoadModel(m_payload, m_id);
+    m_sonos.endJob();
+  }
+private:
+  Sonos& m_sonos;
+  ListModel* m_payload;
+  int m_id;
 };
 
 Sonos::Sonos(QObject* parent)
@@ -51,7 +76,8 @@ Sonos::Sonos(QObject* parent)
 , m_library(ManagedContents())
 , m_shareUpdateID(0)
 , m_system(this, topologyEventCB)
-, m_threadpool(5)
+, m_threadpool(JOB_THREADPOOL_SIZE)
+, m_jobCount(SONOS::LockedNumber<int>(0))
 , m_locale("en_US")
 {
   SONOS::DBGLevel(2);
@@ -64,6 +90,27 @@ Sonos::~Sonos()
     for (ManagedContents::iterator it = left.begin(); it != left.end(); ++it)
       unregisterModel(it->model);
   }
+}
+
+class InitWorker : public SONOS::OS::CWorker
+{
+public:
+  InitWorker(Sonos& sonos, int debug) : m_sonos(sonos), m_debug(debug) { }
+
+  virtual void Process()
+  {
+    m_sonos.beginJob();
+    emit m_sonos.initDone(m_sonos.init(m_debug));
+    m_sonos.endJob();
+  }
+private:
+  Sonos& m_sonos;
+  int m_debug;
+};
+
+bool Sonos::startInit(int debug)
+{
+  return m_threadpool.Enqueue(new InitWorker(*this, debug));
 }
 
 bool Sonos::init(int debug)
@@ -157,6 +204,55 @@ bool Sonos::joinZone(const QVariant& zonePayload, const QVariant& toZonePayload)
 
 }
 
+bool Sonos::joinZones(const QVariantList& zonePayloads, const QVariant& toZonePayload)
+{
+  std::vector<SONOS::ZonePtr> zones;
+  SONOS::ZonePtr toZone = toZonePayload.value<SONOS::ZonePtr>();
+  for (QVariantList::const_iterator it = zonePayloads.begin(); it != zonePayloads.end(); ++it)
+    zones.push_back(it->value<SONOS::ZonePtr>());
+  if (toZone && toZone->GetCoordinator())
+  {
+    for (std::vector<SONOS::ZonePtr>::const_iterator it = zones.begin(); it != zones.end(); ++it)
+    {
+      if ((*it)->GetZoneName() == toZone->GetZoneName())
+        continue;
+      for (std::vector<SONOS::ZonePlayerPtr>::iterator itr = (*it)->begin(); itr != (*it)->end(); ++itr)
+      {
+        SONOS::Player player(*itr);
+        player.JoinToGroup(toZone->GetCoordinator()->GetUUID());
+      }
+    }
+    return true;
+  }
+  return false;
+}
+
+class JoinZonesWorker : public SONOS::OS::CWorker
+{
+public:
+  JoinZonesWorker(Sonos& sonos, const QVariantList& zonePayloads, const QVariant& toZonePayload)
+  : m_sonos(sonos)
+  , m_zonePayloads(zonePayloads)
+  , m_toZonePayload(toZonePayload)
+  { }
+
+  virtual void Process()
+  {
+    m_sonos.beginJob();
+    m_sonos.joinZones(m_zonePayloads, m_toZonePayload);
+    m_sonos.endJob();
+  }
+private:
+  Sonos& m_sonos;
+  QVariantList m_zonePayloads;
+  QVariant m_toZonePayload;
+};
+
+bool Sonos::startJoinZones(const QVariantList& zonePayloads, const QVariant& toZonePayload)
+{
+  return m_threadpool.Enqueue(new JoinZonesWorker(*this, zonePayloads, toZonePayload));
+}
+
 bool Sonos::unjoinRoom(const QVariant& roomPayload)
 {
   SONOS::ZonePlayerPtr room = roomPayload.value<SONOS::ZonePlayerPtr>();
@@ -166,6 +262,45 @@ bool Sonos::unjoinRoom(const QVariant& roomPayload)
     return player.BecomeStandalone();
   }
   return false;
+}
+
+bool Sonos::unjoinRooms(const QVariantList& roomPayloads)
+{
+  for (QVariantList::const_iterator it = roomPayloads.begin(); it != roomPayloads.end(); ++it) {
+    SONOS::ZonePlayerPtr room = it->value<SONOS::ZonePlayerPtr>();
+    if (room && room->IsValid())
+    {
+      SONOS::Player player(room);
+      return player.BecomeStandalone();
+    }
+    else
+      return false;
+  }
+  return true;
+}
+
+class UnjoinRoomsWorker : public SONOS::OS::CWorker
+{
+public:
+  UnjoinRoomsWorker(Sonos& sonos, const QVariantList& roomPayloads)
+  : m_sonos(sonos)
+  , m_roomPayloads(roomPayloads)
+  { }
+
+  virtual void Process()
+  {
+    m_sonos.beginJob();
+    m_sonos.unjoinRooms(m_roomPayloads);
+    m_sonos.endJob();
+  }
+private:
+  Sonos& m_sonos;
+  QVariantList m_roomPayloads;
+};
+
+bool Sonos::startUnjoinRooms(const QVariantList& roomPayloads)
+{
+  return m_threadpool.Enqueue(new UnjoinRoomsWorker(*this, roomPayloads));
 }
 
 bool Sonos::unjoinZone(const QVariant& zonePayload)
@@ -184,7 +319,31 @@ bool Sonos::unjoinZone(const QVariant& zonePayload)
 
 }
 
-const SONOS::System& Sonos::getSystem() const
+class UnjoinZoneWorker : public SONOS::OS::CWorker
+{
+public:
+  UnjoinZoneWorker(Sonos& sonos, const QVariant& zonePayload)
+  : m_sonos(sonos)
+  , m_zonePayload(zonePayload)
+  { }
+
+  virtual void Process()
+  {
+    m_sonos.beginJob();
+    m_sonos.unjoinZone(m_zonePayload);
+    m_sonos.endJob();
+  }
+private:
+  Sonos& m_sonos;
+  QVariant m_zonePayload;
+};
+
+bool Sonos::startUnjoinZone(const QVariant& zonePayload)
+{
+  return m_threadpool.Enqueue(new UnjoinZoneWorker(*this, zonePayload));
+}
+
+const SONOS::System &Sonos::getSystem() const
 {
   return m_system;
 }
@@ -205,7 +364,7 @@ void Sonos::loadEmptyModels()
   {
     SONOS::Locked<ManagedContents>::pointer mc = m_library.Get();
     for (ManagedContents::iterator it = mc->begin(); it != mc->end(); ++it)
-      if (!it->model->m_loaded)
+      if (it->model->m_dataState == ListModel::NoData)
         left.push_back(qMakePair(it->model, SONOS::LockGuard(it->model->m_lock)));
   }
   emit loadingStarted();
@@ -214,7 +373,7 @@ void Sonos::loadEmptyModels()
     while (!left.isEmpty())
     {
       QPair<ListModel*, SONOS::LockGuard> item = left.front();
-      item.first->load();
+      item.first->loadData();
       left.pop_front();
     }
   }
@@ -228,6 +387,8 @@ void Sonos::runModelLoader(ListModel* model)
     model->m_pending = true; // decline next request
     m_threadpool.Enqueue(new ContentLoader(*this, model));
   }
+  else
+    SONOS::DBG(DBG_ERROR, "%s: request has been declined (%p)\n", __FUNCTION__, model);
 }
 
 void Sonos::loadModel(ListModel* model)
@@ -248,9 +409,27 @@ void Sonos::loadModel(ListModel* model)
     SONOS::DBG(DBG_INFO, "%s: %p (%s)\n", __FUNCTION__, item.first, item.first->m_root.toUtf8().constData());
     emit loadingStarted();
     item.first->m_pending = false; // accept add next request in queue
-    item.first->load();
+    item.first->loadData();
     emit loadingFinished();
   }
+}
+
+void Sonos::runCustomizedModelLoader(ListModel* model, int id)
+{
+  if (model && !model->m_pending)
+  {
+    model->m_pending = true; // decline next request
+    m_threadpool.Enqueue(new CustomizedContentLoader(*this, model, id));
+  }
+  else
+    SONOS::DBG(DBG_ERROR, "%s: request id %d has been declined (%p)\n", __FUNCTION__, id, model);
+}
+
+void Sonos::customizedLoadModel(ListModel *model, int id)
+{
+  SONOS::LockGuard guard(model->m_lock);
+  model->m_pending = false; // accept add next request in queue
+  model->customizedLoad(id);
 }
 
 void Sonos::registerModel(ListModel* model, const QString& root)
@@ -289,6 +468,23 @@ void Sonos::unregisterModel(ListModel* model)
       mc->erase(*itl);
     }
   }
+}
+
+bool Sonos::startJob(SONOS::OS::CWorker* worker)
+{
+  return m_threadpool.Enqueue(worker);
+}
+
+void Sonos::beginJob()
+{
+  m_jobCount.Add(1);
+  emit jobCountChanged();
+}
+
+void Sonos::endJob()
+{
+  m_jobCount.Add(-1);
+  emit jobCountChanged();
 }
 
 void Sonos::playerEventCB(void* handle)

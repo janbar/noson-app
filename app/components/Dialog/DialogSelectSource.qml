@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016
+ * Copyright (C) 2016, 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,63 +15,64 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
+import QtQuick 2.9
+import QtQuick.Controls 2.2
+import QtQuick.Layouts 1.3
+
 
 DialogBase {
     id: dialogSelectSource
-    objectName: "dialogSelectSource"
     // TRANSLATORS: this is a title of a dialog to select source
-    title: i18n.tr("Select source")
+    title: qsTr("Select source")
+    standardButtons: Dialog.Close
 
     Label {
-        id: urlOutput
+        id: sourceOutput
         anchors.left: parent.left
         anchors.right: parent.right
         wrapMode: Text.WordWrap
-        color: styleMusic.dialog.labelColor
-        fontSize: "x-small"
+        color: "red"
+        font.pointSize: units.fs("x-small")
         font.weight: Font.Normal
         visible: false // should only be visible when an error is made.
     }
+
     TextField {
         id: url
         text: inputStreamUrl
-        placeholderText: i18n.tr("Enter stream URL")
+        font.pointSize: units.fs("medium")
+        placeholderText: qsTr("Enter stream URL")
         inputMethodHints: Qt.ImhNoPredictiveText | Qt.ImhNoAutoUppercase
-        color: theme.palette.selected.baseText
+        color: styleMusic.mainView.selectedTextBaseColor
+
     }
+
+    Connections {
+        target: player.zonePlayer
+        onJobFailed: {
+            sourceOutput.text = qsTr("Playing failed.")
+            sourceOutput.visible = true
+        }
+    }
+
     Button {
         id: buttonPlayStream
-        text: i18n.tr("Play stream")
-        color: UbuntuColors.green
+        height: units.gu(6)
+        text: qsTr("Play stream")
         onClicked: {
-            urlOutput.visible = false // make sure its hidden now if there was an error last time
+            sourceOutput.visible = false // make sure its hidden now if there was an error last time
             if (url.text.length > 0) { // make sure something is acually inputed
-                color = UbuntuColors.lightGrey
-                delayPlayStream.start()
+                if (player.playStream(url.text, "")) {
+                    inputStreamUrl = url.text
+                }
+                else {
+                    sourceOutput.text = qsTr("Playing failed.")
+                    sourceOutput.visible = true
+                }
             }
             else {
-                urlOutput.visible = true
-                urlOutput.text = i18n.tr("Please type in an URL.")
-            }
-        }
-    }
-
-    Timer {
-        id: delayPlayStream
-        interval: 100
-        onTriggered: {
-            if (player.playStream(url.text, "")) {
-                inputStreamUrl = url.text
-                PopupUtils.close(dialogSelectSource)
-            }
-            else {
-                urlOutput.color = UbuntuColors.red
-                urlOutput.text = i18n.tr("Playing failed.")
-                urlOutput.visible = true
-                buttonPlayStream.color = UbuntuColors.green
+                sourceOutput.visible = true
+                sourceOutput.text = qsTr("Please type in an URL.")
             }
         }
     }
@@ -79,58 +80,55 @@ DialogBase {
     Label {
         anchors.left: parent.left
         anchors.right: parent.right
-        text: i18n.tr("Select the audio input.")
+        text: qsTr("Select the audio input.")
         wrapMode: Text.WordWrap
-        color: styleMusic.dialog.labelColor
-        fontSize: "x-small"
+        color: styleMusic.dialog.foregroundColor
+        font.pointSize: units.fs("medium")
         font.weight: Font.Normal
     }
 
-    Button {
-        text: i18n.tr("Play line IN")
-        color: UbuntuColors.orange
-        onClicked: {
-            if (!player.playLineIN())
-                popInfo.open(i18n.tr("Action can't be performed"))
-            else
-                PopupUtils.close(dialogSelectSource)
+    ListModel {
+        id: selectorModel
+        ListElement { text: qsTr("Queue") }
+        ListElement { text: qsTr("Play line IN") }
+        ListElement { text: qsTr("Play TV") }
+    }
+
+    ComboBox {
+        id: selector
+        height: units.gu(6)
+        textRole: "text"
+        model: selectorModel
+        Layout.fillWidth: true
+        font.pointSize: units.fs("large")
+        currentIndex: 0
+        Component.onCompleted: {
+            popup.font.pointSize = font.pointSize;
+        }
+        onActivated: {
+            switch(index) {
+                case 0:
+                    if (!player.playQueue(false))
+                        popInfo.open(qsTr("Action can't be performed"))
+                    else
+                        dialogSelectSource.accept()
+                    break;
+                case 1:
+                    if (!player.playLineIN())
+                        popInfo.open(qsTr("Action can't be performed"))
+                    else
+                        dialogSelectSource.accept()
+                    break;
+                case 2:
+                    if (!player.playDigitalIN())
+                        popInfo.open(qsTr("Action can't be performed"))
+                    else
+                        dialogSelectSource.accept()
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
-    Button {
-        text: i18n.tr("Play TV")
-        color: UbuntuColors.orange
-        onClicked: {
-            if (!player.playDigitalIN())
-                popInfo.open(i18n.tr("Action can't be performed"))
-            else
-                PopupUtils.close(dialogSelectSource)
-        }
-    }
-
-    Button {
-        text: i18n.tr("Queue")
-        color: UbuntuColors.orange
-        onClicked: {
-            if (!player.playQueue(false))
-                popInfo.open(i18n.tr("Action can't be performed"))
-            else
-                PopupUtils.close(dialogSelectSource)
-        }
-    }
-
-    Label {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        text: i18n.tr("Close this screen.")
-        wrapMode: Text.WordWrap
-        color: styleMusic.dialog.labelColor
-        fontSize: "x-small"
-        font.weight: Font.Normal
-    }
-    Button {
-        text: i18n.tr("Close")
-        color: styleMusic.dialog.cancelButtonColor
-        onClicked: PopupUtils.close(dialogSelectSource)
-    }
 }

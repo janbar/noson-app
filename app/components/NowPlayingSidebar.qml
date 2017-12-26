@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016
+ * Copyright (C) 2016, 2017
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,68 +15,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.4
-import Ubuntu.Components 1.3
-import "HeadState"
-import "Dialog"
+import QtQuick 2.9
+import QtQuick.Controls 2.2
+import QtQuick.Layouts 1.3
 
-Rectangle {
+Page {
     id: nowPlayingSidebar
-    anchors {
-        fill: parent
-    }
+    anchors.fill: parent
 
     property bool isListView: true
-    property DialogBase currentDialog
 
-    color: styleMusic.nowPlaying.backgroundColor
-
-    state: queue.state === "multiselectable" ? "selection" : "default"
-    states: [
-        QueueHeadState {
-            stateName: "default"
-            thisHeader {
-                leadingActionBar {
-                    actions: []  // hide tab bar
-                    objectName: "sideLeadingActionBar"
-                }
-                z: 100  // put on top of content
-            }
-            thisPage: nowPlayingSidebar
-        },
-        MultiSelectHeadState {
-            addToQueue: false
-            listview: queue.listview
-            removable: true
-            thisHeader {
-                z: 100  // put on top of content
-            }
-            thisPage: nowPlayingSidebar
-        }
-    ]
-    property string pageTitle: i18n.tr("Now playing") // fake normal Page
-    property Item pageFlickable: null // fake normal Page
-    property Item header: PageHeader {
-        id: pageHeader
-        flickable: null
-        title: nowPlayingSidebar.pageTitle
-        z: 100  // put on top of content
-
-    }
-
-    property Item previousHeader: null
-
-    onHeaderChanged: {  // Copy what SDK does to parent header correctly
-        if (previousHeader) {
-            previousHeader.parent = null
-        }
-
-        header.parent = nowPlayingSidebar
-        previousHeader = header;
-    }
-
-    BlurredBackground {
+    Rectangle {
+        id: bg
         anchors.fill: parent
+        color: styleMusic.nowPlaying.backgroundColor
     }
 
     Column {
@@ -85,7 +37,6 @@ Rectangle {
             left: parent.left
             right: parent.right
             top: parent.top
-            topMargin: units.gu(6.5)
         }
         NowPlayingToolbar {
             id: nowPlayingToolBar
@@ -96,7 +47,8 @@ Rectangle {
             width: parent.width
             bottomProgressHint: false
             mirror: true
-            color: "transparent"
+            backgroundColor: styleMusic.playerControls.backgroundColor
+            backgroundOpacity: 1.0
         }
     }
 
@@ -115,23 +67,83 @@ Rectangle {
                 right: parent.right
             }
             NowPlayingFullView {
+                id: fullView
                 anchors {
                     fill: undefined
                 }
                 clip: true
-                height: units.gu(48)
+                height: width + units.gu(3)
                 width: parent.width
                 color: "transparent"
             }
         }
+    }
 
-        Connections {
-            target: queue.listview
-            onContentYChanged: {
-                nowPlayingToolBar.bottomProgressHint = (queue.listview.contentY > -units.gu(0.5))
+    footer: Item {
+        height: units.gu(6)
+        width: parent.width
+
+        Rectangle {
+            id: nowPlayingSideBarToolBar
+            anchors.fill: parent
+            color: styleMusic.playerControls.backgroundColor
+
+            opacity: 1.0
+
+            Rectangle {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.topMargin: units.gu(1.5)
+                anchors.rightMargin: units.gu(1)
+                height: units.gu(3)
+                color: "transparent"
+
+                // Page actions
+                Item {
+                    id: optionsMenu
+                    anchors.right: parent.right
+                    width: units.gu(4)
+                    height: parent.height
+                    visible: true
+
+                    Image {
+                        width: units.gu(3)
+                        height: width
+                        anchors.centerIn: parent
+                        horizontalAlignment: Image.AlignHCenter
+                        verticalAlignment: Image.AlignVCenter
+                        source: "qrc:/images/contextual-menu.svg"
+                    }
+
+                    ToolButton {
+                        anchors.centerIn: parent
+                        onClicked: optionsMenuPopup.open()
+                        enabled: parent.visible
+
+                        Menu {
+                            id: optionsMenuPopup
+                            x: parent.width - width
+                            transformOrigin: Menu.TopRight
+
+                            MenuItem {
+                                visible: (queue.listview.count > 0)
+                                height: (visible ? implicitHeight : 0)
+                                text: qsTr("Manage queue")
+                                font.pointSize: units.fs("medium")
+                                onTriggered: dialogManageQueue.open()
+                            }
+
+                            MenuItem {
+                                text: qsTr("Select source")
+                                font.pointSize: units.fs("medium")
+                                onTriggered: dialogSelectSource.open()
+                            }
+                        }
+                    }
+                }
             }
         }
-
     }
 
     // Ensure that the listview has loaded before attempting to positionAt
@@ -140,7 +152,7 @@ Rectangle {
             positionAt(player.currentIndex);
         } else {
             queue.listview.onCountChanged.connect(function() {
-                if (queue.listview.count === player.trackQueue.model.count) {
+                if (queueLoader.item.listview.count === player.trackQueue.model.count) {
                     positionAt(player.currentIndex);
                 }
             })
@@ -149,7 +161,8 @@ Rectangle {
 
     // Position the view at the index
     function positionAt(index) {
-        queue.listview.positionViewAtIndex(index, ListView.Center);
+        customdebug("Set queue position view at " + index);
+        queue.listview.positionViewAtIndex(index > 0 ? index - 1 : 0, ListView.Beginning);
     }
 
     onVisibleChanged: {
