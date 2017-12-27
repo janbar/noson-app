@@ -116,7 +116,6 @@
         <file>components/Dialog/DialogManageQueue.qml</file>
         <file>components/Dialog/DialogSelectSource.qml</file>
         <file>components/Dialog/DialogNewPlaylist.qml</file>
-        <file>components/Dialog/DialogEditPlaylist.qml</file>
         <file>components/NowPlayingSidebar.qml</file>
         <file>ui/AddToPlaylist.qml</file>
         <file>images/font-scalling.svg</file>
@@ -129,7 +128,7 @@
         <file>components/Dialog/DialogSleepTimer.qml</file>
         <file>components/Dialog/DialogSongInfo.qml</file>
         <file>i18n/noson_en.qm</file>
-	<file>i18n/noson_fr.qm</file>
-	<file>i18n/noson_nl.qm</file>
+        <file>i18n/noson_fr.qm</file>
+        <file>i18n/noson_nl.qm</file>
     </qresource>
 </RCC>
