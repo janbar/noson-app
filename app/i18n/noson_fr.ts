@@ -164,7 +164,7 @@
     <message>
         <location filename="../components/Dialog/DialogManageQueue.qml" line="68"/>
         <source>Clearing the queue cannot be undone.</source>
-        <translation>Le vidage de la file d&amp;apos;attente ne pourra pas être annulé.</translation>
+        <translation>Le vidage de la file d&apos;attente ne pourra pas être annulé.</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogManageQueue.qml" line="77"/>
@@ -501,7 +501,7 @@
         <location filename="../components/MusicPage.qml" line="131"/>
         <location filename="../components/MusicPage.qml" line="335"/>
         <source>Queue</source>
-        <translation>File d’attente</translation>
+        <translation>File d&apos;attente</translation>
     </message>
     <message>
         <location filename="../components/MusicPage.qml" line="133"/>
