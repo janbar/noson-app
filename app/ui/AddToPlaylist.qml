@@ -31,7 +31,7 @@ MusicPage {
     id: addToPlaylistPage
     objectName: "addToPlaylistPage"
 
-    // TRANSLATORS: this appears in the header with limited space (around 20 characters)
+    //: this appears in the header with limited space (around 20 characters)
     pageTitle: qsTr("Select playlist")
     pageFlickable: addtoPlaylistView
     searchable: true

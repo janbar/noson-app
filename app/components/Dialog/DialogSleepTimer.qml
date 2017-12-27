@@ -21,7 +21,7 @@ import QtQuick.Layouts 1.3
 
 DialogBase {
     id: dialogSleepTimer
-    // TRANSLATORS: this is a title of a dialog to configure standby timer
+    //: this is a title of a dialog to configure standby timer
     title: qsTr("Standby timer")
     standardButtons: Dialog.Close
 

@@ -23,9 +23,8 @@ Icon {
     height: units.gu(3)
     width: units.gu(15)
     source: "qrc:/images/media-playback-start.svg"
-    // TRANSLATORS: this appears in a button with limited space (around 14 characters)
     label {
-        // TRANSLATORS: this appears in a button with limited space (around 14 characters)
+        //: this appears in a button with limited space (around 14 characters)
         text: qsTr("Play all")
         font.pointSize: units.fs("medium")
     }

@@ -22,7 +22,7 @@ import QtQuick.Layouts 1.3
 
 DialogBase {
     id: dialogSelectSource
-    // TRANSLATORS: this is a title of a dialog to select source
+    //: this is a title of a dialog to select source
     title: qsTr("Select source")
     standardButtons: Dialog.Close
 

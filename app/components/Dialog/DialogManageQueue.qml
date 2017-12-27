@@ -21,7 +21,7 @@ import QtQuick.Controls 2.2
 
 DialogBase {
     id: dialogManageQueue
-    // TRANSLATORS: this is a title of a dialog to manage queue
+    //: this is a title of a dialog to manage queue
     title: qsTr("Manage queue")
     standardButtons: Dialog.Close
 

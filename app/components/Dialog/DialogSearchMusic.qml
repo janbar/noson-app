@@ -27,7 +27,7 @@ DialogBase {
     property var searchableModel
 
     Label {
-        // TRANSLATORS: this is a title of a dialog to setup search
+        //: this is a title of a dialog to setup search
         text: qsTr("Search music")
         font.pointSize: units.fs("large")
         font.bold: true

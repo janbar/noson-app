@@ -89,7 +89,7 @@ Rectangle {
         Button {
             id: regStartButton
             height: units.gu(6)
-            // TRANSLATORS: this appears in a button with limited space (around 30 characters)
+            //: this appears in a button with limited space (around 30 characters)
             text: qsTr("Start service registration")
             width: parent.width
 

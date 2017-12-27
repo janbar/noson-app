@@ -176,7 +176,7 @@ Page {
                 height: units.gu(5)
                 width: units.gu(36)
                 anchors.horizontalCenter: parent.horizontalCenter
-                // TRANSLATORS: this appears in a button with limited space (around 30 characters)
+                //: this appears in a button with limited space (around 30 characters)
                 text: qsTr("Search for Sonos zones")
                 enabled: !mainView.jobRunning
                 onClicked: {

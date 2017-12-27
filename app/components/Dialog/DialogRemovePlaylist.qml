@@ -22,12 +22,12 @@ import QtQml.Models 2.3
 
 DialogBase {
     id: dialogRemovePlaylist
-    // TRANSLATORS: this is a title of a dialog with a prompt to delete a playlist
     standardButtons: Dialog.Cancel | Dialog.Ok
 
     Label {
         anchors.left: parent.left
         anchors.right: parent.right
+        //: this is a title of a dialog with a prompt to delete a playlist
         text: qsTr("Permanently delete playlist ?")
         wrapMode: Label.WordWrap
         color: styleMusic.dialog.foregroundColor

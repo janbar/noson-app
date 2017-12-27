@@ -24,7 +24,7 @@ Icon {
     width: units.gu(15)
     source: "qrc:/images/add.svg"
     label {
-        // TRANSLATORS: this appears in a button with limited space (around 14 characters)
+        //: this appears in a button with limited space (around 14 characters)
         text: qsTr("Queue all")
         font.pointSize: units.fs("medium")
     }

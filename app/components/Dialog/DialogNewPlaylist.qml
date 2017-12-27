@@ -21,7 +21,7 @@ import QtQuick.Controls 2.2
 
 DialogBase {
     id: dialogNewPlaylist
-    // TRANSLATORS: this is a title of a dialog with a prompt to add a new playlist
+    //: this is a title of a dialog with a prompt to add a new playlist
     title: qsTr("New playlist")
     standardButtons: Dialog.Close
 
