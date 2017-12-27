@@ -1023,17 +1023,17 @@
     <message>
         <location filename="../noson.qml" line="1127"/>
         <source>The project has started in 2015 and is intented to make a fast and smart controller for your SONOS devices. You can browse your music library and play track or radio on any zones. You can manage grouping zones, queue, and playlists, and fully control the playback.</source>
-        <translation type="unfinished"/>
+        <translation>Dit project is begonnen in 2015 en heeft als doel om een snelle en slimme bediening te worden voor uw SONOS-apparaten. U kunt bladeren door uw muziekbibliotheek en nummers en radio afspelen in elke zone. U kunt gegroepeerde zones beheren, alsook de wachtrij en afspeellijsten en u kunt het afspelen volledig bedienen.</translation>
     </message>
     <message>
         <location filename="../noson.qml" line="1135"/>
         <source>Author: %1</source>
-        <translation type="unfinished"/>
+        <translation>Auteur: %1</translation>
     </message>
     <message>
         <location filename="../noson.qml" line="1140"/>
         <source>Version: %1</source>
-        <translation type="unfinished"/>
+        <translation>Versie: %1</translation>
     </message>
 </context>
 </TS>
