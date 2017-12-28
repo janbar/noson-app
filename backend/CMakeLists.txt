@@ -49,6 +49,15 @@ add_custom_target(NosonAppbackend-qmldir ALL
 )
 
 # Install plugin file
-install(TARGETS NosonAppbackend DESTINATION ${QT_IMPORTS_DIR}/NosonApp/)
-install(FILES   modules/NosonApp/qmldir DESTINATION ${QT_IMPORTS_DIR}/NosonApp/)
+FIND_PROGRAM(QMAKE NAMES qmake-qt5 qmake)
+IF(NOT QMAKE)
+    MESSAGE(FATAL_ERROR "qmake not found")
+ENDIF()
+EXECUTE_PROCESS(
+    COMMAND ${QMAKE} -query QT_INSTALL_QML
+    OUTPUT_VARIABLE QT_INSTALL_QML OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+MESSAGE(STATUS "QML install path: ${QT_INSTALL_QML}")
+install(TARGETS NosonAppbackend DESTINATION ${QT_INSTALL_QML}/NosonApp/)
+install(FILES   modules/NosonApp/qmldir DESTINATION ${QT_INSTALL_QML}/NosonApp/)
 
