@@ -21,7 +21,8 @@ The build can be achieved on any platform supporting Qt version 5.9. See `debian
 - `make -j5`
 - `sudo make install`
 
-The noson-app files will be placed in `/usr/local/bin` `/usr/local/lib` `/usr/local/share` `/usr/local/include`.
+Installing into PREFIX '/usr/local', you have to set the environment variable 'QML2_IMPORT_PATH' accordingly before running the application. i.e: QML2_IMPORT_PATH=/usr/local/lib/${ARCH}/qt5/qml.
+The noson-app files will be placed in `/usr/local/bin` `/usr/local/lib/${ARCH}` `/usr/local/share` `/usr/local/include`.
 
 ## Enabling debug output
 
