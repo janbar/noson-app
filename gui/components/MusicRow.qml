@@ -196,24 +196,18 @@ Row {
             width: parent.width
             height: row.height
 
-            Image {
+            Icon {
                 width: menu.visible ? units.gu(3) : 0
                 height: width
                 anchors.centerIn: parent
-                horizontalAlignment: Image.AlignHCenter
-                verticalAlignment: Image.AlignVCenter
                 source: "qrc:/images/contextual-menu.svg"
-            }
 
-            ToolButton {
-                id: optionsButton
-                anchors.centerIn: parent
                 onClicked: optionsMenu.open()
 
                 Menu {
                     id: optionsMenu
                     width: implicitWidth * units.scaleFactor
-                    x: optionsButton.width - width
+                    x: parent.width - width
                     transformOrigin: Menu.TopRight
                 }
             }

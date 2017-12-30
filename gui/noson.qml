@@ -750,12 +750,10 @@ ApplicationWindow {
                 width: units.gu(6)
                 height: width
 
-                Image {
+                Icon {
                     width: units.gu(3)
                     height: width
                     anchors.centerIn: parent
-                    horizontalAlignment: Image.AlignHCenter
-                    verticalAlignment: Image.AlignVCenter
                     source: {
                         if (mainView.noZone) {
                             "qrc:/images/info.svg"
@@ -768,10 +766,7 @@ ApplicationWindow {
                             "qrc:/images/navigation-menu.svg"
                         }
                     }
-                }
 
-                ToolButton {
-                    anchors.centerIn: parent
                     onClicked: {
                         if (stackView.depth > 1) {
                             if (stackView.currentItem.isRoot)
@@ -782,6 +777,7 @@ ApplicationWindow {
                             drawer.open()
                         }
                     }
+
                     visible: !mainView.noZone
                     enabled: !mainView.jobRunning
                 }
@@ -802,20 +798,16 @@ ApplicationWindow {
                 height: width
                 visible: (stackView.currentItem !== null && !stackView.currentItem.isRoot)
 
-                Image {
+                Icon {
                     width: units.gu(3)
                     height: width
                     anchors.centerIn: parent
-                    horizontalAlignment: Image.AlignHCenter
-                    verticalAlignment: Image.AlignVCenter
                     source: "qrc:/images/home.svg"
-                }
 
-                ToolButton {
-                    anchors.centerIn: parent
                     onClicked: {
                         stackView.pop()
                     }
+
                     enabled: parent.visible
                 }
             }
@@ -825,18 +817,12 @@ ApplicationWindow {
                 height: width
                 visible: (stackView.currentItem === null || stackView.currentItem.isRoot)
 
-                Image {
+                Icon {
                     width: units.gu(3)
                     height: width
                     anchors.centerIn: parent
-                    horizontalAlignment: Image.AlignHCenter
-                    verticalAlignment: Image.AlignVCenter
                     source: "qrc:/images/contextual-menu.svg"
-                }
 
-
-                ToolButton {
-                    anchors.centerIn: parent
                     onClicked: optionsMenu.open()
 
                     Menu {

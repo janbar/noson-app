@@ -107,18 +107,14 @@ Page {
                     height: parent.height
                     visible: true
 
-                    Image {
+                    Icon {
                         width: units.gu(3)
                         height: width
                         anchors.centerIn: parent
-                        horizontalAlignment: Image.AlignHCenter
-                        verticalAlignment: Image.AlignVCenter
                         source: "qrc:/images/contextual-menu.svg"
-                    }
 
-                    ToolButton {
-                        anchors.centerIn: parent
                         onClicked: optionsMenuPopup.open()
+
                         enabled: parent.visible
 
                         Menu {
