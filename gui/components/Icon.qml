@@ -12,6 +12,7 @@ MouseArea {
     width: row.width
     enabled: true
     visible: true
+    hoverEnabled: enabled && visible
 
     Row {
         id: row
@@ -46,4 +47,23 @@ MouseArea {
         maskSource: row
     }
 
+    Rectangle {
+        id: ripple
+        readonly property bool square: area.implicitWidth <= area.implicitHeight
+        x: (parent.width - width) / 2
+        y: (parent.height - height) / 2
+        clip: !square
+        width: parent.width
+        height: parent.height
+        radius: height / 2
+        color: area.color
+        opacity: 0
+
+        Behavior on opacity {
+            NumberAnimation { duration: 100 }
+        }
+    }
+
+    onEntered: ripple.opacity = 0.1
+    onExited: ripple.opacity = 0
 }
