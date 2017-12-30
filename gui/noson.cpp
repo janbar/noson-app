@@ -6,7 +6,7 @@
 #include <QQuickStyle>
 #include <QTranslator>
 #include <QDebug>
-#include <Qdir>
+#include <QDir>
 
 #if (defined(_WIN32) || defined(_WIN64))
 #define __WINDOWS__
