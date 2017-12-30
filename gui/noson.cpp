@@ -17,8 +17,8 @@
 #endif
 
 void setupApp(QGuiApplication& app);
-QDir getApplicationDir(QGuiApplication& app, QString subdir);
-void prepareTranslator(QGuiApplication& app, QString translationPath, QString translationPrefix);
+QDir getApplicationDir(QGuiApplication& app, const QString& subdir);
+void prepareTranslator(QGuiApplication& app, const QString& translationPath, const QString& translationPrefix, const QLocale& locale);
 
 int main(int argc, char *argv[])
 {
@@ -58,20 +58,17 @@ int main(int argc, char *argv[])
 }
 
 void setupApp(QGuiApplication& app) {
-    // Install noson translations
-    QTranslator * translator = new QTranslator();
-    translator->load(QLocale(), QString("noson"), QString("_"), QString(":/i18n"));
-    app.installTranslator(translator);
+    // set translators
+    QLocale locale = QLocale::system();
+    prepareTranslator(app, QString(":/i18n"), QString("noson"), locale);
 
 #ifdef Q_OS_MAC
-    static QString relTranslationDir = "Resources/translations";
-    // setup translators
-    QString translationPath = getApplicationDir(app, relTranslationDir).absolutePath();
-    prepareTranslator(app, translationPath, "qt");
+    QString translationPath = getApplicationDir(app, QString("Resources/translations")).absolutePath();
+    prepareTranslator(app, translationPath, "qt", locale);
 #endif
 }
 
-QDir getApplicationDir(QGuiApplication& app, QString subdir)
+QDir getApplicationDir(QGuiApplication& app, const QString& subdir)
 {
     QDir appDir(app.applicationDirPath());
     appDir.cdUp();
@@ -79,12 +76,16 @@ QDir getApplicationDir(QGuiApplication& app, QString subdir)
     return appDir;
 }
 
-void prepareTranslator(QGuiApplication& app, QString translationPath, QString translationPrefix)
+void prepareTranslator(QGuiApplication& app, const QString& translationPath, const QString& translationPrefix, const QLocale& locale)
 {
-    QLocale locale = QLocale();
     QTranslator * translator = new QTranslator();
     if (!translator->load(locale, translationPrefix, QString("_"), translationPath))
     {
         qWarning() << "no file found for translations '"+ translationPath + "/" + translationPrefix + "_" + locale.name().left(2) + ".qm ' (using default).";
+    }
+    else
+    {
+        qInfo() << "using file '"+ translationPath + "/" + translationPrefix + "_" + locale.name().left(2) + ".qm ' for translations.";
+        app.installTranslator(translator);
     }
 }

@@ -207,12 +207,10 @@ function copyAdditionalLibraries {
 }
 
 function copyExternalFiles {
-    cp -v $QT_DIR/translations/*_cs.qm $BUILD_BUNDLE_RES_QM_DIR
-    cp -v $QT_DIR/translations/*_de.qm $BUILD_BUNDLE_RES_QM_DIR
-    cp -v $QT_DIR/translations/*_en.qm $BUILD_BUNDLE_RES_QM_DIR
-    cp -v $QT_DIR/translations/*_es.qm $BUILD_BUNDLE_RES_QM_DIR
-    cp -v $QT_DIR/translations/*_fr.qm $BUILD_BUNDLE_RES_QM_DIR
-    cp -v $QT_DIR/translations/*_nl.qm $BUILD_BUNDLE_RES_QM_DIR
+    declare -a languages=("en" "fr" "nl" "de" "it" "es" "cs")
+    for lang in "${languages[@]}"; do
+        cp -v $QT_DIR/translations/*_${lang}.qm $BUILD_BUNDLE_RES_QM_DIR
+    done
 }
 
 
