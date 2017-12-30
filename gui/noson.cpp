@@ -1,9 +1,12 @@
+#include <QtGlobal>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QSettings>
 #include <QQuickStyle>
 #include <QTranslator>
+#include <QDebug>
+#include <Qdir>
 
 #if (defined(_WIN32) || defined(_WIN64))
 #define __WINDOWS__
@@ -12,6 +15,10 @@
 #ifdef __WINDOWS__
 #include <winsock2.h>
 #endif
+
+void setupApp(QGuiApplication& app);
+QDir getApplicationDir(QGuiApplication& app, QString subdir);
+void prepareTranslator(QGuiApplication& app, QString translationPath, QString translationPrefix);
 
 int main(int argc, char *argv[])
 {
@@ -28,10 +35,7 @@ int main(int argc, char *argv[])
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
-
-    QTranslator translator;
-    translator.load(QLocale(), QString("noson"), QString("_"), QString(":/i18n"));
-    app.installTranslator(&translator);
+    setupApp(app);
 
     QSettings settings;
     QString style = QQuickStyle::name();
@@ -51,4 +55,36 @@ int main(int argc, char *argv[])
     WSACleanup();
 #endif /* __WINDOWS__ */
     return ret;
+}
+
+void setupApp(QGuiApplication& app) {
+    // Install noson translations
+    QTranslator * translator = new QTranslator();
+    translator->load(QLocale(), QString("noson"), QString("_"), QString(":/i18n"));
+    app.installTranslator(translator);
+
+#ifdef Q_OS_MAC
+    static QString relTranslationDir = "Resources/translations";
+    // setup translators
+    QString translationPath = getApplicationDir(app, relTranslationDir).absolutePath();
+    prepareTranslator(app, translationPath, "qt");
+#endif
+}
+
+QDir getApplicationDir(QGuiApplication& app, QString subdir)
+{
+    QDir appDir(app.applicationDirPath());
+    appDir.cdUp();
+    appDir.cd(subdir);
+    return appDir;
+}
+
+void prepareTranslator(QGuiApplication& app, QString translationPath, QString translationPrefix)
+{
+    QLocale locale = QLocale();
+    QTranslator * translator = new QTranslator();
+    if (!translator->load(locale, translationPrefix, QString("_"), translationPath))
+    {
+        qWarning() << "no file found for translations '"+ translationPath + "/" + translationPrefix + "_" + locale.name().left(2) + ".qm ' (using default).";
+    }
 }
