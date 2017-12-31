@@ -66,6 +66,27 @@ ApplicationWindow {
         id: player
     }
 
+    onApplicationStateChanged: {
+        if (!noZone && applicationState && player.connected) {
+            mainView.jobRunning = true
+            delayPlayerWakeUp.start()
+        }
+    }
+
+    Timer {
+        id: delayPlayerWakeUp
+        interval: 100
+        onTriggered: {
+            if (!player.wakeUp())
+                noZone = true
+            else {
+                Sonos.renewSubscriptions()
+                noZone = false
+            }
+            mainView.jobRunning = false
+        }
+    }
+
     // Variables
     property string appName: "Noson"
     property int debugLevel: 1
