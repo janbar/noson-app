@@ -207,7 +207,7 @@ function copyAdditionalLibraries {
 }
 
 function copyExternalFiles {
-    declare -a languages=("en" "fr" "nl" "de" "it" "es" "cs")
+    declare -a languages=("en" "fr" "nl" "de" "it" "es" "cs" "da")
     for lang in "${languages[@]}"; do
         cp -v $QT_DIR/translations/*_${lang}.qm $BUILD_BUNDLE_RES_QM_DIR
     done
