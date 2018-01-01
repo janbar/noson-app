@@ -42,7 +42,14 @@ int main(int argc, char *argv[])
     if (!style.isEmpty())
         settings.setValue("style", style);
     else
+    {
+        if (settings.value("style").isNull())
+        {
+            QQuickStyle::setStyle("Material");
+            settings.setValue("style", QQuickStyle::name());
+        }
         QQuickStyle::setStyle(settings.value("style").toString());
+    }
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("availableStyles", QQuickStyle::availableStyles());

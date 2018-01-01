@@ -23,7 +23,7 @@ ApplicationWindow {
 
     Settings {
         id: settings
-        property string style: "Material"
+        property string style: "Default"
         property real scaleFactor: 1.0
         property real fontScaleFactor: 1.0
         property bool firstRun: true
