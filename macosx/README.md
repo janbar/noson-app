@@ -4,7 +4,6 @@ Install Xcode and CMake tool.
 
 Install required dependencies as follows.
 - Install a copy of Qt frameworks >= 5.10.0 in `/Users/Shared/Qt`
-- Install a static copy of openSSL >= 1.0.2 in `/usr/local/lib` (`libcrypto.a` , `libssl.a`), and the headers in `/usr/local/include/openssl`.
 
 Setup environment to build as follows.
 - `export PATH=/Applications/CMake.app/Contents/bin:$PATH`
