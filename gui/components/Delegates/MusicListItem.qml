@@ -29,6 +29,7 @@ MouseArea {
     property bool highlighted: false
 
     signal swipe
+    signal click
     signal actionPressed
 
     Connections {
@@ -66,6 +67,8 @@ MouseArea {
         var diffX = mouse.x - lastX;
         if (Math.abs(diffX) > units.gu(15)) {
             swipe();
+        } else {
+            click();
         }
     }
 

@@ -165,7 +165,7 @@ MusicPage {
                 listview.reorder(from, to)
             }
 
-            onClicked: dialogSongInfo.open(model, true) // show action play
+            onClick: dialogSongInfo.open(model, true) // show action play
 
             color: "transparent"
 

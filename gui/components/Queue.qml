@@ -59,7 +59,7 @@ Item {
                 listview.reorder(from, to)
             }
 
-            onClicked: dialogSongInfo.open(model, false) // don't show actions
+            onClick: dialogSongInfo.open(model, false) // don't show actions
 
             imageSource: makeCoverSource(model.art, model.author, model.album)
             description: qsTr("Song")

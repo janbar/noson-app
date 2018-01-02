@@ -32,6 +32,7 @@ MouseArea {
     property alias checked: row.checked
 
     signal swipe
+    signal click
     signal actionPressed
     signal action2Pressed
     signal reorder(int from, int to)
@@ -115,6 +116,8 @@ MouseArea {
                 var diffX = mouse.x - lastX;
                 if (Math.abs(diffX) > units.gu(10)) {
                     swipe();
+                } else {
+                    click();
                 }
             }
         }
