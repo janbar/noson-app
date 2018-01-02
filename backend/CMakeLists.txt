@@ -1,12 +1,19 @@
-cmake_policy (VERSION 3.0)
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/lib/noson/noson)
+cmake_minimum_required(VERSION 2.8.9)
+# Automatically create moc files
+set(CMAKE_AUTOMOC ON)
+
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Gui REQUIRED)
+find_package(Qt5Qml REQUIRED)
+find_package(Qt5Quick REQUIRED)
+
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 ###############################################################################
 # configure
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}/lib/noson/noson/include/.
-    ${CMAKE_CURRENT_SOURCE_DIR}/lib/noson/src/.
+    ${CMAKE_CURRENT_BINARY_DIR}/lib/noson/noson/include
 )
 
 set(
@@ -49,8 +56,7 @@ add_custom_target(NosonAppbackend-qmldir ALL
 )
 
 # Install plugin file
-SET(QT_INSTALL_QML ${QT_IMPORTS_DIR}/qt5/qml)
-MESSAGE(STATUS "QML install path: ${QT_INSTALL_QML}")
-install(TARGETS NosonAppbackend DESTINATION ${QT_INSTALL_QML}/NosonApp/)
-install(FILES   modules/NosonApp/qmldir DESTINATION ${QT_INSTALL_QML}/NosonApp/)
+MESSAGE(STATUS "PlugIns install path: ${PLUGINS_DIR}")
+install(TARGETS NosonAppbackend DESTINATION ${PLUGINS_DIR}/NosonApp/)
+install(FILES   modules/NosonApp/qmldir DESTINATION ${PLUGINS_DIR}/NosonApp/)
 
