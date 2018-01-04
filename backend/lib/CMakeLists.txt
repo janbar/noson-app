@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.1.0)
+
 option(BUILD_DEPENDENCIES "Build dependencies from sources" off)
 
 if(CMAKE_COMPILER_IS_GNUCC)

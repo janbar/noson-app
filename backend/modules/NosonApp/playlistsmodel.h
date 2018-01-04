@@ -42,7 +42,7 @@ public:
 
   int artsCount() const { return m_arts.size(); }
 
-  QString art(unsigned index) const { return (artsCount() > index ? m_arts[index] : ""); }
+  QString art(int index) const { return (m_arts.size() > index ? m_arts[index] : ""); }
 
   QStringList arts() const { return QStringList(m_arts); }
 

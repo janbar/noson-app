@@ -155,7 +155,7 @@ bool RoomsModel::loadData()
 bool RoomsModel::load(QObject* sonos)
 {
   m_provider = reinterpret_cast<Sonos*> (sonos);
-  m_zoneId = QString::null;
+  m_zoneId = QString();
   if (!loadData())
     return false;
   resetModel();

@@ -247,7 +247,7 @@ bool MediaModel::init(QObject* sonos, const QVariant& service, bool fill)
   m_auth.token = oa.token;
   // initialize path to root
   m_path.clear();
-  return ListModel::init(sonos, "", fill);
+  return ListModel::init(sonos, fill);
 }
 
 void MediaModel::clearData()
