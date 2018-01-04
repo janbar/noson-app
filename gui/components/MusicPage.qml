@@ -124,7 +124,7 @@ Page {
                         source: "qrc:/images/media-playlist.svg"
                         height: units.gu(3)
                         label.text: player.queueInfo
-                        label.font.pointSize: units.fs("medium")
+                        label.font.pointSize: units.fs("x-small")
 
                         onClicked: {
                             var page = mainView.stackView.currentItem;
@@ -141,7 +141,7 @@ Page {
                         source: "qrc:/images/location.svg"
                         height: units.gu(3)
                         label.text: currentZoneTag
-                        label.font.pointSize: units.fs("medium")
+                        label.font.pointSize: units.fs("x-small")
 
                         onClicked: stackView.push("qrc:/ui/Zones.qml")
                     }
@@ -322,7 +322,7 @@ Page {
                         source: "qrc:/images/media-playlist.svg"
                         height: units.gu(3)
                         label.text: player.queueInfo
-                        label.font.pointSize: units.fs("medium")
+                        label.font.pointSize: units.fs("x-small")
 
                         onClicked: {
                             stackView.pop();
@@ -330,13 +330,6 @@ Page {
                             if (!mainView.wideAspect && page.pageTitle !== qsTr("Queue"))
                                 stackView.push("qrc:/ui/QueueView.qml");
                         }
-                    }
-
-                    Icon {
-                        source: "qrc:/images/location.svg"
-                        height: units.gu(3)
-                        label.text: currentZoneTag
-                        label.font.pointSize: units.fs("medium")
                     }
 
                     Icon {
@@ -398,7 +391,7 @@ Page {
                         source: "qrc:/images/location.svg"
                         height: units.gu(3)
                         label.text: currentZoneTag
-                        label.font.pointSize: units.fs("medium")
+                        label.font.pointSize: units.fs("x-small")
                     }
 
                     Icon {
