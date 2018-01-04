@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     {
         if (settings.value("style").isNull())
         {
-            QQuickStyle::setStyle("Material");
+            QQuickStyle::setStyle("Universal");
             settings.setValue("style", QQuickStyle::name());
         }
         QQuickStyle::setStyle(settings.value("style").toString());
