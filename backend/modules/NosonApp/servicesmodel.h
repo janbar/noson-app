@@ -84,7 +84,7 @@ public:
 
   Q_INVOKABLE QVariantMap get(int row);
 
-  Q_INVOKABLE bool init(QObject* sonos, bool fill = false);
+  Q_INVOKABLE bool init(QObject* sonos, bool fill = false) { return ListModel::init(sonos, fill); }
 
   virtual void clearData();
 

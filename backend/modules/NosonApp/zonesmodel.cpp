@@ -130,11 +130,6 @@ QVariantMap ZonesModel::get(int row)
   return model;
 }
 
-bool ZonesModel::init(QObject* sonos, bool fill)
-{
-  return ListModel::init(sonos, "", fill);
-}
-
 void ZonesModel::clearData()
 {
   SONOS::LockGuard lock(m_lock);

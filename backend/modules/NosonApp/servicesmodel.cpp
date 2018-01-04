@@ -129,11 +129,6 @@ QVariantMap ServicesModel::get(int row)
   return model;
 }
 
-bool ServicesModel::init(QObject* sonos, bool fill)
-{
-  return ListModel::init(sonos, "", fill);
-}
-
 void ServicesModel::clearData()
 {
   SONOS::LockGuard lock(m_lock);

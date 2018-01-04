@@ -30,6 +30,7 @@ RadioItem::RadioItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
 : m_ptr(ptr)
 , m_valid(false)
 {
+  (void)baseURL;
   m_id = QString::fromUtf8(ptr->GetObjectID().c_str());
   if (ptr->subType() == SONOS::DigitalItem::SubType_audioItem)
   {

@@ -84,9 +84,9 @@ public:
 
   const QString& objectId() const { return m_objectId; }
 
-  const int displayType() const { return m_displayType; }
+  int displayType() const { return m_displayType; }
 
-  const bool isContainer() const { return m_isContainer; }
+  bool isContainer() const { return m_isContainer; }
 
 private:
   SONOS::DigitalItemPtr m_ptr;

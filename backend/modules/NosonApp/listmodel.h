@@ -63,11 +63,13 @@ protected:
   dataState m_dataState;
 
   virtual bool init(QObject* sonos, const QString& root, bool fill = false);
+  virtual bool init(QObject* sonos, bool fill = false) { return init(sonos, QString(""), fill); }
+  virtual bool init(QObject* sonos, const QVariant&, bool fill = false) { return init(sonos, QString(""), fill); }
 
   bool updateSignaled() { return m_updateSignaled.Load(); }
   void setUpdateSignaled(bool val) { m_updateSignaled.Store(val); }
 
-  virtual bool customizedLoad(int id) { return false; }
+  virtual bool customizedLoad(int id) { (void)id; return false; }
 
 private:
   SONOS::Locked<bool> m_updateSignaled;

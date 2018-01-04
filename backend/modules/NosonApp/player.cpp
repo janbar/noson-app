@@ -21,7 +21,7 @@
 #include "player.h"
 #include "sonos.h"
 #include "tools.h"
-#include "lib/noson/noson/src/private/debug.h"
+#include "../../lib/noson/noson/src/private/debug.h"
 
 #include <cstdio> // for sscanf
 #include <string>
