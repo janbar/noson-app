@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
     }
 
     QQmlApplicationEngine engine;
+    engine.rootContext()->setContextProperty("arguments", app.arguments());
     engine.rootContext()->setContextProperty("availableStyles", QQuickStyle::availableStyles());
     engine.load(QUrl("qrc:/noson.qml"));
     if (engine.rootObjects().isEmpty())
