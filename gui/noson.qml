@@ -180,8 +180,9 @@ ApplicationWindow {
 
     // Run on startup
     Component.onCompleted: {
-        //if (args.values.debug) { debugLevel = 4 }
-        mainView.debugLevel = 1
+        if (argumentIndexOf("--debug") >= 0) {
+            mainView.debugLevel = 4
+        }
         customdebug("LANG=" + Qt.locale().name);
         Sonos.setLocale(Qt.locale().name);
         // initialize all data models
@@ -295,6 +296,15 @@ ApplicationWindow {
     ////
     //// Global actions & helpers
     ////
+
+    // Find index of a command line argument else -1
+    function argumentIndexOf(argv) {
+        for (var i = 0; i < arguments.length; ++i) {
+            if (arguments[i] === argv)
+                return i;
+        }
+        return -1;
+    }
 
     // Custom debug funtion that's easier to shut off
     function customdebug(text) {
