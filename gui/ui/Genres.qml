@@ -93,15 +93,21 @@ MusicPage {
                 var covers = genreGridView.artworks[model.genre];
                 if (covers !== undefined)
                     coverSources = covers
-                else
-                    delayArtwork.start()
+                else {
+                    coverBuilder.active = true;
+                }
             }
 
-            Timer {
-                id: delayArtwork
-                interval: 500
-                onTriggered: {
-                    coverSources = genreGridView.findCoverSources(model);
+            Loader {
+                id: coverBuilder
+                active: false
+                asynchronous: true
+                sourceComponent: Component {
+                    Item {
+                        Component.onCompleted: {
+                            coverSources = genreGridView.findCoverSources(model);
+                        }
+                    }
                 }
             }
 
