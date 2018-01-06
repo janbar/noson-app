@@ -152,6 +152,7 @@ MusicPage {
             primaryText: model.title !== "" ? model.title : qsTr("Unknown Album")
             secondaryTextVisible: false
 
+            onImageError: model.art = "" // reset invalid url from model
             onClicked: {
                 stackView.push("qrc:/ui/SongsView.qml",
                                    {

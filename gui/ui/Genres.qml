@@ -46,29 +46,7 @@ MusicPage {
             sortCaseSensitivity: Qt.CaseInsensitive
         }*/
 
-        AlbumsModel {
-            id: childModel
-        }
         property var artworks: []
-
-        function findCoverSources(modelItem) {
-            var covers = [];
-            var root = modelItem.id + "/";
-            // register and load directory content for root
-            childModel.init(Sonos, root, true);
-            childModel.resetModel();
-            var count = childModel.count;
-            var index = 0;
-            while (index < count && index < 4) {
-                var childItem = childModel.get(index);
-                covers.push({art: makeCoverSource(childItem.art, childItem.artist, undefined)});
-                ++index;
-            }
-            artworks[modelItem.genre] = covers;
-            // unregister directory content
-            childModel.init(null, root);
-            return covers;
-        }
 
         delegate: Card {
             id: genreCard
@@ -92,9 +70,19 @@ MusicPage {
                 // read from artworks cache
                 var covers = genreGridView.artworks[model.genre];
                 if (covers !== undefined)
-                    coverSources = covers
+                    coverSources = covers.slice(0);
                 else {
                     coverBuilder.active = true;
+                }
+            }
+
+            Connections {
+                target: coverBuilder
+                onStatusChanged: {
+                    if (coverBuilder.status === Loader.Ready) {
+                        genreGridView.artworks[model.genre] = coverBuilder.artwork.slice(0);
+                        genreCard.coverSources = coverBuilder.artwork.slice(0);
+                    }
                 }
             }
 
@@ -102,14 +90,38 @@ MusicPage {
                 id: coverBuilder
                 active: false
                 asynchronous: true
+                property var artwork: []
                 sourceComponent: Component {
                     Item {
-                        Component.onCompleted: {
-                            coverSources = genreGridView.findCoverSources(model);
+                        Component.onCompleted: artwork = findCoverSources(model)
+
+                        AlbumsModel {
+                            id: childModel
+                        }
+
+                        function findCoverSources(modelItem) {
+                            var covers = [];
+                            var root = modelItem.id + "/";
+                            // register and load directory content for root
+                            childModel.init(Sonos, root, true);
+                            childModel.resetModel();
+                            var count = childModel.count;
+                            var index = 0;
+                            while (index < count && index < 4) {
+                                var childItem = childModel.get(index);
+                                covers.push({art: makeCoverSource(childItem.art, childItem.artist, undefined), item: childItem});
+                                ++index;
+                            }
+                            // unregister directory content
+                            childModel.init(null, root);
+                            return covers;
                         }
                     }
                 }
             }
+
+            // discard invalid art from covers
+            onImageError: genreGridView.artworks[model.genre].splice(index, 1)
 
             onClicked: {
                 stackView.push("qrc:/ui/SongsView.qml",

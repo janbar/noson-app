@@ -181,6 +181,7 @@ MusicPage {
             imageSource: !songStackPage.isAlbum ? makeCoverSource(model.art, model.author, model.album) : "qrc:/images/no_cover.png"
             description: qsTr("Song")
 
+            onImageError: model.art = "" // reset invalid url from model
             onActionPressed: trackClicked(model) // play track
             actionVisible: true
             actionIconSource: "qrc:/images/media-preview-start.svg"

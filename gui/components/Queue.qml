@@ -63,6 +63,8 @@ Item {
 
             imageSource: makeCoverSource(model.art, model.author, model.album)
             description: qsTr("Song")
+
+            onImageError: model.art = "" // reset invalid url from model
             onActionPressed: indexQueueClicked(model.index)
             actionVisible: true
             actionIconSource: (player.isPlaying && player.currentIndex === index ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-preview-start.svg")

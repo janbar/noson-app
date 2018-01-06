@@ -73,6 +73,8 @@ MusicPage {
                        : model.streamId !== undefined && model.streamId !== "" ? "http://cdn-radiotime-logos.tunein.com/" + model.streamId + "q.png"
                        : ""
             description: qsTr("Radio")
+
+            onImageError: model.icon = "" // reset invalid url from model
             onActionPressed: {
                 radioClicked(model) // play radio
             }
@@ -139,10 +141,9 @@ MusicPage {
             }
 
             noCover: "qrc:/images/radio.png"
-            coverSources: [{art: model.icon !== "" ? model.icon
-                        : model.streamId !== undefined && model.streamId !== "" ? "http://cdn-radiotime-logos.tunein.com/" + model.streamId + "q.png"
-                        : ""}]
+            coverSources: [{art: model.icon}]
 
+            onImageError: model.icon = "" // reset invalid url from model
             onClicked: {
                 radioClicked(model) // play radio
             }

@@ -77,6 +77,8 @@ MusicPage {
                        : model.type === 4 ? qsTr("Playlist")
                        : model.type === 5 ? qsTr("Song")
                        : "";
+
+            onImageError: model.art = "" // reset invalid url from model
             onActionPressed: clickItem(model)
             actionVisible: true
             actionIconSource: "qrc:/images/media-preview-start.svg"
@@ -172,6 +174,7 @@ MusicPage {
                         : model.type === 5 && model.art === "" ? [{art: "qrc:/images/radio.png"}]
                         : [{art: makeCoverSource(model.art, undefined, undefined)}]
 
+            onImageError: model.art = "" // reset invalid url from model
             onClicked: clickItem(model)
         }
 

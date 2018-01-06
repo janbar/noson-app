@@ -56,6 +56,8 @@ MusicPage {
             primaryText: model.title !== undefined && model.title !== "" ? model.title : qsTr("Unknown Album")
             secondaryText: model.artist !== undefined && model.artist !== "" ? model.artist : qsTr("Unknown Artist")
 
+            onImageError: model.art = "" // reset invalid url from model
+
             // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
