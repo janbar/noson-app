@@ -48,6 +48,8 @@ public:
 
   const QString& normalized() const { return m_normalized; }
 
+  void setIcon(const QString& icon) { m_icon = icon; }
+
 private:
   SONOS::DigitalItemPtr m_ptr;
   bool m_valid;
@@ -84,6 +86,8 @@ public:
   int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+
+  bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
   Q_INVOKABLE QVariantMap get(int row);
 

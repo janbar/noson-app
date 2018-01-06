@@ -51,6 +51,7 @@ RadioItem::RadioItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
       char* end = beg;
       while (isdigit(*(++end)));
       m_streamId = QString::fromUtf8(beg, end - beg);
+      m_icon = QString("http://cdn-radiotime-logos.tunein.com/").append(m_streamId).append("q.png");
     }
   }
 }
@@ -117,6 +118,23 @@ QVariant RadiosModel::data(const QModelIndex& index, int role) const
     return item->normalized();
   default:
     return QVariant();
+  }
+}
+
+bool RadiosModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+  SONOS::LockGuard lock(m_lock);
+  if (index.row() < 0 || index.row() >= m_items.count())
+      return false;
+
+  RadioItem* item = m_items[index.row()];
+  switch (role)
+  {
+  case IconRole:
+    item->setIcon(value.toString());
+    return true;
+  default:
+    return false;
   }
 }
 
