@@ -162,6 +162,23 @@ QVariant FavoritesModel::data(const QModelIndex& index, int role) const
   }
 }
 
+bool FavoritesModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+  SONOS::LockGuard lock(m_lock);
+  if (index.row() < 0 || index.row() >= m_items.count())
+      return false;
+
+  FavoriteItem* item = m_items[index.row()];
+  switch (role)
+  {
+  case ArtRole:
+    item->setArt(value.toString());
+    return true;
+  default:
+    return false;
+  }
+}
+
 QHash<int, QByteArray> FavoritesModel::roleNames() const
 {
   QHash<int, QByteArray> roles;

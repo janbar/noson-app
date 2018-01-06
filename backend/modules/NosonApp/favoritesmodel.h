@@ -81,6 +81,8 @@ public:
 
   bool isService() const { return m_isService; }
 
+  void setArt(const QString& art) { m_art = art; }
+
 private:
   SONOS::DigitalItemPtr m_ptr;
   bool m_valid;
@@ -129,6 +131,8 @@ public:
   int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+
+  bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
   Q_INVOKABLE QVariantMap get(int row);
 
