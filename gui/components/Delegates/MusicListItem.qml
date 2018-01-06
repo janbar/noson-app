@@ -32,6 +32,8 @@ MouseArea {
     signal click
     signal actionPressed
 
+    signal imageError
+
     Connections {
         target: row
         onActionPressed: actionPressed()
@@ -96,6 +98,7 @@ MouseArea {
         MusicRow {
             id: row
             anchors.fill: parent
+            onImageError: area.imageError()
         }
     }
 }

@@ -37,6 +37,8 @@ MouseArea {
     signal action2Pressed
     signal reorder(int from, int to)
 
+    signal imageError
+
     state: listview.state
     states: [
         State {
@@ -162,7 +164,7 @@ MouseArea {
         MusicRow {
             id: row
             anchors.fill: parent
-
+            onImageError: dragArea.imageError()
             state: "selection"
         }
     }

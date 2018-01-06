@@ -45,6 +45,8 @@ Row {
     signal selected
     signal deselected
 
+    signal imageError
+
     spacing: units.gu(2)
 
     state: "default"
@@ -80,6 +82,7 @@ Row {
 
         onStatusChanged: {
             if (status === Image.Error) {
+                row.imageError()
                 source = noCover
             }
         }

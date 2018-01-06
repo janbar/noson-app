@@ -34,6 +34,8 @@ MouseArea {
     signal actionPressed
     signal reorder(int from, int to)
 
+    signal imageError
+
     Connections {
         target: row
         onActionPressed: actionPressed()
@@ -126,6 +128,7 @@ MouseArea {
         MusicRow {
             id: row
             anchors.fill: parent
+            onImageError: dragArea.imageError()
         }
     }
 

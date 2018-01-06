@@ -38,9 +38,11 @@ Item {
     property bool useFallbackArt: true
 
     // Property to set source of default cover image
-    property string noCover: Qt.resolvedUrl("../images/no_cover.png")
+    property string noCover: "qrc:/images/no_cover.png"
 
     property string firstSource
+
+    signal imageError(var index)
 
     onCoversChanged: {
         if (covers !== undefined) {
@@ -67,7 +69,7 @@ Item {
                 fillMode: Image.PreserveAspectCrop
                 height: coverGrid.size / (imageRow.flowCount > 1 ? 2 : 1)
                 width: coverGrid.size / (imageRow.flowCount > 2 && !(imageRow.flowCount === 3 && index === 2) ? 2 : 1)
-                source: coverGrid.covers.length !== 0 && coverGrid.covers[index] !== undefined && coverGrid.covers[index].art !== undefined
+                source: coverGrid.covers.length !== 0 && coverGrid.covers[index] !== undefined && coverGrid.covers[index].art.length > 0
                         ? coverGrid.covers[index].art
                         : noCover
 
@@ -82,7 +84,8 @@ Item {
 
                 onStatusChanged: {
                     if (status === Image.Error) {
-                        if (useFallbackArt) {
+                        coverGrid.imageError(index);
+                        if (coverGrid.useFallbackArt) {
                             var array = coverGrid.covers.slice(0);
                             array.splice(index,1);
                             coverGrid.covers = array;
