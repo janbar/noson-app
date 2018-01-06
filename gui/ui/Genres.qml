@@ -46,8 +46,6 @@ MusicPage {
             sortCaseSensitivity: Qt.CaseInsensitive
         }*/
 
-        property var artworks: []
-
         delegate: Card {
             id: genreCard
             coversGridVisible: true
@@ -68,7 +66,7 @@ MusicPage {
             Component.onCompleted: {
                 isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
                 // read from artworks cache
-                var covers = genreGridView.artworks[model.genre];
+                var covers = mainView.genreArtworks[model.genre];
                 if (covers !== undefined)
                     coverSources = covers.slice(0);
                 else {
@@ -80,7 +78,7 @@ MusicPage {
                 target: coverBuilder
                 onStatusChanged: {
                     if (coverBuilder.status === Loader.Ready) {
-                        genreGridView.artworks[model.genre] = coverBuilder.artwork.slice(0);
+                        mainView.genreArtworks[model.genre] = coverBuilder.artwork.slice(0);
                         genreCard.coverSources = coverBuilder.artwork.slice(0);
                     }
                 }
@@ -120,8 +118,8 @@ MusicPage {
                 }
             }
 
-            // discard invalid art from covers
-            onImageError: genreGridView.artworks[model.genre].splice(index, 1)
+            // discard invalid url in artwork cache
+            onImageError: mainView.genreArtworks[model.genre].splice(index, 1)
 
             onClicked: {
                 stackView.push("qrc:/ui/SongsView.qml",

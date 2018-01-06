@@ -129,6 +129,9 @@ ApplicationWindow {
     minimumHeight: units.gu(minSizeGU)
     minimumWidth: units.gu(minSizeGU)
 
+    // Cache built-in genre artworks
+    property var genreArtworks: []
+
     ////////////////////////////////////////////////////////////////////////////
     ////
     //// Events
