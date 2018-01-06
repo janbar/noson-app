@@ -199,14 +199,7 @@ ApplicationWindow {
         AllPlaylistsModel.init(Sonos, "",   false);
         // launch connection
         connectSonos();
-/*
-        // push the page to view
-        mainPageStack.push(tabs)
-        // if a tab index exists restore it, otherwise goto Recent if there are items otherwise go to Albums
-        tabs.selectedTabIndex = settings.tabIndex === -1
-            ? servicesTab.index
-            : (settings.tabIndex > tabs.count - 1
-                ? tabs.count - 1 : settings.tabIndex)*/
+
         // signal UI has finished
         loadedUI = true;
 
