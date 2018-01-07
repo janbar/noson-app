@@ -16,8 +16,18 @@ add_subdirectory(ui)
 # Make the files visible on qtcreator
 add_custom_target(nosongui_QMlFiles ALL SOURCES ${APP_FILES})
 
+set(
+  diskcache_SRCS
+  diskcache/diskcachefactory.cpp
+  diskcache/diskcachefactory.h
+  diskcache/cachingnetworkaccessmanager.cpp
+  diskcache/cachingnetworkaccessmanager.h
+  diskcache/cachereply.cpp
+  diskcache/cachereply.h
+)
+
 qt5_add_resources(noson-gui-resources noson.qrc)
-add_executable(noson-gui noson.cpp ${noson-gui-resources})
+add_executable(noson-gui noson.cpp ${noson-gui-resources} ${diskcache_SRCS})
 qt5_use_modules(noson-gui Gui Qml Quick QuickControls2)
 
 if(MSVC)

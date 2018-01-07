@@ -8,6 +8,8 @@
 #include <QDebug>
 #include <QDir>
 
+#include "diskcache/diskcachefactory.h"
+
 #if (defined(_WIN32) || defined(_WIN64))
 #define __WINDOWS__
 #endif
@@ -52,6 +54,8 @@ int main(int argc, char *argv[])
     }
 
     QQmlApplicationEngine engine;
+    // 100MB cache for network data
+    engine.setNetworkAccessManagerFactory(new DiskCacheFactory(100 * 1000 * 1000));
     engine.rootContext()->setContextProperty("arguments", app.arguments());
     engine.rootContext()->setContextProperty("availableStyles", QQuickStyle::availableStyles());
     engine.load(QUrl("qrc:/noson.qml"));
