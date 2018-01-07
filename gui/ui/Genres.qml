@@ -45,6 +45,7 @@ MusicPage {
             sort.order: Qt.AscendingOrder
             sortCaseSensitivity: Qt.CaseInsensitive
         }*/
+        property int delayed: 0
 
         delegate: Card {
             id: genreCard
@@ -70,7 +71,28 @@ MusicPage {
                 if (covers !== undefined)
                     coverSources = covers.slice(0);
                 else {
+                    delayCoverBuilder.start();
+                }
+            }
+
+            Timer {
+                id: delayCoverBuilder
+                interval: 200
+                // Postpone triggering regarding current delayed count
+                onRunningChanged: {
+                    if (running) {
+                        interval += 300 * genreGridView.delayed++
+                    }
+                }
+                onTriggered: {
+                    genreGridView.delayed--;
                     coverBuilder.active = true;
+                }
+                Component.onDestruction: {
+                    if (running) {
+                        stop();
+                        genreGridView.delayed--;
+                    }
                 }
             }
 
