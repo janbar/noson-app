@@ -183,8 +183,8 @@ ApplicationWindow {
 
     // Run on startup
     Component.onCompleted: {
-        if (argumentIndexOf("--debug") >= 0) {
-            //mainView.debugLevel = 4
+        if (indexOfArgument("--debug") >= 0) {
+            mainView.debugLevel = 4
         }
         customdebug("LANG=" + Qt.locale().name);
         Sonos.setLocale(Qt.locale().name);
@@ -294,9 +294,9 @@ ApplicationWindow {
     ////
 
     // Find index of a command line argument else -1
-    function argumentIndexOf(argv) {
-        for (var i = 0; i < arguments.length; ++i) {
-            if (arguments[i] === argv)
+    function indexOfArgument(argv) {
+        for (var i = 0; i < ApplicationArguments.length; ++i) {
+            if (ApplicationArguments[i] === argv)
                 return i;
         }
         return -1;
@@ -1099,7 +1099,7 @@ ApplicationWindow {
                 ComboBox {
                     id: styleBox
                     property int styleIndex: -1
-                    model: availableStyles
+                    model: AvailableStyles
                     Component.onCompleted: {
                         styleIndex = find(settings.style, Qt.MatchFixedString)
                         if (styleIndex !== -1)

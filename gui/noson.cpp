@@ -56,8 +56,8 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     // 100MB cache for network data
     engine.setNetworkAccessManagerFactory(new DiskCacheFactory(100 * 1000 * 1000));
-    engine.rootContext()->setContextProperty("arguments", app.arguments());
-    engine.rootContext()->setContextProperty("availableStyles", QQuickStyle::availableStyles());
+    engine.rootContext()->setContextProperty("ApplicationArguments", app.arguments());
+    engine.rootContext()->setContextProperty("AvailableStyles", QQuickStyle::availableStyles());
     engine.load(QUrl("qrc:/noson.qml"));
     if (engine.rootObjects().isEmpty())
         return -1;
