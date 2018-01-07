@@ -19,9 +19,8 @@ CacheReply::CacheReply(QIODevice *cacheDev, const QNetworkRequest &req,
     setRawHeader(header.first, header.second);
   }
   QMetaObject::invokeMethod(this, "metaDataChanged", Qt::QueuedConnection);
-
   QMetaObject::invokeMethod(this, "downloadProgress", Qt::QueuedConnection,
-                            Q_ARG(qint64,size), Q_ARG(qint64, size));
+                            Q_ARG(qint64, size), Q_ARG(qint64, size));
   QMetaObject::invokeMethod(this, "readyRead", Qt::QueuedConnection);
   QMetaObject::invokeMethod(this, "finished", Qt::QueuedConnection);
 }
