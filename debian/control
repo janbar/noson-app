@@ -12,7 +12,20 @@ Build-Depends: cmake,
                qtquickcontrols2-5-dev,
                libqt5svg5-dev,
                zlib1g-dev,
-               libssl-dev
+               libssl-dev,
+               qml-module-qt-labs-settings,
+               qml-module-qtgraphicaleffects,
+               qml-module-qtqml-models2,
+               qml-module-qtquick2,
+               qml-module-qtquick-controls2,
+               qml-module-qtquick-layouts,
+               qml-module-qtquick-particles2,
+               qml-module-qtquick-templates2,
+               qml-module-qtquick-window2,
+               qtdeclarative5-particles-plugin,
+               qtdeclarative5-qtquick2-plugin,
+               qtdeclarative5-window-plugin,
+               libqt5svg5
 Standards-Version: 3.9.6
 Homepage: https://github.com/janbar/noson-app
 
@@ -33,7 +46,7 @@ Depends: qml-module-qt-labs-settings,
          libqt5svg5,
          zlib1g,
          openssl,
-         ${shlibs:Depends}, ${misc:Depends},
+         ${shlibs:Depends}, ${misc:Depends}
 Description: SONOS controller for Linux
  Touch enabled SONOS controller for Linux
 
