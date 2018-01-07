@@ -1,4 +1,9 @@
-noson-app (3.0) UNRELEASED; urgency=low
+noson-app (3.1) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 3.1
+  * Performance improvement
+  * Network image caching
 
   [ janbar ]
   * Release 3.0
