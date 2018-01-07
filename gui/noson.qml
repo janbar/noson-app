@@ -184,7 +184,7 @@ ApplicationWindow {
     // Run on startup
     Component.onCompleted: {
         if (argumentIndexOf("--debug") >= 0) {
-            mainView.debugLevel = 4
+            //mainView.debugLevel = 4
         }
         customdebug("LANG=" + Qt.locale().name);
         Sonos.setLocale(Qt.locale().name);
