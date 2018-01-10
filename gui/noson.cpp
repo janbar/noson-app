@@ -16,6 +16,8 @@
 
 #ifdef __WINDOWS__
 #include <winsock2.h>
+#else
+#include "signalhandler.h"
 #endif
 
 void setupApp(QGuiApplication& app);
@@ -70,10 +72,14 @@ int main(int argc, char *argv[])
 }
 
 void setupApp(QGuiApplication& app) {
+#ifndef __WINDOWS__
+    SignalHandler *sh = new SignalHandler(&app);
+    sh->catchSignal(SIGHUP, 0);
+    sh->catchSignal(SIGALRM, 0);
+#endif
     // set translators
     QLocale locale = QLocale::system();
     prepareTranslator(app, QString(":/i18n"), QString("noson"), locale);
-
 #ifdef Q_OS_MAC
     QString translationPath = getApplicationDir(app, QString("Resources/translations")).absolutePath();
     prepareTranslator(app, translationPath, "qt", locale);
@@ -93,7 +99,7 @@ void prepareTranslator(QGuiApplication& app, const QString& translationPath, con
     QTranslator * translator = new QTranslator();
     if (!translator->load(locale, translationPrefix, QString("_"), translationPath))
     {
-        qWarning() << "no file found for translations '"+ translationPath + "/" + translationPrefix + "_" + locale.name().left(2) + ".qm ' (using default).";
+        qWarning() << "no file found for translations '"+ translationPath + "/" + translationPrefix + "_" + locale.name().left(2) + ".qm' (using default).";
     }
     else
     {
