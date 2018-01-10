@@ -15,7 +15,7 @@ QNetworkReply *CachingNetworkAccessManager::createRequest(QNetworkAccessManager:
   {
     //cache contains URL -> return cache reply
     //TODO need to check for expiration date?
-    return new CacheReply(cache()->data(req.url()), req, op, meta, this);
+    return new CacheReply(cache()->data(req.url()), req, op, meta);
   }
   else
   {
