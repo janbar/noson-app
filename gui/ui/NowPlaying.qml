@@ -67,7 +67,7 @@ MusicPage {
         id: popWaitTimer
         interval: 250
         onTriggered: {
-            if (StackView.currentItem === nowPlaying) {
+            if (stackView.currentItem === nowPlaying) {
                 stackView.pop();
                 mainView.nowPlayingPage = null;
             }
