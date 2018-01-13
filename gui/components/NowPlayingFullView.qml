@@ -111,19 +111,6 @@ Flickable {
             }
         }
 
-        /* Show sleep timer state */
-        Icon {
-            source: "qrc:/images/timer.svg"
-            anchors {
-                top: nowPlayingWideAspectLabels.top
-                right: nowPlayingWideAspectLabels.right
-            }
-            color: styleMusic.mainView.highlightedColor
-            height: units.gu(3)
-            width: height
-            visible: player.sleepTimerEnabled
-        }
-
         /* Detect cover art swipe */
         MouseArea {
             anchors.fill: parent

@@ -770,7 +770,7 @@ ApplicationWindow {
         Material.background: styleMusic.toolbar.fullBackgroundColor
 
         RowLayout {
-            spacing: units.gu(2)
+            spacing: units.gu(0)
             anchors.fill: parent
 
             Item {
@@ -818,12 +818,22 @@ ApplicationWindow {
                 horizontalAlignment: Qt.AlignHCenter
                 verticalAlignment: Qt.AlignVCenter
                 Layout.fillWidth: true
+
+                /* Show sleep timer state */
+                Icon {
+                    width: units.gu(3)
+                    height: width
+                    anchors.verticalCenter: parent.Center
+                    anchors.right: parent.right
+                    source: "qrc:/images/timer.svg"
+                    visible: player.sleepTimerEnabled
+                    enabled: visible
+                }
             }
 
             Item {
                 width: units.gu(6)
                 height: width
-                visible: (stackView.currentItem !== null && !stackView.currentItem.isRoot)
 
                 Icon {
                     width: units.gu(3)
@@ -835,20 +845,18 @@ ApplicationWindow {
                         stackView.pop()
                     }
 
-                    enabled: parent.visible
+                    visible: (stackView.currentItem !== null && !stackView.currentItem.isRoot)
+                    enabled: visible
                 }
-            }
-
-            Item {
-                width: units.gu(6)
-                height: width
-                visible: (stackView.currentItem === null || stackView.currentItem.isRoot)
 
                 Icon {
                     width: units.gu(3)
                     height: width
                     anchors.centerIn: parent
                     source: "qrc:/images/contextual-menu.svg"
+
+                    visible: (stackView.currentItem === null || stackView.currentItem.isRoot)
+                    enabled: visible
 
                     onClicked: optionsMenu.open()
 
@@ -882,7 +890,6 @@ ApplicationWindow {
                             onTriggered: aboutDialog.open()
                         }
                     }
-                    enabled: parent.visible
                 }
             }
         }
