@@ -58,8 +58,25 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     // 100MB cache for network data
     engine.setNetworkAccessManagerFactory(new DiskCacheFactory(100 * 1000 * 1000));
+    // bind arguments
     engine.rootContext()->setContextProperty("ApplicationArguments", app.arguments());
-    engine.rootContext()->setContextProperty("AvailableStyles", QQuickStyle::availableStyles());
+    // select and bind styles available and known to work
+    QStringList availableStyles;
+    for (QString style : QQuickStyle::availableStyles())
+    {
+      if (style == "Default")
+        availableStyles.append(style);
+      else if (style == "Fusion")
+        availableStyles.append(style);
+      else if (style == "Imagine")
+        availableStyles.append(style);
+      else if (style == "Material")
+        availableStyles.append(style);
+      else if (style == "Universal")
+        availableStyles.append(style);
+    }
+    engine.rootContext()->setContextProperty("AvailableStyles", availableStyles);
+
     engine.load(QUrl("qrc:/noson.qml"));
     if (engine.rootObjects().isEmpty())
         return -1;
