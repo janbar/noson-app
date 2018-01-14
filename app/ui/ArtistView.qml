@@ -159,10 +159,17 @@ MusicPage {
                 }
             }
         }
+
         model: AlbumsModel {
             id: albumsModel
-            Component.onCompleted: init(Sonos, artistSearch, true)
+            onDataUpdated: albumsModel.asyncLoad()
+            onLoaded: albumsModel.resetModel()
+            Component.onCompleted: {
+                init(Sonos, artistSearch, false)
+                albumsModel.asyncLoad()
+            }
         }
+
         delegate: Card {
             id: albumCard
             coverSources: [
@@ -191,24 +198,15 @@ MusicPage {
         }
     }
 
+    // Query total count of artist's songs
     TracksModel {
         id: songArtistModel
-    }
-
-    Timer {
-        id: delayInitModel
-        interval: 100
-        onTriggered: {
-            isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload) !== "")
-            songArtistModel.init(Sonos, artistSearch + "/", true)
-            mainView.currentlyWorking = false
-            loaded = true
+        onDataUpdated: songArtistModel.asyncLoad()
+        onLoaded: songArtistModel.resetModel()
+        Component.onCompleted: {
+            songArtistModel.init(Sonos, artistSearch + "/", false)
+            songArtistModel.asyncLoad()
         }
-    }
-
-    Component.onCompleted: {
-        mainView.currentlyWorking = true
-        delayInitModel.start()
     }
 }
 

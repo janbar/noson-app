@@ -26,7 +26,7 @@ DialogBase {
     title: i18n.tr("Select source")
 
     Label {
-        id: urlOutput
+        id: sourceOutput
         anchors.left: parent.left
         anchors.right: parent.right
         wrapMode: Text.WordWrap
@@ -35,6 +35,7 @@ DialogBase {
         font.weight: Font.Normal
         visible: false // should only be visible when an error is made.
     }
+
     TextField {
         id: url
         text: inputStreamUrl
@@ -42,36 +43,37 @@ DialogBase {
         inputMethodHints: Qt.ImhNoPredictiveText | Qt.ImhNoAutoUppercase
         color: theme.palette.selected.baseText
     }
+
+    Connections {
+        target: player.zonePlayer
+        onJobFailed: {
+            sourceOutput.color = UbuntuColors.red
+            sourceOutput.text = i18n.tr("Playing failed.")
+            sourceOutput.visible = true
+        }
+    }
+
     Button {
         id: buttonPlayStream
         text: i18n.tr("Play stream")
         color: UbuntuColors.green
         onClicked: {
-            urlOutput.visible = false // make sure its hidden now if there was an error last time
+            sourceOutput.visible = false // make sure its hidden now if there was an error last time
             if (url.text.length > 0) { // make sure something is acually inputed
                 color = UbuntuColors.lightGrey
-                delayPlayStream.start()
+                if (player.playStream(url.text, "")) {
+                    inputStreamUrl = url.text
+                }
+                else {
+                    sourceOutput.color = UbuntuColors.red
+                    sourceOutput.text = i18n.tr("Playing failed.")
+                    sourceOutput.visible = true
+                }
+                color = UbuntuColors.green
             }
             else {
-                urlOutput.visible = true
-                urlOutput.text = i18n.tr("Please type in an URL.")
-            }
-        }
-    }
-
-    Timer {
-        id: delayPlayStream
-        interval: 100
-        onTriggered: {
-            if (player.playStream(url.text, "")) {
-                inputStreamUrl = url.text
-                PopupUtils.close(dialogSelectSource)
-            }
-            else {
-                urlOutput.color = UbuntuColors.red
-                urlOutput.text = i18n.tr("Playing failed.")
-                urlOutput.visible = true
-                buttonPlayStream.color = UbuntuColors.green
+                sourceOutput.visible = true
+                sourceOutput.text = i18n.tr("Please type in an URL.")
             }
         }
     }

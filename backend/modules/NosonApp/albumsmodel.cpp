@@ -54,7 +54,9 @@ AlbumsModel::AlbumsModel(QObject* parent)
 
 AlbumsModel::~AlbumsModel()
 {
-  clear();
+  clearData();
+  qDeleteAll(m_items);
+  m_items.clear();
 }
 
 void AlbumsModel::addItem(AlbumItem* item)
@@ -101,6 +103,23 @@ QVariant AlbumsModel::data(const QModelIndex& index, int role) const
   }
 }
 
+bool AlbumsModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+  SONOS::LockGuard lock(m_lock);
+  if (index.row() < 0 || index.row() >= m_items.count())
+      return false;
+
+  AlbumItem* item = m_items[index.row()];
+  switch (role)
+  {
+  case ArtRole:
+    item->setArt(value.toString());
+    return true;
+  default:
+    return false;
+  }
+}
+
 QHash<int, QByteArray> AlbumsModel::roleNames() const
 {
   QHash<int, QByteArray> roles;
@@ -140,29 +159,32 @@ bool AlbumsModel::init(QObject* sonos, const QString& root, bool fill)
   return ListModel::init(sonos, _root, fill);
 }
 
-void AlbumsModel::clear()
+void AlbumsModel::clearData()
 {
-  {
-    SONOS::LockGuard lock(m_lock);
-    beginRemoveRows(QModelIndex(), 0, m_items.count());
-    qDeleteAll(m_items);
-    m_items.clear();
-    endRemoveRows();
-  }
-  emit countChanged();
+  SONOS::LockGuard lock(m_lock);
+  qDeleteAll(m_data);
+  m_data.clear();
 }
 
-bool AlbumsModel::load()
+bool AlbumsModel::loadData()
 {
   setUpdateSignaled(false);
 
   if (!m_provider)
+  {
+    emit loaded(false);
     return false;
-  clear();
+  }
   const SONOS::PlayerPtr player = m_provider->getPlayer();
   if (!player)
+  {
+    emit loaded(false);
     return false;
+  }
 
+  SONOS::LockGuard lock(m_lock);
+  clearData();
+  m_dataState = ListModel::NoData;
   QString port;
   port.setNum(player->GetPort());
   QString url = "http://";
@@ -174,20 +196,52 @@ bool AlbumsModel::load()
   {
     AlbumItem* item = new AlbumItem(*it, url);
     if (item->isValid())
-      addItem(item);
+      m_data << item;
     else
       delete item;
   }
+
   if (cl.failure())
-    return m_loaded = false;
+  {
+    emit loaded(false);
+    return false;
+  }
   m_updateID = cl.GetUpdateID(); // sync new baseline
-  return m_loaded = true;
+  m_dataState = ListModel::Loaded;
+  emit loaded(true);
+  return true;
 }
 
 bool AlbumsModel::asyncLoad()
 {
   if (m_provider)
+  {
     m_provider->runModelLoader(this);
+    return true;
+  }
+  return false;
+}
+
+void AlbumsModel::resetModel()
+{
+  {
+    SONOS::LockGuard lock(m_lock);
+    if (m_dataState != ListModel::Loaded)
+        return;
+    beginResetModel();
+    beginRemoveRows(QModelIndex(), 0, m_items.count()-1);
+    qDeleteAll(m_items);
+    m_items.clear();
+    endRemoveRows();
+    beginInsertRows(QModelIndex(), 0, m_data.count()-1);
+    foreach (AlbumItem* item, m_data)
+        m_items << item;
+    m_data.clear();
+    m_dataState = ListModel::Synced;
+    endInsertRows();
+    endResetModel();
+  }
+  emit countChanged();
 }
 
 void AlbumsModel::handleDataUpdate()

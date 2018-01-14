@@ -42,7 +42,7 @@ public:
 
   int artsCount() const { return m_arts.size(); }
 
-  QString art(unsigned index) const { return (artsCount() > index ? m_arts[index] : ""); }
+  QString art(int index) const { return (m_arts.size() > index ? m_arts[index] : ""); }
 
   QStringList arts() const { return QStringList(m_arts); }
 
@@ -86,11 +86,15 @@ public:
 
   Q_INVOKABLE bool init(QObject* sonos, const QString& root, bool fill = false);
 
-  Q_INVOKABLE void clear();
+  virtual void clearData();
 
-  Q_INVOKABLE bool load();
+  virtual bool loadData();
 
   Q_INVOKABLE bool asyncLoad();
+
+  Q_INVOKABLE void resetModel();
+
+  Q_INVOKABLE void appendModel() { }
 
   virtual void handleDataUpdate();
 
@@ -99,12 +103,14 @@ public:
 signals:
   void dataUpdated();
   void countChanged();
+  void loaded(bool succeeded);
 
 protected:
   QHash<int, QByteArray> roleNames() const;
 
 private:
   QList<PlaylistItem*> m_items;
+  QList<PlaylistItem*> m_data;
 };
 
 

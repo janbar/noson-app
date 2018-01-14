@@ -40,7 +40,6 @@ Button {
     }
 
     onClicked: {
-        mainView.currentlyWorking = true
         delayPlayAll.start()
     }
 
@@ -49,7 +48,6 @@ Button {
         interval: 100
         onTriggered: {
             playAll(containerItem)
-            mainView.currentlyWorking = false
         }
     }
 

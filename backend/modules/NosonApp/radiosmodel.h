@@ -48,6 +48,8 @@ public:
 
   const QString& normalized() const { return m_normalized; }
 
+  void setIcon(const QString& icon) { m_icon = icon; }
+
 private:
   SONOS::DigitalItemPtr m_ptr;
   bool m_valid;
@@ -85,15 +87,21 @@ public:
 
   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
+  bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+
   Q_INVOKABLE QVariantMap get(int row);
 
   Q_INVOKABLE bool init(QObject* sonos, const QString& root, bool fill = false);
 
-  Q_INVOKABLE void clear();
+  virtual void clearData();
 
-  Q_INVOKABLE bool load();
+  virtual bool loadData();
 
   Q_INVOKABLE bool asyncLoad();
+
+  Q_INVOKABLE void resetModel();
+
+  Q_INVOKABLE void appendModel() { }
 
   virtual void handleDataUpdate();
 
@@ -102,12 +110,14 @@ public:
 signals:
   void dataUpdated();
   void countChanged();
+  void loaded(bool succeeded);
 
 protected:
   QHash<int, QByteArray> roleNames() const;
 
 private:
   QList<RadioItem*> m_items;
+  QList<RadioItem*> m_data;
 };
 
 #endif /* RADIOSMODEL_H */

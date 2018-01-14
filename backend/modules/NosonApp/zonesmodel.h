@@ -84,23 +84,31 @@ public:
 
   Q_INVOKABLE QVariantMap get(int row);
 
-  Q_INVOKABLE bool init(QObject* sonos, bool fill = false);
+  Q_INVOKABLE bool init(QObject* sonos, bool fill = false) { return ListModel::init(sonos, fill); }
 
-  Q_INVOKABLE void clear();
+  virtual void clearData();
 
-  Q_INVOKABLE bool load();
+  virtual bool loadData();
+
+  Q_INVOKABLE bool asyncLoad();
+
+  Q_INVOKABLE void resetModel();
+
+  Q_INVOKABLE void appendModel() { }
 
   virtual void handleDataUpdate();
 
 signals:
   void dataUpdated();
   void countChanged();
+  void loaded(bool succeeded);
 
 protected:
   QHash<int, QByteArray> roleNames() const;
 
 private:
   QList<ZoneItem*> m_items;
+  QList<ZoneItem*> m_data;
 };
 
 #endif /* ZONESMODEL_H */

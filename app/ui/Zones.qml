@@ -93,8 +93,7 @@ BottomEdgePage {
                           text: i18n.tr("Reload zones")
                           visible: true
                           onTriggered: {
-                              mainView.currentlyWorking = true
-                              delayResetController.start()
+                              connectSonos()
                           }
                         },
                         Action {
@@ -134,12 +133,9 @@ BottomEdgePage {
                             iconName: "back"
                             onTriggered: {
                                 if (zoneList.getSelectedIndices().length > 1) {
-                                    mainView.currentlyWorking = true
-                                    delayJoinZones.start()
+                                    handleJoinZones()
                                 }
-                                else {
-                                    zoneList.closeSelection()
-                                }
+                                zoneList.closeSelection()
                             }
                         }
                     ]
@@ -176,27 +172,6 @@ BottomEdgePage {
             }
         }
     ]
-
-    Timer {
-        id: delayResetController
-        interval: 100
-        onTriggered: {
-            connectSonos()
-            // activity indicator will be hidden after finished loading
-        }
-    }
-
-    Timer {
-        id: delayJoinZones
-        interval: 100
-        onTriggered: {
-            handleJoinZones()
-            zoneList.closeSelection()
-            // Zones will be reloaded on signal topologyChanged
-            // Signal is handled in MainView
-            mainView.currentlyWorking = false
-        }
-    }
 
     function handleJoinZones() {
         var indicies = zoneList.getSelectedIndices();
@@ -255,8 +230,7 @@ BottomEdgePage {
                     Clear {
                         visible: model.isGroup
                         onTriggered: {
-                            mainView.currentlyWorking = true
-                            delayUnjoinZone.start()
+                            Sonos.unjoinZone(model.payload)
                         }
                     }
                 ]
@@ -283,40 +257,7 @@ BottomEdgePage {
             }
 
             onItemClicked: {
-                mainView.currentlyWorking = true
-                delayChangeZone.start()
-            }
-
-            Timer {
-                id: delayChangeZone
-                interval: 100
-                onTriggered: {
-                    if (currentZone !== model.name) {
-                        customdebug("Connecting zone '" + name + "'");
-                        if ((Sonos.connectZone(model.name) || Sonos.connectZone("")) && player.connect()) {
-                            currentZone = Sonos.getZoneName();
-                            currentZoneTag = Sonos.getZoneShortName();
-                            if (noZone)
-                                noZone = false;
-                        }
-                        else {
-                            if (!noZone)
-                                noZone = true;
-                        }
-                    }
-                    mainView.currentlyWorking = false
-                }
-            }
-
-            Timer {
-                id: delayUnjoinZone
-                interval: 100
-                onTriggered: {
-                    Sonos.unjoinZone(model.payload)
-                    // Zones will be reloaded on signal topologyChanged
-                    // Signal is handled in MainView
-                    mainView.currentlyWorking = false
-                }
+                connectZone(model.name)
             }
 
             onSelectedChanged: {
@@ -357,6 +298,5 @@ BottomEdgePage {
                 }
             }
         }
-
     }
 }

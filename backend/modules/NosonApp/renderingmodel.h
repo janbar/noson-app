@@ -76,9 +76,13 @@ public:
 
   bool setData(const QModelIndex& index, const QVariant& value, int role);
 
-  Q_INVOKABLE void clear();
+  virtual void clearData();
+
+  virtual bool loadData();
 
   Q_INVOKABLE bool load(QObject* player);
+
+  virtual void resetModel();
 
   Q_INVOKABLE void setVolume(int index, const QVariant& volume);
 
@@ -92,6 +96,8 @@ protected:
 
 private:
   QList<RenderingItem*> m_items;
+  QList<RenderingItem*> m_data;
+  Player* m_player;
 };
 
 #endif /* RENDERINGMODEL_H */

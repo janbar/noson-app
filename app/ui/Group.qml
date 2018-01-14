@@ -44,8 +44,8 @@ Page {
                     iconName: "back"
                     objectName: "backAction"
                     onTriggered: {
-                        mainView.currentlyWorking = true
-                        delayHandleGroupChanges.start()
+                        if (handleUnjoinRooms())
+                            mainPageStack.pop();
                     }
                 }
             ]
@@ -76,41 +76,33 @@ Page {
         }
     }
 
-    Timer {
-        id: delayHandleGroupChanges
-        interval: 100
-        onTriggered: {
-            var failure = false;
-            var items = [];
-            var indicies = groupList.getSelectedIndices();
-            for (var i = 0; i < groupList.model.count; ++i) {
-                var keep = false;
-                for (var j = 0; j < indicies.length; j++) {
-                    if (indicies[j] === i) {
-                        keep = true;
-                        break;
-                    }
-                }
-                if (!keep) {
-                    items.push(groupList.model.get(i));
+    function handleUnjoinRooms() {
+        // keep back unselected rooms
+        var rooms = [];
+        var indicies = groupList.getSelectedIndices();
+        var keep = false;
+        for (var i = 0; i < roomsModel.count; ++i) {
+            keep = false;
+            for (var j = 0; j < indicies.length; j++) {
+                if (indicies[j] === i) {
+                    keep = true;
+                    break;
                 }
             }
-            if (items.length == 0) {
-                mainView.currentlyWorking = false;
+            if (!keep) {
+                rooms.push(roomsModel.get(i).payload);
             }
-            else {
-                for (var i = 0; i < items.length; ++i) {
-                    if (!Sonos.unjoinRoom(items[i].payload)) {
-                        failure = true;
-                        break;
-                    }
-                }
-                // Zones will be reloaded on signal topologyChanged
-                // Signal is handled in MainView
-                mainView.currentlyWorking = false
-            }
-            mainPageStack.pop()
         }
+        // start unjoin rooms
+        if (rooms.length > 0) {
+            if (!Sonos.startUnjoinRooms(rooms))
+                return false;
+        }
+        return true;
+    }
+
+    RoomsModel {
+        id: roomsModel
     }
 
     MultiSelectListView {
@@ -121,12 +113,10 @@ Page {
         footer: Item {
             height: mainView.height - (styleMusic.common.expandHeight + groupList.currentHeight) + units.gu(8)
         }
-        model: RoomsModel {
-        }
+        model: roomsModel
 
         Component.onCompleted: {
-            model.init(Sonos, false)
-            model.load(zoneId)
+            roomsModel.load(Sonos, zoneId)
             selectAll()
         }
 

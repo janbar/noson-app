@@ -94,7 +94,7 @@ Rectangle {
             width: parent.width
 
             onClicked: {
-                mainView.currentlyWorking = true
+                mainView.jobRunning = true
                 delayRegisterService.start()
             }
         }
@@ -110,7 +110,7 @@ Rectangle {
                     regUrl.text = "<a href='" + mediaModel.regURL + "'>" + mediaModel.regURL + "</a>";
                     requestAuthForTime.start();
                 }
-                mainView.currentlyWorking = false
+                 mainView.jobRunning = false
             }
         }
 

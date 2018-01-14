@@ -133,7 +133,6 @@ MusicPage {
                 actions: [
                     Remove {
                         onTriggered: {
-                            mainView.currentlyWorking = true
                             delayRemoveFavorite.start()
                         }
                     }
@@ -184,7 +183,6 @@ MusicPage {
                 onTriggered: {
                     if (!player.removeFavorite(model.id))
                         popInfo.open(i18n.tr("Action can't be performed"));
-                    mainView.currentlyWorking = false
                 }
             }
 
@@ -254,7 +252,6 @@ MusicPage {
         property QtObject model
         onTriggered: {
             player.playFavorite(model) // play favorite
-            mainView.currentlyWorking = false
         }
     }
 
@@ -314,12 +311,10 @@ MusicPage {
                                    })
             }
             else if (model.type === 5) {
-                mainView.currentlyWorking = true
                 delayfavoriteClicked.model = model
                 delayfavoriteClicked.start()
             }
         } else {
-            mainView.currentlyWorking = true
             delayfavoriteClicked.model = model
             delayfavoriteClicked.start()
         }

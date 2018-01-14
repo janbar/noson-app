@@ -129,17 +129,7 @@ Page {
                 width: parent.width
 
                 onClicked: {
-                    mainView.currentlyWorking = true
-                    delayConnectSonos.start()
-                }
-
-                Timer {
-                    id: delayConnectSonos
-                    interval: 100
-                    onTriggered: {
-                        connectSonos()
-                        mainView.currentlyWorking = false
-                    }
+                    connectSonos()
                 }
             }
         }

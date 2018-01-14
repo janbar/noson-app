@@ -114,6 +114,15 @@ MusicPage {
                                        "line2": model.title,
                                    })
             }
+
+            // check favorite on data loaded
+            Connections {
+                target: AllFavoritesModel
+                onLoaded: {
+                    isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
+                }
+            }
+
             onPressAndHold: {
                 if (isFavorite && removeFromFavorites(model.payload))
                     isFavorite = false

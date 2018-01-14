@@ -40,7 +40,6 @@ Button {
     }
 
     onClicked: {
-        mainView.currentlyWorking = true
         delayAddQueue.start()
     }
 
@@ -49,7 +48,6 @@ Button {
         interval: 100
         onTriggered: {
             addQueue(containerItem)
-            mainView.currentlyWorking = false
         }
     }
 

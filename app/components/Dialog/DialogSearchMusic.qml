@@ -96,7 +96,7 @@ DialogBase {
         color: styleMusic.dialog.confirmButtonColor
         onClicked: {
             if (searchableModel !== null && selector.selectedIndex >= 0 && searchField.text.length) {
-                searchableModel.loadSearch(selectorModel.get(selector.selectedIndex).id, searchField.text);
+                searchableModel.asyncLoadSearch(selectorModel.get(selector.selectedIndex).id, searchField.text);
             }
             PopupUtils.close(dialogSearchMusic);
         }

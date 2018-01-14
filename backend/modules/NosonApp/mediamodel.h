@@ -33,17 +33,20 @@ class MediaType : public QObject
   Q_OBJECT
   Q_ENUMS(itemType)
 
-  public:
-    enum itemType
-    {
-      unknown   = 0,
-      album     = 1,
-      person    = 2,
-      genre     = 3,
-      playlist  = 4,
-      audioItem = 5,
-      folder    = 6,
-    };
+public:
+  enum itemType
+  {
+    unknown   = 0,
+    album     = 1,
+    person    = 2,
+    genre     = 3,
+    playlist  = 4,
+    audioItem = 5,
+    folder    = 6,
+  };
+
+  MediaType(QObject* parent)
+  : QObject(parent) {}
 };
 
 class MediaItem
@@ -81,9 +84,9 @@ public:
 
   const QString& objectId() const { return m_objectId; }
 
-  const int displayType() const { return m_displayType; }
+  int displayType() const { return m_displayType; }
 
-  const bool isContainer() const { return m_isContainer; }
+  bool isContainer() const { return m_isContainer; }
 
 private:
   SONOS::DigitalItemPtr m_ptr;
@@ -172,19 +175,13 @@ public:
 
   Q_INVOKABLE bool init(QObject* sonos, const QVariant& service, bool fill = false);
 
-  Q_INVOKABLE void clear();
+  Q_INVOKABLE void clearData();
 
-  Q_INVOKABLE bool load();
+  Q_INVOKABLE bool loadData();
 
   int totalCount() const { return m_totalCount; }
 
   bool isRoot() const { return (m_path.empty()); }
-
-  Q_INVOKABLE bool loadMore();
-
-  Q_INVOKABLE bool loadChild(const QString& id, const QString& title, int displayType, int viewIndex = 0);
-
-  Q_INVOKABLE bool loadParent();
 
   Q_INVOKABLE QString pathName() const;
 
@@ -195,8 +192,6 @@ public:
   Q_INVOKABLE int viewIndex() const;
 
   Q_INVOKABLE QList<QString> listSearchCategories() const;
-
-  Q_INVOKABLE bool loadSearch(const QString& category, const QString& term);
 
   bool isAuthExpired() const;
 
@@ -218,6 +213,28 @@ public:
 
   Q_INVOKABLE bool asyncLoad();
 
+  virtual bool loadMoreData();
+
+  Q_INVOKABLE bool asyncLoadMore();
+
+  virtual bool loadChild(const QString& id, const QString& title, int displayType, int viewIndex = 0);
+
+  Q_INVOKABLE bool asyncLoadChild(const QString& id, const QString& title, int displayType, int viewIndex = 0);
+
+  virtual bool loadParent();
+  
+  Q_INVOKABLE bool asyncLoadParent();
+
+  virtual bool loadSearch(const QString& category, const QString& term);
+
+  Q_INVOKABLE bool asyncLoadSearch(const QString& category, const QString& term);
+
+  Q_INVOKABLE void resetModel();
+
+  Q_INVOKABLE void appendModel();
+
+  virtual bool customizedLoad(int id);
+
   virtual void handleDataUpdate();
 
   Q_INVOKABLE int containerUpdateID() { return m_updateID; }
@@ -228,12 +245,15 @@ signals:
   void totalCountChanged();
   void pathChanged();
   void authStatusChanged();
+  void loaded(bool succeeded);
+  void loadedMore(bool succeeded);
 
 protected:
   QHash<int, QByteArray> roleNames() const;
 
 private:
   QList<MediaItem*> m_items;
+  QList<MediaItem*> m_data;
 
   SONOS::SMAPI* m_smapi;
   SONOS::SMOAKeyring::Credentials m_auth;

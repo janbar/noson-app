@@ -74,7 +74,6 @@ Item {
                 actions: [
                     Remove {
                         onTriggered: {
-                            mainView.currentlyWorking = true
                             delayRemoveTrackFromQueue.start()
                         }
                     }
@@ -105,12 +104,10 @@ Item {
                 interval: 100
                 onTriggered: {
                     removeTrackFromQueue(model)
-                    mainView.currentlyWorking = false
                 }
             }
 
             onItemClicked: {
-                mainView.currentlyWorking = true
                 delayIndexQueueClicked.start()
             }
 
@@ -119,7 +116,6 @@ Item {
                 interval: 100
                 onTriggered: {
                     indexQueueClicked(index) // toggle track state
-                    mainView.currentlyWorking = false
                 }
             }
         }
@@ -127,7 +123,6 @@ Item {
         onReorder: {
             delayReorderTrackInQueue.argFrom = from
             delayReorderTrackInQueue.argTo = to
-            mainView.currentlyWorking = true
             delayReorderTrackInQueue.start()
         }
 
@@ -138,7 +133,6 @@ Item {
             property int argTo: 0
             onTriggered: {
                 reorderTrackInQueue(argFrom, argTo)
-                mainView.currentlyWorking = false
             }
         }
 

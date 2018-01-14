@@ -47,8 +47,8 @@ State {
                     onTriggered: {
                         thisPage.isListView = !thisPage.isListView;
                         if (thisPage.taintedView) {
-                            mainView.currentlyWorking = true;
-                            delayLoadModel.start();
+                            thisPage.model.asyncLoad();
+                            thisPage.taintedView = false; // reset
                         }
                     }
                 },

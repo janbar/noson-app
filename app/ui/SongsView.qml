@@ -34,7 +34,7 @@ MusicPage {
     id: songStackPage
     objectName: "songsPage"
     visible: false
-    pageFlickable: albumtrackslist
+    pageFlickable: songList
 
     property string line1: ""
     property string line2: ""
@@ -50,13 +50,11 @@ MusicPage {
     property string artist: ""
     property string genre: ""
 
-    property bool loaded: false  // used to detect difference between first and further loads
-
     width: mainPageStack.width
 
     property bool isFavorite: false
 
-    state: albumtrackslist.state === "multiselectable" ? "selection" : (isPlaylist ? "playlist" : "album")
+    state: songList.state === "multiselectable" ? "selection" : (isPlaylist ? "playlist" : "album")
     states: [
         AlbumSongsHeadState {
             thisPage: songStackPage
@@ -72,7 +70,7 @@ MusicPage {
         },
         MultiSelectHeadState {
             containerItem: songStackPage.containerItem
-            listview: albumtrackslist
+            listview: songList
             removable: isPlaylist
             thisPage: songStackPage
             thisHeader {
@@ -80,7 +78,6 @@ MusicPage {
             }
 
             onRemoved: {
-                mainView.currentlyWorking = false
                 delayRemoveSelectedFromPlaylist.selectedIndices = selectedIndices
                 delayRemoveSelectedFromPlaylist.start()
             }
@@ -92,47 +89,57 @@ MusicPage {
         interval: 100
         property var selectedIndices: []
         onTriggered: {
-            var cnt = songsModel.count;
+            songList.focusIndex = selectedIndices[selectedIndices.length-1];
             if (removeTracksFromPlaylist(containerItem.id, selectedIndices, songsModel.containerUpdateID())) {
-                songsModel.load();
-                while (songsModel.count < cnt && songsModel.loadMore());
+                songsModel.asyncLoad();
             }
-            mainView.currentlyWorking = false
         }
     }
 
     TracksModel {
         id: songsModel
+        onDataUpdated: songsModel.asyncLoad()
+        onLoaded: songsModel.resetModel()
+        Component.onCompleted: {
+            songsModel.init(Sonos, songSearch, false)
+            songsModel.asyncLoad()
+        }
     }
 
-    Timer {
-        id: delayInitModel
-        interval: 100
-        onTriggered: {
-            isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
-            songsModel.init(Sonos, songSearch, true)
-            mainView.currentlyWorking = false
-            songStackPage.loaded = true;
+    function restoreFocusIndex() {
+        if (songsModel.count <= songList.focusIndex) {
+            songsModel.asyncLoadMore() // load more !!!
+        } else {
+            songList.positionViewAtIndex(songList.focusIndex, ListView.Center);
+            songList.focusIndex = -1
         }
     }
 
     Connections {
         target: songsModel
-        onDataUpdated: {
-            mainView.currentlyWorking = true
-            delayLoadTrackModel.start()
+        onDataUpdated: songsModel.asyncLoad()
+        onLoaded: {
+            songsModel.resetModel()
+            if (succeeded) {
+                if (songList.focusIndex > 0) {
+                    // restore index position in view
+                    restoreFocusIndex()
+                }
+            }
         }
-    }
+        onLoadedMore: {
+            if (succeeded) {
+                songsModel.appendModel();
+                if (songList.focusIndex > 0) {
+                    // restore index position in view
+                    restoreFocusIndex()
+                }
+            } else if (songList.focusIndex > 0) {
+                songList.positionViewAtEnd();
+                songList.focusIndex = -1;
+            }
+        }
 
-    Timer {
-        id: delayLoadTrackModel
-        interval: 100
-        onTriggered: {
-            var cnt = songsModel.count;
-            songsModel.load();
-            while (songsModel.count < cnt && songsModel.loadMore());
-            mainView.currentlyWorking = false
-        }
     }
 
     Repeater {
@@ -160,7 +167,7 @@ MusicPage {
     }
 
     MultiSelectListView {
-        id: albumtrackslist
+        id: songList
         anchors {
             fill: parent
         }
@@ -170,7 +177,7 @@ MusicPage {
             rightColumn: Column {
                 spacing: units.gu(2)
                 ShuffleButton {
-                    model: albumtrackslist.model
+                    model: songList.model
                     width: blurredHeader.width > units.gu(60) ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
                 }
                 QueueAllButton {
@@ -255,11 +262,13 @@ MusicPage {
 
         model: songsModel
 
+        property int focusIndex: 0
+
         delegate: MusicListItem {
             id: track
             color: "transparent"
-            noCover: !songStackPage.isAlbum ? Qt.resolvedUrl("../graphics/no_cover.png") : ""
-            imageSource: !songStackPage.isAlbum ? makeCoverSource(model.art, model.author, model.album) : ""
+            noCover: Qt.resolvedUrl("../graphics/no_cover.png")
+            imageSource: !songStackPage.isAlbum ? makeCoverSource(model.art, model.author, model.album) : noCover
             column: Column {
                 Label {
                     id: trackTitle
@@ -304,7 +313,6 @@ MusicPage {
                     actions: [
                         Remove {
                             onTriggered: {
-                                mainView.currentlyWorking = true
                                 delayRemoveTrackFromPlaylist.start()
                             }
                         }
@@ -316,12 +324,10 @@ MusicPage {
                 id: delayRemoveTrackFromPlaylist
                 interval: 100
                 onTriggered: {
-                    var cnt = songsModel.count;
+                    songList.focusIndex = index > 0 ? index - 1 : 0;
                     if (removeTracksFromPlaylist(containerItem.id, [index], songsModel.containerUpdateID())) {
-                        songsModel.load();
-                        while (songsModel.count < cnt && songsModel.loadMore());
+                        songsModel.asyncLoad();
                     }
-                    mainView.currentlyWorking = false
                 }
             }
 
@@ -333,7 +339,9 @@ MusicPage {
         }
 
         onReorder: {
-            mainView.currentlyWorking = true
+            customdebug("Reorder queue item " + from + " to " + to);
+            songList.focusIndex = to
+            mainView.jobRunning = true
             delayReorderTrackInPlaylist.argFrom = from
             delayReorderTrackInPlaylist.argTo = to
             delayReorderTrackInPlaylist.start()
@@ -346,32 +354,33 @@ MusicPage {
             property int argTo: 0
             onTriggered: {
                 if (reorderTrackInPlaylist(containerItem.id, argFrom, argTo, songsModel.containerUpdateID())) {
-                    songsModel.load();
+                    songsModel.asyncLoad();
                 }
-                mainView.currentlyWorking = false
             }
         }
 
         onAtYEndChanged: {
-            if (albumtrackslist.atYEnd && songsModel.totalCount > songsModel.count) {
-                mainView.currentlyWorking = true
-                delayLoadMoreTracks.start()
-            }
-        }
-
-        Timer {
-            id: delayLoadMoreTracks
-            interval: 100
-            onTriggered: {
-                songsModel.loadMore()
-                mainView.currentlyWorking = false
+            if (songList.atYEnd && songsModel.totalCount > songsModel.count) {
+                songsModel.asyncLoadMore()
             }
         }
 
     }
 
+    Scrollbar {
+        flickableItem: songList
+        align: Qt.AlignTrailing
+    }
+
+    // check favorite on data loaded
+    Connections {
+        target: AllFavoritesModel
+        onCountChanged: {
+            isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
+        }
+    }
+
     Component.onCompleted: {
-        mainView.currentlyWorking = true
-        delayInitModel.start()
+        isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
     }
 }

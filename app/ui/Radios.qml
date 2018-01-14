@@ -84,16 +84,6 @@ MusicPage {
         filterCaseSensitivity: Qt.CaseInsensitive
     }
 
-    Timer {
-        id: delayLoadModel
-        interval: 100
-        onTriggered: {
-            AllRadiosModel.load();
-            radiosPage.taintedView = false; // reset
-            mainView.currentlyWorking = false;
-        }
-    }
-
     // Hack for autopilot otherwise Albums appears as MusicPage
     // due to bug 1341671 it is required that there is a property so that
     // qml doesn't optimise using the parent type
@@ -176,9 +166,7 @@ MusicPage {
             }
 
             onItemClicked: {
-                mainView.currentlyWorking = true
-                delayRadioClicked.model = model
-                delayRadioClicked.start()
+                radioClicked(model) // play radio
             }
 
         }
@@ -226,10 +214,17 @@ MusicPage {
                          ""}]
 
             onClicked: {
-                mainView.currentlyWorking = true
-                delayRadioClicked.model = model
-                delayRadioClicked.start()
+                radioClicked(model) // play radio
             }
+
+            // check favorite on data updated
+            Connections {
+                target: AllFavoritesModel
+                onLoaded: {
+                    isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
+                }
+            }
+
             onPressAndHold: {
                 if (isFavorite && removeFromFavorites(model.payload))
                     isFavorite = false;
@@ -246,14 +241,5 @@ MusicPage {
         }
     }
 
-    Timer {
-        id: delayRadioClicked
-        interval: 100
-        property QtObject model
-        onTriggered: {
-            radioClicked(model) // play radio
-            mainView.currentlyWorking = false
-        }
-    }
 }
 

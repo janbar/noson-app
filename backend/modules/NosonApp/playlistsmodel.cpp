@@ -56,7 +56,9 @@ PlaylistsModel::PlaylistsModel(QObject* parent)
 
 PlaylistsModel::~PlaylistsModel()
 {
-  clear();
+  clearData();
+  qDeleteAll(m_items);
+  m_items.clear();
 }
 
 void PlaylistsModel::addItem(PlaylistItem* item)
@@ -142,29 +144,32 @@ bool PlaylistsModel::init(QObject* sonos, const QString& root, bool fill)
   return ListModel::init(sonos, _root, fill);
 }
 
-void PlaylistsModel::clear()
+void PlaylistsModel::clearData()
 {
-  {
-    SONOS::LockGuard lock(m_lock);
-    beginRemoveRows(QModelIndex(), 0, m_items.count());
-    qDeleteAll(m_items);
-    m_items.clear();
-    endRemoveRows();
-  }
-  emit countChanged();
+  SONOS::LockGuard lock(m_lock);
+  qDeleteAll(m_data);
+  m_data.clear();
 }
 
-bool PlaylistsModel::load()
+bool PlaylistsModel::loadData()
 {
   setUpdateSignaled(false);
   
   if (!m_provider)
+  {
+    emit loaded(false);
     return false;
-  clear();
+  }
   const SONOS::PlayerPtr player = m_provider->getPlayer();
   if (!player)
+  {
+    emit loaded(false);
     return false;
+  }
 
+  SONOS::LockGuard lock(m_lock);
+  clearData();
+  m_dataState = ListModel::NoData;
   QString port;
   port.setNum(player->GetPort());
   QString url = "http://";
@@ -176,14 +181,19 @@ bool PlaylistsModel::load()
   {
     PlaylistItem* item = new PlaylistItem(*it, url);
     if (item->isValid())
-      addItem(item);
+      m_data << item;
     else
       delete item;
   }
   if (cl.failure())
-    return m_loaded = false;
+  {
+    emit loaded(false);
+    return false;
+  }
   m_updateID = cl.GetUpdateID(); // sync new baseline
-  return m_loaded = true;
+  m_dataState = ListModel::Loaded;
+  emit loaded(true);
+  return true;
 }
 
 void PlaylistsModel::handleDataUpdate()
@@ -195,8 +205,34 @@ void PlaylistsModel::handleDataUpdate()
   }
 }
 
+void PlaylistsModel::resetModel()
+{
+  {
+    SONOS::LockGuard lock(m_lock);
+    if (m_dataState != ListModel::Loaded)
+        return;
+    beginResetModel();
+    beginRemoveRows(QModelIndex(), 0, m_items.count()-1);
+    qDeleteAll(m_items);
+    m_items.clear();
+    endRemoveRows();
+    beginInsertRows(QModelIndex(), 0, m_data.count()-1);
+    foreach (PlaylistItem* item, m_data)
+        m_items << item;
+    m_data.clear();
+    m_dataState = ListModel::Synced;
+    endInsertRows();
+    endResetModel();
+  }
+  emit countChanged();
+}
+
 bool PlaylistsModel::asyncLoad()
 {
   if (m_provider)
+  {
     m_provider->runModelLoader(this);
+    return true;
+  }
+  return false;
 }

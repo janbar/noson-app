@@ -111,7 +111,9 @@ MediaModel::MediaModel(QObject* parent)
 
 MediaModel::~MediaModel()
 {
-  clear();
+  clearData();
+  qDeleteAll(m_items);
+  m_items.clear();
   SAFE_DELETE(m_smapi);
 }
 
@@ -245,29 +247,28 @@ bool MediaModel::init(QObject* sonos, const QVariant& service, bool fill)
   m_auth.token = oa.token;
   // initialize path to root
   m_path.clear();
-  return ListModel::init(sonos, "", fill);
+  return ListModel::init(sonos, fill);
 }
 
-void MediaModel::clear()
+void MediaModel::clearData()
 {
-  {
-    SONOS::LockGuard lock(m_lock);
-    beginRemoveRows(QModelIndex(), 0, m_items.count());
-    qDeleteAll(m_items);
-    m_items.clear();
-    endRemoveRows();
-  }
-  emit countChanged();
+  SONOS::LockGuard lock(m_lock);
+  qDeleteAll(m_data);
+  m_data.clear();
 }
 
-bool MediaModel::load()
+bool MediaModel::loadData()
 {
   setUpdateSignaled(false);
   SONOS::LockGuard lock(m_lock);
   if (!m_smapi)
+  {
+    emit loaded(false);
     return false;
+  }
 
-  clear();
+  clearData();
+  m_dataState = ListModel::NoData;
   m_searching = false; // enable browse state
   m_nextIndex = m_totalCount = 0;
   SONOS::SMAPIMetadata meta;
@@ -276,92 +277,30 @@ bool MediaModel::load()
     emit totalCountChanged();
     if (m_smapi->AuthTokenExpired())
       emit authStatusChanged();
+    emit loaded(false);
     return false;
   }
   m_totalCount = meta.TotalCount();
   m_nextIndex = meta.ItemCount();
-  emit totalCountChanged();
 
   SONOS::SMAPIItemList list = meta.GetItems();
   for (SONOS::SMAPIItemList::const_iterator it = list.begin(); it != list.end(); ++it)
   {
     MediaItem* item = new MediaItem(*it);
     if (item->isValid())
-      addItem(item);
+      m_data << item;
     else
+    {
       delete item;
+      // Also decrease total count
+      if (m_totalCount > 0)
+        --m_totalCount;
+    }
   }
-  return m_loaded = true;
-}
-
-bool MediaModel::loadMore()
-{
-  SONOS::LockGuard lock(m_lock);
-  if (!m_smapi)
-    return false;
-  // At end return false
-  if (m_nextIndex >= m_totalCount)
-    return false;
-
-  SONOS::SMAPIMetadata meta;
-  // browse or search for next items depending of current state
-  if ((!m_searching && !m_smapi->GetMetadata(pathId().toUtf8().constData(), m_nextIndex, LOAD_BULKSIZE, false, meta)) ||
-      (m_searching && !m_smapi->Search(m_searchCategory, m_searchTerm, m_nextIndex, LOAD_BULKSIZE, meta)))
-  {
-    if (m_smapi->AuthTokenExpired())
-      emit authStatusChanged();
-    return false;
-  }
-  if (m_totalCount != meta.TotalCount())
-  {
-    m_totalCount = meta.TotalCount();
-    emit totalCountChanged();
-  }
-  m_nextIndex += meta.ItemCount();
-
-  SONOS::SMAPIItemList list= meta.GetItems();
-  for (SONOS::SMAPIItemList::const_iterator it = list.begin(); it != list.end(); ++it)
-  {
-    MediaItem* item = new MediaItem(*it);
-    if (item->isValid())
-      addItem(item);
-    else
-      delete item;
-  }
+  emit totalCountChanged();
+  m_dataState = ListModel::Loaded;
+  emit loaded(true);
   return true;
-}
-
-bool MediaModel::loadChild(const QString& id, const QString& title, int displayType, int viewIndex /*= 0*/)
-{
-  if (id.isEmpty())
-    return false;
-  SONOS::LockGuard lock(m_lock);
-  // save current view index for this path item
-  if (!m_path.empty())
-    m_path.top().viewIndex = viewIndex;
-  m_path.push(Path(id, title, displayType));
-  emit pathChanged();
-  return load();
-}
-
-bool MediaModel::loadParent()
-{
-  SONOS::LockGuard lock(m_lock);
-  if (!m_path.empty())
-    m_path.pop();
-  // reload current search else the parent item
-  if (pathName() == SEARCH_TAG)
-  {
-    m_searching = true; // reset state before signal the change
-    emit pathChanged();
-    return search();
-  }
-  else
-  {
-    m_searching = false; // reset state before signal the change
-    emit pathChanged();
-    return load();
-  }
 }
 
 QString MediaModel::pathName() const
@@ -411,47 +350,6 @@ QList<QString> MediaModel::listSearchCategories() const
       list << QString::fromUtf8((*it)->GetKey().c_str());
   }
   return list;
-}
-
-bool MediaModel::loadSearch(const QString &category, const QString &term)
-{
-  SONOS::LockGuard lock(m_lock);
-  m_searchCategory = category.toUtf8().constData();
-  m_searchTerm = term.toUtf8().constData();
-  m_searching = true; // enable search state
-  m_path.clear();
-  m_path.push(Path("", SEARCH_TAG, ROOT_DISPLAY_TYPE));
-  emit pathChanged();
-  return search();
-}
-
-bool MediaModel::search()
-{
-  if (!m_smapi)
-    return false;
-
-  SONOS::SMAPIMetadata meta;
-  if (!m_smapi->Search(m_searchCategory, m_searchTerm, 0, LOAD_BULKSIZE, meta))
-  {
-    emit totalCountChanged();
-    if (m_smapi->AuthTokenExpired())
-      emit authStatusChanged();
-    return false;
-  }
-  clear();
-  m_totalCount = meta.TotalCount();
-  m_nextIndex = meta.ItemCount();
-  emit totalCountChanged();
-  SONOS::SMAPIItemList list = meta.GetItems();
-  for (SONOS::SMAPIItemList::const_iterator it = list.begin(); it != list.end(); ++it)
-  {
-    MediaItem* item = new MediaItem(*it);
-    if (item->isValid())
-      addItem(item);
-    else
-      delete item;
-  }
-  return m_loaded = true;
 }
 
 bool MediaModel::isAuthExpired() const
@@ -525,7 +423,254 @@ MediaAuth* MediaModel::getDeviceAuth()
 bool MediaModel::asyncLoad()
 {
   if (m_provider)
+  {
     m_provider->runModelLoader(this);
+    return true;
+  }
+  return false;
+}
+
+bool MediaModel::loadMoreData()
+{
+  SONOS::LockGuard lock(m_lock);
+  if (!m_smapi)
+  {
+    emit loadedMore(false);
+    return false;
+  }
+  // At end return false
+  if (m_nextIndex >= m_totalCount)
+  {
+    emit loadedMore(false);
+    return false;
+  }
+
+  SONOS::SMAPIMetadata meta;
+  // browse or search for next items depending of current state
+  if ((!m_searching && !m_smapi->GetMetadata(pathId().toUtf8().constData(), m_nextIndex, LOAD_BULKSIZE, false, meta)) ||
+      (m_searching && !m_smapi->Search(m_searchCategory, m_searchTerm, m_nextIndex, LOAD_BULKSIZE, meta)))
+  {
+    if (m_smapi->AuthTokenExpired())
+      emit authStatusChanged();
+    emit loaded(false);
+    return false;
+  }
+  if (m_totalCount != meta.TotalCount())
+  {
+    m_totalCount = meta.TotalCount();
+    emit totalCountChanged();
+  }
+  m_nextIndex += meta.ItemCount();
+
+  SONOS::SMAPIItemList list= meta.GetItems();
+  for (SONOS::SMAPIItemList::const_iterator it = list.begin(); it != list.end(); ++it)
+  {
+    MediaItem* item = new MediaItem(*it);
+    if (item->isValid())
+      m_data << item;
+    else
+    {
+      delete item;
+      // Also decrease total count
+      if (m_totalCount) {
+        --m_totalCount;
+        emit totalCountChanged();
+      }
+    }
+  }
+  m_dataState = ListModel::Loaded;
+  emit loadedMore(true);
+  return true;
+}
+
+bool MediaModel::asyncLoadMore()
+{
+  if (!m_provider)
+    return false;
+  m_provider->runCustomizedModelLoader(this, 1);
+  return true;
+}
+
+bool MediaModel::loadChild(const QString& id, const QString& title, int displayType, int viewIndex /*= 0*/)
+{
+  if (id.isEmpty())
+    return false;
+  SONOS::LockGuard lock(m_lock);
+  // save current view index for this path item
+  if (!m_path.empty())
+    m_path.top().viewIndex = viewIndex;
+  m_path.push(Path(id, title, displayType));
+  emit pathChanged();
+  return loadData();
+}
+
+bool MediaModel::asyncLoadChild(const QString &id, const QString &title, int displayType, int viewIndex /*= 0*/)
+{
+  if (id.isEmpty())
+    return false;
+  {
+    SONOS::LockGuard lock(m_lock);
+    // save current view index for this path item
+    if (!m_path.empty())
+      m_path.top().viewIndex = viewIndex;
+    m_path.push(Path(id, title, displayType));
+    emit pathChanged();
+  }
+  return asyncLoad();
+}
+
+bool MediaModel::loadParent()
+{
+  SONOS::LockGuard lock(m_lock);
+  if (!m_path.empty())
+    m_path.pop();
+  // reload current search else the parent item
+  if (pathName() == SEARCH_TAG)
+  {
+    m_searching = true; // reset state before signal the change
+    emit pathChanged();
+    return search();
+  }
+  else
+  {
+    m_searching = false; // reset state before signal the change
+    emit pathChanged();
+    return loadData();
+  }
+}
+
+bool MediaModel::asyncLoadParent()
+{
+  if (!m_provider)
+    return false;
+  m_provider->runCustomizedModelLoader(this, 2);
+  return true;
+}
+
+bool MediaModel::loadSearch(const QString &category, const QString &term)
+{
+  SONOS::LockGuard lock(m_lock);
+  m_searchCategory = category.toUtf8().constData();
+  m_searchTerm = term.toUtf8().constData();
+  m_searching = true; // enable search state
+  m_path.clear();
+  m_path.push(Path("", SEARCH_TAG, ROOT_DISPLAY_TYPE));
+  emit pathChanged();
+  return search();
+}
+
+bool MediaModel::asyncLoadSearch(const QString &category, const QString &term)
+{
+  {
+    SONOS::LockGuard lock(m_lock);
+    m_searchCategory = category.toUtf8().constData();
+    m_searchTerm = term.toUtf8().constData();
+    m_searching = true; // enable search state
+    m_path.clear();
+    m_path.push(Path("", SEARCH_TAG, ROOT_DISPLAY_TYPE));
+    emit pathChanged();
+  }
+  if (!m_provider)
+    return false;
+  m_provider->runCustomizedModelLoader(this, 3);
+  return true;
+}
+
+bool MediaModel::search()
+{
+  if (!m_smapi)
+  {
+    emit loaded(false);
+    return false;
+  }
+
+  SONOS::SMAPIMetadata meta;
+  if (!m_smapi->Search(m_searchCategory, m_searchTerm, 0, LOAD_BULKSIZE, meta))
+  {
+    emit totalCountChanged();
+    if (m_smapi->AuthTokenExpired())
+      emit authStatusChanged();
+    emit loaded(false);
+    return false;
+  }
+  clearData();
+  m_dataState = ListModel::NoData;
+  m_totalCount = meta.TotalCount();
+  m_nextIndex = meta.ItemCount();
+  SONOS::SMAPIItemList list = meta.GetItems();
+  for (SONOS::SMAPIItemList::const_iterator it = list.begin(); it != list.end(); ++it)
+  {
+    MediaItem* item = new MediaItem(*it);
+    if (item->isValid())
+      m_data << item;
+    else
+    {
+      delete item;
+      // Also decrease total count
+      if (m_totalCount > 0)
+        --m_totalCount;
+    }
+  }
+  emit totalCountChanged();
+  m_dataState = ListModel::Loaded;
+  emit loaded(true);
+  return true;
+}
+
+void MediaModel::resetModel()
+{
+  {
+    SONOS::LockGuard lock(m_lock);
+    if (m_dataState != ListModel::Loaded)
+        return;
+    beginResetModel();
+    beginRemoveRows(QModelIndex(), 0, m_items.count()-1);
+    qDeleteAll(m_items);
+    m_items.clear();
+    endRemoveRows();
+    beginInsertRows(QModelIndex(), 0, m_data.count()-1);
+    foreach (MediaItem* item, m_data)
+        m_items << item;
+    m_data.clear();
+    m_dataState = ListModel::Synced;
+    endInsertRows();
+    endResetModel();
+  }
+  emit countChanged();
+}
+
+void MediaModel::appendModel()
+{
+  {
+    SONOS::LockGuard lock(m_lock);
+    if (m_dataState != ListModel::Loaded)
+      return;
+    int cnt = m_items.count();
+    beginInsertRows(QModelIndex(), cnt, cnt + m_data.count()-1);
+    foreach (MediaItem* item, m_data)
+        m_items << item;
+    m_data.clear();
+    m_dataState = ListModel::Synced;
+    endInsertRows();
+  }
+  emit countChanged();
+}
+
+bool MediaModel::customizedLoad(int id)
+{
+  switch (id)
+  {
+    case 0:
+      return loadData();
+    case 1:
+      return loadMoreData();
+    case 2:
+      return loadParent();
+    case 3:
+      return search();
+    default:
+      return false;
+  }
 }
 
 void MediaModel::handleDataUpdate()

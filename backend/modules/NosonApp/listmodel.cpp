@@ -26,7 +26,7 @@ ListModel::ListModel()
 , m_provider(0)
 , m_updateID(0)
 , m_pending(false)
-, m_loaded(false)
+, m_dataState(ListModel::NoData)
 , m_updateSignaled(false)
 {
   m_lock = SONOS::LockGuard::CreateLock();
@@ -53,8 +53,8 @@ bool ListModel::init(QObject* sonos, const QString& root, bool fill /*= false*/)
   m_provider = _sonos;
   m_root = root;
   // Reset container status to allow async reload
-  m_loaded = false;
+  m_dataState = ListModel::NoData;
   if (fill)
-    return this->load();
+    return this->loadData();
   return false; // not filled
 }

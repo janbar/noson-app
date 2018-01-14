@@ -108,6 +108,15 @@ MusicPage {
                                        "line2": model.title !== undefined && model.title !== "" ? model.title : i18n.tr("Unknown Album")
                                    })
             }
+
+            // check favorite on data loaded
+            Connections {
+                target: AllFavoritesModel
+                onCountChanged: {
+                    isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
+                }
+            }
+
             onPressAndHold: {
                 if (isFavorite && removeFromFavorites(model.payload))
                     isFavorite = false
