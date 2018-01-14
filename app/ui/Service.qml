@@ -31,11 +31,13 @@ MusicPage {
     id: servicePage
     objectName: "servicePage"
 
+    property bool isListView: false
     property var serviceItem: null
     property bool loaded: false  // used to detect difference between first and further loads
     property bool isRoot: mediaModel.isRoot
     property int displayType: 3  // display type for root
-    property bool isListView: false
+    property int parentDisplayType: 0
+    property bool focusViewIndex: false
 
     // the model handles search
     property alias searchableModel: mediaModel
@@ -77,59 +79,54 @@ MusicPage {
             art: serviceItem.id === "SA_RINCON65031_" ? Qt.resolvedUrl("../graphics/tunein.png") : serviceItem.icon
     }
 
+    property alias model: mediaModel // used in ServiceHeadState
+
     MediaModel {
       id: mediaModel
     }
 
-    Timer {
-        id: delayInitModel
-        interval: 100
-        onTriggered: {
-            mediaModel.init(Sonos, serviceItem.payload, true)
-            mainView.currentlyWorking = false
-            servicePage.loaded = true;
-        }
-    }
-
-    Timer {
-        id: delayLoadModel
-        interval: 100
-        onTriggered: {
-            mediaModel.load();
-            servicePage.taintedView = false; // reset
-            mainView.currentlyWorking = false;
-        }
-    }
-
-    Timer {
-        id: delayLoadMore
-        interval: 100
-        onTriggered: {
-            mediaModel.loadMore()
-            mainView.currentlyWorking = false
-        }
-    }
-
-    Timer {
-        id: delayLoadRootModel
-        interval: 100
-        onTriggered: {
-            mediaModel.loadRoot();
-            servicePage.taintedView = false; // reset
-            mainView.currentlyWorking = false;
+    function restoreFocusViewIndex() {
+        var idx = mediaModel.viewIndex()
+        if (mediaModel.count <= idx) {
+          mediaModel.asyncLoadMore() // load more !!!
+        } else {
+            focusViewIndex = false;
+            mediaList.positionViewAtIndex(idx, ListView.Center);
+            mediaGrid.positionViewAtIndex(idx, GridView.Center);
         }
     }
 
     Connections {
         target: mediaModel
-        onDataUpdated: {
-            mainView.currentlyWorking = true
-            delayLoadModel.start()
+        onDataUpdated: mediaModel.asyncLoad()
+        onLoaded: {
+            if (succeeded) {
+                mediaModel.resetModel()
+                servicePage.displayType = servicePage.parentDisplayType // apply displayType
+                servicePage.taintedView = false // reset
+                if (focusViewIndex) {
+                    // restore index position in view
+                    restoreFocusViewIndex()
+                } else {
+                    mediaList.positionViewAtIndex(0, ListView.Top);
+                    mediaGrid.positionViewAtIndex(0, GridView.Top);
+                }
+            }
         }
-    }
+        onLoadedMore: {
+            if (succeeded) {
+                mediaModel.appendModel()
+                if (focusViewIndex) {
+                    // restore index position in view
+                    restoreFocusViewIndex()
+                }
+            } else if (focusViewIndex) {
+                focusViewIndex = false;
+                mediaList.positionViewAtEnd();
+                mediaGrid.positionViewAtEnd();
+            }
+        }
 
-    Connections {
-        target: mediaModel
         onPathChanged: {
             if (mediaModel.isRoot) {
                 pageTitle = serviceItem.title;
@@ -207,7 +204,7 @@ MusicPage {
                    : model.canPlay && !model.canQueue ? Qt.resolvedUrl("../graphics/radio.png")
                    : Qt.resolvedUrl("../graphics/no_cover.png")
 
-            imageSource: model.art !== "" ? model.art
+            imageSource: model.art !== undefined && model.art.length > 0 ? model.art
                        : model.type === 2 ? Qt.resolvedUrl("../graphics/none.png")
                        : model.canPlay && !model.canQueue ? Qt.resolvedUrl("../graphics/radio.png")
                        : Qt.resolvedUrl("../graphics/no_cover.png")
@@ -272,8 +269,8 @@ MusicPage {
 
         onAtYEndChanged: {
             if (mediaList.atYEnd && mediaModel.totalCount > mediaModel.count) {
-                mainView.currentlyWorking = true
-                delayLoadMore.start()
+                focusViewIndex = true;
+                mediaModel.asyncLoadMore()
             }
         }
     }
@@ -297,7 +294,7 @@ MusicPage {
         delegate: Card {
             id: favoriteCard
             primaryText: model.title
-            secondaryText: model.description.length > 0 ? model.description
+            secondaryText: model.description !== undefined && model.description.length > 0 ? model.description
                          : model.type === 1 ? model.artist.length > 0 ? model.artist : i18n.tr("Album")
                          : model.type === 2 ? i18n.tr("Artist")
                          : model.type === 3 ? i18n.tr("Genre")
@@ -318,6 +315,15 @@ MusicPage {
                         : [{art: Qt.resolvedUrl("../graphics/no_cover.png")}]
 
             onClicked: clickItem(model)
+
+            // check favorite on data loaded
+            Connections {
+                target: AllFavoritesModel
+                onCountChanged: {
+                    isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
+                }
+            }
+
             onPressAndHold: {
                 if (model.canPlay) {
                     if (isFavorite && removeFromFavorites(model.payload))
@@ -336,89 +342,42 @@ MusicPage {
 
         onAtYEndChanged: {
             if (mediaGrid.atYEnd && mediaModel.totalCount > mediaModel.count) {
-                mainView.currentlyWorking = true
-                delayLoadMore.start()
+                mediaModel.asyncLoadMore()
             }
         }
     }
 
     Component.onCompleted: {
-        mainView.currentlyWorking = true;
-        delayInitModel.start();
-    }
-
-    Timer {
-        id: delayGoUp
-        interval: 100
-        onTriggered: {
-            // change view depending of parent display type
-            servicePage.displayType = mediaModel.parentDisplayType();
-            mediaModel.loadParent();
-            // restore index position in view
-            var idx = mediaModel.viewIndex();
-            while (mediaModel.count <= idx && mediaModel.loadMore());
-            if (idx < mediaModel.count) {
-                mediaList.positionViewAtIndex(idx, ListView.Center);
-                mediaGrid.positionViewAtIndex(idx, GridView.Center);
-            } else {
-                mediaList.positionViewAtEnd();
-                mediaGrid.positionViewAtEnd();
-            }
-            mainView.currentlyWorking = false;
-        }
+        mediaModel.init(Sonos, serviceItem.payload, false)
+        mediaModel.asyncLoad()
     }
 
     function goUp() {
-        mainView.currentlyWorking = true
-        delayGoUp.start()
-    }
-
-    Timer {
-        id: delayMediaClicked
-        interval: 100
-        property QtObject model
-        onTriggered: {
-            if (model.isContainer) {
-                var pdt = servicePage.displayType;
-                servicePage.displayType = model.displayType;
-                mediaModel.loadChild(model.id, model.title, pdt, model.index);
-                mediaList.positionViewAtIndex(0, ListView.Top);
-                mediaGrid.positionViewAtIndex(0, GridView.Top);
-            } else if (model.canPlay) {
-                if (model.canQueue)
-                  trackClicked(model);
-                else
-                  radioClicked(model);
-            }
-            mainView.currentlyWorking = false
-        }
+        // change view depending of parent display type
+        servicePage.parentDisplayType = mediaModel.parentDisplayType();
+        focusViewIndex = true;
+        mediaModel.asyncLoadParent();
     }
 
     function clickItem(model) {
-        mainView.currentlyWorking = true
-        delayMediaClicked.model = model
-        delayMediaClicked.start()
-    }
-
-    Timer {
-        id: delayPlayMedia
-        interval: 100
-        property QtObject model
-        onTriggered: {
-            if (model.canPlay) {
-                if (model.canQueue)
-                  trackClicked(model);
-                else
-                  radioClicked(model);
-            }
-            mainView.currentlyWorking = false
+        if (model.isContainer) {
+            servicePage.parentDisplayType = model.displayType;
+            mediaModel.asyncLoadChild(model.id, model.title, servicePage.displayType, model.index);
+        } else if (model.canPlay) {
+            if (model.canQueue)
+              trackClicked(model);
+            else
+              radioClicked(model);
         }
     }
 
     function playItem(model) {
-        mainView.currentlyWorking = true
-        delayPlayMedia.model = model
-        delayPlayMedia.start()
+        if (model.canPlay) {
+            if (model.canQueue)
+              trackClicked(model);
+            else
+              radioClicked(model);
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -446,27 +405,26 @@ MusicPage {
             if (mediaModel.isAuthExpired) {
                 if (mediaModel.policyAuth == 1) {
                     if (!loginService.active) {
-                        mediaModel.clear();
                         // first try with saved login/password
                         var auth = mediaModel.getDeviceAuth();
                         if (auth.key.length === 0 || mediaModel.requestSessionId(mediaModel.username, auth.key) === 0)
                             loginService.active = true; // show login registration
                         else {
                             // refresh the model
-                            delayLoadModel.start();
+                            mediaModel.asyncLoad();
                         }
                     }
                 } else if (mediaModel.policyAuth == 2 || mediaModel.policyAuth == 3) {
                     if (registeringService.active)
                         registeringService.active = false; // restart new registration
                     else
-                        mediaModel.clear();
+                        mediaModel.clearData();
                     registeringService.active = true;
                 }
             } else {
                 loginService.active = false;
                 registeringService.active = false;
-                mainView.currentlyWorking = true;
+                mainView.jobRunning = true;
                 // save new incarnation of accounts settings
                 var auth = mediaModel.getDeviceAuth();
                 var acls = deserializeACLS(startupSettings.accounts);
@@ -480,7 +438,7 @@ MusicPage {
                 _acls.push({type: auth.type, sn: auth.serialNum, key: auth.key, token: auth.token});
                 startupSettings.accounts = serializeACLS(_acls);
                 // refresh the model
-                delayLoadModel.start();
+                mediaModel.asyncLoad();
             }
         }
     }

@@ -108,7 +108,7 @@ Rectangle {
             width: parent.width
 
             onClicked: {
-                mainView.currentlyWorking = true
+                mainView.jobRunning = true
                 delayLoginService.start()
             }
         }
@@ -119,7 +119,7 @@ Rectangle {
             onTriggered: {
                 loginOutput.visible = false;
                 var ret = mediaModel.requestSessionId(username.text, password.text);
-                mainView.currentlyWorking = false;
+                mainView.jobRunning = false;
                 if (ret === 0) {
                     customdebug("Service login failed.");
                     loginOutput.text = i18n.tr("Login failed.");

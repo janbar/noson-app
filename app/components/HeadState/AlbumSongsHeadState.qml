@@ -44,7 +44,7 @@ State {
                     onTriggered: {
                         if (isFavorite && removeFromFavorites(containerItem.payload))
                             isFavorite = false
-                        else if (!isFavorite && addItemToFavorites(containerItem, title, albumtrackslist.headerItem.firstSource))
+                        else if (!isFavorite && addItemToFavorites(containerItem, title, songList.headerItem.firstSource))
                             isFavorite = true
                     }
                 }

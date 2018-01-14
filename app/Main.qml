@@ -39,6 +39,7 @@ MainView {
     applicationName: "noson.janbar"
     id: mainView
 
+    focus: true
     backgroundColor: styleMusic.mainView.backgroundColor
 
     Binding {
@@ -119,7 +120,7 @@ MainView {
     property bool wideAspect: width >= units.gu(100) && loadedUI
 
     // property to enable pop info on index loaded
-    property bool infoLoadedIndex: false
+    property bool infoLoadedIndex: true // enabled at startup
 
     // Constants
     readonly property int queueBatchSize: 100
@@ -129,13 +130,81 @@ MainView {
     //// Events
     ////
 
+    Connections {
+            target: Sonos
+
+            onJobCountChanged: jobRunning = Sonos.jobCount > 0 ? true : false
+
+            onInitDone: {
+                if (succeeded) {
+                    if (noZone)
+                        noZone = false;
+                } else {
+                    if (!noZone)
+                        noZone = true;
+                }
+            }
+
+            onLoadingFinished: {
+                if (infoLoadedIndex) {
+                    infoLoadedIndex = false;
+                    popInfo.open(i18n.tr("Index loaded"));
+                }
+            }
+
+            onTopologyChanged: {
+                AllZonesModel.asyncLoad()
+                delayReloadZone.start()
+            }
+    }
+
+    Timer {
+        id: delayReloadZone
+        interval: 250
+        onTriggered: {
+            if (jobRunning) {
+                restart();
+            } else {
+                // Reload the zone and start the content loader thread
+                customdebug("Reloading the zone ...");
+                if (connectZone(currentZone)) {
+                    Sonos.runLoader();
+                }
+            }
+        }
+    }
+
     // Run on startup
     Component.onCompleted: {
-        currentlyWorking = true
-        if (args.values.debug) { debugLevel = 4 }
-        delayStartup.start()
-
+        if (args.values.debug) {
+            mainView.debugLevel = 4
+        }
         customdebug("LANG=" + Qt.locale().name);
+        Sonos.setLocale(Qt.locale().name);
+        // initialize all data models
+        AllZonesModel.init(Sonos, "",       false);
+        AllFavoritesModel.init(Sonos, "",   false);
+        AllServicesModel.init(Sonos,        false);
+        AllAlbumsModel.init(Sonos, "",      false);
+        AllArtistsModel.init(Sonos, "",     false);
+        AllGenresModel.init(Sonos, "",      false);
+        AllRadiosModel.init(Sonos, "R:0/0", false);
+        AllPlaylistsModel.init(Sonos, "",   false);
+
+        // push the page to view
+        mainPageStack.push(tabs)
+
+        // launch connection
+        connectSonos();
+
+        // if a tab index exists restore it, otherwise goto Recent if there are items otherwise go to Albums
+        tabs.selectedTabIndex = startupSettings.tabIndex === -1
+                ? servicesTab.index
+                : (startupSettings.tabIndex > tabs.count - 1
+                   ? tabs.count - 1 : startupSettings.tabIndex)
+
+        // signal UI has finished
+        loadedUI = true;
 
         // resize main view according to user settings
         mainView.width = (startupSettings.width >= units.gu(44) ? startupSettings.width : units.gu(44));
@@ -146,9 +215,13 @@ MainView {
             customdebug("register account: type=" + acls[i].type + " sn=" + acls[i].sn + " token=" + acls[i].token.substr(0, 1) + "...");
             Sonos.addServiceOAuth(acls[i].type, acls[i].sn, acls[i].key, acls[i].token);
         }
+
+        //@TODO add url to play list
+        //if (args.values.url) {
+        //}
     }
 
-    Timer {
+/*    Timer {
         id: delayStartup
         interval: 100
         onTriggered: {
@@ -171,12 +244,11 @@ MainView {
                 //@TODO add url to play list
             }
         }
-    }
+    }*/
 
     // Show/hide page NoZoneState
     onNoZoneChanged: {
         if (noZone) {
-            currentlyWorking = false // hide actvity indicator
             emptyPage = mainPageStack.push(Qt.resolvedUrl("ui/NoZoneState.qml"), {})
         } else {
             mainPageStack.popPage(emptyPage)
@@ -186,7 +258,7 @@ MainView {
     // Refresh player state when application becomes active
     onApplicationStateChanged: {
         if (!noZone && applicationState && player.connected) {
-            mainView.currentlyWorking = true
+            mainView.jobRunning = true
             delayPlayerWakeUp.start()
         }
     }
@@ -201,7 +273,7 @@ MainView {
                 Sonos.renewSubscriptions()
                 noZone = false
             }
-            mainView.currentlyWorking = false
+            mainView.jobRunning = false
         }
     }
 
@@ -212,55 +284,57 @@ MainView {
     Connections {
         target: AllZonesModel
         onDataUpdated: AllZonesModel.asyncLoad()
+        onLoaded: AllZonesModel.resetModel()
     }
 
     Connections {
-        target: AllAlbumsModel
-        onDataUpdated: AllAlbumsModel.asyncLoad()
-    }
-
-    Connections {
-        target: AllArtistsModel
-        onDataUpdated: AllArtistsModel.asyncLoad()
-    }
-
-    Connections {
-        target: AllGenresModel
-        onDataUpdated: AllGenresModel.asyncLoad()
+        target: AllServicesModel
+        onDataUpdated: AllServicesModel.asyncLoad()
+        onLoaded: AllServicesModel.resetModel()
     }
 
     Connections {
         target: AllRadiosModel
         onDataUpdated: AllRadiosModel.asyncLoad()
-    }
-
-    Connections {
-        target: AllPlaylistsModel
-        onDataUpdated: AllPlaylistsModel.asyncLoad()
+        onLoaded: AllRadiosModel.resetModel()
     }
 
     Connections {
         target: AllFavoritesModel
         onDataUpdated: AllFavoritesModel.asyncLoad()
+        onLoaded: AllFavoritesModel.resetModel()
     }
 
     Connections {
-        target: Sonos
-        onLoadingFinished: {
-            if (infoLoadedIndex) {
-                infoLoadedIndex = false;
-                popInfo.open(i18n.tr("Index loaded"));
-            }
-            currentlyWorking = false; // hide actvity indicator
-        }
-
-        onTopologyChanged: {
-            reloadZone()
-        }
+        target: AllArtistsModel
+        onDataUpdated: AllArtistsModel.asyncLoad()
+        onLoaded: AllArtistsModel.resetModel()
     }
 
-    // Global keyboard shortcuts
-    focus: true
+    Connections {
+        target: AllAlbumsModel
+        onDataUpdated: AllAlbumsModel.asyncLoad()
+        onLoaded: AllAlbumsModel.resetModel()
+    }
+
+    Connections {
+        target: AllGenresModel
+        onDataUpdated: AllGenresModel.asyncLoad()
+        onLoaded: AllGenresModel.resetModel()
+    }
+
+    Connections {
+        target: AllPlaylistsModel
+        onDataUpdated: AllPlaylistsModel.asyncLoad()
+        onLoaded: AllPlaylistsModel.resetModel()
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////
+    ////
+    //// Global keyboard shortcuts
+    ////
+
     Keys.onPressed: {
         if(event.key === Qt.Key_Escape) {
             if (mainPageStack.currentMusicPage.currentDialog !== null) {
@@ -366,23 +440,14 @@ MainView {
     Connections {
         target: ContentHub
         onShareRequested: {
-            delayPlayURL.url = transfer.items[0].url
-            delayPlayURL.start()
-        }
-    }
-
-    Timer {
-        id: delayPlayURL
-        interval: 100
-        property string url: ""
-        onTriggered: {
-            if (!player.playStream(url, ""))
+            var url = transfer.items[0].url
+            if (!player.startPlayStream(url, ""))
                 popInfo.open(i18n.tr("Action can't be performed"))
             else
                 inputStreamUrl = url
-            mainView.currentlyWorking = false
         }
     }
+
 
     ////////////////////////////////////////////////////////////////////////////
     ////
@@ -423,48 +488,30 @@ MainView {
         return acls;
     }
 
-    // Try to connect to SONOS system
-    // On failure: noZone is set to true
+    // Try connect to SONOS system
     function connectSonos() {
-        if (Sonos.init(debugLevel)) {
-            Sonos.setLocale(Qt.locale().name);
-            AllFavoritesModel.init(Sonos, "");
-            AllServicesModel.init(Sonos);
-            AllAlbumsModel.init(Sonos, "");
-            AllArtistsModel.init(Sonos, "");
-            AllGenresModel.init(Sonos, "");
-            AllRadiosModel.init(Sonos, "R:0/0");
-            AllPlaylistsModel.init(Sonos, "");
-            // enable info on index loaded
-            infoLoadedIndex = true;
-            return true;
-        }
-        // Signal change if any
-        if (!noZone)
-            noZone = true;
-        return false;
+        return Sonos.startInit(mainView.debugLevel);
     }
 
-    // Reload zones and try connect
-    // On success: noZone is set to false and content loader thread is started
-    // to fill data in global models
-    function reloadZone() {
-        AllZonesModel.init(Sonos, true); // force load now
-        customdebug("Reloading zone ...");
-        if ((Sonos.connectZone(currentZone) || Sonos.connectZone("")) && player.connect()) {
+    signal zoneChanged
+
+    // Try to change zone
+    // On success noZone is set to false
+    function connectZone(name) {
+        var oldZone = currentZone;
+        customdebug("Connecting zone '" + name + "'");
+        if ((Sonos.connectZone(name) || Sonos.connectZone("")) && player.connect()) {
             currentZone = Sonos.getZoneName();
             currentZoneTag = Sonos.getZoneShortName();
-            customdebug("Connected zone is '" + currentZone + "'");
-            // It is time to fill models
-            Sonos.runLoader();
-            // Signal change if any
+            if (currentZone !== oldZone)
+                zoneChanged();
             if (noZone)
                 noZone = false;
             return true;
+        } else {
+            if (!noZone)
+                noZone = true;
         }
-        // Signal change if any
-        if (!noZone)
-            noZone = true;
         return false;
     }
 
@@ -1035,9 +1082,11 @@ MainView {
 
         height: status === Loader.Ready ? item.height : 0
     }
-    property alias currentlyWorking: loading.visible
+
+    property bool jobRunning: false
 
     LoadingSpinnerComponent {
         id: loading
+        visible: jobRunning
     }
 }

@@ -140,7 +140,7 @@ MusicPage {
         },
         MultiSelectHeadState {
             addToQueue: false
-            listview: queueLoader.item.listview
+            listview: queueLoader.status === Loader.Ready ? queueLoader.item.listview : null
             removable: true
             thisPage: nowPlaying
             thisHeader {

@@ -39,7 +39,6 @@ Button {
     }
 
     onClicked: {
-        mainView.currentlyWorking = true
         delayShuffleModel.start()
     }
 
@@ -48,7 +47,6 @@ Button {
         interval: 100
         onTriggered: {
             shuffleModel(model)
-            mainView.currentlyWorking = false
         }
     }
 

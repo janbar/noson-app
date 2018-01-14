@@ -85,6 +85,7 @@ MusicPage {
             var root = modelItem.id + "/";
             // register and load directory content for root
             childModel.init(Sonos, root, true);
+            childModel.resetModel();
             var count = childModel.count;
             var index = 0;
             while (index < count && index < 4) {
@@ -146,6 +147,15 @@ MusicPage {
                                        "line2": model.genre
                                    })
             }
+
+            // check favorite on data loaded
+            Connections {
+                target: AllFavoritesModel
+                onCountChanged: {
+                    isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
+                }
+            }
+
             onPressAndHold: {
                 if (isFavorite && removeFromFavorites(model.payload))
                     isFavorite = false
