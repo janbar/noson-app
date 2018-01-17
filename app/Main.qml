@@ -66,6 +66,12 @@ MainView {
             help: "Start Noson in a debug mode. Will show more output."
             required: false
         }
+        Argument {
+            name: "scalefactor"
+            help: "set a scale factor"
+            valueNames: ["FACTOR"]
+            required: false
+        }
     }
 
     // Startup settings
@@ -77,6 +83,8 @@ MainView {
         property string zoneName: ""
         property int tabIndex: -1
         property double width: mainView.width
+        property double height: mainView.height
+        property real scaleFactor: 1.0
         property string accounts: ""
     }
 
@@ -179,6 +187,10 @@ MainView {
         if (args.values.debug) {
             mainView.debugLevel = 4
         }
+        if (args.values.scalefactor) {
+            startupSettings.scaleFactor = args.values.scalefactor
+        }
+        units.gridUnit *= startupSettings.scaleFactor;
         customdebug("LANG=" + Qt.locale().name);
         Sonos.setLocale(Qt.locale().name);
         // initialize all data models
@@ -208,6 +220,7 @@ MainView {
 
         // resize main view according to user settings
         mainView.width = (startupSettings.width >= units.gu(44) ? startupSettings.width : units.gu(44));
+        mainView.height = (startupSettings.height >= units.gu(80) ? startupSettings.height : units.gu(80));
 
         // init SMAPI third party accounts (AppLink)
         var acls = deserializeACLS(startupSettings.accounts);
