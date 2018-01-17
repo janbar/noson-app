@@ -1,18 +1,15 @@
 %define _unpackaged_files_terminate_build 0
-%define libmaj 1
-%define libmin 0
-%define librel 1
-%define librev e
+%define debug_package %{nil}
+
 Release: 1
 
 %define openssldir /var/ssl
 
 Summary: Secure Sockets Layer and cryptography libraries and tools
 Name: openssl
-#Version: %{libmaj}.%{libmin}.%{librel}
-Version: %{libmaj}.%{libmin}.%{librel}%{librev}
+Version: 1.0.2n
 Source0: ftp://ftp.openssl.org/source/%{name}-%{version}.tar.gz
-Copyright: Freely distributable
+License: OpenSSL
 Group: System Environment/Libraries
 Provides: SSL
 URL: http://www.openssl.org/
@@ -84,7 +81,7 @@ documentation and POD files from which the man pages were produced.
 
 %build 
 
-%define CONFIG_FLAGS -DSSL_ALLOW_ADH --prefix=/usr --openssldir=%{openssldir}
+%define CONFIG_FLAGS -DSSL_ALLOW_ADH --prefix=%{_exec_prefix} --openssldir=%{openssldir}
 
 perl util/perlpath.pl /usr/bin/perl
 
@@ -106,7 +103,7 @@ LD_LIBRARY_PATH=`pwd` make test
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make MANDIR=/usr/man MANSUFFIX=ssl INSTALL_PREFIX="$RPM_BUILD_ROOT" install
+make MANDIR=%{_mandir} MANSUFFIX=ssl INSTALL_PREFIX="$RPM_BUILD_ROOT" install
 
 # Make backwards-compatibility symlink to ssleay
 ln -sf /usr/bin/openssl $RPM_BUILD_ROOT/usr/bin/ssleay
@@ -118,10 +115,12 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(0644,root,root,0755)
 %doc CHANGES CHANGES.SSLeay LICENSE NEWS README
 
-%attr(0755,root,root) /usr/bin/*
-%attr(0755,root,root) /usr/lib/*.so*
+%attr(0755,root,root) %{_bindir}/*
+%attr(0755,root,root) %{_libdir}/*.so*
+%attr(0755,root,root) %{_libdir}/engines/*.so*
+%attr(0755,root,root) %{_libdir}/pkgconfig/*
 %attr(0755,root,root) %{openssldir}/misc/*
-%attr(0644,root,root) /usr/man/man[157]/*
+%attr(0644,root,root) %{_mandir}/man[157]/*
 
 %config %attr(0644,root,root) %{openssldir}/openssl.cnf 
 %dir %attr(0755,root,root) %{openssldir}/certs
@@ -132,10 +131,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(0644,root,root,0755)
 %doc CHANGES CHANGES.SSLeay LICENSE NEWS README
 
-%attr(0644,root,root) /usr/lib/*.a
-%attr(0644,root,root) /usr/lib/pkgconfig/openssl.pc
-%attr(0644,root,root) /usr/include/openssl/*
-%attr(0644,root,root) /usr/man/man[3]/*
+%attr(0644,root,root) %{_libdir}/*.a
+%attr(0644,root,root) %{_libdir}/pkgconfig/openssl.pc
+%attr(0644,root,root) %{_includedir}/openssl/*
+%attr(0644,root,root) %{_mandir}/man[3]/*
 
 %files doc
 %defattr(0644,root,root,0755)
