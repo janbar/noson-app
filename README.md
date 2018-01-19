@@ -6,7 +6,7 @@ A fast and smart SONOS controller for Linux platforms.
 Go to [project page](http://janbar.github.io/noson-app/index.html) for further details. Translations are managed by **transifex** at [noson-translations](https://www.transifex.com/janbar/noson/).
 
 <p align="center">
-  <img src="http://janbar.github.io/noson-app/download/noson.png"/>
+  <img src="http://janbar.github.io/noson-app/download/noson3.png"/>
 <p>
 
 ## Build instructions
