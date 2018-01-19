@@ -31,3 +31,20 @@ Launch the *Noson* application from command line as follows.
 
 Also that will write debug output into the file `noson.log`. **Please be carefull to not paste debug log on public area before cleaning it from any credentials**. Debugging registration of music services will log entered credentials.
 
+## Ubuntu touch
+
+#### Build
+- `cmake -DCMAKE_BUILD_TYPE=Release -DCLICK_MODE=ON ..`
+- `make -j5`
+- `cmake --build . --target all`
+#### Package
+- `make DESTDIR=./ubuntu-deploy install`
+- `click build --no-validate ./ubuntu-deploy`
+- `click-review --sdk "noson.janbar_X.X.X_armhf.click"`
+#### Deploy
+The developer mode must be enabled for all the following steps: Settings > About Phone > Developer Mode
+- `adb push noson.janbar_X.X.X_armhf.click /home/phablet/Downloads/`
+- `adb shell`
+- `pkcon install-local --allow-untrusted Downloads/noson.janbar_X.X.X_armhf.click`
+- Exit from adb shell by command `exit`.
+
