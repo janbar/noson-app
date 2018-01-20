@@ -69,9 +69,7 @@ MusicPage {
             }
 
             noCover: "qrc:/images/radio.png"
-            imageSource: model.icon !== "" ? model.icon
-                       : model.streamId !== undefined && model.streamId !== "" ? "http://cdn-radiotime-logos.tunein.com/" + model.streamId + "q.png"
-                       : ""
+            imageSource: model.icon
             description: qsTr("Radio")
 
             onImageError: model.icon = "" // reset invalid url from model
