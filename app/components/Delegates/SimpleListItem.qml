@@ -20,6 +20,7 @@ import Ubuntu.Components 1.3
 import "../"
 
 ListItem {
+    id: item
     color: styleMusic.mainView.backgroundColor
     highlightColor: Qt.lighter(color, 1.2)
 

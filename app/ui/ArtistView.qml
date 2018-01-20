@@ -181,6 +181,8 @@ MusicPage {
             primaryText: model.title !== "" ? model.title : i18n.tr("Unknown Album")
             secondaryTextVisible: false
 
+            onImageError: model.art = "" // reset invalid url from model
+
             onClicked: {
                 mainPageStack.push(Qt.resolvedUrl("SongsView.qml"),
                                    {

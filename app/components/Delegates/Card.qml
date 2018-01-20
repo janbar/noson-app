@@ -41,6 +41,8 @@ Item {
     signal pressAndHold(var mouse)
     signal playClicked(var mouse)
 
+    signal imageError(var index)
+
     /* Animations */
     Behavior on height {
         NumberAnimation {
@@ -77,6 +79,7 @@ Item {
         CoverGrid {
             id: coverGrid
             size: parent.width
+            onImageError: card.imageError(index)
         }
 
         Item {
