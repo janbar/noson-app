@@ -1,9 +1,4 @@
 # make the qml files visible on qtcreator
 file(GLOB BOTTOMEDGE_QML_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.qml)
-file(GLOB BOTTOMEDGE_JS_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.js)
 
 add_custom_target(nosonapp_BOTTOMEDGE_QMLFiles ALL SOURCES ${BOTTOMEDGE_QML_FILES})
-add_custom_target(nosonapp_BOTTOMEDGE_JSFiles ALL SOURCES ${BOTTOMEDGE_JS_FILES})
-
-install(FILES ${BOTTOMEDGE_QML_FILES} DESTINATION ${NOSONAPP_DIR}/components/BottomEdge)
-install(FILES ${BOTTOMEDGE_JS_FILES} DESTINATION ${NOSONAPP_DIR}/components/BottomEdge)
