@@ -74,7 +74,7 @@ add_custom_target(NosonAppbackend-qmldir ALL
 )
 
 # Install plugin file
-MESSAGE(STATUS "PlugIns install path: ${QT_IMPORTS_DIR}")
-install(TARGETS NosonAppbackend DESTINATION ${QT_IMPORTS_DIR}/NosonApp/)
-install(FILES modules/NosonApp/qmldir DESTINATION ${QT_IMPORTS_DIR}/NosonApp/)
+MESSAGE(STATUS "PlugIns install path: ${PLUGINS_DIR}")
+install(TARGETS NosonAppbackend DESTINATION ${PLUGINS_DIR}/NosonApp/)
+install(FILES modules/NosonApp/qmldir DESTINATION ${PLUGINS_DIR}/NosonApp/)
 

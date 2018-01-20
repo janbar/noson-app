@@ -85,6 +85,8 @@ MusicPage {
             secondaryText: model.artist !== undefined && model.artist !== "" ? model.artist : i18n.tr("Unknown Artist")
             isFavorite: (AllFavoritesModel.findFavorite(model.payload).length > 0)
 
+            onImageError: model.art = "" // reset invalid url from model
+
             // check favorite on data updated
             Connections {
                 target: AllFavoritesModel

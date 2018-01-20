@@ -305,6 +305,7 @@ MusicPage {
                 }
             }
 
+            onImageError: model.art = "" // reset invalid url from model
             onItemClicked: currentDialog = dialogSongInfo.open(model, true) // show actions play...
 
             Loader {

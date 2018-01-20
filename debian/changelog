@@ -1,4 +1,8 @@
-noson-app (2.5) UNRELEASED; urgency=low
+noson-app (2.6) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 2.6
+  * Enable image disk cache
 
   [ janbar ]
   * Release 2.5

@@ -131,9 +131,9 @@ MusicPage {
 
             noCover: Qt.resolvedUrl("../graphics/radio.png")
 
-            imageSource: model.icon !== "" ? model.icon :
-                         model.streamId !== undefined && model.streamId !== "" ? "http://cdn-radiotime-logos.tunein.com/" + model.streamId + "q.png" :
-                         ""
+            imageSource: model.icon
+
+            onImageError: model.icon = "" // reset invalid url from model
 
             multiselectable: true
 
@@ -209,10 +209,9 @@ MusicPage {
             }
 
             noCover: Qt.resolvedUrl("../graphics/radio.png")
-            coverSources: [{art: model.icon !== "" ? model.icon :
-                         model.streamId !== undefined && model.streamId !== "" ? "http://cdn-radiotime-logos.tunein.com/" + model.streamId + "q.png" :
-                         ""}]
+            coverSources: [{art: model.icon}]
 
+            onImageError: model.icon = "" // reset invalid url from model
             onClicked: {
                 radioClicked(model) // play radio
             }

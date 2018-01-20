@@ -22,6 +22,7 @@ import Ubuntu.Components 1.3
 import "../"
 
 ListItem {
+    id: item
     color: styleMusic.mainView.backgroundColor
     highlightColor: Qt.lighter(color, 1.2)
 
@@ -36,6 +37,7 @@ ListItem {
     property bool reorderable: false
 
     signal itemClicked()
+    signal imageError
 
     onClicked: {
         if (selectMode) {
@@ -68,6 +70,8 @@ ListItem {
             leftMargin: selectMode ? 0 : units.gu(2)
             rightMargin: selectMode ? 0 : units.gu(2)
         }
+
+        onImageError: item.imageError()
 
         // Animate margin changes so it isn't noticible
         Behavior on anchors.leftMargin {

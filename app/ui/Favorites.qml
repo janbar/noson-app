@@ -151,6 +151,8 @@ MusicPage {
                          model.type === 5 && model.art === "" ? Qt.resolvedUrl("../graphics/radio.png") :
                          makeCoverSource(model.art, undefined, undefined)
 
+            onImageError: model.art = "" // reset invalid url from model
+
             multiselectable: false
 
             trailingActions: ListItemActions {
@@ -233,6 +235,7 @@ MusicPage {
                         : model.type === 5 && model.art === "" ? [{art: Qt.resolvedUrl("../graphics/radio.png")}]
                         : [{art: makeCoverSource(model.art, undefined, undefined)}]
 
+            onImageError: model.art = "" // reset invalid url from model
             onClicked: clickItem(model)
             onPressAndHold: {
                 favoritesPage.isListView = true

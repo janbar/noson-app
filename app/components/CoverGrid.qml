@@ -43,6 +43,8 @@ Item {
 
     property string firstSource
 
+    signal imageError(var index)
+
     onCoversChanged: {
         if (covers !== undefined) {
             while (covers.length > 4) {  // remove any covers after 4
@@ -83,6 +85,7 @@ Item {
 
                 onStatusChanged: {
                     if (status === Image.Error) {
+                        coverGrid.imageError(index);
                         if (useFallbackArt) {
                             var array = coverGrid.covers.slice(0);
                             array.splice(index,1);

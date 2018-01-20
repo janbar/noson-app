@@ -1,0 +1,3 @@
+#!/bin/bash
+export QML2_IMPORT_PATH=@PLUGINS_DIR@
+exec @NOSON_GUI@ $@

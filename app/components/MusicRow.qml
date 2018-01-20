@@ -23,12 +23,15 @@ import Ubuntu.Components 1.3
 
 
 Row {
+    id: row
     height: units.gu(7)
 
     property alias column: columnComponent.sourceComponent
     property real coverSize: styleMusic.common.albumSize
     property string noCover: Qt.resolvedUrl("../graphics/no_cover.png")
     property string imageSource: ""
+
+    signal imageError
 
     spacing: units.gu(2)
 
@@ -47,6 +50,7 @@ Row {
 
         onStatusChanged: {
             if (status === Image.Error) {
+                row.imageError()
                 source = noCover
             }
         }

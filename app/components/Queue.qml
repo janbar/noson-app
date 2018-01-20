@@ -53,6 +53,8 @@ Item {
             }
 
             imageSource: makeCoverSource(model.art, model.author, model.album)
+            onImageError: model.art = "" // reset invalid url from model
+
             column: Column {
                 Label {
                     id: trackTitle

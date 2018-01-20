@@ -92,6 +92,8 @@ MusicPage {
                 }
             }
 
+            onImageError: model.art = "" // reset invalid url from model
+
             onClicked: {
                 mainPageStack.push(Qt.resolvedUrl("ArtistView.qml"),
                                    {

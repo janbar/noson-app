@@ -22,6 +22,7 @@ import Ubuntu.Components 1.3
 import "../"
 
 ListItem {
+    id: item
     color: styleMusic.mainView.backgroundColor
     highlightColor: Qt.lighter(color, 1.2)
 
@@ -32,6 +33,7 @@ ListItem {
     property alias imageSource: musicRow.imageSource
 
     signal itemClicked()
+    signal imageError
 
     Component.onCompleted: {
         ListView.view.ViewItems.selectMode = true
@@ -54,6 +56,8 @@ ListItem {
         anchors {
             fill: parent
         }
+
+        onImageError: item.imageError()
 
         // Animate margin changes so it isn't noticible
         Behavior on anchors.leftMargin {
