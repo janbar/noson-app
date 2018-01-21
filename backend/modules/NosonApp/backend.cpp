@@ -22,6 +22,7 @@
 #include "sonos.h"
 #include "player.h"
 #include "renderingmodel.h"
+#include "qmlsortfiltermodel.h"
 
 #include <QtQml>
 #include <QtQml/QQmlContext>
@@ -30,6 +31,12 @@ void BackendPlugin::registerTypes(const char *uri)
 {
   Q_ASSERT(uri == QLatin1String("NosonApp"));
 
+  // register utils types
+  qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 0, "SortFilterModel");
+  qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
+  qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
+
+  // register noson singletons
   qmlRegisterSingletonType<Sonos>(uri, 1, 0, "Sonos", Sonos::sonos_provider);
   qmlRegisterSingletonType<ZonesModel>(uri, 1, 0, "AllZonesModel", Sonos::allZonesModel_provider);
   qmlRegisterSingletonType<AlbumsModel>(uri, 1, 0, "AllAlbumsModel", Sonos::allAlbumsModel_provider);
@@ -41,6 +48,7 @@ void BackendPlugin::registerTypes(const char *uri)
   qmlRegisterSingletonType<ServicesModel>(uri, 1, 0, "AllServicesModel", Sonos::allServicesModel_provider);
   //qmlRegisterSingletonType<TracksModel>(uri, 1, 0, "AllTracksModel", Sonos::allTracksModel_provider);
 
+  // register noson instantiable types
   qmlRegisterType<Player>(uri, 1, 0, "ZonePlayer");
   qmlRegisterType<ZonesModel>(uri, 1, 0, "ZonesModel");
   qmlRegisterType<RoomsModel>(uri, 1, 0, "RoomsModel");

@@ -30,6 +30,9 @@ class BackendPlugin : public QQmlExtensionPlugin
   Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
 
 public:
+  BackendPlugin(QObject* parent = 0)
+  : QQmlExtensionPlugin(parent) { }
+
   void registerTypes(const char *uri);
   void initializeEngine(QQmlEngine *engine, const char *uri);
 };

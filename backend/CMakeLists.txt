@@ -53,6 +53,12 @@ set(
     modules/NosonApp/servicesmodel.h
     modules/NosonApp/mediamodel.cpp
     modules/NosonApp/mediamodel.h
+    modules/NosonApp/qmlfilterbehavior.cpp
+    modules/NosonApp/qmlfilterbehavior.h
+    modules/NosonApp/qmlsortbehavior.cpp
+    modules/NosonApp/qmlsortbehavior.h
+    modules/NosonApp/qmlsortfiltermodel.cpp
+    modules/NosonApp/qmlsortfiltermodel.h
 )
 
 add_library(NosonAppbackend MODULE
