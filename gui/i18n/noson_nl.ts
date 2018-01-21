@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="nl">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="nl" version="2.1">
 <context>
     <name>AddToFavorites</name>
     <message>
@@ -82,18 +80,12 @@
     <message numerus="yes">
         <location filename="../ui/ArtistView.qml" line="101"/>
         <source>%n album(s)</source>
-        <translation>
-            <numerusform>%1 album</numerusform>
-            <numerusform>%1 albums</numerusform>
-        </translation>
+        <translation><numerusform>%1 album</numerusform><numerusform>%1 albums</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../ui/ArtistView.qml" line="120"/>
         <source>%n song(s)</source>
-        <translation>
-            <numerusform>%1 nummer</numerusform>
-            <numerusform>%1 nummers</numerusform>
-        </translation>
+        <translation><numerusform>%1 nummer</numerusform><numerusform>%1 nummers</numerusform></translation>
     </message>
     <message>
         <location filename="../ui/ArtistView.qml" line="152"/>
@@ -853,10 +845,7 @@
         <location filename="../ui/SongsView.qml" line="309"/>
         <location filename="../ui/SongsView.qml" line="310"/>
         <source>%n song(s)</source>
-        <translation>
-            <numerusform>%1 nummer</numerusform>
-            <numerusform>%1 nummers</numerusform>
-        </translation>
+        <translation><numerusform>%1 nummer</numerusform><numerusform>%1 nummers</numerusform></translation>
     </message>
     <message>
         <location filename="../ui/SongsView.qml" line="452"/>
@@ -952,10 +941,7 @@
     <message numerus="yes">
         <location filename="../noson.qml" line="445"/>
         <source>%n song(s) added</source>
-        <translation>
-            <numerusform>%1 nummer toegevoegd</numerusform>
-            <numerusform>%1 nummers toegevoegd</numerusform>
-        </translation>
+        <translation><numerusform>%1 nummer toegevoegd</numerusform><numerusform>%1 nummers toegevoegd</numerusform></translation>
     </message>
     <message>
         <location filename="../noson.qml" line="482"/>
@@ -965,15 +951,12 @@
     <message numerus="yes">
         <location filename="../noson.qml" line="542"/>
         <source>%n song(s) removed</source>
-        <translation>
-            <numerusform>%1 nummer verwijderd</numerusform>
-            <numerusform>%1 nummers verwijderd</numerusform>
-        </translation>
+        <translation><numerusform>%1 nummer verwijderd</numerusform><numerusform>%1 nummers verwijderd</numerusform></translation>
     </message>
     <message>
         <location filename="../noson.qml" line="864"/>
         <source>Search music</source>
-        <translation type="unfinished">Muziek zoeken</translation>
+        <translation>Muziek zoeke</translation>
     </message>
     <message>
         <location filename="../noson.qml" line="923"/>

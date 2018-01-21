@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="fr">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="fr" version="2.1">
 <context>
     <name>AddToFavorites</name>
     <message>
@@ -82,18 +80,12 @@
     <message numerus="yes">
         <location filename="../ui/ArtistView.qml" line="101"/>
         <source>%n album(s)</source>
-        <translation>
-            <numerusform>%n album</numerusform>
-            <numerusform>%n albums</numerusform>
-        </translation>
+        <translation><numerusform>%n album</numerusform><numerusform>%n albums</numerusform></translation>
     </message>
     <message numerus="yes">
         <location filename="../ui/ArtistView.qml" line="120"/>
         <source>%n song(s)</source>
-        <translation>
-            <numerusform>%n titre</numerusform>
-            <numerusform>%n titres</numerusform>
-        </translation>
+        <translation><numerusform>%n titre</numerusform><numerusform>%n titres</numerusform></translation>
     </message>
     <message>
         <location filename="../ui/ArtistView.qml" line="152"/>
@@ -853,10 +845,7 @@
         <location filename="../ui/SongsView.qml" line="309"/>
         <location filename="../ui/SongsView.qml" line="310"/>
         <source>%n song(s)</source>
-        <translation>
-            <numerusform>%n titre</numerusform>
-            <numerusform>%n titres</numerusform>
-        </translation>
+        <translation><numerusform>%n titre</numerusform><numerusform>%n titres</numerusform></translation>
     </message>
     <message>
         <location filename="../ui/SongsView.qml" line="452"/>
@@ -952,10 +941,7 @@
     <message numerus="yes">
         <location filename="../noson.qml" line="445"/>
         <source>%n song(s) added</source>
-        <translation>
-            <numerusform>%n titre ajouté</numerusform>
-            <numerusform>%n titres ajoutés</numerusform>
-        </translation>
+        <translation><numerusform>%n titre ajouté</numerusform><numerusform>%n titres ajoutés</numerusform></translation>
     </message>
     <message>
         <location filename="../noson.qml" line="482"/>
@@ -965,15 +951,12 @@
     <message numerus="yes">
         <location filename="../noson.qml" line="542"/>
         <source>%n song(s) removed</source>
-        <translation>
-            <numerusform>%n titre supprimé</numerusform>
-            <numerusform>%n titres supprimés</numerusform>
-        </translation>
+        <translation><numerusform>%n titre supprimé</numerusform><numerusform>%n titres supprimés</numerusform></translation>
     </message>
     <message>
         <location filename="../noson.qml" line="864"/>
         <source>Search music</source>
-        <translation type="unfinished">Rechercher de la musique</translation>
+        <translation>Rechercher de la musique</translation>
     </message>
     <message>
         <location filename="../noson.qml" line="923"/>
