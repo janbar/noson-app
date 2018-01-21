@@ -52,7 +52,7 @@ CheckBox {
             height: units.gu(1.5)
             x: units.dp(4)
             y: units.dp(4)
-            radius: units.dp(0)
+            radius: units.dp(2)
             color: control.down ? control.controlDownColor : control.color
             visible: control.checked
         }
