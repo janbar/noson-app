@@ -30,22 +30,21 @@ MusicPage {
     pageFlickable: artistGridView
     searchable: true
 
-    /*SortFilterModel {
-        id: artistsModelFilter
-        model: AllArtistsModel
-        sort.property: "artist"
-        sort.order: Qt.AscendingOrder
-        sortCaseSensitivity: Qt.CaseInsensitive
-        filter.property: "normalized"
-        filter.pattern: new RegExp(normalizedInput(searchHeader.query), "i")
-        filterCaseSensitivity: Qt.CaseInsensitive
-    }*/
-
     MusicGridView {
         id: artistGridView
         itemWidth: units.gu(12)
         heightOffset: units.gu(7)
-        model: AllArtistsModel
+
+        model: SortFilterModel {
+            model: AllArtistsModel
+            sort.property: "artist"
+            sort.order: Qt.AscendingOrder
+            sortCaseSensitivity: Qt.CaseInsensitive
+            filter.property: "normalized"
+            filter.pattern: new RegExp(normalizedInput(mainView.query), "i")
+            filterCaseSensitivity: Qt.CaseInsensitive
+        }
+
         delegate: Card {
             id: artistCard
             coverSources: [{art: makeCoverSource(undefined, model.artist, undefined)}]

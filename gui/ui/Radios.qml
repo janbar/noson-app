@@ -36,21 +36,21 @@ MusicPage {
     // - isFavorite
     property bool taintedView: false
 
-/*    SortFilterModel {
+    SortFilterModel {
         id: radiosModelFilter
         model: AllRadiosModel
         sort.property: "title"
         sort.order: Qt.AscendingOrder
         sortCaseSensitivity: Qt.CaseInsensitive
         filter.property: "normalized"
-        filter.pattern: new RegExp(normalizedInput(searchHeader.query), "i")
+        filter.pattern: new RegExp(normalizedInput(mainView.query), "i")
         filterCaseSensitivity: Qt.CaseInsensitive
-    }*/
+    }
 
     MusicListView {
         id: radioList
         anchors.fill: parent
-        model: AllRadiosModel
+        model: radiosModelFilter
         delegate: MusicListItem {
             id: listItem
 
@@ -121,7 +121,7 @@ MusicPage {
         itemWidth: units.gu(15)
         heightOffset: units.gu(9.5)
 
-        model: AllRadiosModel
+        model: radiosModelFilter
 
         delegate: Card {
             id: radioCard

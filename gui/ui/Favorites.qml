@@ -32,21 +32,21 @@ MusicPage {
     multiView: true
     searchable: true
 
-/*    SortFilterModel {
+    SortFilterModel {
         id: favoritesModelFilter
         model: AllFavoritesModel
         sort.property: "title"
         sort.order: Qt.AscendingOrder
         sortCaseSensitivity: Qt.CaseInsensitive
         filter.property: "normalized"
-        filter.pattern: new RegExp(normalizedInput(searchHeader.query), "i")
+        filter.pattern: new RegExp(normalizedInput(mainView.query), "i")
         filterCaseSensitivity: Qt.CaseInsensitive
-    }*/
+    }
 
     MusicListView {
         id: favoriteList
         anchors.fill: parent
-        model: AllFavoritesModel
+        model: favoritesModelFilter
         delegate: MusicListItem {
             id: listItem
 
@@ -153,7 +153,7 @@ MusicPage {
         itemWidth: units.gu(15)
         heightOffset: units.gu(9.5)
 
-        model: AllFavoritesModel
+        model: favoritesModelFilter
 
         delegate: Card {
             id: favoriteCard

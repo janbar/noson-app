@@ -34,23 +34,23 @@ MusicPage {
     property bool changed: false
     property bool childrenChanged: false
 
-/*    SortFilterModel {
+    SortFilterModel {
         id: playlistsModelFilter
-        // Sorting disabled as it is incorrect on first run (due to workers?)
-        // and SQL sorts the data correctly
-        id: playlistModelFilter
         model: AllPlaylistsModel
+        sort.property: "title"
+        sort.order: Qt.AscendingOrder
+        sortCaseSensitivity: Qt.CaseInsensitive
         filter.property: "normalized"
-        filter.pattern: new RegExp(normalizedInput(searchHeader.query), "i")
+        filter.pattern: new RegExp(normalizedInput(mainView.query), "i")
         filterCaseSensitivity: Qt.CaseInsensitive
-    }*/
+    }
 
     MusicGridView {
         id: playlistsGrid
         itemWidth: units.gu(15)
         heightOffset: units.gu(9.5)
 
-        model: AllPlaylistsModel
+        model: playlistsModelFilter
 
         delegate: Card {
             id: playlistCard

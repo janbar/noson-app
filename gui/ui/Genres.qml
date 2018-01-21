@@ -34,17 +34,17 @@ MusicPage {
         id: genreGridView
         itemWidth: units.gu(12)
         heightOffset: units.gu(7)
-        model: AllGenresModel
-/*        model: SortFilterModel {
-            id: genresModelFilter
+
+        model: SortFilterModel {
             model: AllGenresModel
-            filter.property: "normalized"
-            filter.pattern: searchHeader.query === "" ? /\S+/ : new RegExp(normalizedInput(searchHeader.query), "i")
-            filterCaseSensitivity: Qt.CaseInsensitive
             sort.property: "genre"
             sort.order: Qt.AscendingOrder
             sortCaseSensitivity: Qt.CaseInsensitive
-        }*/
+            filter.property: "normalized"
+            filter.pattern: new RegExp(normalizedInput(mainView.query), "i")
+            filterCaseSensitivity: Qt.CaseInsensitive
+        }
+
         property int delayed: 0
 
         delegate: Card {
