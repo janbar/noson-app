@@ -635,12 +635,16 @@ ApplicationWindow {
 
     Shortcut {
         sequences: ["Esc", "Back"]
-        enabled: stackView.depth > 1
+        enabled: noZone === false && (mainToolBar.state === "search" || stackView.depth > 1)
         onActivated: {
-            if (stackView.currentItem.isRoot)
-                stackView.pop()
-            else
-                stackView.currentItem.goUpClicked()
+            if (stackView.depth > 1) {
+                if (stackView.currentItem.isRoot)
+                    stackView.pop()
+                else
+                    stackView.currentItem.goUpClicked()
+            } else if (mainToolBar.state === "search") {
+                mainToolBar.state = "default"
+            }
         }
     }
     Shortcut {
@@ -765,9 +769,22 @@ ApplicationWindow {
     //// Application main view
     ////
 
+    property alias query: searchField.text
+
     header: ToolBar {
+        id: mainToolBar
         Material.foreground: styleMusic.toolbar.foregroundColor
         Material.background: styleMusic.toolbar.fullBackgroundColor
+
+        state: "default"
+        states: [
+            State {
+                name: "default"
+            },
+            State {
+                name: "search"
+            }
+        ]
 
         RowLayout {
             spacing: units.gu(0)
@@ -790,7 +807,10 @@ ApplicationWindow {
                             else
                                 "qrc:/images/go-up.svg"
                         } else {
-                            "qrc:/images/navigation-menu.svg"
+                            if (mainToolBar.state === "search")
+                                "qrc:/images/edit-clear.svg"
+                            else
+                                "qrc:/images/navigation-menu.svg"
                         }
                     }
 
@@ -801,7 +821,10 @@ ApplicationWindow {
                             else
                                 stackView.currentItem.goUpClicked()
                         } else {
-                            drawer.open()
+                            if (mainToolBar.state === "search")
+                                mainToolBar.state = "default"
+                            else
+                                drawer.open()
                         }
                     }
 
@@ -812,6 +835,7 @@ ApplicationWindow {
 
             Label {
                 id: titleLabel
+                visible: !searchField.visible
                 text: stackView.currentItem != null ? stackView.currentItem.pageTitle : ""
                 font.pointSize: units.fs("x-large")
                 elide: Label.ElideRight
@@ -828,6 +852,34 @@ ApplicationWindow {
                     source: "qrc:/images/timer.svg"
                     visible: player.sleepTimerEnabled
                     enabled: visible
+                }
+            }
+
+            TextField {
+                id: searchField
+                visible: mainToolBar.state === "search" && stackView.depth === 1
+                Layout.fillWidth: true
+                font.pointSize: units.fs("large")
+                inputMethodHints: Qt.ImhNoPredictiveText
+                placeholderText: qsTr("Search music")
+
+                Connections {
+                    target: mainToolBar
+                    onStateChanged: {
+                        if (mainToolBar.state === "default") {
+                            // ensure the search is reset (eg pressing Esc)
+                            searchField.text = ""
+                        } else {
+                            // active focus
+                            searchField.forceActiveFocus()
+                        }
+                    }
+                }
+
+                opacity: visible ? 1.0 : 0.0
+
+                Behavior on opacity {
+                    NumberAnimation { duration: 250 }
                 }
             }
 

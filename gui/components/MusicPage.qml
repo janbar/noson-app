@@ -86,7 +86,12 @@ Page {
     signal groupRoomClicked
     signal groupNoneRoomClicked
 
-    //property DialogBase currentDialog
+    // show search text field
+    onSearchClicked: {
+        if (mainToolBar.state === "search")
+            mainToolBar.state = "default"
+        mainToolBar.state = "search"
+    }
 
     Label {
         anchors {
