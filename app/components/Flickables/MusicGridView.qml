@@ -28,13 +28,14 @@ GridView {
     }
     cellHeight: cellSize + heightOffset
     cellWidth: cellSize + widthOffset
-    displaced: Transition {
+
+    add: Transition {
         NumberAnimation {
             duration: UbuntuAnimation.FastDuration
             properties: "x,y"
         }
     }
-    populate: Transition {
+    displaced: Transition {
         NumberAnimation {
             duration: UbuntuAnimation.FastDuration
             properties: "x,y"
