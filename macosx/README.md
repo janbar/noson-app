@@ -12,9 +12,9 @@ Setup environment to build as follows.
 - `export BUILD_DIR=$(pwd)/noson-app/build`
 
 Download the sources and build.
-- `git clone https://github.com/janbar/noson-app.git`
+- `git clone https://github.com/janbar/noson-app.git $SOURCE_DIR`
 - `mkdir $BUILD_DIR && cd $BUILD_DIR`
-- `cmake -DCMAKE_PREFIX_PATH=$QT_DIR -DCMAKE_BUILD_TYPE=Release ..`
+- `cmake -DCMAKE_PREFIX_PATH=$QT_DIR -DCMAKE_BUILD_TYPE=Release $SOURCE_DIR`
 - `make -j5`
 
 Generate the application bundle `Noson.app`
