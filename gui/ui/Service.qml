@@ -358,7 +358,7 @@ MusicPage {
                     if (registeringService.active)
                         registeringService.active = false; // restart new registration
                     else
-                        mediaModel.clear();
+                        mediaModel.clearData();
                     registeringService.active = true;
                 }
             } else {
