@@ -38,6 +38,7 @@
 #include "favoritesmodel.h"
 #include "servicesmodel.h"
 #include "mediamodel.h"
+#include "allservicesmodel.h"
 
 #include <QObject>
 #include <QString>
@@ -59,7 +60,8 @@ public:
 
   Q_INVOKABLE QString getLocale();
 
-  Q_INVOKABLE void addServiceOAuth(const QString& type, const QString& sn, const QString& key, const QString& token);
+  Q_INVOKABLE void addServiceOAuth(const QString& type, const QString& sn, const QString& key, const QString& token, const QString& username);
+  Q_INVOKABLE void deleteServiceOAuth(const QString& type, const QString& sn);
 
   Q_INVOKABLE void renewSubscriptions();
 
@@ -162,6 +164,13 @@ public:
   }
 
   static QObject* allServicesModel_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
+  {
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+    return new AllServicesModel;
+  }
+
+  static QObject* MyServicesModel_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
   {
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)

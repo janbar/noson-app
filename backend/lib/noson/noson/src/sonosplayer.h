@@ -149,6 +149,7 @@ namespace NSROOT
     virtual void HandleEventMessage(EventMessagePtr msg);
 
     // Music services
+    SMServiceList GetEnabledServices();
     SMServiceList GetAvailableServices();
     SMServicePtr GetServiceForMedia(const std::string& mediaUri);
 

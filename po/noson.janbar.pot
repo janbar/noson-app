@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-20 19:34+0000\n"
+"POT-Creation-Date: 2018-02-16 18:49+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -182,14 +182,14 @@ msgstr ""
 #: ../app/components/Dialog/DialogSelectSource.qml:96
 #: ../app/components/Dialog/DialogSelectSource.qml:107
 #: ../app/components/Dialog/DialogSelectSource.qml:118
-#: ../app/components/Player.qml:308 ../app/main.qml:458 ../app/main.qml:539
-#: ../app/main.qml:558 ../app/main.qml:566 ../app/main.qml:576
-#: ../app/main.qml:581 ../app/main.qml:613 ../app/main.qml:627
-#: ../app/main.qml:639 ../app/main.qml:650 ../app/main.qml:658
-#: ../app/main.qml:668 ../app/main.qml:678 ../app/main.qml:685
-#: ../app/main.qml:692 ../app/main.qml:701 ../app/main.qml:710
-#: ../app/main.qml:718 ../app/main.qml:725 ../app/main.qml:732
-#: ../app/main.qml:742 ../app/ui/AddToPlaylist.qml:141
+#: ../app/components/Player.qml:308 ../app/main.qml:466 ../app/main.qml:549
+#: ../app/main.qml:568 ../app/main.qml:576 ../app/main.qml:586
+#: ../app/main.qml:591 ../app/main.qml:623 ../app/main.qml:637
+#: ../app/main.qml:649 ../app/main.qml:660 ../app/main.qml:668
+#: ../app/main.qml:678 ../app/main.qml:688 ../app/main.qml:695
+#: ../app/main.qml:702 ../app/main.qml:711 ../app/main.qml:720
+#: ../app/main.qml:728 ../app/main.qml:735 ../app/main.qml:742
+#: ../app/main.qml:752 ../app/ui/AddToPlaylist.qml:141
 #: ../app/ui/Favorites.qml:188
 msgid "Action can't be performed"
 msgstr ""
@@ -317,15 +317,16 @@ msgid "Delete"
 msgstr ""
 
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-#: ../app/components/HeadState/QueueHeadState.qml:50
-msgid "Show queue"
-msgstr ""
-
-#. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
+#: ../app/components/HeadState/MusicServicesHeadState.qml:57
 #: ../app/components/HeadState/SearchHeadState.qml:78
 #: ../app/components/HeadState/SearchableHeadState.qml:49
 #: ../app/components/HeadState/ServiceHeadState.qml:46
 msgid "Show list"
+msgstr ""
+
+#. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
+#: ../app/components/HeadState/QueueHeadState.qml:50
+msgid "Show queue"
 msgstr ""
 
 #: ../app/components/ListItemActions/AddToFavorites.qml:29
@@ -452,36 +453,40 @@ msgstr ""
 msgid "Index loaded"
 msgstr ""
 
-#: ../app/main.qml:475
+#: ../app/main.qml:483
 msgid "Debug: "
 msgstr ""
 
-#: ../app/main.qml:536
+#: ../app/main.qml:546
 msgid "Refreshing of index is running"
 msgstr ""
 
-#: ../app/main.qml:563 ../app/main.qml:624 ../app/main.qml:636
-#: ../app/main.qml:698 ../app/ui/AddToPlaylist.qml:138
+#: ../app/main.qml:573 ../app/main.qml:634 ../app/main.qml:646
+#: ../app/main.qml:708 ../app/ui/AddToPlaylist.qml:138
 msgid "song added"
 msgstr ""
 
-#: ../app/main.qml:610
+#: ../app/main.qml:620
 #, qt-format
 msgid "%1 song added"
 msgid_plural "%1 songs added"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/main.qml:647
+#: ../app/main.qml:657
 msgid "Queue cleared"
 msgstr ""
 
-#: ../app/main.qml:707
+#: ../app/main.qml:717
 #, qt-format
 msgid "%1 song removed"
 msgid_plural "%1 songs removed"
 msgstr[0] ""
 msgstr[1] ""
+
+#: ../app/ui/AddService.qml:33
+msgid "Add service"
+msgstr ""
 
 #. TRANSLATORS: this appears in the header with limited space (around 20 characters)
 #: ../app/ui/AddToPlaylist.qml:34

@@ -38,19 +38,10 @@ MusicPage {
     searchResultsCount: servicesModelFilter.count
     state: "default"
     states: [
-        SearchableHeadState {
+        MusicServicesHeadState {
+            newServiceEnabled: true
+            searchEnabled: MyServicesModel.count > 0
             thisPage: servicesPage
-            searchEnabled: servicesModelFilter.count > 0
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        },
-        MultiSelectHeadState {
-            listview: serviceList
-            thisPage: servicesPage
-            addToQueue: false
-            addToPlaylist: false
-            removable: false
             thisHeader {
                 extension: DefaultSections { }
             }
@@ -68,7 +59,7 @@ MusicPage {
 
     SortFilterModel {
         id: servicesModelFilter
-        model: AllServicesModel
+        model: MyServicesModel
         sort.property: "title"
         sort.order: Qt.AscendingOrder
         sortCaseSensitivity: Qt.CaseInsensitive
@@ -81,6 +72,19 @@ MusicPage {
     // due to bug 1341671 it is required that there is a property so that
     // qml doesn't optimise using the parent type
     property bool bug1341671workaround: true
+
+    function removeService(type, serialNum) {
+        var acls = deserializeACLS(startupSettings.accounts);
+        var _acls = []
+        for (var i = 0; i < acls.length; ++i) {
+            if (acls[i].type !== type || acls[i].sn !== serialNum)
+                _acls.push(acls[i]);
+        }
+        customdebug("Remove service " + type + " with serial " + serialNum);
+        Sonos.deleteServiceOAuth(type, serialNum);
+        MyServicesModel.asyncLoad();
+        startupSettings.accounts = serializeACLS(_acls);
+    }
 
     MultiSelectListView {
         id: serviceList
@@ -124,8 +128,17 @@ MusicPage {
 
             noCover: Qt.resolvedUrl("../graphics/radio.png")
 
-            imageSource: model.id === "SA_RINCON65031_" ? Qt.resolvedUrl("../graphics/tunein.png") : model.icon
+            imageSource: model.id === "SA_RINCON65031_0" ? Qt.resolvedUrl("../graphics/tunein.png") : model.icon
 
+            leadingActions: ListItemActions {
+                actions: [
+                    Remove {
+                        onTriggered: {
+                            removeService(model.type, model.serialNum)
+                        }
+                    }
+                ]
+            }
             multiselectable: false
 
             onItemClicked: {
@@ -167,7 +180,7 @@ MusicPage {
             isFavorite: false
 
             noCover: Qt.resolvedUrl("../graphics/radio.png")
-            coverSources: [{art: model.id === "SA_RINCON65031_" ? Qt.resolvedUrl("../graphics/tunein.png") : model.icon}]
+            coverSources: [{art: model.id === "SA_RINCON65031_0" ? Qt.resolvedUrl("../graphics/tunein.png") : model.icon}]
 
             onClicked: {
                 mainPageStack.push(Qt.resolvedUrl("Service.qml"),

@@ -42,6 +42,10 @@ msgstr "Verzeichnis geladen"
 msgid "Action can't be performed"
 msgstr "Aktion kann nicht ausgeführt werden"
 
+#: ../app/ui/AddService.qml:33
+msgid "Add service"
+msgstr "Dienst hinzufügen"
+
 #: ../app/Main.qml:397
 msgid "Debug: "
 msgstr "Debug: "

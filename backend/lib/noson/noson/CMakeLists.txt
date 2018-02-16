@@ -20,7 +20,7 @@ endif ()
 
 ###############################################################################
 # set lib version here
-set (NOSON_LIB_VERSION "1.5.6")
+set (NOSON_LIB_VERSION "1.6.0")
 set (NOSON_LIB_SOVERSION "1")
 
 ###############################################################################
@@ -176,6 +176,8 @@ file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/smapi.h
           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/smapimetadata.h
           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/smaccount.h
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
 
 include_directories (
   ${CMAKE_CURRENT_BINARY_DIR}/include/.)
@@ -185,7 +187,9 @@ include_directories (
 file (GLOB SRC_FILES
   src/private/*.c
   src/private/*.cpp
-  src/*.cpp)
+  src/private/*.h
+  src/*.cpp
+  src/*.h)
 
 file (GLOB OS_SRC_FILES
   src/private/os/threads/threadpool.cpp)
@@ -280,5 +284,6 @@ install (FILES
   ${CMAKE_CURRENT_BINARY_DIR}/include/musicservices.h
   ${CMAKE_CURRENT_BINARY_DIR}/include/smapi.h
   ${CMAKE_CURRENT_BINARY_DIR}/include/smapimetadata.h
+  ${CMAKE_CURRENT_BINARY_DIR}/include/smaccount.h
 
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/noson/)
