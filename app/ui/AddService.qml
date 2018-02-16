@@ -88,10 +88,10 @@ MusicPage {
             isFavorite: false
 
             noCover: Qt.resolvedUrl("../graphics/radio.png")
-            coverSources: [{art: model.id === "SA_RINCON65031" ? "qrc:/graphics/tunein.png" : model.icon}]
+            coverSources: [{art: model.type === "65031" ? "qrc:/graphics/tunein.png" : model.icon}]
 
             onClicked: {
-                if (model.type > 0) {
+                if (model.type !== "65031") {
                      var serialNum = 0;
                      var acls = deserializeACLS(startupSettings.accounts);
                      for (var i = 0; i < acls.length; ++i) {
@@ -104,7 +104,7 @@ MusicPage {
                      acls.push({type: model.type, sn: serialNum, key: "", token: "", username: ""});
                      startupSettings.accounts = serializeACLS(acls);
                 }
-                 mainPageStack.goBack();
+                mainPageStack.goBack();
             }
         }
     }
