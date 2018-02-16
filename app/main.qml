@@ -193,6 +193,14 @@ MainView {
         units.gridUnit *= startupSettings.scaleFactor;
         customdebug("LANG=" + Qt.locale().name);
         Sonos.setLocale(Qt.locale().name);
+
+        // init SMAPI third party accounts (AppLink)
+        var acls = deserializeACLS(startupSettings.accounts);
+        for (var i = 0; i < acls.length; ++i) {
+            customdebug("register account: type=" + acls[i].type + " sn=" + acls[i].sn + " token=" + acls[i].token.substr(0, 1) + "...");
+            Sonos.addServiceOAuth(acls[i].type, acls[i].sn, acls[i].key, acls[i].token);
+        }
+
         // initialize all data models
         AllZonesModel.init(Sonos, "",       false);
         AllFavoritesModel.init(Sonos, "",   false);
@@ -202,6 +210,7 @@ MainView {
         AllGenresModel.init(Sonos, "",      false);
         AllRadiosModel.init(Sonos, "R:0/0", false);
         AllPlaylistsModel.init(Sonos, "",   false);
+        MyServicesModel.init(Sonos,         false);
 
         // push the page to view
         mainPageStack.push(tabs)
@@ -221,13 +230,6 @@ MainView {
         // resize main view according to user settings
         mainView.width = (startupSettings.width >= units.gu(44) ? startupSettings.width : units.gu(44));
         mainView.height = (startupSettings.height >= units.gu(80) ? startupSettings.height : units.gu(80));
-
-        // init SMAPI third party accounts (AppLink)
-        var acls = deserializeACLS(startupSettings.accounts);
-        for (var i = 0; i < acls.length; ++i) {
-            customdebug("register account: type=" + acls[i].type + " sn=" + acls[i].sn + " token=" + acls[i].token.substr(0, 1) + "...");
-            Sonos.addServiceOAuth(acls[i].type, acls[i].sn, acls[i].key, acls[i].token);
-        }
 
         //@TODO add url to play list
         //if (args.values.url) {
@@ -304,6 +306,12 @@ MainView {
         target: AllServicesModel
         onDataUpdated: AllServicesModel.asyncLoad()
         onLoaded: AllServicesModel.resetModel()
+    }
+
+    Connections {
+        target: MyServicesModel
+        onDataUpdated: MyServicesModel.asyncLoad()
+        onLoaded: MyServicesModel.resetModel()
     }
 
     Connections {
@@ -482,7 +490,7 @@ MainView {
         for (var i = 0; i < acls.length; ++i) {
             if (i > 0)
                 str += "|";
-            str += acls[i].type + "," + acls[i].sn + "," + Qt.btoa(acls[i].key) + "," + Qt.btoa(acls[i].token);
+            str += acls[i].type + "," + acls[i].sn + "," + Qt.btoa(acls[i].key) + "," + Qt.btoa(acls[i].token) + "," + Qt.btoa(acls[i].username);
         }
         return str;
     }
@@ -494,9 +502,11 @@ MainView {
         for (var r = 0; r < rows.length; ++r) {
             var attrs = rows[r].split(",");
             if (attrs.length == 3) // <= 2.4.7
-                acls.push({type: attrs[0], sn: attrs[1], key: attrs[2], token: attrs[2]});
+                acls.push({type: attrs[0], sn: attrs[1], key: attrs[2], token: attrs[2], username: ""});
             else if (attrs.length == 4) // >= 2.4.8
-                acls.push({type: attrs[0], sn: attrs[1], key: Qt.atob(attrs[2]), token: Qt.atob(attrs[3])});
+                acls.push({type: attrs[0], sn: attrs[1], key: Qt.atob(attrs[2]), token: Qt.atob(attrs[3]), username: ""});
+            else if (attrs.length == 5)
+                acls.push({type: attrs[0], sn: attrs[1], key: Qt.atob(attrs[2]), token: Qt.atob(attrs[3]), username: Qt.atob(attrs[4])});
         }
         return acls;
     }
