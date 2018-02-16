@@ -42,6 +42,10 @@ msgstr "Indice caricato"
 msgid "Action can't be performed"
 msgstr "l' azione non può essere eseguita"
 
+#: ../app/ui/AddService.qml:33
+msgid "Add service"
+msgstr "Aggiungi servizio"
+
 #: ../app/Main.qml:397
 msgid "Debug: "
 msgstr "Debug: "

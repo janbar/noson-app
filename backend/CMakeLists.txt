@@ -53,6 +53,8 @@ set(
     modules/NosonApp/servicesmodel.h
     modules/NosonApp/mediamodel.cpp
     modules/NosonApp/mediamodel.h
+    modules/NosonApp/allservicesmodel.cpp
+    modules/NosonApp/allservicesmodel.h
 )
 
 add_library(NosonAppbackend MODULE

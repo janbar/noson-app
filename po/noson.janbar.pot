@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-03 02:11+0200\n"
+"POT-Creation-Date: 2018-02-16 19:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,59 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-
-#: ../app/Main.qml:88
-msgid "Noson"
-msgstr ""
-
-#: ../app/Main.qml:252
-msgid "Index loaded"
-msgstr ""
-
-#: ../app/Main.qml:380 ../app/Main.qml:479 ../app/Main.qml:498
-#: ../app/Main.qml:506 ../app/Main.qml:516 ../app/Main.qml:521
-#: ../app/Main.qml:553 ../app/Main.qml:567 ../app/Main.qml:579
-#: ../app/Main.qml:590 ../app/Main.qml:598 ../app/Main.qml:608
-#: ../app/Main.qml:618 ../app/Main.qml:625 ../app/Main.qml:632
-#: ../app/Main.qml:641 ../app/Main.qml:650 ../app/Main.qml:658
-#: ../app/Main.qml:665 ../app/Main.qml:672 ../app/Main.qml:682
-#: ../app/components/Dialog/DialogSelectSource.qml:94
-#: ../app/components/Dialog/DialogSelectSource.qml:105
-#: ../app/components/Dialog/DialogSelectSource.qml:116
-#: ../app/ui/AddToPlaylist.qml:141 ../app/ui/Favorites.qml:185
-msgid "Action can't be performed"
-msgstr ""
-
-#: ../app/Main.qml:397
-msgid "Debug: "
-msgstr ""
-
-#: ../app/Main.qml:476
-msgid "Refreshing of index is running"
-msgstr ""
-
-#: ../app/Main.qml:503 ../app/Main.qml:564 ../app/Main.qml:576
-#: ../app/Main.qml:638 ../app/ui/AddToPlaylist.qml:138
-msgid "song added"
-msgstr ""
-
-#: ../app/Main.qml:550
-#, qt-format
-msgid "%1 song added"
-msgid_plural "%1 songs added"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../app/Main.qml:587
-msgid "Queue cleared"
-msgstr ""
-
-#: ../app/Main.qml:647
-#, qt-format
-msgid "%1 song removed"
-msgid_plural "%1 songs removed"
-msgstr[0] ""
-msgstr[1] ""
 
 #. TRANSLATORS: this is a title of a dialog with a prompt to rename a playlist
 #: ../app/components/Dialog/DialogEditPlaylist.qml:28
@@ -127,7 +74,7 @@ msgid "Close the queue management screen."
 msgstr ""
 
 #: ../app/components/Dialog/DialogManageQueue.qml:93
-#: ../app/components/Dialog/DialogSelectSource.qml:132
+#: ../app/components/Dialog/DialogSelectSource.qml:134
 #: ../app/components/Dialog/DialogSettings.qml:54
 #: ../app/components/Dialog/DialogSleepTimer.qml:104
 msgid "Close"
@@ -196,7 +143,7 @@ msgstr ""
 msgid "Composers"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSearchMusic.qml:95 ../app/ui/Service.qml:138
+#: ../app/components/Dialog/DialogSearchMusic.qml:95 ../app/ui/Service.qml:135
 msgid "Search"
 msgstr ""
 
@@ -207,41 +154,57 @@ msgstr ""
 msgid "Select source"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSelectSource.qml:41
+#: ../app/components/Dialog/DialogSelectSource.qml:42
 msgid "Enter stream URL"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSelectSource.qml:47
-msgid "Play stream"
-msgstr ""
-
-#: ../app/components/Dialog/DialogSelectSource.qml:57
-msgid "Please type in an URL."
-msgstr ""
-
-#: ../app/components/Dialog/DialogSelectSource.qml:72
+#: ../app/components/Dialog/DialogSelectSource.qml:51
+#: ../app/components/Dialog/DialogSelectSource.qml:69
 msgid "Playing failed."
 msgstr ""
 
-#: ../app/components/Dialog/DialogSelectSource.qml:82
+#: ../app/components/Dialog/DialogSelectSource.qml:58
+msgid "Play stream"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSelectSource.qml:76
+msgid "Please type in an URL."
+msgstr ""
+
+#: ../app/components/Dialog/DialogSelectSource.qml:84
 msgid "Select the audio input."
 msgstr ""
 
-#: ../app/components/Dialog/DialogSelectSource.qml:90
+#: ../app/components/Dialog/DialogSelectSource.qml:92
 msgid "Play line IN"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSelectSource.qml:101
+#: ../app/components/Dialog/DialogSelectSource.qml:96
+#: ../app/components/Dialog/DialogSelectSource.qml:107
+#: ../app/components/Dialog/DialogSelectSource.qml:118
+#: ../app/components/Player.qml:308 ../app/main.qml:466 ../app/main.qml:549
+#: ../app/main.qml:568 ../app/main.qml:576 ../app/main.qml:586
+#: ../app/main.qml:591 ../app/main.qml:623 ../app/main.qml:637
+#: ../app/main.qml:649 ../app/main.qml:660 ../app/main.qml:668
+#: ../app/main.qml:678 ../app/main.qml:688 ../app/main.qml:695
+#: ../app/main.qml:702 ../app/main.qml:711 ../app/main.qml:720
+#: ../app/main.qml:728 ../app/main.qml:735 ../app/main.qml:742
+#: ../app/main.qml:752 ../app/ui/AddToPlaylist.qml:141
+#: ../app/ui/Favorites.qml:187
+msgid "Action can't be performed"
+msgstr ""
+
+#: ../app/components/Dialog/DialogSelectSource.qml:103
 msgid "Play TV"
 msgstr ""
 
 #. TRANSLATORS: this appears in the header with limited space (around 20 characters)
-#: ../app/components/Dialog/DialogSelectSource.qml:112
+#: ../app/components/Dialog/DialogSelectSource.qml:114
 #: ../app/ui/NowPlaying.qml:38
 msgid "Queue"
 msgstr ""
 
-#: ../app/components/Dialog/DialogSelectSource.qml:125
+#: ../app/components/Dialog/DialogSelectSource.qml:127
 msgid "Close this screen."
 msgstr ""
 
@@ -312,14 +275,14 @@ msgid "6 hours"
 msgstr ""
 
 #: ../app/components/Dialog/DialogSongInfo.qml:38 ../app/ui/Albums.qml:84
-#: ../app/ui/Albums.qml:108 ../app/ui/ArtistView.qml:173
-#: ../app/ui/ArtistView.qml:188 ../app/ui/Favorites.qml:273
+#: ../app/ui/Albums.qml:110 ../app/ui/ArtistView.qml:180
+#: ../app/ui/ArtistView.qml:197 ../app/ui/Favorites.qml:275
 msgid "Unknown Album"
 msgstr ""
 
 #: ../app/components/Dialog/DialogSongInfo.qml:39 ../app/ui/Albums.qml:85
-#: ../app/ui/Albums.qml:107 ../app/ui/ArtistView.qml:93
-#: ../app/ui/ArtistView.qml:187 ../app/ui/Artists.qml:83
+#: ../app/ui/Albums.qml:109 ../app/ui/ArtistView.qml:93
+#: ../app/ui/ArtistView.qml:196 ../app/ui/Artists.qml:83
 msgid "Unknown Artist"
 msgstr ""
 
@@ -333,19 +296,19 @@ msgid "Cancel selection"
 msgstr ""
 
 #: ../app/components/HeadState/MultiSelectHeadState.qml:49
-#: ../app/ui/Group.qml:58 ../app/ui/Zones.qml:152
+#: ../app/ui/Group.qml:58 ../app/ui/Zones.qml:148
 msgid "Select All"
 msgstr ""
 
 #: ../app/components/HeadState/MultiSelectHeadState.qml:63
 #: ../app/components/ListItemActions/AddToQueue.qml:27
-#: ../app/ui/Favorites.qml:161 ../app/ui/Service.qml:228
+#: ../app/ui/Favorites.qml:163 ../app/ui/Service.qml:225
 msgid "Add to queue"
 msgstr ""
 
 #: ../app/components/HeadState/MultiSelectHeadState.qml:85
 #: ../app/components/ListItemActions/AddToPlaylist.qml:27
-#: ../app/ui/Favorites.qml:168 ../app/ui/Service.qml:235
+#: ../app/ui/Favorites.qml:170 ../app/ui/Service.qml:232
 msgid "Add to playlist"
 msgstr ""
 
@@ -354,27 +317,28 @@ msgid "Delete"
 msgstr ""
 
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-#: ../app/components/HeadState/QueueHeadState.qml:50
-msgid "Show queue"
-msgstr ""
-
-#. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
+#: ../app/components/HeadState/MusicServicesHeadState.qml:57
 #: ../app/components/HeadState/SearchHeadState.qml:78
 #: ../app/components/HeadState/SearchableHeadState.qml:49
 #: ../app/components/HeadState/ServiceHeadState.qml:46
 msgid "Show list"
 msgstr ""
 
+#. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
+#: ../app/components/HeadState/QueueHeadState.qml:50
+msgid "Show queue"
+msgstr ""
+
 #: ../app/components/ListItemActions/AddToFavorites.qml:29
-#: ../app/ui/Radios.qml:159 ../app/ui/Service.qml:247
+#: ../app/ui/Radios.qml:149 ../app/ui/Service.qml:244
 msgid "Favorite"
 msgstr ""
 
-#: ../app/components/ListItemActions/Clear.qml:25 ../app/ui/Zones.qml:152
+#: ../app/components/ListItemActions/Clear.qml:25 ../app/ui/Zones.qml:148
 msgid "Clear"
 msgstr ""
 
-#: ../app/components/ListItemActions/PlaySong.qml:24 ../app/ui/Service.qml:221
+#: ../app/components/ListItemActions/PlaySong.qml:24 ../app/ui/Service.qml:218
 msgid "Play"
 msgstr ""
 
@@ -399,7 +363,7 @@ msgstr ""
 msgid "Now playing"
 msgstr ""
 
-#: ../app/components/Player.qml:263
+#: ../app/components/Player.qml:269
 msgid "Untitled"
 msgstr ""
 
@@ -414,9 +378,9 @@ msgid ""
 "every mood and occasion."
 msgstr ""
 
-#: ../app/components/Queue.qml:95 ../app/ui/Favorites.qml:128
-#: ../app/ui/Favorites.qml:224 ../app/ui/Service.qml:179
-#: ../app/ui/Service.qml:304 ../app/ui/SongsView.qml:291
+#: ../app/components/Queue.qml:96 ../app/ui/Favorites.qml:128
+#: ../app/ui/Favorites.qml:225 ../app/ui/Service.qml:176
+#: ../app/ui/Service.qml:301 ../app/ui/SongsView.qml:300
 msgid "Song"
 msgstr ""
 
@@ -481,15 +445,58 @@ msgstr ""
 msgid "This feature will be added in a next version. Please rate the App."
 msgstr ""
 
+#: ../app/main.qml:97
+msgid "Noson"
+msgstr ""
+
+#: ../app/main.qml:159
+msgid "Index loaded"
+msgstr ""
+
+#: ../app/main.qml:483
+msgid "Debug: "
+msgstr ""
+
+#: ../app/main.qml:546
+msgid "Refreshing of index is running"
+msgstr ""
+
+#: ../app/main.qml:573 ../app/main.qml:634 ../app/main.qml:646
+#: ../app/main.qml:708 ../app/ui/AddToPlaylist.qml:138
+msgid "song added"
+msgstr ""
+
+#: ../app/main.qml:620
+#, qt-format
+msgid "%1 song added"
+msgid_plural "%1 songs added"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../app/main.qml:657
+msgid "Queue cleared"
+msgstr ""
+
+#: ../app/main.qml:717
+#, qt-format
+msgid "%1 song removed"
+msgid_plural "%1 songs removed"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../app/ui/AddService.qml:33
+msgid "Add service"
+msgstr ""
+
 #. TRANSLATORS: this appears in the header with limited space (around 20 characters)
 #: ../app/ui/AddToPlaylist.qml:34
 msgid "Select playlist"
 msgstr ""
 
-#: ../app/ui/Albums.qml:106 ../app/ui/Albums.qml:114
-#: ../app/ui/ArtistView.qml:186 ../app/ui/Favorites.qml:124
-#: ../app/ui/Favorites.qml:220 ../app/ui/Favorites.qml:271
-#: ../app/ui/Service.qml:175 ../app/ui/Service.qml:300
+#: ../app/ui/Albums.qml:108 ../app/ui/Albums.qml:125
+#: ../app/ui/ArtistView.qml:195 ../app/ui/Favorites.qml:124
+#: ../app/ui/Favorites.qml:221 ../app/ui/Favorites.qml:273
+#: ../app/ui/Service.qml:172 ../app/ui/Service.qml:297
 msgid "Album"
 msgstr ""
 
@@ -500,18 +507,18 @@ msgid_plural "%1 albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/ui/ArtistView.qml:133 ../app/ui/SongsView.qml:245
-#: ../app/ui/SongsView.qml:246
+#: ../app/ui/ArtistView.qml:133 ../app/ui/SongsView.qml:252
+#: ../app/ui/SongsView.qml:253
 #, qt-format
 msgid "%1 song"
 msgid_plural "%1 songs"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../app/ui/Artists.qml:102 ../app/ui/Artists.qml:108
-#: ../app/ui/Favorites.qml:125 ../app/ui/Favorites.qml:221
-#: ../app/ui/Favorites.qml:283 ../app/ui/Service.qml:176
-#: ../app/ui/Service.qml:301
+#: ../app/ui/Artists.qml:104 ../app/ui/Artists.qml:119
+#: ../app/ui/Favorites.qml:125 ../app/ui/Favorites.qml:222
+#: ../app/ui/Favorites.qml:285 ../app/ui/Service.qml:173
+#: ../app/ui/Service.qml:298
 msgid "Artist"
 msgstr ""
 
@@ -519,24 +526,24 @@ msgstr ""
 msgid "Favorites"
 msgstr ""
 
-#: ../app/ui/Favorites.qml:126 ../app/ui/Favorites.qml:222
-#: ../app/ui/Favorites.qml:294 ../app/ui/Genres.qml:143
-#: ../app/ui/Genres.qml:151 ../app/ui/Service.qml:177 ../app/ui/Service.qml:302
+#: ../app/ui/Favorites.qml:126 ../app/ui/Favorites.qml:223
+#: ../app/ui/Favorites.qml:296 ../app/ui/Genres.qml:144
+#: ../app/ui/Genres.qml:161 ../app/ui/Service.qml:174 ../app/ui/Service.qml:299
 msgid "Genre"
 msgstr ""
 
-#: ../app/ui/Favorites.qml:127 ../app/ui/Favorites.qml:223
-#: ../app/ui/Favorites.qml:309 ../app/ui/Playlists.qml:112
-#: ../app/ui/Playlists.qml:120 ../app/ui/Service.qml:178
-#: ../app/ui/Service.qml:303
+#: ../app/ui/Favorites.qml:127 ../app/ui/Favorites.qml:224
+#: ../app/ui/Favorites.qml:311 ../app/ui/Playlists.qml:112
+#: ../app/ui/Playlists.qml:129 ../app/ui/Service.qml:175
+#: ../app/ui/Service.qml:300
 msgid "Playlist"
 msgstr ""
 
-#: ../app/ui/Genres.qml:106
+#: ../app/ui/Genres.qml:107
 msgid "<Undefined>"
 msgstr ""
 
-#: ../app/ui/Group.qml:32 ../app/ui/Zones.qml:272
+#: ../app/ui/Group.qml:32 ../app/ui/Zones.qml:246
 msgid "Group"
 msgstr ""
 
@@ -568,8 +575,8 @@ msgstr ""
 msgid "My radios"
 msgstr ""
 
-#: ../app/ui/Radios.qml:154 ../app/ui/Radios.qml:236 ../app/ui/Service.qml:180
-#: ../app/ui/Service.qml:305
+#: ../app/ui/Radios.qml:144 ../app/ui/Radios.qml:230 ../app/ui/Service.qml:177
+#: ../app/ui/Service.qml:302
 msgid "Radio"
 msgstr ""
 
@@ -581,10 +588,10 @@ msgstr ""
 msgid "Reload zones"
 msgstr ""
 
-#: ../app/ui/Zones.qml:103
+#: ../app/ui/Zones.qml:102
 msgid "Create group"
 msgstr ""
 
-#: /home/jlb/src/build-noson-app/po/noson.desktop.in.h:1
+#: /home/jlb/src/janbar/QML/build-noson-app-amd64-16-release/po/noson.desktop.in.h:1
 msgid "Sonos music"
 msgstr ""

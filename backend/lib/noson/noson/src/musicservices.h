@@ -23,6 +23,7 @@
 
 #include <local_config.h>
 #include "service.h"
+#include "smaccount.h"
 #include "locked.h"
 
 #include <list>
@@ -36,47 +37,20 @@ namespace NSROOT
     class CMutex;
   }
 
-  class SMAccount : protected Element
-  {
-    friend class MusicServices;
-    friend class SMOAKeyring;
-  public:
-    SMAccount();
-    virtual ~SMAccount();
-    const std::string& GetType() const { return GetAttribut("Type"); }
-    const std::string& GetSerialNum() const { return GetAttribut("SerialNum"); }
-    const std::string& GetUsername() const { return GetAttribut("UN"); }
-    const std::string& GetMetadata() const { return GetAttribut("MD"); }
-    const std::string& GetNickname() const { return GetAttribut("NN"); }
+  class SMService;
 
-    struct Credentials
-    {
-      Credentials(const std::string& _devId, const std::string& _key, const std::string& _token)
-      : devId(_devId)
-      , key(_key)
-      , token(_token)
-      {}
-      const std::string devId;  ///< unique account identifier: OADevID
-      std::string key;
-      std::string token;
-    };
-
-    Credentials GetCredentials() const;
-    void SetCredentials(const Credentials& auth);
-
-  private:
-    OS::CMutex* m_mutex;
-  };
-
-  typedef shared_ptr<SMAccount> SMAccountPtr;
-  typedef std::list<SMAccountPtr> SMAccountList;
+  typedef shared_ptr<SMService> SMServicePtr;
+  typedef std::list<SMServicePtr> SMServiceList;
 
   class SMService
   {
     friend class MusicServices;
   public:
-    SMService(const std::string& agent, const SMAccountPtr& account, const ElementList& vars);
+    SMService(const std::string& agent, const ElementList& vars);
+    SMService(const std::string& agent, const ElementList& vars, const std::string& serialNum);
     virtual ~SMService() {}
+
+    SMServicePtr Clone(const std::string& serialNum);
 
     const std::string& GetId() const;
     const std::string& GetName() const;
@@ -89,7 +63,7 @@ namespace NSROOT
     ElementPtr GetStrings() const;
     ElementPtr GetPresentationMap() const;
 
-    static void ServiceType(const std::string& id, std::string& type);
+    static std::string ServiceType(const std::string& id);
 
     const std::string& GetServiceType() const;
     const std::string& GetServiceDesc() const;
@@ -103,9 +77,6 @@ namespace NSROOT
     std::string m_type;     ///< The type id to use for this service
     std::string m_desc;     ///< The sonos descriptor to use for this service
   };
-
-  typedef shared_ptr<SMService> SMServicePtr;
-  typedef std::list<SMServicePtr> SMServiceList;
 
   class MusicServices : public Service
   {
@@ -136,10 +107,10 @@ namespace NSROOT
     bool GetSessionId(const std::string& serviceId, const std::string& username, ElementList& vars);
 
     /**
-     * Returns the list of enabled services
+     * Returns the list of available services
      * @return The service list
      */
-    SMServiceList GetEnabledServices();
+    SMServiceList GetAvailableServices();
 
     Locked<std::string>& GetVersion() { return m_version; }
 
@@ -155,60 +126,10 @@ namespace NSROOT
 
     bool ParseAvailableServices(const ElementList& vars, std::vector<ElementList>& data);
 
-    bool LoadAccounts(SMAccountList& accounts, std::string& agentStr);
-
     static SMAccountList GetAccountsForService(const SMAccountList& accounts, const std::string& serviceType);
 
   };
 
-  //////////////////////////////////////////////////////////////////////////////
-  ////
-  //// Store for AppLink keyring
-  ////
-  class SMOAKeyring
-  {
-  public:
-    /**
-     * Add AppLink auth in keyring.
-     * Known auth must be registered before getting enabled services. In other cases AppLink account won't be valid.
-     * @param type The related account type
-     * @param serialNum The account serial
-     * @param key The key required to initiate handshake and to refresh the token
-     * @param token The current token (optional)
-     */
-    static void Store(const std::string& type, const std::string& serialNum, const std::string& key, const std::string& token = "");
-
-    /**
-     * Load auth with keyring data for related account.
-     * @param type The related account type
-     * @param serialNum The account serial
-     * @param key (out) key to fill
-     * @param token (out) token to fill
-     */
-    static void Load(SMAccount& account);
-
-    /**
-     * Reset keyring data.
-     */
-    static void Reset();
-
-    struct Credentials
-    {
-      Credentials() { /* empty auth */ }
-      Credentials(  const std::string& _type, const std::string& _sn,
-              const std::string& _key, const std::string& _token)
-      : type(_type), serialNum(_sn), key(_key), token(_token) { }
-      std::string type;
-      std::string serialNum;
-      std::string key;
-      std::string token;
-    };
-
-    typedef std::vector<Credentials> keyring;
-
-  private:
-    static Locked<keyring> g_keyring;
-  };
 }
 
 #endif /* MUSICSERVICES_H */

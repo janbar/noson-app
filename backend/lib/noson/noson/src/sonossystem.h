@@ -90,7 +90,8 @@ namespace NSROOT
      * @param key The key required to refresh token
      * @param token The current token (optional)
      */
-    static void AddServiceOAuth(const std::string& type, const std::string& sn, const std::string& key, const std::string& token);
+    static void AddServiceOAuth(const std::string& type, const std::string& sn, const std::string& key, const std::string& token, const std::string& username);
+    static void DeleteServiceOAuth(const std::string& type, const std::string& sn);
 
   private:
     mutable OS::CMutex* m_mutex;

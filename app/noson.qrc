@@ -113,5 +113,7 @@
         <file>graphics/volume_muted.png</file>
         <file>graphics/wifi_phone_icon@27.png</file>
         <file>main.qml</file>
+        <file>ui/AddService.qml</file>
+        <file>components/HeadState/MusicServicesHeadState.qml</file>
     </qresource>
 </RCC>

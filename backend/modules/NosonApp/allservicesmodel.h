@@ -18,58 +18,21 @@
  *
  */
 
-#ifndef SERVICESMODEL_H
-#define SERVICESMODEL_H
+#ifndef ALLSERVICESMODEL_H
+#define ALLSERVICESMODEL_H
 
 #include "listmodel.h"
-#include "../../lib/noson/noson/src/musicservices.h"
+#include "servicesmodel.h"
 
 #include <QAbstractListModel>
 
-class ServiceItem
-{
-public:
-  ServiceItem(const SONOS::SMServicePtr& ptr);
-
-  virtual ~ServiceItem() { }
-
-  bool isValid() const { return m_valid; }
-
-  QVariant payload() const;
-
-  const QString& id() const { return m_id; }
-
-  const QString& title() const { return m_title; }
-
-  const QString& icon() const { return m_icon; }
-
-  const QString& nickName() const { return m_nickName; }
-
-  const QString& normalized() const { return m_normalized; }
-
-  const QString& type() const { return m_type; }
-
-  const QString& serialNum() const { return m_serialNum; }
-
-private:
-  SONOS::SMServicePtr m_ptr;
-  bool m_valid;
-  QString m_id;
-  QString m_title;
-  QString m_icon;
-  QString m_nickName;
-  QString m_normalized;
-  QString m_type;
-  QString m_serialNum;
-};
-
-class ServicesModel : public QAbstractListModel, public ListModel
+class AllServicesModel : public QAbstractListModel, public ListModel
 {
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
 
 public:
-  enum ServiceRoles
+  enum AllServiceRoles
   {
     PayloadRole,
     IdRole,
@@ -78,11 +41,10 @@ public:
     NickNameRole,
     NormalizedRole,
     TypeRole,
-    SerialNumRole,
   };
 
-  ServicesModel(QObject* parent = 0);
-  virtual ~ServicesModel();
+  AllServicesModel(QObject* parent = 0);
+  virtual ~AllServicesModel();
 
   void addItem(ServiceItem* item);
 
@@ -117,5 +79,5 @@ private:
   QList<ServiceItem*> m_data;
 };
 
-#endif /* SERVICESMODEL_H */
+#endif /* ALLSERVICESMODEL_H */
 

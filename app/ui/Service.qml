@@ -75,7 +75,7 @@ MusicPage {
     BlurredBackground {
             id: blurredBackground
             height: parent.height
-            art: serviceItem.id === "SA_RINCON65031_" ? Qt.resolvedUrl("../graphics/tunein.png") : serviceItem.icon
+            art: serviceItem.id === "SA_RINCON65031_0" ? Qt.resolvedUrl("../graphics/tunein.png") : serviceItem.icon
     }
 
     property alias model: mediaModel // used in ServiceHeadState
@@ -406,7 +406,7 @@ MusicPage {
                     if (!loginService.active) {
                         // first try with saved login/password
                         var auth = mediaModel.getDeviceAuth();
-                        if (auth.key.length === 0 || mediaModel.requestSessionId(mediaModel.username, auth.key) === 0)
+                        if (auth.key.length === 0 || mediaModel.requestSessionId(auth.username, auth.key) === 0)
                             loginService.active = true; // show login registration
                         else {
                             // refresh the model
@@ -434,7 +434,7 @@ MusicPage {
                     else
                         _acls.push(acls[i]);
                 }
-                _acls.push({type: auth.type, sn: auth.serialNum, key: auth.key, token: auth.token});
+                _acls.push({type: auth.type, sn: auth.serialNum, key: auth.key, token: auth.token, username: auth.username});
                 startupSettings.accounts = serializeACLS(_acls);
                 // refresh the model
                 mediaModel.asyncLoad();
