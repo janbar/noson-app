@@ -41,6 +41,10 @@ msgstr "Index musical chargé"
 msgid "Action can't be performed"
 msgstr "L'action a échouée"
 
+#: ../app/ui/AddService.qml:33
+msgid "Add service"
+msgstr "Ajouté un service"
+
 #: ../app/Main.qml:397
 msgid "Debug: "
 msgstr "Debug: "

@@ -41,6 +41,10 @@ msgstr "De index is geladen"
 msgid "Action can't be performed"
 msgstr "De actie kan niet worden uitgevoerd"
 
+#: ../app/ui/AddService.qml:33
+msgid "Add service"
+msgstr "Toevoegen aan dienst"
+
 #: ../app/Main.qml:397
 msgid "Debug: "
 msgstr "Foutopsporing:"

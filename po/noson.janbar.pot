@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the  package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-16 16:14+0000\n"
+"POT-Creation-Date: 2018-02-16 18:49+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -123,8 +123,7 @@ msgstr ""
 
 #. TRANSLATORS: this is the name of the playlists page shown in the tab header.
 #. Remember to keep the translation short to fit the screen width
-#: ../app/components/Dialog/DialogSearchMusic.qml:48
-#: ../app/ui/Playlists.qml:35
+#: ../app/components/Dialog/DialogSearchMusic.qml:48 ../app/ui/Playlists.qml:35
 msgid "Playlists"
 msgstr ""
 
@@ -318,7 +317,7 @@ msgid "Delete"
 msgstr ""
 
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-#: ../app/components/HeadState/MusicServicesHeadState.qml:58
+#: ../app/components/HeadState/MusicServicesHeadState.qml:57
 #: ../app/components/HeadState/SearchHeadState.qml:78
 #: ../app/components/HeadState/SearchableHeadState.qml:49
 #: ../app/components/HeadState/ServiceHeadState.qml:46
@@ -529,8 +528,7 @@ msgstr ""
 
 #: ../app/ui/Favorites.qml:127 ../app/ui/Favorites.qml:224
 #: ../app/ui/Favorites.qml:297 ../app/ui/Genres.qml:145
-#: ../app/ui/Genres.qml:162 ../app/ui/Service.qml:175
-#: ../app/ui/Service.qml:300
+#: ../app/ui/Genres.qml:162 ../app/ui/Service.qml:175 ../app/ui/Service.qml:300
 msgid "Genre"
 msgstr ""
 
@@ -594,6 +592,6 @@ msgstr ""
 msgid "Create group"
 msgstr ""
 
-#: /home/jlb/src/janbar/QML/build-noson-app-armhf-15-release/po/noson.desktop.in.h:1
+#: /home/jlb/src/janbar/QML/build-noson-app-amd64-16-release/po/noson.desktop.in.h:1
 msgid "Sonos music"
 msgstr ""
