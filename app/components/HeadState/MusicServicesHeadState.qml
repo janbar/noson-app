@@ -47,8 +47,20 @@ State {
                     objectName: "newServiceButton"
                     iconName: "add"
                     onTriggered: {
-                        customdebug("New service.")
-                        mainPageStack.push(Qt.resolvedUrl("AddService.qml"))
+                        mainPageStack.push("qrc:/ui/AddService.qml")
+                    }
+                },
+                Action {
+                    visible: thisPage.isListView !== undefined
+                    iconName: thisPage.isListView ? "view-grid-symbolic" : "view-list-symbolic"
+                    // TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
+                    text: i18n.tr("Show list")
+                    onTriggered: {
+                        thisPage.isListView = !thisPage.isListView
+                        if (thisPage.taintedView !== undefined && thisPage.taintedView) {
+                            thisPage.model.asyncLoad();
+                            thisPage.taintedView = false; // reset
+                        }
                     }
                 },
                 Action {

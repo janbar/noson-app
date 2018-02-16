@@ -40,18 +40,8 @@ MusicPage {
     states: [
         MusicServicesHeadState {
             newServiceEnabled: true
-            searchEnabled: servicesModelFilter.count > 0
-            thisPage: playlistsPage
-            thisHeader {
-                extension: DefaultSections { }
-            }
-        },
-        MultiSelectHeadState {
-            listview: serviceList
+            searchEnabled: MyServicesModel.count > 0
             thisPage: servicesPage
-            addToQueue: false
-            addToPlaylist: false
-            removable: false
             thisHeader {
                 extension: DefaultSections { }
             }
@@ -84,7 +74,7 @@ MusicPage {
     property bool bug1341671workaround: true
 
     function removeService(type, serialNum) {
-        var acls = deserializeACLS(settings.accounts);
+        var acls = deserializeACLS(startupSettings.accounts);
         var _acls = []
         for (var i = 0; i < acls.length; ++i) {
             if (acls[i].type !== type || acls[i].sn !== serialNum)
@@ -93,7 +83,7 @@ MusicPage {
         customdebug("Remove service " + type + " with serial " + serialNum);
         Sonos.deleteServiceOAuth(type, serialNum);
         MyServicesModel.asyncLoad();
-        settings.accounts = serializeACLS(_acls);
+        startupSettings.accounts = serializeACLS(_acls);
     }
 
     MultiSelectListView {

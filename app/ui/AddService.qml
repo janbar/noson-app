@@ -30,25 +30,22 @@ MusicPage {
 
     property bool isListView: false
 
-    pageTitle: i18n.tr("Add Services")
+    pageTitle: i18n.tr("Add service")
     pageFlickable: serviceGrid
     searchable: true
     searchResultsCount: servicesModelFilter.count
     state: "default"
     states: [
-        MultiSelectHeadState {
-            listview: serviceList
+        SearchableHeadState {
             thisPage: addServicePage
-            addToQueue: false
-            addToPlaylist: false
-            removable: false
+            searchEnabled: AllServicesModel.count > 0
             thisHeader {
                 extension: DefaultSections { }
             }
         },
         SearchHeadState {
             id: searchHeader
-            thisPage: servicesPage
+            thisPage: addServicePage
             thisHeader {
                 extension: DefaultSections { }
             }
@@ -91,12 +88,12 @@ MusicPage {
             isFavorite: false
 
             noCover: Qt.resolvedUrl("../graphics/radio.png")
-            coverSources: [{art: model.icon}]
+            coverSources: [{art: model.id === "SA_RINCON65031" ? "qrc:/graphics/tunein.png" : model.icon}]
 
             onClicked: {
                 if (model.type > 0) {
                      var serialNum = 0;
-                     var acls = deserializeACLS(settings.accounts);
+                     var acls = deserializeACLS(startupSettings.accounts);
                      for (var i = 0; i < acls.length; ++i) {
                          if (acls[i].type === model.type && parseInt(acls[i].sn) >= serialNum)
                              serialNum = parseInt(acls[i].sn) + 1;
@@ -105,7 +102,7 @@ MusicPage {
                      Sonos.addServiceOAuth(model.type, serialNum, "", "", "");
                      MyServicesModel.asyncLoad();
                      acls.push({type: model.type, sn: serialNum, key: "", token: "", username: ""});
-                     settings.accounts = serializeACLS(acls);
+                     startupSettings.accounts = serializeACLS(acls);
                 }
                  mainPageStack.goBack();
             }

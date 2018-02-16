@@ -194,11 +194,11 @@ MainView {
         customdebug("LANG=" + Qt.locale().name);
         Sonos.setLocale(Qt.locale().name);
 
-        // init SMAPI third party accounts (AppLink)
+        // init SMAPI third party accounts
         var acls = deserializeACLS(startupSettings.accounts);
         for (var i = 0; i < acls.length; ++i) {
             customdebug("register account: type=" + acls[i].type + " sn=" + acls[i].sn + " token=" + acls[i].token.substr(0, 1) + "...");
-            Sonos.addServiceOAuth(acls[i].type, acls[i].sn, acls[i].key, acls[i].token);
+            Sonos.addServiceOAuth(acls[i].type, acls[i].sn, acls[i].key, acls[i].token, acls[i].username);
         }
 
         // initialize all data models

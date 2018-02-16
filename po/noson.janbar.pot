@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-16 15:02+0000\n"
+"POT-Creation-Date: 2018-02-16 16:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -318,15 +318,16 @@ msgid "Delete"
 msgstr ""
 
 #. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
-#: ../app/components/HeadState/QueueHeadState.qml:50
-msgid "Show queue"
-msgstr ""
-
-#. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
+#: ../app/components/HeadState/MusicServicesHeadState.qml:58
 #: ../app/components/HeadState/SearchHeadState.qml:78
 #: ../app/components/HeadState/SearchableHeadState.qml:49
 #: ../app/components/HeadState/ServiceHeadState.qml:46
 msgid "Show list"
+msgstr ""
+
+#. TRANSLATORS: this action appears in the overflow drawer with limited space (around 18 characters)
+#: ../app/components/HeadState/QueueHeadState.qml:50
+msgid "Show queue"
 msgstr ""
 
 #: ../app/components/ListItemActions/AddToFavorites.qml:29
@@ -485,7 +486,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../app/ui/AddService.qml:33
-msgid "Add Services"
+msgid "Add service"
 msgstr ""
 
 #. TRANSLATORS: this appears in the header with limited space (around 20 characters)
