@@ -262,9 +262,14 @@ std::string System::GetLogoForService(const SMServicePtr& service, const std::st
   return Element::Nil();
 }
 
-void System::AddServiceOAuth(const std::string& type, const std::string& sn, const std::string& key, const std::string& token)
+void System::AddServiceOAuth(const std::string& type, const std::string& sn, const std::string& key, const std::string& token, const std::string& username)
 {
-  SMOAKeyring::Store(type, sn, key, token);
+  SMOAKeyring::Store(type, sn, key, token, username);
+}
+
+void System::DeleteServiceOAuth(const std::string& type, const std::string& sn)
+{
+  SMOAKeyring::Purge(type, sn);
 }
 
 bool System::FindDeviceDescription(std::string& url)
