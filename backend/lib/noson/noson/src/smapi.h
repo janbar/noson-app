@@ -98,7 +98,7 @@ namespace NSROOT
 
     const std::string& GetUsername();
 
-    bool GetSessionId(const std::string& user, const std::string& password, SMOAKeyring::Credentials& auth);
+    bool GetSessionId(const std::string& user, const std::string& password, SMOAKeyring::Data& auth);
 
     /**
      * Initialize device link request.
@@ -117,7 +117,7 @@ namespace NSROOT
      * @param (out) Fill a copy of received auth data
      * @return retry (not linked)
      */
-    bool GetDeviceAuthToken(SMOAKeyring::Credentials& auth);
+    bool GetDeviceAuthToken(SMOAKeyring::Data& auth);
 
   private:
     OS::CMutex* m_mutex;
