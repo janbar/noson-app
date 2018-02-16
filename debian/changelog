@@ -1,4 +1,8 @@
-noson-app (3.1) UNRELEASED; urgency=low
+noson-app (3.2) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 3.2
+  * Manage service accounts locally
 
   [ janbar ]
   * Release 3.1

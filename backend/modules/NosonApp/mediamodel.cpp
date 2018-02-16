@@ -245,6 +245,7 @@ bool MediaModel::init(QObject* sonos, const QVariant& service, bool fill)
   m_auth.serialNum = msvc->GetAccount()->GetSerialNum();
   m_auth.key = oa.key;
   m_auth.token = oa.token;
+  m_auth.username = oa.username;
   // initialize path to root
   m_path.clear();
   return ListModel::init(sonos, fill);
@@ -366,7 +367,7 @@ int MediaModel::requestSessionId(const QString& user, const QString& password)
 {
   if (m_smapi)
   {
-    SONOS::SMOAKeyring::Credentials auth;
+    SONOS::SMOAKeyring::Data auth;
     if (m_smapi->GetSessionId(user.toUtf8().constData(), password.toUtf8().constData(), auth))
     {
       m_auth = auth;
@@ -398,7 +399,7 @@ int MediaModel::requestDeviceAuth()
 {
   if (m_smapi)
   {
-    SONOS::SMOAKeyring::Credentials auth;
+    SONOS::SMOAKeyring::Data auth;
     if (m_smapi->GetDeviceAuthToken(auth))
       return 0; // retry
     if (!auth.key.empty())

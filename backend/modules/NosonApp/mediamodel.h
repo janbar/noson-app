@@ -114,6 +114,7 @@ class MediaAuth : public QObject
   Q_PROPERTY(QString serialNum READ serialNum)
   Q_PROPERTY(QString key READ key)
   Q_PROPERTY(QString token READ token)
+  Q_PROPERTY(QString username READ username)
 
 public:
   MediaAuth(QObject* parent = 0) : QObject(parent) { }
@@ -123,11 +124,12 @@ public:
   QString serialNum() { return QString::fromUtf8(m_auth.serialNum.c_str()); }
   QString key() { return QString::fromUtf8(m_auth.key.c_str()); }
   QString token() { return QString::fromUtf8(m_auth.token.c_str()); }
+  QString username() { return QString::fromUtf8(m_auth.username.c_str()); }
 
-  void resetAuth(const SONOS::SMOAKeyring::Credentials& auth) { m_auth = auth; }
+  void resetAuth(const SONOS::SMOAKeyring::Data& auth) { m_auth = auth; }
 
 private:
-  SONOS::SMOAKeyring::Credentials m_auth;
+  SONOS::SMOAKeyring::Data m_auth;
 };
 
 class MediaModel : public QAbstractListModel, public ListModel
@@ -256,7 +258,7 @@ private:
   QList<MediaItem*> m_data;
 
   SONOS::SMAPI* m_smapi;
-  SONOS::SMOAKeyring::Credentials m_auth;
+  SONOS::SMOAKeyring::Data m_auth;
   std::string m_regURL;
   std::string m_linkCode;
 

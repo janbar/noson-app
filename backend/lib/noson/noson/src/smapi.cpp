@@ -156,7 +156,7 @@ bool SMAPI::Init(const SMServicePtr& smsvc, const std::string& locale)
       m_authTokenExpired = true;
     // make sure devId is fulfilled
     if (credentials.devId.empty())
-      smsvc->GetAccount()->SetCredentials(SMAccount::Credentials(m_deviceHouseholdID, credentials.key, credentials.token));
+      smsvc->GetAccount()->SetCredentials(SMAccount::Credentials(m_deviceHouseholdID, credentials.key, credentials.token, ""));
   }
   else if (auth == "AppLink")
   {
@@ -166,7 +166,7 @@ bool SMAPI::Init(const SMServicePtr& smsvc, const std::string& locale)
       m_authTokenExpired = true;
     // make sure devId is fulfilled
     if (credentials.devId.empty())
-      smsvc->GetAccount()->SetCredentials(SMAccount::Credentials(m_deviceHouseholdID, credentials.key, credentials.token));
+      smsvc->GetAccount()->SetCredentials(SMAccount::Credentials(m_deviceHouseholdID, credentials.key, credentials.token, ""));
   }
   else if (auth != "Anonymous")
     return m_valid = false;
@@ -220,10 +220,12 @@ bool SMAPI::Search(const std::string& searchId, const std::string& term, int ind
 
 const std::string& SMAPI::GetUsername()
 {
-  return m_service->GetAccount()->GetUsername();
+  if (m_policyAuth == Auth_UserId)
+    return m_service->GetAccount()->GetCredentials().username;
+  return m_service->GetName();
 }
 
-bool SMAPI::GetSessionId(const std::string& user, const std::string& password, SMOAKeyring::Credentials& auth)
+bool SMAPI::GetSessionId(const std::string& user, const std::string& password, SMOAKeyring::Data& auth)
 {
   OS::CLockGuard lock(*m_mutex);
   ElementList vars;
@@ -243,6 +245,7 @@ bool SMAPI::GetSessionId(const std::string& user, const std::string& password, S
   SMAccount::Credentials oa = m_service->GetAccount()->GetCredentials();
   oa.key = password;
   oa.token = data;
+  oa.username = user;
   // set credentials for the account and reset the auth expiration
   m_service->GetAccount()->SetCredentials(oa);
   m_authTokenExpired = false;
@@ -253,6 +256,7 @@ bool SMAPI::GetSessionId(const std::string& user, const std::string& password, S
   auth.serialNum = m_service->GetAccount()->GetSerialNum();
   auth.key = oa.key;
   auth.token = oa.token;
+  auth.username = oa.username;
   return true;
 }
 
@@ -362,9 +366,9 @@ bool SMAPI::GetAppLink(std::string& regUrl, std::string& linkCode)
   return true;
 }
 
-bool SMAPI::GetDeviceAuthToken(SMOAKeyring::Credentials& auth)
+bool SMAPI::GetDeviceAuthToken(SMOAKeyring::Data& auth)
 {
-  auth = SMOAKeyring::Credentials();
+  auth = SMOAKeyring::Data();
   if (!m_authLinkTimeout || !m_authLinkTimeout->TimeLeft())
     return false;
 

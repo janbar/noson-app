@@ -35,41 +35,29 @@ const std::string MusicServices::ControlURL("/MusicServices/Control");
 const std::string MusicServices::EventURL("/MusicServices/Event");
 const std::string MusicServices::SCPDURL("/xml/MusicServices1.xml");
 
-SMAccount::SMAccount()
-: Element("Account")
-, m_mutex(new OS::CMutex)
-{
-}
-
-SMAccount::~SMAccount()
-{
-  SAFE_DELETE(m_mutex);
-}
-
-SMAccount::Credentials SMAccount::GetCredentials() const
-{
-  OS::CLockGuard lock(*m_mutex);
-  return Credentials(GetAttribut("OADevID"), GetAttribut("Key"), GetAttribut("Token"));
-}
-
-void SMAccount::SetCredentials(const Credentials& auth)
-{
-  OS::CLockGuard lock(*m_mutex);
-  SetAttribut("OADevID", auth.devId);
-  SetAttribut("Key", auth.key);
-  SetAttribut("Token", auth.token);
-  // update keyring store for reuse on account reload
-  SMOAKeyring::Store(GetType(), GetSerialNum(), auth.key, auth.token);
-}
-
-SMService::SMService(const std::string& agent, const SMAccountPtr& account, const ElementList& vars)
+SMService::SMService(const std::string& agent, const ElementList& vars)
 : m_agent(agent)
-, m_account(account)
 , m_vars(vars)
 {
-  ServiceType(GetId(), m_type);
+  m_type = ServiceType(GetId());
+  m_account = SMAccountPtr(new SMAccount(m_type));
   // make the sonos descriptor
-  m_desc.assign("SA_RINCON").append(m_type).append("_").append(account->GetUsername());
+  m_desc.assign("SA_RINCON").append(m_type);
+}
+
+SMService::SMService(const std::string& agent, const ElementList& vars, const std::string& serialNum)
+: m_agent(agent)
+, m_vars(vars)
+{
+  m_type = ServiceType(GetId());
+  m_account = SMAccountPtr(new SMAccount(m_type, serialNum));
+  // make the sonos descriptor
+  m_desc.assign("SA_RINCON").append(m_type).append("_").append(serialNum);
+}
+
+SMServicePtr SMService::Clone(const std::string& serialNum)
+{
+  return SMServicePtr(new SMService(m_agent, m_vars, serialNum));
 }
 
 const std::string& SMService::GetId() const
@@ -131,14 +119,14 @@ ElementPtr SMService::GetPresentationMap() const
   return ElementPtr();
 }
 
-void SMService::ServiceType(const std::string& id, std::string& type)
+std::string SMService::ServiceType(const std::string& id)
 {
   int num = 0;
   if (string_to_int32(id.c_str(), &num) == 0)
     num = num * 256 + 7;
   char st[10];
   int32_to_string(num, st);
-  type.assign(st);
+  return std::string(st);
 }
 
 const std::string& SMService::GetServiceType() const
@@ -183,7 +171,7 @@ bool MusicServices::GetSessionId(const std::string& serviceId, const std::string
   return false;
 }
 
-SMServiceList MusicServices::GetEnabledServices()
+SMServiceList MusicServices::GetAvailableServices()
 {
   // hold version's lock until return
   Locked<std::string>::pointer versionPtr = m_version.Get();
@@ -197,34 +185,15 @@ SMServiceList MusicServices::GetEnabledServices()
   {
     // store new value of version
     versionPtr->assign(vars.GetValue("AvailableServiceListVersion"));
-    // load accounts
-    SMAccountList accounts; // it is filled with retrieved accounts from the sonos device
-    std::string agent; // it is filled with the SERVER tag from http response header
-    if (!LoadAccounts(accounts, agent))
-      DBG(DBG_ERROR, "%s: query accounts failed\n", __FUNCTION__);
-    // Continue to treat services don't require any account
+    std::string agent;
+    //@FIXME make the user agent string according to the template: Linux UPnP/1.0 Sonos/26.99-12345
+    //Resolved by SoCo: https://github.com/SoCo/SoCo/blob/18ee1ec11bba8463c4536aa7c2a25f5c20a051a4/soco/music_services/music_service.py#L55
+    agent.assign("Linux UPnP/1.0 Sonos/26.99-12345");
 
-    // Fill the list of enabled services.
-    // Service is enabled when an account is available for the service type.
-    // Otherwise 'TuneIn' is special case as it is always enabled and no account exists for it.
+    // Fill the list of services.
     for (std::vector<ElementList>::const_iterator it = data.begin(); it != data.end(); ++it)
     {
-      std::string serviceType;
-      SMService::ServiceType(it->GetValue("Id"), serviceType);
-      if (serviceType == "65031") /* TuneIn */
-      {
-        SMAccountPtr ac(new SMAccount());
-        ac->SetAttribut("Type", serviceType);
-        ac->SetAttribut("SerialNum", "0");
-        SMServicePtr sm(new SMService(agent, ac, *it));
-        list.push_back(sm);
-      }
-      else
-      {
-        SMAccountList la = GetAccountsForService(accounts, serviceType);
-        for (SMAccountList::iterator ita = la.begin(); ita != la.end(); ++ita)
-          list.push_back(SMServicePtr(new SMService(agent, *ita, *it)));
-      }
+        list.push_back(SMServicePtr(new SMService(agent, *it)));
     }
   }
   DBG(DBG_DEBUG, "%s: version (%s)\n", __FUNCTION__, versionPtr->c_str());
@@ -314,142 +283,4 @@ bool MusicServices::ParseAvailableServices(const ElementList& vars, std::vector<
     elem = elem->NextSiblingElement(NULL);
   }
   return true;
-}
-
-bool MusicServices::LoadAccounts(SMAccountList& accounts, std::string& agentStr)
-{
-  WSRequest request(m_host, m_port);
-  request.RequestService("/status/accounts");
-  WSResponse response(request);
-  if (!response.IsSuccessful())
-    return false;
-  //@FIXME make the user agent string according to the template: Linux UPnP/1.0 Sonos/26.99-12345
-  //Resolved by SoCo: https://github.com/SoCo/SoCo/blob/18ee1ec11bba8463c4536aa7c2a25f5c20a051a4/soco/music_services/music_service.py#L55
-  agentStr.assign("Linux UPnP/1.0 Sonos/26.99-12345");
-
-  size_t len = 0, l = 0;
-  std::string data;
-  char buffer[4000];
-  while ((l = response.ReadContent(buffer, sizeof(buffer))))
-  {
-    data.append(buffer, l);
-    len += l;
-  }
-
-  /*
-    <ZPSupportInfo>
-    <Accounts LastUpdateDevice="RINCON_000XXXXXXXXXX1400" Version="4" NextSerialNum="2">
-    <Account Type="519" SerialNum="1" Deleted="1">
-    <UN>username</UN>
-    <MD>1</MD>
-    <NN>nickname</NN>
-    <OADevID></OADevID>
-    <Key></Key>
-    </Account>
-    </Accounts>
-    </ZPSupportInfo>
-  */
-  tinyxml2::XMLDocument rootdoc;
-  // Parse xml content
-  if (rootdoc.Parse(data.c_str(), len) != tinyxml2::XML_SUCCESS)
-  {
-    DBG(DBG_ERROR, "%s: parse xml failed\n", __FUNCTION__);
-    return false;
-  }
-  const tinyxml2::XMLElement* elem; // an element
-  // Check for response: Services
-  if (!(elem = rootdoc.RootElement()) || !XMLNS::NameEqual(elem->Name(), "ZPSupportInfo")
-          || !(elem = elem->FirstChildElement("Accounts")))
-  {
-    DBG(DBG_ERROR, "%s: invalid or not supported content\n", __FUNCTION__);
-    tinyxml2::XMLPrinter out;
-    rootdoc.Accept(&out);
-    DBG(DBG_ERROR, "%s\n", out.CStr());
-    return false;
-  }
-  accounts.clear();
-  elem = elem->FirstChildElement("Account");
-  while (elem)
-  {
-    SMAccountPtr item(new SMAccount());
-    const tinyxml2::XMLAttribute* attr = elem->FirstAttribute();
-    while (attr)
-    {
-      item->SetAttribut(attr->Name(), attr->Value());
-      attr = attr->Next();
-    }
-    const tinyxml2::XMLElement* child = elem->FirstChildElement(NULL);
-    while (child)
-    {
-      if (child->GetText())
-        item->SetAttribut(child->Name(), child->GetText());
-      child = child->NextSiblingElement(NULL);
-    }
-    if (item->GetAttribut("Deleted") == "1")
-      DBG(DBG_DEBUG, "%s: account %s (%s) is deleted\n", __FUNCTION__, item->GetSerialNum().c_str(), item->GetType().c_str());
-    else
-    {
-      DBG(DBG_DEBUG, "%s: account %s (%s) is available\n", __FUNCTION__, item->GetSerialNum().c_str(), item->GetType().c_str());
-      SMOAKeyring::Load(*item); // load Auth data from keyring if exist
-      accounts.push_back(item);
-    }
-    elem = elem->NextSiblingElement(NULL);
-  }
-  return true;
-}
-
-SMAccountList MusicServices::GetAccountsForService(const SMAccountList& accounts, const std::string& serviceType)
-{
-  SMAccountList list;
-  for (SMAccountList::const_iterator it = accounts.begin(); it != accounts.end(); ++it)
-  {
-    if ((*it)->GetType() == serviceType)
-      list.push_back((*it));
-  }
-  return list;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-////
-//// Store for AppLink keyring
-////
-SMOAKeyring::keyring new_keyring;
-Locked<SMOAKeyring::keyring> SMOAKeyring::g_keyring(new_keyring);
-
-void SMOAKeyring::Store(const std::string& type, const std::string& serialNum, const std::string& key, const std::string& token)
-{
-  // hold keyring lock until return
-  Locked<SMOAKeyring::keyring>::pointer p = g_keyring.Get();
-  for (keyring::iterator it = p->begin(); it != p->end(); ++it)
-  {
-    if (it->type == type && it->serialNum == serialNum)
-    {
-      it->key.assign(key);
-      it->token.assign(token);
-      return;
-    }
-  }
-  p->push_back(Credentials(type, serialNum, key, token));
-}
-
-void SMOAKeyring::Load(SMAccount& account)
-{
-  const std::string& type = account.GetType();
-  const std::string& serialNum = account.GetSerialNum();
-  // hold keyring lock until return
-  Locked<SMOAKeyring::keyring>::pointer p = g_keyring.Get();
-  for (keyring::iterator it = p->begin(); it != p->end(); ++it)
-  {
-    if (it->type == type && it->serialNum == serialNum)
-    {
-      account.SetAttribut("Key", it->key);
-      account.SetAttribut("Token", it->token);
-      return;
-    }
-  }
-}
-
-void SMOAKeyring::Reset()
-{
-  g_keyring.Store(new_keyring);
 }

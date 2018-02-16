@@ -135,7 +135,7 @@ Player::Player(const ZonePlayerPtr& zonePlayer)
     m_musicServices = new MusicServices(m_host, m_port);
 
     // fill avaialable music services
-    m_smservices = m_musicServices->GetEnabledServices();
+    m_smservices = m_musicServices->GetAvailableServices();
 
     m_queueURI.assign("x-rincon-queue:").append(m_uuid).append("#0");
     m_valid = true;
@@ -191,8 +191,8 @@ void Player::Init(const Zone& zone)
   m_deviceProperties = new DeviceProperties(m_host, m_port);
   m_musicServices = new MusicServices(m_host, m_port);
 
-  // fill avaialable music services
-  m_smservices = m_musicServices->GetEnabledServices();
+  // fill available music services
+  m_smservices = m_musicServices->GetAvailableServices();
 
   for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     it->subscription.Start();
@@ -624,6 +624,37 @@ void Player::HandleEventMessage(EventMessagePtr msg)
   }
 }
 
+SMServiceList Player::GetEnabledServices()
+{
+  SMServiceList list;
+  for (SMServiceList::iterator it = m_smservices.begin(); it != m_smservices.end(); ++it)
+  {
+    const std::string& auth = (*it)->GetPolicy()->GetAttribut("Auth");
+    if ((*it)->GetContainerType() != "MService")
+      continue;
+    if (auth == "Anonymous" || auth == "UserId" || auth == "DeviceLink" || auth == "AppLink") {
+      // Service is enabled when an account is available for the service type.
+      // Otherwise 'TuneIn' is special case as it is always enabled and no account exists for it.
+      if ((*it)->GetServiceType() == "65031") /* TuneIn */
+      {
+        list.push_back((*it)->Clone("0"));
+      }
+      else
+      {
+        SMAccountList la = SMAccount::CreateAccounts((*it)->GetServiceType());
+        for (SMAccountList::iterator ita = la.begin(); ita != la.end(); ++ita)
+        {
+          SMServicePtr sm = (*it)->Clone((*ita)->GetSerialNum());
+          sm->GetAccount()->SetCredentials((*ita)->GetCredentials());
+          list.push_back(sm);
+        }
+      }
+
+    }
+  }
+  return list;
+}
+
 SMServiceList Player::GetAvailableServices()
 {
   SMServiceList list;
@@ -634,8 +665,6 @@ SMServiceList Player::GetAvailableServices()
       continue;
     if (auth == "Anonymous" || auth == "UserId" || auth == "DeviceLink" || auth == "AppLink")
       list.push_back(*it);
-    //else if ((auth == "DeviceLink" || auth == "AppLink") && (*it)->GetAccount()->HasOACredentials())
-    //  list.push_back(*it);
   }
   return list;
 }

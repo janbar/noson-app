@@ -130,5 +130,6 @@
         <file>i18n/noson_en.qm</file>
         <file>i18n/noson_fr.qm</file>
         <file>i18n/noson_nl.qm</file>
+        <file>ui/AddService.qml</file>
     </qresource>
 </RCC>
