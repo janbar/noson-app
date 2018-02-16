@@ -21,76 +21,88 @@ import NosonApp 1.0
 import "../components"
 import "../components/Delegates"
 import "../components/Flickables"
+import "../components/ListItemActions"
 
 
 MusicPage {
     id: servicesPage
     objectName: "servicesPage"
-    pageTitle: qsTr("My services")
-    pageFlickable: serviceGrid //serviceGrid.visible ? serviceGrid : serviceList
-/*
+    pageTitle: qsTr("My Services")
+    pageFlickable: serviceGrid.visible ? serviceGrid : serviceList
+    multiView: true
+    addVisible: true
+
+    function removeService(type, serialNum) {
+        var acls = deserializeACLS(settings.accounts);
+        var _acls = []
+        for (var i = 0; i < acls.length; ++i) {
+            if (acls[i].type !== type || acls[i].sn !== serialNum)
+                _acls.push(acls[i]);
+        }
+        customdebug("Remove service " + type + " with serial " + serialNum);
+        Sonos.deleteServiceOAuth(type, serialNum);
+        MyServicesModel.asyncLoad();
+        settings.accounts = serializeACLS(_acls);
+    }
+
     SortFilterModel {
-        id: servicesModelFilter
-        model: AllServicesModel
+        id: servicesModel
+        model: MyServicesModel
         sort.property: "title"
         sort.order: Qt.AscendingOrder
         sortCaseSensitivity: Qt.CaseInsensitive
-        filter.property: "normalized"
-        filter.pattern: new RegExp(normalizedInput(searchHeader.query), "i")
-        filterCaseSensitivity: Qt.CaseInsensitive
     }
-*/
-/*
-    MultiSelectListView {
+
+    MusicListView {
         id: serviceList
-        anchors {
-            fill: parent
-        }
-        model: servicesModelFilter
-
-        onStateChanged: {
-            if (state === "multiselectable") {
-                servicesPage.state = "selection"
-            } else {
-                searchHeader.query = ""  // force query back to default
-                servicesPage.state = "default"
-            }
-        }
-
+        anchors.fill: parent
+        model: servicesModel
         delegate: MusicListItem {
-            id: service
-            objectName: "servicesPageListItem" + index
+            id: serviceItem
+
+            property bool held: false
+            onPressAndHold: held = true
+            onReleased: held = false
+
+            color: serviceItem.held ? "lightgrey" : "transparent"
+
+            noCover: "qrc:/images/radio.png"
+            imageSource: model.id === "SA_RINCON65031_0" ? "qrc:/images/tunein.png" : model.icon
+            description: qsTr("Service")
+
+            onClicked: {
+                stackView.push("qrc:/ui/Service.qml",
+                                   {
+                                       "serviceItem": model,
+                                       "pageTitle": model.title
+                                   })
+            }
+
+            actionVisible: false
+            menuVisible: (model.id === "SA_RINCON65031_0" ? false : true)
+
+            menuItems: [
+                Remove {
+                    onTriggered: {
+                        removeService(model.type, model.serialNum)
+                    }
+                }
+            ]
+
             column: Column {
                 Label {
                     id: serviceTitle
                     color: styleMusic.common.music
-                    fontSize: "small"
-                    objectName: "servicetitle"
+                    font.pointSize: units.fs("small")
                     text: model.title
                 }
 
                 Label {
                     id: serviceNickName
                     color: styleMusic.common.subtitle
-                    fontSize: "x-small"
+                    font.pointSize: units.fs("x-small")
                     text: model.nickName
                 }
-            }
-
-            height: units.gu(7)
-
-            noCover: Qt.resolvedUrl("../graphics/radio.png")
-
-            imageSource: model.id === "SA_RINCON65031_" ? Qt.resolvedUrl("../graphics/tunein.png") : model.icon
-
-            multiselectable: false
-
-            onItemClicked: {
-                mainPageStack.push(Qt.resolvedUrl("Service.qml"),
-                                   {
-                                       "serviceItem": model,
-                                       "pageTitle": model.title,
-                                   })
             }
         }
 
@@ -100,23 +112,13 @@ MusicPage {
             NumberAnimation { duration: 250 }
         }
     }
-*/
+
     MusicGridView {
         id: serviceGrid
         itemWidth: units.gu(15)
         heightOffset: units.gu(9.5)
 
-        model: AllServicesModel
-        //model: servicesModelFilter
-
-        onStateChanged: {
-            if (state === "multiselectable") {
-                servicesPage.state = "selection"
-            } else {
-                searchHeader.query = ""  // force query back to default
-                servicesPage.state = "default"
-            }
-        }
+        model: servicesModel
 
         delegate: Card {
             id: serviceCard
@@ -125,7 +127,7 @@ MusicPage {
             isFavorite: false
 
             noCover: "qrc:/images/radio.png"
-            coverSources: [{art: model.id === "SA_RINCON65031_" ? "qrc:/images/tunein.png" : model.icon}]
+            coverSources: [{art: model.id === "SA_RINCON65031_0" ? "qrc:/images/tunein.png" : model.icon}]
 
             onClicked: {
                 stackView.push("qrc:/ui/Service.qml",
@@ -141,6 +143,10 @@ MusicPage {
         Behavior on opacity {
             NumberAnimation { duration: 250 }
         }
+    }
+
+    onAddClicked: {
+        stackView.push("qrc:/ui/AddService.qml")
     }
 
 }

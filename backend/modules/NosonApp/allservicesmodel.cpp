@@ -18,47 +18,26 @@
  *
  */
 
-#include "servicesmodel.h"
+#include "allservicesmodel.h"
 #include "sonos.h"
 #include "tools.h"
 
 #include <cstdio> // for strncpy
 #include <cctype> // for isdigit
 
-ServiceItem::ServiceItem(const SONOS::SMServicePtr& ptr)
-: m_ptr(ptr)
-, m_valid(false)
-{
-  m_id = QString::fromUtf8(ptr->GetServiceDesc().c_str());
-  m_title = QString::fromUtf8(ptr->GetName().c_str());
-  m_normalized = normalizedString(m_title);
-  m_icon = QString::fromUtf8(SONOS::System::GetLogoForService(ptr, "square").c_str());
-  m_nickName = QString::fromUtf8(ptr->GetAccount()->GetCredentials().username.c_str());
-  m_type = QString::fromUtf8(ptr->GetServiceType().c_str());
-  m_serialNum = QString::fromUtf8(ptr->GetAccount()->GetSerialNum().c_str());
-  m_valid = true;
-}
-
-QVariant ServiceItem::payload() const
-{
-  QVariant var;
-  var.setValue<SONOS::SMServicePtr>(m_ptr);
-  return var;
-}
-
-ServicesModel::ServicesModel(QObject* parent)
+AllServicesModel::AllServicesModel(QObject* parent)
 : QAbstractListModel(parent)
 {
 }
 
-ServicesModel::~ServicesModel()
+AllServicesModel::~AllServicesModel()
 {
   clearData();
   qDeleteAll(m_items);
   m_items.clear();
 }
 
-void ServicesModel::addItem(ServiceItem* item)
+void AllServicesModel::addItem(ServiceItem* item)
 {
   {
     SONOS::LockGuard lock(m_lock);
@@ -69,14 +48,14 @@ void ServicesModel::addItem(ServiceItem* item)
   emit countChanged();
 }
 
-int ServicesModel::rowCount(const QModelIndex& parent) const
+int AllServicesModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
   SONOS::LockGuard lock(m_lock);
   return m_items.count();
 }
 
-QVariant ServicesModel::data(const QModelIndex& index, int role) const
+QVariant AllServicesModel::data(const QModelIndex& index, int role) const
 {
   SONOS::LockGuard lock(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
@@ -99,14 +78,12 @@ QVariant ServicesModel::data(const QModelIndex& index, int role) const
     return item->normalized();
   case TypeRole:
     return item->type();
-  case SerialNumRole:
-    return item->serialNum();
   default:
     return QVariant();
   }
 }
 
-QHash<int, QByteArray> ServicesModel::roleNames() const
+QHash<int, QByteArray> AllServicesModel::roleNames() const
 {
   QHash<int, QByteArray> roles;
   roles[PayloadRole] = "payload";
@@ -116,11 +93,10 @@ QHash<int, QByteArray> ServicesModel::roleNames() const
   roles[NickNameRole] = "nickName";
   roles[NormalizedRole] = "normalized";
   roles[TypeRole] = "type";
-  roles[SerialNumRole] = "serialNum";
   return roles;
 }
 
-QVariantMap ServicesModel::get(int row)
+QVariantMap AllServicesModel::get(int row)
 {
   SONOS::LockGuard lock(m_lock);
   if (row < 0 || row >= m_items.count())
@@ -135,21 +111,20 @@ QVariantMap ServicesModel::get(int row)
   model[roles[NickNameRole]] = item->nickName();
   model[roles[NormalizedRole]] = item->normalized();
   model[roles[TypeRole]] = item->type();
-  model[roles[SerialNumRole]] = item->serialNum();
   return model;
 }
 
-void ServicesModel::clearData()
+void AllServicesModel::clearData()
 {
   SONOS::LockGuard lock(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
 
-bool ServicesModel::loadData()
+bool AllServicesModel::loadData()
 {
   setUpdateSignaled(false);
-
+  
   if (!m_provider)
   {
     emit loaded(false);
@@ -161,11 +136,11 @@ bool ServicesModel::loadData()
     emit loaded(false);
     return false;
   }
-
+  
   SONOS::LockGuard lock(m_lock);
   clearData();
   m_dataState = ListModel::NoData;
-  SONOS::SMServiceList list = player->GetEnabledServices();
+  SONOS::SMServiceList list = player->GetAvailableServices();
   for (SONOS::SMServiceList::const_iterator it = list.begin(); it != list.end(); ++it)
   {
     ServiceItem* item = new ServiceItem(*it);
@@ -179,7 +154,7 @@ bool ServicesModel::loadData()
   return true;
 }
 
-bool ServicesModel::asyncLoad()
+bool AllServicesModel::asyncLoad()
 {
   if (m_provider)
   {
@@ -189,7 +164,7 @@ bool ServicesModel::asyncLoad()
   return false;
 }
 
-void ServicesModel::resetModel()
+void AllServicesModel::resetModel()
 {
   {
     SONOS::LockGuard lock(m_lock);
@@ -211,7 +186,7 @@ void ServicesModel::resetModel()
   emit countChanged();
 }
 
-void ServicesModel::handleDataUpdate()
+void AllServicesModel::handleDataUpdate()
 {
   if (!updateSignaled())
   {

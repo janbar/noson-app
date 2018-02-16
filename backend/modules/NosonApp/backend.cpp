@@ -45,7 +45,8 @@ void BackendPlugin::registerTypes(const char *uri)
   qmlRegisterSingletonType<RadiosModel>(uri, 1, 0, "AllRadiosModel", Sonos::allRadiosModel_provider);
   qmlRegisterSingletonType<PlaylistsModel>(uri, 1, 0, "AllPlaylistsModel", Sonos::allPlaylistsModel_provider);
   qmlRegisterSingletonType<FavoritesModel>(uri, 1, 0, "AllFavoritesModel", Sonos::allFavoritesModel_provider);
-  qmlRegisterSingletonType<ServicesModel>(uri, 1, 0, "AllServicesModel", Sonos::allServicesModel_provider);
+  qmlRegisterSingletonType<ServicesModel>(uri, 1, 0, "MyServicesModel", Sonos::MyServicesModel_provider);
+  qmlRegisterSingletonType<AllServicesModel>(uri, 1, 0, "AllServicesModel", Sonos::allServicesModel_provider);
   //qmlRegisterSingletonType<TracksModel>(uri, 1, 0, "AllTracksModel", Sonos::allTracksModel_provider);
 
   // register noson instantiable types

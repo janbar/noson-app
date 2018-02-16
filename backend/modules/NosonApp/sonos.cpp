@@ -131,9 +131,14 @@ QString Sonos::getLocale()
   return m_locale.Load();
 }
 
-void Sonos::addServiceOAuth(const QString& type, const QString& sn, const QString& key, const QString& token)
+void Sonos::addServiceOAuth(const QString& type, const QString& sn, const QString& key, const QString& token, const QString& username)
 {
-  SONOS::System::AddServiceOAuth(type.toUtf8().constData(), sn.toUtf8().constData(), key.toUtf8().constData(), token.toUtf8().constData());
+  SONOS::System::AddServiceOAuth(type.toUtf8().constData(), sn.toUtf8().constData(), key.toUtf8().constData(), token.toUtf8().constData(), username.toUtf8().constData());
+}
+
+void Sonos::deleteServiceOAuth(const QString& type, const QString& sn)
+{
+  SONOS::System::DeleteServiceOAuth(type.toUtf8().constData(), sn.toUtf8().constData());
 }
 
 void Sonos::renewSubscriptions()
