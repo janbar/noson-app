@@ -67,7 +67,7 @@ MusicPage {
             color: serviceItem.held ? "lightgrey" : "transparent"
 
             noCover: "qrc:/images/radio.png"
-            imageSource: model.id === "SA_RINCON65031_0" ? "qrc:/images/tunein.png" : model.icon
+            imageSource: model.type === "65031" ? "qrc:/images/tunein.png" : model.icon
             description: qsTr("Service")
 
             onClicked: {
@@ -127,7 +127,7 @@ MusicPage {
             isFavorite: false
 
             noCover: "qrc:/images/radio.png"
-            coverSources: [{art: model.id === "SA_RINCON65031_0" ? "qrc:/images/tunein.png" : model.icon}]
+            coverSources: [{art: model.type === "65031" ? "qrc:/images/tunein.png" : model.icon}]
 
             onClicked: {
                 stackView.push("qrc:/ui/Service.qml",

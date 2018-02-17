@@ -52,10 +52,10 @@ MusicPage {
             isFavorite: false
 
             noCover: "qrc:/images/radio.png"
-            coverSources: [{art: model.id === "SA_RINCON65031_0" ? "qrc:/images/tunein.png" : model.icon}]
+            coverSources: [{art: model.type === "65031" ? "qrc:/images/tunein.png" : model.icon}]
 
             onClicked: {
-               if (model.type > 0) {
+               if (model.type !== "65031") {
                     var serialNum = 0;
                     var acls = deserializeACLS(settings.accounts);
                     for (var i = 0; i < acls.length; ++i) {
