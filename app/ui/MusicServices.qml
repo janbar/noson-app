@@ -127,7 +127,7 @@ MusicPage {
 
             noCover: Qt.resolvedUrl("../graphics/radio.png")
 
-            imageSource: model.id === "SA_RINCON65031_0" ? Qt.resolvedUrl("../graphics/tunein.png") : model.icon
+            imageSource: model.type === "65031" ? Qt.resolvedUrl("../graphics/tunein.png") : model.icon
 
             leadingActions: ListItemActions {
                 actions: [
@@ -179,7 +179,7 @@ MusicPage {
             isFavorite: false
 
             noCover: Qt.resolvedUrl("../graphics/radio.png")
-            coverSources: [{art: model.id === "SA_RINCON65031_0" ? Qt.resolvedUrl("../graphics/tunein.png") : model.icon}]
+            coverSources: [{art: model.type === "65031" ? Qt.resolvedUrl("../graphics/tunein.png") : model.icon}]
 
             onClicked: {
                 mainPageStack.push(Qt.resolvedUrl("Service.qml"),
