@@ -28,8 +28,6 @@ MusicPage {
     id: addServicePage
     objectName: "addServicePage"
 
-    property bool isListView: false
-
     pageTitle: i18n.tr("Add service")
     pageFlickable: serviceGrid
     searchable: true
