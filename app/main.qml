@@ -208,7 +208,6 @@ MainView {
         AllAlbumsModel.init(Sonos, "",      false);
         AllArtistsModel.init(Sonos, "",     false);
         AllGenresModel.init(Sonos, "",      false);
-        AllRadiosModel.init(Sonos, "R:0/0", false);
         AllPlaylistsModel.init(Sonos, "",   false);
         MyServicesModel.init(Sonos,         false);
 
@@ -312,12 +311,6 @@ MainView {
         target: MyServicesModel
         onDataUpdated: MyServicesModel.asyncLoad()
         onLoaded: MyServicesModel.resetModel()
-    }
-
-    Connections {
-        target: AllRadiosModel
-        onDataUpdated: AllRadiosModel.asyncLoad()
-        onLoaded: AllRadiosModel.resetModel()
     }
 
     Connections {
@@ -921,12 +914,6 @@ MainView {
                     visible: AllGenresModel.count > 0 ? true : false
                 },
                 Action {
-                    objectName: "radiosTabAction"
-                    text: radiosTab.title
-                    onTriggered: tabs.selectedTabIndex = radiosTab.index
-                    visible: AllRadiosModel.count > 0 ? true : false
-                },
-                Action {
                     objectName: "playlistsTabAction"
                     text: playlistsTab.title
                     onTriggered: tabs.selectedTabIndex = playlistsTab.index
@@ -995,18 +982,6 @@ MainView {
                 // Tab content begins here
                 page: Genres {
                     id: genresPage
-                }
-            }
-
-            Tab {
-                id: radiosTab
-                objectName: "radiosTab"
-                anchors.fill: parent
-                title: page.pageTitle
-
-                // Tab content begins here
-                page: Radios {
-                    id: radiosPage
                 }
             }
 
