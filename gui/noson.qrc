@@ -84,7 +84,6 @@
         <file>ui/MusicServices.qml</file>
         <file>ui/Favorites.qml</file>
         <file>ui/Service.qml</file>
-        <file>ui/Radios.qml</file>
         <file>components/ServiceRegistration.qml</file>
         <file>components/ServiceLogin.qml</file>
         <file>components/Delegates/DragMusicListItem.qml</file>

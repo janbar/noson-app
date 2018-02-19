@@ -33,7 +33,6 @@
 #include "genresmodel.h"
 #include "tracksmodel.h"
 #include "queuemodel.h"
-#include "radiosmodel.h"
 #include "playlistsmodel.h"
 #include "favoritesmodel.h"
 #include "servicesmodel.h"
@@ -140,13 +139,6 @@ public:
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
     return new GenresModel;
-  }
-
-  static QObject* allRadiosModel_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
-  {
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-    return new RadiosModel;
   }
 
   static QObject* allPlaylistsModel_provider(QQmlEngine *engine, QJSEngine *scriptEngine)

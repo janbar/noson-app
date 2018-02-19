@@ -203,7 +203,6 @@ ApplicationWindow {
         AllAlbumsModel.init(Sonos, "",      false);
         AllArtistsModel.init(Sonos, "",     false);
         AllGenresModel.init(Sonos, "",      false);
-        AllRadiosModel.init(Sonos, "R:0/0", false);
         AllPlaylistsModel.init(Sonos, "",   false);
         MyServicesModel.init(Sonos,         false);
         // launch connection
@@ -255,38 +254,31 @@ ApplicationWindow {
     }
 
     Connections {
-        target: AllRadiosModel
-        onDataUpdated: AllRadiosModel.asyncLoad()
-        onLoaded: AllRadiosModel.resetModel()
-        onCountChanged: { tabs.setProperty(1, "visible", (AllRadiosModel.count > 0)) }
-    }
-
-    Connections {
         target: AllFavoritesModel
         onDataUpdated: AllFavoritesModel.asyncLoad()
         onLoaded: AllFavoritesModel.resetModel()
-        onCountChanged: { tabs.setProperty(2, "visible", (AllFavoritesModel.count > 0)) }
+        onCountChanged: { tabs.setProperty(1, "visible", (AllFavoritesModel.count > 0)) }
     }
 
     Connections {
         target: AllArtistsModel
         onDataUpdated: AllArtistsModel.asyncLoad()
         onLoaded: AllArtistsModel.resetModel()
-        onCountChanged: { tabs.setProperty(3, "visible", (AllArtistsModel.count > 0)) }
+        onCountChanged: { tabs.setProperty(2, "visible", (AllArtistsModel.count > 0)) }
     }
 
     Connections {
         target: AllAlbumsModel
         onDataUpdated: AllAlbumsModel.asyncLoad()
         onLoaded: AllAlbumsModel.resetModel()
-        onCountChanged: { tabs.setProperty(4, "visible", (AllAlbumsModel.count > 0)) }
+        onCountChanged: { tabs.setProperty(3, "visible", (AllAlbumsModel.count > 0)) }
     }
 
     Connections {
         target: AllGenresModel
         onDataUpdated: AllGenresModel.asyncLoad()
         onLoaded: AllGenresModel.resetModel()
-        onCountChanged: { tabs.setProperty(5, "visible", (AllGenresModel.count > 0)) }
+        onCountChanged: { tabs.setProperty(4, "visible", (AllGenresModel.count > 0)) }
     }
 
     Connections {
@@ -960,7 +952,6 @@ ApplicationWindow {
     ListModel {
         id: tabs
         ListElement { title: qsTr("My Services"); source: "qrc:/ui/MusicServices.qml"; visible: true }
-        ListElement { title: qsTr("My Radios"); source: "qrc:/ui/Radios.qml"; visible: false }
         ListElement { title: qsTr("Favorites"); source: "qrc:/ui/Favorites.qml"; visible: false }
         ListElement { title: qsTr("Artists"); source: "qrc:/ui/Artists.qml"; visible: false }
         ListElement { title: qsTr("Albums"); source: "qrc:/ui/Albums.qml"; visible: false }
