@@ -37,8 +37,6 @@ set(
     modules/NosonApp/tracksmodel.h
     modules/NosonApp/queuemodel.cpp
     modules/NosonApp/queuemodel.h
-    modules/NosonApp/radiosmodel.cpp
-    modules/NosonApp/radiosmodel.h
     modules/NosonApp/playlistsmodel.cpp
     modules/NosonApp/playlistsmodel.h
     modules/NosonApp/zonesmodel.cpp
