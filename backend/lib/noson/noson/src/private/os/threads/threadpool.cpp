@@ -72,7 +72,7 @@ CThreadPool::~CThreadPool()
     for (std::set<CWorkerThread*>::iterator it = m_pool.begin(); it != m_pool.end(); ++it)
       (*it)->StopThread(false);
     // Wake sleeper
-    m_queueContent.Broadcast();
+    m_queueFill.Broadcast();
     // Waiting all finalized
     m_condition.Wait(m_mutex, m_empty);
   }
@@ -91,7 +91,7 @@ bool CThreadPool::Enqueue(CWorker* worker)
       if (m_waitingCount)
       {
         // Wake a thread
-        m_queueContent.Signal();
+        m_queueFill.Signal();
         return true;
       }
       else
@@ -130,6 +130,22 @@ unsigned CThreadPool::QueueSize() const
 {
   CLockGuard lock(m_mutex);
   return static_cast<unsigned>(m_queue.size());
+}
+
+bool CThreadPool::IsQueueEmpty() const
+{
+  CLockGuard lock(m_mutex);
+  return m_queue.empty();
+}
+
+bool CThreadPool::waitEmpty(unsigned millisec)
+{
+  return IsQueueEmpty() || m_queueEmpty.Wait(millisec);
+}
+
+bool CThreadPool::waitEmpty()
+{
+  return IsQueueEmpty() || m_queueEmpty.Wait();
 }
 
 void CThreadPool::Suspend()
@@ -185,11 +201,15 @@ CWorker* CThreadPool::PopQueue(CWorkerThread* _thread)
 {
   (void)_thread;
   CLockGuard lock(m_mutex);
-  if (!m_suspended && !m_queue.empty())
+  if (!m_suspended)
   {
-    CWorker* worker = m_queue.front();
-    m_queue.pop();
-    return worker;
+    m_queueEmpty.Signal();
+    if (!m_queue.empty())
+    {
+      CWorker* worker = m_queue.front();
+      m_queue.pop();
+      return worker;
+    }
   }
   return NULL;
 }
@@ -201,7 +221,7 @@ void CThreadPool::WaitQueue(CWorkerThread* _thread)
   ++m_waitingCount;
   unsigned millisec = m_keepAlive;
   lock.Unlock();
-  m_queueContent.Wait(millisec);
+  m_queueFill.Wait(millisec);
   lock.Lock();
   --m_waitingCount;
 }
@@ -254,6 +274,6 @@ void CThreadPool::__resize()
     }
     // Wake up the waiting threads to stop
     if (m_waitingCount)
-        m_queueContent.Broadcast();
+        m_queueFill.Broadcast();
   }
 }

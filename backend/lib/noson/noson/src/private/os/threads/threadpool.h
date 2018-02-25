@@ -55,6 +55,9 @@ namespace OS
     unsigned Size() const;
 
     unsigned QueueSize() const;
+    bool IsQueueEmpty() const;
+    bool waitEmpty(unsigned millisec);
+    bool waitEmpty();
 
     void Suspend();
     void Resume();
@@ -78,7 +81,8 @@ namespace OS
     std::set<CWorkerThread*>  m_pool;
     mutable CMutex            m_mutex;
     CCondition<volatile bool> m_condition;
-    CEvent                    m_queueContent;
+    CEvent                    m_queueFill;
+    CEvent                    m_queueEmpty;
 
     CWorker* PopQueue(CWorkerThread* _thread);
     void WaitQueue(CWorkerThread* _thread);
