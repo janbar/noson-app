@@ -454,12 +454,15 @@ ApplicationWindow {
     // Action on play all button clicked
     function playAll(modelItem)
     {
-        var nr = player.addItemToQueue(modelItem, 0);
-        if (nr && player.playQueue(false) && player.seekTrack(nr) && player.play()) {
-            // Show the Now playing page and make sure the track is visible
-            tabs.pushNowPlaying();
-            popInfo.open(qsTr("song added"));
-            return true;
+        // replace queue with the bundle item
+        if (player.removeAllTracksFromQueue()) {
+            var nr = player.addItemToQueue(modelItem, 0);
+            if (nr && player.playQueue(false) && player.seekTrack(nr) && player.play()) {
+                // Show the Now playing page and make sure the track is visible
+                tabs.pushNowPlaying();
+                popInfo.open(qsTr("song added"));
+                return true;
+            }
         }
         popInfo.open(qsTr("Action can't be performed"));
         return false;

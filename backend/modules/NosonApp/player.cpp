@@ -333,7 +333,11 @@ int Player::addMultipleItemsToQueue(const QVariantList& payloads)
 
 bool Player::removeAllTracksFromQueue()
 {
-  return m_player ? m_player->RemoveAllTracksFromQueue() : false;
+  if (m_player && m_player->RemoveAllTracksFromQueue()) {
+    m_currentIndex = -1;
+    return true;
+  }
+  return false;
 }
 
 bool Player::removeTrackFromQueue(const QString& id, int containerUpdateID)

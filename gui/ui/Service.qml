@@ -298,18 +298,22 @@ MusicPage {
             mediaModel.asyncLoadChild(model.id, model.title, servicePage.displayType, model.index);
         } else if (model.canPlay) {
             if (model.canQueue)
-              trackClicked(model);
+                trackClicked(model);
             else
-              radioClicked(model);
+                radioClicked(model);
         }
     }
 
     function playItem(model) {
         if (model.canPlay) {
-            if (model.canQueue)
-              trackClicked(model);
-            else
-              radioClicked(model);
+            if (model.canQueue) {
+                if (model.isContainer)
+                    playAll(model);
+                else
+                    trackClicked(model);
+            } else {
+                radioClicked(model);
+            }
         }
     }
 
