@@ -193,7 +193,7 @@ int main(int argc, char** argv)
                 PRINT1("!!! Browsing failed for service %s !!!\n", item->GetName().c_str());
               else
               {
-                SONOS::SMOAKeyring::Credentials auth;
+                SONOS::SMOAKeyring::Data auth;
                 switch (sm.GetPolicyAuth())
                 {
                 case SONOS::SMAPI::Auth_UserId:
