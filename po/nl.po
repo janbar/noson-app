@@ -493,12 +493,26 @@ msgid "Shuffle"
 msgstr "Willekeurig"
 
 #: ../app/components/ZoneControls.qml:52
-msgid "Under construction"
-msgstr "Wordt nog aan gewerkt"
+msgid "About"
+msgstr "Over"
 
 #: ../app/components/ZoneControls.qml:63
-msgid "This feature will be added in a next version. Please rate the App."
-msgstr "Deze mogelijkheid zal worden toegevoegd in een volgende versie. Waarder alstublieft de app."
+msgid ""
+"The project has started in 2015 and is intented to make a fast and smart "
+"controller for your SONOS devices. You can browse your music library and "
+"play track or radio on any zones. You can manage grouping zones, queue, and "
+"playlists, and fully control the playback."
+msgstr "Dit project is begonnen in 2015 en heeft als doel om een snelle en slimme bediening te worden voor uw SONOS-apparaten. U kunt bladeren door uw muziekbibliotheek en nummers en radio afspelen in elke zone. U kunt gegroepeerde zones beheren, alsook de wachtrij en afspeellijsten en u kunt het afspelen volledig bedienen."
+ 
+#: ../app/components/ZoneControls.qml:74
+#, qt-format
+msgid "Version: %1"
+msgstr "Versie: %1"
+
+#: ../app/components/ZoneControls.qml:85
+#, qt-format
+msgid "Author: %1"
+msgstr "Auteur: %1"
 
 #. TRANSLATORS: this appears in the header with limited space (around 20
 #. characters)

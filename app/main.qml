@@ -39,6 +39,8 @@ MainView {
     applicationName: "noson.janbar"
     id: mainView
 
+    readonly property string versionString: "2.8.0"
+
     focus: true
     backgroundColor: styleMusic.mainView.backgroundColor
 
@@ -620,12 +622,15 @@ MainView {
     // Action on play all button clicked
     function playAll(modelItem)
     {
-        var nr = player.addItemToQueue(modelItem, 0);
-        if (nr && player.playQueue(false) && player.seekTrack(nr) && player.play()) {
-            // Show the Now playing page and make sure the track is visible
-            tabs.pushNowPlaying();
-            popInfo.open(i18n.tr("song added"));
-            return true;
+        // replace queue with the bundle item
+        if (player.removeAllTracksFromQueue()) {
+            var nr = player.addItemToQueue(modelItem, 0);
+            if (nr && player.playQueue(false) && player.seekTrack(nr) && player.play()) {
+                // Show the Now playing page and make sure the track is visible
+                tabs.pushNowPlaying();
+                popInfo.open(qsTr("song added"));
+                return true;
+            }
         }
         popInfo.open(i18n.tr("Action can't be performed"));
         return false;
