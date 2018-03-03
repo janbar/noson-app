@@ -48,8 +48,8 @@ Item {
                 elide: Text.ElideRight
                 fontSize: "x-large"
                 horizontalAlignment: Text.AlignHCenter
-                maximumLineCount: 2
-                text: i18n.tr("Under construction")
+                maximumLineCount: 1
+                text: i18n.tr("About")
                 width: parent.width
                 wrapMode: Text.WordWrap
             }
@@ -57,13 +57,36 @@ Item {
             Label {
                 color: styleMusic.libraryEmpty.labelColor
                 elide: Text.ElideRight
-                fontSize: "large"
+                fontSize: "normal"
                 horizontalAlignment: Text.AlignLeft
-                maximumLineCount: 8
-                text: i18n.tr("This feature will be added in a next version. Please rate the App.")
+                maximumLineCount: 10
+                text: i18n.tr("The project has started in 2015 and is intented to make a fast and smart controller for your SONOS devices. You can browse your music library and play track or radio on any zones. You can manage grouping zones, queue, and playlists, and fully control the playback.")
                 width: parent.width
                 wrapMode: Text.WordWrap
             }
+
+            Label {
+                color: styleMusic.libraryEmpty.labelColor
+                elide: Text.ElideRight
+                fontSize: "normal"
+                horizontalAlignment: Text.AlignLeft
+                maximumLineCount: 1
+                text: i18n.tr("Version: %1").arg(mainView.versionString)
+                width: parent.width
+                wrapMode: Text.WordWrap
+            }
+
+            Label {
+                color: styleMusic.libraryEmpty.labelColor
+                elide: Text.ElideRight
+                fontSize: "normal"
+                horizontalAlignment: Text.AlignLeft
+                maximumLineCount: 1
+                text: i18n.tr("Author: %1").arg("Jean-Luc Barriere")
+                width: parent.width
+                wrapMode: Text.WordWrap
+            }
+
         }
     }
 }
