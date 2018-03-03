@@ -2,6 +2,14 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en">
 <context>
+    <name>AddService</name>
+    <message>
+        <location filename="../ui/AddService.qml" line="29"/>
+        <source>Add Service</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AddToFavorites</name>
     <message>
         <location filename="../components/ListItemActions/AddToFavorites.qml" line="28"/>
@@ -424,28 +432,28 @@
     <message>
         <location filename="../ui/Favorites.qml" line="74"/>
         <location filename="../ui/Favorites.qml" line="162"/>
-        <location filename="../ui/Favorites.qml" line="209"/>
+        <location filename="../ui/Favorites.qml" line="215"/>
         <source>Album</source>
         <translation>Album</translation>
     </message>
     <message>
         <location filename="../ui/Favorites.qml" line="75"/>
         <location filename="../ui/Favorites.qml" line="163"/>
-        <location filename="../ui/Favorites.qml" line="221"/>
+        <location filename="../ui/Favorites.qml" line="227"/>
         <source>Artist</source>
         <translation>Artist</translation>
     </message>
     <message>
         <location filename="../ui/Favorites.qml" line="76"/>
         <location filename="../ui/Favorites.qml" line="164"/>
-        <location filename="../ui/Favorites.qml" line="232"/>
+        <location filename="../ui/Favorites.qml" line="238"/>
         <source>Genre</source>
         <translation>Genre</translation>
     </message>
     <message>
         <location filename="../ui/Favorites.qml" line="77"/>
         <location filename="../ui/Favorites.qml" line="165"/>
-        <location filename="../ui/Favorites.qml" line="246"/>
+        <location filename="../ui/Favorites.qml" line="252"/>
         <source>Playlist</source>
         <translation>Playlist</translation>
     </message>
@@ -461,7 +469,7 @@
         <translation>Action can&apos;t be performed</translation>
     </message>
     <message>
-        <location filename="../ui/Favorites.qml" line="211"/>
+        <location filename="../ui/Favorites.qml" line="217"/>
         <source>Unknown Album</source>
         <translation>Unknown Album</translation>
     </message>
@@ -552,9 +560,18 @@
 <context>
     <name>MusicServices</name>
     <message>
-        <location filename="../ui/MusicServices.qml" line="29"/>
         <source>My services</source>
-        <translation>My services</translation>
+        <translation type="vanished">My services</translation>
+    </message>
+    <message>
+        <location filename="../ui/MusicServices.qml" line="30"/>
+        <source>My Services</source>
+        <translation type="unfinished">My Services</translation>
+    </message>
+    <message>
+        <location filename="../ui/MusicServices.qml" line="71"/>
+        <source>Service</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -712,15 +729,12 @@
 <context>
     <name>Radios</name>
     <message>
-        <location filename="../ui/Radios.qml" line="30"/>
         <source>My Radios</source>
-        <translation>My Radios</translation>
+        <translation type="vanished">My Radios</translation>
     </message>
     <message>
-        <location filename="../ui/Radios.qml" line="73"/>
-        <location filename="../ui/Radios.qml" line="151"/>
         <source>Radio</source>
-        <translation>Radio</translation>
+        <translation type="vanished">Radio</translation>
     </message>
 </context>
 <context>
@@ -913,44 +927,44 @@
         <translation>Index loaded</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="371"/>
+        <location filename="../noson.qml" line="373"/>
         <source>Refreshing of index is running</source>
         <translation>Refreshing of index is running</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="374"/>
-        <location filename="../noson.qml" line="393"/>
-        <location filename="../noson.qml" line="401"/>
-        <location filename="../noson.qml" line="411"/>
-        <location filename="../noson.qml" line="416"/>
-        <location filename="../noson.qml" line="448"/>
-        <location filename="../noson.qml" line="462"/>
-        <location filename="../noson.qml" line="474"/>
-        <location filename="../noson.qml" line="485"/>
-        <location filename="../noson.qml" line="493"/>
-        <location filename="../noson.qml" line="503"/>
-        <location filename="../noson.qml" line="513"/>
-        <location filename="../noson.qml" line="520"/>
-        <location filename="../noson.qml" line="527"/>
-        <location filename="../noson.qml" line="536"/>
-        <location filename="../noson.qml" line="545"/>
-        <location filename="../noson.qml" line="553"/>
-        <location filename="../noson.qml" line="560"/>
-        <location filename="../noson.qml" line="567"/>
-        <location filename="../noson.qml" line="577"/>
+        <location filename="../noson.qml" line="376"/>
+        <location filename="../noson.qml" line="395"/>
+        <location filename="../noson.qml" line="403"/>
+        <location filename="../noson.qml" line="413"/>
+        <location filename="../noson.qml" line="418"/>
+        <location filename="../noson.qml" line="450"/>
+        <location filename="../noson.qml" line="467"/>
+        <location filename="../noson.qml" line="479"/>
+        <location filename="../noson.qml" line="490"/>
+        <location filename="../noson.qml" line="498"/>
+        <location filename="../noson.qml" line="508"/>
+        <location filename="../noson.qml" line="518"/>
+        <location filename="../noson.qml" line="525"/>
+        <location filename="../noson.qml" line="532"/>
+        <location filename="../noson.qml" line="541"/>
+        <location filename="../noson.qml" line="550"/>
+        <location filename="../noson.qml" line="558"/>
+        <location filename="../noson.qml" line="565"/>
+        <location filename="../noson.qml" line="572"/>
+        <location filename="../noson.qml" line="582"/>
         <source>Action can&apos;t be performed</source>
         <translation>Action can&apos;t be performed</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="398"/>
-        <location filename="../noson.qml" line="459"/>
-        <location filename="../noson.qml" line="471"/>
-        <location filename="../noson.qml" line="533"/>
+        <location filename="../noson.qml" line="400"/>
+        <location filename="../noson.qml" line="463"/>
+        <location filename="../noson.qml" line="476"/>
+        <location filename="../noson.qml" line="538"/>
         <source>song added</source>
         <translation>song added</translation>
     </message>
     <message numerus="yes">
-        <location filename="../noson.qml" line="445"/>
+        <location filename="../noson.qml" line="447"/>
         <source>%n song(s) added</source>
         <translation>
             <numerusform>%n song added</numerusform>
@@ -958,12 +972,12 @@
         </translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="482"/>
+        <location filename="../noson.qml" line="487"/>
         <source>Queue cleared</source>
         <translation>Queue cleared</translation>
     </message>
     <message numerus="yes">
-        <location filename="../noson.qml" line="542"/>
+        <location filename="../noson.qml" line="547"/>
         <source>%n song(s) removed</source>
         <translation>
             <numerusform>%n song removed</numerusform>
@@ -971,89 +985,88 @@
         </translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="864"/>
+        <location filename="../noson.qml" line="869"/>
         <source>Search music</source>
         <translation type="unfinished">Search music</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="923"/>
+        <location filename="../noson.qml" line="928"/>
         <source>Standby timer</source>
         <translation>Standby timer</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="930"/>
+        <location filename="../noson.qml" line="935"/>
         <source>Sonos settings</source>
         <translation>Sonos settings</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="935"/>
-        <location filename="../noson.qml" line="1042"/>
+        <location filename="../noson.qml" line="940"/>
+        <location filename="../noson.qml" line="1046"/>
         <source>General settings</source>
         <translation>General settings</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="940"/>
-        <location filename="../noson.qml" line="1191"/>
+        <location filename="../noson.qml" line="945"/>
+        <location filename="../noson.qml" line="1195"/>
         <source>About</source>
         <translation>About</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="952"/>
+        <location filename="../noson.qml" line="957"/>
         <source>My Services</source>
         <translation>My Services</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="953"/>
         <source>My Radios</source>
-        <translation>My Radios</translation>
+        <translation type="vanished">My Radios</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="954"/>
+        <location filename="../noson.qml" line="958"/>
         <source>Favorites</source>
         <translation>Favorites</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="955"/>
+        <location filename="../noson.qml" line="959"/>
         <source>Artists</source>
         <translation>Artists</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="956"/>
+        <location filename="../noson.qml" line="960"/>
         <source>Albums</source>
         <translation>Albums</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="957"/>
+        <location filename="../noson.qml" line="961"/>
         <source>Genres</source>
         <translation>Genres</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="958"/>
+        <location filename="../noson.qml" line="962"/>
         <source>Playlists</source>
         <translation>Playlists</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1155"/>
+        <location filename="../noson.qml" line="1159"/>
         <source>Style</source>
         <translation>Style</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1176"/>
+        <location filename="../noson.qml" line="1180"/>
         <source>Restart is required</source>
         <translation>Restart is required</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1199"/>
+        <location filename="../noson.qml" line="1203"/>
         <source>The project has started in 2015 and is intented to make a fast and smart controller for your SONOS devices. You can browse your music library and play track or radio on any zones. You can manage grouping zones, queue, and playlists, and fully control the playback.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1207"/>
+        <location filename="../noson.qml" line="1211"/>
         <source>Author: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1212"/>
+        <location filename="../noson.qml" line="1216"/>
         <source>Version: %1</source>
         <translation></translation>
     </message>
