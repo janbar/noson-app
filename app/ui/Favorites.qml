@@ -251,11 +251,17 @@ MusicPage {
     }
 
     Timer {
-        id: delayfavoriteClicked
+        id: delayFavoritePlayAll
         interval: 100
         property QtObject model
         onTriggered: {
-            player.playFavorite(model) // play favorite
+            // clear queue when playing bundle
+            if (model.type !== 5 && model.canQueue) {
+                if (player.removeAllTracksFromQueue())
+                    player.playFavorite(model);
+            } else {
+               player.playFavorite(model);
+            }
         }
     }
 
@@ -315,12 +321,11 @@ MusicPage {
                                    })
             }
             else if (model.type === 5) {
-                delayfavoriteClicked.model = model
-                delayfavoriteClicked.start()
+                player.playFavorite(model) // play it
             }
         } else {
-            delayfavoriteClicked.model = model
-            delayfavoriteClicked.start()
+            delayFavoritePlayAll.model = model
+            delayFavoritePlayAll.start()
         }
     }
 }
