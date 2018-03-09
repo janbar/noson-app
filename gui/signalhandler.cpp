@@ -41,7 +41,10 @@ bool SignalHandler::catchSignal(int signal, int flags)
 
 void SignalHandler::omitSignal(int signal)
 {
-  sigset(signal, SIG_DFL);
+  struct sigaction act;
+  act.sa_handler = SIG_DFL;
+  sigemptyset(&act.sa_mask);
+  sigaction(signal, &act, 0);
 }
 
 void SignalHandler::forward()
