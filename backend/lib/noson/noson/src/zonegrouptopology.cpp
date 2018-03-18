@@ -171,26 +171,38 @@ bool ZoneGroupTopology::ParseZoneGroupState(const std::string& xml)
           zoneGroupMember.SetAttribut(cattr->Name(), cattr->Value());
           cattr = cattr->Next();
         }
-        ZonePlayerPtr zp(new ZonePlayer(zoneGroupMember.GetAttribut("ZoneName")));
-        const std::string& muuid = zoneGroupMember.GetAttribut("UUID");
-        zp->SetAttribut(ZP_UUID, muuid);
-        if (muuid == cuuid)
-          zp->SetAttribut(ZP_COORDINATOR, "true");
+        if (zoneGroupMember.GetAttribut("Invisible") == "1")
+        {
+          const std::string& mname = zoneGroupMember.GetAttribut("ZoneName");
+          const std::string& muuid = zoneGroupMember.GetAttribut("UUID");
+          DBG(DBG_INFO, "%s: discard invisible group member '%s' (%s)\n", __FUNCTION__, muuid.c_str(), mname.c_str());
+        }
         else
-          zp->SetAttribut(ZP_COORDINATOR, "false");
-        zp->SetAttribut(ZP_LOCATION, zoneGroupMember.GetAttribut("Location"));
-        zp->SetAttribut(ZP_ICON, zoneGroupMember.GetAttribut("Icon"));
-        zp->SetAttribut(ZP_VERSION, zoneGroupMember.GetAttribut("SoftwareVersion"));
-        zp->SetAttribut(ZP_MCVERSION, zoneGroupMember.GetAttribut("MinCompatibleVersion"));
-        zp->SetAttribut(ZP_LCVERSION, zoneGroupMember.GetAttribut("LegacyCompatibleVersion"));
-        DBG(DBG_INFO, "%s: new group member '%s' (%s)\n", __FUNCTION__, muuid.c_str(), zp->c_str());
-        zonePlayers->insert(std::make_pair(*zp, zp));
-        zone->push_back(zp);
+        {
+          ZonePlayerPtr zp(new ZonePlayer(zoneGroupMember.GetAttribut("ZoneName")));
+          const std::string& muuid = zoneGroupMember.GetAttribut("UUID");
+          zp->SetAttribut(ZP_UUID, muuid);
+          if (muuid == cuuid)
+            zp->SetAttribut(ZP_COORDINATOR, "true");
+          else
+            zp->SetAttribut(ZP_COORDINATOR, "false");
+          zp->SetAttribut(ZP_LOCATION, zoneGroupMember.GetAttribut("Location"));
+          zp->SetAttribut(ZP_ICON, zoneGroupMember.GetAttribut("Icon"));
+          zp->SetAttribut(ZP_VERSION, zoneGroupMember.GetAttribut("SoftwareVersion"));
+          zp->SetAttribut(ZP_MCVERSION, zoneGroupMember.GetAttribut("MinCompatibleVersion"));
+          zp->SetAttribut(ZP_LCVERSION, zoneGroupMember.GetAttribut("LegacyCompatibleVersion"));
+          DBG(DBG_INFO, "%s: new group member '%s' (%s)\n", __FUNCTION__, muuid.c_str(), zp->c_str());
+          zonePlayers->insert(std::make_pair(*zp, zp));
+          zone->push_back(zp);
+        }
       }
       child = child->NextSiblingElement(NULL);
     }
-    zone->Revamp();
-    zones->insert(std::make_pair(zone->GetGroup(), zone));
+    if (!zone->empty())
+    {
+      zone->Revamp();
+      zones->insert(std::make_pair(zone->GetGroup(), zone));
+    }
     elem = elem->NextSiblingElement(NULL);
   }
   // compute a key for this state
