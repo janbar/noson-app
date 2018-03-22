@@ -726,22 +726,19 @@ size_t UdpSocket::ReceiveData(void* buf, size_t n)
   if (IsValid())
   {
     m_errno = 0;
-    size_t rcvlen = 0;
-    char *p = (char*)buf;
+    size_t len = 0;
 
-    // Retrieve data from buffer
+    // fill rest of data from buffer
     if (m_buffer)
     {
       if (m_bufptr < m_buffer + m_rcvlen)
       {
-        rcvlen = m_rcvlen - (m_bufptr - m_buffer);
-        if (rcvlen > n)
-          rcvlen = n;
-        memcpy(p, m_bufptr, rcvlen);
-        m_bufptr += rcvlen;
-        //p += rcvlen;
-        //n -= rcvlen;
-        return rcvlen;
+        len = m_rcvlen - (m_bufptr - m_buffer);
+        if (len > n)
+          len = n;
+        memcpy(buf, m_bufptr, len);
+        m_bufptr += len;
+        return len;
       }
     }
     else if ((m_buffer = new char[m_buflen]) == NULL)
@@ -750,11 +747,10 @@ size_t UdpSocket::ReceiveData(void* buf, size_t n)
       DBG(DBG_ERROR, "%s: cannot allocate %u bytes for buffer\n", __FUNCTION__, m_buflen);
       return 0;
     }
-    // Reset buffer
+    // fill buffer with the next incoming datagram
     m_bufptr = m_buffer;
     m_rcvlen = 0;
 
-    // Else fill buffer with new data
     struct timeval tv;
     fd_set fds;
     int r = 0;
@@ -768,17 +764,13 @@ size_t UdpSocket::ReceiveData(void* buf, size_t n)
       socklen_t _fromlen = m_from->sa_len;
       if ((r = recvfrom(m_socket, m_buffer, m_buflen, 0, &m_from->sa, &_fromlen)) > 0)
       {
-        m_rcvlen = r;
-        size_t s = r;
-        if (s > n)
-          s = n;
-        memcpy(p, m_buffer, s);
-        m_bufptr = m_buffer + s;
-        //p += s;
-        //n -= s;
-        rcvlen += s;
+        m_rcvlen = len = r;
         if (m_rcvlen == m_buflen)
           DBG(DBG_WARN, "%s: datagram have been truncated (%d)\n", __FUNCTION__, r);
+        if (len > n)
+          len = n;
+        memcpy(buf, m_buffer, len);
+        m_bufptr += len;
       }
     }
     if (r == 0)
@@ -791,7 +783,7 @@ size_t UdpSocket::ReceiveData(void* buf, size_t n)
       m_errno = LASTERROR;
       DBG(DBG_ERROR, "%s: socket(%p) read error (%d)\n", __FUNCTION__, &m_socket, m_errno);
     }
-    return rcvlen;
+    return len;
   }
   m_errno = ENOTSOCK;
   return 0;
@@ -819,4 +811,224 @@ std::string UdpSocket::GetRemoteIP() const
       break;
   }
   return host;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+////
+//// UDP server socket
+////
+
+UdpServerSocket::UdpServerSocket()
+: m_socket(INVALID_SOCKET_VALUE)
+, m_errno(0)
+, m_buffer(NULL)
+, m_bufptr(NULL)
+, m_buflen(SOCKET_BUFFER_SIZE)
+, m_rcvlen(0)
+{
+  m_addr = new SocketAddress;
+  m_from = new SocketAddress;
+  m_timeout.tv_sec = SOCKET_READ_TIMEOUT_SEC;
+  m_timeout.tv_usec = SOCKET_READ_TIMEOUT_USEC;
+
+}
+
+UdpServerSocket::UdpServerSocket(size_t bufferSize)
+: m_socket(INVALID_SOCKET_VALUE)
+, m_errno(0)
+, m_buffer(NULL)
+, m_bufptr(NULL)
+, m_buflen(bufferSize)
+, m_rcvlen(0)
+{
+  m_addr = new SocketAddress;
+  m_from = new SocketAddress;
+  m_timeout.tv_sec = SOCKET_READ_TIMEOUT_SEC;
+  m_timeout.tv_usec = SOCKET_READ_TIMEOUT_USEC;
+}
+
+UdpServerSocket::~UdpServerSocket()
+{
+  if (IsValid())
+  {
+    closesocket(m_socket);
+    m_socket = INVALID_SOCKET_VALUE;
+  }
+  if (m_addr)
+  {
+    delete m_addr;
+    m_addr = NULL;
+  }
+  if (m_from)
+  {
+    delete m_from;
+    m_from = NULL;
+  }
+  if (m_buffer)
+  {
+    delete[] m_buffer;
+    m_buffer = m_bufptr = NULL;
+  }
+}
+
+bool UdpServerSocket::Create(SOCKET_AF_t af)
+{
+  if (IsValid())
+    return false;
+
+  m_addr->sa.sa_family = __addressFamily(af);
+  m_socket = socket(m_addr->sa.sa_family, SOCK_DGRAM, 0);
+  if (!IsValid())
+  {
+    m_errno = LASTERROR;
+    DBG(DBG_ERROR, "%s: invalid socket (%d)\n", __FUNCTION__, m_errno);
+    return false;
+  }
+
+  // TIME_WAIT
+  int opt_reuseaddr = 1;
+  if (setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, (char*)&opt_reuseaddr, sizeof(opt_reuseaddr)))
+  {
+    m_errno = LASTERROR;
+    DBG(DBG_ERROR, "%s: could not set reuseaddr from socket (%d)\n", __FUNCTION__, m_errno);
+    return false;
+  }
+  return true;
+}
+
+bool UdpServerSocket::IsValid() const
+{
+  return (m_socket == INVALID_SOCKET_VALUE ? false : true);
+}
+
+bool UdpServerSocket::Bind(unsigned port)
+{
+  if (!IsValid())
+    return false;
+  int r = 0;
+
+  m_addr->Clear(m_addr->sa.sa_family);
+  switch (m_addr->sa.sa_family)
+  {
+    case AF_INET:
+    {
+      sockaddr_in* sa = (sockaddr_in*)&m_addr->sa;
+      sa->sin_family = AF_INET;
+      sa->sin_addr.s_addr = htonl(INADDR_ANY);
+      sa->sin_port = htons(port);
+      r = bind(m_socket, &m_addr->sa, m_addr->sa_len);
+      break;
+    }
+    case AF_INET6:
+    {
+      sockaddr_in6* sa = (sockaddr_in6*)&m_addr->sa;
+      sa->sin6_family = AF_INET6;
+      sa->sin6_addr = in6addr_any;
+      sa->sin6_port = htons(port);
+      r = bind(m_socket, &m_addr->sa, m_addr->sa_len);
+      break;
+    }
+  }
+
+  if (r)
+  {
+    m_errno = LASTERROR;
+    DBG(DBG_ERROR, "%s: could not bind to address (%d)\n", __FUNCTION__, m_errno);
+    return false;
+  }
+  return true;
+}
+
+size_t UdpServerSocket::AwaitIncoming(timeval timeout)
+{
+  if (IsValid())
+  {
+    m_errno = 0;
+
+    if (!m_buffer && (m_buffer = new char[m_buflen]) == NULL)
+    {
+      m_errno = ENOMEM;
+      DBG(DBG_ERROR, "%s: cannot allocate %u bytes for buffer\n", __FUNCTION__, m_buflen);
+      return 0;
+    }
+    // reset buffer
+    m_bufptr = m_buffer;
+    m_rcvlen = 0;
+
+    struct timeval tv = timeout;
+    fd_set fds;
+    int r = 0;
+
+    FD_ZERO(&fds);
+    FD_SET(m_socket, &fds);
+    r = select(m_socket + 1, &fds, NULL, NULL, &tv);
+    if (r > 0)
+    {
+      socklen_t _fromlen = m_from->sa_len;
+      if ((r = recvfrom(m_socket, m_buffer, m_buflen, 0, &m_from->sa, &_fromlen)) > 0)
+      {
+        m_rcvlen = r;
+        if (m_rcvlen == m_buflen)
+          DBG(DBG_WARN, "%s: datagram have been truncated (%d)\n", __FUNCTION__, r);
+      }
+    }
+    if (r == 0)
+    {
+      m_errno = ETIMEDOUT;
+      DBG(DBG_DEBUG, "%s: socket(%p) timed out\n", __FUNCTION__, &m_socket);
+    }
+    if (r < 0)
+    {
+      m_errno = LASTERROR;
+      DBG(DBG_ERROR, "%s: socket(%p) read error (%d)\n", __FUNCTION__, &m_socket, m_errno);
+    }
+    return m_rcvlen;
+  }
+  m_errno = ENOTSOCK;
+  return 0;
+}
+
+size_t UdpServerSocket::AwaitIncoming()
+{
+  return AwaitIncoming(m_timeout);
+}
+
+std::string UdpServerSocket::GetRemoteIP() const
+{
+  char host[INET6_ADDRSTRLEN];
+  memset(host, 0, INET6_ADDRSTRLEN);
+
+  switch(m_from->sa.sa_family)
+  {
+    case AF_INET:
+      getnameinfo(&m_from->sa, m_from->sa_len, host, INET_ADDRSTRLEN, NULL, 0, NI_NUMERICHOST);
+      break;
+    case AF_INET6:
+      getnameinfo(&m_from->sa, m_from->sa_len, host, INET6_ADDRSTRLEN, NULL, 0, NI_NUMERICHOST);
+      break;
+    default:
+      break;
+  }
+  return host;
+}
+
+size_t UdpServerSocket::ReadData(void* buf, size_t n)
+{
+  if (IsValid())
+  {
+    m_errno = 0;
+    size_t len = 0;
+
+    if (m_buffer && m_bufptr < m_buffer + m_rcvlen)
+    {
+      len = m_rcvlen - (m_bufptr - m_buffer);
+      if (len > n)
+        len = n;
+      memcpy(buf, m_bufptr, len);
+      m_bufptr += len;
+    }
+    return len;
+  }
+  m_errno = ENOTSOCK;
+  return 0;
 }

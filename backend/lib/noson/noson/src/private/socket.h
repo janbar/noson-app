@@ -141,7 +141,7 @@ namespace NSROOT
   public:
     UdpSocket();
     UdpSocket(size_t bufferSize);
-    ~UdpSocket();
+    virtual ~UdpSocket();
 
     int GetErrNo() const
     {
@@ -153,14 +153,6 @@ namespace NSROOT
 
     bool SetAddress(SOCKET_AF_t af, const char *target, unsigned port);
     bool SetMulticastTTL(int multicastTTL);
-    size_t GetPayloadLength() const
-    {
-      return m_rcvlen;
-    }
-    void FlushPayload()
-    {
-      m_rcvlen = 0;
-    }
     std::string GetRemoteIP() const;
 
   private:
@@ -176,6 +168,80 @@ namespace NSROOT
     // prevent copy
     UdpSocket(const UdpSocket&);
     UdpSocket& operator=(const UdpSocket&);
+  };
+
+  class UdpServerSocket
+  {
+  public:
+    UdpServerSocket();
+    UdpServerSocket(size_t bufferSize);
+    ~UdpServerSocket();
+
+    int GetErrNo() const
+    {
+      return m_errno;
+    }
+    bool Create(SOCKET_AF_t af);
+    bool IsValid() const;
+    bool Bind(unsigned port);
+
+    /**
+     * Wait for incoming data.
+     * @return the size of datagram or 0 when timed out
+     */
+    size_t AwaitIncoming(timeval timeout);
+    size_t AwaitIncoming();
+
+    /**
+     * @return the sender of received datagram
+     */
+    std::string GetRemoteIP() const;
+
+    /**
+     * Read data from datagram buffer.
+     * @return the size of copied data
+     */
+    size_t ReadData(void* buf, size_t n);
+
+  private:
+    SocketAddress* m_addr;
+    SocketAddress* m_from;
+    net_socket_t m_socket;
+    int m_errno;
+    char* m_buffer;
+    char* m_bufptr;
+    size_t m_buflen;
+    size_t m_rcvlen;
+    struct timeval m_timeout;
+
+    // prevent copy
+    UdpServerSocket(const UdpServerSocket&);
+    UdpServerSocket& operator=(const UdpServerSocket&);
+  };
+
+  class UdpMessageReader : public NetSocket
+  {
+  public:
+    UdpMessageReader(UdpServerSocket& boundSocket)
+    : NetSocket()
+    , m_bound(boundSocket) { }
+
+    bool SendData(const char* data, size_t size) { return false; };
+    size_t ReceiveData(void* buf, size_t n)
+    {
+      size_t r = 0;
+      if (m_bound.IsValid())
+      {
+        if ((r = m_bound.ReadData(buf, n)) > 0)
+          return r;
+        if (m_bound.AwaitIncoming(m_timeout) > 0)
+          return m_bound.ReadData(buf, n);
+      }
+      return r;
+    }
+
+  private:
+    UdpServerSocket& m_bound;
   };
 
 }
