@@ -34,6 +34,7 @@
 #define SOCKET_READ_TIMEOUT_USEC      0
 #define SOCKET_READ_ATTEMPT           3
 #define SOCKET_BUFFER_SIZE            1472
+#define SOCKET_CONNECTION_REQUESTS    5
 
 namespace NSROOT
 {
@@ -56,10 +57,7 @@ namespace NSROOT
     virtual ~NetSocket() { }
     virtual bool SendData(const char* buf, size_t size) = 0;
     virtual size_t ReceiveData(void* buf, size_t n) = 0;
-    void SetTimeout(timeval timeout)
-    {
-      m_timeout = timeout;
-    }
+    void SetTimeout(timeval timeout) { m_timeout = timeout; }
 
   protected:
     struct timeval m_timeout;
@@ -72,23 +70,74 @@ namespace NSROOT
     TcpSocket();
     virtual ~TcpSocket();
 
-    int GetErrNo() const
-    {
-      return m_errno;
-    }
-    void SetReadAttempt(int n)
-    {
-      m_attempt = n;
-    }
-    virtual bool Connect(const char *server, unsigned port, int rcvbuf);
-    virtual bool SendData(const char* buf, size_t size);
-    virtual size_t ReceiveData(void* buf, size_t n);
-    virtual void Disconnect();
-    virtual bool IsValid() const;
-    int Listen(timeval *timeout);
-    net_socket_t GetSocket() const;
-    std::string GetLocalIP();
+    /**
+     * @return the last error occuring on call
+     */
+    int GetErrNo() const { return m_errno; }
 
+    /**
+     * Configure the number of timed out attempt reading the socket before
+     * returning.
+     * @param n the number of attempt
+     */
+    void SetReadAttempt(int n) { m_attempt = n; }
+
+    /**
+     * Try to connect the socket to an address name, port.
+     * @param server the destination address name
+     * @param port the destination port
+     * @param rcvbuf the size of read buffer, else 0 for SOCKET_RCVBUF_MINSIZE
+     * @return true on success, else false
+     */
+    virtual bool Connect(const char *server, unsigned port, int rcvbuf);
+
+    /**
+     * Send data into the socket.
+     * @param buf the pointer to data
+     * @param size the number of byte to send
+     * @return true when succeeded, else false
+     */
+    virtual bool SendData(const char* buf, size_t size);
+
+    /**
+     * Read data from the socket.
+     * @param buf the pointer to write received data
+     * @param n the number of byte to read
+     * @return the number of received byte
+     */
+    virtual size_t ReceiveData(void* buf, size_t n);
+
+    /**
+     * Gracefully disconnect the socket.
+     */
+    virtual void Disconnect();
+
+    /**
+     * @return true when socket is connected, else false
+     */
+    virtual bool IsValid() const;
+
+    /**
+     * Check for read readiness. It returns -1 for errors, 0 for occurred
+     * timeout, and >0 when incoming data are ready to read.
+     * @param timeout
+     * @return an int for status
+     */
+    int Listen(timeval *timeout);
+
+    /**
+     * @return the socket handle
+     */
+    net_socket_t GetHandle() const { return m_socket; }
+
+    /**
+     * @return the address string of this host
+     */
+    std::string GetHostAddrInfo();
+
+    /**
+     * @return this host name
+     */
     static const char* GetMyHostName();
 
   protected:
@@ -114,16 +163,51 @@ namespace NSROOT
     TcpServerSocket();
     ~TcpServerSocket();
 
-    int GetErrNo() const
-    {
-      return m_errno;
-    }
+    /**
+     * @return the last error occuring on call
+     */
+    int GetErrNo() const { return m_errno; }
+
+    /**
+     * Initialize the socket for the given protocol.
+     * @return true on success, else false
+     */
     bool Create(SOCKET_AF_t af);
+
+    /**
+     * @return true when socket is created, else false
+     */
     bool IsValid() const;
+
+    /**
+     * Bind the socket to the given port on any local addresses.
+     * @param port
+     * @return true on success, else false
+     */
     bool Bind(unsigned port);
-    bool ListenConnection();
+
+    /**
+     * Prepare to accept connections on the socket.
+     * @return true on success, else false
+     */
+    bool ListenConnection(int maxConnections = SOCKET_CONNECTION_REQUESTS);
+
+    /**
+     * Await a connection.
+     * @param socket the tcp socket to connect on new request
+     * @return true on success, else false
+     */
     bool AcceptConnection(TcpSocket& socket);
+
+    /**
+     * Close the socket.
+     */
     void Close();
+
+    /**
+     * @return the socket handle
+     */
+    net_socket_t GetHandle() const { return m_socket; }
 
   private:
     SocketAddress* m_addr;
@@ -143,17 +227,58 @@ namespace NSROOT
     UdpSocket(size_t bufferSize);
     virtual ~UdpSocket();
 
-    int GetErrNo() const
-    {
-      return m_errno;
-    }
-    bool SendData(const char* data, size_t size);
+    /**
+     * @return the last error occuring on call
+     */
+    int GetErrNo() const { return m_errno; }
+
+    /**
+     * Send data into the socket.
+     * @param buf the pointer to data
+     * @param size the number of byte to send
+     * @return true when succeeded, else false
+     */
+    bool SendData(const char* buf, size_t size);
+
+    /**
+     * Read data from the socket.
+     * @param buf the pointer to write received data
+     * @param n the number of byte to read
+     * @return the number of received byte
+     */
     size_t ReceiveData(void* buf, size_t n);
+
+    /**
+     * @return true when socket is opened, else false
+     */
     bool IsValid() const;
 
-    bool SetAddress(SOCKET_AF_t af, const char *target, unsigned port);
+    /**
+     * Open the socket for the given destination.
+     * @param af the protocol
+     * @param target the address name of destination
+     * @param port
+     * @return true on success, else false
+     */
+    bool Open(SOCKET_AF_t af, const char *target, unsigned port);
+
+    /**
+     * Configure hop limit value to be used for multicast packets on the opened
+     * socket.
+     * @param multicastTTL
+     * @return true on success, else false
+     */
     bool SetMulticastTTL(int multicastTTL);
-    std::string GetRemoteIP() const;
+
+    /**
+     * @return the address string of the remote host
+     */
+    std::string GetRemoteAddrInfo() const;
+
+    /**
+     * @return the socket handle
+     */
+    net_socket_t GetHandle() const { return m_socket; }
 
   private:
     SocketAddress* m_addr;
@@ -177,31 +302,70 @@ namespace NSROOT
     UdpServerSocket(size_t bufferSize);
     ~UdpServerSocket();
 
-    int GetErrNo() const
-    {
-      return m_errno;
-    }
+    /**
+     * @return the last error occuring on call
+     */
+    int GetErrNo() const { return m_errno; }
+
+    /**
+     * Initialize the socket for the given protocol.
+     * @return true on success, else false
+     */
     bool Create(SOCKET_AF_t af);
+
+    /**
+     * @return true when socket is created, else false
+     */
     bool IsValid() const;
+
+    /**
+     * Bind the socket to the given port on any local addresses.
+     * @param port
+     * @return true on success, else false
+     */
     bool Bind(unsigned port);
 
     /**
+     * Configure hop limit value to be used for multicast packets on the opened
+     * socket.
+     * @param multicastTTL
+     * @return true on success, else false
+     */
+    bool SetMulticastTTL(int multicastTTL);
+
+    /**
+     * Configure socket to join/leave the given multicast group.
+     * @param group address name of the group
+     * @param join add/drop membership
+     * @return true on success, else false
+     */
+    bool SetMulticastMembership(const char *group, bool join);
+
+    /**
      * Wait for incoming data.
-     * @return the size of datagram or 0 when timed out
+     * @return the size of datagram else 0 when timeout occurred
      */
     size_t AwaitIncoming(timeval timeout);
     size_t AwaitIncoming();
 
     /**
-     * @return the sender of received datagram
+     * @return the address string of the remote host that provided the incoming
+     * datagram
      */
-    std::string GetRemoteIP() const;
+    std::string GetRemoteAddrInfo() const;
 
     /**
-     * Read data from datagram buffer.
-     * @return the size of copied data
+     * Read remaining data from the datagram buffer.
+     * @param buf the pointer to write received data
+     * @param n the number of byte to read
+     * @return the number of received byte
      */
     size_t ReadData(void* buf, size_t n);
+
+    /**
+     * @return the socket handle
+     */
+    net_socket_t GetHandle() const { return m_socket; }
 
   private:
     SocketAddress* m_addr;
@@ -227,6 +391,7 @@ namespace NSROOT
     , m_bound(boundSocket) { }
 
     bool SendData(const char* data, size_t size) { return false; };
+
     size_t ReceiveData(void* buf, size_t n)
     {
       size_t r = 0;

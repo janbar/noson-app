@@ -135,7 +135,7 @@ bool SubscriptionThreadImpl::Configure()
 {
   TcpSocket sock;
   sock.Connect(m_host.c_str(), m_port, 0);
-  std::string myIP = sock.GetLocalIP();
+  std::string myIP = sock.GetHostAddrInfo();
   sock.Disconnect();
   if (!myIP.empty())
   {

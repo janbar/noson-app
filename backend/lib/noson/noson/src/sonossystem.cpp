@@ -293,7 +293,7 @@ bool System::FindDeviceDescription(std::string& url)
 
   bool ret = false;
   UdpSocket sock;
-  sock.SetAddress(SOCKET_AF_INET4, MULTICAST_ADDR, MULTICAST_NUMP);
+  sock.Open(SOCKET_AF_INET4, MULTICAST_ADDR, MULTICAST_NUMP);
   sock.SetMulticastTTL(4);
 
   OS::CTimeout timeout(DISCOVER_TIMEOUT);
