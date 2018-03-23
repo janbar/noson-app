@@ -293,7 +293,7 @@ bool System::FindDeviceDescription(std::string& url)
 
   bool ret = false;
   UdpSocket sock;
-  sock.SetAddress(SOCKET_AF_INET4, MULTICAST_ADDR, MULTICAST_NUMP);
+  sock.Open(SOCKET_AF_INET4, MULTICAST_ADDR, MULTICAST_NUMP);
   sock.SetMulticastTTL(4);
 
   OS::CTimeout timeout(DISCOVER_TIMEOUT);
@@ -307,16 +307,10 @@ bool System::FindDeviceDescription(std::string& url)
     while (!ret && WSResponse::ReadHeaderLine(&sock, "\r\n", strread, &len))
     {
       const char* line = strread.c_str();
-      if (len == 15 && memcmp(line, "HTTP", 4) == 0)
+      if (!_context && strstr(line, "HTTP/1."))
       {
-        int status = 0;
-        if (1 == sscanf(line, "%*s %d", &status) && status == 200)
-        {
-          DBG(DBG_INFO, "%s: starting new context\n", __FUNCTION__);
-          _context = 1; // new valid context
-        }
-        else
-          _context = 0; // reset context
+        DBG(DBG_INFO, "%s: starting new context\n", __FUNCTION__);
+        _context = 1; // new valid context
       }
       else if (_context)
       {
