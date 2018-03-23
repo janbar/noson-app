@@ -52,9 +52,9 @@ typedef IN_ADDR in_addr_t;
 
 using namespace NSROOT;
 
-static int __addressFamily(SOCKET_AF_t af)
+static int __addressFamily(SOCKET_AF_t saf)
 {
-  switch(af)
+  switch(saf)
   {
     case SOCKET_AF_INET4:
       return AF_INET;
@@ -388,13 +388,7 @@ int TcpSocket::Listen(timeval *timeout)
   return -1;
 }
 
-net_socket_t TcpSocket::GetSocket() const
-{
-  return m_socket;
-}
-
-
-std::string TcpSocket::GetLocalIP()
+std::string TcpSocket::GetHostAddrInfo()
 {
   char host[INET6_ADDRSTRLEN];
   memset(host, 0, INET6_ADDRSTRLEN);
@@ -521,17 +515,18 @@ bool TcpServerSocket::Bind(unsigned port)
   return true;
 }
 
-bool TcpServerSocket::ListenConnection()
+bool TcpServerSocket::ListenConnection(int maxConnections /*= SOCKET_CONNECTION_REQUESTS*/)
 {
   if (!IsValid())
     return false;
 
-  if (listen(m_socket, m_maxconnections))
+  if (listen(m_socket, maxConnections))
   {
     m_errno = LASTERROR;
     DBG(DBG_ERROR, "%s: listen failed (%d)\n", __FUNCTION__, m_errno);
     return false;
   }
+  m_maxconnections = maxConnections;
   return true;
 }
 
@@ -611,7 +606,7 @@ UdpSocket::~UdpSocket()
   }
 }
 
-bool UdpSocket::SetAddress(SOCKET_AF_t af, const char* target, unsigned port)
+bool UdpSocket::Open(SOCKET_AF_t af, const char* target, unsigned port)
 {
   if (IsValid() && m_addr->sa.sa_family != __addressFamily(af))
   {
@@ -704,11 +699,11 @@ bool UdpSocket::SetMulticastTTL(int multicastTTL)
   return true;
 }
 
-bool UdpSocket::SendData(const char* data, size_t size)
+bool UdpSocket::SendData(const char* buf, size_t size)
 {
   if (IsValid())
   {
-    size_t s = sendto(m_socket, data, size, 0, &m_addr->sa, m_addr->sa_len);
+    size_t s = sendto(m_socket, buf, size, 0, &m_addr->sa, m_addr->sa_len);
     if (s != size)
     {
       m_errno = LASTERROR;
@@ -794,7 +789,7 @@ bool UdpSocket::IsValid() const
   return (m_socket == INVALID_SOCKET_VALUE ? false : true);
 }
 
-std::string UdpSocket::GetRemoteIP() const
+std::string UdpSocket::GetRemoteAddrInfo() const
 {
   char host[INET6_ADDRSTRLEN];
   memset(host, 0, INET6_ADDRSTRLEN);
@@ -939,6 +934,97 @@ bool UdpServerSocket::Bind(unsigned port)
   return true;
 }
 
+bool UdpServerSocket::SetMulticastTTL(int multicastTTL)
+{
+  if (!IsValid())
+    return false;
+
+  switch(m_addr->sa.sa_family)
+  {
+    case AF_INET:
+    {
+      // The v4 multicast TTL socket option requires that the value be passed in an unsigned char
+      unsigned char _ttl = (unsigned char) multicastTTL;
+      if (setsockopt(m_socket, IPPROTO_IP, IP_MULTICAST_TTL, (char*)&_ttl, sizeof(_ttl)))
+      {
+        m_errno = LASTERROR;
+        DBG(DBG_ERROR, "%s: could not set IP_MULTICAST_TTL from socket (%d)\n", __FUNCTION__, m_errno);
+        return false;
+      }
+      break;
+    }
+    case AF_INET6:
+    {
+      // The v6 multicast TTL socket option requires that the value be passed in as an integer
+      if (setsockopt(m_socket, IPPROTO_IPV6, IPV6_MULTICAST_HOPS, (char*)&multicastTTL, sizeof(multicastTTL)))
+      {
+        m_errno = LASTERROR;
+        DBG(DBG_ERROR, "%s: could not set IPV6_MULTICAST_HOPS from socket (%d)\n", __FUNCTION__, m_errno);
+        return false;
+      }
+      break;
+    }
+    default:
+      m_errno = EINVAL;
+      DBG(DBG_ERROR, "%s: address familly unknown (%d)\n", __FUNCTION__, m_addr->sa.sa_family);
+      return false;
+  }
+  m_errno = 0;
+  return true;
+}
+
+bool UdpServerSocket::SetMulticastMembership(const char* group, bool join)
+{
+  if (!IsValid())
+    return false;
+
+  switch(m_addr->sa.sa_family)
+  {
+    case AF_INET:
+    {
+      struct ip_mreq mreq;
+      if (inet_pton(AF_INET, group, &mreq.imr_multiaddr) == 0)
+      {
+        m_errno = LASTERROR;
+        DBG(DBG_ERROR, "%s: invalid address (%d)\n", __FUNCTION__, m_errno);
+        return false;
+      }
+      mreq.imr_interface.s_addr = htonl(INADDR_ANY);
+      if (setsockopt(m_socket, IPPROTO_IP, join ? IP_ADD_MEMBERSHIP : IP_DROP_MEMBERSHIP, &mreq, sizeof(mreq)))
+      {
+        m_errno = LASTERROR;
+        DBG(DBG_ERROR, "%s: could not set multicast membership from socket (%d)\n", __FUNCTION__, m_errno);
+        return false;
+      }
+      break;
+    }
+    case AF_INET6:
+    {
+      struct ipv6_mreq mreq;
+      if (inet_pton(AF_INET6, group, &mreq.ipv6mr_multiaddr) == 0)
+      {
+        m_errno = LASTERROR;
+        DBG(DBG_ERROR, "%s: invalid address (%d)\n", __FUNCTION__, m_errno);
+        return false;
+      }
+      mreq.ipv6mr_interface = 0;
+      if (setsockopt(m_socket, IPPROTO_IPV6, join ? IPV6_JOIN_GROUP : IPV6_LEAVE_GROUP, &mreq, sizeof(mreq)))
+      {
+        m_errno = LASTERROR;
+        DBG(DBG_ERROR, "%s: could not set multicast membership from socket (%d)\n", __FUNCTION__, m_errno);
+        return false;
+      }
+      break;
+    }
+    default:
+      m_errno = EINVAL;
+      DBG(DBG_ERROR, "%s: address familly unknown (%d)\n", __FUNCTION__, m_addr->sa.sa_family);
+      return false;
+  }
+  m_errno = 0;
+  return true;
+}
+
 size_t UdpServerSocket::AwaitIncoming(timeval timeout)
 {
   if (IsValid())
@@ -993,7 +1079,7 @@ size_t UdpServerSocket::AwaitIncoming()
   return AwaitIncoming(m_timeout);
 }
 
-std::string UdpServerSocket::GetRemoteIP() const
+std::string UdpServerSocket::GetRemoteAddrInfo() const
 {
   char host[INET6_ADDRSTRLEN];
   memset(host, 0, INET6_ADDRSTRLEN);
