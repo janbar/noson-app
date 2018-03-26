@@ -51,13 +51,15 @@ void SignalHandler::forward()
 {
   int signal;
   m_notifier->setEnabled(false);
-  ::read(m_pipe[1], &signal, sizeof(signal));
+  size_t r = ::read(m_pipe[1], &signal, sizeof(signal));
+  (void)r;
   emit catched(signal);
   m_notifier->setEnabled(true);
 }
 
 void SignalHandler::handler(int signal)
 {
-  ::write(m_pipe[0], &signal, sizeof(signal));
+  size_t w = ::write(m_pipe[0], &signal, sizeof(signal));
+  (void)w;
 }
 
