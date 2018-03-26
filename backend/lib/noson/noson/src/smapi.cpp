@@ -451,7 +451,7 @@ bool SMAPI::parsePresentationMap(const std::string& xml)
   while (elem)
   {
     unsigned uid = 0; // unique item id
-    char sid[10];
+    char sid[12];
     memset(sid, '\0', sizeof(sid));
     tinyxml2::XMLElement* child; // a child of elem
     const char* type = elem->Attribute("type");
