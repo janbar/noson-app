@@ -98,7 +98,7 @@ std::string Zone::GetZoneShortName() const
   name.append(*coordinator);
   if (size() > 1)
   {
-    char buf[3];
+    char buf[4];
     memset(buf, 0, sizeof(buf));
     uint8_to_string((uint8_t)(size() - 1), buf);
     name.append(" + ").append(buf);
