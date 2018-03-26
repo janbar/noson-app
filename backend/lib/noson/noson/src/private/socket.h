@@ -390,7 +390,7 @@ namespace NSROOT
     : NetSocket()
     , m_bound(boundSocket) { }
 
-    bool SendData(const char* data, size_t size) { return false; };
+    bool SendData(const char* buf, size_t size) { (void)buf; (void)size; return false; };
 
     size_t ReceiveData(void* buf, size_t n)
     {

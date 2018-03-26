@@ -124,7 +124,7 @@ std::string SMService::ServiceType(const std::string& id)
   int num = 0;
   if (string_to_int32(id.c_str(), &num) == 0)
     num = num * 256 + 7;
-  char st[10];
+  char st[12];
   int32_to_string(num, st);
   return std::string(st);
 }
@@ -234,7 +234,7 @@ bool MusicServices::ParseAvailableServices(const ElementList& vars, std::vector<
   while (elem)
   {
     unsigned uid = 0; // unique item id
-    char sid[10];
+    char sid[12];
     memset(sid, '\0', sizeof(sid));
     const tinyxml2::XMLAttribute* attr = elem->FirstAttribute();
     ElementList service;
