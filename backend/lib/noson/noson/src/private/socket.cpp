@@ -990,7 +990,7 @@ bool UdpServerSocket::SetMulticastMembership(const char* group, bool join)
         return false;
       }
       mreq.imr_interface.s_addr = htonl(INADDR_ANY);
-      if (setsockopt(m_socket, IPPROTO_IP, join ? IP_ADD_MEMBERSHIP : IP_DROP_MEMBERSHIP, &mreq, sizeof(mreq)))
+      if (setsockopt(m_socket, IPPROTO_IP, join ? IP_ADD_MEMBERSHIP : IP_DROP_MEMBERSHIP, reinterpret_cast<const char*>(&mreq), sizeof(mreq)))
       {
         m_errno = LASTERROR;
         DBG(DBG_ERROR, "%s: could not set multicast membership from socket (%d)\n", __FUNCTION__, m_errno);
@@ -1008,7 +1008,7 @@ bool UdpServerSocket::SetMulticastMembership(const char* group, bool join)
         return false;
       }
       mreq.ipv6mr_interface = 0;
-      if (setsockopt(m_socket, IPPROTO_IPV6, join ? IPV6_JOIN_GROUP : IPV6_LEAVE_GROUP, &mreq, sizeof(mreq)))
+      if (setsockopt(m_socket, IPPROTO_IPV6, join ? IPV6_JOIN_GROUP : IPV6_LEAVE_GROUP, reinterpret_cast<const char*>(&mreq), sizeof(mreq)))
       {
         m_errno = LASTERROR;
         DBG(DBG_ERROR, "%s: could not set multicast membership from socket (%d)\n", __FUNCTION__, m_errno);
