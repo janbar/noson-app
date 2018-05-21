@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-03 07:55+0000\n"
+"POT-Creation-Date: 2018-05-21 12:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -378,7 +378,7 @@ msgid ""
 "every mood and occasion."
 msgstr ""
 
-#: ../app/components/Queue.qml:96 ../app/ui/Favorites.qml:129
+#: ../app/components/Queue.qml:97 ../app/ui/Favorites.qml:129
 #: ../app/ui/Favorites.qml:226 ../app/ui/Service.qml:177
 #: ../app/ui/Service.qml:302 ../app/ui/SongsView.qml:301
 msgid "Song"
@@ -601,6 +601,6 @@ msgstr ""
 msgid "Create group"
 msgstr ""
 
-#: /home/jlb/src/janbar/QML/build-noson-app-16-amd64/po/noson.desktop.in.h:1
+#: /home/jlb/src/janbar/QML/build-noson-app-v2-Desktop-Release/po/noson.desktop.in.h:1
 msgid "Sonos music"
 msgstr ""
