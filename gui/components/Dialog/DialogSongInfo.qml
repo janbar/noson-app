@@ -36,8 +36,8 @@ Item {
             timer.restart();
             if (songInfo.model) {
                 card.coverSources = [{art: makeCoverSource(songInfo.model.art, songInfo.model.author, songInfo.model.album)}];
-                card.primaryText = songInfo.model.title !== "" ? songInfo.model.title : i18n.tr("Unknown Album");
-                card.secondaryText = songInfo.model.author !== "" ? songInfo.model.author : i18n.tr("Unknown Artist");
+                card.primaryText = songInfo.model.title !== "" ? songInfo.model.title : qsTr("Unknown Album");
+                card.secondaryText = songInfo.model.author !== "" ? songInfo.model.author : qsTr("Unknown Artist");
                 card.tertiaryLabelVisible = songInfo.model.album.length !== "";
                 card.tertiaryText = qsTr("%1 - track #%2").arg(songInfo.model.album).arg(songInfo.model.albumTrackNo);
             }
