@@ -409,6 +409,16 @@
 <context>
     <name>DialogSongInfo</name>
     <message>
+        <location filename="../components/Dialog/DialogSongInfo.qml" line="39"/>
+        <source>Unknown Album</source>
+        <translation>Album inconnu</translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogSongInfo.qml" line="40"/>
+        <source>Unknown Artist</source>
+        <translation>Artiste inconnu</translation>
+    </message>
+    <message>
         <location filename="../components/Dialog/DialogSongInfo.qml" line="42"/>
         <source>%1 - track #%2</source>
         <translation>%1 - titre #%2</translation>
