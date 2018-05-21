@@ -72,12 +72,14 @@ Item {
 
             menuItems: [
                 AddToFavorites {
+                    enabled: !model.isService
+                    visible: enabled
                     description: listItem.description
                     art: model.art
                 },
                 //@FIXME add to playlist service item doesn't work
                 AddToPlaylist {
-                    enabled: model.isService
+                    enabled: !model.isService
                     visible: enabled
                 },
                 Remove {
