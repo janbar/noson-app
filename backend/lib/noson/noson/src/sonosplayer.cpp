@@ -701,9 +701,9 @@ SMServicePtr Player::GetServiceForMedia(const std::string& mediaUri)
       if (sn.empty())
         sn.assign("0"); // trying fake account
 
-      // loop in services
+      // loop in services: no longer check the serial since commit 7a91d3ade3a428d69fe6eb97a98fc6f670f16351
       for (SMServiceList::iterator its = m_smservices.begin(); its != m_smservices.end(); ++its)
-        if ((*its)->GetId() == sid && (*its)->GetAccount()->GetSerialNum() == sn)
+        if ((*its)->GetId() == sid /*&& (*its)->GetAccount()->GetSerialNum() == sn*/)
           return *its;
 
       DBG(DBG_WARN, "%s: not found a valid service for this uri (%s)\n", __FUNCTION__, mediaUri.c_str());
