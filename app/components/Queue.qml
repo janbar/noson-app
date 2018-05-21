@@ -93,6 +93,7 @@ Item {
                         visible: model.isService ? false : true
                     },
                     AddToFavorites {
+                        visible: model.isService ? false : true
                         description: i18n.tr("Song")
                         art: model.art
                     }
