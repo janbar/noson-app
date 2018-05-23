@@ -2,7 +2,7 @@
 Name=noson
 _Comment=Sonos music
 Exec=@EXEC@
-Icon=@ICON@
+Icon=noson
 Terminal=false
 Type=Application
 
