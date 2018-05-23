@@ -175,15 +175,21 @@ bool RoomsModel::load(QObject* sonos, const QString& zoneId)
 void RoomsModel::resetModel()
 {
   beginResetModel();
-  beginRemoveRows(QModelIndex(), 0, m_items.count()-1);
-  qDeleteAll(m_items);
-  m_items.clear();
-  endRemoveRows();
-  beginInsertRows(QModelIndex(), 0, m_data.count()-1);
-  foreach (RoomItem* item, m_data)
-      m_items << item;
-  m_data.clear();
-  endInsertRows();
+  if (m_items.count() > 0)
+  {
+    beginRemoveRows(QModelIndex(), 0, m_items.count()-1);
+    qDeleteAll(m_items);
+    m_items.clear();
+    endRemoveRows();
+  }
+  if (m_data.count() > 0)
+  {
+    beginInsertRows(QModelIndex(), 0, m_data.count()-1);
+    foreach (RoomItem* item, m_data)
+        m_items << item;
+    m_data.clear();
+    endInsertRows();
+  }
   endResetModel();
   emit countChanged();
 }
