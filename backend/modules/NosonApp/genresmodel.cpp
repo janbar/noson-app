@@ -141,7 +141,7 @@ void GenresModel::clearData()
 bool GenresModel::loadData()
 {
   setUpdateSignaled(false);
-  
+
   if (!m_provider)
   {
     emit loaded(false);
@@ -200,16 +200,22 @@ void GenresModel::resetModel()
     if (m_dataState != ListModel::Loaded)
         return;
     beginResetModel();
-    beginRemoveRows(QModelIndex(), 0, m_items.count()-1);
-    qDeleteAll(m_items);
-    m_items.clear();
-    endRemoveRows();
-    beginInsertRows(QModelIndex(), 0, m_data.count()-1);
-    foreach (GenreItem* item, m_data)
-        m_items << item;
-    m_data.clear();
+    if (m_items.count() > 0)
+    {
+      beginRemoveRows(QModelIndex(), 0, m_items.count()-1);
+      qDeleteAll(m_items);
+      m_items.clear();
+      endRemoveRows();
+    }
+    if (m_data.count() > 0)
+    {
+      beginInsertRows(QModelIndex(), 0, m_data.count()-1);
+      foreach (GenreItem* item, m_data)
+          m_items << item;
+      m_data.clear();
+      endInsertRows();
+    }
     m_dataState = ListModel::Synced;
-    endInsertRows();
     endResetModel();
   }
   emit countChanged();
