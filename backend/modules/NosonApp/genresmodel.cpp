@@ -141,7 +141,7 @@ void GenresModel::clearData()
 bool GenresModel::loadData()
 {
   setUpdateSignaled(false);
-  
+
   if (!m_provider)
   {
     emit loaded(false);
@@ -213,9 +213,9 @@ void GenresModel::resetModel()
       foreach (GenreItem* item, m_data)
           m_items << item;
       m_data.clear();
-      m_dataState = ListModel::Synced;
       endInsertRows();
     }
+    m_dataState = ListModel::Synced;
     endResetModel();
   }
   emit countChanged();

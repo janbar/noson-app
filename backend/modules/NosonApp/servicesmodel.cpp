@@ -209,9 +209,9 @@ void ServicesModel::resetModel()
       foreach (ServiceItem* item, m_data)
           m_items << item;
       m_data.clear();
-      m_dataState = ListModel::Synced;
       endInsertRows();
     }
+    m_dataState = ListModel::Synced;
     endResetModel();
   }
   emit countChanged();

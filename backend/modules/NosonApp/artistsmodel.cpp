@@ -145,7 +145,7 @@ void ArtistsModel::clearData()
 bool ArtistsModel::loadData()
 {
   setUpdateSignaled(false);
-  
+
   if (!m_provider)
   {
     emit loaded(false);
@@ -217,9 +217,9 @@ void ArtistsModel::resetModel()
       foreach (ArtistItem* item, m_data)
           m_items << item;
       m_data.clear();
-      m_dataState = ListModel::Synced;
       endInsertRows();
     }
+    m_dataState = ListModel::Synced;
     endResetModel();
   }
   emit countChanged();

@@ -154,7 +154,7 @@ void PlaylistsModel::clearData()
 bool PlaylistsModel::loadData()
 {
   setUpdateSignaled(false);
-  
+
   if (!m_provider)
   {
     emit loaded(false);
@@ -226,9 +226,9 @@ void PlaylistsModel::resetModel()
       foreach (PlaylistItem* item, m_data)
           m_items << item;
       m_data.clear();
-      m_dataState = ListModel::Synced;
       endInsertRows();
     }
+    m_dataState = ListModel::Synced;
     endResetModel();
   }
   emit countChanged();

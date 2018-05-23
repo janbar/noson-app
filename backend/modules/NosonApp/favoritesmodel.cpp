@@ -317,9 +317,9 @@ void FavoritesModel::resetModel()
           m_objectIDs.insert(item->objectId(), item->id());
       }
       m_data.clear();
-      m_dataState = ListModel::Synced;
       endInsertRows();
     }
+    m_dataState = ListModel::Synced;
     endResetModel();
   }
   emit countChanged();
