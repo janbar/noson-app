@@ -124,7 +124,7 @@ void AllServicesModel::clearData()
 bool AllServicesModel::loadData()
 {
   setUpdateSignaled(false);
-  
+
   if (!m_provider)
   {
     emit loaded(false);
@@ -136,7 +136,7 @@ bool AllServicesModel::loadData()
     emit loaded(false);
     return false;
   }
-  
+
   SONOS::LockGuard lock(m_lock);
   clearData();
   m_dataState = ListModel::NoData;
@@ -184,9 +184,9 @@ void AllServicesModel::resetModel()
       foreach (ServiceItem* item, m_data)
           m_items << item;
       m_data.clear();
-      m_dataState = ListModel::Synced;
       endInsertRows();
     }
+    m_dataState = ListModel::Synced;
     endResetModel();
   }
   emit countChanged();
