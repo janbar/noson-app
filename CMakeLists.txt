@@ -24,7 +24,6 @@ set(LIBDIR "lib/${ARCH_TRIPLET}")
 # Set install paths
 include(GNUInstallDirs)
 set(DESKTOP_DIR ${CMAKE_INSTALL_DATADIR}/applications)
-set(ICON "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/${APP_NAME}/${ICON_FILE}")
 set(PLUGINS_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/${APP_NAME}")
 set(NOSON_GUI "${PLUGINS_DIR}/noson-gui")
 
@@ -50,7 +49,7 @@ install(
 
 install(
   FILES "gui/images/${ICON_FILE}"
-  DESTINATION ${CMAKE_INSTALL_DATADIR}/${APP_NAME}
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps
 )
 
 add_subdirectory(gui)
