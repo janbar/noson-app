@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
   <id>io.github.janbar.noson</id>
-​  <launchable type="desktop-id">noson.desktop</launchable>
+  <launchable type="desktop-id">noson.desktop</launchable>
   <name>Noson</name>
   <project_license>GPL-3.0-only</project_license>
   <developer_name>Jean-Luc Barriere</developer_name>
@@ -14,7 +14,7 @@
   </description>
   <screenshots>
     <screenshot>
-      <image type="source">http://janbar.github.io/noson-app/download/noson.png</image>
+      <image type="source">http://janbar.github.io/noson-app/download/noson3.png</image>
     </screenshot>
   </screenshots>
   <releases>

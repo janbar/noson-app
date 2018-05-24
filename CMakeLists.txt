@@ -7,11 +7,11 @@ option(INSTALL_TESTS "Install the tests on make install" on)
 
 set(APP_VERSION       "3.3.6")
 set(APP_NAME          "noson")
-set(APP_ID            "noson.janbar")
+set(APP_ID            "io.github.janbar.noson")
 set(EXEC              "noson-app")
 set(ICON_FILE         "noson.png")
 set(DESKTOP_FILE_NAME "noson.desktop")
-set(APPDATA_FILE_NAME "io.github.janbar.noson.appdata.xml")
+set(APPDATA_FILE_NAME "noson.appdata.xml")
 
 # Components PATH
 execute_process(
@@ -54,9 +54,14 @@ install(
   DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps
 )
 
+configure_file(
+  ${APPDATA_FILE_NAME}.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${APPDATA_FILE_NAME}
+)
+
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/${APPDATA_FILE_NAME}
-  DESTINATION ${APPDATA_DIR}
+  DESTINATION ${APPDATA_DIR} RENAME ${APP_ID}.appdata.xml
 )
 
 add_subdirectory(gui)
