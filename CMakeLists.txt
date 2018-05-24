@@ -11,6 +11,7 @@ set(APP_ID            "noson.janbar")
 set(EXEC              "noson-app")
 set(ICON_FILE         "noson.png")
 set(DESKTOP_FILE_NAME "noson.desktop")
+set(APPDATA_FILE_NAME "io.github.janbar.noson.appdata.xml")
 
 # Components PATH
 execute_process(
@@ -23,6 +24,7 @@ set(LIBDIR "lib/${ARCH_TRIPLET}")
 
 # Set install paths
 include(GNUInstallDirs)
+set(APPDATA_DIR ${CMAKE_INSTALL_DATADIR}/metainfo)
 set(DESKTOP_DIR ${CMAKE_INSTALL_DATADIR}/applications)
 set(PLUGINS_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/${APP_NAME}")
 set(NOSON_GUI "${PLUGINS_DIR}/noson-gui")
@@ -50,6 +52,11 @@ install(
 install(
   FILES "gui/images/${ICON_FILE}"
   DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps
+)
+
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/${APPDATA_FILE_NAME}
+  DESTINATION ${APPDATA_DIR}
 )
 
 add_subdirectory(gui)
