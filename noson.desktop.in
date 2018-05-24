@@ -1,8 +1,8 @@
 [Desktop Entry]
-Name=noson
+Name=@APP_NAME@
 _Comment=Sonos music
 Exec=@EXEC@
-Icon=noson
+Icon=@APP_NAME@
 Terminal=false
 Type=Application
 

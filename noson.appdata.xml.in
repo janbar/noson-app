@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>io.github.janbar.noson</id>
-  <launchable type="desktop-id">noson.desktop</launchable>
-  <name>Noson</name>
+  <id>@APP_ID@</id>
+  <launchable type="desktop-id">@APP_NAME@.desktop</launchable>
+  <name>@APP_NAME@</name>
   <project_license>GPL-3.0-only</project_license>
   <developer_name>Jean-Luc Barriere</developer_name>
   <summary>Controller for SONOS</summary>
