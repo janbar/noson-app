@@ -46,7 +46,7 @@ configure_file(
 
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE_NAME}
-  DESTINATION ${DESKTOP_DIR} RENAME ${APP_NAME}.desktop
+  DESTINATION ${DESKTOP_DIR} RENAME ${APP_ID}.desktop
 )
 
 install(
