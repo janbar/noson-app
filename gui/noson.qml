@@ -1080,7 +1080,7 @@ ApplicationWindow {
                 }
                 SpinBox {
                     id: fontScaleBox
-                    from: 100
+                    from: 50
                     value: settings.fontScaleFactor * 100
                     to: 200
                     stepSize: 10
