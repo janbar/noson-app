@@ -30,7 +30,7 @@ DialogBase {
         //: this is a title of a dialog with a prompt to delete a playlist
         text: qsTr("Permanently delete playlist ?")
         wrapMode: Label.WordWrap
-        color: styleMusic.dialog.foregroundColor
+        color: styleMusic.dialog.labelColor
         font.pointSize: units.fs("large")
         font.bold: true
     }

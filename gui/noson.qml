@@ -48,21 +48,21 @@ ApplicationWindow {
     palette.base: {
         if (settings.style === "Material") {
             return Material.background
-        } else if (style === "Universal") {
+        } else if (settings.style === "Universal") {
             return Universal.background
         }
     }
     palette.text: {
         if (settings.style === "Material") {
             return Material.foreground
-        } else if (style === "Universal") {
+        } else if (settings.style === "Universal") {
             return Universal.foreground
         }
     }
     palette.highlight: {
         if (settings.style === "Material") {
             return Material.accent
-        } else if (style === "Universal") {
+        } else if (settings.style === "Universal") {
             return Universal.accent
         }
     }
@@ -1258,6 +1258,7 @@ ApplicationWindow {
         contentSpacing: units.gu(0.5)
 
         Text {
+            color: styleMusic.dialog.foregroundColor
             width: aboutDialog.availableWidth
             text: qsTr("The project has started in 2015 and is intented to make a fast and smart controller for your SONOS devices."
                        + " You can browse your music library and play track or radio on any zones."
@@ -1266,11 +1267,13 @@ ApplicationWindow {
             font.pointSize: units.fs("medium")
         }
         Text {
+            color: styleMusic.dialog.foregroundColor
             width: aboutDialog.availableWidth
             text: qsTr("Author: %1").arg("Jean-Luc Barriere")
             font.pointSize: units.fs("medium")
         }
         Text {
+            color: styleMusic.dialog.foregroundColor
             width: aboutDialog.availableWidth
             text: qsTr("Version: %1").arg(versionString)
             font.pointSize: units.fs("medium")

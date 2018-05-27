@@ -29,6 +29,7 @@ DialogBase {
     Label {
         //: this is a title of a dialog to setup search
         text: qsTr("Search music")
+        color: styleMusic.dialog.labelColor
         font.pointSize: units.fs("large")
         font.bold: true
     }

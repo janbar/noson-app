@@ -38,8 +38,8 @@ Item {
         DragMusicListItem {
             id: listItem
             listview: queueList
-            color: palette.base
-            highlightedColor: palette.highlight
+            color: styleMusic.mainView.backgroundColor
+            highlightedColor: styleMusic.mainView.highlightedColor
             highlighted: (player.currentIndex === index)
 
             onSwipe: {
@@ -87,7 +87,7 @@ Item {
             column: Column {
                 Label {
                     id: trackTitle
-                    color: palette.text
+                    color: styleMusic.common.music
                     font.pointSize: units.fs("small")
                     font.bold: true
                     text: model.title

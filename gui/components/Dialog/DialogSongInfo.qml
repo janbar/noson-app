@@ -16,7 +16,7 @@
  */
 
 import QtQuick 2.9
-import QtQuick.Controls 2.3
+import QtQuick.Controls 2.2
 import NosonApp 1.0
 import "../Delegates"
 import "../"
@@ -86,7 +86,7 @@ Item {
                         height: coverGrid.height * 0.20
                         width: height
                         radius: height / 2
-                        color: palette.window
+                        color: styleMusic.dialog.backgroundColor
                         opacity: 0.5
                         visible: songInfo.actionsVisible
                     }
@@ -99,7 +99,7 @@ Item {
                         anchors.rightMargin: units.gu(1) * 1.6
                         anchors.bottomMargin: units.gu(1) * 1.7
                         visible: songInfo.actionsVisible
-                        color: palette.text
+                        color: styleMusic.dialog.foregroundColor
                         height: coverGrid.height * 0.15
                         width: height
                         source: "qrc:/images/media-playback-start.svg"
@@ -124,6 +124,7 @@ Item {
                         right: parent.right
                         rightMargin: units.gu(1)
                     }
+                    color: styleMusic.dialog.labelColor
                     elide: Text.ElideRight
                     font.pointSize: units.fs("large")
                     opacity: 1.0
@@ -138,6 +139,7 @@ Item {
                         right: parent.right
                         rightMargin: units.gu(1)
                     }
+                    color: styleMusic.dialog.labelColor
                     elide: Text.ElideRight
                     font.pointSize: units.fs("medium")
                     opacity: 0.9
@@ -152,6 +154,7 @@ Item {
                         right: parent.right
                         rightMargin: units.gu(1)
                     }
+                    color: styleMusic.dialog.labelColor
                     elide: Text.ElideRight
                     font.pointSize: units.fs("medium")
                     opacity: 0.9
