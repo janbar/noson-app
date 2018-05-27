@@ -78,8 +78,10 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("AvailableStyles", availableStyles);
 
     engine.load(QUrl("qrc:/noson.qml"));
-    if (engine.rootObjects().isEmpty())
+    if (engine.rootObjects().isEmpty()) {
+        qWarning() << "Failed to load QML";
         return -1;
+    }
 
     ret = app.exec();
 #ifdef __WINDOWS__
