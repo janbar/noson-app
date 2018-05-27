@@ -30,14 +30,7 @@ Item {
     property alias listview: queueList
     property alias header: queueList.header
     property alias headerItem: queueList.headerItem
-    property alias backgroundColor: bg.color
     clip: true
-
-    Rectangle {
-        id: bg
-        anchors.fill: parent
-        color: "white"
-    }
 
     Component {
         id: dragDelegate
@@ -45,8 +38,8 @@ Item {
         DragMusicListItem {
             id: listItem
             listview: queueList
-            color: bg.color
-            highlightedColor: "lightgray"
+            color: palette.base
+            highlightedColor: palette.highlight
             highlighted: (player.currentIndex === index)
 
             onSwipe: {
@@ -94,8 +87,9 @@ Item {
             column: Column {
                 Label {
                     id: trackTitle
-                    color: player.currentIndex === index ? "#19b1e9" : styleMusic.common.music
+                    color: palette.text
                     font.pointSize: units.fs("small")
+                    font.bold: true
                     text: model.title
                 }
 

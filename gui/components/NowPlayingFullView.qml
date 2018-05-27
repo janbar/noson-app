@@ -20,6 +20,8 @@
 
 import QtQuick 2.9
 import QtQuick.Controls 2.2
+import QtGraphicalEffects 1.0
+
 //import "../components/Themes/Ambiance"
 
 
@@ -53,14 +55,32 @@ Flickable {
             }
         }
 
-        Rectangle {
+        Item {
             id: nowPlayingWideAspectLabelsBackground
             anchors.bottom: albumImageContainer.bottom
             height: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(10) : units.gu(13)
             width: parent.width
-            color: styleMusic.playerControls.backgroundColor
-            opacity: 0.3
+
+            clip: true
+
+            FastBlur {
+                id: blurred
+                source: albumImageContainer
+                radius: 32
+                width: albumImageContainer.width
+                height: albumImageContainer.height
+                visible: false
+            }
+            BrightnessContrast {
+                anchors.bottom: parent.bottom
+                source: blurred
+                brightness: 0.5-styleMusic.playerControls.labelColor.hslLightness
+                width: albumImageContainer.width
+                height: albumImageContainer.height
+            }
         }
+
+
 
         /* Column for labels */
         Column {

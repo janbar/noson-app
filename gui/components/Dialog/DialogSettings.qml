@@ -17,7 +17,7 @@
 
 import QtQuick 2.9
 import QtQuick.Layouts 1.3
-import QtQuick.Controls 2.2
+import QtQuick.Controls 2.3
 import QtQml.Models 2.3
 
 DialogBase {
@@ -30,7 +30,7 @@ DialogBase {
         anchors.right: parent.right
         text: qsTr("Whenever you make changes to your music library, such as adding and removing tracks, or adjusting album artwork, you will need to update the music index on Sonos before these changes will show up in the Sonos controller.")
         wrapMode: Text.WordWrap
-        color: styleMusic.dialog.foregroundColor
+        color: palette.windowText
         font.pointSize: units.fs("medium")
         font.weight: Font.Normal
     }

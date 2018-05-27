@@ -5,6 +5,8 @@ import QtQuick.Controls.Material 2.2
 import QtQuick.Controls.Universal 2.2
 import Qt.labs.settings 1.0
 import QtGraphicalEffects 1.0
+import QtQuick.Controls.Universal 2.1
+import QtQuick.Controls.Material 2.3
 import NosonApp 1.0
 import "components"
 import "components/Dialog"
@@ -24,6 +26,8 @@ ApplicationWindow {
     Settings {
         id: settings
         property string style: "Default"
+        property int theme: 0
+
         property real scaleFactor: 1.0
         property real fontScaleFactor: 1.0
         property bool firstRun: true
@@ -37,6 +41,32 @@ ApplicationWindow {
     StyleLight {
         id: styleMusic
     }
+
+    Universal.theme: settings.theme
+    Material.theme: settings.theme
+
+    palette.base: {
+        if (settings.style === "Material") {
+            return Material.background
+        } else if (style === "Universal") {
+            return Universal.background
+        }
+    }
+    palette.text: {
+        if (settings.style === "Material") {
+            return Material.foreground
+        } else if (style === "Universal") {
+            return Universal.foreground
+        }
+    }
+    palette.highlight: {
+        if (settings.style === "Material") {
+            return Material.accent
+        } else if (style === "Universal") {
+            return Universal.accent
+        }
+    }
+
 
     Units {
         id: units
@@ -778,8 +808,6 @@ ApplicationWindow {
 
     header: ToolBar {
         id: mainToolBar
-        Material.foreground: styleMusic.toolbar.foregroundColor
-        Material.background: styleMusic.toolbar.fullBackgroundColor
 
         state: "default"
         states: [
@@ -1049,6 +1077,7 @@ ApplicationWindow {
         standardButtons: Dialog.Ok | Dialog.Cancel
         onAccepted: {
             settings.style = styleBox.displayText
+
             scaleBox.acceptedValue = settings.scaleFactor
             applicationSettingsDialog.close()
         }
@@ -1174,6 +1203,35 @@ ApplicationWindow {
                     popup {
                         font.pointSize: units.fs("medium");
                     }
+                }
+            }
+
+            RowLayout {
+                visible: styleBox.currentText === "Material" || styleBox.currentText === "Universal"
+                spacing: units.gu(1)
+                Layout.fillWidth: true
+                Label {
+                    text: qsTr("Theme")
+                    font.pointSize: units.fs("medium");
+                }
+
+                ComboBox {
+                    id: themeBox
+
+                    model: [
+                        qsTr("Light"),
+                        qsTr("Dark"),
+                        qsTr("System default")
+                    ]
+
+                    currentIndex: settings.theme
+                    onActivated: {
+                        settings.theme = index
+                    }
+
+                    Layout.fillWidth: true
+                    font.pointSize: units.fs("medium");
+                    Component.onCompleted: popup.font.pointSize = units.fs("medium")
                 }
             }
 

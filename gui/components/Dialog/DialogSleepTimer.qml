@@ -67,7 +67,6 @@ DialogBase {
             rightMargin: units.gu(1)
         }
         text: remainingTimeToString(remainingTime)
-        color: styleMusic.dialog.labelColor
         elide: Text.ElideRight
         font.pointSize: 2 * units.fs("x-large")
         horizontalAlignment: Text.AlignHCenter

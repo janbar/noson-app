@@ -29,5 +29,5 @@ ListView {
         flickDeceleration = flickDeceleration * scaleFactor;
     }
 
-    ScrollBar.vertical: ScrollBar { }
+    ScrollBar.vertical: ScrollBar {}
 }
