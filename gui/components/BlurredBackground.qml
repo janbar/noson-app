@@ -67,9 +67,9 @@ Item {
     onArtChanged: {
         // TODO: This is a work around for LP:1261078 and LP:1306845. Ideally,
         //       there should be a better way of getting the blur to repaint
+        backgroundBlur.cached = false
         backgroundImage.source = art
-        backgroundBlur.source = null
-        backgroundBlur.source = backgroundImage
+        backgroundBlur.cached = true
     }
 }
 

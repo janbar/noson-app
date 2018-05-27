@@ -16,7 +16,7 @@
  */
 
 import QtQuick 2.9
-import QtQuick.Controls 2.2
+import QtQuick.Controls 2.3
 
 Dialog {
     id: dialog
@@ -67,7 +67,7 @@ Dialog {
 
     Rectangle {
         id: background
-        color: "transparent" //styleMusic.dialog.backgroungColor
+        color: "transparent"
         anchors.fill: parent
         anchors.margins: dialog.edgeMargins
     }
@@ -93,7 +93,7 @@ Dialog {
                 horizontalAlignment: Text.AlignHCenter
                 text: dialog.text
                 font.pointSize: units.fs("medium")
-                color: styleMusic.dialog.foregroundColor
+                color: palette.windowText
                 wrapMode: Text.Wrap
                 visible: (text !== "")
             }

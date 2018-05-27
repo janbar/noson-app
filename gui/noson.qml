@@ -17,9 +17,6 @@ ApplicationWindow {
     visible: true
     title: "noson"
 
-    Universal.theme: settings.theme
-    Material.theme: settings.theme
-
     readonly property string versionString: "3.3.6"
 
     // Design stuff
@@ -29,6 +26,8 @@ ApplicationWindow {
     Settings {
         id: settings
         property string style: "Default"
+        property int theme: 0
+
         property real scaleFactor: 1.0
         property real fontScaleFactor: 1.0
         property bool firstRun: true
@@ -37,13 +36,37 @@ ApplicationWindow {
         property int widthGU: Math.round(mainView.width / units.gridUnit)
         property int heightGU: Math.round(mainView.height / units.gridUnit)
         property string accounts: ""
-
-        property int theme: 0
     }
 
     StyleLight {
         id: styleMusic
     }
+
+    Universal.theme: settings.theme
+    Material.theme: settings.theme
+
+    palette.base: {
+        if (settings.style === "Material") {
+            return Material.background
+        } else if (style === "Universal") {
+            return Universal.background
+        }
+    }
+    palette.text: {
+        if (settings.style === "Material") {
+            return Material.foreground
+        } else if (style === "Universal") {
+            return Universal.foreground
+        }
+    }
+    palette.highlight: {
+        if (settings.style === "Material") {
+            return Material.accent
+        } else if (style === "Universal") {
+            return Universal.accent
+        }
+    }
+
 
     Units {
         id: units
@@ -785,8 +808,6 @@ ApplicationWindow {
 
     header: ToolBar {
         id: mainToolBar
-        Material.foreground: styleMusic.toolbar.foregroundColor
-        Material.background: styleMusic.toolbar.fullBackgroundColor
 
         state: "default"
         states: [
@@ -1055,6 +1076,7 @@ ApplicationWindow {
         standardButtons: Dialog.Ok | Dialog.Cancel
         onAccepted: {
             settings.style = styleBox.displayText
+
             scaleBox.acceptedValue = settings.scaleFactor
             applicationSettingsDialog.close()
         }
@@ -1188,7 +1210,7 @@ ApplicationWindow {
                 spacing: units.gu(1)
                 Layout.fillWidth: true
                 Label {
-                    text: qsTr("Style")
+                    text: qsTr("Theme")
                     font.pointSize: units.fs("medium");
                 }
 

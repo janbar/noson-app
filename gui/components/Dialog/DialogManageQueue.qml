@@ -16,7 +16,7 @@
  */
 
 import QtQuick 2.9
-import QtQuick.Controls 2.2
+import QtQuick.Controls 2.3
 
 
 DialogBase {
@@ -67,7 +67,7 @@ DialogBase {
         anchors.right: parent.right
         text: qsTr("Clearing the queue cannot be undone.")
         wrapMode: Text.WordWrap
-        color: styleMusic.dialog.foregroundColor
+        color: palette.windowText
         font.pointSize: units.fs("small")
         font.weight: Font.Normal
     }
