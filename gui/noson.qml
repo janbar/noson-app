@@ -5,6 +5,8 @@ import QtQuick.Controls.Material 2.1
 import QtQuick.Controls.Universal 2.1
 import Qt.labs.settings 1.0
 import QtGraphicalEffects 1.0
+import QtQuick.Controls.Universal 2.1
+import QtQuick.Controls.Material 2.3
 import NosonApp 1.0
 import "components"
 import "components/Dialog"
@@ -14,6 +16,9 @@ ApplicationWindow {
     id: mainView
     visible: true
     title: "noson"
+
+    Universal.theme: settings.theme
+    Material.theme: settings.theme
 
     readonly property string versionString: "3.3.6"
 
@@ -32,6 +37,8 @@ ApplicationWindow {
         property int widthGU: Math.round(mainView.width / units.gridUnit)
         property int heightGU: Math.round(mainView.height / units.gridUnit)
         property string accounts: ""
+
+        property int theme: 0
     }
 
     StyleLight {
@@ -1173,6 +1180,35 @@ ApplicationWindow {
                     popup {
                         font.pointSize: units.fs("medium");
                     }
+                }
+            }
+
+            RowLayout {
+                visible: styleBox.currentText === "Material" || styleBox.currentText === "Universal"
+                spacing: units.gu(1)
+                Layout.fillWidth: true
+                Label {
+                    text: qsTr("Style")
+                    font.pointSize: units.fs("medium");
+                }
+
+                ComboBox {
+                    id: themeBox
+
+                    model: [
+                        qsTr("Light"),
+                        qsTr("Dark"),
+                        qsTr("System default")
+                    ]
+
+                    currentIndex: settings.theme
+                    onActivated: {
+                        settings.theme = index
+                    }
+
+                    Layout.fillWidth: true
+                    font.pointSize: units.fs("medium");
+                    Component.onCompleted: popup.font.pointSize = units.fs("medium")
                 }
             }
 
