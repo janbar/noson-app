@@ -36,35 +36,42 @@ ApplicationWindow {
         property string accounts: ""
     }
 
+    //@FIXME: declare the property 'palette' that is missing in QtQuick.controls 2.2 (Qt-5.9)
+    Item {
+        id: palette
+        property color base: {
+            if (settings.style === "Material") {
+                return Material.background
+            } else if (settings.style === "Universal") {
+                return Universal.background
+            } else return "white"
+        }
+        property color text: {
+            if (settings.style === "Material") {
+                return Material.foreground
+            } else if (settings.style === "Universal") {
+                return Universal.foreground
+            } else return "black"
+        }
+        property color highlight: {
+            if (settings.style === "Material") {
+                return Material.accent
+            } else if (settings.style === "Universal") {
+                return Universal.accent
+            } else return "#e95420"
+        }
+        property color shadow: "black"
+        property color brightText: "dimgray"
+        property color button: "darkgray"
+        property color link: "green"
+    }
+
     StyleLight {
         id: styleMusic
     }
 
     Universal.theme: settings.theme
     Material.theme: settings.theme
-
-    palette.base: {
-        if (settings.style === "Material") {
-            return Material.background
-        } else if (settings.style === "Universal") {
-            return Universal.background
-        }
-    }
-    palette.text: {
-        if (settings.style === "Material") {
-            return Material.foreground
-        } else if (settings.style === "Universal") {
-            return Universal.foreground
-        }
-    }
-    palette.highlight: {
-        if (settings.style === "Material") {
-            return Material.accent
-        } else if (settings.style === "Universal") {
-            return Universal.accent
-        }
-    }
-
 
     Units {
         id: units
