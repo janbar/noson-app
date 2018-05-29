@@ -26,7 +26,6 @@ private:
 
   QSocketNotifier *m_notifier;
 
-  static SignalHandler& m_instance;
   static int m_pipe[2];
   static void handler(int signal);
 };
