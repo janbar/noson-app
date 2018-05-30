@@ -69,6 +69,7 @@ QtObject {
         property color selectedTextFieldColor: "darkgrey"
         property color selectedTextBaseColor: "black"
         property color highlightedColor: "#e95420"
+        property color link: "green"
     }
 
     property QtObject nowPlaying: QtObject {

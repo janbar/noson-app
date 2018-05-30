@@ -81,7 +81,7 @@ Rectangle {
             maximumLineCount: 6
             text: ""
             onLinkActivated: Qt.openUrlExternally(link)
-            linkColor: UbuntuColors.green
+            linkColor: styleMusic.mainView.link
             width: parent.width
             wrapMode: Text.WordWrap
         }
