@@ -105,14 +105,14 @@ MusicPage {
             column: Column {
                 Label {
                     id: favoriteTitle
-                    color: styleMusic.common.music
+                    color: styleMusic.view.primaryColor
                     font.pointSize: units.fs("small")
                     text: model.title
                 }
 
                 Label {
                     id: favoriteDescription
-                    color: styleMusic.common.subtitle
+                    color: styleMusic.view.secondaryColor
                     font.pointSize: units.fs("x-small")
                     text: listItem.description
                 }

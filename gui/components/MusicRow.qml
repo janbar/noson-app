@@ -26,7 +26,7 @@ Row {
 
     property real contentHeight: units.gu(6)
     property alias column: columnComponent.sourceComponent
-    property real coverSize: styleMusic.common.albumSize
+    property real coverSize: styleMusic.view.albumSize
     property string noCover: "qrc:/images/no_cover.png"
     property string imageSource: ""
     property string description: ""

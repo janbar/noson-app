@@ -78,7 +78,7 @@ MusicPage {
                         left: parent.left
                         right: parent.right
                     }
-                    color: styleMusic.common.music
+                    color: styleMusic.view.primaryColor
                     elide: Text.ElideRight
                     font.pointSize: units.fs("x-large")
                     maximumLineCount: 1
@@ -94,7 +94,7 @@ MusicPage {
 
                     Label {
                         id: albumCount
-                        color: styleMusic.common.subtitle
+                        color: styleMusic.view.secondaryColor
                         elide: Text.ElideRight
                         font.pointSize: units.fs("small")
                         maximumLineCount: 1
@@ -103,7 +103,7 @@ MusicPage {
 
                     Label {
                         id: separator
-                        color: styleMusic.common.subtitle
+                        color: styleMusic.view.secondaryColor
                         elide: Text.ElideRight
                         font.pointSize: units.fs("small")
                         maximumLineCount: 1
@@ -113,7 +113,7 @@ MusicPage {
 
                     Label {
                         id: songCount
-                        color: styleMusic.common.subtitle
+                        color: styleMusic.view.secondaryColor
                         elide: Text.ElideRight
                         font.pointSize: units.fs("small")
                         maximumLineCount: 1

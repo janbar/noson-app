@@ -40,7 +40,6 @@ DialogBase {
         id: playlistName
         placeholderText: qsTr("Enter playlist name")
         inputMethodHints: Qt.ImhNoPredictiveText
-        color: styleMusic.mainView.selectedTextBaseColor
     }
 
     Button {

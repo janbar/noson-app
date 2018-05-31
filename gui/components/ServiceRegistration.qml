@@ -25,7 +25,7 @@ Rectangle {
     anchors {
         fill: parent
     }
-    color: mainView.backgroundColor
+    color: styleMusic.view.backgroundColor
 
     Column {
         id: noMusicTextColumn
@@ -36,7 +36,7 @@ Rectangle {
         width: parent.width > units.gu(44) ? parent.width - units.gu(8) : units.gu(36)
 
         Label {
-            color: styleMusic.mainView.labelColor
+            color: styleMusic.view.labelColor
             elide: Text.ElideRight
             font.pointSize: units.fs("large")
             horizontalAlignment: Text.AlignHCenter
@@ -49,7 +49,7 @@ Rectangle {
         Label {
             id: regCode
             visible: text.length > 0
-            color: styleMusic.mainView.labelColor
+            color: styleMusic.view.foregroundColor
             elide: Text.ElideRight
             font.pointSize: units.fs("large")
             horizontalAlignment: Text.AlignHCenter
@@ -61,7 +61,7 @@ Rectangle {
 
         Label {
             id: regMessage
-            color: styleMusic.mainView.labelColor
+            color: styleMusic.view.foregroundColor
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 4
@@ -74,14 +74,14 @@ Rectangle {
         Label {
             id: regUrl
             visible: text.length > 0
-            color: styleMusic.mainView.labelColor
+            color: styleMusic.view.foregroundColor
             elide: Text.ElideRight
             font.pointSize: units.fs("large")
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 6
             text: ""
             onLinkActivated: Qt.openUrlExternally(link)
-            linkColor: styleMusic.mainView.link
+            linkColor: styleMusic.view.linkColor
             width: parent.width
             wrapMode: Text.WordWrap
         }

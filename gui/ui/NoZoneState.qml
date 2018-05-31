@@ -32,7 +32,7 @@ Page {
         anchors {
             fill: parent
         }
-        color: styleMusic.mainView.backgroundColor
+        color: styleMusic.view.backgroundColor
 
         Row {
             id: images
@@ -150,7 +150,7 @@ Page {
             width: parent.width > units.gu(44) ? parent.width - units.gu(8) : units.gu(36)
 
             Label {
-                color: styleMusic.mainView.labelColor
+                color: styleMusic.view.labelColor
                 elide: Text.ElideRight
                 font.pointSize: 22.0
                 horizontalAlignment: Text.AlignHCenter
@@ -161,7 +161,7 @@ Page {
             }
 
             Label {
-                color: styleMusic.mainView.labelColor
+                color: styleMusic.view.foregroundColor
                 elide: Text.ElideRight
                 font.pointSize: 16.0
                 horizontalAlignment: Text.AlignHCenter

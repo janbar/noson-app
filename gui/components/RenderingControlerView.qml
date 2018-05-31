@@ -28,9 +28,9 @@ MusicListView {
     model: player.renderingModel
     objectName: "renderingControlList"
 
-    property color backgroundColor: styleMusic.mainView.backgroundColor
-    property color foregroundColor: styleMusic.mainView.foregroundColor
-    property color labelColor: styleMusic.mainView.labelColor
+    property color backgroundColor: styleMusic.view.backgroundColor
+    property color foregroundColor: styleMusic.view.foregroundColor
+    property color labelColor: styleMusic.view.labelColor
     property bool held: false
 
     signal finger(bool isHeld)

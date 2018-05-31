@@ -20,8 +20,8 @@ import QtQuick.Controls 2.2
 
 CheckBox {
     id: control
-    property color color: styleMusic.mainView.normalTextBaseColor
-    property color controlDownColor: styleMusic.mainView.highlightedColor
+    property color color: styleMusic.view.foregroundColor
+    property color controlDownColor: styleMusic.view.highlightedColor
 
     opacity: checkable ? 1.0 : 0.1
 

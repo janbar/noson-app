@@ -36,6 +36,9 @@ ApplicationWindow {
         property string accounts: ""
     }
 
+    Material.accent: Material.Grey
+    Universal.accent: Universal.Steel
+
     //@FIXME: declare the property 'palette' that is missing in QtQuick.controls 2.2 (Qt-5.9)
     Item {
         id: palette
@@ -64,6 +67,8 @@ ApplicationWindow {
         property color brightText: "dimgray"
         property color button: "darkgray"
         property color link: "green"
+        property color toolTipBase: "black"
+        property color toolTipText: "white"
     }
 
     StyleLight {
@@ -813,6 +818,8 @@ ApplicationWindow {
 
     header: ToolBar {
         id: mainToolBar
+        Material.foreground: styleMusic.view.foregroundColor
+        Material.background: styleMusic.view.backgroundColor
 
         state: "default"
         states: [

@@ -124,14 +124,14 @@ MusicPage {
 
                     Label {
                         id: zoneName
-                        color: currentZone === model.name ? "#19b1e9" : styleMusic.common.music
+                        color: styleMusic.view.primaryColor
                         font.pointSize: units.fs("large")
                         text: model.isGroup ? model.shortName : model.name
                     }
 
                     Label {
                         id: fullName
-                        color: styleMusic.common.subtitle
+                        color: styleMusic.view.secondaryColor
                         font.pointSize: units.fs("small")
                         text: model.name
                         visible: model.isGroup

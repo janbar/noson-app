@@ -98,7 +98,7 @@ Item {
                     verticalCenter: parent.verticalCenter
                 }
                 visible: player.currentCount > 0
-                color: styleMusic.playerControls.labelColor
+                color: styleMusic.playerControls.foregroundColor
                 height: units.gu(4)
                 source: player.isPlaying ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
                 width: height
@@ -113,7 +113,7 @@ Item {
                     verticalCenter: parent.verticalCenter
                 }
                 visible: player.currentCount === 0
-                color: styleMusic.playerControls.labelColor
+                color: styleMusic.playerControls.foregroundColor
                 height: units.gu(4)
                 source: "qrc:/images/input.svg"
                 width: height
@@ -175,7 +175,7 @@ Item {
                         left: parent.left
                         right: parent.right
                     }
-                    color: styleMusic.common.music
+                    color: styleMusic.view.primaryColor
                     elide: Text.ElideRight
                     font.pointSize: units.fs("medium")
                     font.weight: Font.DemiBold
@@ -189,7 +189,7 @@ Item {
                         left: parent.left
                         right: parent.right
                     }
-                    color: styleMusic.common.subtitle
+                    color: styleMusic.view.secondaryColor
                     elide: Text.ElideRight
                     font.pointSize: units.fs("small")
                     text: player.currentMetaArtist
@@ -204,7 +204,7 @@ Item {
                     rightMargin: units.gu(3)
                     verticalCenter: parent.verticalCenter
                 }
-                color: styleMusic.playerControls.labelColor
+                color: styleMusic.playerControls.foregroundColor
                 height: units.gu(4)
                 source: player.playbackState === "PLAYING" ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
                 objectName: "playShape"
@@ -243,7 +243,7 @@ Item {
                     anchors {
                         fill: parent
                     }
-                    color: styleMusic.playerControls.labelColor
+                    color: styleMusic.playerControls.foregroundColor
                     opacity: parent.pressed ? 0.1 : 0
 
                     Behavior on opacity {
@@ -272,7 +272,7 @@ Item {
                     left: parent.left
                     top: parent.top
                 }
-                color: styleMusic.nowPlaying.progressForegroundColor
+                color: styleMusic.playerControls.progressForegroundColor
                 height: parent.height
                 width: player.duration > 0 ? (player.position / player.duration) * playerControlsProgressBar.width : 0
 

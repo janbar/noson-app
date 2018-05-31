@@ -19,24 +19,19 @@ import QtQuick 2.9
 import QtQuick.Controls 2.2
 
 QtObject {
-    property QtObject addtoPlaylist: QtObject {
+    property QtObject view: QtObject {
+        property color foregroundColor: palette.text
         property color backgroundColor: palette.base
+        property color highlightedColor: palette.highlight
         property color labelColor: palette.text
-        property color labelSecondaryColor: palette.text
-        property color progressBackgroundColor: palette.base
-        property color progressForegroundColor: "#e95420"
-        property color progressHandleColor: palette.text
-    }
+        property color primaryColor: palette.text
+        property color secondaryColor: palette.text
+        property color linkColor: palette.link
+        property color footerColor: backgroundColor
+        property color headerColor: backgroundColor
 
-    property QtObject common: QtObject {
-        property color music: palette.text
-        property color subtitle: palette.text
         property int albumSize: units.gu(10)
-        property int itemHeight: units.gu(12)
         property int expandHeight: units.gu(7)
-        property int expandedItem: units.gu(2)
-        property int expandedTopMargin: units.gu(13.5)
-        property int expandedLeftMargin: units.gu(2)
     }
 
     property QtObject dialog: QtObject {
@@ -49,32 +44,16 @@ QtObject {
     }
 
     property QtObject card: QtObject {
-        property color backgroundColor: palette.base
-        property color borderColor: palette.text
-        property color labelColor: palette.text
-    }
-
-    property QtObject mainView: QtObject{
-        property color backgroundColor: palette.base
+        property color backgroundColor: "grey"
         property color foregroundColor: palette.text
-        property color footerColor: backgroundColor
-        property color headerColor: backgroundColor
-        property color labelColor: palette.text
-        property color normalTextFieldColor: palette.text
-        property color normalTextBaseColor: palette.base
-        property color selectedTextFieldColor: palette.highlight
-        property color selectedTextBaseColor: palette.text
-        property color highlightedColor: palette.highlight
-        property color link: palette.link
+        property color borderColor: backgroundColor
     }
 
     property QtObject nowPlaying: QtObject {
         property color backgroundColor: "transparent"
         property color foregroundColor: palette.text
-        property color labelColor: palette.text
-        property color labelSecondaryColor: palette.text
-        property color progressBackgroundColor: palette.base
-        property color progressForegroundColor: palette.highlight
+        property color primaryColor: palette.text
+        property color secondaryColor: palette.text
     }
 
     property QtObject playerControls: QtObject {
@@ -82,30 +61,16 @@ QtObject {
         property color foregroundColor: palette.text
         property color labelColor: palette.text
         property color progressBackgroundColor: palette.text
-        property color progressForegroundColor: palette.highlight
+        property color progressForegroundColor: "#19b1e9"
         property color progressHandleColor: progressForegroundColor
         property color volumeBackgroundColor: palette.text
-        property color volumeForegroundColor: progressForegroundColor
-        property color volumeHandleColor: palette.text
+        property color volumeForegroundColor: "#e95420"
+        property color volumeHandleColor: volumeBackgroundColor
     }
 
     property QtObject popover: QtObject {
-        property color backgroundColor: palette.shadow
-        property color foregroundColor: palette.brightText
-        property color labelColor: palette.brightText
-    }
-
-    property QtObject playlist: QtObject {
-        property int infoHeight: units.gu(14);
-        property int playlistItemHeight: units.gu(10);
-        property int playlistAlbumSize: units.gu(8);
-    }
-
-    property QtObject albums: QtObject {
-        property int itemHeight: units.gu(4)
-    }
-
-    property QtObject artists: QtObject {
-        property int itemHeight: units.gu(12.5)
+        property color backgroundColor: palette.toolTipBase
+        property color foregroundColor: palette.toolTipText
+        property color labelColor: palette.toolTipText
     }
 }

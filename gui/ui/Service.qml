@@ -187,7 +187,7 @@ MusicPage {
             column: Column {
                 Label {
                     id: mediaTitle
-                    color: styleMusic.common.music
+                    color: styleMusic.view.primaryColor
                     font.pointSize: units.fs("medium")
                     objectName: "itemtitle"
                     text: model.title
@@ -195,7 +195,7 @@ MusicPage {
 
                 Label {
                     id: mediaDescription
-                    color: styleMusic.common.subtitle
+                    color: styleMusic.view.secondaryColor
                     font.pointSize: units.fs("x-small")
                     text: listItem.description
                 }

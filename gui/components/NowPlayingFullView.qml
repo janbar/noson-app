@@ -30,12 +30,14 @@ Flickable {
     anchors {
         fill: parent
     }
-    property alias color: fullviewBackground.color
+    property alias backgroundColor: fullviewBackground.color
+    property alias backgroundOpacity: fullviewBackground.opacity
 
     Rectangle {
         id: fullviewBackground
         anchors.fill: parent
-        color: styleMusic.nowPlaying.backgroundColor
+        color: "transparent"
+        opacity: 1.0
 
         Item {
             id: albumImageContainer
@@ -66,7 +68,7 @@ Flickable {
             FastBlur {
                 id: blurred
                 source: albumImageContainer
-                radius: 32
+                radius: 10
                 width: albumImageContainer.width
                 height: albumImageContainer.height
                 visible: false
@@ -74,7 +76,7 @@ Flickable {
             BrightnessContrast {
                 anchors.bottom: parent.bottom
                 source: blurred
-                brightness: 0.5-styleMusic.playerControls.labelColor.hslLightness
+                brightness: 0.5-styleMusic.nowPlaying.primaryColor.hslLightness
                 width: albumImageContainer.width
                 height: albumImageContainer.height
             }
@@ -104,7 +106,7 @@ Flickable {
                     right: parent.right
                     rightMargin: units.gu(1)
                 }
-                color: styleMusic.playerControls.labelColor
+                color: styleMusic.nowPlaying.primaryColor
                 elide: Text.ElideRight
                 font.pointSize: units.fs("large")
                 font.weight: Font.DemiBold
@@ -123,7 +125,7 @@ Flickable {
                     right: parent.right
                     rightMargin: units.gu(1)
                 }
-                color: styleMusic.nowPlaying.labelColor
+                color: styleMusic.nowPlaying.primaryColor
                 elide: Text.ElideRight
                 font.pointSize: units.fs("small")
                 font.weight: Font.DemiBold
@@ -168,8 +170,8 @@ Flickable {
         anchors.bottom: fullviewBackground.bottom
         height: units.gu(3)
         width: parent.width
-        color: styleMusic.playerControls.backgroundColor
-        opacity: 0.3
+        color: fullviewBackground.color
+        opacity: fullviewBackground.opacity
     }
 
     /* Progress bar component */
@@ -193,7 +195,7 @@ Flickable {
                 left: parent.left
                 leftMargin: units.gu(1)
             }
-            color: styleMusic.nowPlaying.labelSecondaryColor
+            color: styleMusic.nowPlaying.secondaryColor
             font.pointSize: units.fs("small")
             height: parent.height
             horizontalAlignment: Text.AlignLeft
@@ -213,10 +215,10 @@ Flickable {
             objectName: "progressSliderShape"
             value: player.position  // load value at startup
 
-            foregroundColor: styleMusic.nowPlaying.progressForegroundColor
-            backgroundColor: styleMusic.nowPlaying.progressBackgroundColor
-            handleColor: styleMusic.nowPlaying.progressForegroundColor
-            handleColorPressed: backgroundColor
+            foregroundColor: styleMusic.playerControls.progressForegroundColor
+            backgroundColor: styleMusic.playerControls.progressBackgroundColor
+            handleColor: styleMusic.playerControls.progressHandleColor
+            handleColorPressed: styleMusic.playerControls.backgroundColor
             handleBorderColor: handleColor
             handleSize: units.gu(1.5)
 
@@ -278,7 +280,7 @@ Flickable {
                 right: parent.right
                 rightMargin: units.gu(1)
             }
-            color: styleMusic.nowPlaying.labelSecondaryColor
+            color: styleMusic.nowPlaying.secondaryColor
             font.pointSize: units.fs("small")
             height: parent.height
             horizontalAlignment: Text.AlignRight

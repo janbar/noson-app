@@ -23,8 +23,8 @@ import "../"
 MouseArea {
     id: dragArea
     property ListView listview: null
-    property color color: "black"
-    property color highlightedColor: "lightgray"
+    property color color: styleMusic.view.backgroundColor
+    property color highlightedColor: styleMusic.view.highlightedColor
     property var currentColor: highlighted ? highlightedColor : color
     property bool highlighted: false
     property bool reorderable: true

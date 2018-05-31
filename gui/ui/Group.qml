@@ -104,7 +104,7 @@ MusicPage {
                 column: Column {
                     Label {
                         id: roomName
-                        color: model.coordinator ? "#19b1e9" : styleMusic.common.music
+                        color: model.coordinator ? "#19b1e9" : styleMusic.view.foregroundColor
                         font.pointSize: units.fs("large")
                         objectName: "nameLabel"
                         text: model.name

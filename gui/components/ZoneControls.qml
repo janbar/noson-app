@@ -30,7 +30,7 @@ Item {
         anchors {
             fill: parent
         }
-        color: styleMusic.mainView.backgroundColor
+        color: styleMusic.view.backgroundColor
 
         Column {
             anchors.centerIn: parent
@@ -38,7 +38,7 @@ Item {
             width: units.gu(36)
 
             Label {
-                color: styleMusic.mainView.labelColor
+                color: styleMusic.view.labelColor
                 elide: Text.ElideRight
                 font.pointSize: units.fs("x-large")
                 horizontalAlignment: Text.AlignHCenter
@@ -49,7 +49,7 @@ Item {
             }
 
             Label {
-                color: styleMusic.mainView.labelColor
+                color: styleMusic.view.foregroundColor
                 elide: Text.ElideRight
                 font.pointSize: units.fs("large")
                 horizontalAlignment: Text.AlignLeft

@@ -25,7 +25,7 @@ import QtQuick.Controls 2.2
 Rectangle {
     id: playlistsEmptyState
     anchors.fill: parent
-    color: styleMusic.mainView.backgroundColor
+    color: styleMusic.view.backgroundColor
 
     Column {
         anchors.centerIn: parent
@@ -33,7 +33,7 @@ Rectangle {
         width: parent.width > units.gu(44) ? parent.width - units.gu(8) : units.gu(40)
 
         Label {
-            color: styleMusic.mainView.labelColor
+            color: styleMusic.view.labelColor
             elide: Text.ElideRight
             font.pointSize: units.fs("x-large")
             horizontalAlignment: Text.AlignHCenter
@@ -44,7 +44,7 @@ Rectangle {
         }
 
         Label {
-            color: styleMusic.mainView.labelColor
+            color: styleMusic.view.labelColor
             elide: Text.ElideRight
             font.pointSize: units.fs("large")
             horizontalAlignment: Text.AlignHCenter

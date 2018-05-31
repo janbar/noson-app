@@ -30,7 +30,16 @@ Item {
     property alias listview: queueList
     property alias header: queueList.header
     property alias headerItem: queueList.headerItem
+    property alias backgroundColor: bg.color
+    property alias backgroundOpacity: bg.opacity
     clip: true
+
+    Rectangle {
+        id: bg
+        anchors.fill: parent
+        color: "transparent"
+        opacity: 1.0
+    }
 
     Component {
         id: dragDelegate
@@ -38,8 +47,8 @@ Item {
         DragMusicListItem {
             id: listItem
             listview: queueList
-            color: styleMusic.mainView.backgroundColor
-            highlightedColor: styleMusic.mainView.highlightedColor
+            color: bg.color
+            highlightedColor: styleMusic.view.highlightedColor
             highlighted: (player.currentIndex === index)
 
             onSwipe: {
@@ -87,7 +96,7 @@ Item {
             column: Column {
                 Label {
                     id: trackTitle
-                    color: styleMusic.common.music
+                    color: styleMusic.view.primaryColor
                     font.pointSize: units.fs("small")
                     font.bold: true
                     text: model.title
@@ -95,7 +104,7 @@ Item {
 
                 Label {
                     id: trackArtist
-                    color: styleMusic.common.subtitle
+                    color: styleMusic.view.secondaryColor
                     font.pointSize: units.fs("x-small")
                     text: model.author
                 }
@@ -112,7 +121,7 @@ Item {
         anchors.fill: parent
 
         footer: Item {
-            height: mainView.height - (styleMusic.common.expandHeight + queueList.currentHeight) + units.gu(8)
+            height: mainView.height - (styleMusic.view.expandHeight + queueList.currentHeight) + units.gu(8)
         }
 
         model: DelegateModel {

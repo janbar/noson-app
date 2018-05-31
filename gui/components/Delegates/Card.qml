@@ -66,6 +66,7 @@ Item {
         border.width: units.dp(1)
         border.color: styleMusic.card.borderColor
         color: styleMusic.card.backgroundColor
+        opacity: 0.1
     }
 
     /* Column containing image and labels */
@@ -98,7 +99,7 @@ Item {
                 right: parent.right
                 rightMargin: units.gu(1)
             }
-            color: styleMusic.common.music
+            color: styleMusic.view.primaryColor
             elide: Text.ElideRight
             font.pointSize: units.fs("small")
             maximumLineCount: 2
@@ -113,7 +114,7 @@ Item {
                 right: parent.right
                 rightMargin: units.gu(1)
             }
-            color: styleMusic.common.subtitle
+            color: styleMusic.view.secondaryColor
             elide: Text.ElideRight
             font.pointSize: units.fs("small")
             // Allow wrapping of 2 lines unless primary has been wrapped
@@ -141,7 +142,7 @@ Item {
         onClicked: card.playClicked(mouse)
         onPressAndHold: card.pressAndHold(mouse)
         source: "qrc:/images/media-preview-start.svg"
-        color: styleMusic.card.labelColor
+        color: styleMusic.card.foregroundColor
     }
 
     /* Show starred */
@@ -155,7 +156,7 @@ Item {
         width: height
         enabled: isFavorite
         source: "qrc:/images/starred.svg"
-        color: styleMusic.card.labelColor
+        color: styleMusic.card.foregroundColor
     }
 
     /* Overlay for when card is pressed */
@@ -164,7 +165,7 @@ Item {
         anchors {
             fill: bg
         }
-        color: styleMusic.mainView.backgroundColor
+        color: styleMusic.card.backgroundColor
         opacity: cardMouseArea.pressed ? 0.3 : 0
 
         Behavior on opacity {

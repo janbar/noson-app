@@ -38,7 +38,7 @@ Item {
     Rectangle {
         id: bg
         anchors.fill: parent
-        color: styleMusic.playerControls.backgroundColor
+        color: "transparent"
         opacity: 1.0
     }
 
@@ -70,7 +70,7 @@ Item {
             width: height
             source: player.mute ? "qrc:/images/audio-volume-muted.svg" : "qrc:/images/audio-volume.svg"
             objectName: "muteShape"
-            opacity: 1
+            opacity: 1.0
             onClicked: {
                 player.toggleMuteGroup()
                 player.refreshRenderingGroup()
@@ -93,6 +93,7 @@ Item {
 
             handleSize: units.gu(2)
             handleColor: styleMusic.playerControls.volumeHandleColor
+            handleColorPressed: styleMusic.playerControls.backgroundColor
             handleBorderColor: handleColor
             backgroundColor: styleMusic.playerControls.volumeBackgroundColor
             foregroundColor: styleMusic.playerControls.volumeForegroundColor
@@ -279,7 +280,7 @@ Item {
                 left: parent.left
                 bottom: parent.bottom
             }
-            color: styleMusic.nowPlaying.progressForegroundColor
+            color: styleMusic.playerControls.progressForegroundColor
             height: parent.height
             width: player.duration > 0 ? (player.position / player.duration) * playerControlsProgressBar.width : 0
 

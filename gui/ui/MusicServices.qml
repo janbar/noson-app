@@ -92,14 +92,14 @@ MusicPage {
             column: Column {
                 Label {
                     id: serviceTitle
-                    color: styleMusic.common.music
+                    color: styleMusic.view.primaryColor
                     font.pointSize: units.fs("small")
                     text: model.title
                 }
 
                 Label {
                     id: serviceNickName
-                    color: styleMusic.common.subtitle
+                    color: styleMusic.view.secondaryColor
                     font.pointSize: units.fs("x-small")
                     text: model.nickName
                 }

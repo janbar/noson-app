@@ -6,8 +6,8 @@ MouseArea {
     id: area
     property alias source: icon.source
     property alias label: label
-    property color color: "dimgray"
-    property color pressedColor: "lightgray"
+    property color color: styleMusic.view.foregroundColor
+    property color pressedColor: styleMusic.view.highlightedColor
     height: units.gu(4)
     width: row.width
     enabled: true

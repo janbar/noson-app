@@ -33,7 +33,7 @@ Item {
         background: Rectangle {
                 id: containerLayoutBackground
                 anchors.fill: parent
-                color: "transparent"
+                color: styleMusic.popover.backgroundColor
                 radius: units.gu(1)
                 opacity: 0.7
             }
@@ -44,7 +44,7 @@ Item {
             anchors.centerIn: parent
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
-            color: "black"
+            color: styleMusic.popover.labelColor
             font.pointSize: units.fs("small")
             font.weight: Font.Normal
         }

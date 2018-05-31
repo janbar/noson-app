@@ -23,7 +23,7 @@ import NosonApp 1.0
 Rectangle {
     id: loginLauncher
     anchors.fill: parent
-    color: styleMusic.mainView.backgroundColor
+    color: styleMusic.view.backgroundColor
 
     Column {
         id: noMusicTextColumn
@@ -32,7 +32,7 @@ Rectangle {
         width: parent.width > units.gu(44) ? parent.width - units.gu(8) : units.gu(36)
 
         Label {
-            color: styleMusic.mainView.labelColor
+            color: styleMusic.view.labelColor
             elide: Text.ElideRight
             font.pointSize: units.fs("large")
             horizontalAlignment: Text.AlignHCenter
@@ -44,7 +44,7 @@ Rectangle {
 
         Label {
             id: regMessage
-            color: styleMusic.mainView.labelColor
+            color: styleMusic.view.foregroundColor
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 6
@@ -72,7 +72,6 @@ Rectangle {
                 left: parent.left
                 right: parent.right
             }
-            color: styleMusic.mainView.normalTextBaseColor
             focus: true
             inputMethodHints: Qt.ImhNoPredictiveText
             placeholderText: qsTr("User name")
@@ -85,7 +84,6 @@ Rectangle {
                 left: parent.left
                 right: parent.right
             }
-            color: styleMusic.mainView.normalTextBaseColor
             focus: true
             inputMethodHints: Qt.ImhNoPredictiveText
             placeholderText: qsTr("Password")

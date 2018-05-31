@@ -47,8 +47,6 @@ Page {
             width: parent.width
             bottomProgressHint: false
             mirror: true
-            backgroundColor: styleMusic.playerControls.backgroundColor
-            backgroundOpacity: 1.0
         }
     }
 
@@ -74,7 +72,6 @@ Page {
                 clip: true
                 height: width + units.gu(3)
                 width: parent.width
-                color: "transparent"
             }
         }
     }

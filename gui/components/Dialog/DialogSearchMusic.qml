@@ -88,7 +88,6 @@ DialogBase {
             left: parent.left
             right: parent.right
         }
-        color: styleMusic.mainView.normalTextBaseColor
         focus: true
         inputMethodHints: Qt.ImhNoPredictiveText
         placeholderText: qsTr("Type search")

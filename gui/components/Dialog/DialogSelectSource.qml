@@ -43,8 +43,6 @@ DialogBase {
         font.pointSize: units.fs("medium")
         placeholderText: qsTr("Enter stream URL")
         inputMethodHints: Qt.ImhNoPredictiveText | Qt.ImhNoAutoUppercase
-        color: styleMusic.mainView.selectedTextBaseColor
-
     }
 
     Connections {

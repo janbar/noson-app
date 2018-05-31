@@ -136,7 +136,6 @@ MusicPage {
             right: parent.right
         }
         asynchronous: true
-        source: "qrc:/components/Queue.qml"
     }
 
     DialogManageQueue {
@@ -165,7 +164,8 @@ MusicPage {
     ]
 
     Component.onCompleted: {
-        fullViewLoader.setSource("qrc:/components/NowPlayingFullView.qml", { "color": "transparent" })
-        nowPlayingToolbarLoader.setSource("qrc:/components/NowPlayingToolbar.qml", { "backgroundColor": styleMusic.playerControls.backgroundColor, "backgroundOpacity": 0.3 })
+        fullViewLoader.setSource("qrc:/components/NowPlayingFullView.qml", { "backgroundColor": "transparent" })
+        nowPlayingToolbarLoader.setSource("qrc:/components/NowPlayingToolbar.qml", { "backgroundColor": "transparent" })
+        queueLoader.setSource("qrc:/components/Queue.qml", { "backgroundColor": "transparent" })
     }
 }

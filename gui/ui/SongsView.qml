@@ -213,14 +213,14 @@ MusicPage {
             column: Column {
                 Label {
                     id: trackTitle
-                    color: styleMusic.common.music
+                    color: styleMusic.view.primaryColor
                     font.pointSize: !songStackPage.isAlbum ? units.fs("small") : units.fs("medium")
                     text: model.title
                 }
 
                 Label {
                     id: trackArtist
-                    color: styleMusic.common.subtitle
+                    color: styleMusic.view.secondaryColor
                     font.pointSize: !songStackPage.isAlbum ? units.fs("x-small") : units.fs("small")
                     text: model.author
                 }
@@ -272,7 +272,7 @@ MusicPage {
                         left: parent.left
                         right: parent.right
                     }
-                    color: styleMusic.common.music
+                    color: styleMusic.view.foregroundColor
                     elide: Text.ElideRight
                     font.pointSize: units.fs("x-large")
                     maximumLineCount: 1
@@ -286,7 +286,7 @@ MusicPage {
                         left: parent.left
                         right: parent.right
                     }
-                    color: styleMusic.common.subtitle
+                    color: styleMusic.view.secondaryColor
                     elide: Text.ElideRight
                     font.pointSize: units.fs("small")
                     maximumLineCount: 1
@@ -301,7 +301,7 @@ MusicPage {
                         left: parent.left
                         right: parent.right
                     }
-                    color: styleMusic.common.subtitle
+                    color: styleMusic.view.secondaryColor
                     elide: Text.ElideRight
                     font.pointSize: units.fs("small")
                     maximumLineCount: 1
