@@ -65,6 +65,7 @@ QtObject {
         property color selectedTextFieldColor: palette.highlight
         property color selectedTextBaseColor: palette.text
         property color highlightedColor: palette.highlight
+        property color link: palette.link
     }
 
     property QtObject nowPlaying: QtObject {
