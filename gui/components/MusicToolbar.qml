@@ -128,7 +128,7 @@ Item {
                     if (player.currentCount > 0)
                         player.playQueue(true)
                     else
-                        mainView.dialogSelectSource.open()
+                        dialogSelectSource.open()
                 }
             }
         }
