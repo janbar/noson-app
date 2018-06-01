@@ -905,7 +905,7 @@ ApplicationWindow {
                 visible: mainToolBar.state === "search" && stackView.depth === 1
                 enabled: visible
                 Layout.fillWidth: true
-                font.pointSize: units.fs("large")
+                font.pointSize: units.fs("x-large")
                 inputMethodHints: Qt.ImhNoPredictiveText
                 placeholderText: qsTr("Search music")
 
