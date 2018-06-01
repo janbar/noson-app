@@ -130,6 +130,7 @@ ApplicationWindow {
     // Variables
     property string appName: "Noson"
     property int debugLevel: 1
+    property bool playOnStart: false
 
     // Property to store the state of an application (active or suspended)
     property bool applicationState: Qt.application.active
@@ -216,6 +217,13 @@ ApplicationWindow {
                 customdebug("Reloading the zone ...");
                 if (connectZone(currentZone)) {
                     Sonos.runLoader();
+                    // handle play on startup
+                    if (playOnStart) {
+                        playOnStart = false;
+                        if (player.playStream(inputStreamUrl, "")) {
+                            tabs.pushNowPlaying();
+                        }
+                    }
                 }
             }
         }
@@ -223,9 +231,22 @@ ApplicationWindow {
 
     // Run on startup
     Component.onCompleted: {
-        if (indexOfArgument("--debug") >= 0) {
-            mainView.debugLevel = 4
+        var argno = 0;
+        if (indexOfArgument("--debug") > 0) {
+            mainView.debugLevel = 4;
         }
+        // Argument --playurl={Stream URL}: Play URL at startup
+        if ((argno = indexOfArgument("--playurl=")) > 0) {
+            inputStreamUrl = ApplicationArguments[argno].slice(ApplicationArguments[argno].indexOf("=") + 1);
+            playOnStart = (inputStreamUrl.length > 0);
+            customdebug(argno + ": playurl=" + inputStreamUrl);
+        }
+        // Argument --zone={Zone name}: Connect to zone at startup
+        if ((argno = indexOfArgument("--zone=")) > 0) {
+            currentZone = ApplicationArguments[argno].slice(ApplicationArguments[argno].indexOf("=") + 1);
+            customdebug(argno + ": zone=" + currentZone);
+        }
+
         customdebug("LANG=" + Qt.locale().name);
         Sonos.setLocale(Qt.locale().name);
 
@@ -254,10 +275,6 @@ ApplicationWindow {
         // resize main view according to user settings
         mainView.width = (settings.widthGU >= minSizeGU ? units.gu(settings.widthGU) : units.gu(minSizeGU));
         mainView.height = (settings.heightGU >= minSizeGU ? units.gu(settings.heightGU) : units.gu(minSizeGU));
-
-        //@TODO add url to play list
-        //if (args.values.url) {
-        //}
     }
 
     // Show/hide page NoZoneState
@@ -336,7 +353,7 @@ ApplicationWindow {
     // Find index of a command line argument else -1
     function indexOfArgument(argv) {
         for (var i = 0; i < ApplicationArguments.length; ++i) {
-            if (ApplicationArguments[i] === argv)
+            if (ApplicationArguments[i].indexOf(argv) === 0)
                 return i;
         }
         return -1;
