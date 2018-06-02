@@ -150,7 +150,7 @@ MusicPage {
     optionsMenuVisible: true
     optionsMenuContentItems: [
         MenuItem {
-            visible: (queueLoader.item.listview.count > 0)
+            visible: (queueLoader.status === Loader.Ready && queueLoader.item.listview.count > 0)
             height: (visible ? implicitHeight : 0)
             text: qsTr("Manage queue")
             font.pointSize: units.fs("medium")
