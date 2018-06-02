@@ -737,7 +737,8 @@ ElementList SMAPI::Request(const std::string& action, const ElementList& args)
       m_authTokenExpired = true;
       makeSoapHeader(); // refresh hearder
     }
-    else if (XMLNS::NameEqual(str.c_str(), "Client.SessionIdInvalid") && !m_authTokenExpired)
+    // handle others fault like Client.SessionIdInvalid, Client.LoginInvalid
+    else if (!m_authTokenExpired)
     {
       m_authTokenExpired = true;
       makeSoapHeader(); // refresh header;
