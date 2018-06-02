@@ -39,7 +39,7 @@ MainView {
     applicationName: "noson.janbar"
     id: mainView
 
-    readonly property string versionString: "2.8.3"
+    readonly property string versionString: "2.8.4"
 
     focus: true
     backgroundColor: styleMusic.mainView.backgroundColor
