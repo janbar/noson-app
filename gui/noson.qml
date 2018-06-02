@@ -863,6 +863,7 @@ ApplicationWindow {
             TextField {
                 id: searchField
                 visible: mainToolBar.state === "search" && stackView.depth === 1
+                enabled: visible
                 Layout.fillWidth: true
                 font.pointSize: units.fs("large")
                 inputMethodHints: Qt.ImhNoPredictiveText
