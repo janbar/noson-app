@@ -1210,6 +1210,12 @@ ApplicationWindow {
                         if (styleIndex !== -1)
                             currentIndex = styleIndex
                     }
+                    onActivated: {
+                        // reset theme when not supported
+                        if (currentText !== "Material" && currentText !== "Universal") {
+                            settings.theme = 0;
+                        }
+                    }
                     Layout.fillWidth: true
                     font.pointSize: units.fs("medium");
                     popup {
