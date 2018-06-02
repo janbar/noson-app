@@ -60,7 +60,7 @@ namespace NSROOT
       show, album, albumList, artist, artistTrackList, genre, playlist,
       streamList, trackList, search, favorites, collection, container,
       favorite, audiobook,
-      other,
+      other, unknown,
     } ItemType;
 
     static void MakeUriMetadata(const SMServicePtr& service, ItemType itemType, const DigitalItemPtr& item, DigitalItemPtr& uriMetadata);

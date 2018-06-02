@@ -77,7 +77,7 @@ SMAPIItemList SMAPIMetadata::GetItems()
     SMAPIItem data;
     data.displayType = SMAPIItem::Editorial;
 
-    ItemType itemType = other;
+    ItemType itemType = unknown;
     if (mediaType == "track")
     {
       itemType = track;
@@ -163,6 +163,11 @@ SMAPIItemList SMAPIMetadata::GetItems()
     else if (mediaType == "search")
     {
       itemType = search;
+      data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_storageFolder));
+    }
+    else if (mediaType == "other")
+    {
+      itemType = other;
       data.item.reset(new DigitalItem(DigitalItem::Type_container, DigitalItem::SubType_storageFolder));
     }
     else
