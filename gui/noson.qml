@@ -15,7 +15,7 @@ ApplicationWindow {
     visible: true
     title: "noson"
 
-    readonly property string versionString: "3.3.7"
+    readonly property string versionString: "3.3.8"
 
     // Design stuff
     width: 360

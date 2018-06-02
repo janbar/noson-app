@@ -18,6 +18,7 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release date="2018-06-02" version="3.3.8"/>
     <release date="2018-06-01" version="3.3.7"/>
     <release date="2018-05-23" version="3.3.6"/>
     <release date="2018-05-21" version="3.3.5"/>
