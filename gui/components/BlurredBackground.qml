@@ -41,17 +41,7 @@ Item {
         asynchronous: true
         fillMode: Image.PreserveAspectCrop
         height: parent.height
-        source: art // this has to be fixed for the default cover art to work - cant find in this dir
-
-        // TODO: This should be investigated once http://pad.lv/1391368
-        //       is resolved. Once it is, these can either be set to
-        //       "height" and "width" or a property exposed via the
-        //       SDK or Thumbnailer to avoid a regression caused by
-        //       these hardcoded values changing in the Thumbnailer.
-        //       512 is size of the "xlarge" thumbnails in pixels.
-        sourceSize.height: 512
-        sourceSize.width: 512
-
+        source: art
         visible: false
         width: Math.max(parent.height, parent.width)
     }
@@ -65,8 +55,7 @@ Item {
         opacity: 0.2
     }
     onArtChanged: {
-        // TODO: This is a work around for LP:1261078 and LP:1306845. Ideally,
-        //       there should be a better way of getting the blur to repaint
+        // a way of getting the blur to repaint
         backgroundBlur.cached = false
         backgroundImage.source = art
         backgroundBlur.cached = true
