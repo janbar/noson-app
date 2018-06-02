@@ -29,6 +29,14 @@ Item {
         anchors.fill: parent
         color: styleMusic.playerControls.backgroundColor
         opacity: 1.0
+
+        Rectangle {
+            color: styleMusic.card.borderColor
+            anchors.top: parent.top
+            width: parent.width
+            height: units.dp(1)
+            opacity: 0.1
+        }
     }
 
     /* Toolbar controls */

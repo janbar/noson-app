@@ -421,13 +421,6 @@ Page {
                 }
             }
         }
-
-        Rectangle {
-            color: "#e5e5e5"
-            anchors.bottom: parent.bottom
-            width: parent.width
-            height: units.dp(1)
-        }
     }
 
 }
