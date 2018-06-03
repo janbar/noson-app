@@ -1,4 +1,9 @@
-noson-app (3.3) UNRELEASED; urgency=low
+noson-app (3.4) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 3.4
+  * Add setting for theme light/dark
+  * Cleanup the style using palette
 
   [ janbar ]
   * Release 3.3
