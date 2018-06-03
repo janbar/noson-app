@@ -4,6 +4,8 @@ noson-app (3.4) UNRELEASED; urgency=low
   * Release 3.4
   * Add setting for theme light/dark
   * Cleanup the style using palette
+  * Add cli argument to connect a zone on startup
+  * Add cli argument to play an URL on startup
 
   [ janbar ]
   * Release 3.3
