@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
+[ "--cli" = "$1" ] && shift && exec @NOSON_CLI@ $@
 export QML2_IMPORT_PATH=@PLUGINS_DIR@
 exec @NOSON_GUI@ $@

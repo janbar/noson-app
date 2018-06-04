@@ -28,6 +28,7 @@ set(APPDATA_DIR ${CMAKE_INSTALL_DATADIR}/metainfo)
 set(DESKTOP_DIR ${CMAKE_INSTALL_DATADIR}/applications)
 set(PLUGINS_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/${APP_NAME}")
 set(NOSON_GUI "${PLUGINS_DIR}/noson-gui")
+set(NOSON_CLI "${PLUGINS_DIR}/noson-cli")
 
 configure_file(
   ${EXEC}.in
@@ -66,6 +67,7 @@ install(
 
 add_subdirectory(gui)
 add_subdirectory(backend)
+add_subdirectory(cli)
 
 add_custom_target(
   "run"
