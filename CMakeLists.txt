@@ -33,6 +33,7 @@ if(CLICK_MODE)
   set(ICON "${ICON_FILE}")
   set(PLUGINS_DIR "${LIBDIR}/${APP_NAME}")
   set(NOSON_GUI "${PLUGINS_DIR}/noson-gui")
+  set(NOSON_CLI "${PLUGINS_DIR}/noson-cli")
 
   # This command figures out the target architecture for use in the manifest file
   execute_process(
@@ -75,6 +76,7 @@ else(CLICK_MODE)
   set(ICON "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/${APP_NAME}/${ICON_FILE}")
   set(PLUGINS_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/${APP_NAME}")
   set(NOSON_GUI "${PLUGINS_DIR}/noson-gui")
+  set(NOSON_CLI "${PLUGINS_DIR}/noson-cli")
 
   configure_file(
     ${EXEC}.in
@@ -98,6 +100,7 @@ endif(CLICK_MODE)
 
 add_subdirectory(app)
 add_subdirectory(backend)
+add_subdirectory(cli)
 add_subdirectory(po)
 
 add_custom_target("run" QML2_IMPORT_PATH=${CMAKE_BINARY_DIR}/backend ${CMAKE_BINARY_DIR}/app/noson-gui --debug
