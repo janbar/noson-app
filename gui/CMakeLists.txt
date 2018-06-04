@@ -39,7 +39,7 @@ endif()
 
 qt5_add_resources(noson-gui-resources noson.qrc)
 add_executable(noson-gui ${noson-gui-sources} ${noson-gui-resources} ${extra-sources})
-qt5_use_modules(noson-gui Gui Qml Quick QuickControls2)
+target_link_libraries(noson-gui Qt5::Gui Qt5::Qml Qt5::Quick Qt5::QuickControls2)
 
 if(MSVC)
   target_link_libraries (noson-gui ws2_32)

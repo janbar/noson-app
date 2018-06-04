@@ -71,7 +71,7 @@ target_link_libraries (NosonAppbackend noson)
 set_target_properties(NosonAppbackend PROPERTIES
          LIBRARY_OUTPUT_DIRECTORY NosonApp)
 
-qt5_use_modules(NosonAppbackend Gui Qml Quick)
+target_link_libraries(NosonAppbackend Qt5::Gui Qt5::Qml Qt5::Quick)
 
 # Copy qmldir file to build dir for running in QtCreator
 add_custom_target(NosonAppbackend-qmldir ALL
