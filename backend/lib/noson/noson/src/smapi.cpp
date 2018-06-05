@@ -147,6 +147,7 @@ bool SMAPI::Init(const SMServicePtr& smsvc, const std::string& locale)
     // check credentials status
     if (credentials.key.empty())
       m_authTokenExpired = true;
+    smsvc->GetAccount()->SetCredentials(SMAccount::Credentials(m_deviceHouseholdID, credentials.key, credentials.token, credentials.username));
   }
   else if (auth == "DeviceLink")
   {

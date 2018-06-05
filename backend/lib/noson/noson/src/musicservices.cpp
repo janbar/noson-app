@@ -41,8 +41,7 @@ SMService::SMService(const std::string& agent, const ElementList& vars)
 {
   m_type = ServiceType(GetId());
   m_account = SMAccountPtr(new SMAccount(m_type));
-  // make the sonos descriptor
-  m_desc.assign("SA_RINCON").append(m_type);
+  m_desc.assign("");
 }
 
 SMService::SMService(const std::string& agent, const ElementList& vars, const std::string& serialNum)
@@ -51,8 +50,7 @@ SMService::SMService(const std::string& agent, const ElementList& vars, const st
 {
   m_type = ServiceType(GetId());
   m_account = SMAccountPtr(new SMAccount(m_type, serialNum));
-  // make the sonos descriptor
-  m_desc.assign("SA_RINCON").append(m_type).append("_").append(serialNum);
+  m_desc.assign("");
 }
 
 SMServicePtr SMService::Clone(const std::string& serialNum)
@@ -136,6 +134,24 @@ const std::string& SMService::GetServiceType() const
 
 const std::string& SMService::GetServiceDesc() const
 {
+  if (m_desc.empty())
+  {
+    m_desc.assign("SA_RINCON").append(m_type).append("_");
+    const std::string& auth = GetPolicy()->GetAttribut("Auth");
+    if (auth == "UserId")
+    {
+      m_desc.append(m_account->GetCredentials().username);
+    }
+    else if (auth == "DeviceLink")
+    {
+      //@FIXME: failed for service 'Bandcamp'
+      m_desc.append("X_#Svc").append(m_type).append("-0-Token");
+    }
+    else if (auth == "AppLink")
+    {
+      m_desc.append("X_#Svc").append(m_type).append("-0-Token");
+    }
+  }
   return m_desc;
 }
 
