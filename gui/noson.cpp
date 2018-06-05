@@ -7,6 +7,7 @@
 #include <QTranslator>
 #include <QDebug>
 #include <QDir>
+#include <QProcess>
 
 #include "diskcache/diskcachefactory.h"
 
@@ -23,6 +24,7 @@
 void setupApp(QGuiApplication& app);
 QDir getApplicationDir(QGuiApplication& app, const QString& subdir);
 void prepareTranslator(QGuiApplication& app, const QString& translationPath, const QString& translationPrefix, const QLocale& locale);
+void doExit(int code);
 
 int main(int argc, char *argv[])
 {
@@ -77,6 +79,9 @@ int main(int argc, char *argv[])
     }
     engine.rootContext()->setContextProperty("AvailableStyles", availableStyles);
 
+    // handle signal exit(int) issued by the qml instance
+    QObject::connect(&engine, &QQmlApplicationEngine::exit, doExit);
+
     engine.load(QUrl("qrc:/noson.qml"));
     if (engine.rootObjects().isEmpty()) {
         qWarning() << "Failed to load QML";
@@ -125,4 +130,15 @@ void prepareTranslator(QGuiApplication& app, const QString& translationPath, con
         qInfo() << "using file '"+ translationPath + "/" + translationPrefix + "_" + locale.name().left(2) + ".qm ' for translations.";
         app.installTranslator(translator);
     }
+}
+
+void doExit(int code)
+{
+  if (code == 16)
+  {
+    QStringList args = QCoreApplication::arguments();
+    args.removeFirst();
+    QProcess::startDetached(QCoreApplication::applicationFilePath(), args);
+  }
+  QCoreApplication::quit();
 }

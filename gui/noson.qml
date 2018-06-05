@@ -1105,10 +1105,15 @@ ApplicationWindow {
 
         standardButtons: Dialog.Ok | Dialog.Cancel
         onAccepted: {
-            settings.style = styleBox.displayText
+            var needRestart = (styleBox.currentIndex !== styleBox.styleIndex ||
+                    scaleBox.realValue !== scaleBox.acceptedValue);
 
-            scaleBox.acceptedValue = settings.scaleFactor
-            applicationSettingsDialog.close()
+            settings.style = styleBox.displayText;
+            scaleBox.acceptedValue = settings.scaleFactor;
+            applicationSettingsDialog.close();
+
+            if (needRestart)
+                Qt.exit(16);
         }
         onRejected: {
             styleBox.currentIndex = styleBox.styleIndex
