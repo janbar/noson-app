@@ -75,7 +75,7 @@ namespace NSROOT
     SMAccountPtr m_account; ///< The account relates this service
     ElementList m_vars;
     std::string m_type;     ///< The type id to use for this service
-    std::string m_desc;     ///< The sonos descriptor to use for this service
+    mutable std::string m_desc;     ///< The sonos descriptor to use for this service
   };
 
   class MusicServices : public Service

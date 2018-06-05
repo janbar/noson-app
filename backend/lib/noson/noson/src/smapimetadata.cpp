@@ -364,7 +364,9 @@ void SMAPIMetadata::MakeUriMetadata(const SMServicePtr& service, ItemType itemTy
     res->SetAttribut("protocolInfo", "x-rincon-cpcontainer:*:*:*");
     uriMetadata->SetProperty(res);
   }
-  else if (itemType == artistTrackList || itemType == trackList || itemType == container)
+  else if (itemType == artistTrackList || itemType == trackList || itemType == albumList
+           || itemType == artist || itemType == genre || itemType == favorites
+           || itemType == container || itemType == other)
   {
     uriMetadata->SetObjectID(std::string("100f006c").append(itemId));
     uriMetadata->SetParentID(std::string("1008006c").append(parentId));
