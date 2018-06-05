@@ -51,6 +51,8 @@ public:
 
   const QString& serialNum() const { return m_serialNum; }
 
+  const QString& auth() const { return m_auth; }
+
 private:
   SONOS::SMServicePtr m_ptr;
   bool m_valid;
@@ -61,6 +63,7 @@ private:
   QString m_normalized;
   QString m_type;
   QString m_serialNum;
+  QString m_auth;
 };
 
 class ServicesModel : public QAbstractListModel, public ListModel
@@ -79,6 +82,7 @@ public:
     NormalizedRole,
     TypeRole,
     SerialNumRole,
+    AuthRole,
   };
 
   ServicesModel(QObject* parent = 0);

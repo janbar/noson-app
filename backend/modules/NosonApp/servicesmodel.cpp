@@ -36,6 +36,7 @@ ServiceItem::ServiceItem(const SONOS::SMServicePtr& ptr)
   m_nickName = QString::fromUtf8(ptr->GetAccount()->GetCredentials().username.c_str());
   m_type = QString::fromUtf8(ptr->GetServiceType().c_str());
   m_serialNum = QString::fromUtf8(ptr->GetAccount()->GetSerialNum().c_str());
+  m_auth = QString::fromUtf8(ptr->GetPolicy()->GetAttribut("Auth").c_str());
   m_valid = true;
 }
 
@@ -101,6 +102,8 @@ QVariant ServicesModel::data(const QModelIndex& index, int role) const
     return item->type();
   case SerialNumRole:
     return item->serialNum();
+  case AuthRole:
+    return item->auth();
   default:
     return QVariant();
   }
@@ -117,6 +120,7 @@ QHash<int, QByteArray> ServicesModel::roleNames() const
   roles[NormalizedRole] = "normalized";
   roles[TypeRole] = "type";
   roles[SerialNumRole] = "serialNum";
+  roles[AuthRole] = "auth";
   return roles;
 }
 
@@ -136,6 +140,7 @@ QVariantMap ServicesModel::get(int row)
   model[roles[NormalizedRole]] = item->normalized();
   model[roles[TypeRole]] = item->type();
   model[roles[SerialNumRole]] = item->serialNum();
+  model[roles[AuthRole]] = item->auth();
   return model;
 }
 
