@@ -56,6 +56,7 @@ function buildAppStructure {
     # binary
     mkdir -p $BUILD_BUNDLE_APP_DIR
     cp -v $BUILD_DIR/gui/noson-gui  $BUILD_BUNDLE_APP_FILE
+    cp -v $BUILD_DIR/cli/noson-cli  $BUILD_BUNDLE_APP_DIR/
 
     mkdir -p $BUILD_BUNDLE_RES_DIR/qml
     cp -v -r $BUILD_DIR/backend/NosonApp $BUILD_BUNDLE_RES_DIR/qml/
