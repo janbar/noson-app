@@ -62,7 +62,7 @@ Item {
         width: height
         enabled: isFavorite
         source: "qrc:/images/starred.svg"
-        color: styleMusic.card.labelColor
+        color: styleMusic.card.foregroundColor
     }
 
     Loader {
