@@ -234,7 +234,7 @@ bool parseCommand(const std::string& line)
         std::string param(*it);
         while(++it != tokens.end())
           param.append(" ").append(*it);
-        if (gSonos->GetPlayer()->PlayStream(*it, ""))
+        if (gSonos->GetPlayer()->PlayStream(param, ""))
           ERROR("Succeeded\n");
         else
           ERROR("Failed\n");
