@@ -1351,7 +1351,6 @@ ApplicationWindow {
         source: "qrc:/components/MusicToolbar.qml"
         visible: !noZone && (!wideAspect || player.currentMetaSource === "") && status === Loader.Ready &&
                  (stackView.currentItem && (stackView.currentItem.showToolbar || stackView.currentItem.showToolbar === undefined))
-        height: status === Loader.Ready ? item.height : 0
     }
 
     Loader {
