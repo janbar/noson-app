@@ -152,6 +152,7 @@ bool parseCommand(const std::string& line)
       PRINT("SEEK 1..                    Seek to track number\n");
       PRINT("VOLUME 0..100               Set volume master\n");
       PRINT("VOLUME {player} 0..100      Set volume\n");
+      PRINT("SLEEPTIMER 0..65535         Set sleep timer\n");
       PRINT("SHOWQUEUE                   Show queue content\n");
       PRINT("SHOWFV                      Show favorites\n");
       PRINT("SHOWSQ                      Show playlists\n");
@@ -202,6 +203,25 @@ bool parseCommand(const std::string& line)
       PRINT1("CurrentPlayMode = %s\n", props.CurrentPlayMode.c_str());
       PRINT1("CurrentTransportActions = %s\n", props.CurrentTransportActions.c_str());
       PRINT1("NumberOfTracks = %d\n", props.NumberOfTracks);
+      SONOS::ElementList vars;
+      if (gSonos->GetPlayer()->GetRemainingSleepTimerDuration(vars))
+      {
+        PRINT1("RemainingSleepTimerDuration = %s\n", vars.GetValue("RemainingSleepTimerDuration").c_str());
+      }
+    }
+    else if (token == "SLEEPTIMER")
+    {
+      if (++it != tokens.end())
+      {
+        std::string param(*it);
+        SONOS::ZonePtr pl = gSonos->GetConnectedZone();
+        uint16_t value = 0;
+        string_to_uint16(param.c_str(), &value);
+        if (gSonos->GetPlayer()->ConfigureSleepTimer((unsigned)value))
+          ERROR("Succeeded\n");
+        else
+          ERROR("Failed\n");
+      }
     }
     else if (token == "PLAY")
     {
