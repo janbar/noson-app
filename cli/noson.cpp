@@ -108,6 +108,17 @@ int main(int argc, char** argv)
   return ret;
 }
 
+std::string& upstr(std::string& str)
+{
+  std::string::iterator c = str.begin();
+  while (c != str.end())
+  {
+    *c = toupper(*c);
+    ++c;
+  }
+  return str;
+}
+
 bool parseCommand(const std::string& line)
 {
   std::vector<std::string> tokens;
@@ -116,12 +127,7 @@ bool parseCommand(const std::string& line)
   if (it != tokens.end())
   { 
     std::string token(*it);
-    std::string::iterator c = token.begin();
-    while (c != token.end())
-    {
-      *c = toupper(*c);
-      ++c;
-    }
+    upstr(token);
 
     if (token == "EXIT")
       return false;
@@ -131,6 +137,7 @@ bool parseCommand(const std::string& line)
     {
       PRINT("EXIT                        Exit from CLI\n");
       PRINT("CONNECT {zone name}         Connect to a zone for control\n");
+      PRINT("STATUS                      Show the playing status\n");
       PRINT("PLAYURL {stream URL}        Play stream from URL\n");
       PRINT("PLAYFV {URL}                Play the given favorite\n");
       PRINT("PLAYSQ {URL}                Play the given playlist\n");
@@ -145,6 +152,7 @@ bool parseCommand(const std::string& line)
       PRINT("SEEK 1..                    Seek to track number\n");
       PRINT("VOLUME 0..100               Set volume master\n");
       PRINT("VOLUME {player} 0..100      Set volume\n");
+      PRINT("SLEEPTIMER 0..65535         Set sleep timer\n");
       PRINT("SHOWQUEUE                   Show queue content\n");
       PRINT("SHOWFV                      Show favorites\n");
       PRINT("SHOWSQ                      Show playlists\n");
@@ -177,6 +185,43 @@ bool parseCommand(const std::string& line)
     else if (!gSonos->IsConnected())
     {
       ERROR("Error: Not connected.\n");
+    }
+    else if (token == "STATUS")
+    {
+      while (gSonos->GetPlayer()->TransportPropertyEmpty())
+        sleep(1);
+      SONOS::AVTProperty props = gSonos->GetPlayer()->GetTransportProperty();
+      PRINT1("TransportStatus = %s\n", props.TransportStatus.c_str());
+      PRINT1("TransportState = %s\n", props.TransportState.c_str());
+      PRINT1("AVTransportURI = [%s]\n", props.AVTransportURI.c_str());
+      PRINT1("AVTransportTitle = [%s]\n", props.AVTransportURIMetaData ? props.AVTransportURIMetaData->GetValue("dc:title").c_str() : "null");
+      PRINT1("CurrentTrack = %d\n", props.CurrentTrack);
+      PRINT1("CurrentTrackDuration = %s\n", props.CurrentTrackDuration.c_str());
+      PRINT1("CurrentTrackURI = [%s]\n", props.CurrentTrackURI.c_str());
+      PRINT1("CurrentTrackTitle = [%s]\n", props.CurrentTrackMetaData ? props.CurrentTrackMetaData->GetValue("dc:title").c_str() : "null");
+      PRINT1("CurrentCrossfadeMode = %s\n", props.CurrentCrossfadeMode.c_str());
+      PRINT1("CurrentPlayMode = %s\n", props.CurrentPlayMode.c_str());
+      PRINT1("CurrentTransportActions = %s\n", props.CurrentTransportActions.c_str());
+      PRINT1("NumberOfTracks = %d\n", props.NumberOfTracks);
+      SONOS::ElementList vars;
+      if (gSonos->GetPlayer()->GetRemainingSleepTimerDuration(vars))
+      {
+        PRINT1("RemainingSleepTimerDuration = %s\n", vars.GetValue("RemainingSleepTimerDuration").c_str());
+      }
+    }
+    else if (token == "SLEEPTIMER")
+    {
+      if (++it != tokens.end())
+      {
+        std::string param(*it);
+        SONOS::ZonePtr pl = gSonos->GetConnectedZone();
+        uint16_t value = 0;
+        string_to_uint16(param.c_str(), &value);
+        if (gSonos->GetPlayer()->ConfigureSleepTimer((unsigned)value))
+          ERROR("Succeeded\n");
+        else
+          ERROR("Failed\n");
+      }
     }
     else if (token == "PLAY")
     {
