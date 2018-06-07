@@ -221,6 +221,8 @@ bool parseCommand(const std::string& line)
         else
           ERROR("Failed\n");
       }
+      else
+        ERROR("Error: Missing arguments.\n");
     }
     else if (token == "PLAY")
     {
