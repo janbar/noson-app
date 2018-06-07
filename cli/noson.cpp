@@ -108,6 +108,17 @@ int main(int argc, char** argv)
   return ret;
 }
 
+std::string& upstr(std::string& str)
+{
+  std::string::iterator c = str.begin();
+  while (c != str.end())
+  {
+    *c = toupper(*c);
+    ++c;
+  }
+  return str;
+}
+
 bool parseCommand(const std::string& line)
 {
   std::vector<std::string> tokens;
@@ -116,12 +127,7 @@ bool parseCommand(const std::string& line)
   if (it != tokens.end())
   { 
     std::string token(*it);
-    std::string::iterator c = token.begin();
-    while (c != token.end())
-    {
-      *c = toupper(*c);
-      ++c;
-    }
+    upstr(token);
 
     if (token == "EXIT")
       return false;
@@ -131,6 +137,7 @@ bool parseCommand(const std::string& line)
     {
       PRINT("EXIT                        Exit from CLI\n");
       PRINT("CONNECT {zone name}         Connect to a zone for control\n");
+      PRINT("STATUS                      Show the playing status\n");
       PRINT("PLAYURL {stream URL}        Play stream from URL\n");
       PRINT("PLAYFV {URL}                Play the given favorite\n");
       PRINT("PLAYSQ {URL}                Play the given playlist\n");
@@ -177,6 +184,24 @@ bool parseCommand(const std::string& line)
     else if (!gSonos->IsConnected())
     {
       ERROR("Error: Not connected.\n");
+    }
+    else if (token == "STATUS")
+    {
+      while (gSonos->GetPlayer()->TransportPropertyEmpty())
+        sleep(1);
+      SONOS::AVTProperty props = gSonos->GetPlayer()->GetTransportProperty();
+      PRINT1("TransportStatus = %s\n", props.TransportStatus.c_str());
+      PRINT1("TransportState = %s\n", props.TransportState.c_str());
+      PRINT1("AVTransportURI = [%s]\n", props.AVTransportURI.c_str());
+      PRINT1("AVTransportTitle = [%s]\n", props.AVTransportURIMetaData ? props.AVTransportURIMetaData->GetValue("dc:title").c_str() : "null");
+      PRINT1("CurrentTrack = %d\n", props.CurrentTrack);
+      PRINT1("CurrentTrackDuration = %s\n", props.CurrentTrackDuration.c_str());
+      PRINT1("CurrentTrackURI = [%s]\n", props.CurrentTrackURI.c_str());
+      PRINT1("CurrentTrackTitle = [%s]\n", props.CurrentTrackMetaData ? props.CurrentTrackMetaData->GetValue("dc:title").c_str() : "null");
+      PRINT1("CurrentCrossfadeMode = %s\n", props.CurrentCrossfadeMode.c_str());
+      PRINT1("CurrentPlayMode = %s\n", props.CurrentPlayMode.c_str());
+      PRINT1("CurrentTransportActions = %s\n", props.CurrentTransportActions.c_str());
+      PRINT1("NumberOfTracks = %d\n", props.NumberOfTracks);
     }
     else if (token == "PLAY")
     {
