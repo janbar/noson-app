@@ -304,15 +304,15 @@ bool System::FindDeviceDescription(std::string& url)
     std::string strread;
     size_t len = 0;
     unsigned _context = 0;
-    while (!ret && WSResponse::ReadHeaderLine(&sock, "\r\n", strread, &len))
+    while (_context != 0xF && WSResponse::ReadHeaderLine(&sock, "\r\n", strread, &len))
     {
       const char* line = strread.c_str();
-      if (!_context && strstr(line, "HTTP/1."))
+      if (_context == 0 && strstr(line, "HTTP/1."))
       {
         DBG(DBG_INFO, "%s: starting new context\n", __FUNCTION__);
         _context = 1; // new valid context
       }
-      else if (_context)
+      else if (_context > 0)
       {
         /*
          * Each header field consists of a name followed by a colon (":") and the
@@ -369,13 +369,13 @@ bool System::FindDeviceDescription(std::string& url)
         }
         else if (len == 0)
         {
+          // the message is ending by an empty line
           DBG(DBG_INFO, "%s: reseting context\n", __FUNCTION__);
           _context = 0; // reset context
         }
       }
-      if (_context == 0xF)
-        ret = true;
     }
+    ret = (_context == 0xF);
   }
   return ret;
 }
