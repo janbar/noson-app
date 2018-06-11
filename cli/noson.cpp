@@ -214,7 +214,6 @@ bool parseCommand(const std::string& line)
       if (++it != tokens.end())
       {
         std::string param(*it);
-        SONOS::ZonePtr pl = gSonos->GetConnectedZone();
         uint16_t value = 0;
         string_to_uint16(param.c_str(), &value);
         if (gSonos->GetPlayer()->ConfigureSleepTimer((unsigned)value))
@@ -222,6 +221,8 @@ bool parseCommand(const std::string& line)
         else
           ERROR("Failed\n");
       }
+      else
+        ERROR("Error: Missing arguments.\n");
     }
     else if (token == "PLAY")
     {
