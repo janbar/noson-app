@@ -108,6 +108,9 @@ namespace NSROOT
     bool GetMute(const std::string& uuid, uint8_t* value);
     bool SetMute(const std::string& uuid, uint8_t value);
 
+    bool GetNightmode(const std::string& uuid, uint8_t* value);
+    bool SetNightmode(const std::string& uuid, uint8_t value);
+
     bool SetCurrentURI(const DigitalItemPtr& item);
     bool PlayStream(const std::string& streamURL, const std::string& title);
     bool PlayQueue(bool start);

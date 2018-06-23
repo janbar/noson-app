@@ -48,6 +48,7 @@ Item {
     property bool mute: false
     property int renderingControlCount: 0
     property bool sleepTimerEnabled: false
+    property bool nightmodeEnabled: false
 
     property string queueInfo: queueOverviewString()
 
@@ -168,6 +169,11 @@ Item {
         return playerLoader.item.toggleMute(uuid);
     }
 
+    function toggleNightmode() {
+        return playerLoader.item.toggleNightmode();
+    }
+
+
     function playQueue(start) {
         return playerLoader.item.playQueue(start);
     }
@@ -254,6 +260,8 @@ Item {
     function refreshRenderingGroup() {
         player.volumeMaster = playerLoader.item.volumeMaster;
         player.mute = playerLoader.item.muteMaster;
+        player.nightmodeEnabled = playerLoader.item.nightmode;
+        console.log("night mode: " + playerLoader.item.nightmode)
     }
 
     function refreshRendering() {
@@ -314,6 +322,7 @@ Item {
                 onStatusChanged: {}
                 onStopped: player.stopped()
                 onSleepTimerChanged: player.sleepTimerEnabled = player.remainingSleepTimerDuration() > 0 ? true : false
+                onNightmodeChanged: player.nightmodeEnabled = nightmode
             }
         }
     }

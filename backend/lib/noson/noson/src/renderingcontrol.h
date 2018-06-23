@@ -63,6 +63,10 @@ namespace NSROOT
 
     bool SetMute(uint8_t value, const char* channel = CH_MASTER);
 
+    bool GetNightmode(uint8_t* value);
+
+    bool SetNightmode(uint8_t value);
+
     // Implements EventSubscriber
     virtual void HandleEventMessage(EventMessagePtr msg);
 

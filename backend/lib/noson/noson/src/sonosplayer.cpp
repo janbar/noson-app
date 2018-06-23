@@ -374,6 +374,26 @@ bool Player::SetMute(const std::string& uuid, uint8_t value)
   return false;
 }
 
+bool Player::GetNightmode(const std::string &uuid, uint8_t *value)
+{
+  for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+  {
+    if (it->uuid == uuid)
+      return it->renderingControl->GetNightmode(value);
+  }
+  return false;
+}
+
+bool Player::SetNightmode(const std::string &uuid, uint8_t value)
+{
+  for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+  {
+    if (it->uuid == uuid)
+      return it->renderingControl->SetNightmode(value);
+  }
+  return false;
+}
+
 bool Player::SetCurrentURI(const DigitalItemPtr& item)
 {
   // Fix items from 'My radios' haven't required tag desc
