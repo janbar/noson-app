@@ -183,13 +183,10 @@ bool AVTransport::SeekTime(uint16_t reltime)
 
 bool AVTransport::SeekTrack(unsigned tracknr)
 {
-  char buf[11];
-  memset(buf, 0, sizeof (buf));
-  uint32_to_string(tracknr, buf);
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("Unit", "TRACK_NR")));
-  args.push_back(ElementPtr(new Element("Target", buf)));
+  args.push_back(ElementPtr(new Element("Target", std::to_string(tracknr))));
   ElementList vars = Request("Seek", args);
   if (!vars.empty() && vars[0]->compare("SeekResponse") == 0)
     return true;
@@ -244,14 +241,11 @@ bool AVTransport::SetNextURI(const std::string& uri, const std::string& metadata
 
 unsigned AVTransport::AddURIToQueue(const std::string& uri, const std::string& metadata, unsigned position)
 {
-  char buf[11];
-  memset(buf, 0, sizeof (buf));
-  uint32_to_string(position, buf);
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("EnqueuedURI", uri)));
   args.push_back(ElementPtr(new Element("EnqueuedURIMetaData", metadata)));
-  args.push_back(ElementPtr(new Element("DesiredFirstTrackNumberEnqueued", buf)));
+  args.push_back(ElementPtr(new Element("DesiredFirstTrackNumberEnqueued", std::to_string(position))));
   args.push_back(ElementPtr(new Element("EnqueueAsNext", "1")));
   ElementList vars = Request("AddURIToQueue", args);
   if (!vars.empty() && vars[0]->compare("AddURIToQueueResponse") == 0)
@@ -265,14 +259,11 @@ unsigned AVTransport::AddURIToQueue(const std::string& uri, const std::string& m
 
 unsigned AVTransport::AddMultipleURIsToQueue(const std::vector<std::string>& uris, const std::vector<std::string>& metadatas)
 {
-  char buf[11];
-  memset(buf, 0, sizeof (buf));
   ElementList args;
   Element* elem;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("UpdateID", "0")));
-  uint32_to_string(uris.size(), buf);
-  args.push_back(ElementPtr(new Element("NumberOfURIs", buf)));
+  args.push_back(ElementPtr(new Element("NumberOfURIs", std::to_string(uris.size()))));
   elem = new Element("EnqueuedURIs", "");
   for (std::vector<std::string>::const_iterator it = uris.begin(); it != uris.end(); ++it)
   {
@@ -305,21 +296,12 @@ unsigned AVTransport::AddMultipleURIsToQueue(const std::vector<std::string>& uri
 
 bool AVTransport::ReorderTracksInQueue(unsigned startIndex, unsigned numTracks, unsigned insBefore, unsigned containerUpdateID)
 {
-  char buf[11];
-  memset(buf, 0, sizeof (buf));
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
-  memset(buf, 0, sizeof (buf));
-  uint32_to_string(startIndex, buf);
-  args.push_back(ElementPtr(new Element("StartingIndex", buf)));
-  memset(buf, 0, sizeof (buf));
-  uint32_to_string(numTracks, buf);
-  args.push_back(ElementPtr(new Element("NumberOfTracks", buf)));
-  memset(buf, 0, sizeof (buf));
-  uint32_to_string(insBefore, buf);
-  args.push_back(ElementPtr(new Element("InsertBefore", buf)));
-  uint32_to_string(containerUpdateID, buf);
-  args.push_back(ElementPtr(new Element("UpdateID", buf)));
+  args.push_back(ElementPtr(new Element("StartingIndex", std::to_string(startIndex))));
+  args.push_back(ElementPtr(new Element("NumberOfTracks", std::to_string(numTracks))));
+  args.push_back(ElementPtr(new Element("InsertBefore", std::to_string(insBefore))));
+  args.push_back(ElementPtr(new Element("UpdateID", std::to_string(containerUpdateID))));
   ElementList vars = Request("ReorderTracksInQueue", args);
   if (!vars.empty() && vars[0]->compare("ReorderTracksInQueueResponse") == 0)
     return true;
@@ -328,13 +310,10 @@ bool AVTransport::ReorderTracksInQueue(unsigned startIndex, unsigned numTracks, 
 
 bool AVTransport::RemoveTrackFromQueue(const std::string& objectID, unsigned containerUpdateID)
 {
-  char buf[11];
-  memset(buf, 0, sizeof (buf));
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("ObjectID", objectID)));
-  uint32_to_string(containerUpdateID, buf);
-  args.push_back(ElementPtr(new Element("UpdateID", buf)));
+  args.push_back(ElementPtr(new Element("UpdateID", std::to_string(containerUpdateID))));
   ElementList vars = Request("RemoveTrackFromQueue", args);
   if (!vars.empty() && vars[0]->compare("RemoveTrackFromQueueResponse") == 0)
     return true;
@@ -343,18 +322,11 @@ bool AVTransport::RemoveTrackFromQueue(const std::string& objectID, unsigned con
 
 bool AVTransport::RemoveTrackRangeFromQueue(unsigned startIndex, unsigned numTracks, unsigned containerUpdateID)
 {
-  char buf[11];
-  memset(buf, 0, sizeof (buf));
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
-  memset(buf, 0, sizeof (buf));
-  uint32_to_string(startIndex, buf);
-  args.push_back(ElementPtr(new Element("StartingIndex", buf)));
-  memset(buf, 0, sizeof (buf));
-  uint32_to_string(numTracks, buf);
-  args.push_back(ElementPtr(new Element("NumberOfTracks", buf)));
-  uint32_to_string(containerUpdateID, buf);
-  args.push_back(ElementPtr(new Element("UpdateID", buf)));
+  args.push_back(ElementPtr(new Element("StartingIndex", std::to_string(startIndex))));
+  args.push_back(ElementPtr(new Element("NumberOfTracks", std::to_string(numTracks))));
+  args.push_back(ElementPtr(new Element("UpdateID", std::to_string(containerUpdateID))));
   ElementList vars = Request("RemoveTrackRangeFromQueue", args);
   if (!vars.empty() && vars[0]->compare("RemoveTrackRangeFromQueueResponse") == 0)
   {
@@ -403,16 +375,13 @@ bool AVTransport::CreateSavedQueue(const std::string& title)
 
 unsigned AVTransport::AddURIToSavedQueue(const std::string& SQObjectID, const std::string& uri, const std::string& metadata, unsigned containerUpdateID)
 {
-  char buf[11];
-  memset(buf, 0, sizeof (buf));
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("ObjectID", SQObjectID)));
   args.push_back(ElementPtr(new Element("EnqueuedURI", uri)));
   args.push_back(ElementPtr(new Element("EnqueuedURIMetaData", metadata)));
   args.push_back(ElementPtr(new Element("AddAtIndex", "4294967295"))); // An other value will failed
-  uint32_to_string(containerUpdateID, buf);
-  args.push_back(ElementPtr(new Element("UpdateID", buf)));
+  args.push_back(ElementPtr(new Element("UpdateID", std::to_string(containerUpdateID))));
   ElementList vars = Request("AddURIToSavedQueue", args);
   if (!vars.empty() && vars[0]->compare("AddURIToSavedQueueResponse") == 0)
   {
@@ -425,15 +394,12 @@ unsigned AVTransport::AddURIToSavedQueue(const std::string& SQObjectID, const st
 
 bool AVTransport::ReorderTracksInSavedQueue(const std::string& SQObjectID, const std::string& trackList, const std::string& newPositionList, unsigned containerUpdateID)
 {
-  char buf[11];
-  memset(buf, 0, sizeof (buf));
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("ObjectID", SQObjectID)));
   args.push_back(ElementPtr(new Element("TrackList", trackList)));
   args.push_back(ElementPtr(new Element("NewPositionList", newPositionList)));
-  uint32_to_string(containerUpdateID, buf);
-  args.push_back(ElementPtr(new Element("UpdateID", buf)));
+  args.push_back(ElementPtr(new Element("UpdateID", std::to_string(containerUpdateID))));
   ElementList vars = Request("ReorderTracksInSavedQueue", args);
   if (!vars.empty() && vars[0]->compare("ReorderTracksInSavedQueueResponse") == 0)
     return true;
@@ -592,3 +558,5 @@ void AVTransport::HandleEventMessage(EventMessagePtr msg)
     }
   }
 }
+
+/* vim: set ts=2 sw=2 tw=2 softtabstop=2 :*/
