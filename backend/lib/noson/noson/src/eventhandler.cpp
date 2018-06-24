@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Jean-Luc Barriere
+ *      Copyright (C) 2014-2018 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -379,9 +379,7 @@ void BasicEventHandler::AnnounceStatus(const char *status)
   msg.event = EVENT_HANDLER_STATUS;
   msg.subject.push_back(status);
   msg.subject.push_back(m_listenerAddress);
-  char buf[6];
-  uint16_to_string((uint16_t)m_port, buf);
-  msg.subject.push_back(buf);
+  msg.subject.push_back(std::to_string((uint16_t)m_port));
   DispatchEvent(msg);
 }
 

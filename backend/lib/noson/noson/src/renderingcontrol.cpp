@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Jean-Luc Barriere
+ *      Copyright (C) 2014-2018 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -78,13 +78,10 @@ bool RenderingControl::GetVolume(uint8_t* value, const char* channel)
 
 bool RenderingControl::SetVolume(uint8_t value, const char* channel)
 {
-  char buf[4];
-  memset(buf, 0, sizeof (buf));
-  uint8_to_string(value, buf);
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("Channel", channel)));
-  args.push_back(ElementPtr(new Element("DesiredVolume", buf)));
+  args.push_back(ElementPtr(new Element("DesiredVolume", std::to_string(value))));
   ElementList vars = Request("SetVolume", args);
   if (!vars.empty() && vars[0]->compare("SetVolumeResponse") == 0)
     return true;
@@ -108,13 +105,10 @@ bool RenderingControl::GetMute(uint8_t* value, const char* channel)
 
 bool RenderingControl::SetMute(uint8_t value, const char* channel)
 {
-  char buf[4];
-  memset(buf, 0, sizeof (buf));
-  uint8_to_string(value, buf);
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("Channel", channel)));
-  args.push_back(ElementPtr(new Element("DesiredMute", buf)));
+  args.push_back(ElementPtr(new Element("DesiredMute", std::to_string(value))));
   ElementList vars = Request("SetMute", args);
   if (!vars.empty() && vars[0]->compare("SetMuteResponse") == 0)
     return true;

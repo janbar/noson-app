@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Jean-Luc Barriere
+ *      Copyright (C) 2014-2018 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -122,9 +122,7 @@ std::string SMService::ServiceType(const std::string& id)
   int num = 0;
   if (string_to_int32(id.c_str(), &num) == 0)
     num = num * 256 + 7;
-  char st[12];
-  int32_to_string(num, st);
-  return std::string(st);
+  return std::to_string(num);
 }
 
 const std::string& SMService::GetServiceType() const
@@ -250,8 +248,6 @@ bool MusicServices::ParseAvailableServices(const ElementList& vars, std::vector<
   while (elem)
   {
     unsigned uid = 0; // unique item id
-    char sid[12];
-    memset(sid, '\0', sizeof(sid));
     const tinyxml2::XMLAttribute* attr = elem->FirstAttribute();
     ElementList service;
     while (attr)
@@ -267,8 +263,7 @@ bool MusicServices::ParseAvailableServices(const ElementList& vars, std::vector<
       if (XMLNS::NameEqual(child->Name(), "Policy"))
       {
         const tinyxml2::XMLAttribute* cattr = child->FirstAttribute();
-        uint32_to_string(++uid, sid);
-        ElementPtr policyPtr(new Element(child->Name(), sid));
+        ElementPtr policyPtr(new Element(child->Name(), std::to_string(++uid)));
         while (cattr)
         {
           policyPtr->SetAttribut(cattr->Name(), cattr->Value());
@@ -282,8 +277,7 @@ bool MusicServices::ParseAvailableServices(const ElementList& vars, std::vector<
         while (child2)
         {
           const tinyxml2::XMLAttribute* cattr = child2->FirstAttribute();
-          uint32_to_string(++uid, sid);
-          ElementPtr mapPtr(new Element(child2->Name(), sid));
+          ElementPtr mapPtr(new Element(child2->Name(), std::to_string(++uid)));
           while (cattr)
           {
             mapPtr->SetAttribut(cattr->Name(), cattr->Value());
