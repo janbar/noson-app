@@ -130,5 +130,7 @@
         <file>i18n/noson_fr.qm</file>
         <file>i18n/noson_nl.qm</file>
         <file>ui/AddService.qml</file>
+        <file>images/nightmode-enabled.svg</file>
+        <file>images/nightmode-disabled.svg</file>
     </qresource>
 </RCC>

@@ -82,7 +82,8 @@ Item {
             id: volumeGroupSlider
             anchors.left: nowPlayingMuteButton.right
             anchors.leftMargin: units.gu(2)
-            anchors.right: parent.right
+            anchors.rightMargin: units.gu(2)
+            anchors.right: nightmodeButton.left
             anchors.verticalCenter: parent.verticalCenter
             live: true
             from: 0
@@ -124,6 +125,23 @@ Item {
             Connections {
                 target: player
                 onVolumeMasterChanged: volumeGroupSlider.value = player.volumeMaster
+            }
+        }
+
+        /* Nightmode button */
+        Icon {
+            id: nightmodeButton
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            height: units.gu(4)
+            width: height
+            source: player.nightmodeEnabled ? "qrc:/images/nightmode-enabled.svg" : "qrc:/images/nightmode-disabled.svg"
+            objectName: "nightmodeShape"
+            opacity: 1.0
+            onClicked: {
+                player.toggleNightmode()
+                player.refreshRenderingGroup()
+                player.refreshRendering()
             }
         }
     }

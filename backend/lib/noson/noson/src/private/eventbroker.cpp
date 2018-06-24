@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Jean-Luc Barriere
+ *      Copyright (C) 2014-2018 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -250,12 +250,10 @@ void EventBroker::Process()
       if (rb.GetParsedURI().compare("/") == 0)
       {
         static const char* version_string = "<html><h1>Noson Event Broker</h1><p>Version <b>" LIBVERSION "</b>, compiled on " __DATE__ " at " __TIME__ "</html>";
-        char buf[8];
-        uint32_to_string(strlen(version_string), buf);
         status.Set(HSC_OK);
         resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage()).append("\r\n");
         resp.append("CONTENT-TYPE: text/html\r\n");
-        resp.append("CONTENT-LENGTH: ").append(buf).append("\r\n");
+        resp.append("CONTENT-LENGTH: ").append(std::to_string(strlen(version_string))).append("\r\n");
         resp.append("\r\n");
         resp.append(version_string);
       }

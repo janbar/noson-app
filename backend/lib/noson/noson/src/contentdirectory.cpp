@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Jean-Luc Barriere
+ *      Copyright (C) 2014-2018 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -80,15 +80,12 @@ ContentDirectory::~ContentDirectory()
 
 bool ContentDirectory::Browse(const std::string& objectId, unsigned index, unsigned count, ElementList &vars)
 {
-  char buf[11];
   ElementList args;
   args.push_back(ElementPtr(new Element("ObjectID", objectId)));
   args.push_back(ElementPtr(new Element("BrowseFlag", "BrowseDirectChildren")));
   args.push_back(ElementPtr(new Element("Filter", "*")));
-  uint32_to_string((uint32_t)index, buf);
-  args.push_back(ElementPtr(new Element("StartingIndex", buf)));
-  uint32_to_string((uint32_t)count, buf);
-  args.push_back(ElementPtr(new Element("RequestedCount", buf)));
+  args.push_back(ElementPtr(new Element("StartingIndex", std::to_string(index))));
+  args.push_back(ElementPtr(new Element("RequestedCount", std::to_string(count))));
   args.push_back(ElementPtr(new Element("SortCriteria", "")));
   vars = Request("Browse", args);
   if (!vars.empty() && vars[0]->compare("BrowseResponse") == 0)
