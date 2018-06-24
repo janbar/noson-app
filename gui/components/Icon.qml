@@ -24,6 +24,8 @@ MouseArea {
             id: icon
             height: parent.height
             width: area.visible ? height : 0
+            sourceSize.height: height
+            sourceSize.width: width
             source: "qrc:/images/delete.svg"
         }
 

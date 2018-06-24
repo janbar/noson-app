@@ -32,6 +32,7 @@ class Player : public QObject
 {
   Q_OBJECT
   Q_PROPERTY(bool muteMaster READ muteMaster NOTIFY renderingGroupChanged)
+  Q_PROPERTY(bool nightmode READ nightmode NOTIFY renderingGroupChanged)
   Q_PROPERTY(int volumeMaster READ volumeMaster NOTIFY renderingGroupChanged)
 
   // Read only
@@ -75,6 +76,9 @@ public:
   Q_INVOKABLE bool toggleMute();
   Q_INVOKABLE bool toggleMute(const QString& uuid);
 
+  Q_INVOKABLE bool toggleNightmode();
+  Q_INVOKABLE bool toggleNightmode(const QString& uuid);
+
   Q_INVOKABLE bool startPlayStream(const QString& url, const QString& title); // asynchonous
   Q_INVOKABLE bool playStream(const QString& url, const QString& title);
   Q_INVOKABLE bool playLineIN();
@@ -100,6 +104,7 @@ public:
   Q_INVOKABLE bool startPlayFavorite(const QVariant& payload); // asynchronous
   Q_INVOKABLE bool playFavorite(const QVariant& payload);
 
+  bool nightmode() const { return m_RCGroup.nightmode; }
   bool muteMaster() const { return m_RCGroup.mute; }
   int muteLF() const { return m_RCGroup.mute; }
   int muteRF() const { return m_RCGroup.mute; }
@@ -111,9 +116,10 @@ public:
   {
     std::string uuid;
     std::string name;
-    bool mute;
-    int volume;
-    double volumeFake;
+    bool mute = false;
+    bool nightmode = false;
+    int volume = 0;
+    double volumeFake = 0.;
   };
 
   typedef std::vector<RCProperty> RCTable;

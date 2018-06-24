@@ -252,6 +252,48 @@ bool Player::toggleMute(const QString& uuid)
   return false;
 }
 
+bool Player::toggleNightmode()
+{
+  if (m_player)
+  {
+    bool ret = true;
+    bool nightmode = !m_RCGroup.nightmode;
+    for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+    {
+      if (m_player->SetNightmode(it->uuid, nightmode ? 1 : 0))
+        it->nightmode = nightmode;
+      else
+        ret = false;
+    }
+    if (ret)
+      m_RCGroup.nightmode = nightmode;
+    return ret;
+  }
+  return false;
+}
+
+bool Player::toggleNightmode(const QString &uuid)
+{
+  if (m_player)
+  {
+    std::string _uuid = uuid.toUtf8().constData();
+    for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+    {
+      if (it->uuid == _uuid)
+      {
+        bool nightmode = !it->nightmode;
+        if (m_player->SetNightmode(it->uuid, nightmode ? 1 : 0))
+        {
+          it->nightmode = !nightmode;
+          return true;
+        }
+        return false;
+      }
+    }
+  }
+  return false;
+}
+
 class playStreamWorker : public SONOS::OS::CWorker
 {
 public:
@@ -637,6 +679,7 @@ void Player::handleRenderingControlChange()
         item.uuid = it->uuid;
         item.name = it->subordinateName;
         item.mute = it->property.MuteMaster ? true : false;
+        item.nightmode = it->property.NightMode ? true : false;
         item.volume = it->property.VolumeMaster;
         item.volumeFake = it->property.VolumeMaster > 0 ? (double)it->property.VolumeMaster : 100.0 / 101.0;
         m_RCTable.push_back(item);
@@ -655,6 +698,7 @@ void Player::handleRenderingControlChange()
     {
       double volume = 0.0;
       bool mute = true;
+      bool nightmode = false;
       SONOS::SRPList::const_iterator it = props.begin();
       std::vector<RCProperty>::iterator itz = m_RCTable.begin();
       while (it != props.end())
@@ -663,6 +707,12 @@ void Player::handleRenderingControlChange()
         if (_mute != itz->mute)
         {
           itz->mute = _mute;
+          signalMask |= RENDERING_CHANGED;
+        }
+        bool _nightmode = it->property.NightMode ? true : false;
+        if (_nightmode != itz->nightmode)
+        {
+          itz->nightmode = _nightmode;
           signalMask |= RENDERING_CHANGED;
         }
         if (it->property.VolumeMaster != itz->volume)
@@ -689,6 +739,8 @@ void Player::handleRenderingControlChange()
         SONOS::DBG(DBG_DEBUG, "%s: [%s] sig=%d volume: %3.3f [%d]\n", __FUNCTION__, it->uuid.c_str(), signalMask, itz->volumeFake, itz->volume);
         if (!itz->mute)
           mute = false; // exists active audio in group
+        if (itz->nightmode)
+          nightmode = true;
         volume += itz->volumeFake;
         ++it;
         ++itz;
@@ -697,6 +749,7 @@ void Player::handleRenderingControlChange()
       m_RCGroup.volumeFake = volume;
       m_RCGroup.volume = roundDouble(volume);
       m_RCGroup.mute = mute;
+      m_RCGroup.nightmode = nightmode;
       signalMask |= RENDERING_GROUP_CHANGED; // handles group update
     }
 
