@@ -169,7 +169,9 @@ namespace NSROOT
     , VolumeRF(0)
     , MuteMaster(0)
     , MuteLF(0)
-    , MuteRF(0) { }
+    , MuteRF(0)
+    , NightMode(0)
+    { }
 
     virtual ~RCSProperty() { }
 
@@ -179,6 +181,7 @@ namespace NSROOT
     int MuteMaster;
     int MuteLF;
     int MuteRF;
+    int NightMode;
   };
 
   class SRProperty
