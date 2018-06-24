@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Jean-Luc Barriere
+ *      Copyright (C) 2015-2018 Jean-Luc Barriere
  *
  *  This file is part of Noson-App
  *
@@ -22,6 +22,7 @@
 #include "sonos.h"
 #include "player.h"
 #include "renderingmodel.h"
+#include "alarmsmodel.h"
 #include "qmlsortfiltermodel.h"
 
 #include <QtQml>
@@ -64,6 +65,7 @@ void BackendPlugin::registerTypes(const char *uri)
   qmlRegisterType<ServicesModel>(uri, 1, 0, "ServicesModel");
   qmlRegisterType<MediaModel>(uri, 1, 0, "MediaModel");
   qmlRegisterType<MediaAuth>(uri, 1, 0, "MediaAuth");
+  qmlRegisterType<AlarmsModel>(uri, 1, 0, "AlarmsModel");
 }
 
 void BackendPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

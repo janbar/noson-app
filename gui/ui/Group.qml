@@ -114,8 +114,8 @@ MusicPage {
         }
 
         Component.onCompleted: {
-            roomsModel.load(Sonos, zoneId)
-            selectAll()
+            roomsModel.load(Sonos, zoneId);
+            selectAll();
         }
     }
 }

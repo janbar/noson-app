@@ -22,6 +22,7 @@ CheckBox {
     id: control
     property color color: styleMusic.view.foregroundColor
     property color controlDownColor: styleMusic.view.highlightedColor
+    property real zoom: 1.0
 
     opacity: checkable ? 1.0 : 0.1
 
@@ -38,8 +39,8 @@ CheckBox {
     }
 
     indicator: Rectangle {
-        implicitWidth: units.gu(2.5)
-        implicitHeight: units.gu(2.5)
+        implicitWidth: units.gu(2.5 * zoom)
+        implicitHeight: units.gu(2.5 * zoom)
         x: control.width - width - control.rightPadding
         //x: control.rightPadding
         y: control.topPadding + control.availableHeight / 2 - height / 2
@@ -48,11 +49,11 @@ CheckBox {
         border.color: control.down ? control.controlDownColor : control.color
 
         Rectangle {
-            width: units.gu(1.5)
-            height: units.gu(1.5)
-            x: units.dp(4)
-            y: units.dp(4)
-            radius: units.dp(2)
+            width: units.gu(1.5 * zoom)
+            height: units.gu(1.5 * zoom)
+            x: units.dp(4 * zoom)
+            y: units.dp(4 * zoom)
+            radius: units.dp(2 * zoom)
             color: control.down ? control.controlDownColor : control.color
             visible: control.checked
         }

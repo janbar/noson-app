@@ -54,13 +54,18 @@
 #define ERROR2(a,b,c) fprintf(stderr, a, b, c)
 #define ERROR3(a,b,c,d) fprintf(stderr, a, b, c, d)
 
-void handleEventCB(void* handle)
-{
-}
-
 void readStream(std::istream*);
 
 SONOS::System * gSonos = 0;
+
+void handleEventCB(void* handle)
+{
+  unsigned char mask = gSonos->LastEvents();
+  if ((mask & SONOS::SVCEvent_AlarmClockChanged))
+    SONOS::DBG(DBG_DEBUG, "AlarmClockChanged event triggered\n");
+  if ((mask & SONOS::SVCEvent_ZGTopologyChanged))
+    SONOS::DBG(DBG_DEBUG, "ZGTopologyChanged event triggered\n");
+}
 
 /*
  * the main function
@@ -74,10 +79,11 @@ int main(int argc, char** argv)
   if ((ret = WSAStartup(MAKEWORD(2, 2), &wsaData)))
     return ret;
 #endif /* __WINDOWS__ */
-  
+
   PRINT1("Noson CLI using libnoson %s, Copyright (C) 2018 Jean-Luc Barriere\n", LIBVERSION);
   gSonos = new SONOS::System(0, handleEventCB);
   ERROR("Searching... ");
+  //SONOS::DBGLevel(DBG_PROTO);
   if (!gSonos->Discover())
   {
     ERROR("No SONOS zone found.\n");
@@ -98,10 +104,10 @@ int main(int argc, char** argv)
     PRINT2("Found zone '%s' with coordinator '%s'\n", it->second->GetZoneName().c_str(), it->second->GetCoordinator()->c_str());
 
   readStream(&std::cin);
-  
+
   delete gSonos;
   gSonos = 0;
-  
+
 #ifdef __WINDOWS__
   WSACleanup();
 #endif /* __WINDOWS__ */
@@ -125,7 +131,7 @@ bool parseCommand(const std::string& line)
   tokenize(line, " ", tokens, true);
   std::vector<std::string>::const_iterator it = tokens.begin();
   if (it != tokens.end())
-  { 
+  {
     std::string token(*it);
     upstr(token);
 
@@ -135,28 +141,42 @@ bool parseCommand(const std::string& line)
     {}
     else if (token == "HELP")
     {
-      PRINT("EXIT                        Exit from CLI\n");
-      PRINT("CONNECT {zone name}         Connect to a zone for control\n");
-      PRINT("STATUS                      Show the playing status\n");
-      PRINT("PLAYURL {stream URL}        Play stream from URL\n");
-      PRINT("PLAYFV {URL}                Play the given favorite\n");
-      PRINT("PLAYSQ {URL}                Play the given playlist\n");
-      PRINT("PLAYQUEUE                   Play queue\n");
-      PRINT("PLAYLINEIN                  Play line-IN\n");
-      PRINT("PLAYDIGITALIN               Play digital-IN/TV\n");
-      PRINT("PLAY                        Press play\n");
-      PRINT("PAUSE                       Press pause\n");
-      PRINT("STOP                        Press stop\n");
-      PRINT("PREVIOUS                    Press skip previous\n");
-      PRINT("NEXT                        Press skip next\n");
-      PRINT("SEEK 1..                    Seek to track number\n");
-      PRINT("VOLUME 0..100               Set volume master\n");
-      PRINT("VOLUME {player} 0..100      Set volume\n");
-      PRINT("SLEEPTIMER 0..65535         Set sleep timer\n");
-      PRINT("SHOWQUEUE                   Show queue content\n");
-      PRINT("SHOWFV                      Show favorites\n");
-      PRINT("SHOWSQ                      Show playlists\n");
-      PRINT("HELP                        Print this help\n");
+      PRINT("EXIT                          Exit from CLI\n");
+      PRINT("CONNECT {zone name}           Connect to a zone for control\n");
+      PRINT("STATUS                        Show the playing status\n");
+      PRINT("PLAYURL {stream URL}          Play stream from URL\n");
+      PRINT("PLAYFV {URI}                  Play the given favorite\n");
+      PRINT("PLAYSQ {URI}                  Play the given playlist\n");
+      PRINT("PLAYQUEUE                     Play queue\n");
+      PRINT("PLAYLINEIN                    Play line-IN\n");
+      PRINT("PLAYDIGITALIN                 Play digital-IN/TV\n");
+      PRINT("PLAY                          Press play\n");
+      PRINT("PAUSE                         Press pause\n");
+      PRINT("STOP                          Press stop\n");
+      PRINT("PREVIOUS                      Press skip previous\n");
+      PRINT("NEXT                          Press skip next\n");
+      PRINT("SEEK 1..                      Seek to track number\n");
+      PRINT("VOLUME 0..100                 Set volume master\n");
+      PRINT("VOLUME {player} 0..100        Set volume\n");
+      PRINT("SLEEPTIMER 0..65535           Set sleep timer\n");
+      PRINT("SHOWQUEUE                     Show queue content\n");
+      PRINT("SHOWFV                        Show favorites\n");
+      PRINT("SHOWSQ                        Show playlists\n");
+      PRINT("SHOWAC                        Show alarms clock\n");
+      PRINT("CREATEAC {1} {2} {3} {4} {5}  Create alarm clock using arguments:\n");
+      PRINT("  1:ROOM       The room UUID\n");
+      PRINT("  2:STARTTIME  The time using format HH:MM:SS\n");
+      PRINT("  3:RECURRENCE The comma separated values of day: SUN,MON,..,SAT\n");
+      PRINT("  4:DURATION   The duration using format HH:MM:SS\n");
+      PRINT("  5:VOLUME     0..100\n");
+      PRINT("ENABLEAC {id}                 Enable alarm clock\n");
+      PRINT("DISABLEAC {id}                Disable alarm clock\n");
+      PRINT("DESTROYAC {id}                Destroy alarm clock\n");
+      PRINT("UPDATEAC {id} {2} {3}         Update alarm clock using arguments:\n");
+      PRINT("  2:Type ROOM,STARTTIME,RECURRENCE,DURATION,VOLUME,PROGRAM\n");
+      PRINT("  3:New value\n");
+      PRINT("  Program 0 for Buzzer or the index of favorite (see SHOWFV)\n");
+      PRINT("HELP                          Print this help\n");
       PRINT("\n");
     }
     else if (token == "CONNECT")
@@ -171,7 +191,7 @@ bool parseCommand(const std::string& line)
         {
           if (iz->second->GetZoneName() == param)
           {
-            if (gSonos->ConnectZone(iz->second, 0, handleEventCB))
+            if (gSonos->ConnectZone(iz->second, 0, 0))
               ERROR1("Connected to zone %s\n", gSonos->GetConnectedZone()->GetZoneName().c_str());
             else
               ERROR("Failed\n");
@@ -203,6 +223,11 @@ bool parseCommand(const std::string& line)
       PRINT1("CurrentPlayMode = %s\n", props.CurrentPlayMode.c_str());
       PRINT1("CurrentTransportActions = %s\n", props.CurrentTransportActions.c_str());
       PRINT1("NumberOfTracks = %d\n", props.NumberOfTracks);
+      PRINT1("AlarmRunning = %s\n", props.r_AlarmRunning.c_str());
+      PRINT1("AlarmIDRunning = %s\n", props.r_AlarmIDRunning.c_str());
+      PRINT1("AlarmLoggedStartTime = %s\n", props.r_AlarmLoggedStartTime.c_str());
+      PRINT1("AlarmState = %s\n", props.r_AlarmState.c_str());
+
       SONOS::ElementList vars;
       if (gSonos->GetPlayer()->GetRemainingSleepTimerDuration(vars))
       {
@@ -220,6 +245,208 @@ bool parseCommand(const std::string& line)
           ERROR("Succeeded\n");
         else
           ERROR("Failed\n");
+      }
+      else
+        ERROR("Error: Missing arguments.\n");
+    }
+    else if (token == "SHOWAC")
+    {
+      SONOS::AlarmList alarms = gSonos->GetAlarmList();
+      for (SONOS::AlarmList::const_iterator il = alarms.begin(); il != alarms.end(); ++il)
+      {
+	PRINT("\n");
+	PRINT2("%s: Enabled = %s\n", (*il)->GetId().c_str(), (*il)->GetEnabled() ? "true" : "false");
+	PRINT2("%s: StartTime = %s\n", (*il)->GetId().c_str(), (*il)->GetStartLocalTime().c_str());
+	PRINT2("%s: Recurrence = %s\n", (*il)->GetId().c_str(), (*il)->GetRecurrence().c_str());
+	PRINT2("%s: RoomUUID = %s\n", (*il)->GetId().c_str(), (*il)->GetRoomUUID().c_str());
+	PRINT2("%s: IncludeLinkedZones = %s\n", (*il)->GetId().c_str(), (*il)->GetIncludeLinkedZones() ? "true" : "false");
+	PRINT2("%s: ProgramURI = %s\n", (*il)->GetId().c_str(), (*il)->GetProgramURI().c_str());
+	const SONOS::DigitalItemPtr didl = (*il)->GetProgramMetadata();
+	PRINT2("%s: ProgramTitle = %s\n", (*il)->GetId().c_str(), didl ? didl->GetValue("dc:title").c_str() : "");
+	PRINT2("%s: PlayMode = %s\n", (*il)->GetId().c_str(), (*il)->GetPlayMode().c_str());
+	PRINT2("%s: Volume = %d\n", (*il)->GetId().c_str(), (*il)->GetVolume());
+	PRINT2("%s: Duration = %s\n", (*il)->GetId().c_str(), (*il)->GetDuration().c_str());
+      }
+    }
+    else if (token == "CREATEAC")
+    {
+      std::string roomUUID;
+      std::string start;
+      std::string recurrence("MON,TUE,WED,THU,FRI");
+      std::string duration("01:00:00");
+      uint8_t volume = 20;
+      if (++it != tokens.end())
+        roomUUID.assign(*it);
+      if (++it != tokens.end())
+        start.assign(*it);
+      if (it != tokens.end() && ++it != tokens.end())
+        recurrence.assign(*it);
+      if (it != tokens.end() && ++it != tokens.end())
+        duration.assign(*it);
+      if (it != tokens.end() && ++it != tokens.end())
+        string_to_uint8(it->c_str(), &volume);
+      if (it != tokens.end() && ++it == tokens.end())
+      {
+        SONOS::Alarm alarm;
+        alarm.SetRoomUUID(roomUUID);
+        alarm.SetStartLocalTime(start);
+        alarm.SetRecurrence(recurrence);
+        alarm.SetDuration(duration);
+        alarm.SetVolume(volume);
+        if (gSonos->CreateAlarm(alarm))
+          ERROR("Succeeded\n");
+        else
+          ERROR("Failed\n");
+      }
+      else
+        ERROR("Error: Missing arguments.\n");
+    }
+    else if (token == "ENABLEAC")
+    {
+      if (++it != tokens.end())
+      {
+        SONOS::AlarmList alarms = gSonos->GetAlarmList();
+        SONOS::AlarmPtr ptr;
+        for (SONOS::AlarmList::iterator il = alarms.begin(); il != alarms.end(); ++il)
+        {
+          if ((*il)->GetId() == *it)
+          {
+            ptr = *il;
+            break;
+          }
+        }
+        if (ptr)
+        {
+          ptr->SetEnabled(true);
+          if (gSonos->UpdateAlarm(*ptr))
+            ERROR("Succeeded\n");
+          else
+            ERROR("Failed\n");
+        }
+        else
+          ERROR("Error: Invalid alarm ID.\n");
+      }
+      else
+        ERROR("Error: Missing arguments.\n");
+    }
+    else if (token == "DISABLEAC")
+    {
+      if (++it != tokens.end())
+      {
+        SONOS::AlarmList alarms = gSonos->GetAlarmList();
+        SONOS::AlarmPtr ptr;
+        for (SONOS::AlarmList::iterator il = alarms.begin(); il != alarms.end(); ++il)
+        {
+          if ((*il)->GetId() == *it)
+          {
+            ptr = *il;
+            break;
+          }
+        }
+        if (ptr)
+        {
+          ptr->SetEnabled(false);
+          if (gSonos->UpdateAlarm(*ptr))
+            ERROR("Succeeded\n");
+          else
+            ERROR("Failed\n");
+        }
+        else
+          ERROR("Error: Invalid alarm ID.\n");
+      }
+      else
+        ERROR("Error: Missing arguments.\n");
+    }
+    else if (token == "DESTROYAC")
+    {
+      if (++it != tokens.end())
+      {
+        if (gSonos->DestroyAlarm(*it))
+          ERROR("Succeeded\n");
+        else
+          ERROR("Failed\n");
+      }
+      else
+        ERROR("Error: Missing arguments.\n");
+    }
+    else if (token == "UPDATEAC")
+    {
+      std::string alarmId;
+      std::string type;
+      if (++it != tokens.end())
+        alarmId.assign(*it);
+      if (it != tokens.end() && ++it != tokens.end())
+      {
+        type.assign(*it);
+        upstr(type);
+      }
+      if (it != tokens.end() && ++it != tokens.end())
+      {
+        SONOS::AlarmList alarms = gSonos->GetAlarmList();
+        SONOS::AlarmPtr ptr;
+        for (SONOS::AlarmList::iterator il = alarms.begin(); il != alarms.end(); ++il)
+        {
+          if ((*il)->GetId() == alarmId)
+          {
+            ptr = *il;
+            break;
+          }
+        }
+        if (ptr)
+        {
+          //ROOM,TIME,RECURRENCE,DURATION,VOLUME
+          if (type == "ROOM")
+            ptr->SetRoomUUID(*it);
+          else if (type == "STARTTIME")
+            ptr->SetStartLocalTime(*it);
+          else if (type == "RECURRENCE")
+            ptr->SetRecurrence(*it);
+          else if (type == "DURATION")
+            ptr->SetDuration(*it);
+          else if (type == "VOLUME")
+          {
+            uint8_t value;
+            string_to_uint8(it->c_str(), &value);
+            ptr->SetVolume(value);
+          }
+          else if (type == "PROGRAM")
+          {
+            if (*it == "0")
+            {
+              ptr->SetProgramURI(ALARM_BUZZER_URI);
+              ptr->SetProgramMetadata(SONOS::DigitalItemPtr());
+            }
+            else
+            {
+              uint16_t value;
+              string_to_uint16(it->c_str(), &value);
+              SONOS::ContentDirectory mycontent(gSonos->GetPlayer()->GetHost(), gSonos->GetPlayer()->GetPort());
+              SONOS::ContentList bdir(mycontent, "FV:2");
+              SONOS::ContentList::iterator ic = bdir.begin();
+              uint16_t i = 0;
+              while (ic != bdir.end())
+              {
+                if (++i == value)
+                {
+                  SONOS::DigitalItemPtr metaPtr;
+                  if (SONOS::System::ExtractObjectFromFavorite(*ic, metaPtr))
+                  {
+                    ptr->SetProgramURI(metaPtr->GetValue("res"));
+                    ptr->SetProgramMetadata(metaPtr);
+                  }
+                  break;
+                }
+                ++ic;
+              }
+            }
+          }
+          if (gSonos->UpdateAlarm(*ptr))
+            ERROR("Succeeded\n");
+          else
+            ERROR("Failed\n");
+        }
+        else
+          ERROR("Error: Invalid alarm ID.\n");
       }
       else
         ERROR("Error: Missing arguments.\n");

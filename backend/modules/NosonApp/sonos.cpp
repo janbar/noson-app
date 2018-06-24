@@ -22,6 +22,7 @@
 #include "../../lib/noson/noson/src/private/debug.h"
 #include "../../lib/noson/noson/src/contentdirectory.h"
 #include "listmodel.h"
+#include "alarmsmodel.h"
 
 #include <QString>
 
@@ -75,7 +76,7 @@ Sonos::Sonos(QObject* parent)
 : QObject(parent)
 , m_library(ManagedContents())
 , m_shareUpdateID(0)
-, m_system(this, topologyEventCB)
+, m_system(this, systemEventCB)
 , m_threadpool(JOB_THREADPOOL_SIZE)
 , m_jobCount(SONOS::LockedNumber<int>(0))
 , m_locale("en_US")
@@ -166,6 +167,13 @@ bool Sonos::connectZone(const QString& zoneName)
   return false;
 }
 
+QString Sonos::getZoneId() const
+{
+  if (m_system.IsConnected())
+    return m_system.GetConnectedZone()->GetGroup().c_str();
+  return "";
+}
+
 QString Sonos::getZoneName() const
 {
   if (m_system.IsConnected())
@@ -178,6 +186,13 @@ QString Sonos::getZoneShortName() const
   if (m_system.IsConnected())
     return m_system.GetConnectedZone()->GetZoneShortName().c_str();
   return "";
+}
+
+RoomsModel* Sonos::getZoneRooms()
+{
+  RoomsModel* model = new RoomsModel();
+  model->load(this, getZoneId());
+  return model;
 }
 
 bool Sonos::joinRoom(const QVariant& roomPayload, const QVariant& toZonePayload)
@@ -348,7 +363,32 @@ bool Sonos::startUnjoinZone(const QVariant& zonePayload)
   return m_threadpool.Enqueue(new UnjoinZoneWorker(*this, zonePayload));
 }
 
-const SONOS::System &Sonos::getSystem() const
+bool Sonos::createAlarm(const QVariant& alarmPayload)
+{
+  SONOS::AlarmPtr ptr = alarmPayload.value<SONOS::AlarmPtr>();
+  if (ptr && m_system.CreateAlarm(*ptr))
+  {
+    return true;
+  }
+  return false;
+}
+
+bool Sonos::updateAlarm(const QVariant& alarmPayload)
+{
+  SONOS::AlarmPtr ptr = alarmPayload.value<SONOS::AlarmPtr>();
+  if (ptr && m_system.UpdateAlarm(*ptr))
+  {
+    return true;
+  }
+  return false;
+}
+
+bool Sonos::destroyAlarm(const QString& id)
+{
+  return m_system.DestroyAlarm(id.toUtf8().constData());
+}
+
+SONOS::System &Sonos::getSystem()
 {
   return m_system;
 }
@@ -548,8 +588,14 @@ void Sonos::playerEventCB(void* handle)
   }
 }
 
-void Sonos::topologyEventCB(void *handle)
+void Sonos::systemEventCB(void *handle)
 {
   Sonos* sonos = static_cast<Sonos*>(handle);
-  emit sonos->topologyChanged();
+  // Read last event flags
+  unsigned char events = sonos->getSystem().LastEvents();
+
+  if ((events & SONOS::SVCEvent_ZGTopologyChanged))
+    emit sonos->topologyChanged();
+  if ((events & SONOS::SVCEvent_AlarmClockChanged))
+    emit sonos->alarmClockChanged();
 }

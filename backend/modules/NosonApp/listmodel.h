@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2015-2016 Jean-Luc Barriere
+ *      Copyright (C) 2015-2018 Jean-Luc Barriere
  *
  *  This file is part of Noson-App
  *
@@ -24,6 +24,7 @@
 #include "../../lib/noson/noson/src/digitalitem.h"
 #include "../../lib/noson/noson/src/sonoszone.h"
 #include "../../lib/noson/noson/src/musicservices.h"
+#include "../../lib/noson/noson/src/alarm.h"
 #include "../../lib/noson/noson/src/locked.h"
 
 #include <QObject>
@@ -32,6 +33,7 @@ Q_DECLARE_METATYPE(SONOS::DigitalItemPtr)
 Q_DECLARE_METATYPE(SONOS::ZonePtr)
 Q_DECLARE_METATYPE(SONOS::ZonePlayerPtr)
 Q_DECLARE_METATYPE(SONOS::SMServicePtr)
+Q_DECLARE_METATYPE(SONOS::AlarmPtr)
 
 class Sonos;
 
