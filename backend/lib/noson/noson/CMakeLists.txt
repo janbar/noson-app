@@ -20,7 +20,7 @@ endif ()
 
 ###############################################################################
 # set lib version here
-set (NOSON_LIB_VERSION "1.7.0")
+set (NOSON_LIB_VERSION "1.8.0")
 set (NOSON_LIB_SOVERSION "1")
 
 ###############################################################################
@@ -177,6 +177,10 @@ file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/smapi.h
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/smapimetadata.h
           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/smaccount.h
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/alarmclock.h
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/alarm.h
           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
 
 include_directories (

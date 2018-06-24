@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Jean-Luc Barriere
+ *      Copyright (C) 2014-2018 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -26,6 +26,7 @@
 #include "sonosplayer.h"
 #include "eventhandler.h"
 #include "subscription.h"
+#include "alarmclock.h"
 
 #include <string>
 
@@ -40,6 +41,7 @@ namespace NSROOT
   }
 
   class ZoneGroupTopology;
+  class AlarmClock;
 
   class System : private EventSubscriber
   {
@@ -50,6 +52,8 @@ namespace NSROOT
     bool IsListening() { return m_eventHandler.IsRunning(); }
 
     bool Discover();
+
+    unsigned char LastEvents();
 
     void RenewSubscriptions();
 
@@ -70,6 +74,15 @@ namespace NSROOT
     // Implements EventSubscriber
     virtual void HandleEventMessage(EventMessagePtr msg);
 
+    // Alarm clock
+    AlarmList GetAlarmList() const;
+
+    bool CreateAlarm(Alarm& alarm);
+
+    bool UpdateAlarm(Alarm& alarm);
+
+    bool DestroyAlarm(const std::string& id);
+
     // helpers
     static bool ExtractObjectFromFavorite(const DigitalItemPtr& favorite, DigitalItemPtr& item);
     static bool CanQueueItem(const DigitalItemPtr& item);
@@ -84,13 +97,20 @@ namespace NSROOT
     static std::string GetLogoForService(const SMServicePtr& service, const std::string& placement);
 
     /**
-     * Register OAuth data for service using AppLink policy
+     * Register auth data for a third part service
      * @param type The service type
      * @param sn The serial of account
-     * @param key The key required to refresh token
-     * @param token The current token (optional)
+     * @param key The key or password required to authenticate
+     * @param token The current token for AppLink policy
+     * @param username The user name for Login policy
      */
     static void AddServiceOAuth(const std::string& type, const std::string& sn, const std::string& key, const std::string& token, const std::string& username);
+
+    /**
+     * Remove auth data of a registered service
+     * @param type The service type
+     * @param sn The serial of account
+     */
     static void DeleteServiceOAuth(const std::string& type, const std::string& sn);
 
   private:
@@ -100,8 +120,12 @@ namespace NSROOT
     unsigned m_subId;
     Subscription m_ZGTSubscription;
     ZoneGroupTopology* m_groupTopology;
+    Subscription m_AlarmClockSubscription;
+    AlarmClock* m_alarmClock;
     void* m_CBHandle;
     EventCB m_eventCB;
+    Locked<bool> m_eventSignaled;
+    Locked<unsigned char> m_eventMask;
 
     struct
     {
@@ -111,7 +135,8 @@ namespace NSROOT
 
     static bool FindDeviceDescription(std::string& url);
 
-    static void CBZGTopology(void* handle);
+    static void CB_ZGTopology(void* handle);
+    static void CB_AlarmClock(void* handle);
 
     static bool LoadMSLogo(ElementList& logos);
   };

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Jean-Luc Barriere
+ *      Copyright (C) 2014-2018 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -49,8 +49,11 @@ System::System(void* CBHandle, EventCB eventCB)
 , m_eventHandler(SONOS_LISTENER_PORT)
 , m_subId(0)
 , m_groupTopology(0)
+, m_alarmClock(0)
 , m_CBHandle(CBHandle)
 , m_eventCB(eventCB)
+, m_eventSignaled(false)
+, m_eventMask(0)
 {
   m_connectedZone.player.reset();
   m_connectedZone.zone.reset();
@@ -65,6 +68,7 @@ System::System(void* CBHandle, EventCB eventCB)
 System::~System()
 {
   m_mutex->Lock();
+  SAFE_DELETE(m_alarmClock);
   SAFE_DELETE(m_groupTopology);
   SAFE_DELETE(m_cbzgt);
   SAFE_DELETE(m_mutex);
@@ -72,29 +76,53 @@ System::~System()
 
 bool System::Discover()
 {
+  bool ret = false;
   std::string url;
   if (!FindDeviceDescription(url))
-    return false;
+    return ret;
   URIParser uri(url);
   if (!uri.Scheme() || !uri.Host() || !uri.Port())
-    return false;
+    return ret;
 
   OS::CLockGuard lock(*m_mutex);
   // subscribe to ZoneGroupTopology events
   SAFE_DELETE(m_groupTopology);
   m_ZGTSubscription = Subscription(uri.Host(), uri.Port(), ZoneGroupTopology::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
-  m_groupTopology = new ZoneGroupTopology(uri.Host(), uri.Port(), m_eventHandler, m_ZGTSubscription, this, CBZGTopology);
+  m_groupTopology = new ZoneGroupTopology(uri.Host(), uri.Port(), m_eventHandler, m_ZGTSubscription, this, CB_ZGTopology);
   m_ZGTSubscription.Start();
   // Wait event notification
-  if (m_cbzgt->Wait(CB_TIMEOUT))
-    return true;
-  DBG(DBG_WARN, "%s: notification wasn't received after timeout: fall back on manual call\n", __FUNCTION__);
-  return m_groupTopology->GetZoneGroupState();
+  if (!(ret = m_cbzgt->Wait(CB_TIMEOUT)))
+  {
+    DBG(DBG_WARN, "%s: notification wasn't received after timeout: fall back on manual call\n", __FUNCTION__);
+    ret = m_groupTopology->GetZoneGroupState();
+  }
+  // subscribe to others services
+  if (ret)
+  {
+    m_AlarmClockSubscription = Subscription(uri.Host(), uri.Port(), AlarmClock::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
+    m_alarmClock = new AlarmClock(uri.Host(), uri.Port(), m_eventHandler, m_AlarmClockSubscription, this, CB_AlarmClock);
+    m_AlarmClockSubscription.Start();
+  }
+  return ret;
+}
+
+unsigned char System::LastEvents()
+{
+  unsigned char mask;
+  Locked<bool>::pointer _signaled = m_eventSignaled.Get();
+  {
+    Locked<unsigned char>::pointer _mask = m_eventMask.Get();
+    mask = *_mask;
+    *_mask = 0;
+  }
+  *_signaled = false;
+  return mask;
 }
 
 void System::RenewSubscriptions()
 {
   m_ZGTSubscription.AskRenewal();
+  m_AlarmClockSubscription.AskRenewal();
 }
 
 ZoneList System::GetZoneList() const
@@ -170,6 +198,35 @@ void System::HandleEventMessage(EventMessagePtr msg)
     if (msg->subject[0] == "GET" && msg->subject[1] == "/stop")
       m_eventHandler.Stop();
   }
+}
+
+AlarmList System::GetAlarmList() const
+{
+  AlarmList alarms;
+  if (m_alarmClock)
+    m_alarmClock->ListAlarms(alarms);
+  return alarms;
+}
+
+bool System::CreateAlarm(Alarm& alarm)
+{
+  if (!m_alarmClock)
+    return false;
+  return m_alarmClock->CreateAlarm(alarm);
+}
+
+bool System::UpdateAlarm(Alarm& alarm)
+{
+  if (!m_alarmClock)
+    return false;
+  return m_alarmClock->UpdateAlarm(alarm);
+}
+
+bool System::DestroyAlarm(const std::string& id)
+{
+  if (!m_alarmClock)
+    return false;
+  return m_alarmClock->DestroyAlarm(id);
 }
 
 bool System::ExtractObjectFromFavorite(const DigitalItemPtr& favorite, DigitalItemPtr& item)
@@ -380,14 +437,28 @@ bool System::FindDeviceDescription(std::string& url)
   return ret;
 }
 
-void System::CBZGTopology(void* handle)
+void System::CB_ZGTopology(void* handle)
 {
   if (handle)
   {
     System* _handle = static_cast<System*>(handle);
+    Locked<unsigned char>::pointer _mask = _handle->m_eventMask.Get();
+    *_mask |= SVCEvent_ZGTopologyChanged;
     _handle->m_cbzgt->Broadcast();
-    if (_handle->m_eventCB)
-      (_handle->m_eventCB)(_handle->m_CBHandle);
+    if (_handle->m_eventCB && !_handle->m_eventSignaled.Load())
+      _handle->m_eventCB(_handle->m_CBHandle);
+  }
+}
+
+void System::CB_AlarmClock(void* handle)
+{
+  if (handle)
+  {
+    System* _handle = static_cast<System*>(handle);
+    Locked<unsigned char>::pointer _mask = _handle->m_eventMask.Get();
+    *_mask |= SVCEvent_AlarmClockChanged;
+    if (_handle->m_eventCB && !_handle->m_eventSignaled.Load())
+      _handle->m_eventCB(_handle->m_CBHandle);
   }
 }
 

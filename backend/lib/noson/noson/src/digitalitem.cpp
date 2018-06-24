@@ -52,6 +52,18 @@ const char* DigitalItem::SubTypeTable[SubType_unknown + 1] = {
   "audioItem", "videoItem", "imageItem", "playlistItem", "textItem", "bookmarkItem", "epgItem", ""
 };
 
+DigitalItem::DigitalItem()
+: m_type(Type_unknown)
+, m_subType(SubType_unknown)
+, m_restricted(false)
+, m_objectID("")
+, m_parentID("")
+{
+  ElementPtr _class(new Element(DIDL_QNAME_UPNP "class"));
+  _class->assign("object");
+  m_vars.push_back(_class);
+}
+
 DigitalItem::DigitalItem(Type_t _type, SubType_t _subType)
 : m_type(_type)
 , m_subType(_subType)
@@ -103,7 +115,7 @@ DigitalItem::DigitalItem(const std::string& objectID, const std::string& parentI
   }
 }
 
-void DigitalItem::Clone(DigitalItem& _item)
+void DigitalItem::Clone(DigitalItem& _item) const
 {
   _item.m_type        = this->m_type;
   _item.m_subType     = this->m_subType;
