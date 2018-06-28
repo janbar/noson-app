@@ -220,6 +220,15 @@ MusicPage {
         }
     }
 
+    // Overlay to show when no alarms are on the device
+    Loader {
+        anchors.fill: parent
+        active: alarmList.count === 0 && !infoLoadedIndex
+        asynchronous: true
+        source: "qrc:/components/AlarmsEmptyState.qml"
+        visible: active
+    }
+
     onAddClicked: {
         alarmsModel.updatePending = true; // lock model reset
         var r = alarmsModel.append();

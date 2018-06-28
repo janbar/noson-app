@@ -73,7 +73,7 @@
         <location filename="../ui/Alarms.qml" line="111"/>
         <location filename="../ui/Alarms.qml" line="120"/>
         <location filename="../ui/Alarms.qml" line="203"/>
-        <location filename="../ui/Alarms.qml" line="233"/>
+        <location filename="../ui/Alarms.qml" line="242"/>
         <source>Action can&apos;t be performed</source>
         <translation>L&apos;action a échouée</translation>
     </message>
@@ -116,6 +116,19 @@
         <location filename="../ui/Alarms.qml" line="190"/>
         <source>Sun</source>
         <translation>Dim</translation>
+    </message>
+</context>
+<context>
+    <name>AlarmsEmptyState</name>
+    <message>
+        <location filename="../components/AlarmsEmptyState.qml" line="41"/>
+        <source>No alarms found</source>
+        <translation>Aucune alarme trouvée</translation>
+    </message>
+    <message>
+        <location filename="../components/AlarmsEmptyState.qml" line="52"/>
+        <source>Tapping the %1 icon to add alarms.</source>
+        <translation>Appuyez sur l&apos;icône %1 pour ajouter des alarmes.</translation>
     </message>
 </context>
 <context>
