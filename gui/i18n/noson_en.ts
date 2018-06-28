@@ -60,6 +60,67 @@
     </message>
 </context>
 <context>
+    <name>Alarms</name>
+    <message>
+        <location filename="../ui/Alarms.qml" line="31"/>
+        <source>Alarm clock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/Alarms.qml" line="99"/>
+        <source>Alarm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/Alarms.qml" line="111"/>
+        <location filename="../ui/Alarms.qml" line="120"/>
+        <location filename="../ui/Alarms.qml" line="203"/>
+        <location filename="../ui/Alarms.qml" line="233"/>
+        <source>Action can&apos;t be performed</source>
+        <translation type="unfinished">Action can&apos;t be performed</translation>
+    </message>
+    <message>
+        <location filename="../ui/Alarms.qml" line="130"/>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/Alarms.qml" line="178"/>
+        <source>Mon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/Alarms.qml" line="180"/>
+        <source>Tue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/Alarms.qml" line="182"/>
+        <source>Wed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/Alarms.qml" line="184"/>
+        <source>Thu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/Alarms.qml" line="186"/>
+        <source>Fri</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/Alarms.qml" line="188"/>
+        <source>Sat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../ui/Alarms.qml" line="190"/>
+        <source>Sun</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Albums</name>
     <message>
         <location filename="../ui/Albums.qml" line="29"/>
@@ -150,6 +211,66 @@
     </message>
 </context>
 <context>
+    <name>DialogAlarm</name>
+    <message>
+        <location filename="../components/Dialog/DialogAlarm.qml" line="40"/>
+        <source>Alarm</source>
+        <extracomment>this is a title of a dialog to configure an alarm</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogAlarm.qml" line="83"/>
+        <source>Start time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogAlarm.qml" line="117"/>
+        <source>Duration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogAlarm.qml" line="178"/>
+        <source>Mon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogAlarm.qml" line="192"/>
+        <source>Tue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogAlarm.qml" line="206"/>
+        <source>Wed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogAlarm.qml" line="220"/>
+        <source>Thu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogAlarm.qml" line="234"/>
+        <source>Fri</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogAlarm.qml" line="248"/>
+        <source>Sat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogAlarm.qml" line="262"/>
+        <source>Sun</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogAlarm.qml" line="429"/>
+        <location filename="../components/Dialog/DialogAlarm.qml" line="433"/>
+        <source>Action can&apos;t be performed</source>
+        <translation type="unfinished">Action can&apos;t be performed</translation>
+    </message>
+</context>
+<context>
     <name>DialogManageQueue</name>
     <message>
         <location filename="../components/Dialog/DialogManageQueue.qml" line="25"/>
@@ -158,7 +279,7 @@
         <translation>Manage queue</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogManageQueue.qml" line="41"/>
+        <location filename="../components/Dialog/DialogManageQueue.qml" line="42"/>
         <source>Enter playlist name</source>
         <translation>Enter playlist name</translation>
     </message>
@@ -197,7 +318,7 @@
         <translation>New playlist</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogNewPlaylist.qml" line="41"/>
+        <location filename="../components/Dialog/DialogNewPlaylist.qml" line="42"/>
         <source>Enter playlist name</source>
         <translation>Enter playlist name</translation>
     </message>
@@ -235,42 +356,42 @@
         <translation>Search music</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSearchMusic.qml" line="48"/>
+        <location filename="../components/Dialog/DialogSearchMusic.qml" line="49"/>
         <source>Artists</source>
         <translation>Artists</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSearchMusic.qml" line="50"/>
+        <location filename="../components/Dialog/DialogSearchMusic.qml" line="51"/>
         <source>Albums</source>
         <translation>Albums</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSearchMusic.qml" line="52"/>
+        <location filename="../components/Dialog/DialogSearchMusic.qml" line="53"/>
         <source>Songs</source>
         <translation>Songs</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSearchMusic.qml" line="54"/>
+        <location filename="../components/Dialog/DialogSearchMusic.qml" line="55"/>
         <source>Playlists</source>
         <translation>Playlists</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSearchMusic.qml" line="56"/>
+        <location filename="../components/Dialog/DialogSearchMusic.qml" line="57"/>
         <source>Radios</source>
         <translation>Radios</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSearchMusic.qml" line="58"/>
+        <location filename="../components/Dialog/DialogSearchMusic.qml" line="59"/>
         <source>Podcasts</source>
         <translation>Podcasts</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSearchMusic.qml" line="60"/>
+        <location filename="../components/Dialog/DialogSearchMusic.qml" line="61"/>
         <source>Genres</source>
         <translation>Genres</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSearchMusic.qml" line="62"/>
+        <location filename="../components/Dialog/DialogSearchMusic.qml" line="63"/>
         <source>Composers</source>
         <translation>Composers</translation>
     </message>
@@ -294,45 +415,45 @@
         <translation>Enter stream URL</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="53"/>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="69"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="51"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="67"/>
         <source>Playing failed.</source>
         <translation>Playing failed.</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="61"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="59"/>
         <source>Play stream</source>
         <translation>Play stream</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="75"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="73"/>
         <source>Please type in an URL.</source>
         <translation>Please type in an URL.</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="83"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="81"/>
         <source>Select the audio input.</source>
         <translation>Select the audio input.</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="92"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="90"/>
         <source>Queue</source>
         <translation>Queue</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="93"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="91"/>
         <source>Play line IN</source>
         <translation>Play line IN</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="94"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="92"/>
         <source>Play TV</source>
         <translation>Play TV</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="111"/>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="117"/>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="123"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="109"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="115"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="121"/>
         <source>Action can&apos;t be performed</source>
         <translation>Action can&apos;t be performed</translation>
     </message>
@@ -587,12 +708,12 @@
 <context>
     <name>MusicToolbar</name>
     <message>
-        <location filename="../components/MusicToolbar.qml" line="86"/>
+        <location filename="../components/MusicToolbar.qml" line="94"/>
         <source>No music in queue</source>
         <translation>No music in queue</translation>
     </message>
     <message>
-        <location filename="../components/MusicToolbar.qml" line="86"/>
+        <location filename="../components/MusicToolbar.qml" line="94"/>
         <source>Tap to play music</source>
         <translation>Tap to play music</translation>
     </message>
@@ -629,12 +750,12 @@
         <translation>Now playing</translation>
     </message>
     <message>
-        <location filename="../ui/NowPlaying.qml" line="156"/>
+        <location filename="../ui/NowPlaying.qml" line="155"/>
         <source>Manage queue</source>
         <translation>Manage queue</translation>
     </message>
     <message>
-        <location filename="../ui/NowPlaying.qml" line="161"/>
+        <location filename="../ui/NowPlaying.qml" line="160"/>
         <source>Select source</source>
         <translation>Select source</translation>
     </message>
@@ -642,12 +763,12 @@
 <context>
     <name>NowPlayingSidebar</name>
     <message>
-        <location filename="../components/NowPlayingSidebar.qml" line="128"/>
+        <location filename="../components/NowPlayingSidebar.qml" line="125"/>
         <source>Manage queue</source>
         <translation>Manage queue</translation>
     </message>
     <message>
-        <location filename="../components/NowPlayingSidebar.qml" line="134"/>
+        <location filename="../components/NowPlayingSidebar.qml" line="131"/>
         <source>Select source</source>
         <translation>Select source</translation>
     </message>
@@ -664,12 +785,12 @@
 <context>
     <name>Player</name>
     <message>
-        <location filename="../components/Player.qml" line="269"/>
+        <location filename="../components/Player.qml" line="275"/>
         <source>Untitled</source>
         <translation>Untitled</translation>
     </message>
     <message>
-        <location filename="../components/Player.qml" line="308"/>
+        <location filename="../components/Player.qml" line="314"/>
         <source>Action can&apos;t be performed</source>
         <translation>Action can&apos;t be performed</translation>
     </message>
@@ -704,7 +825,7 @@
 <context>
     <name>Queue</name>
     <message>
-        <location filename="../components/Queue.qml" line="65"/>
+        <location filename="../components/Queue.qml" line="67"/>
         <source>Song</source>
         <translation>Song</translation>
     </message>
@@ -812,23 +933,23 @@
         <translation>This will require to authenticate against the music service again, as credentials cannot be retrieved from Sonos device.</translation>
     </message>
     <message>
-        <location filename="../components/ServiceLogin.qml" line="78"/>
+        <location filename="../components/ServiceLogin.qml" line="77"/>
         <source>User name</source>
         <translation>User name</translation>
     </message>
     <message>
-        <location filename="../components/ServiceLogin.qml" line="91"/>
+        <location filename="../components/ServiceLogin.qml" line="89"/>
         <source>Password</source>
         <translation>Password</translation>
     </message>
     <message>
-        <location filename="../components/ServiceLogin.qml" line="104"/>
+        <location filename="../components/ServiceLogin.qml" line="102"/>
         <source>Submit</source>
         <extracomment>this appears in a button with limited space (around 30 characters)</extracomment>
         <translation>Submit</translation>
     </message>
     <message>
-        <location filename="../components/ServiceLogin.qml" line="122"/>
+        <location filename="../components/ServiceLogin.qml" line="120"/>
         <source>Login failed.</source>
         <translation>Login failed.</translation>
     </message>
@@ -932,49 +1053,49 @@
 <context>
     <name>noson</name>
     <message>
-        <location filename="../noson.qml" line="158"/>
+        <location filename="../noson.qml" line="226"/>
         <source>Index loaded</source>
         <translation>Index loaded</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="373"/>
+        <location filename="../noson.qml" line="466"/>
         <source>Refreshing of index is running</source>
         <translation>Refreshing of index is running</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="376"/>
-        <location filename="../noson.qml" line="395"/>
-        <location filename="../noson.qml" line="403"/>
-        <location filename="../noson.qml" line="413"/>
-        <location filename="../noson.qml" line="418"/>
-        <location filename="../noson.qml" line="450"/>
-        <location filename="../noson.qml" line="467"/>
-        <location filename="../noson.qml" line="479"/>
-        <location filename="../noson.qml" line="490"/>
-        <location filename="../noson.qml" line="498"/>
-        <location filename="../noson.qml" line="508"/>
-        <location filename="../noson.qml" line="518"/>
-        <location filename="../noson.qml" line="525"/>
-        <location filename="../noson.qml" line="532"/>
-        <location filename="../noson.qml" line="541"/>
-        <location filename="../noson.qml" line="550"/>
-        <location filename="../noson.qml" line="558"/>
-        <location filename="../noson.qml" line="565"/>
+        <location filename="../noson.qml" line="469"/>
+        <location filename="../noson.qml" line="488"/>
+        <location filename="../noson.qml" line="496"/>
+        <location filename="../noson.qml" line="506"/>
+        <location filename="../noson.qml" line="511"/>
+        <location filename="../noson.qml" line="543"/>
+        <location filename="../noson.qml" line="560"/>
         <location filename="../noson.qml" line="572"/>
-        <location filename="../noson.qml" line="582"/>
+        <location filename="../noson.qml" line="583"/>
+        <location filename="../noson.qml" line="591"/>
+        <location filename="../noson.qml" line="601"/>
+        <location filename="../noson.qml" line="611"/>
+        <location filename="../noson.qml" line="618"/>
+        <location filename="../noson.qml" line="625"/>
+        <location filename="../noson.qml" line="634"/>
+        <location filename="../noson.qml" line="643"/>
+        <location filename="../noson.qml" line="651"/>
+        <location filename="../noson.qml" line="658"/>
+        <location filename="../noson.qml" line="665"/>
+        <location filename="../noson.qml" line="675"/>
         <source>Action can&apos;t be performed</source>
         <translation>Action can&apos;t be performed</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="400"/>
-        <location filename="../noson.qml" line="463"/>
-        <location filename="../noson.qml" line="476"/>
-        <location filename="../noson.qml" line="538"/>
+        <location filename="../noson.qml" line="493"/>
+        <location filename="../noson.qml" line="556"/>
+        <location filename="../noson.qml" line="569"/>
+        <location filename="../noson.qml" line="631"/>
         <source>song added</source>
         <translation>song added</translation>
     </message>
     <message numerus="yes">
-        <location filename="../noson.qml" line="447"/>
+        <location filename="../noson.qml" line="540"/>
         <source>%n song(s) added</source>
         <translation>
             <numerusform>%n song added</numerusform>
@@ -982,12 +1103,12 @@
         </translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="487"/>
+        <location filename="../noson.qml" line="580"/>
         <source>Queue cleared</source>
         <translation>Queue cleared</translation>
     </message>
     <message numerus="yes">
-        <location filename="../noson.qml" line="547"/>
+        <location filename="../noson.qml" line="640"/>
         <source>%n song(s) removed</source>
         <translation>
             <numerusform>%n song removed</numerusform>
@@ -995,34 +1116,34 @@
         </translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="869"/>
+        <location filename="../noson.qml" line="979"/>
         <source>Search music</source>
         <translation type="unfinished">Search music</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="928"/>
+        <location filename="../noson.qml" line="1038"/>
         <source>Standby timer</source>
         <translation>Standby timer</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="935"/>
+        <location filename="../noson.qml" line="1045"/>
         <source>Sonos settings</source>
         <translation>Sonos settings</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="940"/>
-        <location filename="../noson.qml" line="1046"/>
+        <location filename="../noson.qml" line="1050"/>
+        <location filename="../noson.qml" line="1157"/>
         <source>General settings</source>
         <translation>General settings</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="945"/>
-        <location filename="../noson.qml" line="1195"/>
+        <location filename="../noson.qml" line="1055"/>
+        <location filename="../noson.qml" line="1347"/>
         <source>About</source>
         <translation>About</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="957"/>
+        <location filename="../noson.qml" line="1067"/>
         <source>My Services</source>
         <translation>My Services</translation>
     </message>
@@ -1031,52 +1152,77 @@
         <translation type="vanished">My Radios</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="958"/>
+        <location filename="../noson.qml" line="1068"/>
         <source>Favorites</source>
         <translation>Favorites</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="959"/>
+        <location filename="../noson.qml" line="1069"/>
         <source>Artists</source>
         <translation>Artists</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="960"/>
+        <location filename="../noson.qml" line="1070"/>
         <source>Albums</source>
         <translation>Albums</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="961"/>
+        <location filename="../noson.qml" line="1071"/>
         <source>Genres</source>
         <translation>Genres</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="962"/>
+        <location filename="../noson.qml" line="1072"/>
         <source>Playlists</source>
         <translation>Playlists</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1159"/>
+        <location filename="../noson.qml" line="1073"/>
+        <source>Alarm clock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../noson.qml" line="1276"/>
         <source>Style</source>
         <translation>Style</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1180"/>
+        <location filename="../noson.qml" line="1307"/>
+        <source>Theme</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../noson.qml" line="1315"/>
+        <source>Light</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../noson.qml" line="1316"/>
+        <source>Dark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../noson.qml" line="1317"/>
+        <source>System default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../noson.qml" line="1332"/>
         <source>Restart is required</source>
         <translation>Restart is required</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1203"/>
+        <location filename="../noson.qml" line="1356"/>
         <source>The project has started in 2015 and is intented to make a fast and smart controller for your SONOS devices. You can browse your music library and play track or radio on any zones. You can manage grouping zones, queue, and playlists, and fully control the playback.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1211"/>
+        <location filename="../noson.qml" line="1365"/>
         <source>Author: %1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1216"/>
+        <location filename="../noson.qml" line="1371"/>
         <source>Version: %1</source>
         <translation></translation>
     </message>
