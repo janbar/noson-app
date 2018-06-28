@@ -22,6 +22,15 @@
 
 using namespace NSROOT;
 
+const char* NSROOT::PlayModeTable[PlayMode_unknown +1] = {
+  "NORMAL",
+  "REPEAT_ALL",
+  "SHUFFLE",
+  "SHUFFLE_NOREPEAT",
+  "REPEAT_ONE",
+  "",
+};
+
 const char* NSROOT::ProtocolTable[Protocol_unknown + 1] = {
   "x-rincon-queue",
   "x-rincon-stream",

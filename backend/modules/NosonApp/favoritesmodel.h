@@ -71,6 +71,8 @@ public:
 
   const QString& objectId() const { return m_objectId; }
 
+  const QString& objectUri() const { return m_objectUri; }
+
   int type() const { return m_type; }
 
   bool canQueue() const { return m_canQueue; }
@@ -93,6 +95,7 @@ private:
   QString m_normalized;
   SONOS::DigitalItemPtr m_objectPtr;
   QString m_objectId;
+  QString m_objectUri;
   FavoriteType::itemType m_type;
   bool m_canQueue;
   QString m_artist;
@@ -116,6 +119,7 @@ public:
     NormalizedRole,
     ObjectRole,
     ObjectIdRole,
+    ObjectUriRole,
     TypeRole,
     CanQueueRole,
     ArtistRole,

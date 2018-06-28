@@ -48,6 +48,7 @@ FavoriteItem::FavoriteItem(const SONOS::DigitalItemPtr& ptr, const QString& base
     m_valid = true;
     m_canQueue = SONOS::System::CanQueueItem(m_objectPtr);
     m_objectId = QString::fromUtf8(m_objectPtr->GetObjectID().c_str());
+    m_objectUri = QString::fromUtf8(m_objectPtr->GetValue("res").c_str());
     m_isService = SONOS::System::IsItemFromService(m_objectPtr);
     switch (m_objectPtr->subType())
     {
@@ -147,6 +148,8 @@ QVariant FavoritesModel::data(const QModelIndex& index, int role) const
     return item->object();
   case ObjectIdRole:
     return item->objectId();
+  case ObjectUriRole:
+    return item->objectUri();
   case TypeRole:
     return item->type();
   case CanQueueRole:
@@ -190,6 +193,7 @@ QHash<int, QByteArray> FavoritesModel::roleNames() const
   roles[NormalizedRole] = "normalized";
   roles[ObjectRole] = "object";
   roles[ObjectIdRole] = "objectId";
+  roles[ObjectUriRole] = "objectUri";
   roles[TypeRole] = "type";
   roles[CanQueueRole] = "canQueue";
   roles[ArtistRole] = "artist";
@@ -214,6 +218,7 @@ QVariantMap FavoritesModel::get(int row)
   model[roles[NormalizedRole]] = item->normalized();
   model[roles[ObjectRole]] = item->object();
   model[roles[ObjectIdRole]] = item->objectId();
+  model[roles[ObjectUriRole]] = item->objectUri();
   model[roles[TypeRole]] = item->type();
   model[roles[CanQueueRole]] = item->canQueue();
   model[roles[ArtistRole]] = item->artist();

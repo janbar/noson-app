@@ -67,6 +67,7 @@ namespace NSROOT
       SubType_unknown,
     } SubType_t;
 
+    DigitalItem();
     DigitalItem(Type_t _type, SubType_t _subType = SubType_unknown);
     DigitalItem(const std::string& objectID, const std::string& parentID, bool restricted, const ElementList& vars);
     virtual ~DigitalItem() {}
@@ -107,7 +108,7 @@ namespace NSROOT
 
     std::string DIDL() const;
 
-    void Clone(DigitalItem& _item);
+    void Clone(DigitalItem& _item) const;
 
   private:
     Type_t m_type;

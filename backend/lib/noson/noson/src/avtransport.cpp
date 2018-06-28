@@ -106,19 +106,19 @@ bool AVTransport::SetPlayMode(PlayMode_t mode)
   switch (mode)
   {
     case PlayMode_NORMAL:
-      modeStr = "NORMAL";
+      modeStr = PlayModeTable[PlayMode_NORMAL];
       break;
     case PlayMode_REPEAT_ALL:
-      modeStr = "REPEAT_ALL";
+      modeStr = PlayModeTable[PlayMode_REPEAT_ALL];
       break;
     case PlayMode_SHUFFLE:
-      modeStr = "SHUFFLE";
+      modeStr = PlayModeTable[PlayMode_SHUFFLE];
       break;
     case PlayMode_SHUFFLE_NOREPEAT:
-      modeStr = "SHUFFLE_NOREPEAT";
+      modeStr = PlayModeTable[PlayMode_SHUFFLE_NOREPEAT];
       break;
     case PlayMode_REPEAT_ONE:
-      modeStr = "REPEAT_ONE";
+      modeStr = PlayModeTable[PlayMode_REPEAT_ONE];
       break;
     default:
       modeStr = "";
@@ -542,6 +542,12 @@ void AVTransport::HandleEventMessage(EventMessagePtr msg)
           prop->r_SleepTimerGeneration.assign(*++it);
         else if (*it == "r:AlarmRunning")
           prop->r_AlarmRunning.assign(*++it);
+        else if (*it == "r:AlarmIDRunning")
+          prop->r_AlarmIDRunning.assign(*++it);
+        else if (*it == "r:AlarmLoggedStartTime")
+          prop->r_AlarmLoggedStartTime.assign(*++it);
+        else if (*it == "r:AlarmState")
+          prop->r_AlarmState.assign(*++it);
         else if (*it == "r:SnoozeRunning")
           prop->r_SnoozeRunning.assign(*++it);
         else if (*it == "r:RestartPending")

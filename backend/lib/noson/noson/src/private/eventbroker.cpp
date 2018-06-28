@@ -59,13 +59,11 @@ namespace NSROOT
 EventBroker::EventBroker(EventHandler::EventHandlerThread* handler, SHARED_PTR<TcpSocket>& sockPtr)
 : m_handler(handler)
 , m_sockPtr(sockPtr)
-, m_buffer(NULL)
 {
 }
 
 EventBroker::~EventBroker()
 {
-  SAFE_DELETE_ARRAY(m_buffer);
 }
 
 
@@ -103,7 +101,6 @@ void EventBroker::Process()
       data.append(buffer, l);
       len += l;
     }
-
     // Parse xml content
     tinyxml2::XMLDocument rootdoc;
     if (rootdoc.Parse(data.c_str(), len) != tinyxml2::XML_SUCCESS)
@@ -140,7 +137,7 @@ void EventBroker::Process()
                 !(elem = doc.RootElement()))
           {
             DBG(DBG_ERROR, "%s: invalid or not supported content\n", __FUNCTION__);
-            DBG(DBG_ERROR, "%s: dump => %s\n", __FUNCTION__, m_buffer);
+            DBG(DBG_ERROR, "%s: dump => %s\n", __FUNCTION__, data.c_str());
             WSStatus status(HSC_Internal_Server_Error);
             resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage());
             resp.append("\r\n\r\n");
@@ -195,7 +192,7 @@ void EventBroker::Process()
           else
           {
             DBG(DBG_WARN, "%s: not supported content\n", __FUNCTION__);
-            DBG(DBG_WARN, "%s: dump => %s\n", __FUNCTION__, m_buffer);
+            DBG(DBG_WARN, "%s: dump => %s\n", __FUNCTION__, data.c_str());
           }
         }
         // Else treat propertyset/property/
@@ -222,7 +219,7 @@ void EventBroker::Process()
     else
     {
       DBG(DBG_ERROR, "%s: invalid or not supported content\n", __FUNCTION__);
-      DBG(DBG_ERROR, "%s: dump => %s\n", __FUNCTION__, m_buffer);
+      DBG(DBG_ERROR, "%s: dump => %s\n", __FUNCTION__, data.c_str());
       WSStatus status(HSC_Internal_Server_Error);
       resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage());
       resp.append("\r\n\r\n");

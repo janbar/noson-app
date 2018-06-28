@@ -132,5 +132,14 @@
         <file>ui/AddService.qml</file>
         <file>images/nightmode-enabled.svg</file>
         <file>images/nightmode-disabled.svg</file>
+        <file>ui/Alarms.qml</file>
+        <file>components/ClockTumbler.qml</file>
+        <file>images/media-record.svg</file>
+        <file>images/share.svg</file>
+        <file>images/location-idle.svg</file>
+        <file>components/Dialog/DialogAlarm.qml</file>
+        <file>images/bell.svg</file>
+        <file>images/alarm.svg</file>
+        <file>images/go-down.svg</file>
     </qresource>
 </RCC>

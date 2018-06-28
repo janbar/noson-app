@@ -68,9 +68,13 @@ public:
 
   Q_INVOKABLE bool connectZone(const QString& zoneName);
 
+  Q_INVOKABLE QString getZoneId() const;
+
   Q_INVOKABLE QString getZoneName() const;
 
   Q_INVOKABLE QString getZoneShortName() const;
+
+  Q_INVOKABLE RoomsModel* getZoneRooms();
 
   Q_INVOKABLE bool joinRoom(const QVariant& roomPayload, const QVariant& toZonePayload);
 
@@ -85,7 +89,11 @@ public:
   Q_INVOKABLE bool unjoinZone(const QVariant& zonePayload);
   Q_INVOKABLE bool startUnjoinZone(const QVariant& zonePayload);
 
-  const SONOS::System& getSystem() const;
+  Q_INVOKABLE bool createAlarm(const QVariant& alarmPayload);
+  Q_INVOKABLE bool updateAlarm(const QVariant& alarmPayload);
+  Q_INVOKABLE bool destroyAlarm(const QString& id);
+
+  SONOS::System& getSystem();
   const SONOS::PlayerPtr& getPlayer() const;
 
   Q_INVOKABLE void runLoader();
@@ -182,6 +190,7 @@ signals:
   void transportChanged();
   void renderingControlChanged();
   void topologyChanged();
+  void alarmClockChanged();
 
   void jobCountChanged();
 
@@ -205,7 +214,7 @@ private:
   SONOS::Locked<QString> m_locale; // language_COUNTRY
 
   static void playerEventCB(void* handle);
-  static void topologyEventCB(void* handle);
+  static void systemEventCB(void* handle);
 };
 
 #endif // SONOS_H

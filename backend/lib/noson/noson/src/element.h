@@ -130,7 +130,7 @@ namespace NSROOT
     ElementList(const std::vector<ElementPtr>& vars) : std::vector<ElementPtr>(vars) {}
     virtual ~ElementList() {}
 
-    void Clone(ElementList& _clone)
+    void Clone(ElementList& _clone) const
     {
       _clone.clear();
       _clone.reserve(size());

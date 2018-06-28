@@ -59,6 +59,8 @@ set(
     modules/NosonApp/qmlsortfiltermodel.h
     modules/NosonApp/allservicesmodel.cpp
     modules/NosonApp/allservicesmodel.h
+    modules/NosonApp/alarmsmodel.cpp
+    modules/NosonApp/alarmsmodel.h
 )
 
 add_library(NosonAppbackend MODULE

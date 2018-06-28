@@ -61,7 +61,7 @@ ApplicationWindow {
                 return Material.accent
             } else if (settings.style === "Universal") {
                 return Universal.accent
-            } else return "#e95420"
+            } else return "gray"
         }
         property color shadow: "black"
         property color brightText: "dimgray"
@@ -173,6 +173,33 @@ ApplicationWindow {
     // Cache built-in genre artworks
     property var genreArtworks: []
 
+    AlarmsModel {
+        id: alarmsModel
+        property bool updatePending: false
+        property bool dataSynced: false
+
+        onDataUpdated: asyncLoad()
+
+        onLoaded: {
+            if (updatePending) {
+                // delay model reset while a dialog still opened
+                dataSynced = false;
+            } else {
+                resetModel();
+                dataSynced = true;
+            }
+        }
+
+        onUpdatePendingChanged: {
+            if (!updatePending && !dataSynced) {
+                resetModel();
+                dataSynced = true;
+            }
+        }
+
+        onCountChanged: alarmEnabled = isAlarmEnabled()
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     ////
     //// Events
@@ -266,6 +293,7 @@ ApplicationWindow {
         AllGenresModel.init(Sonos, "",      false);
         AllPlaylistsModel.init(Sonos, "",   false);
         MyServicesModel.init(Sonos,         false);
+        alarmsModel.init(Sonos,             false);
         // launch connection
         connectSonos();
 
@@ -344,6 +372,14 @@ ApplicationWindow {
         onLoaded: AllPlaylistsModel.resetModel()
     }
 
+    Connections {
+        target: Sonos
+        onAlarmClockChanged: alarmsModel.asyncLoad()
+    }
+
+    onZoneChanged: {
+        alarmEnabled = isAlarmEnabled();
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     ////
@@ -689,6 +725,21 @@ ApplicationWindow {
         return uri;
     }
 
+    function isAlarmEnabled() {
+        var rooms = Sonos.getZoneRooms();
+        for (var i = 0; i < alarmsModel.count; ++i) {
+            var alarm = alarmsModel.get(i);
+            if (alarm.enabled) {
+                for (var r = 0; r < rooms.count; ++r) {
+                    if (rooms.get(r).id === alarm.roomId) {
+                        if (alarm.includeLinkedZones || rooms.count === 1)
+                            return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     ////
@@ -832,6 +883,7 @@ ApplicationWindow {
     ////
 
     property alias query: searchField.text
+    property bool alarmEnabled: false
 
     header: ToolBar {
         id: mainToolBar
@@ -911,8 +963,8 @@ ApplicationWindow {
                     height: width
                     anchors.verticalCenter: parent.Center
                     anchors.right: parent.right
-                    source: "qrc:/images/timer.svg"
-                    visible: player.sleepTimerEnabled
+                    source: player.sleepTimerEnabled ? "qrc:/images/timer.svg" : "qrc:/images/alarm.svg"
+                    visible: player.sleepTimerEnabled || alarmEnabled
                     enabled: visible
                 }
             }
@@ -1018,6 +1070,7 @@ ApplicationWindow {
         ListElement { title: qsTr("Albums"); source: "qrc:/ui/Albums.qml"; visible: false }
         ListElement { title: qsTr("Genres"); source: "qrc:/ui/Genres.qml"; visible: false }
         ListElement { title: qsTr("Playlists"); source: "qrc:/ui/Playlists.qml"; visible: true }
+        ListElement { title: qsTr("Alarm clock"); source: "qrc:/ui/Alarms.qml"; visible: true }
 
         function initialIndex() {
             return (settings.tabIndex === -1 ? 0

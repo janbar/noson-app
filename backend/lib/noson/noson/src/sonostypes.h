@@ -36,6 +36,8 @@ namespace NSROOT
     SVCEvent_TransportChanged        = 0x01,
     SVCEvent_RenderingControlChanged = 0x02,
     SVCEvent_ContentDirectoryChanged = 0x04,
+    SVCEvent_ZGTopologyChanged       = 0x08,
+    SVCEvent_AlarmClockChanged       = 0x10,
   } SVCEventMask_t;
 
   typedef enum
@@ -45,8 +47,11 @@ namespace NSROOT
     PlayMode_SHUFFLE,
     PlayMode_SHUFFLE_NOREPEAT,
     PlayMode_REPEAT_ONE,
+    PlayMode_unknown,
   } PlayMode_t;
 
+  extern const char* PlayModeTable[PlayMode_unknown + 1];
+  
   typedef enum
   {
     TransportState_STOPPED          = 0,
@@ -124,6 +129,9 @@ namespace NSROOT
     std::string     TransportStatus;              // OK
     std::string     r_SleepTimerGeneration;       // 0
     std::string     r_AlarmRunning;               // 0
+    std::string     r_AlarmIDRunning;
+    std::string     r_AlarmLoggedStartTime;
+    std::string     r_AlarmState;
     std::string     r_SnoozeRunning;              // 0
     std::string     r_RestartPending;             // 0
     std::string     PossiblePlaybackStorageMedia; // NONE, NETWORK
