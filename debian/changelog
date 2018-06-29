@@ -1,4 +1,12 @@
-noson-app (3.4) UNRELEASED; urgency=low
+noson-app (3.6) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 3.6
+  * Add support to manage alarm clock
+
+  [ janbar ]
+  * Release 3.5
+  * Add support for enabling/disabling night mode
 
   [ janbar ]
   * Release 3.4
