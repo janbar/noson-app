@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1.0)
 
-find_package(noson QUIET)
+if(NOT BUILD_DEPENDENCIES)
+    find_package(noson QUIET)
+endif()
 if(NOT noson_FOUND)
     set(noson_INCLUDE_DIRS
         "${CMAKE_BINARY_DIR}/backend/lib/noson/noson/public/noson"
