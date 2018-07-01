@@ -21,11 +21,11 @@
 #ifndef LISTMODEL
 #define LISTMODEL
 
-#include "../../lib/noson/noson/src/digitalitem.h"
-#include "../../lib/noson/noson/src/sonoszone.h"
-#include "../../lib/noson/noson/src/musicservices.h"
-#include "../../lib/noson/noson/src/alarm.h"
-#include "../../lib/noson/noson/src/locked.h"
+#include <noson/digitalitem.h>
+#include <noson/sonoszone.h>
+#include <noson/musicservices.h>
+#include <noson/alarm.h>
+#include <noson/locked.h>
 
 #include <QObject>
 

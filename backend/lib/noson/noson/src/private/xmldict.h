@@ -22,7 +22,7 @@
 #ifndef XMLNAME_H
 #define XMLNAME_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "tinyxml2.h"
 
 #include <string>

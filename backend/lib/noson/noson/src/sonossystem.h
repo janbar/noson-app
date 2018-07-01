@@ -21,7 +21,7 @@
 #ifndef SONOSSYSTEM_H
 #define	SONOSSYSTEM_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "sonoszone.h"
 #include "sonosplayer.h"
 #include "eventhandler.h"

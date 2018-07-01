@@ -21,7 +21,7 @@
 #ifndef SERVICE_H
 #define	SERVICE_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "sonostypes.h"
 #include "element.h"
 

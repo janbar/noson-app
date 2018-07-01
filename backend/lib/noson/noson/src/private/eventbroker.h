@@ -21,7 +21,7 @@
 #ifndef EVENTBROKER_H
 #define	EVENTBROKER_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "os/threads/threadpool.h"
 #include "wsrequestbroker.h"
 #include "socket.h"

@@ -21,7 +21,7 @@
 #ifndef SONOSPLAYER_H
 #define	SONOSPLAYER_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "sharedptr.h"
 #include "sonostypes.h"
 #include "sonoszone.h"

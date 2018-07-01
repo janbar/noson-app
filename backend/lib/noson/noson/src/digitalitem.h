@@ -21,7 +21,7 @@
 #ifndef DIGITALITEM_H
 #define	DIGITALITEM_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "element.h"
 #include "sharedptr.h"
 

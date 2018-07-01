@@ -13,13 +13,13 @@
 #include <sys/time.h>
 #endif
 
-#include "../../noson/src/private/debug.h"
-#include "../../noson/src/sonossystem.h"
-#include "../../noson/src/contentdirectory.h"
-#include "../../noson/src/avtransport.h"
-#include "../../noson/src/musicservices.h"
-#include "../../noson/src/smapi.h"
-#include "../../noson/src/didlparser.h"
+#include "private/debug.h"
+#include <noson/sonossystem.h>
+#include <noson/contentdirectory.h>
+#include <noson/avtransport.h>
+#include <noson/musicservices.h>
+#include <noson/smapi.h>
+#include <noson/didlparser.h>
 
 #include <cstdio>
 #include <string>

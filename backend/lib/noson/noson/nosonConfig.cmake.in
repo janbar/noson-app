@@ -1,0 +1,15 @@
+# - Config file for the noson package
+# It defines the following variables
+#  NOSON_INCLUDE_DIRS - include directories for noson
+#  NOSON_LIBRARIES    - libraries to link against
+
+# Compute paths
+get_filename_component(noson_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+set(noson_INCLUDE_DIRS "@includedir@")
+
+# Our library dependencies (contains definitions for IMPORTED targets)
+if(NOT TARGET noson AND NOT noson_BINARY_DIR)
+include("${noson_CMAKE_DIR}/nosonTargets.cmake")
+endif()
+
+set(noson_LIBRARIES noson)

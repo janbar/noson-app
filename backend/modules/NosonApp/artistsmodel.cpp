@@ -21,7 +21,7 @@
 #include "artistsmodel.h"
 #include "sonos.h"
 #include "tools.h"
-#include "../../lib/noson/noson/src/contentdirectory.h"
+#include <noson/contentdirectory.h>
 
 ArtistItem::ArtistItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
 : m_ptr(ptr)

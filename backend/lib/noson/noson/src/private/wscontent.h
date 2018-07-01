@@ -22,7 +22,7 @@
 #ifndef WSCONTENT_H
 #define	WSCONTENT_H
 
-#include <local_config.h>
+#include "local_config.h"
 
 namespace NSROOT
 {

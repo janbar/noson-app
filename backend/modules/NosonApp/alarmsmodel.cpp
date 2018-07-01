@@ -20,7 +20,7 @@
 
 #include "alarmsmodel.h"
 #include "sonos.h"
-#include "../../lib/noson/noson/src/private/tokenizer.h"
+#include "private/tokenizer.h"
 
 AlarmItem::AlarmItem(const SONOS::AlarmPtr& ptr)
 : m_ptr(ptr)

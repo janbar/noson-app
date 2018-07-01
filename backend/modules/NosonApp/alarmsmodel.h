@@ -22,7 +22,7 @@
 #define ALARMSMODEL_H
 
 #include "listmodel.h"
-#include "../../lib/noson/noson/src/alarm.h"
+#include <noson/alarm.h>
 
 #include <QAbstractListModel>
 
