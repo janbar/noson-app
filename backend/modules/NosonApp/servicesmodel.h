@@ -22,7 +22,7 @@
 #define SERVICESMODEL_H
 
 #include "listmodel.h"
-#include "../../lib/noson/noson/src/musicservices.h"
+#include <noson/musicservices.h>
 
 #include <QAbstractListModel>
 

@@ -22,7 +22,7 @@
 #define ROOMSMODEL_H
 
 #include "listmodel.h"
-#include "../../lib/noson/noson/src/sonosplayer.h"
+#include <noson/sonosplayer.h>
 
 #include <QAbstractListModel>
 

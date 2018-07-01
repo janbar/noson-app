@@ -7,13 +7,18 @@ find_package(Qt5Gui REQUIRED)
 find_package(Qt5Qml REQUIRED)
 find_package(Qt5Quick REQUIRED)
 
-add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/lib)
+if(NOT BUILD_DEPENDENCIES)
+    find_package(noson QUIET)
+endif()
+if(NOT noson_FOUND)
+  add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/lib)
+endif()
 
 ###############################################################################
 # configure
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}/lib/noson/noson/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/noson/noson/src
+    ${noson_INCLUDE_DIRS}
 )
 
 set(
@@ -67,8 +72,11 @@ add_library(NosonAppbackend MODULE
     ${NosonAppbackend_SRCS}
 )
 
-add_dependencies (NosonAppbackend noson)
-target_link_libraries (NosonAppbackend noson)
+if(NOT noson_FOUND)
+    add_dependencies (NosonAppbackend noson)
+endif()
+
+target_link_libraries(NosonAppbackend ${noson_LIBRARIES})
 
 set_target_properties(NosonAppbackend PROPERTIES
          LIBRARY_OUTPUT_DIRECTORY NosonApp)

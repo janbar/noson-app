@@ -31,18 +31,18 @@
 #include <sys/time.h>
 #endif
 
-#include "../backend/lib/noson/noson/src/private/debug.h"
-#include "../backend/lib/noson/noson/src/sonossystem.h"
-#include "../backend/lib/noson/noson/src/contentdirectory.h"
-#include "../backend/lib/noson/noson/src/didlparser.h"
+#include "private/debug.h"
+#include <noson/sonossystem.h>
+#include <noson/contentdirectory.h>
+#include <noson/didlparser.h>
 
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
 #include <string>
 
-#include "../backend/lib/noson/noson/src/private/tokenizer.h"
-#include "../backend/lib/noson/noson/src/private/builtin.h"
+#include "private/tokenizer.h"
+#include "private/builtin.h"
 
 #define PRINT(a) fprintf(stdout, a)
 #define PRINT1(a,b) fprintf(stdout, a, b)
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
     return ret;
 #endif /* __WINDOWS__ */
 
-  PRINT1("Noson CLI using libnoson %s, Copyright (C) 2018 Jean-Luc Barriere\n", LIBVERSION);
+  PRINT1("Noson CLI using libnoson %s, Copyright (C) 2018 Jean-Luc Barriere\n", SONOS::libVersionString());
   gSonos = new SONOS::System(0, handleEventCB);
   ERROR("Searching... ");
   //SONOS::DBGLevel(DBG_PROTO);

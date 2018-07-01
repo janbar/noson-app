@@ -21,7 +21,7 @@
 #include "favoritesmodel.h"
 #include "sonos.h"
 #include "tools.h"
-#include "../../lib/noson/noson/src/contentdirectory.h"
+#include <noson/contentdirectory.h>
 
 #include <cstdio> // for strncpy
 #include <cctype> // for isdigit

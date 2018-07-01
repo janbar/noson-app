@@ -21,8 +21,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "../../lib/noson/noson/src/private/os/threads/threadpool.h"
-#include "../../lib/noson/noson/src/sonosplayer.h"
+#include "private/os/threads/threadpool.h"
+#include <noson/sonosplayer.h>
 
 #include <QObject>
 
