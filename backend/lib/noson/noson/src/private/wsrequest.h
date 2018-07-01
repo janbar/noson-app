@@ -22,7 +22,7 @@
 #ifndef WSREQUEST_H
 #define	WSREQUEST_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "wscontent.h"
 #include "uriparser.h"
 

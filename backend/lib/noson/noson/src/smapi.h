@@ -21,12 +21,11 @@
 #ifndef SMAPI_H
 #define SMAPI_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "smapimetadata.h"
 #include "musicservices.h"
 #include "sonosplayer.h"
 #include "element.h"
-#include "private/os/threads/timeout.h"
 
 #include <list>
 

@@ -21,7 +21,7 @@
 #ifndef RENDERINGCONTROL_H
 #define	RENDERINGCONTROL_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "service.h"
 #include "eventhandler.h"
 #include "subscription.h"

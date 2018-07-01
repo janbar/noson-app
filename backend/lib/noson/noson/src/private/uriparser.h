@@ -22,7 +22,7 @@
 #ifndef URIPARSER_H
 #define	URIPARSER_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include <string>
 
 namespace NSROOT

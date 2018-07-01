@@ -27,7 +27,7 @@
 extern "C" {
 #endif
 
-#include <local_config.h>
+#include "local_config.h"
 
 #include <string.h>
 #include <stdint.h>

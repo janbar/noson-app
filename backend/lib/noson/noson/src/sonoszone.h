@@ -21,7 +21,7 @@
 #ifndef SONOSZONE_H
 #define	SONOSZONE_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "sharedptr.h"
 #include "element.h"
 

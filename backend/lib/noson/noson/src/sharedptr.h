@@ -22,7 +22,7 @@
 #ifndef SHAREDPTR_H
 #define	SHAREDPTR_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "intrinsic.h"
 
 #include <cstddef>  // for NULL

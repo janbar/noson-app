@@ -21,7 +21,7 @@
 #ifndef SONOSTYPES_H
 #define	SONOSTYPES_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include <stdint.h>
 #include <vector>
 
@@ -29,6 +29,11 @@
 
 namespace NSROOT
 {
+  extern const char* libVersionString();
+  extern int libVersionMajor();
+  extern int libVersionMinor();
+  extern int libVersionPatch();
+
   typedef void (*EventCB)(void*);
 
   typedef enum

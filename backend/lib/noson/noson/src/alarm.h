@@ -21,7 +21,7 @@
 #ifndef ALARM_H
 #define ALARM_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "sonostypes.h"
 #include "element.h"
 #include "sharedptr.h"

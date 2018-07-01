@@ -21,7 +21,7 @@
 #ifndef ELEMENT_H
 #define	ELEMENT_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "sharedptr.h"
 
 #include <string>

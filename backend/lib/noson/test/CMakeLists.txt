@@ -22,7 +22,9 @@ endif ()
 ###############################################################################
 # configure
 include_directories (
-  ${CMAKE_BINARY_DIR}/noson/include/.)
+  ${CMAKE_BINARY_DIR}/noson/public/noson
+  ${CMAKE_BINARY_DIR}/noson/public
+  ${CMAKE_SOURCE_DIR}/noson/src)
 
 ###############################################################################
 # add targets

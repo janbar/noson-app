@@ -22,7 +22,7 @@
 #ifndef ATOMIC_H
 #define	ATOMIC_H
 
-#include <local_config.h>
+#include "local_config.h"
 
 #ifdef __GNUC__
 

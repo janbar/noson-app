@@ -21,7 +21,7 @@
 #ifndef MUSICSERVICES_H
 #define MUSICSERVICES_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "service.h"
 #include "smaccount.h"
 #include "locked.h"
