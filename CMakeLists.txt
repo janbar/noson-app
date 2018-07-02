@@ -52,7 +52,7 @@ install(
 
 install(
   FILES "gui/images/${ICON_FILE}"
-  DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps RENAME ${APP_NAME}.png
 )
 
 configure_file(

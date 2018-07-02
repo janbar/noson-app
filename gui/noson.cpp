@@ -8,6 +8,8 @@
 #include <QDebug>
 #include <QDir>
 #include <QProcess>
+#include <QPixmap>
+#include <QIcon>
 
 #include "diskcache/diskcachefactory.h"
 
@@ -107,6 +109,8 @@ void setupApp(QGuiApplication& app) {
 #ifdef Q_OS_MAC
     QString translationPath = getApplicationDir(app, QString("Resources/translations")).absolutePath();
     prepareTranslator(app, translationPath, "qt", locale);
+#else
+    app.setWindowIcon(QIcon(QPixmap(":/images/noson.png")));
 #endif
 }
 
