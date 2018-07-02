@@ -259,18 +259,18 @@ if (NOT SKIP_INSTALL_ALL)
 
   if (NOT MSVC)
     if (NOT DEFINED CMAKE_INSTALL_BINDIR)
-      set (CMAKE_INSTALL_BINDIR bin)
+      set (CMAKE_INSTALL_BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
     endif ()
-    if (NOT DEFINED CMAKE_INSTALL_LIBDIR)
-      set (CMAKE_INSTALL_LIBDIR lib)
+    if (NOT DEFINED CMAKE_INSTALL_FULL_LIBDIR)
+      set (CMAKE_INSTALL_FULL_LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
     endif ()
     if (NOT DEFINED CMAKE_INSTALL_INCLUDEDIR)
-      set (CMAKE_INSTALL_INCLUDEDIR include)
+      set (CMAKE_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/include)
     endif ()
     set (prefix      "${CMAKE_INSTALL_PREFIX}")
     set (exec_prefix "${CMAKE_INSTALL_PREFIX}")
-    set (includedir  "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}/noson")
-    set (libdir      "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
+    set (includedir  "${CMAKE_INSTALL_INCLUDEDIR}/noson")
+    set (libdir      "${CMAKE_INSTALL_FULL_LIBDIR}")
     configure_file (noson.pc.in noson.pc @ONLY)
     configure_file (nosonConfig.cmake.in nosonConfig.cmake @ONLY)
     configure_file (nosonConfigVersion.cmake.in nosonConfigVersion.cmake @ONLY)
@@ -278,15 +278,15 @@ if (NOT SKIP_INSTALL_ALL)
     install (TARGETS noson
       EXPORT nosonTargets
       RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-      LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+      ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
+      LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR})
 
     install (FILES
       "${CMAKE_CURRENT_BINARY_DIR}/noson.pc"
-      DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+      DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig")
 
     # Install the nosonConfig.cmake and nosonConfigVersion.cmake
-    set(INSTALL_CMAKE_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/noson")
+    set(INSTALL_CMAKE_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/cmake/noson")
     install (FILES
       "${CMAKE_CURRENT_BINARY_DIR}/nosonConfig.cmake"
       "${CMAKE_CURRENT_BINARY_DIR}/nosonConfigVersion.cmake"
