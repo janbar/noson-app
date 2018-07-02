@@ -20,13 +20,11 @@ execute_process(
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
-set(LIBDIR "lib/${ARCH_TRIPLET}")
-
 # Set install paths
 include(GNUInstallDirs)
 set(APPDATA_DIR ${CMAKE_INSTALL_DATADIR}/metainfo)
 set(DESKTOP_DIR ${CMAKE_INSTALL_DATADIR}/applications)
-set(PLUGINS_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/${APP_NAME}")
+set(PLUGINS_DIR ${CMAKE_INSTALL_FULL_LIBDIR}/${APP_NAME})
 set(NOSON_GUI "${PLUGINS_DIR}/noson-gui")
 set(NOSON_CLI "${PLUGINS_DIR}/noson-cli")
 
