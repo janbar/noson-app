@@ -320,6 +320,11 @@ MusicPage {
     DialogSearchMusic {
         id: dialogSearch
         searchableModel: mediaModel
+
+        onClosed: {
+            // reset state of the main tool bar
+            mainToolBar.state = "default";
+        }
     }
 
     onSearchClicked: dialogSearch.open();
