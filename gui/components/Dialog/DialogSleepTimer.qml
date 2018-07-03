@@ -27,6 +27,10 @@ DialogBase {
 
     property int remainingTime: player.remainingSleepTimerDuration() // Load at startup
 
+    onOpened: {
+        remainingTime = player.remainingSleepTimerDuration();
+    }
+
     ListModel {
         id: selectorModel
         ListElement {text: qsTr("Disabled");     duration: 0}
