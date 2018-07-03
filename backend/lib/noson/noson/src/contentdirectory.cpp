@@ -176,6 +176,12 @@ void ContentDirectory::HandleEventMessage(EventMessagePtr msg)
           prop->FavoritesUpdateID.assign(*++it);
         else if (*it == "FavoritePresetsUpdateID")
           prop->FavoritePresetsUpdateID.assign(*++it);
+        else if (*it == "ShareIndexInProgress")
+        {
+          int32_t num;
+          string_to_int32((++it)->c_str(), &num);
+          prop->ShareIndexInProgress = (num != 0);
+        }
 
         ++it;
       }
