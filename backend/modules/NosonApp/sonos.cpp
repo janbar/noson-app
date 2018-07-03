@@ -76,6 +76,7 @@ Sonos::Sonos(QObject* parent)
 : QObject(parent)
 , m_library(ManagedContents())
 , m_shareUpdateID(0)
+, m_shareIndexInProgess(false)
 , m_system(this, systemEventCB)
 , m_threadpool(JOB_THREADPOOL_SIZE)
 , m_jobCount(SONOS::LockedNumber<int>(0))
@@ -583,6 +584,15 @@ void Sonos::playerEventCB(void* handle)
           if (_update)
             it->model->handleDataUpdate();
         }
+      }
+      // Signal share index events
+      if (prop.ShareIndexInProgress != sonos->m_shareIndexInProgess)
+      {
+        if (prop.ShareIndexInProgress)
+          emit sonos->shareIndexInProgress();
+        else
+          emit sonos->shareIndexFinished();
+        sonos->m_shareIndexInProgess = prop.ShareIndexInProgress;
       }
     }
   }

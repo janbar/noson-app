@@ -191,6 +191,8 @@ signals:
   void renderingControlChanged();
   void topologyChanged();
   void alarmClockChanged();
+  void shareIndexInProgress();
+  void shareIndexFinished();
 
   void jobCountChanged();
 
@@ -206,6 +208,7 @@ private:
   typedef QList<RegisteredContent> ManagedContents;
   SONOS::Locked<ManagedContents> m_library;
   unsigned m_shareUpdateID; // Current updateID of SONOS shares
+  bool m_shareIndexInProgess;
 
   SONOS::System m_system;
   SONOS::OS::CThreadPool m_threadpool;
