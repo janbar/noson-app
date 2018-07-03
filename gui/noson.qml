@@ -375,6 +375,12 @@ ApplicationWindow {
     Connections {
         target: Sonos
         onAlarmClockChanged: alarmsModel.asyncLoad()
+        onShareIndexInProgress: {
+            shareIndexInProgress = true;
+        }
+        onShareIndexFinished: {
+            shareIndexInProgress = false;
+        }
     }
 
     onZoneChanged: {
@@ -884,6 +890,7 @@ ApplicationWindow {
 
     property alias query: searchField.text
     property bool alarmEnabled: false
+    property bool shareIndexInProgress: false
 
     header: ToolBar {
         id: mainToolBar
@@ -957,15 +964,17 @@ ApplicationWindow {
                 verticalAlignment: Qt.AlignVCenter
                 Layout.fillWidth: true
 
-                /* Show sleep timer state */
+                /* Show more info */
                 Icon {
+                    id: iconInfo
                     width: units.gu(3)
                     height: width
                     anchors.verticalCenter: parent.Center
                     anchors.right: parent.right
-                    source: player.sleepTimerEnabled ? "qrc:/images/timer.svg" : "qrc:/images/alarm.svg"
-                    visible: player.sleepTimerEnabled || alarmEnabled
+                    source: shareIndexInProgress ? "qrc:/images/sync.svg" : player.sleepTimerEnabled ? "qrc:/images/timer.svg" : "qrc:/images/alarm.svg"
+                    visible: player.sleepTimerEnabled || alarmEnabled || shareIndexInProgress
                     enabled: visible
+                    rotationRunning: shareIndexInProgress
                 }
             }
 

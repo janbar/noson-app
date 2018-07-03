@@ -142,5 +142,6 @@
         <file>images/alarm.svg</file>
         <file>images/go-down.svg</file>
         <file>components/AlarmsEmptyState.qml</file>
+        <file>images/sync.svg</file>
     </qresource>
 </RCC>
