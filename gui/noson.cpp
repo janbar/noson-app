@@ -109,9 +109,8 @@ void setupApp(QGuiApplication& app) {
 #ifdef Q_OS_MAC
     QString translationPath = getApplicationDir(app, QString("Resources/translations")).absolutePath();
     prepareTranslator(app, translationPath, "qt", locale);
-#else
-    app.setWindowIcon(QIcon(QPixmap(":/images/noson.png")));
 #endif
+    app.setWindowIcon(QIcon(QPixmap(":/images/noson.png")));
 }
 
 QDir getApplicationDir(QGuiApplication& app, const QString& subdir)
