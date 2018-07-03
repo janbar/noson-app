@@ -8,6 +8,7 @@ MouseArea {
     property alias label: label
     property color color: styleMusic.view.foregroundColor
     property color pressedColor: styleMusic.view.highlightedColor
+    property alias rotationRunning: icon.rotationRunning
     height: units.gu(4)
     width: row.width
     enabled: true
@@ -27,6 +28,33 @@ MouseArea {
             sourceSize.height: height
             sourceSize.width: width
             source: "qrc:/images/delete.svg"
+
+            property bool rotationRunning: false
+
+            onRotationRunningChanged: {
+                if (rotationRunning)
+                    animator.start();
+                else {
+                    animator.stop();
+                    animator.angle = 0;
+                }
+            }
+
+            Timer {
+                id: animator
+                interval: 500
+                repeat: true
+                property int angle: 0
+                onTriggered: {
+                    angle = (angle + 30) % 360;
+                }
+            }
+
+            transform: Rotation {
+                origin.x: icon.x + icon.width / 2
+                origin.y: icon.y + icon.height / 2
+                angle: animator.angle
+            }
         }
 
         Label {
