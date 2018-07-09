@@ -40,9 +40,9 @@ namespace NSROOT
     Element& operator =(const Element& _other) { m_key = _other.m_key; m_attrs = _other.m_attrs; this->assign(_other); return *this; }
     virtual ~Element() {}
 
-    static const std::string& Nil()
+    static const Element& Nil()
     {
-      static const std::string nil("");
+      static const Element nil("", "");
       return nil;
     }
 
@@ -86,7 +86,7 @@ namespace NSROOT
       SetAttribut(Element(name, value));
     }
 
-    const std::string& GetAttribut(const std::string& name) const
+    const Element& GetAttribut(const std::string& name) const
     {
       for (std::vector<Element>::const_iterator it = m_attrs.begin(); it != m_attrs.end(); ++it)
         if (it->m_key == name)
