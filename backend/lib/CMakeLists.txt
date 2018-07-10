@@ -11,7 +11,7 @@ set(SKIP_INSTALL_ALL ON)
 
 # Provides dependency zlib
 if(NOT BUILD_DEPENDENCIES)
-        find_package(ZLIB QUIET)
+    find_package(ZLIB QUIET)
 endif()
 if(NOT ZLIB_FOUND)
     add_subdirectory(
@@ -27,7 +27,7 @@ endif()
 
 # Provides dependency openssl
 if(NOT BUILD_DEPENDENCIES)
-        find_package(OpenSSL QUIET)
+    find_package(OpenSSL QUIET)
 endif()
 if(NOT OPENSSL_FOUND)
     add_subdirectory(

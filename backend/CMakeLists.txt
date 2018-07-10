@@ -11,7 +11,7 @@ if(NOT BUILD_DEPENDENCIES)
     find_package(noson QUIET)
 endif()
 if(NOT noson_FOUND)
-  add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/lib)
+    add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/lib)
 endif()
 
 ###############################################################################
@@ -79,7 +79,7 @@ endif()
 target_link_libraries(NosonAppbackend ${noson_LIBRARIES})
 
 set_target_properties(NosonAppbackend PROPERTIES
-         LIBRARY_OUTPUT_DIRECTORY NosonApp)
+    LIBRARY_OUTPUT_DIRECTORY NosonApp)
 
 target_link_libraries(NosonAppbackend Qt5::Gui Qt5::Qml Qt5::Quick)
 
