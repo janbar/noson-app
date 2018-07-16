@@ -63,9 +63,23 @@ install(
   DESTINATION ${APPDATA_DIR} RENAME ${APP_ID}.appdata.xml
 )
 
-add_subdirectory(gui)
 add_subdirectory(backend)
-add_subdirectory(cli)
+add_subdirectory(gui)
+if(ANDROID)
+  include(android/AddQtAndroidApk.cmake)
+  add_dependencies(noson-gui NosonAppbackend NosonAppbackend-qmldir)
+  add_qt_android_apk(noson-apk noson-gui
+      NAME "noson"
+      VERSION_CODE 1
+      PACKAGE_NAME "io.github.janbar.noson"
+      PACKAGE_SOURCES ${CMAKE_SOURCE_DIR}/android/package-sources
+      BUILDTOOLS_REVISION ${QT_ANDROID_SDK_BUILDTOOLS_REVISION}
+      DEPENDS ssl crypto
+      PLUGINS ${CMAKE_BINARY_DIR}/backend/qml
+  )
+else()
+  add_subdirectory(cli)
+endif()
 
 add_custom_target(
   "run"

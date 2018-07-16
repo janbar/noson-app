@@ -41,7 +41,11 @@ set ( LIBSRC
   bio_ssl.c ssl_err.c kssl.c t1_reneg.c tls_srp.c t1_trce.c ssl_utst.c
   )
 
-add_library ( ssl ${LIBSRC} )
+if( ANDROID )
+  add_library ( ssl SHARED ${LIBSRC} )
+else()
+  add_library ( ssl ${LIBSRC} )
+endif()
 target_link_libraries ( ssl crypto )
 
 install( FILES ssl.h ssl2.h ssl3.h ssl23.h tls1.h dtls1.h kssl.h srtp.h

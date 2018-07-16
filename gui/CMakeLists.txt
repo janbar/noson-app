@@ -6,6 +6,9 @@ find_package(Qt5Gui REQUIRED)
 find_package(Qt5Qml REQUIRED)
 find_package(Qt5Quick REQUIRED)
 find_package(Qt5QuickControls2 REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Xml REQUIRED)
+find_package(Qt5Svg REQUIRED)
 
 file(GLOB QML_JS_FILES *.qml *.js)
 file(GLOB APP_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.qml *.js *.json)
@@ -38,8 +41,14 @@ else()
 endif()
 
 qt5_add_resources(noson-gui-resources noson.qrc)
-add_executable(noson-gui ${noson-gui-sources} ${noson-gui-resources} ${extra-sources})
-target_link_libraries(noson-gui Qt5::Gui Qt5::Qml Qt5::Quick Qt5::QuickControls2)
+
+if(ANDROID)
+  add_library(noson-gui SHARED ${noson-gui-sources} ${noson-gui-resources} ${extra-sources})
+else()
+  add_executable(noson-gui ${noson-gui-sources} ${noson-gui-resources} ${extra-sources})
+endif()
+
+target_link_libraries(noson-gui Qt5::Gui Qt5::Qml Qt5::Quick Qt5::QuickControls2 Qt5::Widgets Qt5::Xml Qt5::Svg)
 
 if(MSVC)
   target_link_libraries (noson-gui ws2_32)
