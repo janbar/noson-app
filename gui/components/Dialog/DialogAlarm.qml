@@ -48,16 +48,17 @@ Item {
 
             Item {
                 id: roomLabel
-                width: units.gu(3)
+                width: units.gu(5)
                 height: room.height
                 Icon {
                     anchors.centerIn: parent
-                    height: units.gu(3)
+                    height: units.gu(5)
                     width: height
                     color: styleMusic.dialog.labelColor
                     enabled: false
                     source: "qrc:/images/location.svg"
                     opacity: 0.7
+                    hoverEnabled: false
                 }
             }
 
@@ -147,16 +148,18 @@ Item {
 
             Column {
                 id: c3
+                spacing: 0
                 Item {
                     width: volume.width
-                    height: units.gu(3)
+                    height: units.gu(2)
                     Icon {
                         anchors.centerIn: parent
-                        height: parent.height
+                        height: units.gu(5)
                         width: height
                         source: volume.value === 0 ? "qrc:/images/audio-volume-muted.svg" : "qrc:/images/audio-volume.svg"
                         enabled: false
                         opacity: 0.7
+                        hoverEnabled: false
                     }
                 }
 
@@ -287,16 +290,17 @@ Item {
 
             Item {
                 id: programLabel
-                width: units.gu(3)
+                width: units.gu(5)
                 height: program.height
                 Icon {
                     anchors.centerIn: parent
-                    height: units.gu(3)
+                    height: units.gu(5)
                     width: height
                     color: styleMusic.dialog.labelColor
                     enabled: false
                     source: "qrc:/images/bell.svg"
                     opacity: 0.7
+                    hoverEnabled: false
                 }
             }
 

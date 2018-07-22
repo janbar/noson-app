@@ -102,7 +102,7 @@ Page {
     }
 
     footer: Item {
-        height: units.gu(6)
+        height: units.gu(7.25)
         width: parent.width
 
         Rectangle {
@@ -116,18 +116,18 @@ Page {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: parent.top
-                anchors.topMargin: units.gu(1.5)
+                anchors.topMargin: units.gu(1)
                 anchors.leftMargin: units.gu(1)
                 anchors.rightMargin: units.gu(1)
-                height: units.gu(3)
+                height: units.gu(5)
                 color: "transparent"
 
                 Row {
-                    spacing: units.gu(3)
+                    spacing: units.gu(1)
 
                     Icon {
                         source: "qrc:/images/media-playlist.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         label.text: player.queueInfo
                         label.font.pointSize: units.fs("x-small")
 
@@ -144,7 +144,7 @@ Page {
 
                     Icon {
                         source: "qrc:/images/location.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         label.text: currentZoneTag
                         label.font.pointSize: units.fs("x-small")
 
@@ -155,7 +155,7 @@ Page {
                         id: viewType
                         visible: false
                         source: isListView ? "qrc:/images/view-grid-symbolic.svg" : "qrc:/images/view-list-symbolic.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         onClicked: {
                             isListView = !isListView
                         }
@@ -165,7 +165,7 @@ Page {
                         id: find
                         visible: false
                         source: "qrc:/images/find.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         onClicked: searchClicked()
                     }
 
@@ -173,7 +173,7 @@ Page {
                         id: selection
                         visible: false
                         source: "qrc:/images/select.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         onClicked: thisPage.state = "selection"
                     }
 
@@ -181,7 +181,7 @@ Page {
                         id: add
                         visible: false
                         source: "qrc:/images/add.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         label.text: qsTr("Add")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: addClicked()
@@ -191,12 +191,13 @@ Page {
                 Item {
                     id: optionsMenu
                     anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
                     width: units.gu(4)
                     height: parent.height
                     visible: false
 
                     Icon {
-                        width: units.gu(3)
+                        width: units.gu(5)
                         height: width
                         anchors.centerIn: parent
                         source: "qrc:/images/contextual-menu.svg"
@@ -229,20 +230,20 @@ Page {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: parent.top
-                anchors.topMargin: units.gu(1.5)
+                anchors.topMargin: units.gu(1)
                 anchors.leftMargin: units.gu(1)
                 anchors.rightMargin: units.gu(1)
-                height: units.gu(3)
+                height: units.gu(5)
                 color: "transparent"
 
                 Row {
-                    spacing: units.gu(3)
+                    spacing: units.gu(1)
 
                     Icon {
                         id: closeSelection
                         visible: true
                         source: "qrc:/images/close.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         label.text: qsTr("Close")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: {
@@ -255,7 +256,7 @@ Page {
                         id: selectAll
                         visible: true
                         source: "qrc:/images/select.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         label.text: qsTr("All")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: selectAllClicked()
@@ -265,7 +266,7 @@ Page {
                         id: selectNone
                         visible: true
                         source: "qrc:/images/select-undefined.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         label.text: qsTr("Clear")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: selectNoneClicked()
@@ -275,7 +276,7 @@ Page {
                         id: addToQueue
                         visible: true
                         source: "qrc:/images/add.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         onClicked: addToQueueClicked()
                     }
 
@@ -283,7 +284,7 @@ Page {
                         id: addToPlaylist
                         visible: true
                         source: "qrc:/images/add-to-playlist.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         onClicked: addToPlaylistClicked()
                     }
                 }
@@ -293,7 +294,7 @@ Page {
                     anchors.right: parent.right
                     visible: true
                     source: "qrc:/images/delete.svg"
-                    height: units.gu(3)
+                    height: units.gu(5)
                     onClicked: removeSelectedClicked()
                 }
             }
@@ -314,18 +315,18 @@ Page {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: parent.top
-                anchors.topMargin: units.gu(1.5)
+                anchors.topMargin: units.gu(1)
                 anchors.leftMargin: units.gu(1)
                 anchors.rightMargin: units.gu(1)
                 height: units.gu(3)
                 color: "transparent"
 
                 Row {
-                    spacing: units.gu(3)
+                    spacing: units.gu(1)
 
                     Icon {
                         source: "qrc:/images/media-playlist.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         label.text: player.queueInfo
                         label.font.pointSize: units.fs("x-small")
 
@@ -341,7 +342,7 @@ Page {
                         id: reload
                         visible: true
                         source: "qrc:/images/reload.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         onClicked: reloadClicked()
                     }
 
@@ -349,7 +350,7 @@ Page {
                         id: groupAll
                         visible: true
                         source: "qrc:/images/select.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         label.text: qsTr("All")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: groupAllZoneClicked()
@@ -359,7 +360,7 @@ Page {
                         id: group
                         visible: true
                         source: "qrc:/images/group.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         label.text: qsTr("Done")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: groupZoneClicked()
@@ -383,18 +384,18 @@ Page {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: parent.top
-                anchors.topMargin: units.gu(1.5)
+                anchors.topMargin: units.gu(1)
                 anchors.leftMargin: units.gu(1)
                 anchors.rightMargin: units.gu(1)
                 height: units.gu(3)
                 color: "transparent"
 
                 Row {
-                    spacing: units.gu(3)
+                    spacing: units.gu(1)
 
                     Icon {
                         source: "qrc:/images/location.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         label.text: currentZoneTag
                         label.font.pointSize: units.fs("x-small")
                     }
@@ -403,7 +404,7 @@ Page {
                         id: groupAllRoom
                         visible: true
                         source: "qrc:/images/select-undefined.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         label.text: qsTr("None")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: groupNoneRoomClicked()
@@ -413,7 +414,7 @@ Page {
                         id: groupRoom
                         visible: true
                         source: "qrc:/images/group.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         label.text: qsTr("Done")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: groupRoomClicked()

@@ -66,7 +66,7 @@ Item {
             id: nowPlayingMuteButton
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
-            height: units.gu(4)
+            height: units.gu(6)
             width: height
             source: player.mute ? "qrc:/images/audio-volume-muted.svg" : "qrc:/images/audio-volume.svg"
             objectName: "muteShape"
@@ -133,7 +133,7 @@ Item {
             id: nightmodeButton
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            height: units.gu(4)
+            height: units.gu(6)
             width: height
             source: player.nightmodeEnabled ? "qrc:/images/nightmode-enabled.svg" : "qrc:/images/nightmode-disabled.svg"
             objectName: "nightmodeShape"
@@ -168,7 +168,7 @@ Item {
 
             Icon {
                 id: repeatIcon
-                height: units.gu(3)
+                height: units.gu(5)
                 width: height
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -196,7 +196,7 @@ Item {
 
             Icon {
                 id: nowPlayingPreviousIndicator
-                height: units.gu(3)
+                height: units.gu(5)
                 width: height
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -211,13 +211,13 @@ Item {
         Rectangle {
             id: nowPlayingPlayButton
             anchors.centerIn: parent
-            height: units.gu(6)
+            height: units.gu(8)
             width: height
             color: "transparent"
 
             Icon {
                 id: nowPlayingPlayIndicator
-                height: units.gu(6)
+                height: units.gu(8)
                 width: height
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -239,7 +239,7 @@ Item {
 
             Icon {
                 id: nowPlayingNextIndicator
-                height: units.gu(3)
+                height: units.gu(5)
                 width: height
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -263,7 +263,7 @@ Item {
 
             Icon {
                 id: shuffleIcon
-                height: units.gu(3)
+                height: units.gu(5)
                 width: height
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter

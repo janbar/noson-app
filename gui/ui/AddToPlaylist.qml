@@ -101,13 +101,13 @@ MusicPage {
                 color: "transparent"
 
                 Row {
-                    spacing: units.gu(3)
+                    spacing: units.gu(1)
 
                     Icon {
                         id: selectorFind
                         visible: true
                         source: "qrc:/images/find.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         onClicked: searchClicked()
                     }
 
@@ -115,7 +115,7 @@ MusicPage {
                         id: add
                         visible: true
                         source: "qrc:/images/add.svg"
-                        height: units.gu(3)
+                        height: units.gu(5)
                         label.text: qsTr("Add")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: addClicked()

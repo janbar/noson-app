@@ -83,7 +83,7 @@ Item {
                         anchors.bottom: coverGrid.bottom
                         anchors.right: coverGrid.right
                         anchors.margins: units.gu(1)
-                        height: coverGrid.height * 0.20
+                        height: coverGrid.height * 0.25
                         width: height
                         radius: height / 2
                         color: styleMusic.dialog.backgroundColor
@@ -96,11 +96,11 @@ Item {
                         id: playerControlsPlayButton
                         anchors.bottom: coverGrid.bottom
                         anchors.right: coverGrid.right
-                        anchors.rightMargin: units.gu(1) * 1.6
-                        anchors.bottomMargin: units.gu(1) * 1.7
+                        anchors.rightMargin: units.gu(1)
+                        anchors.bottomMargin: units.gu(1)
                         visible: songInfo.actionsVisible
                         color: styleMusic.dialog.foregroundColor
-                        height: coverGrid.height * 0.15
+                        height: coverGrid.height * 0.25
                         width: height
                         source: "qrc:/images/media-playback-start.svg"
                         onClicked: {
