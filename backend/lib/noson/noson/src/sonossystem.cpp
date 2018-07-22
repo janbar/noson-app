@@ -94,7 +94,8 @@ bool System::Discover()
   if (!(ret = m_cbzgt->Wait(CB_TIMEOUT)))
   {
     DBG(DBG_WARN, "%s: notification wasn't received after timeout: fall back on manual call\n", __FUNCTION__);
-    ret = m_groupTopology->GetZoneGroupState();
+    if ((ret = m_groupTopology->GetZoneGroupState()))
+      CB_ZGTopology(this); // ring the listener manually
   }
   // subscribe to others services
   if (ret)
