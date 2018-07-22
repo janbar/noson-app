@@ -53,7 +53,11 @@ int main(int argc, char *argv[])
     {
         if (settings.value("style").isNull())
         {
+#ifdef Q_OS_ANDROID
+            QQuickStyle::setStyle("Material");
+#else
             QQuickStyle::setStyle("Universal");
+#endif
             settings.setValue("style", QQuickStyle::name());
         }
         QQuickStyle::setStyle(settings.value("style").toString());
@@ -64,10 +68,22 @@ int main(int argc, char *argv[])
     engine.setNetworkAccessManagerFactory(new DiskCacheFactory(100 * 1000 * 1000));
     // bind arguments
     engine.rootContext()->setContextProperty("ApplicationArguments", app.arguments());
+    // bind Android flag
+#ifdef Q_OS_ANDROID
+    engine.rootContext()->setContextProperty("Android", true);
+#else
+    engine.rootContext()->setContextProperty("Android", false);
+#endif
     // select and bind styles available and known to work
     QStringList availableStyles;
     for (QString style : QQuickStyle::availableStyles())
     {
+#ifdef Q_OS_ANDROID
+      if (style == "Default")
+        availableStyles.append(style);
+      else if (style == "Material")
+        availableStyles.append(style);
+#else
       if (style == "Default")
         availableStyles.append(style);
       else if (style == "Fusion")
@@ -78,6 +94,7 @@ int main(int argc, char *argv[])
         availableStyles.append(style);
       else if (style == "Universal")
         availableStyles.append(style);
+#endif
     }
     engine.rootContext()->setContextProperty("AvailableStyles", availableStyles);
 
@@ -137,11 +154,13 @@ void prepareTranslator(QGuiApplication& app, const QString& translationPath, con
 
 void doExit(int code)
 {
+#ifndef Q_OS_ANDROID
   if (code == 16)
   {
     QStringList args = QCoreApplication::arguments();
     args.removeFirst();
     QProcess::startDetached(QCoreApplication::applicationFilePath(), args);
   }
+#endif
   QCoreApplication::quit();
 }

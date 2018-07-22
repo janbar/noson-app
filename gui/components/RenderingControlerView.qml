@@ -78,7 +78,7 @@ MusicListView {
                     id: muteButton
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
-                    height: units.gu(4)
+                    height: units.gu(5)
                     width: height
                     source: model.mute ? "qrc:/images/audio-volume-muted.svg" : "qrc:/images/audio-volume.svg"
                     opacity: model.mute ? 1.0 : 0.6
@@ -137,7 +137,7 @@ MusicListView {
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
                     source: "qrc:/images/grip.svg"
-                    width: units.gu(3)
+                    width: units.gu(5)
                     height: width
                     opacity: renderingControlList.held ? 1.0 : 0.6
                     color: renderingControlList.foregroundColor

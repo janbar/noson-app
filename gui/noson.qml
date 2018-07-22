@@ -916,7 +916,7 @@ ApplicationWindow {
                 height: width
 
                 Icon {
-                    width: units.gu(3)
+                    width: units.gu(5)
                     height: width
                     anchors.centerIn: parent
                     source: {
@@ -967,7 +967,7 @@ ApplicationWindow {
                 /* Show more info */
                 Icon {
                     id: iconInfo
-                    width: units.gu(3)
+                    width: units.gu(5)
                     height: width
                     anchors.verticalCenter: parent.Center
                     anchors.right: parent.right
@@ -1012,7 +1012,7 @@ ApplicationWindow {
                 height: width
 
                 Icon {
-                    width: units.gu(3)
+                    width: units.gu(5)
                     height: width
                     anchors.centerIn: parent
                     source: "qrc:/images/home.svg"
@@ -1026,7 +1026,7 @@ ApplicationWindow {
                 }
 
                 Icon {
-                    width: units.gu(3)
+                    width: units.gu(5)
                     height: width
                     anchors.centerIn: parent
                     source: "qrc:/images/contextual-menu.svg"
@@ -1190,15 +1190,16 @@ ApplicationWindow {
             spacing: units.gu(1)
 
             RowLayout {
-                spacing: units.gu(1)
+                spacing: 0
                 Icon {
-                    height: units.gu(3)
+                    height: units.gu(5)
                     width: height
                     source: "qrc:/images/font-scalling.svg"
-                    anchors.rightMargin: units.gu(1)
+                    hoverEnabled: false
                 }
                 SpinBox {
                     id: fontScaleBox
+                    enabled: !Android
                     from: 50
                     value: settings.fontScaleFactor * 100
                     to: 200
@@ -1234,14 +1235,16 @@ ApplicationWindow {
             }
 
             RowLayout {
-                spacing: units.gu(1)
+                spacing: 0
                 Icon {
-                    height: units.gu(3)
+                    height: units.gu(5)
                     width: height
                     source: "qrc:/images/graphic-scalling.svg"
+                    hoverEnabled: false
                 }
                 SpinBox {
                     id: scaleBox
+                    enabled: !Android
                     from: 50
                     value: settings.scaleFactor * 100
                     to: 400

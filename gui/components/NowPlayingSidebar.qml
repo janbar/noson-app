@@ -77,7 +77,7 @@ Page {
     }
 
     footer: Item {
-        height: units.gu(6)
+        height: units.gu(7.25)
         width: parent.width
 
         Rectangle {
@@ -91,21 +91,20 @@ Page {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: parent.top
-                anchors.topMargin: units.gu(1.5)
                 anchors.rightMargin: units.gu(1)
-                height: units.gu(3)
+                height: parent.height
                 color: "transparent"
 
                 // Page actions
                 Item {
                     id: optionsMenu
                     anchors.right: parent.right
-                    width: units.gu(4)
+                    width: units.gu(5)
                     height: parent.height
                     visible: true
 
                     Icon {
-                        width: units.gu(3)
+                        width: units.gu(5)
                         height: width
                         anchors.centerIn: parent
                         source: "qrc:/images/contextual-menu.svg"

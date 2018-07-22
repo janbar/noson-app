@@ -66,7 +66,7 @@ Item {
                     tumb.currentIndex = i < tumb.count ? i : i - tumb.count;
                 }
 
-                width: units.gu(3)
+                width: units.gu(5)
                 height: width
                 opacity: 0.7
             }
@@ -97,7 +97,7 @@ Item {
                     tumb.currentIndex = i >= 0 ? i : i + tumb.count;
                 }
 
-                width: units.gu(3)
+                width: units.gu(5)
                 height: width
                 opacity: 0.7
             }

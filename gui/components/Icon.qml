@@ -9,8 +9,9 @@ MouseArea {
     property color color: styleMusic.view.foregroundColor
     property color pressedColor: styleMusic.view.highlightedColor
     property alias rotationRunning: icon.rotationRunning
-    height: units.gu(4)
-    width: row.width
+    property alias iconSize: icon.height
+    height: units.gu(5)
+    width: row.width + units.gu(2)
     enabled: true
     visible: true
     hoverEnabled: enabled && visible
@@ -20,10 +21,17 @@ MouseArea {
         spacing: units.gu(0.5)
         height: parent.height
         visible: false
+        anchors.verticalCenter: parent.verticalCenter
+
+        Item {
+            height: parent.height
+            width: units.gu(0.5)
+        }
 
         Image {
             id: icon
-            height: parent.height
+            anchors.verticalCenter: parent.verticalCenter
+            height: parent.height < units.gu(3) ? parent.height : (parent.height - units.gu(2))
             width: area.visible ? height : 0
             sourceSize.height: height
             sourceSize.width: width

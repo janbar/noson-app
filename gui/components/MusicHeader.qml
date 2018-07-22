@@ -58,7 +58,7 @@ Item {
             bottom: coversImage.bottom
             right: coversImage.right
         }
-        height: isFavorite ? (coversImage.size * 0.25) : 0
+        height: isFavorite ? (coversImage.size * 0.40) : 0
         width: height
         enabled: isFavorite
         source: "qrc:/images/starred.svg"

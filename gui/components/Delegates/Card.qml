@@ -135,7 +135,7 @@ Item {
             bottom: bg.bottom
             right: bg.right
         }
-        height: canPlay ? (card.width * 0.25) : 0
+        height: canPlay ? (card.width * 0.40) : 0
         width: height
         enabled: canPlay
         opacity: 0.3
@@ -152,7 +152,7 @@ Item {
             bottom: playMouseArea.top
             right: bg.right
         }
-        height: isFavorite ? (card.width * 0.25) : 0
+        height: isFavorite ? (card.width * 0.40) : 0
         width: height
         enabled: isFavorite
         source: "qrc:/images/starred.svg"

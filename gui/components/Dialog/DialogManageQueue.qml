@@ -38,7 +38,7 @@ DialogBase {
 
     TextField {
         id: playlistName
-        font.pointSize: units.fs("x-large")
+        font.pointSize: units.fs("medium")
         placeholderText: qsTr("Enter playlist name")
         inputMethodHints: Qt.ImhNoPredictiveText
     }
@@ -82,5 +82,4 @@ DialogBase {
         }
     }
 
-    Component.onCompleted: playlistName.forceActiveFocus()
 }

@@ -243,19 +243,19 @@ MusicPage {
             id: blurredHeader
             isFavorite: songStackPage.isFavorite
             rightColumn: Column {
-                spacing: units.gu(2)
+                spacing: units.gu(1)
                 ShuffleButton {
                     model: songsModel
-                    width: blurredHeader.width > mainView.wideSongView ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
+                    width: units.gu(24)
                 }
                 QueueAllButton {
                     containerItem: songStackPage.containerItem
-                    width: blurredHeader.width > mainView.wideSongView ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
+                    width: units.gu(24)
                     visible: containerItem ? true : false
                 }
                 PlayAllButton {
                     containerItem: songStackPage.containerItem
-                    width: blurredHeader.width > mainView.wideSongView ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
+                    width: units.gu(24)
                     visible: containerItem ? true : false
 
                 }

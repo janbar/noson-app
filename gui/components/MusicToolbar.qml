@@ -107,7 +107,7 @@ Item {
                 }
                 visible: player.currentCount > 0
                 color: styleMusic.playerControls.foregroundColor
-                height: units.gu(4)
+                height: units.gu(6)
                 source: player.isPlaying ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
                 width: height
             }
@@ -122,7 +122,7 @@ Item {
                 }
                 visible: player.currentCount === 0
                 color: styleMusic.playerControls.foregroundColor
-                height: units.gu(4)
+                height: units.gu(6)
                 source: "qrc:/images/input.svg"
                 width: height
             }
@@ -213,7 +213,7 @@ Item {
                     verticalCenter: parent.verticalCenter
                 }
                 color: styleMusic.playerControls.foregroundColor
-                height: units.gu(4)
+                height: units.gu(6)
                 source: player.playbackState === "PLAYING" ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
                 objectName: "playShape"
                 width: height

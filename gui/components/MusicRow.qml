@@ -144,8 +144,8 @@ Row {
         id: action2
         visible: false
         anchors.right: action.left
-        anchors.rightMargin: units.gu(2)
-        width: visible ? units.gu(3) : 0
+        anchors.rightMargin: units.gu(1)
+        width: visible ? units.gu(5) : 0
         property alias iconSource: icon2.source
 
         Rectangle {
@@ -168,8 +168,8 @@ Row {
         id: action
         visible: false
         anchors.right: menu.left
-        anchors.rightMargin: units.gu(2)
-        width: units.gu(3)
+        anchors.rightMargin: units.gu(1)
+        width: units.gu(5)
         property alias iconSource: icon.source
 
         Rectangle {
@@ -200,7 +200,7 @@ Row {
             height: row.height
 
             Icon {
-                width: menu.visible ? units.gu(3) : 0
+                width: menu.visible ? units.gu(5) : 0
                 height: width
                 anchors.centerIn: parent
                 source: "qrc:/images/contextual-menu.svg"

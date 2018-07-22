@@ -21,6 +21,8 @@ include_directories(
     ${noson_INCLUDE_DIRS}
 )
 
+set(QML_IMPORT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/qml)
+
 set(
     NosonAppbackend_SRCS
     modules/NosonApp/tools.h
@@ -79,13 +81,13 @@ endif()
 target_link_libraries(NosonAppbackend ${noson_LIBRARIES})
 
 set_target_properties(NosonAppbackend PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY NosonApp)
+    LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_DIRECTORY}/NosonApp)
 
 target_link_libraries(NosonAppbackend Qt5::Gui Qt5::Qml Qt5::Quick)
 
 # Copy qmldir file to build dir for running in QtCreator
 add_custom_target(NosonAppbackend-qmldir ALL
-    COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/modules/NosonApp/qmldir ${CMAKE_CURRENT_BINARY_DIR}/NosonApp
+    COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/modules/NosonApp/qmldir ${QML_IMPORT_DIRECTORY}/NosonApp
     DEPENDS ${QMLFILES}
 )
 

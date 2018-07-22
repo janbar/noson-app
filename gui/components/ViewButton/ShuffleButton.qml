@@ -20,8 +20,8 @@ import QtQuick.Controls 2.2
 import "../"
 
 Icon {
-    height: units.gu(3)
-    width: units.gu(15)
+    height: units.gu(5)
+    width: units.gu(20)
     source: "qrc:/images/media-playlist-shuffle.svg"
     label {
         //: this appears in a button with limited space (around 14 characters)
