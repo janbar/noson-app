@@ -299,7 +299,7 @@ Item {
 
     Loader {
         id: renderingModelLoader
-        asynchronous: true
+        asynchronous: false
         sourceComponent: Component {
             RenderingModel {
             }
@@ -308,7 +308,7 @@ Item {
 
     Loader {
         id: playerLoader
-        asynchronous: true
+        asynchronous: false
         sourceComponent: Component {
             ZonePlayer {
                 onJobFailed: popInfo.open(qsTr("Action can't be performed"));
@@ -328,7 +328,7 @@ Item {
 
     Loader {
         id: trackQueueLoader
-        asynchronous: true
+        asynchronous: false
         sourceComponent: Component {
             TrackQueue {
             }
