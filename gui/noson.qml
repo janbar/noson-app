@@ -969,7 +969,7 @@ ApplicationWindow {
                     id: iconInfo
                     width: units.gu(5)
                     height: width
-                    anchors.verticalCenter: parent.Center
+                    anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
                     source: shareIndexInProgress ? "qrc:/images/sync.svg" : player.sleepTimerEnabled ? "qrc:/images/timer.svg" : "qrc:/images/alarm.svg"
                     visible: player.sleepTimerEnabled || alarmEnabled || shareIndexInProgress
