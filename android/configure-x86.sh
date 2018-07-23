@@ -31,4 +31,4 @@ cmake ../.. -DCMAKE_SYSTEM_NAME=Android \
 -DQt5Xml_DIR=$QT_DIR/lib/cmake/Qt5Xml \
 -DQt5Svg_DIR=$QT_DIR/lib/cmake/Qt5Svg \
 -DQt5Widgets_DIR=$QT_DIR/lib/cmake/Qt5Widgets \
-
+$@
