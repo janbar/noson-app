@@ -141,6 +141,9 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         set(QT_ANDROID_APP_EXTRA_LIBS "\"android-extra-libs\": \"${EXTRA_LIBS}\",")
     endif()
 
+    # deploy Qt translations
+    set(EXTRA_PLUGINS "${QT_ANDROID_QT_ROOT}/translations")
+
     # set the list of dependant plugins
     if(ARG_PLUGINS)
         foreach(PLUGIN ${ARG_PLUGINS})
