@@ -24,7 +24,6 @@
 #endif
 
 void setupApp(QGuiApplication& app);
-QDir getApplicationDir(QGuiApplication& app, const QString& subdir);
 void prepareTranslator(QGuiApplication& app, const QString& translationPath, const QString& translationPrefix, const QLocale& locale);
 void doExit(int code);
 
@@ -124,18 +123,13 @@ void setupApp(QGuiApplication& app) {
     QLocale locale = QLocale::system();
     prepareTranslator(app, QString(":/i18n"), QString("noson"), locale);
 #ifdef Q_OS_MAC
-    QString translationPath = getApplicationDir(app, QString("Resources/translations")).absolutePath();
-    prepareTranslator(app, translationPath, "qt", locale);
+    QDir appDir(app.applicationDirPath());
+    if (appDir.cdUp() && appDir.cd("Resources/translations"))
+      prepareTranslator(app, appDir.absolutePath(), "qt", locale);
+#elif defined(Q_OS_ANDROID)
+    prepareTranslator(app, "assets:/translations", "qt", locale);
 #endif
     app.setWindowIcon(QIcon(QPixmap(":/images/noson.png")));
-}
-
-QDir getApplicationDir(QGuiApplication& app, const QString& subdir)
-{
-    QDir appDir(app.applicationDirPath());
-    appDir.cdUp();
-    appDir.cd(subdir);
-    return appDir;
 }
 
 void prepareTranslator(QGuiApplication& app, const QString& translationPath, const QString& translationPrefix, const QLocale& locale)
