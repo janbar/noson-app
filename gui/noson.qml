@@ -56,13 +56,7 @@ ApplicationWindow {
                 return Universal.foreground
             } else return "black"
         }
-        property color highlight: {
-            if (settings.style === "Material") {
-                return Material.accent
-            } else if (settings.style === "Universal") {
-                return Universal.accent
-            } else return "gray"
-        }
+        property color highlight: "gray"
         property color shadow: "black"
         property color brightText: "dimgray"
         property color button: "darkgray"
