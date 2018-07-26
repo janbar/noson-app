@@ -24,7 +24,7 @@ Item {
             if (s === "large")
                 return 18.0 * scaleFactor * fontScaleFactor;
             if (s === "x-large")
-                return 25.0 * scaleFactor * fontScaleFactor;
+                return 24.0 * scaleFactor * fontScaleFactor;
         } else {
             if (s === "x-small")
                 return 9.0 * scaleFactor * fontScaleFactor;
