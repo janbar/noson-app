@@ -125,6 +125,7 @@ ApplicationWindow {
     property string appName: "Noson"
     property int debugLevel: 1
     property bool playOnStart: false
+    property bool startup: true
 
     // Property to store the state of an application (active or suspended)
     property bool applicationState: Qt.application.active
@@ -238,12 +239,16 @@ ApplicationWindow {
                 customdebug("Reloading the zone ...");
                 if (connectZone(currentZone)) {
                     Sonos.runLoader();
-                    // handle play on startup
-                    if (playOnStart) {
-                        playOnStart = false;
-                        if (player.playStream(inputStreamUrl, "")) {
-                            tabs.pushNowPlaying();
+                    // Completing startup
+                    if (startup) {
+                        startup = false;
+                        if (playOnStart) {
+                            if (player.playStream(inputStreamUrl, "")) {
+                                tabs.pushNowPlaying();
+                            }
                         }
+                        // check for enabled alarm
+                        alarmEnabled = isAlarmEnabled();
                     }
                 }
             }
@@ -378,7 +383,10 @@ ApplicationWindow {
     }
 
     onZoneChanged: {
-        alarmEnabled = isAlarmEnabled();
+        // Some tasks are already launched during startup
+        if (!startup) {
+          alarmEnabled = isAlarmEnabled();
+        }
     }
 
     ////////////////////////////////////////////////////////////////////////////
