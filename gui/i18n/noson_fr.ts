@@ -738,7 +738,7 @@
     <message>
         <location filename="../ui/NoZoneState.qml" line="169"/>
         <source>Make sure that your device is connected to the correct wireless network and one or more Sonos products are receiving power.</source>
-        <translation>Assurez-vous que votre appareil est connecté au réseau sans fil approprié et un ou plusieurs produits Sonos sont alimenté.</translation>
+        <translation>Assurez-vous que votre appareil est connecté au réseau sans fil approprié et un ou plusieurs produits Sonos sont alimentés.</translation>
     </message>
     <message>
         <location filename="../ui/NoZoneState.qml" line="180"/>
