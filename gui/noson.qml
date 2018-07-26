@@ -902,7 +902,7 @@ ApplicationWindow {
         ]
 
         RowLayout {
-            spacing: units.gu(0)
+            spacing: 0
             anchors.fill: parent
 
             Item {
@@ -961,6 +961,7 @@ ApplicationWindow {
                 /* Show more info */
                 Icon {
                     id: iconInfo
+                    color: "#e95420"
                     width: units.gu(5)
                     height: width
                     anchors.verticalCenter: parent.verticalCenter
