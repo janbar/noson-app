@@ -8,7 +8,12 @@ find_package(Qt5Qml REQUIRED)
 find_package(Qt5Quick REQUIRED)
 
 if(NOT BUILD_DEPENDENCIES)
-    find_package(noson QUIET)
+    if(DEFINED BUILD_DEPENDENCIES)
+        # BUILD_DEPENDENCIES is configured to not build dependencies
+        find_package(noson 1.8 REQUIRED)
+    else()
+        find_package(noson 1.8 QUIET)
+    endif()
 endif()
 if(NOT noson_FOUND)
     add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/lib)
