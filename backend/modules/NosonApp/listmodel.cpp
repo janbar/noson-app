@@ -26,7 +26,7 @@ ListModel::ListModel()
 , m_provider(0)
 , m_updateID(0)
 , m_pending(false)
-, m_dataState(ListModel::NoData)
+, m_dataState(ListModel::New)
 , m_updateSignaled(false)
 {
   m_lock = SONOS::LockGuard::CreateLock();

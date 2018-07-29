@@ -51,9 +51,10 @@ public:
   virtual void handleDataUpdate() = 0;
 
   enum dataState {
-    NoData  = 0,
-    Loaded  = 1,
-    Synced  = 2
+    New     = 0,
+    NoData  = 1,
+    Loaded  = 2,
+    Synced  = 3
   };
 
 protected:

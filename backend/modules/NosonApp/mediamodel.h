@@ -175,6 +175,8 @@ public:
 
   Q_INVOKABLE QVariantMap get(int row);
 
+  Q_INVOKABLE bool isNew() { return m_dataState == ListModel::New; }
+
   Q_INVOKABLE bool init(QObject* sonos, const QVariant& service, bool fill = false);
 
   Q_INVOKABLE void clearData();
