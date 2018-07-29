@@ -144,5 +144,8 @@
         <file>components/AlarmsEmptyState.qml</file>
         <file>images/sync.svg</file>
         <file>i18n/noson_de.qm</file>
+        <file>ui/Index.qml</file>
+        <file>components/IndexEmptyState.qml</file>
+        <file>components/MusicFilter.qml</file>
     </qresource>
 </RCC>

@@ -86,21 +86,6 @@ Page {
     signal groupRoomClicked
     signal groupNoneRoomClicked
 
-    // show search text field
-    onSearchClicked: {
-        if (mainToolBar.state === "search")
-            mainToolBar.state = "default"
-        mainToolBar.state = "search"
-    }
-
-    Label {
-        anchors {
-            centerIn: parent
-        }
-        text: qsTr("No items found")
-        visible: parent.state === "search" && searchResultsCount === 0
-    }
-
     footer: Item {
         height: units.gu(7.25)
         width: parent.width

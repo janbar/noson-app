@@ -287,9 +287,6 @@ ApplicationWindow {
         AllZonesModel.init(Sonos, "",       false);
         AllFavoritesModel.init(Sonos, "",   false);
         AllServicesModel.init(Sonos,        false);
-        AllAlbumsModel.init(Sonos, "",      false);
-        AllArtistsModel.init(Sonos, "",     false);
-        AllGenresModel.init(Sonos, "",      false);
         AllPlaylistsModel.init(Sonos, "",   false);
         MyServicesModel.init(Sonos,         false);
         alarmsModel.init(Sonos,             false);
@@ -341,28 +338,25 @@ ApplicationWindow {
         target: AllFavoritesModel
         onDataUpdated: AllFavoritesModel.asyncLoad()
         onLoaded: AllFavoritesModel.resetModel()
-        onCountChanged: { tabs.setProperty(1, "visible", (AllFavoritesModel.count > 0)) }
+        onCountChanged: { tabs.setProperty(2, "visible", (AllFavoritesModel.count > 0)) }
     }
 
     Connections {
         target: AllArtistsModel
         onDataUpdated: AllArtistsModel.asyncLoad()
         onLoaded: AllArtistsModel.resetModel()
-        onCountChanged: { tabs.setProperty(2, "visible", (AllArtistsModel.count > 0)) }
     }
 
     Connections {
         target: AllAlbumsModel
         onDataUpdated: AllAlbumsModel.asyncLoad()
         onLoaded: AllAlbumsModel.resetModel()
-        onCountChanged: { tabs.setProperty(3, "visible", (AllAlbumsModel.count > 0)) }
     }
 
     Connections {
         target: AllGenresModel
         onDataUpdated: AllGenresModel.asyncLoad()
         onLoaded: AllGenresModel.resetModel()
-        onCountChanged: { tabs.setProperty(4, "visible", (AllGenresModel.count > 0)) }
     }
 
     Connections {
@@ -756,15 +750,13 @@ ApplicationWindow {
 
     Shortcut {
         sequences: ["Esc", "Back"]
-        enabled: noZone === false && (mainToolBar.state === "search" || stackView.depth > 1)
+        enabled: noZone === false && stackView.depth > 1
         onActivated: {
             if (stackView.depth > 1) {
                 if (stackView.currentItem.isRoot)
                     stackView.pop()
                 else
                     stackView.currentItem.goUpClicked()
-            } else if (mainToolBar.state === "search") {
-                mainToolBar.state = "default"
             }
         }
     }
@@ -827,9 +819,7 @@ ApplicationWindow {
     Shortcut {
         sequence: "Ctrl+F"              // Ctrl+F      Show Search popup
         onActivated: {
-            if (stackView.currentItem.searchable && stackView.currentItem.state === "default") {
-                stackView.currentItem.searchClicked()
-            }
+            stackView.currentItem.searchClicked()
         }
     }
     Shortcut {
@@ -890,7 +880,6 @@ ApplicationWindow {
     //// Application main view
     ////
 
-    property alias query: searchField.text
     property bool alarmEnabled: false
     property bool shareIndexInProgress: false
 
@@ -903,9 +892,6 @@ ApplicationWindow {
         states: [
             State {
                 name: "default"
-            },
-            State {
-                name: "search"
             }
         ]
 
@@ -930,10 +916,7 @@ ApplicationWindow {
                             else
                                 "qrc:/images/go-up.svg"
                         } else {
-                            if (mainToolBar.state === "search")
-                                "qrc:/images/edit-clear.svg"
-                            else
-                                "qrc:/images/navigation-menu.svg"
+                            "qrc:/images/navigation-menu.svg"
                         }
                     }
 
@@ -944,10 +927,7 @@ ApplicationWindow {
                             else
                                 stackView.currentItem.goUpClicked()
                         } else {
-                            if (mainToolBar.state === "search")
-                                mainToolBar.state = "default"
-                            else
-                                drawer.open()
+                            drawer.open()
                         }
                     }
 
@@ -958,7 +938,6 @@ ApplicationWindow {
 
             Label {
                 id: titleLabel
-                visible: !searchField.visible
                 text: stackView.currentItem != null ? stackView.currentItem.pageTitle : ""
                 font.pointSize: units.fs("x-large")
                 elide: Label.ElideRight
@@ -978,35 +957,6 @@ ApplicationWindow {
                     visible: player.sleepTimerEnabled || alarmEnabled || shareIndexInProgress
                     enabled: visible
                     rotationRunning: shareIndexInProgress
-                }
-            }
-
-            TextField {
-                id: searchField
-                visible: mainToolBar.state === "search" && stackView.depth === 1
-                enabled: visible
-                Layout.fillWidth: true
-                font.pointSize: units.fs("x-large")
-                inputMethodHints: Qt.ImhNoPredictiveText
-                placeholderText: qsTr("Search music")
-
-                Connections {
-                    target: mainToolBar
-                    onStateChanged: {
-                        if (mainToolBar.state === "default") {
-                            // ensure the search is reset (eg pressing Esc)
-                            searchField.text = ""
-                        } else {
-                            // active focus
-                            searchField.forceActiveFocus()
-                        }
-                    }
-                }
-
-                opacity: visible ? 1.0 : 0.0
-
-                Behavior on opacity {
-                    NumberAnimation { duration: 250 }
                 }
             }
 
@@ -1077,10 +1027,8 @@ ApplicationWindow {
     ListModel {
         id: tabs
         ListElement { title: qsTr("My Services"); source: "qrc:/ui/MusicServices.qml"; visible: true }
+        ListElement { title: qsTr("My Index"); source: "qrc:/ui/Index.qml"; visible: true }
         ListElement { title: qsTr("Favorites"); source: "qrc:/ui/Favorites.qml"; visible: false }
-        ListElement { title: qsTr("Artists"); source: "qrc:/ui/Artists.qml"; visible: false }
-        ListElement { title: qsTr("Albums"); source: "qrc:/ui/Albums.qml"; visible: false }
-        ListElement { title: qsTr("Genres"); source: "qrc:/ui/Genres.qml"; visible: false }
         ListElement { title: qsTr("Playlists"); source: "qrc:/ui/Playlists.qml"; visible: true }
         ListElement { title: qsTr("Alarm clock"); source: "qrc:/ui/Alarms.qml"; visible: true }
 

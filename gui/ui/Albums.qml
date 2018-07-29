@@ -17,6 +17,7 @@
 
 import QtQuick 2.9
 import QtQuick.Controls 2.2
+import QtQuick.Layouts 1.3
 import NosonApp 1.0
 import "../components"
 import "../components/Delegates"
@@ -30,6 +31,20 @@ MusicPage {
     pageFlickable: albumGridView
     searchable: true
 
+    Component.onCompleted: {
+        if (AllAlbumsModel.isNew()) {
+            AllAlbumsModel.init(Sonos, "", false);
+            AllAlbumsModel.asyncLoad();
+        }
+    }
+
+    onSearchClicked: filter.visible = true
+
+    header: MusicFilter {
+        id: filter
+        visible: false
+    }
+
     MusicGridView {
         id: albumGridView
         itemWidth: units.gu(15)
@@ -41,7 +56,7 @@ MusicPage {
             sort.order: Qt.AscendingOrder
             sortCaseSensitivity: Qt.CaseInsensitive
             filter.property: "normalized"
-            filter.pattern: new RegExp(normalizedInput(mainView.query), "i")
+            filter.pattern: new RegExp(normalizedInput(filter.text), "i")
             filterCaseSensitivity: Qt.CaseInsensitive
         }
 
