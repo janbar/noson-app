@@ -147,7 +147,7 @@ Flickable {
 
             onReleased: {
                 var diffX = mouse.x - lastX
-                if (Math.abs(diffX) > units.gu(4)) {
+                if (Math.abs(diffX) > units.gu(10)) {
                     if (diffX < 0) {
                         player.nextSong()
                     } else {
@@ -155,7 +155,7 @@ Flickable {
                     }
                 }
                 var diffY = mouse.y - lastY
-                if (Math.abs(diffY) > units.gu(4)) {
+                if (Math.abs(diffY) > units.gu(5)) {
                     if (diffY < 0 && mainView.nowPlayingPage !== null) {
                         mainView.nowPlayingPage.isListView = true;
                     }
