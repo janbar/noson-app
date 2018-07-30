@@ -7,12 +7,11 @@ find_package(Qt5Gui REQUIRED)
 find_package(Qt5Qml REQUIRED)
 find_package(Qt5Quick REQUIRED)
 
+OPTION (BUILD_LIBNOSON "Build libnoson from sources." ON)
+
 if(NOT BUILD_DEPENDENCIES)
-    if(DEFINED BUILD_DEPENDENCIES)
-        # BUILD_DEPENDENCIES is configured to not build dependencies
+    if(NOT BUILD_LIBNOSON)
         find_package(noson 1.8 REQUIRED)
-    else()
-        find_package(noson 1.8 QUIET)
     endif()
 endif()
 if(NOT noson_FOUND)
