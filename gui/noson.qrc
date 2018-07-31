@@ -147,5 +147,8 @@
         <file>ui/Index.qml</file>
         <file>components/IndexEmptyState.qml</file>
         <file>components/MusicFilter.qml</file>
+        <file>images/folder_album.png</file>
+        <file>images/folder_artist.png</file>
+        <file>images/folder_genre.png</file>
     </qresource>
 </RCC>

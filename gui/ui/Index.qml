@@ -30,7 +30,7 @@ MusicPage {
     objectName: "indexPage"
     isRoot: true
     multiView: true
-    searchable: true
+    searchable: false
 
     pageTitle: qsTr("My Index")
     pageFlickable: indexGrid.visible ? indexGrid : indexList
@@ -121,17 +121,17 @@ MusicPage {
             noIndex = false;
             indexModel.append({
                 title: qsTr("Artists"),
-                art: "qrc:/images/no_cover.png",
+                art: "qrc:/images/folder_artist.png",
                 source: "qrc:/ui/Artists.qml"
             });
             indexModel.append({
                 title: qsTr("Albums"),
-                art: "qrc:/images/no_cover.png",
+                art: "qrc:/images/folder_album.png",
                 source: "qrc:/ui/Albums.qml"
             });
             indexModel.append({
                 title: qsTr("Genres"),
-                art: "qrc:/images/no_cover.png",
+                art: "qrc:/images/folder_genre.png",
                 source: "qrc:/ui/Genres.qml"
             });
         } else {
@@ -157,17 +157,4 @@ MusicPage {
         stackView.push(model.source);
     }
 
-    /*
-    DialogSearchMusic {
-        id: dialogSearch
-        searchableModel: mediaModel
-
-        onClosed: {
-            // reset state of the main tool bar
-            mainToolBar.state = "default";
-        }
-    }
-
-    onSearchClicked: dialogSearch.open();
-    */
 }
