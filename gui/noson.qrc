@@ -150,5 +150,8 @@
         <file>images/folder_album.png</file>
         <file>images/folder_artist.png</file>
         <file>images/folder_genre.png</file>
+        <file>images/folder_composer.png</file>
+        <file>ui/Composers.qml</file>
+        <file>ui/ComposerView.qml</file>
     </qresource>
 </RCC>

@@ -360,6 +360,12 @@ ApplicationWindow {
     }
 
     Connections {
+        target: AllComposersModel
+        onDataUpdated: AllComposersModel.asyncLoad()
+        onLoaded: AllComposersModel.resetModel()
+    }
+
+    Connections {
         target: AllPlaylistsModel
         onDataUpdated: AllPlaylistsModel.asyncLoad()
         onLoaded: AllPlaylistsModel.resetModel()

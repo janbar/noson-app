@@ -72,6 +72,8 @@ set(
     modules/NosonApp/allservicesmodel.h
     modules/NosonApp/alarmsmodel.cpp
     modules/NosonApp/alarmsmodel.h
+    modules/NosonApp/composersmodel.cpp
+    modules/NosonApp/composersmodel.h
 )
 
 add_library(NosonAppbackend MODULE

@@ -134,6 +134,11 @@ MusicPage {
                 art: "qrc:/images/folder_genre.png",
                 source: "qrc:/ui/Genres.qml"
             });
+            indexModel.append({
+                title: qsTr("Composers"),
+                art: "qrc:/images/folder_composer.png",
+                source: "qrc:/ui/Composers.qml"
+            });
         } else {
             noIndex = true;
         }

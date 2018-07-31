@@ -42,6 +42,7 @@ void BackendPlugin::registerTypes(const char *uri)
   qmlRegisterSingletonType<ZonesModel>(uri, 1, 0, "AllZonesModel", Sonos::allZonesModel_provider);
   qmlRegisterSingletonType<AlbumsModel>(uri, 1, 0, "AllAlbumsModel", Sonos::allAlbumsModel_provider);
   qmlRegisterSingletonType<ArtistsModel>(uri, 1, 0, "AllArtistsModel", Sonos::allArtistsModel_provider);
+  qmlRegisterSingletonType<ComposersModel>(uri, 1, 0, "AllComposersModel", Sonos::allComposersModel_provider);
   qmlRegisterSingletonType<GenresModel>(uri, 1, 0, "AllGenresModel", Sonos::allGenresModel_provider);
   qmlRegisterSingletonType<PlaylistsModel>(uri, 1, 0, "AllPlaylistsModel", Sonos::allPlaylistsModel_provider);
   qmlRegisterSingletonType<FavoritesModel>(uri, 1, 0, "AllFavoritesModel", Sonos::allFavoritesModel_provider);
@@ -55,6 +56,7 @@ void BackendPlugin::registerTypes(const char *uri)
   qmlRegisterType<RoomsModel>(uri, 1, 0, "RoomsModel");
   qmlRegisterType<AlbumsModel>(uri, 1, 0, "AlbumsModel");
   qmlRegisterType<ArtistsModel>(uri, 1, 0, "ArtistsModel");
+  qmlRegisterType<ComposersModel>(uri, 1, 0, "CompisersModel");
   qmlRegisterType<GenresModel>(uri, 1, 0, "GenresModel");
   qmlRegisterType<PlaylistsModel>(uri, 1, 0, "PlaylistsModel");
   qmlRegisterType<TracksModel>(uri, 1, 0, "TracksModel");
