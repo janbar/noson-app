@@ -82,7 +82,7 @@ MusicPage {
                     elide: Text.ElideRight
                     font.pointSize: units.fs("x-large")
                     maximumLineCount: 1
-                    text: artist != "" ? artist : i18n.tr("Unknown Artist")
+                    text: artist != "" ? artist : qsTr("Unknown Artist")
                     wrapMode: Text.NoWrap
                 }
 
