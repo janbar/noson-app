@@ -1,4 +1,8 @@
-noson-app (3.6) UNRELEASED; urgency=low
+noson-app (3.7) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 3.7
+  * Improvements for mobile device
 
   [ janbar ]
   * Release 3.6
