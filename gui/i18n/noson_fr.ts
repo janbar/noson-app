@@ -711,7 +711,7 @@
     <message>
         <location filename="../ui/Index.qml" line="35"/>
         <source>My Index</source>
-        <translation>Ma bibliothèque</translation>
+        <translation>Ma Musique</translation>
     </message>
     <message>
         <location filename="../ui/Index.qml" line="123"/>
@@ -1269,7 +1269,7 @@
     <message>
         <location filename="../noson.qml" line="1036"/>
         <source>My Index</source>
-        <translation>Ma bibliothèque</translation>
+        <translation>Ma Musique</translation>
     </message>
     <message>
         <location filename="../noson.qml" line="1038"/>
