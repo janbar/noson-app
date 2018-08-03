@@ -222,7 +222,7 @@ Page {
                 color: "transparent"
 
                 Row {
-                    spacing: units.gu(1)
+                    spacing: units.gu(0.5)
 
                     Icon {
                         id: closeSelection
