@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
-<manifest android:versionName="3.7.0" package="io.github.janbar.noson" android:installLocation="auto" xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="2">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  android:versionName="3.7.1"
+  android:versionCode="3"
+  package="io.github.janbar.noson"
+  android:installLocation="auto">
     <application android:label="noson" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:icon="@mipmap/ic_launcher">
 		<activity android:label="noson" android:name="org.qtproject.qt5.android.bindings.QtActivity" android:screenOrientation="unspecified" android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|locale|fontScale|keyboard|keyboardHidden|navigation">
 			<intent-filter>
