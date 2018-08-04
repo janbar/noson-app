@@ -38,9 +38,9 @@ DialogBase {
 
     TextField {
         id: playlistName
-        font.pointSize: units.fs("x-large")
+        font.pointSize: units.fs("large")
         placeholderText: qsTr("Enter playlist name")
-        inputMethodHints: Qt.ImhNoPredictiveText
+        inputMethodHints: Qt.ImhNone
     }
 
     Button {
