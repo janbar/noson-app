@@ -59,7 +59,11 @@ Rectangle {
     }
 
     onVisibleChanged: {
-        if (visible)
+        if (visible) {
+            field.enabled = true;
             field.forceActiveFocus();
+        } else {
+            field.enabled = false;
+        }
     }
 }
