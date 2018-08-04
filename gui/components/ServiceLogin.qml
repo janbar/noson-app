@@ -73,7 +73,7 @@ Rectangle {
                 right: parent.right
             }
             focus: true
-            inputMethodHints: Qt.ImhNoPredictiveText
+            inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhEmailCharactersOnly
             placeholderText: qsTr("User name")
             font.pointSize: units.fs("medium")
         }
@@ -85,7 +85,7 @@ Rectangle {
                 right: parent.right
             }
             focus: true
-            inputMethodHints: Qt.ImhNoPredictiveText
+            inputMethodHints: Qt.ImhHiddenText
             placeholderText: qsTr("Password")
             echoMode: TextInput.Password
             font.pointSize: units.fs("medium")
