@@ -59,8 +59,8 @@ MouseArea {
             }
 
             transform: Rotation {
-                origin.x: icon.x + icon.width / 2
-                origin.y: icon.y + icon.height / 2
+                origin.x: icon.x - units.gu(1) + icon.width / 2
+                origin.y: icon.y - units.gu(1) + icon.height / 2
                 angle: animator.angle
             }
         }
