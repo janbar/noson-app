@@ -225,6 +225,16 @@ void ArtistsModel::resetModel()
   emit countChanged();
 }
 
+void ArtistsModel::clearModel()
+{
+  if (m_dataState != ListModel::New)
+  {
+    clearData();
+    m_dataState = ListModel::Loaded;
+    emit loaded(true);
+  }
+}
+
 void ArtistsModel::handleDataUpdate()
 {
   if (!updateSignaled())

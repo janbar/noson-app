@@ -221,6 +221,16 @@ void GenresModel::resetModel()
   emit countChanged();
 }
 
+void GenresModel::clearModel()
+{
+  if (m_dataState != ListModel::New)
+  {
+    clearData();
+    m_dataState = ListModel::Loaded;
+    emit loaded(true);
+  }
+}
+
 void GenresModel::handleDataUpdate()
 {
   if (!updateSignaled())

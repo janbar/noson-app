@@ -250,6 +250,16 @@ void AlbumsModel::resetModel()
   emit countChanged();
 }
 
+void AlbumsModel::clearModel()
+{
+  if (m_dataState != ListModel::New)
+  {
+    clearData();
+    m_dataState = ListModel::Loaded;
+    emit loaded(true);
+  }
+}
+
 void AlbumsModel::handleDataUpdate()
 {
   if (!updateSignaled())

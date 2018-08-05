@@ -89,6 +89,8 @@ public:
 
   Q_INVOKABLE void appendModel() { }
 
+  Q_INVOKABLE void clearModel();
+
   virtual void handleDataUpdate();
 
   Q_INVOKABLE int containerUpdateID() { return m_updateID; }
