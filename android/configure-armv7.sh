@@ -1,6 +1,6 @@
-rm -rf build/*
-mkdir -p build
-cd build
+rm -rf build-armv7/*
+mkdir -p build-armv7
+cd build-armv7
 
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home/
 export ANDROID_SDK=/Users/Shared/Android/Sdk

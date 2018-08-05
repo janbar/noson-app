@@ -1,6 +1,6 @@
-rm -rf build/*
-mkdir -p build
-cd build
+rm -rf build-x86/*
+mkdir -p build-x86
+cd build-x86
 
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home/
 export ANDROID_SDK=/Users/Shared/Android/Sdk
