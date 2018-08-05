@@ -158,6 +158,15 @@ MusicPage {
         visible: active
     }
 
+    // Overlay to show when index is being refreshed
+    Loader {
+        anchors.fill: parent
+        active: shareIndexInProgress && infoLoadedIndex
+        asynchronous: true
+        source: "qrc:/components/IndexUpdateState.qml"
+        visible: active
+    }
+
     function clickItem(model) {
         stackView.push(model.source);
     }
