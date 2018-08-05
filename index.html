@@ -11,160 +11,158 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
   <script src="./bootstrap/js/bootstrap.js"></script>
 
-</head>
+  </head>
   <body id="index">
-
-    <div class="container">
-      <div class="row">
-        <div class="page-header">
-          <img src="./icon.png" style="width: 120px; height: 120px; float: left; margin-right: 20px">
-          <div id="blurb">
-            <p>Noson is a SONOS controller for Linux platforms</p>
+    <div style="margin-left: 10px;">
+      <div class="container">
+        <div class="row">
+          <div class="page-header" style="margin-left: 20px;">
+            <img src="./icon.png" style="width: 120px; height: 120px; float: left; margin-right: 20px">
+            <div id="blurb">
+              <p>Noson is a SONOS controller for Linux platforms</p>
+            </div>
+            <div style="clear:both;"></div>
           </div>
-          <div style="clear:both;"></div>
         </div>
-      </div>
         
-      <div class="row" style="text-align:left">
-        <div class="span12">
-          <p>The fast and smart controller for your SONOS devices. You can browse your music library and play track or radio on any zones. You can manage grouping zones, queue, and playlists, and fully control the playback.</p>
-          <p>Written with QML/C++ for maximal performance</p>
+        <div class="row" style="text-align:left">
+          <div class="span12">
+            <p>The fast and smart controller for your SONOS devices. You can browse your music library and play track or radio on any zones. You can manage grouping zones, queue, and playlists, and fully control the playback.</p>
+            <p>Written with QML/C++ for maximal performance</p>
+          </div>
+          <div class="span12" style="text-align:center">
+          </div>
         </div>
-        <div class="span12" style="text-align:center">
-        </div>
-      </div>
 
-      <ul>
-        <li>
-          <h4>Package for Ubuntu</h4>
-          <p>Ubuntu packages for your desktop are available in repository <code>ppa:jlbarriere68/noson-app</code>. Go to <a href="https://launchpad.net/~jlbarriere68/+archive/ubuntu/noson-app">noson-app PPA</a> for technical details.</p>
-          <p>You can install noson-app on your Ubuntu desktop by the following:
-          <pre>sudo add-apt-repository ppa:jlbarriere68/noson-app
-sudo apt-get update
-sudo apt-get install noson-app</pre>
-          </p>
-        </li>
-        <li>
-          <h4>Package Flatpak</h4>
-          <p>Noson is published in the <b>flathub</b> repository and it can be installed on any others Linux using flatpak. Go to <a href="https://flathub.org/apps/details/io.github.janbar.noson">noson in FlatHub</a> for further details.
-          </p>
-        </li>
-        <li>
-          <h4>Package Snap</h4>
-          <p>Alternatively the older version of noson(2.8) is available from Ubuntu store as SNAP package. You can manually install it by the following:
-          <pre>sudo snap install noson</pre>
-          </p>
-        </li>
-      </ul>
-
-      <p>Sources code is hosted by <em>github</em> in repository <a href="https://github.com/janbar/noson-app/">noson-app</a>.</p>
-
-      <p>
-        <a href="https://gitter.im/janbar/noson-app?utm_source=share-link&utm_medium=link&utm_campaign=share-link">
-          <img alt="gitter chat" src="https://badges.gitter.im/janbar/noson-app.svg">
-        </a>
-      </p>
-
-      <div class="row">
-        <h2 align="center">Screenshot</h2>
-        <div id="screenshot" align="center">
-          <img src="download/noson.png"/>
-        </div>
-      </div>
-
-      <br><br>
-
-      <div class="row">
-        <h2 align="center">Usage (Linux,BSD)</h2>
         <ul>
           <li>
-            <h4>--cli</h4>
-            It launches the CLI tool for DIYers: Type 'help' to show all available commands.<br>
+            <h4>Package for Ubuntu</h4>
+            <p>Ubuntu packages for your desktop are available in repository <code>ppa:jlbarriere68/noson-app</code>. Go to <a href="https://launchpad.net/~jlbarriere68/+archive/ubuntu/noson-app">noson-app PPA</a> for technical details.</p>
+            <p>You can install noson-app on your Ubuntu desktop by the following:
+            <pre>sudo add-apt-repository ppa:jlbarriere68/noson-app
+  sudo apt-get update
+  sudo apt-get install noson-app</pre>
+            </p>
           </li>
           <li>
-            <h4>--zone={Name of zone}</h4>
-            It will connect the specified zone at GUI startup.<br>
+            <h4>Package Flatpak</h4>
+            <p>Noson is published in the <b>flathub</b> repository and it can be installed on any others Linux using flatpak. Go to <a href="https://flathub.org/apps/details/io.github.janbar.noson">noson in FlatHub</a> for further details.
+            </p>
           </li>
           <li>
-            <h4>--playurl={Stream URL}</h4>
-            It will play the stream at GUI startup.<br>
-          </li>
-          <li>
-            <h4>--debug</h4>
-            Enable debug output.<br>
+            <h4>Package Snap</h4>
+            <p>Alternatively the older version of noson(2.8) is available from Ubuntu store as SNAP package. You can manually install it by the following:
+            <pre>sudo snap install noson</pre>
+            </p>
           </li>
         </ul>
-      </div>
 
-      <br><br>
+        <p>Sources code is hosted by <em>github</em> in repository <a href="https://github.com/janbar/noson-app/">noson-app</a>.</p>
 
-      <div class="row">
-        <h2 align="center">Release notes</h2>
-        <ul>
-          <li>
-            <h4>Release 3.7.0</h4>
-            Fast startup: No more loading the full music index at startup.<br>
-            The new space 'My Music' allows to browse the music index.<br>
-            Adds a new folder to browse music by composer.<br>
-            Improvements for mobile devices.<br>
-          </li>
-          <li>
-            <h4>Release 3.6.5</h4>
-            Improve touching areas for phone device.<br>
-            Build Android (Native API level 16).<br>
-          </li>
-          <li>
-            <h4>Release 3.6.4</h4>
-            Add german translations from transifex.<br>
-          </li>
-          <li>
-            <h4>Release 3.6.3</h4>
-            Display share indexing in progress.<br>
-            Fix remaining time of sleeptimer not refreshed.<br>
-            Fix search state not cleaned.<br>
-          </li>
-          <li>
-            <h4>Release 3.6.0</h4>
-            Add support to manage alarm clock.<br>
-            Add new command CLI 'SHOWAC', 'CREATEAC', 'UPDATEAC', 'DESTROYAC'.<br>
-          </li>
-          <li>
-            <h4>Release 3.5.0</h4>
-            Add support for enabling/disabling night mode.<br>
-          </li>
-          <li>
-            <h4>Release 3.4.3</h4>
-            Add new command CLI 'STATUS', 'SLEEPTIMER'.<br>
-            Fix crash caused by the command CLI 'PLAYURL'.<br>
-            Fix bug occurring with QtQuick 5.11.<br>
-            Fix CMake build with Qt 5.11.<br>
-          </li>
-          <li>
-            <h4>Release 3.4.1</h4>
-            It includes a CLI tool available with the command <code>noson-app --cli</code>.<br>
-            Restart automatically the application when the setting style or scale has been changed.<br>
-          </li>
-          <li>
-            <h4>Release 3.4.0</h4>
-            The command line argument <code>--zone={Name of zone}</code> will connect the zone on startup.<br>
-            The command line argument <code>--playurl={Stream URL}</code> will play the stream on startup.<br>
-            A setting <i>Theme</i> is added to switch the theme of colors: <i>Light</i> or <i>Dark</i> or <i>System default</i>. It is available only for the styles <i>Material</i> and <i>Universal</i>.<br>
-          </li>
-          <li>
-            <h4>Release 3.3.8</h4>
-            Bug fixing.<br>
-          </li>
-        </ul>
+        <p>
+          <a href="https://gitter.im/janbar/noson-app?utm_source=share-link&utm_medium=link&utm_campaign=share-link">
+            <img alt="gitter chat" src="https://badges.gitter.im/janbar/noson-app.svg">
+          </a>
+        </p>
+
+        <div class="row">
+          <h2 align="center">Screenshot</h2>
+          <div id="screenshot" align="center">
+            <img src="download/noson.png" style="margin-left: 20px;"/>
+          </div>
+        </div>
+
+        <br><br>
+
+        <div class="row">
+          <h2 align="center">Usage (Linux,BSD)</h2>
+          <ul>
+            <li>
+              <h4>--cli</h4>
+              It launches the CLI tool for DIYers: Type 'help' to show all available commands.<br>
+            </li>
+            <li>
+              <h4>--zone={Name of zone}</h4>
+              It will connect the specified zone at GUI startup.<br>
+            </li>
+            <li>
+              <h4>--playurl={Stream URL}</h4>
+              It will play the stream at GUI startup.<br>
+            </li>
+            <li>
+              <h4>--debug</h4>
+              Enable debug output.<br>
+            </li>
+          </ul>
+        </div>
+
+        <br><br>
+
+        <div class="row">
+          <h2 align="center">Release notes</h2>
+          <ul>
+            <li>
+              <h4>Release 3.7.0</h4>
+              Fast startup: No more loading the full music index at startup.<br>
+              The new space 'My Music' allows to browse the music index.<br>
+              Adds a new folder to browse music by composer.<br>
+              Improvements for mobile devices.<br>
+            </li>
+            <li>
+              <h4>Release 3.6.5</h4>
+              Improve touching areas for phone device.<br>
+              Build Android (Native API level 16).<br>
+            </li>
+            <li>
+              <h4>Release 3.6.4</h4>
+              Add german translations from transifex.<br>
+            </li>
+            <li>
+              <h4>Release 3.6.3</h4>
+              Display share indexing in progress.<br>
+              Fix remaining time of sleeptimer not refreshed.<br>
+              Fix search state not cleaned.<br>
+            </li>
+            <li>
+              <h4>Release 3.6.0</h4>
+              Add support to manage alarm clock.<br>
+              Add new command CLI 'SHOWAC', 'CREATEAC', 'UPDATEAC', 'DESTROYAC'.<br>
+            </li>
+            <li>
+              <h4>Release 3.5.0</h4>
+              Add support for enabling/disabling night mode.<br>
+            </li>
+            <li>
+              <h4>Release 3.4.3</h4>
+              Add new command CLI 'STATUS', 'SLEEPTIMER'.<br>
+              Fix crash caused by the command CLI 'PLAYURL'.<br>
+              Fix bug occurring with QtQuick 5.11.<br>
+              Fix CMake build with Qt 5.11.<br>
+            </li>
+            <li>
+              <h4>Release 3.4.1</h4>
+              It includes a CLI tool available with the command <code>noson-app --cli</code>.<br>
+              Restart automatically the application when the setting style or scale has been changed.<br>
+            </li>
+            <li>
+              <h4>Release 3.4.0</h4>
+              The command line argument <code>--zone={Name of zone}</code> will connect the zone on startup.<br>
+              The command line argument <code>--playurl={Stream URL}</code> will play the stream on startup.<br>
+              A setting <i>Theme</i> is added to switch the theme of colors: <i>Light</i> or <i>Dark</i> or <i>System default</i>. It is available only for the styles <i>Material</i> and <i>Universal</i>.<br>
+            </li>
+            <li>
+              <h4>Release 3.3.8</h4>
+              Bug fixing.<br>
+            </li>
+          </ul>
+        </div>
       </div>
-    
     </div>
-
     <footer>
       <div class="container">
-        <p>This website is made with <a href='http://twitter.github.com/bootstrap/'>Twitter Bootstrap</a>, themed with <a href='http://bootswatch.com'>Bootswatch</a>.</p>
-        <p>noson-app is licensed under the GNU General Public License.</p>
+        <p>This website is made with <a href='http://twitter.github.com/bootstrap'>Twitter Bootstrap</a>, themed with <a href='http://bootswatch.com'>Bootswatch</a>.</p>
+          <p>noson-app is licensed under the GNU General Public License.</p>
       </div>
     </footer>
-    
   </body>
 </html>
