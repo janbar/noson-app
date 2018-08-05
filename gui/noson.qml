@@ -376,6 +376,10 @@ ApplicationWindow {
         onAlarmClockChanged: alarmsModel.asyncLoad()
         onShareIndexInProgress: {
             shareIndexInProgress = true;
+            AllAlbumsModel.clearModel();
+            AllArtistsModel.clearModel();
+            AllComposersModel.clearModel();
+            AllGenresModel.clearModel();
         }
         onShareIndexFinished: {
             shareIndexInProgress = false;
