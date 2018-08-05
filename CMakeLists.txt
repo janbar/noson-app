@@ -6,6 +6,7 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 option(INSTALL_TESTS "Install the tests on make install" on)
 
 set(APP_VERSION       "3.7.1")
+set(APP_VERSION_CODE  3)
 set(APP_NAME          "noson")
 set(APP_ID            "io.github.janbar.noson")
 set(EXEC              "noson-app")
@@ -66,12 +67,16 @@ install(
 add_subdirectory(backend)
 add_subdirectory(gui)
 if(ANDROID)
+  configure_file(
+    ${CMAKE_SOURCE_DIR}/android/AndroidManifest.xml.in
+    ${CMAKE_SOURCE_DIR}/android/package-sources/AndroidManifest.xml
+  )
   include(android/AddQtAndroidApk.cmake)
   add_dependencies(noson-gui NosonAppbackend NosonAppbackend-qmldir)
   add_qt_android_apk(noson-apk noson-gui
-      NAME "noson"
-      VERSION_CODE 1
-      PACKAGE_NAME "io.github.janbar.noson"
+      NAME ${APP_NAME}
+      VERSION_CODE ${APP_VERSION_CODE}
+      PACKAGE_NAME ${APP_ID}
       PACKAGE_SOURCES ${CMAKE_SOURCE_DIR}/android/package-sources
       BUILDTOOLS_REVISION ${QT_ANDROID_SDK_BUILDTOOLS_REVISION}
       DEPENDS ssl crypto

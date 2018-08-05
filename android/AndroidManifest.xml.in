@@ -1,7 +1,11 @@
 <?xml version="1.0"?>
-<manifest android:versionName="@QT_ANDROID_APP_VERSION@" package="@QT_ANDROID_APP_PACKAGE_NAME@" android:installLocation="auto" xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="@QT_ANDROID_APP_VERSION_CODE@">
-    <application android:label="@QT_ANDROID_APP_NAME@" android:name="org.qtproject.qt5.android.bindings.QtApplication">
-		<activity android:label="@QT_ANDROID_APP_NAME@" android:name="org.qtproject.qt5.android.bindings.QtActivity" android:screenOrientation="unspecified" android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|locale|fontScale|keyboard|keyboardHidden|navigation">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  android:versionName="@APP_VERSION@"
+  android:versionCode="@APP_VERSION_CODE@"
+  package="@APP_ID@"
+  android:installLocation="auto">
+    <application android:label="@APP_NAME@" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:icon="@mipmap/ic_launcher">
+		<activity android:label="@APP_NAME@" android:name="org.qtproject.qt5.android.bindings.QtActivity" android:screenOrientation="unspecified" android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|locale|fontScale|keyboard|keyboardHidden|navigation">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 				<category android:name="android.intent.category.LAUNCHER"/>
