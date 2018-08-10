@@ -14,3 +14,4 @@ endif()
 set(QML_IMPORT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/qml)
 
 add_subdirectory(NosonApp)
+add_subdirectory(NosonThumbnailer)

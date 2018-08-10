@@ -44,6 +44,8 @@ Item {
         source: art
         visible: false
         width: Math.max(parent.height, parent.width)
+        sourceSize.height: 512
+        sourceSize.width: 512
     }
 
     // the blur

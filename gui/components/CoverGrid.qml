@@ -19,6 +19,7 @@
  */
 
 import QtQuick 2.9
+import NosonThumbnailer 1.0
 
 Item {
     id: coverGrid
@@ -39,6 +40,9 @@ Item {
 
     // Property to set source of default cover image
     property string noCover: "qrc:/images/no_cover.png"
+
+    // Property to set the visibility of noCover as overlay
+    property bool overlay: true
 
     property string firstSource
 
@@ -62,6 +66,7 @@ Item {
         source: noCover
         sourceSize.height: 128
         sourceSize.width: 128
+        visible: coverGrid.overlay
     }
 
     // Flow of the cover arts in either 1, 1x1, 2x1, 2x2

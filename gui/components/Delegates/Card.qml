@@ -31,6 +31,7 @@ Item {
     property alias coverFlow: coverGrid.flowModel
     property alias imageSource: coverGrid.firstSource
     property alias noCover: coverGrid.noCover
+    property alias overlay: coverGrid.overlay
     property alias primaryText: primaryLabel.text
     property alias secondaryText: secondaryLabel.text
     property alias secondaryTextVisible: secondaryLabel.visible

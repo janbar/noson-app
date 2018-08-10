@@ -173,6 +173,7 @@ MusicPage {
                          : model.type === 4 ? qsTr("Playlist")
                          : model.type === 5 ? qsTr("Song")
                          : ""
+            overlay: false // item icon could be transparent
             noCover: model.type === 5 && !model.canQueue ? "qrc:/images/radio.png"
                    : model.type === 2 ? "qrc:/images/none.png"
                    : "qrc:/images/no_cover.png"

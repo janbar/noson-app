@@ -126,6 +126,7 @@ MusicPage {
             secondaryText: model.nickName
             isFavorite: false
 
+            overlay: false // item icon could be transparent
             noCover: "qrc:/images/radio.png"
             coverSources: [{art: model.type === "65031" ? "qrc:/images/tunein.png" : model.icon}]
 

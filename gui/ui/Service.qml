@@ -247,10 +247,10 @@ MusicPage {
 
             canPlay: model.isContainer && model.canPlay ? true : false
 
+            overlay: false // item icon could be transparent
             noCover: model.type === 2 ? "qrc:/images/none.png"
                    : model.canPlay && !model.canQueue ? "qrc:/images/radio.png"
                    : "qrc:/images/no_cover.png"
-
             coverSources: model.art !== "" ? [{art: model.art}]
                         : model.type === 2 ? [{art: "qrc:/images/none.png"}]
                         : model.canPlay && !model.canQueue ? [{art: "qrc:/images/radio.png"}]

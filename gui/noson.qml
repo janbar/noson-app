@@ -6,6 +6,7 @@ import QtQuick.Controls.Universal 2.2
 import Qt.labs.settings 1.0
 import QtGraphicalEffects 1.0
 import NosonApp 1.0
+import NosonThumbnailer 1.0
 import "components"
 import "components/Dialog"
 import "ui"
@@ -32,6 +33,7 @@ ApplicationWindow {
         property int widthGU: Math.round(mainView.width / units.gridUnit)
         property int heightGU: Math.round(mainView.height / units.gridUnit)
         property string accounts: ""
+        property string lastfmKey: ""
     }
 
     Material.accent: Material.Grey
@@ -156,6 +158,9 @@ ApplicationWindow {
     // property to enable pop info on index loaded
     property bool infoLoadedIndex: true // enabled at startup
 
+    // property to detect thumbnailer is available
+    property bool thumbValid: false
+
     // Constants
     readonly property int queueBatchSize: 100
     readonly property real minSizeGU: 45
@@ -273,6 +278,8 @@ ApplicationWindow {
 
         customdebug("LANG=" + Qt.locale().name);
         Sonos.setLocale(Qt.locale().name);
+        if (Thumbnailer.setApiKey(settings.lastfmKey))
+            thumbValid = true;
 
         // init SMAPI third party accounts
         var acls = deserializeACLS(settings.accounts);
@@ -730,8 +737,12 @@ ApplicationWindow {
             uri = art;
         else if (album !== undefined && album !== "")
             uri = "qrc:/images/no_cover.png";
-        else if (artist !== undefined && artist !== "")
-            uri = "qrc:/images/none.png";
+        else if (artist !== undefined && artist !== "") {
+            if (settings.lastfmKey.length > 0)
+                uri = "image://artistart/artist=" + encodeURIComponent(artist);
+            else
+                uri = "qrc:/images/none.png";
+        }
         return uri;
     }
 
@@ -1131,6 +1142,13 @@ ApplicationWindow {
 
             settings.style = styleBox.displayText;
             scaleBox.acceptedValue = settings.scaleFactor;
+
+            if (settings.lastfmKey !== apiKey.text) {
+                settings.lastfmKey = apiKey.text;
+                if (Thumbnailer.setApiKey(apiKey.text))
+                    thumbValid = true;
+            }
+
             applicationSettingsDialog.close();
 
             if (needRestart)
@@ -1309,6 +1327,26 @@ ApplicationWindow {
                 verticalAlignment: Label.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+            }
+
+            RowLayout {
+                visible: true
+                spacing: units.gu(1)
+                Layout.fillWidth: true
+                Label {
+                    text: qsTr("Last.fm")
+                    font.pointSize: units.fs("medium");
+                }
+
+                TextField {
+                    id: apiKey
+                    font.pointSize: units.fs("medium")
+                    placeholderText: qsTr("Enter a valid API key");
+                    inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhUrlCharactersOnly
+                    Layout.fillWidth: true
+
+                    Component.onCompleted: apiKey.text = settings.lastfmKey
+                }
             }
         }
     }
