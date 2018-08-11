@@ -28,6 +28,8 @@
 #include "private/wsresponse.h"
 #include "private/os/threads/mutex.h"
 
+#define USER_AGENT "Linux UPnP/1.0 Sonos/36.4-41270 (ACR_:noson)"
+
 using namespace NSROOT;
 
 const std::string MusicServices::Name("MusicServices");
@@ -202,7 +204,7 @@ SMServiceList MusicServices::GetAvailableServices()
     std::string agent;
     //@FIXME make the user agent string according to the template: Linux UPnP/1.0 Sonos/26.99-12345
     //Resolved by SoCo: https://github.com/SoCo/SoCo/blob/18ee1ec11bba8463c4536aa7c2a25f5c20a051a4/soco/music_services/music_service.py#L55
-    agent.assign("Linux UPnP/1.0 Sonos/26.99-12345");
+    agent.assign(USER_AGENT);
 
     // Fill the list of services.
     for (std::vector<ElementList>::const_iterator it = data.begin(); it != data.end(); ++it)
