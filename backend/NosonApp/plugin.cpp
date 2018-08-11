@@ -18,7 +18,7 @@
  *
  */
 
-#include "backend.h"
+#include "plugin.h"
 #include "sonos.h"
 #include "player.h"
 #include "renderingmodel.h"

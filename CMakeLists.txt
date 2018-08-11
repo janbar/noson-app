@@ -1,4 +1,4 @@
-project(NosonApp C CXX)
+project(noson-app C CXX)
 cmake_minimum_required(VERSION 3.1.0)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -72,7 +72,7 @@ if(ANDROID)
     ${CMAKE_SOURCE_DIR}/android/package-sources/AndroidManifest.xml
   )
   include(android/AddQtAndroidApk.cmake)
-  add_dependencies(noson-gui NosonAppbackend NosonAppbackend-qmldir)
+  add_dependencies(noson-gui NosonApp NosonApp-qmldir)
   add_qt_android_apk(noson-apk noson-gui
       NAME ${APP_NAME}
       VERSION_CODE ${APP_VERSION_CODE}
@@ -91,7 +91,7 @@ endif()
 add_custom_target(
   "run"
   QML2_IMPORT_PATH=${CMAKE_BINARY_DIR}/backend/qml ${CMAKE_BINARY_DIR}/gui/noson-gui
-  DEPENDS NosonAppbackend NosonAppbackend-qmldir
+  DEPENDS NosonApp NosonApp-qmldir
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/gui
 )
 

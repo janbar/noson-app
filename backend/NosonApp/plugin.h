@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef BACKEND_PLUGIN_H
-#define BACKEND_PLUGIN_H
+#ifndef PLUGIN_H
+#define PLUGIN_H
 
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlExtensionPlugin>
@@ -36,6 +36,6 @@ public:
   void registerTypes(const char *uri);
   void initializeEngine(QQmlEngine *engine, const char *uri);
 };
-#endif // BACKEND_PLUGIN_H
+#endif // PLUGIN_H
 
 
