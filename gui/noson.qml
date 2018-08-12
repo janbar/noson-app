@@ -1341,7 +1341,7 @@ ApplicationWindow {
         Text {
             color: styleMusic.dialog.foregroundColor
             width: aboutDialog.availableWidth
-            text: qsTr("Version: %1").arg(versionString)
+            text: qsTr("Version: %1").arg(versionString) + " (libnoson " + Sonos.getLibVersion() + ")"
             font.pointSize: units.fs("medium")
         }
     }
