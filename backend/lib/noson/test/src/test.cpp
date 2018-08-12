@@ -139,7 +139,8 @@ int main(int argc, char** argv)
         while (it != bdir.end())
         {
           PRINT4("Item %d: [%d] [%s] [%s]\n", ++i, (*it)->IsItem(), (*it)->GetValue("dc:title").c_str(), (*it)->GetObjectID().c_str());
-          PRINT3("     %d: %s, %s\n", i, (*it)->GetValue("res").c_str(), (*it)->GetProperty("res")->GetAttribut("protocolInfo").c_str());
+          if ((*it)->GetProperty("res"))
+	    PRINT3("     %d: %s, %s\n", i, (*it)->GetValue("res").c_str(), (*it)->GetProperty("res")->GetAttribut("protocolInfo").c_str());
           SONOS::DigitalItemPtr payload;
           if (SONOS::System::ExtractObjectFromFavorite(*it, payload))
             PRINT2("   F %d: %s\n", i, payload->GetObjectID().c_str());

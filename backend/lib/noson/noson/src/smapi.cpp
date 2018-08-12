@@ -377,7 +377,11 @@ bool SMAPI::GetDeviceAuthToken(SMOAKeyring::Data& auth)
 
   const std::string& tag = resp.GetValue("TAG");
   if (tag == "Fault")
+  {
+    // show the feedback and return true to request a retry
+    DBG(DBG_INFO, "%s: %s\n", __FUNCTION__, m_fault.GetValue("faultstring").c_str());
     return true;
+  }
   else if (tag == "getDeviceAuthTokenResponse")
   {
     const std::string& data = resp.GetValue("getDeviceAuthTokenResult");
