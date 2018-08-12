@@ -457,7 +457,7 @@ void Sonos::loadModel(ListModel* model)
   }
   if (item.first)
   {
-    SONOS::DBG(DBG_INFO, "%s: %p (%s)\n", __FUNCTION__, item.first, item.first->m_root.toUtf8().constData());
+    SONOS::DBG(DBG_DEBUG, "%s: %p (%s)\n", __FUNCTION__, item.first, item.first->m_root.toUtf8().constData());
     emit loadingStarted();
     item.first->m_pending = false; // accept add next request in queue
     item.first->loadData();
@@ -487,7 +487,7 @@ void Sonos::registerModel(ListModel* model, const QString& root)
 {
   if (model)
   {
-    SONOS::DBG(DBG_INFO, "%s: %p (%s)\n", __FUNCTION__, model, root.toUtf8().constData());
+    SONOS::DBG(DBG_DEBUG, "%s: %p (%s)\n", __FUNCTION__, model, root.toUtf8().constData());
     SONOS::LockGuard lock(model->m_lock);
     SONOS::Locked<ManagedContents>::pointer mc = m_library.Get();
     for (ManagedContents::iterator it = mc->begin(); it != mc->end(); ++it)
@@ -514,6 +514,7 @@ void Sonos::unregisterModel(ListModel* model)
         left.push_back(it);
     for (QList<ManagedContents::iterator>::iterator itl = left.begin(); itl != left.end(); ++itl)
     {
+      SONOS::DBG(DBG_DEBUG, "%s: %p (%s)\n", __FUNCTION__, model, model->m_root.toUtf8().constData());
       model->m_provider = 0;
       model->m_root.clear();
       mc->erase(*itl);
