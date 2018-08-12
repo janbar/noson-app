@@ -40,6 +40,8 @@ else()
   unset(extra-sources)
 endif()
 
+add_definitions(-DAPP_VERSION="${APP_VERSION}")
+
 qt5_add_resources(noson-gui-resources noson.qrc)
 
 if(ANDROID)

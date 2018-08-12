@@ -23,6 +23,10 @@
 #include "signalhandler.h"
 #endif
 
+#ifndef APP_VERSION
+#define APP_VERSION "Undefined"
+#endif
+
 void setupApp(QGuiApplication& app);
 void prepareTranslator(QGuiApplication& app, const QString& translationPath, const QString& translationPrefix, const QLocale& locale);
 void doExit(int code);
@@ -65,6 +69,8 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     // 100MB cache for network data
     engine.setNetworkAccessManagerFactory(new DiskCacheFactory(100 * 1000 * 1000));
+    // bind version string
+    engine.rootContext()->setContextProperty("VersionString", QString(APP_VERSION));
     // bind arguments
     engine.rootContext()->setContextProperty("ApplicationArguments", app.arguments());
     // bind Android flag

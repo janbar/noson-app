@@ -15,8 +15,6 @@ ApplicationWindow {
     visible: true
     title: "noson"
 
-    readonly property string versionString: "3.7.3"
-
     // Design stuff
     width: 360
     height: 640
@@ -123,7 +121,7 @@ ApplicationWindow {
 
     // Variables
     property string appName: "Noson"
-    property int debugLevel: 1
+    property int debugLevel: 2
     property bool playOnStart: false
     property bool startup: true
 
@@ -1341,7 +1339,7 @@ ApplicationWindow {
         Text {
             color: styleMusic.dialog.foregroundColor
             width: aboutDialog.availableWidth
-            text: qsTr("Version: %1").arg(versionString) + " (libnoson " + Sonos.getLibVersion() + ")"
+            text: qsTr("Version: %1").arg(VersionString) + " (libnoson " + Sonos.getLibVersion() + ")"
             font.pointSize: units.fs("medium")
         }
     }
