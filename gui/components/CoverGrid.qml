@@ -53,6 +53,17 @@ Item {
         }
     }
 
+    Image {
+        id: overlayImage
+        asynchronous: true
+        fillMode: Image.PreserveAspectCrop
+        height: coverGrid.size
+        width: coverGrid.size
+        source: noCover
+        sourceSize.height: 128
+        sourceSize.width: 128
+    }
+
     // Flow of the cover arts in either 1, 1x1, 2x1, 2x2
     Flow {
         id: imageRow
@@ -70,17 +81,10 @@ Item {
                 height: coverGrid.size / (imageRow.flowCount > 1 ? 2 : 1)
                 width: coverGrid.size / (imageRow.flowCount > 2 && !(imageRow.flowCount === 3 && index === 2) ? 2 : 1)
                 source: coverGrid.covers.length !== 0 && coverGrid.covers[index] !== undefined && coverGrid.covers[index].art.length > 0
-                        ? coverGrid.covers[index].art
-                        : noCover
+                        ? coverGrid.covers[index].art : ""
 
-                // TODO: This should be investigated once http://pad.lv/1391368
-                //       is resolved. Once it is, these can either be set to
-                //       "height" and "width" or a property exposed via the
-                //       SDK or Thumbnailer to avoid a regression caused by
-                //       these hardcoded values changing in the Thumbnailer.
-                //       512 is size of the "xlarge" thumbnails in pixels.
-                sourceSize.height: 512
-                sourceSize.width: 512
+                sourceSize.height: 128
+                sourceSize.width: 128
 
                 onStatusChanged: {
                     if (status === Image.Error) {
