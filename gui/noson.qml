@@ -731,19 +731,39 @@ ApplicationWindow {
         };
     }
 
-    function makeCoverSource(art, artist, album) {
-        var uri = "qrc:/images/no_cover.png";
+    function makeArt(art, artist, album) {
         if (art !== undefined && art !== "")
-            uri = art;
-        else if (album !== undefined && album !== "")
-            uri = "qrc:/images/no_cover.png";
-        else if (artist !== undefined && artist !== "") {
-            if (settings.lastfmKey.length > 0)
-                uri = "image://artistart/artist=" + encodeURIComponent(artist);
+            return art;
+        if (album !== undefined && album !== "") {
+            if (thumbValid)
+                return "image://albumart/artist=" + encodeURIComponent(artist) + "&album=" + encodeURIComponent(album);
             else
-                uri = "qrc:/images/none.png";
+                return "qrc:/images/no_cover.png";
+        } else if (artist !== undefined && artist !== "") {
+            if (thumbValid)
+                return "image://artistart/artist=" + encodeURIComponent(artist);
+            else
+                return "qrc:/images/none.png";
         }
-        return uri;
+        return "qrc:/images/no_cover.png";
+    }
+
+    function makeCoverSource(art, artist, album) {
+        var array = [];
+        if (art !== undefined && art !== "")
+            array.push( {art: art} );
+        if (album !== undefined && album !== "") {
+            if (thumbValid)
+                array.push( {art: "image://albumart/artist=" + encodeURIComponent(artist) + "&album=" + encodeURIComponent(album)} );
+            array.push( {art: "qrc:/images/no_cover.png"} );
+        } else if (artist !== undefined && artist !== "") {
+            if (thumbValid)
+                array.push( {art: "image://artistart/artist=" + encodeURIComponent(artist)} );
+            array.push( {art: "qrc:/images/none.png"} );
+        } else {
+            array.push( {art: "qrc:/images/no_cover.png"} );
+        }
+        return array;
     }
 
     function isAlarmEnabled() {

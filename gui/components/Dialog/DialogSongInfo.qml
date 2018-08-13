@@ -24,6 +24,7 @@ import "../"
 Item {
     id: songInfo
     property var model: null
+    property var covers: []
     property bool actionsVisible: false
 
     DialogBase {
@@ -35,7 +36,7 @@ Item {
         onOpened: {
             timer.restart();
             if (songInfo.model) {
-                card.coverSources = [{art: makeCoverSource(songInfo.model.art, songInfo.model.author, songInfo.model.album)}];
+                card.coverSources = covers
                 card.primaryText = songInfo.model.title !== "" ? songInfo.model.title : qsTr("Unknown Album");
                 card.secondaryText = songInfo.model.author !== "" ? songInfo.model.author : qsTr("Unknown Artist");
                 card.tertiaryLabelVisible = songInfo.model.album.length !== "";
@@ -76,6 +77,7 @@ Item {
                     CoverGrid {
                         id: coverGrid
                         size: parent.width
+                        noCover: ""
                     }
 
                     Rectangle {
@@ -187,8 +189,9 @@ Item {
 
     }
 
-    function open(model, showActions) {
+    function open(model, covers, showActions) {
         songInfo.model = model;
+        songInfo.covers = covers;
         songInfo.actionsVisible = showActions;
         return dialog.open();
     }

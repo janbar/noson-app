@@ -73,11 +73,11 @@ MusicPage {
             noCover: model.type === 5 && !model.canQueue ? "qrc:/images/radio.png"
                    : model.type === 2 ? "qrc:/images/none.png"
                    : "qrc:/images/no_cover.png"
-            imageSource: model.type === 1 ? makeCoverSource(model.art, model.artist, model.title)
-                       : model.type === 2 ? makeCoverSource(undefined, model.artist, undefined)
-                       : model.type === 5 && model.canQueue ? makeCoverSource(model.art, model.author, model.album)
-                       : model.type === 5 && model.art === "" ? "qrc:/images/radio.png"
-                       : makeCoverSource(model.art, undefined, undefined)
+            imageSources: model.type === 1 ? makeCoverSource(model.art, model.artist, model.title)
+                        : model.type === 2 ? makeCoverSource(undefined, model.artist, undefined)
+                        : model.type === 5 && model.canQueue ? makeCoverSource(model.art, model.author, model.album)
+                        : model.type === 5 && model.art === "" ? "qrc:/images/radio.png"
+                        : makeCoverSource(model.art, undefined, undefined)
             description:  model.description.length > 0 ? model.description
                        : model.type === 1 ? qsTr("Album")
                        : model.type === 2 ? qsTr("Artist")
@@ -177,11 +177,11 @@ MusicPage {
             noCover: model.type === 5 && !model.canQueue ? "qrc:/images/radio.png"
                    : model.type === 2 ? "qrc:/images/none.png"
                    : "qrc:/images/no_cover.png"
-            coverSources: model.type === 1 ? [{art: makeCoverSource(model.art, model.artist, model.title)}, {art: makeCoverSource(undefined, model.artist, model.title)}]
-                        : model.type === 2 ? [{art: makeCoverSource(undefined, model.artist, undefined)}]
-                        : model.type === 5 && model.canQueue ? [{art: makeCoverSource(model.art, model.author, model.album)}, {art: makeCoverSource(undefined, model.author, model.album)}]
+            coverSources: model.type === 1 ? makeCoverSource(model.art, model.artist, model.title)
+                        : model.type === 2 ? makeCoverSource(undefined, model.artist, undefined)
+                        : model.type === 5 && model.canQueue ? makeCoverSource(model.art, model.author, model.album)
                         : model.type === 5 && model.art === "" ? [{art: "qrc:/images/radio.png"}]
-                        : [{art: makeCoverSource(model.art, undefined, undefined)}]
+                        : makeCoverSource(model.art, undefined, undefined)
 
             onImageError: model.art = "" // reset invalid url from model
             onClicked: clickItem(model)
@@ -218,7 +218,7 @@ MusicPage {
                                        "songSearch": model.objectId,
                                        "album": model.album,
                                        "artist": model.artist,
-                                       "covers": [{art: makeCoverSource(model.art, model.artist, model.album)}],
+                                       "covers": makeCoverSource(model.art, model.artist, model.album),
                                        "isAlbum": true,
                                        "genre": "",
                                        "pageTitle": qsTr("Album"),
@@ -232,7 +232,7 @@ MusicPage {
                                        "containerItem": {id: model.objectId, payload: model.object},
                                        "artistSearch": model.objectId,
                                        "artist": model.artist,
-                                       "covers": [{art: makeCoverSource(undefined, model.artist, undefined)}],
+                                       "covers": makeCoverSource(undefined, model.artist, undefined),
                                        "pageTitle": qsTr("Artist")
                                    })
             }
@@ -255,7 +255,7 @@ MusicPage {
                                        "containerItem": {id: model.objectId, payload: model.object},
                                        "songSearch": model.objectId,
                                        "album": "",
-                                       "covers": [{art: makeCoverSource(model.art, model.artist, model.album)}],
+                                       "covers": makeCoverSource(model.art, model.artist, model.album),
                                        "isPlaylist": true,
                                        "genre": "",
                                        "pageTitle": qsTr("Playlist"),

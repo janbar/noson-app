@@ -160,7 +160,7 @@ Item {
                      top: parent.top
                      margins: units.dp(2)
                  }
-                 covers: [{art: makeCoverSource(player.currentMetaArt, player.currentMetaArtist, player.currentMetaAlbum)}]
+                 covers: makeCoverSource(player.currentMetaArt, player.currentMetaArtist, player.currentMetaAlbum)
                  size: parent.height
                  useFallbackArt: false
             }

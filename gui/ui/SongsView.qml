@@ -165,7 +165,14 @@ MusicPage {
                 listview.reorder(from, to)
             }
 
-            onClick: dialogSongInfo.open(model, true) // show action play
+            onClick: {
+                if (isAlbum)
+                    // header covers
+                    dialogSongInfo.open(model, covers, true); // show action play
+                else
+                    // item cover
+                    dialogSongInfo.open(model, [{art: imageSource}], true); // show action play
+            }
 
             color: "transparent"
 
@@ -178,7 +185,7 @@ MusicPage {
             }
 
             noCover: !songStackPage.isAlbum ? "qrc:/images/no_cover.png" : "qrc:/images/no_cover.png"
-            imageSource: !songStackPage.isAlbum ? makeCoverSource(model.art, model.author, model.album) : "qrc:/images/no_cover.png"
+            imageSources: !songStackPage.isAlbum ? makeCoverSource(model.art, model.author, model.album) : [{art: "qrc:/images/no_cover.png"}]
             description: qsTr("Song")
 
             onImageError: model.art = "" // reset invalid url from model
@@ -334,7 +341,7 @@ MusicPage {
         signal reorder(int from, int to)
 
         onReorder: {
-            customdebug("Reorder queue item " + from + " to " + to);
+            customdebug("Reorder item " + from + " to " + to);
             songList.focusIndex = to;
             mainView.jobRunning = true
             delayReorderTrackInPlaylist.argFrom = from

@@ -67,7 +67,7 @@ MusicPage {
             color: serviceItem.held ? "lightgrey" : "transparent"
 
             noCover: "qrc:/images/radio.png"
-            imageSource: model.type === "65031" ? "qrc:/images/tunein.png" : model.icon
+            imageSources: [{art: model.type === "65031" ? "qrc:/images/tunein.png" : model.icon}]
             description: qsTr("Service")
 
             onClicked: {

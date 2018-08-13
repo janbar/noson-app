@@ -61,7 +61,7 @@ MusicPage {
 
             color: listItem.held ? "lightgrey" : "transparent"
 
-            imageSource: model.art
+            imageSources: [{art: model.art}]
 
             column: Column {
                 Label {
