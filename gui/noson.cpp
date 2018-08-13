@@ -13,6 +13,8 @@
 
 #include "diskcache/diskcachefactory.h"
 
+#define CACHE_SIZE 100000000L
+
 #if (defined(_WIN32) || defined(_WIN64))
 #define __WINDOWS__
 #endif
@@ -68,7 +70,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     // 100MB cache for network data
-    engine.setNetworkAccessManagerFactory(new DiskCacheFactory(100 * 1000 * 1000));
+    engine.setNetworkAccessManagerFactory(new DiskCacheFactory(CACHE_SIZE));
     // bind version string
     engine.rootContext()->setContextProperty("VersionString", QString(APP_VERSION));
     // bind arguments
