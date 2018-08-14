@@ -31,10 +31,10 @@
 #include <sys/time.h>
 #endif
 
-#include "../backend/lib/noson/noson/src/private/debug.h"
-#include "../backend/lib/noson/noson/src/sonossystem.h"
-#include "../backend/lib/noson/noson/src/contentdirectory.h"
-#include "../backend/lib/noson/noson/src/didlparser.h"
+#include "private/debug.h"
+#include <noson/sonossystem.h>
+#include <noson/contentdirectory.h>
+#include <noson/didlparser.h>
 
 #include <cstdlib>
 #include <cstdio>

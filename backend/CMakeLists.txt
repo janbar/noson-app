@@ -11,9 +11,11 @@ add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 ###############################################################################
 # configure
+set(noson_INCLUDE_DIRS "${CMAKE_CURRENT_BINARY_DIR}/lib/noson/noson/public/noson"
+    "${CMAKE_CURRENT_BINARY_DIR}/lib/noson/noson/public")
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}/lib/noson/noson/include
+    ${noson_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/noson/noson/src
 )
 
 set(

@@ -21,9 +21,9 @@
 #ifndef SONOS_H
 #define SONOS_H
 
-#include "../../lib/noson/noson/src/sonossystem.h"
-#include "../../lib/noson/noson/src/private/os/threads/threadpool.h"
-#include "../../lib/noson/noson/src/locked.h"
+#include <noson/sonossystem.h>
+#include "private/os/threads/threadpool.h"
+#include <noson/locked.h>
 
 #include "tools.h"
 #include "zonesmodel.h"

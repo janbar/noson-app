@@ -21,7 +21,7 @@
 #include "genresmodel.h"
 #include "sonos.h"
 #include "tools.h"
-#include "../../lib/noson/noson/src/contentdirectory.h"
+#include <noson/contentdirectory.h>
 
 GenreItem::GenreItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
 : m_ptr(ptr)

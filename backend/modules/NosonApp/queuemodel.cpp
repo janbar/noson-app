@@ -20,7 +20,7 @@
 
 #include "queuemodel.h"
 #include "sonos.h"
-#include "../../lib/noson/noson/src/contentdirectory.h"
+#include <noson/contentdirectory.h>
 
 QueueModel::QueueModel(QObject* parent)
 : QAbstractListModel(parent)
