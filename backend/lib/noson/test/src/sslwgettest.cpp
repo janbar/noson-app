@@ -13,9 +13,9 @@
 #include <sys/time.h>
 #endif
 
-#include "../../noson/src/private/wsresponse.h"
-#include "../../noson/src/private/debug.h"
-#include "../../noson/src/private/securesocket.h"
+#include "private/wsresponse.h"
+#include "private/debug.h"
+#include "private/securesocket.h"
 
 #include <string.h>
 #include <cstdio>

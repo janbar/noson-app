@@ -20,8 +20,13 @@ endif ()
 
 ###############################################################################
 # set lib version here
-set (NOSON_LIB_VERSION "1.6.5")
-set (NOSON_LIB_SOVERSION "1")
+set (noson_VERSION_MAJOR 1)
+set (noson_VERSION_MINOR 8)
+set (noson_VERSION_PATCH 4)
+
+set (noson_VERSION ${noson_VERSION_MAJOR}.${noson_VERSION_MINOR}.${noson_VERSION_PATCH})
+set (NOSON_LIB_VERSION ${noson_VERSION})
+set (NOSON_LIB_SOVERSION ${noson_VERSION_MAJOR})
 
 ###############################################################################
 # add definitions
@@ -132,55 +137,62 @@ endif ()
 
 # configure the public config file
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/src/local_config.h.in
-                 ${CMAKE_CURRENT_BINARY_DIR}/include/local_config.h)
+                 ${CMAKE_CURRENT_BINARY_DIR}/public/noson/local_config.h)
 
-# Copy the header files to the public include folder
-
+# Copy the header files to the public folder
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/locked.h
-           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/intrinsic.h
-           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/sharedptr.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/avtransport.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/contentdirectory.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/deviceproperties.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/didlparser.h
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/digitalitem.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/element.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/eventhandler.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/renderingcontrol.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/service.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/subscription.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/sonosplayer.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/sonossystem.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/sonostypes.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/sonoszone.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/zonegrouptopology.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/musicservices.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/smapi.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/smapimetadata.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/smaccount.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/include/)
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/alarmclock.h
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/alarm.h
+          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 
-include_directories (
-  ${CMAKE_CURRENT_BINARY_DIR}/include/.)
+file (GLOB PUBLIC_HEADER_FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/public/noson/*.h)
+
+include_directories (${CMAKE_CURRENT_BINARY_DIR}/public/noson)
 
 ###############################################################################
 # add sources
@@ -231,59 +243,60 @@ set_target_properties (noson PROPERTIES
     VERSION "${NOSON_LIB_VERSION}"
     SOVERSION "${NOSON_LIB_SOVERSION}")
 
+# Export the package for use from the build-tree
+# (this registers the build-tree with a global CMake-registry)
+export(PACKAGE noson)
+
 ###############################################################################
 # install targets
 # Create pkg-conf file.
 # (We use the same files as ./configure does, so we
 #  have to defined the same variables used there).
-if (NOT MSVC)
-  if (NOT DEFINED CMAKE_INSTALL_BINDIR)
-    set (CMAKE_INSTALL_BINDIR bin)
-  endif ()
-  if (NOT DEFINED CMAKE_INSTALL_LIBDIR)
-    set (CMAKE_INSTALL_LIBDIR lib)
-  endif ()
-  if (NOT DEFINED CMAKE_INSTALL_INCLUDEDIR)
-    set (CMAKE_INSTALL_INCLUDEDIR include)
-  endif ()
-  set (prefix      ${CMAKE_INSTALL_PREFIX})
-  set (exec_prefix ${CMAKE_INSTALL_PREFIX})
-  set (libdir      ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
-  set (VERSION     ${NOSON_LIB_VERSION})
-  configure_file (noson.pc.in noson.pc @ONLY)
 
-  install (TARGETS noson
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+if (NOT SKIP_INSTALL_ALL)
+  # Add all targets to the build-tree export set
+  export(TARGETS noson FILE "${CMAKE_CURRENT_BINARY_DIR}/nosonTargets.cmake")
 
-  install (FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/noson.pc
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+  if (NOT MSVC)
+    if (NOT DEFINED CMAKE_INSTALL_BINDIR)
+      set (CMAKE_INSTALL_BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
+    endif ()
+    if (NOT DEFINED CMAKE_INSTALL_FULL_LIBDIR)
+      set (CMAKE_INSTALL_FULL_LIBDIR ${CMAKE_INSTALL_PREFIX}/lib)
+    endif ()
+    if (NOT DEFINED CMAKE_INSTALL_INCLUDEDIR)
+      set (CMAKE_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_PREFIX}/include)
+    endif ()
+    set (prefix      "${CMAKE_INSTALL_PREFIX}")
+    set (exec_prefix "${CMAKE_INSTALL_PREFIX}")
+    set (includedir  "${CMAKE_INSTALL_INCLUDEDIR}/noson")
+    set (libdir      "${CMAKE_INSTALL_FULL_LIBDIR}")
+    configure_file (noson.pc.in noson.pc @ONLY)
+    configure_file (nosonConfig.cmake.in nosonConfig.cmake @ONLY)
+    configure_file (nosonConfigVersion.cmake.in nosonConfigVersion.cmake @ONLY)
+
+    install (TARGETS noson
+      EXPORT nosonTargets
+      RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+      ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
+      LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR})
+
+    install (FILES
+      "${CMAKE_CURRENT_BINARY_DIR}/noson.pc"
+      DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig")
+
+    # Install the nosonConfig.cmake and nosonConfigVersion.cmake
+    set(INSTALL_CMAKE_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/cmake/noson")
+    install (FILES
+      "${CMAKE_CURRENT_BINARY_DIR}/nosonConfig.cmake"
+      "${CMAKE_CURRENT_BINARY_DIR}/nosonConfigVersion.cmake"
+      DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
+
+    # Install the export set for use with the install-tree
+    install(EXPORT nosonTargets DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
+
+  endif ()
+
+  install (FILES ${PUBLIC_HEADER_FILES}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/noson/)
 endif ()
-
-install (FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/include/local_config.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/locked.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/intrinsic.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/sharedptr.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/avtransport.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/contentdirectory.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/deviceproperties.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/digitalitem.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/element.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/eventhandler.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/renderingcontrol.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/service.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/subscription.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/sonosplayer.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/sonossystem.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/sonostypes.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/sonoszone.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/zonegrouptopology.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/musicservices.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/smapi.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/smapimetadata.h
-  ${CMAKE_CURRENT_BINARY_DIR}/include/smaccount.h
-
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/noson/)

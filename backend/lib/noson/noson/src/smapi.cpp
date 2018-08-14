@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Jean-Luc Barriere
+ *      Copyright (C) 2014-2018 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -179,13 +179,10 @@ bool SMAPI::Init(const SMServicePtr& smsvc, const std::string& locale)
 
 bool SMAPI::GetMetadata(const std::string& id, int index, int count, bool recursive, SMAPIMetadata& metadata)
 {
-  char buf[20];
   ElementList args;
   args.push_back(ElementPtr(new Element("id", urldecode(id)))); // id is url encoded
-  int32_to_string(index, buf);
-  args.push_back(ElementPtr(new Element("index", buf)));
-  int32_to_string(count, buf);
-  args.push_back(ElementPtr(new Element("count", buf)));
+  args.push_back(ElementPtr(new Element("index", std::to_string(index))));
+  args.push_back(ElementPtr(new Element("count", std::to_string(count))));
   args.push_back(ElementPtr(new Element("recursive", recursive ? "true" : "false")));
 
   metadata.Reset(m_service, Request("getMetadata", args).GetValue("getMetadataResult"), id);
@@ -206,14 +203,11 @@ bool SMAPI::Search(const std::string& searchId, const std::string& term, int ind
   const std::string& mappedId = m_searchCategories.GetValue(searchId);
   if (mappedId.empty())
     return false;
-  char buf[20];
   ElementList args;
   args.push_back(ElementPtr(new Element("id", mappedId)));
   args.push_back(ElementPtr(new Element("term", term)));
-  int32_to_string(index, buf);
-  args.push_back(ElementPtr(new Element("index", buf)));
-  int32_to_string(count, buf);
-  args.push_back(ElementPtr(new Element("count", buf)));
+  args.push_back(ElementPtr(new Element("index", std::to_string(index))));
+  args.push_back(ElementPtr(new Element("count", std::to_string(count))));
 
   metadata.Reset(m_service, Request("search", args).GetValue("searchResult"), mappedId);
   return metadata.IsValid();
@@ -383,7 +377,11 @@ bool SMAPI::GetDeviceAuthToken(SMOAKeyring::Data& auth)
 
   const std::string& tag = resp.GetValue("TAG");
   if (tag == "Fault")
+  {
+    // show the feedback and return true to request a retry
+    DBG(DBG_INFO, "%s: %s\n", __FUNCTION__, m_fault.GetValue("faultstring").c_str());
     return true;
+  }
   else if (tag == "getDeviceAuthTokenResponse")
   {
     const std::string& data = resp.GetValue("getDeviceAuthTokenResult");
@@ -452,8 +450,6 @@ bool SMAPI::parsePresentationMap(const std::string& xml)
   while (elem)
   {
     unsigned uid = 0; // unique item id
-    char sid[12];
-    memset(sid, '\0', sizeof(sid));
     tinyxml2::XMLElement* child; // a child of elem
     const char* type = elem->Attribute("type");
     if (type)
@@ -477,8 +473,7 @@ bool SMAPI::parsePresentationMap(const std::string& xml)
           while (categ && categ->Attribute("id") && categ->Attribute("mappedId"))
           {
             // could be Category or CustomCategory
-            uint32_to_string(++uid, sid);
-            ElementPtr item(new Element(categ->Name(), sid));
+            ElementPtr item(new Element(categ->Name(), std::to_string(++uid)));
             item->SetAttribut("id", categ->Attribute("id"));
             item->SetAttribut("mappedId", categ->Attribute("mappedId"));
             list.push_back(item);
@@ -501,8 +496,7 @@ bool SMAPI::parsePresentationMap(const std::string& xml)
           tinyxml2::XMLElement* entry = child->FirstChildElement("sizeEntry");
           while (entry && entry->Attribute("size") && entry->Attribute("substitution"))
           {
-            uint32_to_string(++uid, sid);
-            ElementPtr item(new Element(entry->Name(), sid));
+            ElementPtr item(new Element(entry->Name(), std::to_string(++uid)));
             item->SetAttribut("size", entry->Attribute("size"));
             item->SetAttribut("substitution", entry->Attribute("substitution"));
             list.push_back(item);

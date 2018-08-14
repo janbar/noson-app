@@ -21,7 +21,7 @@
 #ifndef EVENTHANDLER_H
 #define	EVENTHANDLER_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "sharedptr.h"
 
 #include <string>

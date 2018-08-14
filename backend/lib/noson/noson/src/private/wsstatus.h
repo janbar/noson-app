@@ -22,7 +22,7 @@
 #ifndef WSSTATUS_H
 #define	WSSTATUS_H
 
-#include <local_config.h>
+#include "local_config.h"
 
 #include <string>
 #include <cassert>

@@ -27,8 +27,9 @@ before_script:
   - if [ "$TRAVIS_OS_NAME" = "linux" -a "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
   - cmake --version
   - mkdir build && cd build
-  - cmake .. -Wdev -DCMAKE_CXX_COMPILER=$(which $CXX) -DCMAKE_C_COMPILER=$(which $CC)
+  - cmake .. -Wdev -DCMAKE_CXX_COMPILER=$(which $CXX) -DCMAKE_C_COMPILER=$(which $CC) -DCMAKE_INSTALL_PREFIX=$HOME
 
 script:
-  - cmake --build .
+  - cmake --build . --target install
+  - cmake --build . --target uninstall
 

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Jean-Luc Barriere
+ *      Copyright (C) 2014-2018 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -78,13 +78,10 @@ bool RenderingControl::GetVolume(uint8_t* value, const char* channel)
 
 bool RenderingControl::SetVolume(uint8_t value, const char* channel)
 {
-  char buf[4];
-  memset(buf, 0, sizeof (buf));
-  uint8_to_string(value, buf);
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("Channel", channel)));
-  args.push_back(ElementPtr(new Element("DesiredVolume", buf)));
+  args.push_back(ElementPtr(new Element("DesiredVolume", std::to_string(value))));
   ElementList vars = Request("SetVolume", args);
   if (!vars.empty() && vars[0]->compare("SetVolumeResponse") == 0)
     return true;
@@ -108,15 +105,39 @@ bool RenderingControl::GetMute(uint8_t* value, const char* channel)
 
 bool RenderingControl::SetMute(uint8_t value, const char* channel)
 {
-  char buf[4];
-  memset(buf, 0, sizeof (buf));
-  uint8_to_string(value, buf);
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("Channel", channel)));
-  args.push_back(ElementPtr(new Element("DesiredMute", buf)));
+  args.push_back(ElementPtr(new Element("DesiredMute", std::to_string(value))));
   ElementList vars = Request("SetMute", args);
   if (!vars.empty() && vars[0]->compare("SetMuteResponse") == 0)
+    return true;
+  return false;
+}
+
+bool RenderingControl::GetNightmode(uint8_t *value)
+{
+  ElementList args;
+  args.push_back(ElementPtr(new Element("InstanceID", "0")));
+  ElementList vars = Request("GetEQ", args);
+  if (!vars.empty() && vars[0]->compare("GetEQResponse") == 0)
+  {
+    ElementList::const_iterator it = vars.FindKey("NightMode");
+    if (it != vars.end())
+      return (string_to_uint8((*it)->c_str(), value) == 0);
+  }
+  return false;
+
+}
+
+bool RenderingControl::SetNightmode(uint8_t value)
+{
+  ElementList args;
+  args.push_back(ElementPtr(new Element("InstanceID", "0")));
+  args.push_back(ElementPtr(new Element("EQType", "NightMode")));
+  args.push_back(ElementPtr(new Element("DesiredValue", std::to_string(value))));
+  ElementList vars = Request("SetEQ", args);
+  if (!vars.empty() && vars[0]->compare("SetEQResponse") == 0)
     return true;
   return false;
 }
@@ -165,6 +186,11 @@ void RenderingControl::HandleEventMessage(EventMessagePtr msg)
         {
           if (string_to_int32((*++it).c_str(), &num) == 0)
             prop->MuteRF = num;
+        }
+        else if (*it == "NightMode")
+        {
+          if (string_to_int32((*++it).c_str(), &num) == 0)
+            prop->NightMode = num;
         }
 
         ++it;

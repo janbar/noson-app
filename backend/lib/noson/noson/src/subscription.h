@@ -21,7 +21,7 @@
 #ifndef SONOSSUBSCRIPTION_H
 #define	SONOSSUBSCRIPTION_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "sharedptr.h"
 
 #include <string>

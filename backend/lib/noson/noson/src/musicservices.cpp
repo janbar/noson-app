@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Jean-Luc Barriere
+ *      Copyright (C) 2014-2018 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -27,6 +27,8 @@
 #include "private/wsrequest.h"
 #include "private/wsresponse.h"
 #include "private/os/threads/mutex.h"
+
+#define USER_AGENT "Linux UPnP/1.0 Sonos/36.4-41270 (ACR_noson)"
 
 using namespace NSROOT;
 
@@ -122,9 +124,7 @@ std::string SMService::ServiceType(const std::string& id)
   int num = 0;
   if (string_to_int32(id.c_str(), &num) == 0)
     num = num * 256 + 7;
-  char st[12];
-  int32_to_string(num, st);
-  return std::string(st);
+  return std::to_string(num);
 }
 
 const std::string& SMService::GetServiceType() const
@@ -202,9 +202,8 @@ SMServiceList MusicServices::GetAvailableServices()
     // store new value of version
     versionPtr->assign(vars.GetValue("AvailableServiceListVersion"));
     std::string agent;
-    //@FIXME make the user agent string according to the template: Linux UPnP/1.0 Sonos/26.99-12345
-    //Resolved by SoCo: https://github.com/SoCo/SoCo/blob/18ee1ec11bba8463c4536aa7c2a25f5c20a051a4/soco/music_services/music_service.py#L55
-    agent.assign("Linux UPnP/1.0 Sonos/26.99-12345");
+    // configure a valid user-agent
+    agent.assign(USER_AGENT);
 
     // Fill the list of services.
     for (std::vector<ElementList>::const_iterator it = data.begin(); it != data.end(); ++it)
@@ -250,8 +249,6 @@ bool MusicServices::ParseAvailableServices(const ElementList& vars, std::vector<
   while (elem)
   {
     unsigned uid = 0; // unique item id
-    char sid[12];
-    memset(sid, '\0', sizeof(sid));
     const tinyxml2::XMLAttribute* attr = elem->FirstAttribute();
     ElementList service;
     while (attr)
@@ -267,8 +264,7 @@ bool MusicServices::ParseAvailableServices(const ElementList& vars, std::vector<
       if (XMLNS::NameEqual(child->Name(), "Policy"))
       {
         const tinyxml2::XMLAttribute* cattr = child->FirstAttribute();
-        uint32_to_string(++uid, sid);
-        ElementPtr policyPtr(new Element(child->Name(), sid));
+        ElementPtr policyPtr(new Element(child->Name(), std::to_string(++uid)));
         while (cattr)
         {
           policyPtr->SetAttribut(cattr->Name(), cattr->Value());
@@ -282,8 +278,7 @@ bool MusicServices::ParseAvailableServices(const ElementList& vars, std::vector<
         while (child2)
         {
           const tinyxml2::XMLAttribute* cattr = child2->FirstAttribute();
-          uint32_to_string(++uid, sid);
-          ElementPtr mapPtr(new Element(child2->Name(), sid));
+          ElementPtr mapPtr(new Element(child2->Name(), std::to_string(++uid)));
           while (cattr)
           {
             mapPtr->SetAttribut(cattr->Name(), cattr->Value());

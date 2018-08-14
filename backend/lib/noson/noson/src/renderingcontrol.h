@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Jean-Luc Barriere
+ *      Copyright (C) 2014-2018 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -21,7 +21,7 @@
 #ifndef RENDERINGCONTROL_H
 #define	RENDERINGCONTROL_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "service.h"
 #include "eventhandler.h"
 #include "subscription.h"
@@ -62,6 +62,10 @@ namespace NSROOT
     bool GetMute(uint8_t* value, const char* channel = CH_MASTER);
 
     bool SetMute(uint8_t value, const char* channel = CH_MASTER);
+
+    bool GetNightmode(uint8_t* value);
+
+    bool SetNightmode(uint8_t value);
 
     // Implements EventSubscriber
     virtual void HandleEventMessage(EventMessagePtr msg);

@@ -21,7 +21,7 @@
 #ifndef SONOSTYPES_H
 #define	SONOSTYPES_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include <stdint.h>
 #include <vector>
 
@@ -29,6 +29,11 @@
 
 namespace NSROOT
 {
+  extern const char* libVersionString();
+  extern int libVersionMajor();
+  extern int libVersionMinor();
+  extern int libVersionPatch();
+
   typedef void (*EventCB)(void*);
 
   typedef enum
@@ -36,6 +41,8 @@ namespace NSROOT
     SVCEvent_TransportChanged        = 0x01,
     SVCEvent_RenderingControlChanged = 0x02,
     SVCEvent_ContentDirectoryChanged = 0x04,
+    SVCEvent_ZGTopologyChanged       = 0x08,
+    SVCEvent_AlarmClockChanged       = 0x10,
   } SVCEventMask_t;
 
   typedef enum
@@ -45,8 +52,11 @@ namespace NSROOT
     PlayMode_SHUFFLE,
     PlayMode_SHUFFLE_NOREPEAT,
     PlayMode_REPEAT_ONE,
+    PlayMode_unknown,
   } PlayMode_t;
 
+  extern const char* PlayModeTable[PlayMode_unknown + 1];
+  
   typedef enum
   {
     TransportState_STOPPED          = 0,
@@ -124,6 +134,9 @@ namespace NSROOT
     std::string     TransportStatus;              // OK
     std::string     r_SleepTimerGeneration;       // 0
     std::string     r_AlarmRunning;               // 0
+    std::string     r_AlarmIDRunning;
+    std::string     r_AlarmLoggedStartTime;
+    std::string     r_AlarmState;
     std::string     r_SnoozeRunning;              // 0
     std::string     r_RestartPending;             // 0
     std::string     PossiblePlaybackStorageMedia; // NONE, NETWORK
@@ -169,7 +182,9 @@ namespace NSROOT
     , VolumeRF(0)
     , MuteMaster(0)
     , MuteLF(0)
-    , MuteRF(0) { }
+    , MuteRF(0)
+    , NightMode(0)
+    { }
 
     virtual ~RCSProperty() { }
 
@@ -179,6 +194,7 @@ namespace NSROOT
     int MuteMaster;
     int MuteLF;
     int MuteRF;
+    int NightMode;
   };
 
   class SRProperty

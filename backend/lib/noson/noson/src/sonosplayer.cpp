@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Jean-Luc Barriere
+ *      Copyright (C) 2014-2018 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -370,6 +370,26 @@ bool Player::SetMute(const std::string& uuid, uint8_t value)
   {
     if (it->uuid == uuid)
       return it->renderingControl->SetMute(value);
+  }
+  return false;
+}
+
+bool Player::GetNightmode(const std::string &uuid, uint8_t *value)
+{
+  for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+  {
+    if (it->uuid == uuid)
+      return it->renderingControl->GetNightmode(value);
+  }
+  return false;
+}
+
+bool Player::SetNightmode(const std::string &uuid, uint8_t value)
+{
+  for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+  {
+    if (it->uuid == uuid)
+      return it->renderingControl->SetNightmode(value);
   }
   return false;
 }

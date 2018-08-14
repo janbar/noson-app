@@ -21,7 +21,7 @@
 #ifndef SMAPIMETADATA_H
 #define SMAPIMETADATA_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "element.h"
 #include "digitalitem.h"
 #include "musicservices.h"

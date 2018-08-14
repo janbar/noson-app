@@ -21,7 +21,7 @@
 #ifndef DEVICEPROPERTIES_H
 #define	DEVICEPROPERTIES_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "service.h"
 
 namespace NSROOT

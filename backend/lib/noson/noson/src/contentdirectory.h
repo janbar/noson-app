@@ -21,7 +21,7 @@
 #ifndef CONTENTDIRECTORY_H
 #define CONTENTDIRECTORY_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "service.h"
 #include "digitalitem.h"
 #include "eventhandler.h"

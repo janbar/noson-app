@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Jean-Luc Barriere
+ *      Copyright (C) 2014-2018 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -21,7 +21,7 @@
 #ifndef SONOSPLAYER_H
 #define	SONOSPLAYER_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "sharedptr.h"
 #include "sonostypes.h"
 #include "sonoszone.h"
@@ -107,6 +107,9 @@ namespace NSROOT
     bool SetVolume(const std::string& uuid, uint8_t value);
     bool GetMute(const std::string& uuid, uint8_t* value);
     bool SetMute(const std::string& uuid, uint8_t value);
+
+    bool GetNightmode(const std::string& uuid, uint8_t* value);
+    bool SetNightmode(const std::string& uuid, uint8_t value);
 
     bool SetCurrentURI(const DigitalItemPtr& item);
     bool PlayStream(const std::string& streamURL, const std::string& title);
