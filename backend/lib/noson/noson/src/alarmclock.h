@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Jean-Luc Barriere
+ *      Copyright (C) 2018 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -18,25 +18,47 @@
  *
  */
 
-#ifndef ZONEGROUPTOPOLOGY_H
-#define ZONEGROUPTOPOLOGY_H
+#ifndef ALARMCLOCK_H
+#define ALARMCLOCK_H
 
 #include "local_config.h"
 #include "service.h"
 #include "eventhandler.h"
 #include "subscription.h"
-#include "sonoszone.h"
 #include "locked.h"
+#include "alarm.h"
+
+#include <stdint.h>
+#include <vector>
 
 namespace NSROOT
 {
+  class Subscription;
 
-  class ZoneGroupTopology : public Service, public EventSubscriber
+  class ACProperty
   {
   public:
-    ZoneGroupTopology(const std::string& serviceHost, unsigned servicePort);
-    ZoneGroupTopology(const std::string& serviceHost, unsigned servicePort, EventHandler& eventHandler, Subscription& subscription, void* CBHandle = 0, EventCB eventCB = 0);
-    ~ZoneGroupTopology();
+    ACProperty()
+    : timeGeneration(0)
+    { }
+
+    virtual ~ACProperty() { }
+
+    std::string timeZone;
+    std::string timeServer;
+    unsigned timeGeneration;
+    std::string timeFormat;
+    std::string dateFormat;
+    std::string dailyIndexRefreshTime;
+    std::string alarmListVersion;
+  };
+
+  class AlarmClock : public Service, public EventSubscriber
+  {
+  public:
+    AlarmClock(const std::string& serviceHost, unsigned servicePort);
+    AlarmClock(const std::string& serviceHost, unsigned servicePort, EventHandler& eventHandler, Subscription& subscription, void* CBHandle = 0, EventCB eventCB = 0);
+    ~AlarmClock();
 
     static const std::string Name;
     static const std::string ControlURL;
@@ -51,16 +73,29 @@ namespace NSROOT
 
     const std::string& GetSCPDURL() const { return SCPDURL; }
 
-    bool GetZoneGroupState();
+    typedef enum
+    {
+      RecurrenceDaily,
+      RecurrenceWeekDays,
+      RecurrenceWeekEnds,
+      RecurrenceOnce,
+      RecurrenceOn,
+    } Recurrence_t;
 
-    unsigned GetTopologyKey() const { return m_topologyKey; }
+    bool CreateAlarm(Alarm& alarm);
 
-    Locked<ZoneList>& GetZoneList() { return m_zones; }
+    bool UpdateAlarm(Alarm& alarm);
 
-    Locked<ZonePlayerList>& GetZonePlayerList() { return m_zonePlayers; }
+    bool DestroyAlarm(const std::string& id);
+
+    bool ListAlarms(std::vector<AlarmPtr>& alarms);
 
     // Implements EventSubscriber
     virtual void HandleEventMessage(EventMessagePtr msg);
+
+    bool Empty() { return m_msgCount == 0; }
+
+    Locked<ACProperty>& GetACProperty() { return m_property; }
 
   private:
     EventHandler m_eventHandler;
@@ -68,15 +103,12 @@ namespace NSROOT
     void* m_CBHandle;
     EventCB m_eventCB;
     unsigned m_msgCount;
-    unsigned m_topologyKey;
 
-    Locked<ZoneList> m_zones;
-    Locked<ZonePlayerList> m_zonePlayers;
+    Locked<ACProperty> m_property;
 
-    bool ParseZoneGroupState(const std::string& xml);
-
+    static bool ParseAlarmList(const std::string& xml, AlarmList& alarms);
   };
 }
 
-#endif /* ZONEGROUPTOPOLOGY_H */
+#endif /* ALARMCLOCK_H */
 

@@ -22,7 +22,7 @@
 #define TRACKSMODEL_H
 
 #include "listmodel.h"
-#include "../../lib/noson/noson/src/contentdirectory.h"
+#include <noson/contentdirectory.h>
 
 #include <QAbstractListModel>
 

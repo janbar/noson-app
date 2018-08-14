@@ -19,8 +19,8 @@
  */
 
 #include "sonos.h"
-#include "../../lib/noson/noson/src/private/debug.h"
-#include "../../lib/noson/noson/src/contentdirectory.h"
+#include "private/debug.h"
+#include <noson/contentdirectory.h>
 #include "listmodel.h"
 
 #include <QString>

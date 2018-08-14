@@ -22,7 +22,7 @@
 #define ZONESMODEL_H
 
 #include "listmodel.h"
-#include "../../lib/noson/noson/src/sonoszone.h"
+#include <noson/sonoszone.h>
 
 #include <QAbstractListModel>
 

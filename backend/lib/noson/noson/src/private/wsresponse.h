@@ -22,7 +22,7 @@
 #ifndef WSRESPONSE_H
 #define	WSRESPONSE_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "wscontent.h"
 #include "wsrequest.h"
 

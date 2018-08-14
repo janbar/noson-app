@@ -22,7 +22,7 @@
 #ifndef DEBUG_H
 #define	DEBUG_H
 
-#include <local_config.h>
+#include "local_config.h"
 
 #define DBG_NONE  -1
 #define DBG_ERROR  0

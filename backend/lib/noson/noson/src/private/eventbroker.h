@@ -21,7 +21,7 @@
 #ifndef EVENTBROKER_H
 #define	EVENTBROKER_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "os/threads/threadpool.h"
 #include "wsrequestbroker.h"
 #include "socket.h"
@@ -41,7 +41,6 @@ namespace NSROOT
   private:
     EventHandler::EventHandlerThread* m_handler;
     SHARED_PTR<TcpSocket> m_sockPtr;
-    char* m_buffer;
   };
 }
 

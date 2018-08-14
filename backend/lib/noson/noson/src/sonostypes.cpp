@@ -22,6 +22,20 @@
 
 using namespace NSROOT;
 
+const char* NSROOT::libVersionString() { return LIBVERSION; }
+int NSROOT::libVersionMajor() { return LIBVERSION_MAJOR; }
+int NSROOT::libVersionMinor() { return LIBVERSION_MINOR; }
+int NSROOT::libVersionPatch() { return LIBVERSION_PATCH; }
+
+const char* NSROOT::PlayModeTable[PlayMode_unknown +1] = {
+  "NORMAL",
+  "REPEAT_ALL",
+  "SHUFFLE",
+  "SHUFFLE_NOREPEAT",
+  "REPEAT_ONE",
+  "",
+};
+
 const char* NSROOT::ProtocolTable[Protocol_unknown + 1] = {
   "x-rincon-queue",
   "x-rincon-stream",

@@ -11,8 +11,8 @@
 #include <sys/time.h>
 #endif
 
-#include "../../noson/src/private/os/threads/threadpool.h"
-#include "../../noson/src/intrinsic.h"
+#include "private/os/threads/threadpool.h"
+#include <noson/intrinsic.h>
 
 #include <cstdio>
 #include <stdlib.h>

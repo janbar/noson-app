@@ -22,7 +22,7 @@
 #ifndef COMPRESSOR_H
 #define COMPRESSOR_H
 
-#include <local_config.h>
+#include "local_config.h"
 
 #include <cstddef> // for size_t
 #include <cstring> // for memcpy

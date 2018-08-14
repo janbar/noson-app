@@ -22,7 +22,7 @@
 #define MEDIAMODEL_H
 
 #include "listmodel.h"
-#include "../../lib/noson/noson/src/smapi.h"
+#include <noson/smapi.h>
 
 #include <QAbstractListModel>
 #include <QStack>

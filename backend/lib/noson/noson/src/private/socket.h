@@ -22,7 +22,7 @@
 #ifndef SOCKET_H
 #define	SOCKET_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "os/os.h"
 
 #include <cstddef>  // for size_t

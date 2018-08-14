@@ -21,7 +21,7 @@
 #ifndef LOCKED_H
 #define	LOCKED_H
 
-#include <local_config.h>
+#include "local_config.h"
 
 namespace NSROOT
 {

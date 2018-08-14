@@ -21,7 +21,7 @@
 #ifndef SMACCOUNT_H
 #define SMACCOUNT_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "sharedptr.h"
 #include "locked.h"
 

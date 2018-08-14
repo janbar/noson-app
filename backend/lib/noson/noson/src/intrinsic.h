@@ -22,7 +22,7 @@
 #ifndef INTRINSIC_H
 #define	INTRINSIC_H
 
-#include <local_config.h>
+#include "local_config.h"
 
 namespace NSROOT
 {

@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 2.8.9)
 
+set(noson_INCLUDE_DIRS
+    "${CMAKE_BINARY_DIR}/backend/lib/noson/noson/public/noson"
+    "${CMAKE_BINARY_DIR}/backend/lib/noson/noson/public"
+)
+
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}/../backend/lib/noson/noson/include
+    ${CMAKE_SOURCE_DIR}/backend/lib/noson/noson/src
+    ${noson_INCLUDE_DIRS}
 )
 
 set(

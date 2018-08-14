@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Jean-Luc Barriere
+ *      Copyright (C) 2014-2018 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -162,18 +162,14 @@ bool SubscriptionThreadImpl::SubscribeForEvent(bool renew)
   }
   else
   {
-    char buf[11];
-    memset(buf, 0, sizeof(buf));
-    uint16_to_string(m_bindingPort, buf);
-    request.SetHeader("Callback", "<http://" + m_myIP + ":" + buf + ">");
+    std::string cb;
+    cb.assign("<http://").append(m_myIP).append(":").append(std::to_string(m_bindingPort)).append(">");
+    request.SetHeader("Callback", cb);
     request.SetHeader("NT", "upnp:event");
   }
-  char buf[18];
-  memset(buf, 0, sizeof(buf));
-  strncpy(buf, "Second-0", 8);
-  uint32_t secs = (uint32_t)m_timeout;
-  uint32_to_string(secs, buf + 7);
-  request.SetHeader("TIMEOUT", buf);
+  std::string tmo;
+  tmo.assign("Second-").append(std::to_string((uint32_t)m_timeout));
+  request.SetHeader("TIMEOUT", tmo);
   WSResponse response(request);
   if (response.IsSuccessful() && response.GetHeaderValue("SID", m_SID))
     return true;

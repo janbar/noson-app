@@ -22,7 +22,7 @@
 #ifndef WSREQUESTBROKER_H
 #define	WSREQUESTBROKER_H
 
-#include <local_config.h>
+#include "local_config.h"
 #include "os/os.h"
 #include "wsrequest.h"
 

@@ -8,19 +8,19 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 option(INSTALL_TESTS "Install the tests on make install" on)
 option(CLICK_MODE "Installs to a contained location" on)
 
-set(APP_VERSION       "2.8.6")
+set(APP_VERSION       "2.8.7")
 set(APP_NAME          "noson")
 set(APP_ID            "noson.janbar")
 set(EXEC              "noson-app")
 set(ICON_FILE         "noson.png")
 set(DESKTOP_FILE_NAME "noson.desktop")
 
-# Components PATH 
+# Components PATH
 execute_process(
   COMMAND dpkg-architecture -qDEB_HOST_MULTIARCH
   OUTPUT_VARIABLE ARCH_TRIPLET
   OUTPUT_STRIP_TRAILING_WHITESPACE
-)   
+)
 
 set(LIBDIR "lib/${ARCH_TRIPLET}")
 

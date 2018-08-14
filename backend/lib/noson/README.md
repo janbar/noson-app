@@ -11,18 +11,15 @@ and control playback in any zones.
 
 ### Linux, BSD, OSX
 
-Start by creating a build folder
-<pre><code>mkdir -p build
-rm -rf build/*
-cd build/</code></pre>
+Configure, make and install
 
-To build execute the following:
-<pre><code>cmake -DCMAKE_BUILD_TYPE=Release ..
-make</code></pre>
+<pre><code>cmake -DCMAKE_BUILD_TYPE=Release $NOSON_PROJECT_DIR
+make
+sudo make install</code></pre>
 
 ### Windows
 
-Start by installing VC strudio 2012 and CMAKE tool
+Start by installing VC studio 2012 and CMAKE tool
 
 To build open a command tool CMD.EXE from the project folder and execute the following
 <pre><code>mkdir build_vc
@@ -35,6 +32,8 @@ cmake --build .</code></pre>
 ./test/nosontest
 
 ## Generate the documentation
+
+sudo apt-get install graphviz
 
 doxygen <root path of noson>/docs/doxygen-dev.cfg
 
