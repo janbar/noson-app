@@ -93,7 +93,7 @@ MusicPage {
                 Label {
                     id: serviceTitle
                     color: styleMusic.view.primaryColor
-                    font.pointSize: units.fs("small")
+                    font.pointSize: units.fs("medium")
                     text: model.title
                 }
 

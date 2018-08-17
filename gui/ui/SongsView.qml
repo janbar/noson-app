@@ -221,14 +221,14 @@ MusicPage {
                 Label {
                     id: trackTitle
                     color: styleMusic.view.primaryColor
-                    font.pointSize: !songStackPage.isAlbum ? units.fs("small") : units.fs("medium")
+                    font.pointSize: units.fs("medium")
                     text: model.title
                 }
 
                 Label {
                     id: trackArtist
                     color: styleMusic.view.secondaryColor
-                    font.pointSize: !songStackPage.isAlbum ? units.fs("x-small") : units.fs("small")
+                    font.pointSize: units.fs("small")
                     text: model.author
                 }
             }

@@ -97,7 +97,7 @@ Item {
                 Label {
                     id: trackTitle
                     color: styleMusic.view.primaryColor
-                    font.pointSize: units.fs("small")
+                    font.pointSize: units.fs("medium")
                     font.bold: true
                     text: model.title
                 }
@@ -105,7 +105,7 @@ Item {
                 Label {
                     id: trackArtist
                     color: styleMusic.view.secondaryColor
-                    font.pointSize: units.fs("x-small")
+                    font.pointSize: units.fs("small")
                     text: model.author
                 }
 
