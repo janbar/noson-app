@@ -1,4 +1,10 @@
-noson-app (3.7) UNRELEASED; urgency=low
+noson-app (3.8) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 3.8
+  * New plugin to download arts from Last.fm
+  * Improves the management of the fallback image
+  * Minor graphic improvements
 
   [ janbar ]
   * Release 3.7
