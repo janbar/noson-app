@@ -12,6 +12,7 @@ find_package(Qt5Quick REQUIRED)
 include_directories(
     ${noson_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}/../lib/noson/noson/src
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 set(

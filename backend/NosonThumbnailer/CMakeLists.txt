@@ -8,6 +8,8 @@ find_package(Qt5Quick REQUIRED)
 ###############################################################################
 # configure
 
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
 set(
   NosonThumbnailer-static_SRCS
   albumartgenerator.cpp
