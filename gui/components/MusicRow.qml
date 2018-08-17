@@ -129,22 +129,21 @@ Row {
 
     Item {
         id: favorite
+        visible: isFavorite
         anchors.right: action2.left
-        anchors.rightMargin: units.gu(2)
-        width: units.gu(3)
+        anchors.rightMargin: units.gu(1)
+        width: visible ? units.gu(5) : 0
 
         Rectangle {
             color: "transparent"
             width: parent.width
             height: row.height
 
-            Image {
+            Icon {
                 width: parent.width
                 height: width
                 anchors.centerIn: parent
-                horizontalAlignment: Image.AlignHCenter
-                verticalAlignment: Image.AlignVCenter
-                source: isFavorite ? "qrc:/images/starred.svg" : ""
+                source: "qrc:/images/starred.svg"
             }
         }
     }
