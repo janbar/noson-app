@@ -5,8 +5,8 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 option(INSTALL_TESTS "Install the tests on make install" on)
 
-set(APP_VERSION       "3.7.4")
-set(APP_VERSION_CODE  6)
+set(APP_VERSION       "3.8.0")
+set(APP_VERSION_CODE  7)
 set(APP_NAME          "noson")
 set(APP_ID            "io.github.janbar.noson")
 set(EXEC              "noson-app")
@@ -72,7 +72,9 @@ if(ANDROID)
     ${CMAKE_SOURCE_DIR}/android/package-sources/AndroidManifest.xml
   )
   include(android/AddQtAndroidApk.cmake)
-  add_dependencies(noson-gui NosonApp NosonApp-qmldir)
+  add_dependencies(noson-gui NosonApp NosonApp-qmldir
+      NosonThumbnailer NosonThumbnailer-qmldir
+  )
   add_qt_android_apk(noson-apk noson-gui
       NAME ${APP_NAME}
       VERSION_CODE ${APP_VERSION_CODE}
@@ -91,7 +93,7 @@ endif()
 add_custom_target(
   "run"
   QML2_IMPORT_PATH=${CMAKE_BINARY_DIR}/backend/qml ${CMAKE_BINARY_DIR}/gui/noson-gui
-  DEPENDS NosonApp NosonApp-qmldir
+  DEPENDS NosonApp NosonApp-qmldir NosonThumbnailer NosonThumbnailer-qmldir
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/gui
 )
 

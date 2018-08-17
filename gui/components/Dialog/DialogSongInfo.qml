@@ -17,6 +17,7 @@
 
 import QtQuick 2.9
 import QtQuick.Controls 2.2
+import QtGraphicalEffects 1.0
 import NosonApp 1.0
 import "../Delegates"
 import "../"
@@ -24,6 +25,7 @@ import "../"
 Item {
     id: songInfo
     property var model: null
+    property var covers: []
     property bool actionsVisible: false
 
     DialogBase {
@@ -35,12 +37,18 @@ Item {
         onOpened: {
             timer.restart();
             if (songInfo.model) {
-                card.coverSources = [{art: makeCoverSource(songInfo.model.art, songInfo.model.author, songInfo.model.album)}];
+                card.coverSources = covers
                 card.primaryText = songInfo.model.title !== "" ? songInfo.model.title : qsTr("Unknown Album");
                 card.secondaryText = songInfo.model.author !== "" ? songInfo.model.author : qsTr("Unknown Artist");
                 card.tertiaryLabelVisible = songInfo.model.album.length !== "";
                 card.tertiaryText = qsTr("%1 - track #%2").arg(songInfo.model.album).arg(songInfo.model.albumTrackNo);
             }
+            if (actionsVisible)
+                standardButtons |= Dialog.Open;
+        }
+
+        onAccepted: {
+            trackClicked(songInfo.model); // play track
         }
 
         onClosed: {
@@ -54,7 +62,7 @@ Item {
 
         Item {
             id: card
-            height: cardColumn.childrenRect.height
+            height: coverGrid.height + labels.childrenRect.height - units.gu(10)
 
             property alias coverSources: coverGrid.covers
             property alias primaryText: primaryLabel.text
@@ -62,71 +70,49 @@ Item {
             property alias tertiaryText: tertiaryLabel.text
             property alias tertiaryLabelVisible: tertiaryLabel.visible
 
-            /* Column containing image and labels */
-            Column {
-                id: cardColumn
-                spacing: units.gu(0.5)
-                anchors.top: parent.top
+
+            CoverGrid {
+                id: coverGrid
+                size: parent.width
+                noCover: ""
+            }
+
+            Rectangle {
+                id: labelsBackground
+                anchors.top: coverGrid.top
+                anchors.topMargin: coverGrid.height - units.gu(10)
+                height: labels.childrenRect.height < units.gu(10) ? units.gu(10)
+                                                                  : labels.childrenRect.height + units.gu(3)
                 width: parent.width
+                color: styleMusic.dialog.backgroundColor
+                opacity: 0.60
+                clip: true
+            }
 
-                Item {
-                    width: parent.width
-                    height: coverGrid.height
-
-                    CoverGrid {
-                        id: coverGrid
-                        size: parent.width
-                    }
-
-                    Rectangle {
-                        id: iconBg
-                        anchors.bottom: coverGrid.bottom
-                        anchors.right: coverGrid.right
-                        anchors.margins: units.gu(1)
-                        height: coverGrid.height * 0.25
-                        width: height
-                        radius: height / 2
-                        color: styleMusic.dialog.backgroundColor
-                        opacity: 0.5
-                        visible: songInfo.actionsVisible
-                    }
-
-                    /* Play button */
-                    Icon {
-                        id: playerControlsPlayButton
-                        anchors.bottom: coverGrid.bottom
-                        anchors.right: coverGrid.right
-                        anchors.rightMargin: units.gu(1)
-                        anchors.bottomMargin: units.gu(1)
-                        visible: songInfo.actionsVisible
-                        color: styleMusic.dialog.foregroundColor
-                        height: coverGrid.height * 0.25
-                        width: height
-                        source: "qrc:/images/media-playback-start.svg"
-                        onClicked: {
-                            trackClicked(songInfo.model); // play track
-                            dialog.accept();
-                        }
-                    }
+            /* Column for labels */
+            Column {
+                id: labels
+                anchors {
+                    left: parent.left
+                    leftMargin: units.gu(1.5)
+                    right: parent.right
+                    rightMargin: units.gu(1.5)
+                    top: labelsBackground.top
+                    topMargin: units.gu(1.5)
                 }
 
-                Item {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    height: units.gu(1)
-                }
+                spacing: units.gu(0.5)
 
                 Label {
                     id: primaryLabel
                     anchors {
                         left: parent.left
-                        leftMargin: units.gu(1)
                         right: parent.right
-                        rightMargin: units.gu(1)
                     }
                     color: styleMusic.dialog.labelColor
                     elide: Text.ElideRight
                     font.pointSize: units.fs("large")
+                    font.bold: true
                     opacity: 1.0
                     wrapMode: Text.WordWrap
                 }
@@ -135,9 +121,7 @@ Item {
                     id: secondaryLabel
                     anchors {
                         left: parent.left
-                        leftMargin: units.gu(1)
                         right: parent.right
-                        rightMargin: units.gu(1)
                     }
                     color: styleMusic.dialog.labelColor
                     elide: Text.ElideRight
@@ -150,15 +134,14 @@ Item {
                     id: tertiaryLabel
                     anchors {
                         left: parent.left
-                        leftMargin: units.gu(1)
                         right: parent.right
-                        rightMargin: units.gu(1)
                     }
                     color: styleMusic.dialog.labelColor
                     elide: Text.ElideRight
                     font.pointSize: units.fs("medium")
                     opacity: 0.9
                     wrapMode: Text.WordWrap
+                    font.italic: true
                 }
             }
         }
@@ -187,8 +170,9 @@ Item {
 
     }
 
-    function open(model, showActions) {
+    function open(model, covers, showActions) {
         songInfo.model = model;
+        songInfo.covers = covers;
         songInfo.actionsVisible = showActions;
         return dialog.open();
     }

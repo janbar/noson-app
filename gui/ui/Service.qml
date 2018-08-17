@@ -144,10 +144,10 @@ MusicPage {
             noCover: model.type === 2 ? "qrc:/images/none.png"
                    : model.canPlay && !model.canQueue ? "qrc:/images/radio.png"
                    : "qrc:/images/no_cover.png"
-            imageSource: model.art !== "" ? model.art
-                       : model.type === 2 ? "qrc:/images/none.png"
-                       : model.canPlay && !model.canQueue ? "qrc:/images/radio.png"
-                       : "qrc:/images/no_cover.png"
+            imageSources: model.art !== "" ? [{art: model.art}]
+                        : model.type === 2 ? [{art: "qrc:/images/none.png"}]
+                        : model.canPlay && !model.canQueue ? [{art: "qrc:/images/radio.png"}]
+                        : [{art: "qrc:/images/no_cover.png"}]
             description: model.description.length > 0 ? model.description
                     : model.type === 1 ? model.artist.length > 0 ? model.artist : qsTr("Album")
                     : model.type === 2 ? qsTr("Artist")
@@ -247,10 +247,10 @@ MusicPage {
 
             canPlay: model.isContainer && model.canPlay ? true : false
 
+            overlay: false // item icon could be transparent
             noCover: model.type === 2 ? "qrc:/images/none.png"
                    : model.canPlay && !model.canQueue ? "qrc:/images/radio.png"
                    : "qrc:/images/no_cover.png"
-
             coverSources: model.art !== "" ? [{art: model.art}]
                         : model.type === 2 ? [{art: "qrc:/images/none.png"}]
                         : model.canPlay && !model.canQueue ? [{art: "qrc:/images/radio.png"}]

@@ -75,9 +75,9 @@ MusicPage {
                 }
             }
 
-            coverSources: makeCoverSources()
+            coverSources: allCovers()
 
-            function makeCoverSources() {
+            function allCovers() {
                 var cs = [];
                 var arts = model.arts;
                 for (var i = 0; i < arts.length; ++i) cs.push({art: arts[i]});

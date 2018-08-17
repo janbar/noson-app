@@ -61,9 +61,9 @@ Item {
                 listview.reorder(from, to)
             }
 
-            onClick: dialogSongInfo.open(model, false) // don't show actions
+            onClick: dialogSongInfo.open(model, [{art: imageSource}], false) // don't show actions
 
-            imageSource: makeCoverSource(model.art, model.author, model.album)
+            imageSources: makeCoverSource(model.art, model.author, model.album)
             description: qsTr("Song")
 
             onImageError: model.art = "" // reset invalid url from model
@@ -97,7 +97,7 @@ Item {
                 Label {
                     id: trackTitle
                     color: styleMusic.view.primaryColor
-                    font.pointSize: units.fs("small")
+                    font.pointSize: units.fs("medium")
                     font.bold: true
                     text: model.title
                 }
@@ -105,7 +105,7 @@ Item {
                 Label {
                     id: trackArtist
                     color: styleMusic.view.secondaryColor
-                    font.pointSize: units.fs("x-small")
+                    font.pointSize: units.fs("small")
                     text: model.author
                 }
 

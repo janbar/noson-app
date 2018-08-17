@@ -6,6 +6,7 @@ import QtQuick.Controls.Universal 2.2
 import Qt.labs.settings 1.0
 import QtGraphicalEffects 1.0
 import NosonApp 1.0
+import NosonThumbnailer 1.0
 import "components"
 import "components/Dialog"
 import "ui"
@@ -32,6 +33,7 @@ ApplicationWindow {
         property int widthGU: Math.round(mainView.width / units.gridUnit)
         property int heightGU: Math.round(mainView.height / units.gridUnit)
         property string accounts: ""
+        property string lastfmKey: ""
     }
 
     Material.accent: Material.Grey
@@ -156,6 +158,9 @@ ApplicationWindow {
     // property to enable pop info on index loaded
     property bool infoLoadedIndex: true // enabled at startup
 
+    // property to detect thumbnailer is available
+    property bool thumbValid: false
+
     // Constants
     readonly property int queueBatchSize: 100
     readonly property real minSizeGU: 45
@@ -273,6 +278,8 @@ ApplicationWindow {
 
         customdebug("LANG=" + Qt.locale().name);
         Sonos.setLocale(Qt.locale().name);
+        if (Thumbnailer.setApiKey(settings.lastfmKey))
+            thumbValid = true;
 
         // init SMAPI third party accounts
         var acls = deserializeACLS(settings.accounts);
@@ -724,15 +731,39 @@ ApplicationWindow {
         };
     }
 
-    function makeCoverSource(art, artist, album) {
-        var uri = "qrc:/images/no_cover.png";
+    function makeArt(art, artist, album) {
         if (art !== undefined && art !== "")
-            uri = art;
-        else if (album !== undefined && album !== "")
-            uri = "qrc:/images/no_cover.png";
-        else if (artist !== undefined && artist !== "")
-            uri = "qrc:/images/none.png";
-        return uri;
+            return art;
+        if (album !== undefined && album !== "") {
+            if (thumbValid)
+                return "image://albumart/artist=" + encodeURIComponent(artist) + "&album=" + encodeURIComponent(album);
+            else
+                return "qrc:/images/no_cover.png";
+        } else if (artist !== undefined && artist !== "") {
+            if (thumbValid)
+                return "image://artistart/artist=" + encodeURIComponent(artist);
+            else
+                return "qrc:/images/none.png";
+        }
+        return "qrc:/images/no_cover.png";
+    }
+
+    function makeCoverSource(art, artist, album) {
+        var array = [];
+        if (art !== undefined && art !== "")
+            array.push( {art: art} );
+        if (album !== undefined && album !== "") {
+            if (thumbValid)
+                array.push( {art: "image://albumart/artist=" + encodeURIComponent(artist) + "&album=" + encodeURIComponent(album)} );
+            array.push( {art: "qrc:/images/no_cover.png"} );
+        } else if (artist !== undefined && artist !== "") {
+            if (thumbValid)
+                array.push( {art: "image://artistart/artist=" + encodeURIComponent(artist)} );
+            array.push( {art: "qrc:/images/none.png"} );
+        } else {
+            array.push( {art: "qrc:/images/no_cover.png"} );
+        }
+        return array;
     }
 
     function isAlarmEnabled() {
@@ -1131,6 +1162,13 @@ ApplicationWindow {
 
             settings.style = styleBox.displayText;
             scaleBox.acceptedValue = settings.scaleFactor;
+
+            if (settings.lastfmKey !== apiKey.text) {
+                settings.lastfmKey = apiKey.text;
+                if (Thumbnailer.setApiKey(apiKey.text))
+                    thumbValid = true;
+            }
+
             applicationSettingsDialog.close();
 
             if (needRestart)
@@ -1309,6 +1347,26 @@ ApplicationWindow {
                 verticalAlignment: Label.AlignVCenter
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+            }
+
+            RowLayout {
+                visible: true
+                spacing: units.gu(1)
+                Layout.fillWidth: true
+                Label {
+                    text: qsTr("Last.fm")
+                    font.pointSize: units.fs("medium");
+                }
+
+                TextField {
+                    id: apiKey
+                    font.pointSize: units.fs("medium")
+                    placeholderText: qsTr("Enter a valid API key");
+                    inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhUrlCharactersOnly
+                    Layout.fillWidth: true
+
+                    Component.onCompleted: apiKey.text = settings.lastfmKey
+                }
             }
         }
     }

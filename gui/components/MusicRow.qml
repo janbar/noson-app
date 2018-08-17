@@ -28,6 +28,7 @@ Row {
     property alias column: columnComponent.sourceComponent
     property real coverSize: styleMusic.view.albumSize
     property string noCover: "qrc:/images/no_cover.png"
+    property var imageSources: []
     property string imageSource: ""
     property string description: ""
     property bool isFavorite: false
@@ -45,7 +46,7 @@ Row {
     signal selected
     signal deselected
 
-    signal imageError
+    signal imageError(var index)
 
     spacing: units.gu(2)
 
@@ -67,6 +68,7 @@ Row {
 
     Image {
         id: image
+        property int index: 0
         anchors {
             verticalCenter: parent.verticalCenter
             topMargin: units.gu(1)
@@ -76,17 +78,24 @@ Row {
         fillMode: Image.PreserveAspectCrop
         height: contentHeight
         width: height
-        source: imageSource !== "" ? imageSource : noCover
+        source: imageSources !== undefined && imageSources.length ? imageSources[index].art : noCover
         sourceSize.height: height
         sourceSize.width: width
 
+
         onStatusChanged: {
             if (status === Image.Error) {
-                row.imageError()
-                source = noCover
+                row.imageError(index)
+                if (imageSources.length > (index + 1)) {
+                    source = imageSources[++index].art
+                } else {
+                    source = noCover
+                }
+            } else if (status === Image.Ready) {
+                imageSource = source;
             }
         }
-        visible: imageSource !== ""
+        visible: imageSources.length > 0
     }
 
     Rectangle {
@@ -102,7 +111,7 @@ Row {
             verticalCenter: parent.verticalCenter
         }
 
-        width: imageSource === undefined ? parent.width - parent.spacing - action.width - menu.width
+        width: imageSources === undefined ? parent.width - parent.spacing - action.width - menu.width
                                          : parent.width - image.width - parent.spacing - action.width - menu.width
 
         onSourceComponentChanged: {

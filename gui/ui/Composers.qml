@@ -62,7 +62,7 @@ MusicPage {
 
         delegate: Card {
             id: composerCard
-            coverSources: [{art: makeCoverSource(undefined, model.composer, undefined)}]
+            coverSources: makeCoverSource(undefined, model.composer, undefined)
             noCover: "qrc:/images/none.png"
             objectName: "composersPageGridItem" + index
             primaryText: model.composer !== undefined && model.composer !== "" ? model.composer : qsTr("Unknown Composer")

@@ -16,11 +16,11 @@ Item {
     function fs(s) {
         if (Android) {
             if (s === "x-small")
-                return 12.0 * scaleFactor * fontScaleFactor;
+                return 10.0 * scaleFactor * fontScaleFactor;
             if (s === "small")
-                return 14.0 * scaleFactor * fontScaleFactor;
+                return 12.0 * scaleFactor * fontScaleFactor;
             if (s === "medium")
-                return 16.0 * scaleFactor * fontScaleFactor;
+                return 14.0 * scaleFactor * fontScaleFactor;
             if (s === "large")
                 return 18.0 * scaleFactor * fontScaleFactor;
             if (s === "x-large")

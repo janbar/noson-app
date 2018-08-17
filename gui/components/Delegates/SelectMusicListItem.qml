@@ -77,6 +77,7 @@ MouseArea {
     property alias column: row.column
     property alias description: row.description
     property alias isFavorite: row.isFavorite
+    property alias imageSources: row.imageSources
     property alias imageSource: row.imageSource
     property alias noCover: row.noCover
     property alias actionVisible: row.actionVisible

@@ -144,7 +144,7 @@ MusicPage {
                             var index = 0;
                             while (index < count && index < 4) {
                                 var childItem = childModel.get(index);
-                                covers.push({art: makeCoverSource(childItem.art, childItem.artist, undefined), item: childItem});
+                                covers.push({art: makeArt(childItem.art, childItem.artist, undefined), item: childItem});
                                 ++index;
                             }
                             // unregister directory content
@@ -164,7 +164,7 @@ MusicPage {
                                        "containerItem": makeContainerItem(model),
                                        "songSearch": model.id + "//",
                                        "covers": coverSources,
-                                       "album": "",
+                                       "album": undefined,
                                        "genre": model.genre,
                                        "pageTitle": qsTr("Genre"),
                                        "line1": "",
