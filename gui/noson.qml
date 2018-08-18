@@ -864,8 +864,9 @@ ApplicationWindow {
     Shortcut {
         sequence: "Ctrl+J"              // Ctrl+J      Jump to playing song
         onActivated: {
-            tabs.pushNowPlaying()
-            stackView.currentItem.isListView = true;
+            tabs.pushNowPlaying();
+            if (nowPlayingPage !== null)
+                nowPlayingPage.isListView = true;
         }
     }
     Shortcut {
@@ -1080,11 +1081,8 @@ ApplicationWindow {
         function pushNowPlaying()
         {
             if (!wideAspect) {
-                // pop existing page now playing
-                if (nowPlayingPage !== null && stackView.pop(nowPlayingPage) === nowPlayingPage) {
-                    return;
-                }
-                nowPlayingPage = stackView.push("qrc:/ui/NowPlaying.qml", false, true);
+                if (nowPlayingPage === null)
+                    nowPlayingPage = stackView.push("qrc:/ui/NowPlaying.qml", false, true);
                 if (nowPlayingPage.isListView) {
                     nowPlayingPage.isListView = false; // ensure full view
                 }
