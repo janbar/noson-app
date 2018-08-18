@@ -1163,6 +1163,7 @@ ApplicationWindow {
 
             if (settings.lastfmKey !== apiKey.text) {
                 settings.lastfmKey = apiKey.text;
+                Thumbnailer.reset(); // reset thumbnailer state
                 if (Thumbnailer.setApiKey(apiKey.text))
                     thumbValid = true;
             }
