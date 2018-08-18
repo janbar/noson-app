@@ -377,11 +377,13 @@ namespace thumbnailer
 
   void ThumbnailerImpl::clearCache()
   {
+    qInfo().noquote() << "thumbnailer: clear cache";
     cache_->clear();
   }
 
   void ThumbnailerImpl::reset()
   {
+    qInfo().noquote() << "thumbnailer: reset state";
     nwerr_.store(0);
     netFailed_ = false;
     fatal_.store(0);
