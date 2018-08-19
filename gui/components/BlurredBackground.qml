@@ -24,7 +24,7 @@ import QtGraphicalEffects 1.0
 Item {
     width: parent.width
 
-    property string art: player.currentMetaArt === "" ? Qt.resolvedUrl("../images/no_cover.png") : player.currentMetaArt
+    property string art: player.currentMetaArt === "" ? "qrc:/images/no_cover.png" : player.currentMetaArt
 
     // dark layer
     Rectangle {
