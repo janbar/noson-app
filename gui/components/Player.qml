@@ -49,10 +49,12 @@ Item {
     property int renderingControlCount: 0
     property bool sleepTimerEnabled: false
     property bool nightmodeEnabled: false
+    property var covers: []
 
     property string queueInfo: queueOverviewString()
 
     signal stopped()
+    signal sourceChanged()
 
     onCurrentCountChanged: queueInfo = queueOverviewString()
     onCurrentIndexChanged: queueInfo = queueOverviewString()
@@ -249,6 +251,8 @@ Item {
         // reset position
         var npos = 1000 * playerLoader.item.currentTrackPosition();
         player.position = npos > player.duration ? 0 : npos;
+        player.covers = makeCoverSource(player.currentMetaArt, player.currentMetaArtist, player.currentMetaAlbum);
+        player.sourceChanged();
     }
 
     function refreshPlayMode() {
