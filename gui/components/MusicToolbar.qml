@@ -160,9 +160,16 @@ Item {
                      top: parent.top
                      margins: units.dp(2)
                  }
-                 covers: makeCoverSource(player.currentMetaArt, player.currentMetaArtist, player.currentMetaAlbum)
+                 covers: player.covers
                  size: parent.height
-                 useFallbackArt: false
+                 overlay: false
+
+                 Connections {
+                     target: player
+                     onSourceChanged: {
+                         playerControlsImage.covers = player.covers
+                     }
+                 }
             }
 
             /* Column of meta labels */

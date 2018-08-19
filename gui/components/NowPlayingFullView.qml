@@ -51,9 +51,16 @@ Flickable {
             CoverGrid {
                 id: albumImage
                 anchors.centerIn: parent
-                covers: makeCoverSource(player.currentMetaArt, player.currentMetaArtist, player.currentMetaAlbum)
+                covers: player.covers
                 size: parent.height
-                useFallbackArt: false
+                overlay: false
+
+                Connections {
+                    target: player
+                    onSourceChanged: {
+                        albumImage.covers = player.covers;
+                    }
+                }
             }
         }
 
