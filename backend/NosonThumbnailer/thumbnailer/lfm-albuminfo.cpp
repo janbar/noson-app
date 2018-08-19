@@ -69,7 +69,7 @@ AlbumInfo::AlbumInfo(DiskCacheManager* cache, NetManager* nam, const QString& ap
   QString str("image://albuminfo/?");
   QUrlQuery qry;
   qry.addQueryItem("artist", m_artist);
-  qry.addQueryItem("album", m_artist);
+  qry.addQueryItem("album", m_album);
   qry.addQueryItem("size", QString::number(m_size));
   str.append(qry.toString());
   m_cacheUrl.setUrl(str);
