@@ -44,7 +44,7 @@ namespace thumbnailer
 
     void ThumbnailerPlugin::registerTypes(const char* uri)
     {
-      qmlRegisterSingletonType<Controller>(uri, 1, 0, "Thumbnailer", ThumbnailerPlugin::thumbnailer);
+      qmlRegisterSingletonType<Proxy>(uri, 1, 0, "Thumbnailer", ThumbnailerPlugin::proxy);
     }
 
     void ThumbnailerPlugin::initializeEngine(QQmlEngine* engine, const char* uri)
@@ -86,20 +86,20 @@ namespace thumbnailer
       // LCOV_EXCL_STOP
     }
 
-    QObject* ThumbnailerPlugin::thumbnailer(QQmlEngine *engine, QJSEngine *scriptEngine)
+    QObject* ThumbnailerPlugin::proxy(QQmlEngine *engine, QJSEngine *scriptEngine)
     {
       Q_UNUSED(engine)
       Q_UNUSED(scriptEngine)
-      return new Controller(ThumbnailerPlugin::_instance_->m_thumbnailer);
+      return new Proxy(ThumbnailerPlugin::_instance_->m_thumbnailer);
     }
 
-    Controller::Controller(std::shared_ptr<thumbnailer::Thumbnailer>& thumbnailer, QObject *parent)
+    Proxy::Proxy(std::shared_ptr<thumbnailer::Thumbnailer>& thumbnailer, QObject *parent)
     : QObject(parent)
     , m_p(thumbnailer)
     {
     }
 
-    bool Controller::setApiKey(const QString &apiKey)
+    bool Proxy::setApiKey(const QString &apiKey)
     {
       m_p->setApiKey(apiKey);
       return m_p->isValid();

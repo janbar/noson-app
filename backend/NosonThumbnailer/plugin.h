@@ -46,7 +46,7 @@ namespace thumbnailer
       virtual void registerTypes(const char* uri) override;
       virtual void initializeEngine(QQmlEngine* engine, const char* uri) override;
 
-      static QObject* thumbnailer(QQmlEngine *engine, QJSEngine *scriptEngine);
+      static QObject* proxy(QQmlEngine *engine, QJSEngine *scriptEngine);
 
     private:     
       static ThumbnailerPlugin* _instance_;
@@ -55,13 +55,13 @@ namespace thumbnailer
     };
 
 
-    class Controller : public QObject
+    class Proxy : public QObject
     {
       Q_OBJECT
 
     public:
-      Controller(std::shared_ptr<thumbnailer::Thumbnailer>& thumbnailer, QObject* parent = 0);
-      ~Controller() = default;
+      Proxy(std::shared_ptr<thumbnailer::Thumbnailer>& thumbnailer, QObject* parent = 0);
+      ~Proxy() = default;
 
       Q_INVOKABLE bool setApiKey(const QString& apiKey);
 
