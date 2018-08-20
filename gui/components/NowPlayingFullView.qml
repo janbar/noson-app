@@ -51,10 +51,13 @@ Flickable {
             CoverGrid {
                 id: albumImage
                 anchors.centerIn: parent
-                covers: player.covers.slice()
                 size: parent.height
                 overlay: false
 
+                /* @FIXME: QML binding for covers fails randomly. So bind manually the covers */
+                Component.onCompleted: {
+                    covers = player.covers.slice();
+                }
                 Connections {
                     target: player
                     onSourceChanged: {
