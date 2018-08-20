@@ -388,6 +388,8 @@ ApplicationWindow {
         }
         onShareIndexFinished: {
             shareIndexInProgress = false;
+            // Queue item metadata could be outdated: force reloading of the queue
+            player.trackQueue.loadQueue();
         }
     }
 
