@@ -158,7 +158,7 @@ MusicPage {
     // Overlay to show when index is being refreshed
     Loader {
         anchors.fill: parent
-        active: shareIndexInProgress && infoLoadedIndex
+        active: shareIndexInProgress
         asynchronous: true
         source: "qrc:/components/IndexUpdateState.qml"
         visible: active
