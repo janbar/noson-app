@@ -235,13 +235,14 @@ void ArtistInfo::queryInfo()
   url.setUrl(BASE_URL);
   url.setQuery(qry);
 
-  m_call.reset(new NetRequest(m_nam));
+  m_call.reset(new NetRequest());
   //connect(m_call.get(), SIGNAL(readyRead(NetRequest*)), this, SLOT(readInfo()));
   connect(m_call.get(), SIGNAL(finished(NetRequest*)), this, SLOT(processInfo()));
   m_call->setOperation(QNetworkAccessManager::PostOperation);
   m_call->setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
   m_call->setData(postData);
-  m_call->startRequest(QUrl(url));
+  m_call->setUrl(QUrl(url));
+  m_call->launch(m_nam);
 }
 
 bool ArtistInfo::parseInfo()
@@ -298,10 +299,11 @@ bool ArtistInfo::parseInfo()
 
 void ArtistInfo::queryImage(const QUrl& url)
 {
-  m_call.reset(new NetRequest(m_nam));
+  m_call.reset(new NetRequest());
   //connect(m_call.get(), SIGNAL(readyRead(NetRequest*)), this, SLOT(readImage()));
   connect(m_call.get(), SIGNAL(finished(NetRequest*)), this, SLOT(processImage()));
-  m_call->startRequest(url);
+  m_call->setUrl(url);
+  m_call->launch(m_nam);
 }
 
 bool ArtistInfo::parseServerError()

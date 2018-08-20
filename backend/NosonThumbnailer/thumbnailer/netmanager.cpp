@@ -18,6 +18,8 @@
  *
  */
 
+#include <QNetworkReply>
+
 #include "netmanager.h"
 
 using namespace thumbnailer;
@@ -26,6 +28,7 @@ NetManager::NetManager(QObject* parent)
 : QObject(parent)
 , m_nam(new QNetworkAccessManager())
 {
+  connect(this, SIGNAL(request(NetRequest*)), this, SLOT(onRequest(NetRequest*)));
 }
 
 NetManager::~NetManager()
@@ -40,25 +43,28 @@ QNetworkAccessManager* NetManager::networkAccessManager()
 
 void NetManager::onRequest(NetRequest* wr)
 {
+  QNetworkReply* reply;
   switch (wr->getOperation())
   {
     case QNetworkAccessManager::GetOperation:
-      wr->newReply(m_nam->get(wr->getRequest()));
+      reply = m_nam->get(wr->getRequest());
       break;
     case QNetworkAccessManager::HeadOperation:
-      wr->newReply(m_nam->head(wr->getRequest()));
+      reply = m_nam->head(wr->getRequest());
       break;
     case QNetworkAccessManager::PostOperation:
-      wr->newReply(m_nam->post(wr->getRequest(), wr->getData()));
+      reply = m_nam->post(wr->getRequest(), wr->getData());
       break;
     case QNetworkAccessManager::PutOperation:
-      wr->newReply(m_nam->put(wr->getRequest(), wr->getData()));
+      reply = m_nam->put(wr->getRequest(), wr->getData());
       break;
     case QNetworkAccessManager::DeleteOperation:
-      wr->newReply(m_nam->deleteResource(wr->getRequest()));
+      reply = m_nam->deleteResource(wr->getRequest());
       break;
     default:
       qDebug().noquote() << "NetManager::onRequest(): Unknown operation";
       QMetaObject::invokeMethod(wr, "requestAborted", Qt::QueuedConnection);
+      return;
   }
+  wr->newReply(this, reply);
 }

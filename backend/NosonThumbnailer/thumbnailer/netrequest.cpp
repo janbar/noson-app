@@ -27,21 +27,17 @@
 
 using namespace thumbnailer;
 
-NetRequest::NetRequest(NetManager* nam, QObject* parent)
+NetRequest::NetRequest(QObject* parent)
 : QObject(parent)
 , m_enableRedirect(true)
 , m_redirect(false)
 , m_operation(QNetworkAccessManager::GetOperation)
-, m_nam(nam)
+, m_nam(nullptr)
 , m_reply(nullptr)
 , m_httpRequestAborted(false)
 , m_httpReplyError(false)
 , m_errorCode(QNetworkReply::NoError)
 {
-#ifndef QT_NO_SSL
-  connect(m_nam->networkAccessManager(), &QNetworkAccessManager::sslErrors, this, &NetRequest::sslErrors);
-#endif
-  connect(this, SIGNAL(request(NetRequest*)), m_nam, SLOT(onRequest(NetRequest*)));
 }
 
 NetRequest::~NetRequest()
@@ -50,23 +46,27 @@ NetRequest::~NetRequest()
     m_reply->deleteLater();
 }
 
+void NetRequest::launch(NetManager* nam)
+{
+  emit nam->request(this);
+}
+
 void NetRequest::redirect(bool enabled)
 {
   m_enableRedirect = enabled;
 }
 
-void NetRequest::startRequest(const QUrl &requestedUrl)
+void NetRequest::newReply(NetManager* nam, QNetworkReply* reply)
 {
-  m_request.setUrl(requestedUrl);
   m_httpRequestAborted = false;
-  emit request(this);
-}
-
-void NetRequest::newReply(QNetworkReply* reply)
-{
+  m_httpReplyError = false;
+  m_nam = nam;
   m_reply = reply;
   connect(m_reply, &QNetworkReply::finished, this, &NetRequest::replyFinished);
   connect(m_reply, &QIODevice::readyRead, this, &NetRequest::replyReadyRead);
+#ifndef QT_NO_SSL
+  connect(m_reply, &QNetworkReply::sslErrors, this, &NetRequest::sslErrors);
+#endif
 }
 
 bool NetRequest::atEnd()
@@ -86,6 +86,11 @@ void NetRequest::cancel()
   Q_ASSERT(m_reply);
   m_httpRequestAborted = true;
   m_reply->abort();
+}
+
+void NetRequest::setUrl(const QUrl &url)
+{
+  m_request.setUrl(url);
 }
 
 void NetRequest::setOperation(QNetworkAccessManager::Operation operation)
@@ -141,7 +146,8 @@ void NetRequest::replyFinished()
           m_reply->deleteLater();
           m_reply = nullptr;
           m_redirect = true;
-          startRequest(redirectedUrl);
+          setUrl(redirectedUrl);
+          launch(m_nam);
           return;
         }
         m_httpReplyError = true;
@@ -168,7 +174,7 @@ void NetRequest::replyReadyRead()
 
 #ifndef QT_NO_SSL
 
-void NetRequest::sslErrors(QNetworkReply*, const QList<QSslError> &errors)
+void NetRequest::sslErrors(const QList<QSslError> &errors)
 {
   QString errorString;
 

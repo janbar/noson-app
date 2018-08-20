@@ -36,14 +36,14 @@ namespace thumbnailer
     Q_OBJECT
 
   public:
-    explicit NetRequest(NetManager* nam, QObject* parent = 0);
+    explicit NetRequest(QObject* parent = 0);
     virtual ~NetRequest();
+
+    void launch(NetManager* nam);
 
     void redirect(bool enabled);
 
-    void startRequest(const QUrl &requestedUrl);
-    
-    void newReply(QNetworkReply* reply);
+    void newReply(NetManager* nam, QNetworkReply* reply);
 
     bool atEnd();
     QByteArray readData();
@@ -53,6 +53,8 @@ namespace thumbnailer
     {
       return m_request;
     }
+
+    void setUrl(const QUrl& url);
 
     void setOperation(QNetworkAccessManager::Operation operation);
 
@@ -86,7 +88,6 @@ namespace thumbnailer
     }
 
     signals:
-    void request(NetRequest*);
     void readyRead(NetRequest*);
     void finished(NetRequest*);
 
@@ -95,7 +96,7 @@ namespace thumbnailer
     void replyFinished();
     void replyReadyRead();
 #ifndef QT_NO_SSL
-    void sslErrors(QNetworkReply*, const QList<QSslError> &errors);
+    void sslErrors(const QList<QSslError> &errors);
 #endif
 
   private:

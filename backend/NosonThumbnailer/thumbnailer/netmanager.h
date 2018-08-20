@@ -37,7 +37,10 @@ namespace thumbnailer
 
     QNetworkAccessManager* networkAccessManager();
 
-  public slots:
+  signals:
+    void request(NetRequest*);
+
+  private slots:
     void onRequest(NetRequest* wr);
 
   private:
