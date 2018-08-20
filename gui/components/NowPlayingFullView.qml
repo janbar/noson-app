@@ -51,14 +51,14 @@ Flickable {
             CoverGrid {
                 id: albumImage
                 anchors.centerIn: parent
-                covers: player.covers
+                covers: player.covers.slice()
                 size: parent.height
                 overlay: false
 
                 Connections {
                     target: player
                     onSourceChanged: {
-                        albumImage.covers = player.covers;
+                        albumImage.covers = player.covers.slice();
                     }
                 }
             }

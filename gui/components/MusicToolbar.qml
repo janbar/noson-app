@@ -160,14 +160,14 @@ Item {
                      top: parent.top
                      margins: units.dp(2)
                  }
-                 covers: player.covers
+                 covers: player.covers.slice()
                  size: parent.height
                  overlay: false
 
                  Connections {
                      target: player
                      onSourceChanged: {
-                         playerControlsImage.covers = player.covers
+                         playerControlsImage.covers = player.covers.slice();
                      }
                  }
             }
