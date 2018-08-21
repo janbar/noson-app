@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.1.0)
 # Automatically create moc files
 set(CMAKE_AUTOMOC ON)
 
@@ -15,6 +16,8 @@ file(GLOB APP_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.qml *.js *.json)
 
 add_subdirectory(components)
 add_subdirectory(ui)
+
+set(CMAKE_CXX_STANDARD 11)
 
 # Make the files visible on qtcreator
 add_custom_target(nosongui_QMlFiles ALL SOURCES ${APP_FILES})

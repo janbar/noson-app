@@ -23,6 +23,9 @@
 #include "albumartgenerator.h"
 #include "artistartgenerator.h"
 
+#include <QtQml>
+#include <QtQml/QQmlContext>
+
 #include <memory>
 
 #define CACHE_SIZE 100000000L

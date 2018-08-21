@@ -77,9 +77,9 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("ApplicationArguments", app.arguments());
     // bind Android flag
 #ifdef Q_OS_ANDROID
-    engine.rootContext()->setContextProperty("Android", true);
+    engine.rootContext()->setContextProperty("Android", QVariant(true));
 #else
-    engine.rootContext()->setContextProperty("Android", false);
+    engine.rootContext()->setContextProperty("Android", QVariant(false));
 #endif
     // select and bind styles available and known to work
     QStringList availableStyles;

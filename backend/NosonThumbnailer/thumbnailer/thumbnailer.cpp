@@ -30,6 +30,7 @@
 #include <QDebug>
 
 #include <memory>
+#include <ctime>
 
 
 #define MAX_BACKLOG 4   // Maximum number of pending requests before the thumbnailer starts queuing them.

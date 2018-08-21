@@ -22,6 +22,7 @@
 #define NETREQUEST_H
 
 #include <QNetworkAccessManager>
+#include <QNetworkRequest>
 #include <QByteArray>
 #include <QUrl>
 #include <QTimer>

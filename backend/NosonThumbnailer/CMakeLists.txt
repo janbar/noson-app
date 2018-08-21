@@ -7,6 +7,7 @@ find_package(Qt5Quick REQUIRED)
 
 ###############################################################################
 # configure
+set(CMAKE_CXX_STANDARD 11)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 

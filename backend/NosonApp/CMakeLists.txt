@@ -9,6 +9,8 @@ find_package(Qt5Quick REQUIRED)
 
 ###############################################################################
 # configure
+set(CMAKE_CXX_STANDARD 11)
+
 include_directories(
     ${noson_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}/../lib/noson/noson/src
