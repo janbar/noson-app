@@ -48,13 +48,15 @@ namespace thumbnailer
 
     virtual void run() = 0;
 
-    virtual ReplyStatus error() = 0;
+    virtual ReplyStatus error() const = 0;
 
-    virtual int errorCode() = 0;
+    virtual int errorCode() const = 0;
 
-    virtual QString errorString() = 0;
+    virtual QString errorString() const = 0;
 
-    virtual const QByteArray& image() = 0;
+    virtual const QByteArray& image() const = 0;
+
+    virtual bool isCached() const = 0;
 
     signals:
     void finished();
@@ -72,10 +74,11 @@ namespace thumbnailer
     ~Job();
 
     void start();
-    ReplyStatus error();
-    int errorCode();
-    QString errorString();
-    const QByteArray& image();
+    ReplyStatus error() const;
+    int errorCode() const;
+    QString errorString() const;
+    const QByteArray& image() const;
+    bool isCached() const;
 
     signals:
     void finished();

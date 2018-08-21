@@ -111,6 +111,7 @@ namespace thumbnailer
   public slots:
     void onNetworkError(); // will provide data only from the cache
     void onFatalError(); // will reject any future request
+    void onReply(bool cached); // will reset the network error count
 
   private:
     QSharedPointer<Request> createRequest(QString const& details,
@@ -212,11 +213,16 @@ namespace thumbnailer
           thumbnailer_.onFatalError();
           break;
         default:
+          // reset the network error count
+          thumbnailer_.onReply(job_->isCached());
           break;
       }
       finishWithError("Thumbnailer: " + job_->errorString());
       return;
     }
+
+    // reset the network error count
+    thumbnailer_.onReply(job_->isCached());
 
     try
     {
@@ -454,6 +460,13 @@ namespace thumbnailer
       qWarning().noquote() << "thumbnailer: service suspended due to fatal error";
       valid_ = false;
     }
+  }
+
+  void ThumbnailerImpl::onReply(bool cached)
+  {
+    // reset the network error counter
+    if (!cached)
+      nwerr_.store(0);
   }
 
   Request::Request(RequestImpl* impl)

@@ -42,22 +42,27 @@ void Job::start()
   m_worker->run();
 }
 
-ReplyStatus Job::error()
+ReplyStatus Job::error() const
 {
   return m_worker->error();
 }
 
-int Job::errorCode()
+int Job::errorCode() const
 {
   return m_worker->errorCode();
 }
 
-QString Job::errorString()
+QString Job::errorString() const
 {
   return m_worker->errorString();
 }
 
-const QByteArray& Job::image()
+const QByteArray& Job::image() const
 {
   return m_worker->image();
+}
+
+bool Job::isCached() const
+{
+  return m_worker->isCached();
 }

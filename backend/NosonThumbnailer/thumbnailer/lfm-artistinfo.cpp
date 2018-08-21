@@ -94,6 +94,7 @@ void ArtistInfo::run()
       m_errorCode = 0;
       m_errorString = ERRMSG_NOT_FOUND;
     }
+    m_cached = true; // hold data is cached
     emit finished();
     return;
   }
@@ -103,30 +104,36 @@ void ArtistInfo::run()
     m_error = ReplyServerError;
     m_errorCode = 0;
     m_errorString = ERRMSG_NOT_FOUND;
+    m_cached = false;
     emit finished();
     return;
   }
   queryInfo();
 }
 
-ReplyStatus ArtistInfo::error()
+ReplyStatus ArtistInfo::error() const
 {
   return m_error;
 }
 
-int ArtistInfo::errorCode()
+int ArtistInfo::errorCode() const
 {
   return m_errorCode;
 }
 
-QString ArtistInfo::errorString()
+QString ArtistInfo::errorString() const
 {
   return m_errorString;
 }
 
-const QByteArray& ArtistInfo::image()
+const QByteArray& ArtistInfo::image() const
 {
   return m_image;
+}
+
+bool ArtistInfo::isCached() const
+{
+  return m_cached;
 }
 
 void ArtistInfo::readInfo()

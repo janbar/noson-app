@@ -46,13 +46,15 @@ namespace thumbnailer
 
     void run();
 
-    ReplyStatus error();
+    ReplyStatus error() const;
 
-    int errorCode();
+    int errorCode() const;
 
-    QString errorString();
+    QString errorString() const;
 
-    const QByteArray& image();
+    const QByteArray& image() const;
+
+    bool isCached() const;
 
     signals:
     void doRequest(NetRequest*, QUrl);

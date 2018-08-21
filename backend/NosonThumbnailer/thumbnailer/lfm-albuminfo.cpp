@@ -96,6 +96,7 @@ void AlbumInfo::run()
       m_errorCode = 0;
       m_errorString = ERRMSG_NOT_FOUND;
     }
+    m_cached = true; // hold data is cached
     emit finished();
     return;
   }
@@ -105,30 +106,36 @@ void AlbumInfo::run()
     m_error = ReplyServerError;
     m_errorCode = 0;
     m_errorString = ERRMSG_NOT_FOUND;
+    m_cached = false;
     emit finished();
     return;
   }
   queryInfo();
 }
 
-ReplyStatus AlbumInfo::error()
+ReplyStatus AlbumInfo::error() const
 {
   return m_error;
 }
 
-int AlbumInfo::errorCode()
+int AlbumInfo::errorCode() const
 {
   return m_errorCode;
 }
 
-QString AlbumInfo::errorString()
+QString AlbumInfo::errorString() const
 {
   return m_errorString;
 }
 
-const QByteArray& AlbumInfo::image()
+const QByteArray& AlbumInfo::image() const
 {
   return m_image;
+}
+
+bool AlbumInfo::isCached() const
+{
+  return m_cached;
 }
 
 void AlbumInfo::readInfo()
