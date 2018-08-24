@@ -42,9 +42,8 @@ MusicListView {
         color: renderingControlList.backgroundColor
 
         column: Column {
-            anchors {
-                top: parent.top
-            }
+            anchors.top: parent.top
+            width: parent.width
 
             Label {
                 id: nameLabel
@@ -135,6 +134,7 @@ MusicListView {
                 Icon {
                     id: gripButton
                     anchors.right: parent.right
+                    anchors.rightMargin: - units.gu(1)
                     anchors.verticalCenter: parent.verticalCenter
                     source: "qrc:/images/grip.svg"
                     width: units.gu(5)

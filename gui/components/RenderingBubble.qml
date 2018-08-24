@@ -27,8 +27,9 @@ Item {
         margins: units.gu(2)
     }
     property bool opened: false
-    property color backgroundColor: "black"
-    property color labelColor: "white"
+    property color backgroundColor: styleMusic.popover.backgroundColor
+    property color foregroundColor: styleMusic.popover.foregroundColor
+    property color labelColor: styleMusic.popover.labelColor
     readonly property bool displayable: containerLayout.height >= containerLayout.rowHeight
 
     Popup {
@@ -57,6 +58,7 @@ Item {
             RenderingControlerView {
                 id: renderingControlerView
                 backgroundColor: "transparent"
+                foregroundColor: renderingBubble.foregroundColor
                 labelColor: renderingBubble.labelColor
                 anchors.topMargin: units.gu(2)
                 anchors.bottomMargin: units.gu(2)

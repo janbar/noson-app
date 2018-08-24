@@ -32,18 +32,18 @@ Slider {
         implicitHeight: units.gu(5)
 
         Rectangle {
-        x: control.leftPadding
-        y: control.topPadding + control.availableHeight / 2 - height / 2
-        anchors {
-            verticalCenter: parent.verticalCenter
-            left: parent.left
-            right: parent.right
-        }
-        width: control.availableWidth
-        height: units.dp(2)
-        radius: 0
-        color: control.backgroundColor
-        opacity: 0.1
+            x: control.leftPadding
+            y: control.topPadding + control.availableHeight / 2 - height / 2
+            anchors {
+                verticalCenter: parent.verticalCenter
+                left: parent.left
+                right: parent.right
+            }
+            width: control.availableWidth
+            height: units.dp(2)
+            radius: 0
+            color: control.backgroundColor
+            opacity: 0.4
         }
 
         Rectangle {

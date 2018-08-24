@@ -60,12 +60,12 @@ QtObject {
         property color backgroundColor: palette.base
         property color foregroundColor: palette.text
         property color labelColor: palette.text
-        property color progressBackgroundColor: palette.text
+        property color progressBackgroundColor: "grey"
         property color progressForegroundColor: "#19b1e9"
-        property color progressHandleColor: progressForegroundColor
-        property color volumeBackgroundColor: palette.text
+        property color progressHandleColor: palette.text
+        property color volumeBackgroundColor: "grey"
         property color volumeForegroundColor: "#e95420"
-        property color volumeHandleColor: volumeBackgroundColor
+        property color volumeHandleColor: palette.text
     }
 
     property QtObject popover: QtObject {
