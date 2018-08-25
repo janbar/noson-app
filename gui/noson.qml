@@ -1378,7 +1378,7 @@ ApplicationWindow {
 
         standardButtons: Dialog.Close
 
-        contentSpacing: units.gu(0.5)
+        contentSpacing: units.gu(1)
 
         Text {
             color: styleMusic.dialog.foregroundColor
@@ -1400,6 +1400,15 @@ ApplicationWindow {
             width: aboutDialog.availableWidth
             text: qsTr("Version: %1").arg(VersionString) + " (libnoson " + Sonos.getLibVersion() + ")"
             font.pointSize: units.fs("medium")
+        }
+        Text {
+            id: donate
+            color: styleMusic.dialog.foregroundColor
+            width: aboutDialog.availableWidth
+            font.pointSize: units.fs("medium")
+            text: "<a href='https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=jlbarriere68%40gmail%2ecom&lc=US&item_name=noson%2dapp&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted'>Donate with Paypal</a>"
+            onLinkActivated: Qt.openUrlExternally(link)
+            linkColor: styleMusic.view.linkColor
         }
     }
 
