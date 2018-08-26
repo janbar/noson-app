@@ -291,7 +291,7 @@ bool SMAPI::GetDeviceLinkCode(std::string& regUrl, std::string& linkCode)
   string_to_uint16(m_service->GetPolicy()->GetAttribut("PollInterval").c_str(), &poll);
   if (!m_authLinkTimeout)
     m_authLinkTimeout = new OS::CTimeout();
-  m_authLinkTimeout->Set(poll * 1000);
+  m_authLinkTimeout->Set((poll < 60 ? 60 : poll) * 1000);
   m_authLinkCode = vars.GetValue("linkCode");
   m_authLinkDeviceId = vars.GetValue("linkDeviceId");
   regUrl = vars.GetValue("regUrl");
@@ -423,6 +423,14 @@ bool SMAPI::GetDeviceAuthToken(SMOAKeyring::Data& auth)
     auth.token = oa.token;
   }
   return false;
+}
+
+const std::string& SMAPI::GetFaultString() const
+{
+  OS::CLockGuard lock(*m_mutex);
+  if (m_fault.GetValue("TAG") == "Fault")
+    return m_fault.GetValue("faultstring");
+  return m_fault.GetValue("errorstring");
 }
 
 bool SMAPI::parsePresentationMap(const std::string& xml)
@@ -610,6 +618,7 @@ ElementList SMAPI::DoCall(const std::string& action, const ElementList& args)
   if (rootdoc.Parse(data.c_str(), len) != tinyxml2::XML_SUCCESS)
   {
     DBG(DBG_ERROR, "%s: parse xml failed\n", __FUNCTION__);
+    SetFault(vars);
     return vars;
   }
   const tinyxml2::XMLElement* elem; // an element
@@ -618,6 +627,7 @@ ElementList SMAPI::DoCall(const std::string& action, const ElementList& args)
   if (!(elem = rootdoc.RootElement()) || !XMLNS::NameEqual(elem->Name(), "Envelope"))
   {
     __dumpInvalidResponse(rootdoc);
+    SetFault(vars);
     return vars;
   }
   // learn declared namespaces in the element Envelope for translations
@@ -628,6 +638,7 @@ ElementList SMAPI::DoCall(const std::string& action, const ElementList& args)
           !(elem = elem->FirstChildElement()))
   {
     __dumpInvalidResponse(rootdoc);
+    SetFault(vars);
     return vars;
   }
   vars.push_back(ElementPtr(new Element("TAG", XMLNS::LocalName(elem->Name()))));
@@ -727,16 +738,17 @@ ElementList SMAPI::Request(const std::string& action, const ElementList& args)
       // Retry the request
       vars = DoCall(action, args);
     }
-    else if (XMLNS::NameEqual(str.c_str(), "Client.AuthTokenExpired") && !m_authTokenExpired)
-    {
-      m_authTokenExpired = true;
-      makeSoapHeader(); // refresh hearder
-    }
-    // handle others fault like Client.SessionIdInvalid, Client.LoginInvalid
     else if (!m_authTokenExpired)
     {
-      m_authTokenExpired = true;
-      makeSoapHeader(); // refresh header;
+      if (XMLNS::NameEqual(str.c_str(), "Client.AuthTokenExpired") ||
+              XMLNS::NameEqual(str.c_str(), "Client.LoginDisabled") ||
+              XMLNS::NameEqual(str.c_str(), "Client.LoginInvalid") ||
+              XMLNS::NameEqual(str.c_str(), "Client.LoginUnauthorized") ||
+              XMLNS::NameEqual(str.c_str(), "Client.SessionIdInvalid"))
+      {
+        m_authTokenExpired = true;
+        makeSoapHeader(); // refresh hearder
+      }
     }
   }
   return vars;

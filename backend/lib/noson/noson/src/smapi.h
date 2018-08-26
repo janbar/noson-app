@@ -118,6 +118,12 @@ namespace NSROOT
      */
     bool GetDeviceAuthToken(SMOAKeyring::Data& auth);
 
+    /**
+     * Returns the message of fault
+     * @return the fault string
+     */
+    const std::string& GetFaultString() const;
+
   private:
     OS::CMutex* m_mutex;
     PlayerPtr m_player;
