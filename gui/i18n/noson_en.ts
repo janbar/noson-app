@@ -1014,8 +1014,8 @@
     <name>Service</name>
     <message>
         <location filename="../ui/Service.qml" line="91"/>
-        <source>No item found</source>
-        <translation type="unfinished"></translation>
+        <source>No items found</source>
+        <translation type="unfinished">No items found</translation>
     </message>
     <message>
         <location filename="../ui/Service.qml" line="125"/>

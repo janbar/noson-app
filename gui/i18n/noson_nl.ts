@@ -139,20 +139,20 @@
         <translation>Albums</translation>
     </message>
     <message>
-        <location filename="../ui/Albums.qml" line="70"/>
-        <location filename="../ui/Albums.qml" line="95"/>
+        <location filename="../ui/Albums.qml" line="67"/>
+        <location filename="../ui/Albums.qml" line="92"/>
         <source>Unknown Album</source>
         <translation>Onbekend album</translation>
     </message>
     <message>
-        <location filename="../ui/Albums.qml" line="71"/>
-        <location filename="../ui/Albums.qml" line="94"/>
+        <location filename="../ui/Albums.qml" line="68"/>
+        <location filename="../ui/Albums.qml" line="91"/>
         <source>Unknown Artist</source>
         <translation>Onbekende artiest</translation>
     </message>
     <message>
-        <location filename="../ui/Albums.qml" line="93"/>
-        <location filename="../ui/Albums.qml" line="101"/>
+        <location filename="../ui/Albums.qml" line="90"/>
+        <location filename="../ui/Albums.qml" line="98"/>
         <source>Album</source>
         <translation>Album</translation>
     </message>
@@ -170,29 +170,29 @@
         <translation><numerusform>%n nummer</numerusform><numerusform>%n nummers</numerusform></translation>
     </message>
     <message>
-        <location filename="../ui/ArtistView.qml" line="152"/>
-        <location filename="../ui/ArtistView.qml" line="168"/>
+        <location filename="../ui/ArtistView.qml" line="149"/>
+        <location filename="../ui/ArtistView.qml" line="165"/>
         <source>Unknown Album</source>
         <translation>Onbekend album</translation>
     </message>
     <message>
-        <location filename="../ui/ArtistView.qml" line="166"/>
+        <location filename="../ui/ArtistView.qml" line="163"/>
         <source>Album</source>
         <translation>Album</translation>
     </message>
     <message>
         <location filename="../ui/ArtistView.qml" line="85"/>
-        <location filename="../ui/ArtistView.qml" line="167"/>
+        <location filename="../ui/ArtistView.qml" line="164"/>
         <source>Unknown Artist</source>
         <translation>Onbekende artiest</translation>
     </message>
     <message>
-        <location filename="../ui/ArtistView.qml" line="191"/>
+        <location filename="../ui/ArtistView.qml" line="188"/>
         <source>Remove from favorites</source>
         <translation>Verwijderen uit favorieten</translation>
     </message>
     <message>
-        <location filename="../ui/ArtistView.qml" line="191"/>
+        <location filename="../ui/ArtistView.qml" line="188"/>
         <source>Add to favorites</source>
         <translation>Toevoegen aan favorieten</translation>
     </message>
@@ -234,28 +234,28 @@
         <translation><numerusform>%n nummer</numerusform><numerusform>%n nummers</numerusform></translation>
     </message>
     <message>
-        <location filename="../ui/ComposerView.qml" line="152"/>
-        <location filename="../ui/ComposerView.qml" line="168"/>
+        <location filename="../ui/ComposerView.qml" line="149"/>
+        <location filename="../ui/ComposerView.qml" line="165"/>
         <source>Unknown Album</source>
         <translation>Onbekend album</translation>
     </message>
     <message>
-        <location filename="../ui/ComposerView.qml" line="166"/>
+        <location filename="../ui/ComposerView.qml" line="163"/>
         <source>Album</source>
         <translation>Album</translation>
     </message>
     <message>
-        <location filename="../ui/ComposerView.qml" line="167"/>
+        <location filename="../ui/ComposerView.qml" line="164"/>
         <source>Unknown Artist</source>
         <translation>Onbekende artiest</translation>
     </message>
     <message>
-        <location filename="../ui/ComposerView.qml" line="191"/>
+        <location filename="../ui/ComposerView.qml" line="188"/>
         <source>Remove from favorites</source>
         <translation>Verwijderen uit favorieten</translation>
     </message>
     <message>
-        <location filename="../ui/ComposerView.qml" line="191"/>
+        <location filename="../ui/ComposerView.qml" line="188"/>
         <source>Add to favorites</source>
         <translation>Toevoegen aan favorieten</translation>
     </message>
@@ -607,17 +607,17 @@
 <context>
     <name>DialogSongInfo</name>
     <message>
-        <location filename="../components/Dialog/DialogSongInfo.qml" line="39"/>
+        <location filename="../components/Dialog/DialogSongInfo.qml" line="41"/>
         <source>Unknown Album</source>
         <translation>Onbekend album</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSongInfo.qml" line="40"/>
+        <location filename="../components/Dialog/DialogSongInfo.qml" line="42"/>
         <source>Unknown Artist</source>
         <translation>Onbekende artiest</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSongInfo.qml" line="42"/>
+        <location filename="../components/Dialog/DialogSongInfo.qml" line="44"/>
         <source>%1 - track #%2</source>
         <translation>%1 - nummer #%2</translation>
     </message>
@@ -632,28 +632,28 @@
     <message>
         <location filename="../ui/Favorites.qml" line="82"/>
         <location filename="../ui/Favorites.qml" line="170"/>
-        <location filename="../ui/Favorites.qml" line="223"/>
+        <location filename="../ui/Favorites.qml" line="224"/>
         <source>Album</source>
         <translation>Album</translation>
     </message>
     <message>
         <location filename="../ui/Favorites.qml" line="83"/>
         <location filename="../ui/Favorites.qml" line="171"/>
-        <location filename="../ui/Favorites.qml" line="235"/>
+        <location filename="../ui/Favorites.qml" line="236"/>
         <source>Artist</source>
         <translation>Artiest</translation>
     </message>
     <message>
         <location filename="../ui/Favorites.qml" line="84"/>
         <location filename="../ui/Favorites.qml" line="172"/>
-        <location filename="../ui/Favorites.qml" line="246"/>
+        <location filename="../ui/Favorites.qml" line="247"/>
         <source>Genre</source>
         <translation>Genre</translation>
     </message>
     <message>
         <location filename="../ui/Favorites.qml" line="85"/>
         <location filename="../ui/Favorites.qml" line="173"/>
-        <location filename="../ui/Favorites.qml" line="260"/>
+        <location filename="../ui/Favorites.qml" line="261"/>
         <source>Playlist</source>
         <translation>Afspeellijst</translation>
     </message>
@@ -669,7 +669,7 @@
         <translation>De actie kan niet worden uitgevoerd</translation>
     </message>
     <message>
-        <location filename="../ui/Favorites.qml" line="225"/>
+        <location filename="../ui/Favorites.qml" line="226"/>
         <source>Unknown Album</source>
         <translation>Onbekend album</translation>
     </message>
@@ -714,22 +714,22 @@
         <translation>Mijn Musiekindex</translation>
     </message>
     <message>
-        <location filename="../ui/Index.qml" line="123"/>
+        <location filename="../ui/Index.qml" line="120"/>
         <source>Artists</source>
         <translation>Artiesten</translation>
     </message>
     <message>
-        <location filename="../ui/Index.qml" line="128"/>
+        <location filename="../ui/Index.qml" line="125"/>
         <source>Albums</source>
         <translation>Albums</translation>
     </message>
     <message>
-        <location filename="../ui/Index.qml" line="133"/>
+        <location filename="../ui/Index.qml" line="130"/>
         <source>Genres</source>
         <translation>Genres</translation>
     </message>
     <message>
-        <location filename="../ui/Index.qml" line="138"/>
+        <location filename="../ui/Index.qml" line="135"/>
         <source>Composers</source>
         <translation>Componisten</translation>
     </message>
@@ -841,22 +841,22 @@
 <context>
     <name>NoZoneState</name>
     <message>
-        <location filename="../ui/NoZoneState.qml" line="26"/>
+        <location filename="../ui/NoZoneState.qml" line="27"/>
         <source>No zone</source>
         <translation>Geen zone</translation>
     </message>
     <message>
-        <location filename="../ui/NoZoneState.qml" line="158"/>
+        <location filename="../ui/NoZoneState.qml" line="159"/>
         <source>No Sonos zone found</source>
         <translation>Geen Sonos-zone gevonden</translation>
     </message>
     <message>
-        <location filename="../ui/NoZoneState.qml" line="169"/>
+        <location filename="../ui/NoZoneState.qml" line="170"/>
         <source>Make sure that your device is connected to the correct wireless network and one or more Sonos products are receiving power.</source>
         <translation>Zorg ervoor dat uw apparaat verbonden is met het juiste draadloze netwerk en dat één of meer Sonos-apparaten voorzien zijn van stroom.</translation>
     </message>
     <message>
-        <location filename="../ui/NoZoneState.qml" line="180"/>
+        <location filename="../ui/NoZoneState.qml" line="181"/>
         <source>Search for Sonos zones</source>
         <extracomment>this appears in a button with limited space (around 30 characters)</extracomment>
         <translation>Zoeken naar Sonos-zones</translation>
@@ -905,12 +905,12 @@
 <context>
     <name>Player</name>
     <message>
-        <location filename="../components/Player.qml" line="275"/>
+        <location filename="../components/Player.qml" line="279"/>
         <source>Untitled</source>
         <translation>Naamloos</translation>
     </message>
     <message>
-        <location filename="../components/Player.qml" line="314"/>
+        <location filename="../components/Player.qml" line="318"/>
         <source>Action can&apos;t be performed</source>
         <translation>De actie kan niet worden uitgevoerd</translation>
     </message>
@@ -999,43 +999,48 @@
 <context>
     <name>Service</name>
     <message>
-        <location filename="../ui/Service.qml" line="108"/>
+        <location filename="../ui/Service.qml" line="91"/>
+        <source>No items found</source>
+        <translation>Geen items gevonden</translation>
+    </message>
+    <message>
+        <location filename="../ui/Service.qml" line="125"/>
         <source>Search</source>
         <translation>Zoeken</translation>
     </message>
     <message>
-        <location filename="../ui/Service.qml" line="152"/>
-        <location filename="../ui/Service.qml" line="230"/>
+        <location filename="../ui/Service.qml" line="186"/>
+        <location filename="../ui/Service.qml" line="264"/>
         <source>Album</source>
         <translation>Album</translation>
     </message>
     <message>
-        <location filename="../ui/Service.qml" line="153"/>
-        <location filename="../ui/Service.qml" line="231"/>
+        <location filename="../ui/Service.qml" line="187"/>
+        <location filename="../ui/Service.qml" line="265"/>
         <source>Artist</source>
         <translation>Artiest</translation>
     </message>
     <message>
-        <location filename="../ui/Service.qml" line="154"/>
-        <location filename="../ui/Service.qml" line="232"/>
+        <location filename="../ui/Service.qml" line="188"/>
+        <location filename="../ui/Service.qml" line="266"/>
         <source>Genre</source>
         <translation>Genre</translation>
     </message>
     <message>
-        <location filename="../ui/Service.qml" line="155"/>
-        <location filename="../ui/Service.qml" line="233"/>
+        <location filename="../ui/Service.qml" line="189"/>
+        <location filename="../ui/Service.qml" line="267"/>
         <source>Playlist</source>
         <translation>Afspeellijst</translation>
     </message>
     <message>
-        <location filename="../ui/Service.qml" line="156"/>
-        <location filename="../ui/Service.qml" line="234"/>
+        <location filename="../ui/Service.qml" line="190"/>
+        <location filename="../ui/Service.qml" line="268"/>
         <source>Song</source>
         <translation>Nummer</translation>
     </message>
     <message>
-        <location filename="../ui/Service.qml" line="157"/>
-        <location filename="../ui/Service.qml" line="235"/>
+        <location filename="../ui/Service.qml" line="191"/>
+        <location filename="../ui/Service.qml" line="269"/>
         <source>Radio</source>
         <translation>Radio</translation>
     </message>
@@ -1110,28 +1115,28 @@
 <context>
     <name>SongsView</name>
     <message>
-        <location filename="../ui/SongsView.qml" line="182"/>
+        <location filename="../ui/SongsView.qml" line="189"/>
         <source>Song</source>
         <translation>Nummer</translation>
     </message>
     <message numerus="yes">
-        <location filename="../ui/SongsView.qml" line="309"/>
-        <location filename="../ui/SongsView.qml" line="310"/>
+        <location filename="../ui/SongsView.qml" line="316"/>
+        <location filename="../ui/SongsView.qml" line="317"/>
         <source>%n song(s)</source>
         <translation><numerusform>%n nummer</numerusform><numerusform>%n nummers</numerusform></translation>
     </message>
     <message>
-        <location filename="../ui/SongsView.qml" line="452"/>
+        <location filename="../ui/SongsView.qml" line="459"/>
         <source>Remove from favorites</source>
         <translation>Verwijderen uit favorieten</translation>
     </message>
     <message>
-        <location filename="../ui/SongsView.qml" line="452"/>
+        <location filename="../ui/SongsView.qml" line="459"/>
         <source>Add to favorites</source>
         <translation>Toevoegen aan favorieten</translation>
     </message>
     <message>
-        <location filename="../ui/SongsView.qml" line="477"/>
+        <location filename="../ui/SongsView.qml" line="484"/>
         <source>Delete</source>
         <translation>Verwijderen</translation>
     </message>
@@ -1152,17 +1157,17 @@
 <context>
     <name>Zones</name>
     <message>
-        <location filename="../ui/Zones.qml" line="29"/>
+        <location filename="../ui/Zones.qml" line="30"/>
         <source>Zones</source>
         <translation>Zones</translation>
     </message>
     <message>
-        <location filename="../ui/Zones.qml" line="92"/>
+        <location filename="../ui/Zones.qml" line="94"/>
         <source>Zone</source>
         <translation>Zone</translation>
     </message>
     <message>
-        <location filename="../ui/Zones.qml" line="111"/>
+        <location filename="../ui/Zones.qml" line="113"/>
         <source>Group</source>
         <translation>Groe</translation>
     </message>
@@ -1170,86 +1175,86 @@
 <context>
     <name>noson</name>
     <message>
-        <location filename="../noson.qml" line="221"/>
+        <location filename="../noson.qml" line="224"/>
         <source>Index loaded</source>
         <translation>De index is geladen</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="478"/>
+        <location filename="../noson.qml" line="485"/>
         <source>Refreshing of index is running</source>
         <translation>Bezig met verversen van de index</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="481"/>
-        <location filename="../noson.qml" line="500"/>
-        <location filename="../noson.qml" line="508"/>
-        <location filename="../noson.qml" line="518"/>
-        <location filename="../noson.qml" line="523"/>
-        <location filename="../noson.qml" line="555"/>
-        <location filename="../noson.qml" line="572"/>
-        <location filename="../noson.qml" line="584"/>
-        <location filename="../noson.qml" line="595"/>
-        <location filename="../noson.qml" line="603"/>
-        <location filename="../noson.qml" line="613"/>
-        <location filename="../noson.qml" line="623"/>
+        <location filename="../noson.qml" line="488"/>
+        <location filename="../noson.qml" line="507"/>
+        <location filename="../noson.qml" line="515"/>
+        <location filename="../noson.qml" line="525"/>
+        <location filename="../noson.qml" line="530"/>
+        <location filename="../noson.qml" line="562"/>
+        <location filename="../noson.qml" line="579"/>
+        <location filename="../noson.qml" line="591"/>
+        <location filename="../noson.qml" line="602"/>
+        <location filename="../noson.qml" line="610"/>
+        <location filename="../noson.qml" line="620"/>
         <location filename="../noson.qml" line="630"/>
         <location filename="../noson.qml" line="637"/>
-        <location filename="../noson.qml" line="646"/>
-        <location filename="../noson.qml" line="655"/>
-        <location filename="../noson.qml" line="663"/>
+        <location filename="../noson.qml" line="644"/>
+        <location filename="../noson.qml" line="653"/>
+        <location filename="../noson.qml" line="662"/>
         <location filename="../noson.qml" line="670"/>
         <location filename="../noson.qml" line="677"/>
-        <location filename="../noson.qml" line="687"/>
+        <location filename="../noson.qml" line="684"/>
+        <location filename="../noson.qml" line="694"/>
         <source>Action can&apos;t be performed</source>
         <translation>De actie kan niet worden uitgevoerd</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="505"/>
-        <location filename="../noson.qml" line="568"/>
-        <location filename="../noson.qml" line="581"/>
-        <location filename="../noson.qml" line="643"/>
+        <location filename="../noson.qml" line="512"/>
+        <location filename="../noson.qml" line="575"/>
+        <location filename="../noson.qml" line="588"/>
+        <location filename="../noson.qml" line="650"/>
         <source>song added</source>
         <translation>nummer toegevoegd</translation>
     </message>
     <message numerus="yes">
-        <location filename="../noson.qml" line="552"/>
+        <location filename="../noson.qml" line="559"/>
         <source>%n song(s) added</source>
         <translation><numerusform>%n nummer toegevoegd</numerusform><numerusform>%n nummers toegevoegd</numerusform></translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="592"/>
+        <location filename="../noson.qml" line="599"/>
         <source>Queue cleared</source>
         <translation>Wachtrij gewist</translation>
     </message>
     <message numerus="yes">
-        <location filename="../noson.qml" line="652"/>
+        <location filename="../noson.qml" line="659"/>
         <source>%n song(s) removed</source>
         <translation><numerusform>%n nummer verwijderd</numerusform><numerusform>%n nummers verwijderd</numerusform></translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1010"/>
+        <location filename="../noson.qml" line="1042"/>
         <source>Standby timer</source>
         <translation>Standby-tijdsklok</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1017"/>
+        <location filename="../noson.qml" line="1049"/>
         <source>Sonos settings</source>
         <translation>Sonos-instellingen</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1022"/>
-        <location filename="../noson.qml" line="1127"/>
+        <location filename="../noson.qml" line="1054"/>
+        <location filename="../noson.qml" line="1156"/>
         <source>General settings</source>
         <translation>Algemene instellingen</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1027"/>
-        <location filename="../noson.qml" line="1320"/>
+        <location filename="../noson.qml" line="1059"/>
+        <location filename="../noson.qml" line="1377"/>
         <source>About</source>
         <translation>Over</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1039"/>
+        <location filename="../noson.qml" line="1071"/>
         <source>My Services</source>
         <translation>Mijn diensten</translation>
     </message>
@@ -1258,7 +1263,7 @@
         <translation type="vanished">Mijn radio&apos;s</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1041"/>
+        <location filename="../noson.qml" line="1073"/>
         <source>Favorites</source>
         <translation>Favorieten</translation>
     </message>
@@ -1275,62 +1280,72 @@
         <translation type="vanished">Genres</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1040"/>
+        <location filename="../noson.qml" line="1072"/>
         <source>My Index</source>
         <translation>Mijn Musiekindex</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1042"/>
+        <location filename="../noson.qml" line="1074"/>
         <source>Playlists</source>
         <translation>Afspeellijsten</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1043"/>
+        <location filename="../noson.qml" line="1075"/>
         <source>Alarm clock</source>
         <translation>Alarmklok</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1249"/>
+        <location filename="../noson.qml" line="1286"/>
         <source>Style</source>
         <translation>Stijl</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1280"/>
+        <location filename="../noson.qml" line="1317"/>
         <source>Theme</source>
         <translation>Thema</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1288"/>
+        <location filename="../noson.qml" line="1325"/>
         <source>Light</source>
         <translation>Licht</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1289"/>
+        <location filename="../noson.qml" line="1326"/>
         <source>Dark</source>
         <translation>Donker</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1290"/>
+        <location filename="../noson.qml" line="1327"/>
         <source>System default</source>
         <translation>Systeemstandaard</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1305"/>
+        <location filename="../noson.qml" line="1342"/>
         <source>Restart is required</source>
         <translation>Herstart is vereist</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1329"/>
+        <location filename="../noson.qml" line="1358"/>
+        <source>Last.fm</source>
+        <translation>Last.fm</translation>
+    </message>
+    <message>
+        <location filename="../noson.qml" line="1365"/>
+        <source>Enter a valid API key</source>
+        <translation>Voer een geldige API-sleutel in</translation>
+    </message>
+    <message>
+        <location filename="../noson.qml" line="1386"/>
         <source>The project has started in 2015 and is intented to make a fast and smart controller for your SONOS devices. You can browse your music library and play track or radio on any zones. You can manage grouping zones, queue, and playlists, and fully control the playback.</source>
         <translation>Dit project is begonnen in 2015 en heeft als doel om een snelle en slimme bediening te worden voor uw SONOS-apparaten. U kunt bladeren door uw muziekbibliotheek en nummers en radio afspelen in elke zone. U kunt gegroepeerde zones beheren, alsook de wachtrij en afspeellijsten en u kunt het afspelen volledig bedienen.</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1338"/>
+        <location filename="../noson.qml" line="1395"/>
         <source>Author: %1</source>
         <translation>Auteur: %1</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1344"/>
+        <location filename="../noson.qml" line="1401"/>
         <source>Version: %1</source>
         <translation>Versie: %1</translation>
     </message>
