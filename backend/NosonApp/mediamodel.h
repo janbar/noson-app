@@ -243,6 +243,8 @@ public:
 
   Q_INVOKABLE int containerUpdateID() { return m_updateID; }
 
+  Q_INVOKABLE QString faultString();
+
 signals:
   void dataUpdated();
   void countChanged();

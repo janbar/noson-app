@@ -278,6 +278,7 @@ bool MediaModel::loadData()
     emit totalCountChanged();
     if (m_smapi->AuthTokenExpired())
       emit authStatusChanged();
+    m_dataState = ListModel::Loaded;
     emit loaded(false);
     return false;
   }
@@ -453,7 +454,7 @@ bool MediaModel::loadMoreData()
   {
     if (m_smapi->AuthTokenExpired())
       emit authStatusChanged();
-    emit loaded(false);
+    emit loadedMore(false);
     return false;
   }
   if (m_totalCount != meta.TotalCount())
@@ -591,6 +592,7 @@ bool MediaModel::search()
     emit totalCountChanged();
     if (m_smapi->AuthTokenExpired())
       emit authStatusChanged();
+    m_dataState = ListModel::Loaded;
     emit loaded(false);
     return false;
   }
@@ -687,4 +689,11 @@ void MediaModel::handleDataUpdate()
     setUpdateSignaled(true);
     dataUpdated();
   }
+}
+
+QString MediaModel::faultString()
+{
+  if (!m_smapi)
+    return QString();
+  return QString::fromUtf8(m_smapi->GetFaultString().c_str());
 }
