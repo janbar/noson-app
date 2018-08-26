@@ -88,7 +88,7 @@ MusicPage {
                     if (emptyState.active)
                         emptyState.active = false;
                 } else {
-                    emptyState.message = qsTr("No item found");
+                    emptyState.message = qsTr("No items found");
                     emptyState.active = true;
                 }
 
