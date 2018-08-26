@@ -154,5 +154,6 @@
         <file>ui/Composers.qml</file>
         <file>ui/ComposerView.qml</file>
         <file>components/IndexUpdateState.qml</file>
+        <file>components/ServiceEmptyState.qml</file>
     </qresource>
 </RCC>

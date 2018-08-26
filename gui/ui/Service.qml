@@ -72,7 +72,7 @@ MusicPage {
         target: mediaModel
         onDataUpdated: mediaModel.asyncLoad()
         onLoaded: {
-            if (succeeded) {
+            if (succeeded) {                
                 mediaModel.resetModel()
                 servicePage.displayType = servicePage.parentDisplayType // apply displayType
                 servicePage.taintedView = false // reset
@@ -82,6 +82,23 @@ MusicPage {
                 } else {
                     mediaList.positionViewAtIndex(0, ListView.Top);
                     mediaGrid.positionViewAtIndex(0, GridView.Top);
+                }
+
+                if (mediaModel.count > 0) {
+                    if (emptyState.active)
+                        emptyState.active = false;
+                } else {
+                    emptyState.message = qsTr("No item found");
+                    emptyState.active = true;
+                }
+
+            } else {
+                // don't show registration fault
+                if (!mediaModel.isAuthExpired) {
+                    mediaModel.resetModel();
+                    emptyState.message = mediaModel.faultString();
+                    emptyState.active = true;
+                    customdebug("Fault: " + emptyState.message);
                 }
             }
         }
@@ -114,6 +131,23 @@ MusicPage {
 
     onDisplayTypeChanged: {
         isListView = (displayType === 0 /*Grid*/ || displayType === 3 /*Editorial*/) ? false : true
+    }
+
+    // Overlay to show when no item available
+    Loader {
+        id: emptyState
+        anchors.fill: parent
+        active: false
+        asynchronous: true
+        source: "qrc:/components/ServiceEmptyState.qml"
+        visible: active
+
+        property string message: ""
+
+        onStatusChanged: {
+            if (emptyState.status === Loader.Ready)
+                item.text = message;
+        }
     }
 
     MusicListView {
@@ -346,11 +380,12 @@ MusicPage {
     Connections {
         target: mediaModel
         onIsAuthExpiredChanged: {
+            var auth;
             if (mediaModel.isAuthExpired) {
                 if (mediaModel.policyAuth == 1) {
                     if (!loginService.active) {
                         // first try with saved login/password
-                        var auth = mediaModel.getDeviceAuth();
+                        auth = mediaModel.getDeviceAuth();
                         if (auth.key.length === 0 || mediaModel.requestSessionId(auth.username, auth.key) === 0)
                             loginService.active = true; // show login registration
                         else {
@@ -370,7 +405,7 @@ MusicPage {
                 registeringService.active = false;
                 mainView.jobRunning = true;
                 // save new incarnation of accounts settings
-                var auth = mediaModel.getDeviceAuth();
+                auth = mediaModel.getDeviceAuth();
                 var acls = deserializeACLS(settings.accounts);
                 var _acls = [];
                 for (var i = 0; i < acls.length; ++i) {
