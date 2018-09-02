@@ -27,6 +27,16 @@
 project( openssl )
 cmake_minimum_required( VERSION 2.8.3 )
 
+if( APPLE )
+    set( CMAKE_MACOSX_RPATH ON )
+endif()
+
+include_directories ( BEFORE SYSTEM
+    ${CMAKE_CURRENT_BINARY_DIR}/crypto
+    ${CMAKE_CURRENT_BINARY_DIR}/ssl
+    ${CMAKE_CURRENT_BINARY_DIR}/include
+    crypto . )
+
 add_definitions( -DOPENSSL_NO_ASM )
 
 if( WIN32 AND NOT CYGWIN )
@@ -46,20 +56,22 @@ add_subdirectory( crypto )
 add_subdirectory( ssl )
 add_subdirectory( apps )
 
-install( FILES e_os2.h DESTINATION include/openssl )
+file ( COPY e_os2.h DESTINATION ${PROJECT_BINARY_DIR}/include/openssl )
+
+install( DIRECTORY ${PROJECT_BINARY_DIR}/include/openssl DESTINATION include )
 
 install( FILES tools/c_hash tools/c_info tools/c_issuer tools/c_name tools/c_rehash
     FAQ LICENSE PROBLEMS README README.ASN1 README.ENGINE
     DESTINATION share/openssl )
 
-install( DIRECTORY doc DESTINATION ./ )
+install( DIRECTORY doc DESTINATION share )
 
 # Generate the package target
 set( CPACK_GENERATOR ZIP TGZ )
 set( CPACK_PACKAGE_NAME "openssl-cmake" )
 set( CPACK_PACKAGE_VERSION_MAJOR 1  )
 set( CPACK_PACKAGE_VERSION_MINOR 0  )
-set( CPACK_PACKAGE_VERSION_PATCH 2n )
+set( CPACK_PACKAGE_VERSION_PATCH 2p )
 
 include( CPack )
 

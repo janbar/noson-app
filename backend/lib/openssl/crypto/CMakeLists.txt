@@ -57,7 +57,7 @@ set( LIBSRC
   ebcdic.c uid.c o_time.c o_str.c o_dir.c o_fips.c o_init.c fips_ers.c
   )
 
-include_directories( ${CMAKE_CURRENT_BINARY_DIR} .. ../include . asn1 evp modes )
+include_directories( BEFORE SYSTEM asn1 evp modes )
 
 if( BUILD_SHARED_LIBS )
   add_definitions( -DOPENSSL_BUILD_SHLIBCRYPTO )
@@ -230,8 +230,9 @@ if( WIN32 AND NOT CYGWIN )
   target_link_libraries( crypto ws2_32 crypt32 )
 endif()
 
-install( DIRECTORY ${PROJECT_SOURCE_DIR}/include
-    DESTINATION ./ )
+foreach( header ${EXHEADERS} )
+    file ( COPY ${header} DESTINATION ${PROJECT_BINARY_DIR}/include/openssl )
+endforeach( header )
 
 install( TARGETS crypto
     RUNTIME DESTINATION bin

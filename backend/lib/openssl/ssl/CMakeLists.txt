@@ -23,8 +23,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-include_directories ( ../crypto .. ../include )
-
 if( BUILD_SHARED_LIBS )
     add_definitions ( -DOPENSSL_BUILD_SHLIBSSL )
 endif()
@@ -48,8 +46,10 @@ else()
 endif()
 target_link_libraries ( ssl crypto )
 
-install( FILES ssl.h ssl2.h ssl3.h ssl23.h tls1.h dtls1.h kssl.h srtp.h
-    DESTINATION include/openssl )
+set( EXHEADERS ssl.h ssl2.h ssl3.h ssl23.h tls1.h dtls1.h kssl.h srtp.h )
+foreach( file ${EXHEADERS} )
+    file ( COPY ${file} DESTINATION ${PROJECT_BINARY_DIR}/include/openssl )
+endforeach( file )
 
 install( TARGETS ssl
     RUNTIME DESTINATION bin
