@@ -42,6 +42,11 @@ set( CONF "
 #define OPENSSL_NO_SCTP
 #define OPENSSL_NO_EC_NISTP_64_GCC_128
 ${CONF}" )
+if( APPLE )
+  set( CONF "
+#define OPENSSL_SYSNAME_MACOSX
+${CONF}" )
+endif()
 file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/opensslconf.h.cmake "${CONF}" )
 
 #~2DO: set BUILDINF_DATE to `date LC_ALL=C LC_TIME=C`
