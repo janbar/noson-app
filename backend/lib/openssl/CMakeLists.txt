@@ -27,10 +27,6 @@
 project( openssl )
 cmake_minimum_required( VERSION 2.8.3 )
 
-if( APPLE )
-    set( CMAKE_MACOSX_RPATH ON )
-endif()
-
 include_directories ( BEFORE SYSTEM
     ${CMAKE_CURRENT_BINARY_DIR}/crypto
     ${CMAKE_CURRENT_BINARY_DIR}/ssl
@@ -38,6 +34,11 @@ include_directories ( BEFORE SYSTEM
     crypto . )
 
 add_definitions( -DOPENSSL_NO_ASM )
+
+if ( APPLE )
+  set( CMAKE_MACOSX_RPATH ON )
+  add_definitions( -DOPENSSL_SYSNAME_MACOSX )
+endif()
 
 if( WIN32 AND NOT CYGWIN )
   add_definitions( -DOPENSSL_SYSNAME_WIN32 )
