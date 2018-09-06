@@ -26,9 +26,7 @@
 
 include( CMakeParseArguments )
 
-file( READ opensslconf.h.in CONF )
-string( REPLACE "#undef OPENSSL_EXPORT_VAR_AS_FUNCTION" "#cmakedefine OPENSSL_EXPORT_VAR_AS_FUNCTION"
-    CONF "${CONF}" )
+file( READ opensslconf.h.cmake CONF )
 
 set( CONF "
 #define OPENSSL_NO_GMP
@@ -47,9 +45,22 @@ file( WRITE ${CMAKE_CURRENT_BINARY_DIR}/opensslconf.h.cmake "${CONF}" )
 #~2DO: set BUILDINF_DATE to `date LC_ALL=C LC_TIME=C`
 configure_file ( buildinf.h.cmake buildinf.h )
 
-if( WIN32 AND MINGW AND NOT CYGWIN )
+include(CheckTypeSize)
+check_type_size( "long" LONG_INT )
+check_type_size( "long long" LONG_LONG_INT )
+check_type_size( "int" INT )
+if ( HAVE_LONG_INT AND (${LONG_INT} EQUAL 8) )
+  set ( SIXTY_FOUR_BIT_LONG ON )
+elseif ( HAVE_LONG_LONG_INT AND (${LONG_LONG_INT} EQUAL 8) )
+  set ( SIXTY_FOUR_BIT ON )
+else()
+  set ( THIRTY_TWO_BIT ON )
+endif()
+
+if ( WIN32 AND MINGW AND NOT CYGWIN )
   set( OPENSSL_EXPORT_VAR_AS_FUNCTION true )
 endif()
+
 configure_file( ${CMAKE_CURRENT_BINARY_DIR}/opensslconf.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/openssl/opensslconf.h )
 
 set( LIBSRC
@@ -57,7 +68,7 @@ set( LIBSRC
   ebcdic.c uid.c o_time.c o_str.c o_dir.c o_fips.c o_init.c fips_ers.c
   )
 
-include_directories( BEFORE SYSTEM asn1 evp modes )
+include_directories( BEFORE SYSTEM ${CMAKE_CURRENT_BINARY_DIR} asn1 evp modes )
 
 if( BUILD_SHARED_LIBS )
   add_definitions( -DOPENSSL_BUILD_SHLIBCRYPTO )
@@ -217,7 +228,7 @@ add_submodule ( x509v3 v3_bcons.c v3_bitst.c v3_conf.c v3_extku.c v3_ia5.c v3_li
   pcy_map.c pcy_tree.c pcy_lib.c v3_asid.c v3_addr.c v3_scts.c EXHEADERS x509v3.h )
 # dirs not included: threads
 
-add_submodule ( . EXHEADERS crypto.h opensslv.h opensslconf.h ebcdic.h symhacks.h
+add_submodule ( . EXHEADERS crypto.h opensslv.h ebcdic.h symhacks.h
   ossl_typ.h )
 
 if( ANDROID )
@@ -236,6 +247,8 @@ set_target_properties( crypto PROPERTIES
 foreach( header ${EXHEADERS} )
     file ( COPY ${header} DESTINATION ${PROJECT_BINARY_DIR}/include/openssl )
 endforeach( header )
+
+configure_file( opensslconf.h.cmake ${PROJECT_BINARY_DIR}/include/openssl/opensslconf.h )
 
 install( TARGETS crypto
     RUNTIME DESTINATION bin
