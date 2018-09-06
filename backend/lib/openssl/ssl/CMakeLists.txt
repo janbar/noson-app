@@ -46,6 +46,9 @@ else()
 endif()
 target_link_libraries ( ssl crypto )
 
+set_target_properties( ssl PROPERTIES
+  VERSION "${LIB_VERSION}" SOVERSION "${LIB_SOVERSION}" )
+
 set( EXHEADERS ssl.h ssl2.h ssl3.h ssl23.h tls1.h dtls1.h kssl.h srtp.h )
 foreach( file ${EXHEADERS} )
     file ( COPY ${file} DESTINATION ${PROJECT_BINARY_DIR}/include/openssl )

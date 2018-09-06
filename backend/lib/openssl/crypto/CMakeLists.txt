@@ -230,6 +230,9 @@ if( WIN32 AND NOT CYGWIN )
   target_link_libraries( crypto ws2_32 crypt32 )
 endif()
 
+set_target_properties( crypto PROPERTIES
+  VERSION "${LIB_VERSION}" SOVERSION "${LIB_SOVERSION}" )
+
 foreach( header ${EXHEADERS} )
     file ( COPY ${header} DESTINATION ${PROJECT_BINARY_DIR}/include/openssl )
 endforeach( header )
