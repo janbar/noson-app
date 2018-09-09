@@ -394,6 +394,46 @@ bool Player::SetNightmode(const std::string &uuid, uint8_t value)
   return false;
 }
 
+bool Player::GetBass(const std::string &uuid, int8_t *value)
+{
+  for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+  {
+    if (it->uuid == uuid)
+      return it->renderingControl->GetBass(value);
+  }
+  return false;
+}
+
+bool Player::SetBass(const std::string &uuid, int8_t value)
+{
+  for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+  {
+    if (it->uuid == uuid)
+      return it->renderingControl->SetBass(value);
+  }
+  return false;
+}
+
+bool Player::GetTreble(const std::string &uuid, int8_t *value)
+{
+  for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+  {
+    if (it->uuid == uuid)
+      return it->renderingControl->GetTreble(value);
+  }
+  return false;
+}
+
+bool Player::SetTreble(const std::string &uuid, int8_t value)
+{
+  for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+  {
+    if (it->uuid == uuid)
+      return it->renderingControl->SetTreble(value);
+  }
+  return false;
+}
+
 bool Player::SetCurrentURI(const DigitalItemPtr& item)
 {
   // Fix items from 'My radios' haven't required tag desc

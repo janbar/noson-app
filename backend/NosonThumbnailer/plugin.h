@@ -21,9 +21,6 @@
 #ifndef THUMBNAILERPLUGIN_H
 #define THUMBNAILERPLUGIN_H
 
-#include <QtQml/QQmlEngine>
-#include <QtQml/QQmlExtensionPlugin>
-
 #include "thumbnailer/thumbnailer.h"
 
 #include <memory>
@@ -33,28 +30,6 @@ namespace thumbnailer
 
   namespace qml
   {
-
-    class ThumbnailerPlugin : public QQmlExtensionPlugin
-    {
-      Q_OBJECT
-      Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
-
-    public:
-      ThumbnailerPlugin(QObject* parent = 0);
-      ~ThumbnailerPlugin() = default;
-
-      virtual void registerTypes(const char* uri) override;
-      virtual void initializeEngine(QQmlEngine* engine, const char* uri) override;
-
-      static QObject* proxy(QQmlEngine *engine, QJSEngine *scriptEngine);
-
-    private:     
-      static ThumbnailerPlugin* _instance_;
-
-      std::shared_ptr<thumbnailer::Thumbnailer> m_thumbnailer;
-    };
-
-
     class Proxy : public QObject
     {
       Q_OBJECT
@@ -63,7 +38,11 @@ namespace thumbnailer
       Proxy(std::shared_ptr<thumbnailer::Thumbnailer>& thumbnailer, QObject* parent = 0);
       ~Proxy() = default;
 
-      Q_INVOKABLE bool setApiKey(const QString& apiKey);
+      Q_INVOKABLE bool setApiKey(const QString& apiKey)
+      {
+          m_p->setApiKey(apiKey);
+          return m_p->isValid();
+      }
 
       Q_INVOKABLE void setTrace(bool trace) { m_p->setTrace(trace); }
 

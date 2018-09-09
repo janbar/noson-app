@@ -38,6 +38,7 @@ Page {
             right: parent.right
             top: parent.top
         }
+
         NowPlayingToolbar {
             id: nowPlayingToolBar
             anchors {
@@ -52,6 +53,7 @@ Page {
 
     Queue {
         id: queue
+
         anchors {
             top: toolbar.bottom
             bottom: parent.bottom

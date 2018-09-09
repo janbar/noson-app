@@ -142,6 +142,57 @@ bool RenderingControl::SetNightmode(uint8_t value)
   return false;
 }
 
+bool RenderingControl::GetTreble(int8_t *value)
+{
+  ElementList args;
+  args.push_back(ElementPtr(new Element("InstanceID", "0")));
+  ElementList vars = Request("GetTreble", args);
+  if (!vars.empty() && vars[0]->compare("GetTrebleResponse") == 0)
+  {
+    ElementList::const_iterator it = vars.FindKey("CurrentTreble");
+    if (it != vars.end())
+      return (string_to_int8((*it)->c_str(), value) == 0);
+  }
+  return false;
+}
+
+bool RenderingControl::SetTreble(int8_t value)
+{
+  ElementList args;
+  args.push_back(ElementPtr(new Element("InstanceID", "0")));
+  args.push_back(ElementPtr(new Element("DesiredTreble", std::to_string(value))));
+  ElementList vars = Request("SetTreble", args);
+  if (!vars.empty() && vars[0]->compare("SetTrebleResponse") == 0)
+    return true;
+  return false;
+}
+
+bool RenderingControl::GetBass(int8_t *value)
+{
+  ElementList args;
+  args.push_back(ElementPtr(new Element("InstanceID", "0")));
+  ElementList vars = Request("GetBass", args);
+  if (!vars.empty() && vars[0]->compare("GetBassResponse") == 0)
+  {
+    ElementList::const_iterator it = vars.FindKey("CurrentBass");
+    if (it != vars.end()) {
+      return (string_to_int8((*it)->c_str(), value) == 0);
+    }
+  }
+  return false;
+}
+
+bool RenderingControl::SetBass(int8_t value)
+{
+  ElementList args;
+  args.push_back(ElementPtr(new Element("InstanceID", "0")));
+  args.push_back(ElementPtr(new Element("DesiredBass", std::to_string(value))));
+  ElementList vars = Request("SetBass", args);
+  if (!vars.empty() && vars[0]->compare("SetBassResponse") == 0)
+    return true;
+  return false;
+}
+
 void RenderingControl::HandleEventMessage(EventMessagePtr msg)
 {
   if (!msg)
@@ -191,6 +242,16 @@ void RenderingControl::HandleEventMessage(EventMessagePtr msg)
         {
           if (string_to_int32((*++it).c_str(), &num) == 0)
             prop->NightMode = num;
+        }
+        else if (*it == "Bass")
+        {
+          if (string_to_int32((*++it).c_str(), &num) == 0)
+            prop->Bass = num;
+        }
+        else if (*it == "Treble")
+        {
+          if (string_to_int32((*++it).c_str(), &num) == 0)
+            prop->Treble = num;
         }
 
         ++it;

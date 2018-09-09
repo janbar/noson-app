@@ -43,6 +43,8 @@ Item {
     readonly property var playbackState: playerLoader.status == Loader.Ready ? playerLoader.item.playbackState : ""
     property int position: 0
     property int volumeMaster: 0
+    property int bass: 0
+    property int treble: 0
     property bool repeat: false
     property bool shuffle: false
     property bool mute: false
@@ -50,6 +52,7 @@ Item {
     property bool sleepTimerEnabled: false
     property bool nightmodeEnabled: false
     property var covers: []
+    property bool isTv: false
 
     property string queueInfo: queueOverviewString()
 
@@ -163,6 +166,14 @@ Item {
         return playerLoader.item.setVolume(uuid, volume);
     }
 
+    function setBass(value) {
+        return playerLoader.item.setBass(value)
+    }
+
+    function setTreble(value) {
+        return playerLoader.item.setTreble(value)
+    }
+
     function toggleMuteGroup() {
         return playerLoader.item.toggleMute();
     }
@@ -240,6 +251,7 @@ Item {
 
     function refreshSource() {
         // protect against undefined properties
+        player.isTv = playerLoader.item.currentMetaSource.endsWith(":spdif")
         player.currentMetaAlbum = playerLoader.item.currentMetaAlbum || "";
         player.currentMetaArt = playerLoader.item.currentMetaArt || "";
         player.currentMetaArtist = playerLoader.item.currentMetaArtist || "";
@@ -262,6 +274,8 @@ Item {
 
     function refreshRenderingGroup() {
         player.volumeMaster = playerLoader.item.volumeMaster;
+        player.treble = playerLoader.item.treble;
+        player.bass = playerLoader.item.bass;
         player.mute = playerLoader.item.muteMaster;
         player.nightmodeEnabled = playerLoader.item.nightmode;
     }

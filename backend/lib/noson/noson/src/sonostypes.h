@@ -195,6 +195,8 @@ namespace NSROOT
     int MuteLF;
     int MuteRF;
     int NightMode;
+    int Treble;
+    int Bass;
   };
 
   class SRProperty

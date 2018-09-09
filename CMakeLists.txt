@@ -72,8 +72,8 @@ if(ANDROID)
     ${CMAKE_SOURCE_DIR}/android/package-sources/AndroidManifest.xml
   )
   include(android/AddQtAndroidApk.cmake)
-  add_dependencies(noson-gui NosonApp NosonApp-qmldir
-      NosonThumbnailer NosonThumbnailer-qmldir
+  add_dependencies(noson-gui NosonApp
+      NosonThumbnailer
   )
   add_qt_android_apk(noson-apk noson-gui
       NAME ${APP_NAME}
@@ -93,7 +93,7 @@ endif()
 add_custom_target(
   "run"
   QML2_IMPORT_PATH=${CMAKE_BINARY_DIR}/backend/qml ${CMAKE_BINARY_DIR}/gui/noson-gui
-  DEPENDS NosonApp NosonApp-qmldir NosonThumbnailer NosonThumbnailer-qmldir
+  DEPENDS NosonApp NosonThumbnailer
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/gui
 )
 
