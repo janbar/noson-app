@@ -1433,6 +1433,10 @@ ApplicationWindow {
         id: dialogSongInfo
     }
 
+    DialogSoundSettings {
+        id: dialogSoundSettings
+    }
+
     property alias musicToolbar: musicToolbar
 
     Loader {
