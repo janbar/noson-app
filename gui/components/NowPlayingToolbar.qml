@@ -128,20 +128,17 @@ Item {
             }
         }
 
-        /* Nightmode button */
+        /* equalizer button */
         Icon {
             id: nightmodeButton
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            height: units.gu(6)
+            height: units.gu(5) // smaller
             width: height
-            source: player.nightmodeEnabled ? "qrc:/images/nightmode-enabled.svg" : "qrc:/images/nightmode-disabled.svg"
-            objectName: "nightmodeShape"
+            source: "qrc:/images/settings.svg"
             opacity: 1.0
             onClicked: {
-                player.toggleNightmode()
-                player.refreshRenderingGroup()
-                player.refreshRendering()
+                dialogSoundSettings.open()
             }
         }
     }

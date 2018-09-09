@@ -43,7 +43,7 @@ Item {
                     id: trebleLabel
                     text: qsTr("Treble")
                     color: styleMusic.dialog.labelColor
-                    font.pointSize: units.fs("large")
+                    font.pointSize: units.fs("medium")
                     verticalAlignment: Text.AlignVCenter
                     height: trebleSlider.height
                     width: units.gu(10)
@@ -61,7 +61,7 @@ Item {
                     handleBorderColor: handleColor
                     backgroundColor: styleMusic.playerControls.volumeBackgroundColor
                     foregroundColor: styleMusic.playerControls.volumeForegroundColor
-                    size: parent.width - trebleLabel.width - parent.spacing
+                    size: parent.width - trebleLabel.width - parent.spacing - units.gu(1)
                     stepSize: 1.0
 
                     value: player.treble // load value at startup
@@ -103,7 +103,7 @@ Item {
                     height: units.gu(1)
                 }
                 Label {
-                    width: (parent.width - c0.width - zero.width) / 2
+                    width: (parent.width - c0.width - zero.width - units.gu(1)) / 2
                     text: "-10"
                     font.pointSize: units.fs("x-small")
                     verticalAlignment: Text.AlignVCenter
@@ -119,7 +119,7 @@ Item {
                     color: styleMusic.playerControls.volumeForegroundColor
                 }
                 Label {
-                    width: (parent.width - c0.width - zero.width) / 2
+                    width: (parent.width - c0.width - zero.width - units.gu(1)) / 2
                     text: "+10"
                     font.pointSize: units.fs("x-small")
                     verticalAlignment: Text.AlignVCenter
@@ -136,7 +136,7 @@ Item {
                     id: bassLabel
                     text: qsTr("Bass")
                     color: styleMusic.dialog.labelColor
-                    font.pointSize: units.fs("large")
+                    font.pointSize: units.fs("medium")
                     verticalAlignment: Text.AlignVCenter
                     height: bassSlider.height
                     width: units.gu(10)
@@ -153,7 +153,7 @@ Item {
                     handleBorderColor: handleColor
                     backgroundColor: styleMusic.playerControls.volumeBackgroundColor
                     foregroundColor: styleMusic.playerControls.volumeForegroundColor
-                    size: parent.width - trebleLabel.width - parent.spacing
+                    size: parent.width - trebleLabel.width - parent.spacing - units.gu(1)
                     stepSize: 1.0
 
                     value: player.bass // load value at startup
@@ -202,6 +202,7 @@ Item {
                     anchors.leftMargin: units.gu(1)
                     text: qsTr("Night mode")
                     textAlignment: Text.AlignHCenter
+                    font.pointSize: units.fs("medium")
                     checked: player.nightmodeEnabled
                     onClicked: {
                         if (!player.toggleNightmode())
@@ -220,6 +221,7 @@ Item {
                     anchors.leftMargin: units.gu(1)
                     text: qsTr("Loudness")
                     textAlignment: Text.AlignHCenter
+                    font.pointSize: units.fs("medium")
                     checked: false
                     enabled: false
                 }
@@ -237,6 +239,7 @@ Item {
                     anchors.leftMargin: units.gu(1)
                     text: qsTr("Line IN")
                     textAlignment: Text.AlignHCenter
+                    font.pointSize: units.fs("medium")
                     checked: (player.currentProtocol === 1)
                     onClicked: {
                         if (checked) {
@@ -263,6 +266,7 @@ Item {
                     anchors.left: parent.left
                     anchors.leftMargin: units.gu(1)
                     text: qsTr("TV")
+                    font.pointSize: units.fs("medium")
                     textAlignment: Text.AlignHCenter
                     checked: (player.currentProtocol === 5)
                     onClicked: {
