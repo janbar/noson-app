@@ -66,32 +66,8 @@ set(
 
 add_library(NosonApp-static STATIC ${NosonApp-static_SRCS})
 
-if(NOT noson_FOUND)
+#if(NOT noson_FOUND)
     add_dependencies (NosonApp-static noson)
-endif()
+#endif()
 
-target_link_libraries(NosonApp-static ${noson_LIBRARIES}
-    Qt5::Gui Qt5::Qml Qt5::Quick)
-
-set(
-    NosonApp_SRCS
-    plugin.cpp
-    plugin.h
-)
-
-add_library(NosonApp MODULE ${NosonApp_SRCS})
-
-set_target_properties(NosonApp PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_DIRECTORY}/NosonApp)
-target_link_libraries(NosonApp NosonApp-static)
-
-# Copy qmldir file to build dir for running in QtCreator
-add_custom_target(NosonApp-qmldir ALL
-    COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QML_IMPORT_DIRECTORY}/NosonApp
-    DEPENDS ${QMLFILES}
-)
-
-# Install plugin file
-MESSAGE(STATUS "PlugIns install path: ${PLUGINS_DIR}")
-install(TARGETS NosonApp DESTINATION ${PLUGINS_DIR}/NosonApp/)
-install(FILES   qmldir DESTINATION ${PLUGINS_DIR}/NosonApp/)
+target_link_libraries(NosonApp-static ${noson_LIBRARIES} Qt5::Gui Qt5::Qml Qt5::Quick)
