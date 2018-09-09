@@ -13,6 +13,10 @@
 
 #include "diskcache/diskcachefactory.h"
 
+#include <NosonThumbnailer/plugin.h>
+#include <NosonThumbnailer/albumartgenerator.h>
+#include <NosonThumbnailer/artistartgenerator.h>
+
 #define CACHE_SIZE 100000000L
 
 #if (defined(_WIN32) || defined(_WIN64))
@@ -104,6 +108,11 @@ int main(int argc, char *argv[])
 #endif
     }
     engine.rootContext()->setContextProperty("AvailableStyles", availableStyles);
+
+    std::shared_ptr<thumbnailer::Thumbnailer> thumbnailer = std::make_shared<thumbnailer::Thumbnailer>(engine.offlineStoragePath(), CACHE_SIZE, QString(""));
+    engine.rootContext()->setContextProperty("Thumbnailer", new thumbnailer::qml::Proxy(thumbnailer));
+    engine.addImageProvider("albumart", new thumbnailer::qml::AlbumArtGenerator(thumbnailer));
+    engine.addImageProvider("artistart", new thumbnailer::qml::ArtistArtGenerator(thumbnailer));
 
     // handle signal exit(int) issued by the qml instance
     QObject::connect(&engine, &QQmlApplicationEngine::exit, doExit);

@@ -19,7 +19,6 @@
  */
 
 import QtQuick 2.9
-import NosonThumbnailer 1.0
 
 Item {
     id: coverGrid

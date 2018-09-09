@@ -37,31 +37,10 @@ set(
   thumbnailer/lfm-albuminfo.h
   thumbnailer/tinyxml2.cpp
   thumbnailer/xmldict.cpp
+  plugin.cpp
+  plugin.h
 )
 
 add_library(NosonThumbnailer-static STATIC ${NosonThumbnailer-static_SRCS})
 
 target_link_libraries(NosonThumbnailer-static Qt5::Qml Qt5::Quick)
-
-set(
-  NosonThumbnailer_SRCS
-  plugin.cpp
-  plugin.h
-)
-
-add_library(NosonThumbnailer MODULE ${NosonThumbnailer_SRCS})
-
-set_target_properties(NosonThumbnailer PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_DIRECTORY}/NosonThumbnailer)
-target_link_libraries(NosonThumbnailer NosonThumbnailer-static)
-
-# Copy qmldir file to build dir for running in QtCreator
-add_custom_target(NosonThumbnailer-qmldir ALL
-    COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QML_IMPORT_DIRECTORY}/NosonThumbnailer
-    DEPENDS ${QMLFILES}
-)
-
-# Install plugin file
-MESSAGE(STATUS "PlugIns install path: ${PLUGINS_DIR}")
-install(TARGETS NosonThumbnailer DESTINATION ${PLUGINS_DIR}/NosonThumbnailer/)
-install(FILES   qmldir DESTINATION ${PLUGINS_DIR}/NosonThumbnailer/)

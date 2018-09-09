@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.1.0)
 # Automatically create moc files
 set(CMAKE_AUTOMOC ON)
 
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../backend/
+)
+
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Qml REQUIRED)
@@ -53,7 +57,7 @@ else()
   add_executable(noson-gui ${noson-gui-sources} ${noson-gui-resources} ${extra-sources})
 endif()
 
-target_link_libraries(noson-gui Qt5::Gui Qt5::Qml Qt5::Quick Qt5::QuickControls2 Qt5::Widgets Qt5::Xml Qt5::Svg)
+target_link_libraries(noson-gui NosonThumbnailer-static Qt5::Gui Qt5::Qml Qt5::Quick Qt5::QuickControls2 Qt5::Widgets Qt5::Xml Qt5::Svg)
 
 if(MSVC)
   target_link_libraries (noson-gui ws2_32)

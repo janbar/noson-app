@@ -6,7 +6,6 @@ import QtQuick.Controls.Universal 2.2
 import Qt.labs.settings 1.0
 import QtGraphicalEffects 1.0
 import NosonApp 1.0
-import NosonThumbnailer 1.0
 import "components"
 import "components/Dialog"
 import "ui"
