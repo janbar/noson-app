@@ -20,6 +20,7 @@
 
 import QtQuick 2.9
 import QtQuick.Controls 2.2
+import QtQuick.Layouts 1.11
 
 
 /* Full toolbar */
@@ -133,15 +134,12 @@ Item {
             id: nightmodeButton
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            height: units.gu(6)
+            height: units.gu(5)
             width: height
-            source: player.nightmodeEnabled ? "qrc:/images/nightmode-enabled.svg" : "qrc:/images/nightmode-disabled.svg"
-            objectName: "nightmodeShape"
+            source: "qrc:/images/cog.svg"
             opacity: 1.0
             onClicked: {
-                player.toggleNightmode()
-                player.refreshRenderingGroup()
-                player.refreshRendering()
+                eqPopup.open()
             }
         }
     }
@@ -313,4 +311,105 @@ Item {
             }
         }
     }
+
+        Popup {
+            id: eqPopup
+            property real sliderWidth: units.gu(30)
+            GridLayout {
+                id: popupLayout
+                columns: 2
+
+                Label {
+                    text: qsTr("Treble")
+                }
+
+                StyledSlider {
+                    id: trebleSlider
+                    sliderWidth: eqPopup.sliderWidth
+                    live: true
+                    from: -10
+                    to: 10
+                    value: player.treble // load value at startup
+
+                    Connections {
+                        target: player
+                        onBassChanged:{
+                            if (trebleSlider.pressed) {
+                                return
+                            }
+
+                            trebleSlider.value = player.treble
+                        }
+                    }
+
+                    onPressedChanged: {
+                        if (!pressed) {
+                            value = player.treble
+                        }
+                    }
+
+                    onMoved: {
+                        var treble = Math.round(value)
+                        if (treble === player.treble) {
+                            return
+                        }
+                        player.setTreble(treble)
+                    }
+                }
+
+                Label {
+                    text: qsTr("Bass")
+                }
+                StyledSlider {
+                    id: bassSlider
+                    sliderWidth: eqPopup.sliderWidth
+                    live: true
+                    from: -10
+                    to: 10
+                    value: player.bass // load value at startup
+
+                    Connections {
+                        target: player
+                        onBassChanged: {
+                            if (bassSlider.pressed) {
+                                return;
+                            }
+
+                            bassSlider.value = player.bass
+                        }
+                    }
+
+                    onPressedChanged: {
+                        if (!pressed) {
+                            value = player.bass
+                        }
+                    }
+
+                    onMoved: {
+                        var bass = Math.round(value)
+                        if (bass === player.bass) {
+                            return
+                        }
+                        player.setBass(bass)
+                    }
+                }
+
+                Label {
+                    text: qsTr("Nightmode")
+                }
+
+                CheckBox {
+                    id: nightmodeCheckbox
+                    checked: player.nightmodeEnabled
+
+                    onClicked: player.toggleNightmode()
+
+                    Connections {
+                        target: player
+                        onNightmodeEnabledChanged: nightmodeCheckbox.checked = player.nightmodeEnabled
+                    }
+                }
+
+            }
+        }
 }

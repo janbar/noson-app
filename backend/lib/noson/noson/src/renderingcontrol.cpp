@@ -142,7 +142,7 @@ bool RenderingControl::SetNightmode(uint8_t value)
   return false;
 }
 
-bool RenderingControl::GetTreble(uint8_t *value)
+bool RenderingControl::GetTreble(int8_t *value)
 {
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
@@ -151,12 +151,12 @@ bool RenderingControl::GetTreble(uint8_t *value)
   {
     ElementList::const_iterator it = vars.FindKey("CurrentTreble");
     if (it != vars.end())
-      return (string_to_uint8((*it)->c_str(), value) == 0);
+      return (string_to_int8((*it)->c_str(), value) == 0);
   }
   return false;
 }
 
-bool RenderingControl::SetTreble(uint8_t value)
+bool RenderingControl::SetTreble(int8_t value)
 {
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
@@ -167,7 +167,7 @@ bool RenderingControl::SetTreble(uint8_t value)
   return false;
 }
 
-bool RenderingControl::GetBass(uint8_t *value)
+bool RenderingControl::GetBass(int8_t *value)
 {
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
@@ -176,13 +176,13 @@ bool RenderingControl::GetBass(uint8_t *value)
   {
     ElementList::const_iterator it = vars.FindKey("CurrentBass");
     if (it != vars.end()) {
-      return (string_to_uint8((*it)->c_str(), value) == 0);
+      return (string_to_int8((*it)->c_str(), value) == 0);
     }
   }
   return false;
 }
 
-bool RenderingControl::SetBass(uint8_t value)
+bool RenderingControl::SetBass(int8_t value)
 {
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
@@ -237,6 +237,11 @@ void RenderingControl::HandleEventMessage(EventMessagePtr msg)
         {
           if (string_to_int32((*++it).c_str(), &num) == 0)
             prop->MuteRF = num;
+        }
+        else if (*it == "NightMode")
+        {
+          if (string_to_int32((*++it).c_str(), &num) == 0)
+            prop->NightMode = num;
         }
         else if (*it == "Bass")
         {

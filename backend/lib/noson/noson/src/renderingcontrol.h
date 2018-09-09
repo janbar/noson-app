@@ -67,13 +67,13 @@ namespace NSROOT
 
     bool SetNightmode(uint8_t value);
 
-    bool GetTreble(uint8_t* value);
+    bool GetTreble(int8_t *value);
 
-    bool SetTreble(uint8_t value);
+    bool SetTreble(int8_t value);
 
-    bool GetBass(uint8_t* value);
+    bool GetBass(int8_t *value);
 
-    bool SetBass(uint8_t value);
+    bool SetBass(int8_t value);
 
     // Implements EventSubscriber
     virtual void HandleEventMessage(EventMessagePtr msg);

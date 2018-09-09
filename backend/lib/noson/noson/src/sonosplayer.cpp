@@ -394,7 +394,7 @@ bool Player::SetNightmode(const std::string &uuid, uint8_t value)
   return false;
 }
 
-bool Player::GetBass(const std::string &uuid, uint8_t *value)
+bool Player::GetBass(const std::string &uuid, int8_t *value)
 {
   for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
   {
@@ -404,7 +404,7 @@ bool Player::GetBass(const std::string &uuid, uint8_t *value)
   return false;
 }
 
-bool Player::SetBass(const std::string &uuid, uint8_t value)
+bool Player::SetBass(const std::string &uuid, int8_t value)
 {
   for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
   {
@@ -414,7 +414,7 @@ bool Player::SetBass(const std::string &uuid, uint8_t value)
   return false;
 }
 
-bool Player::GetTreble(const std::string &uuid, uint8_t *value)
+bool Player::GetTreble(const std::string &uuid, int8_t *value)
 {
   for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
   {
@@ -424,7 +424,7 @@ bool Player::GetTreble(const std::string &uuid, uint8_t *value)
   return false;
 }
 
-bool Player::SetTreble(const std::string &uuid, uint8_t value)
+bool Player::SetTreble(const std::string &uuid, int8_t value)
 {
   for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
   {
