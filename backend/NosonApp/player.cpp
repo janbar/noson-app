@@ -494,6 +494,45 @@ bool Player::playFavorite(const QVariant& payload)
   return false;
 }
 
+bool Player::setTreble(double val)
+{
+  if (m_player)
+  {
+    bool ret = true;
+    for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+    {
+      if (m_player->SetTreble(it->uuid, val))
+        it->treble = val;
+      else
+        ret = false;
+    }
+    if (ret)
+      m_RCGroup.treble = val;
+    return ret;
+  }
+  return false;
+}
+
+bool Player::setBass(double val)
+{
+  if (m_player)
+  {
+    bool ret = true;
+    for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+    {
+      if (m_player->SetBass(it->uuid, val))
+        it->bass = val;
+      else
+        ret = false;
+    }
+    if (ret)
+      m_RCGroup.bass = val;
+    return ret;
+  }
+  return false;
+
+}
+
 bool Player::setVolumeGroup(double volume)
 {
   if (m_player)
@@ -682,6 +721,8 @@ void Player::handleRenderingControlChange()
         item.nightmode = it->property.NightMode ? true : false;
         item.volume = it->property.VolumeMaster;
         item.volumeFake = it->property.VolumeMaster > 0 ? (double)it->property.VolumeMaster : 100.0 / 101.0;
+        item.treble = it->property.Treble;
+        item.bass = it->property.Bass;
         m_RCTable.push_back(item);
         if (!item.mute)
           mute = false; // exists active audio in group
@@ -699,6 +740,8 @@ void Player::handleRenderingControlChange()
       double volume = 0.0;
       bool mute = true;
       bool nightmode = false;
+      double treble = 0.0;
+      double bass = 0.0;
       SONOS::SRPList::const_iterator it = props.begin();
       std::vector<RCProperty>::iterator itz = m_RCTable.begin();
       while (it != props.end())
@@ -713,6 +756,18 @@ void Player::handleRenderingControlChange()
         if (_nightmode != itz->nightmode)
         {
           itz->nightmode = _nightmode;
+          signalMask |= RENDERING_CHANGED;
+        }
+        double _treble = it->property.Treble;
+        if (_treble != itz->treble)
+        {
+          itz->treble = _treble;
+          signalMask |= RENDERING_CHANGED;
+        }
+        double _bass = it->property.Bass;
+        if (_bass != itz->bass)
+        {
+          itz->bass = _bass;
           signalMask |= RENDERING_CHANGED;
         }
         if (it->property.VolumeMaster != itz->volume)
@@ -741,6 +796,8 @@ void Player::handleRenderingControlChange()
           mute = false; // exists active audio in group
         if (itz->nightmode)
           nightmode = true;
+        treble = itz->treble;
+        bass = itz->bass;
         volume += itz->volumeFake;
         ++it;
         ++itz;
@@ -750,6 +807,8 @@ void Player::handleRenderingControlChange()
       m_RCGroup.volume = roundDouble(volume);
       m_RCGroup.mute = mute;
       m_RCGroup.nightmode = nightmode;
+      m_RCGroup.treble = treble;
+      m_RCGroup.bass = bass;
       signalMask |= RENDERING_GROUP_CHANGED; // handles group update
     }
 

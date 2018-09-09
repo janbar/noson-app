@@ -34,6 +34,8 @@ class Player : public QObject
   Q_PROPERTY(bool muteMaster READ muteMaster NOTIFY renderingGroupChanged)
   Q_PROPERTY(bool nightmode READ nightmode NOTIFY renderingGroupChanged)
   Q_PROPERTY(int volumeMaster READ volumeMaster NOTIFY renderingGroupChanged)
+  Q_PROPERTY(int treble READ treble NOTIFY renderingGroupChanged)
+  Q_PROPERTY(int bass READ bass NOTIFY renderingGroupChanged)
 
   // Read only
   Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged())
@@ -111,6 +113,8 @@ public:
   int volumeMaster() const { return m_RCGroup.volume; }
   int volumeLF() const { return m_RCGroup.volume; }
   int volumeRF() const { return m_RCGroup.volume; }
+  int treble() const { return m_RCGroup.treble; }
+  int bass() const { return m_RCGroup.bass; }
 
   struct RCProperty
   {
@@ -119,12 +123,17 @@ public:
     bool mute = false;
     bool nightmode = false;
     int volume = 0;
+    int treble = 0;
+    int bass = 0;
     double volumeFake = 0.;
   };
 
   typedef std::vector<RCProperty> RCTable;
 
   const RCTable& renderingTable() const { return m_RCTable; }
+
+  Q_INVOKABLE bool setTreble(double val);
+  Q_INVOKABLE bool setBass(double val);
 
   Q_INVOKABLE bool setVolumeGroup(double volume);
   Q_INVOKABLE bool setVolume(const QString& uuid, double volume);
