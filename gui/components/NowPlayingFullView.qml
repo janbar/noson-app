@@ -195,6 +195,7 @@ Flickable {
         }
         height: units.gu(2)
         width: parent.width
+        visible: !player.isTv
 
         /* Position label */
         Label {

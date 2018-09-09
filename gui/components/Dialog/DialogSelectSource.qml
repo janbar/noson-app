@@ -98,7 +98,7 @@ DialogBase {
         model: selectorModel
         Layout.fillWidth: true
         font.pointSize: units.fs("large")
-        currentIndex: 0
+        currentIndex: player.isTv ? 2 : 0
         Component.onCompleted: {
             popup.font.pointSize = font.pointSize;
         }

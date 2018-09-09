@@ -751,6 +751,10 @@ ApplicationWindow {
 
     function makeCoverSource(art, artist, album) {
         var array = [];
+        if (player.isTv) {
+            array.push({art: "qrc:/images/tv.svg" })
+        }
+
         if (art !== undefined && art !== "")
             array.push( {art: art} );
         if (album !== undefined && album !== "") {

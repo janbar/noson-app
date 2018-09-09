@@ -87,8 +87,8 @@ Item {
                 source: coverGrid.covers.length !== 0 && coverGrid.covers[index] !== undefined && coverGrid.covers[index].art.length > 0
                         ? coverGrid.covers[index].art : ""
 
-                sourceSize.height: 128
-                sourceSize.width: 128
+                sourceSize.height: height
+                sourceSize.width: width
 
                 onStatusChanged: {
                     if (status === Image.Error) {

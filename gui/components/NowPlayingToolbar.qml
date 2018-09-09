@@ -153,6 +153,7 @@ Item {
         }
         height: units.gu(8)
         width: parent.width
+        visible: !player.isTv
 
         /* Repeat button */
         Rectangle {
@@ -312,104 +313,125 @@ Item {
         }
     }
 
-        Popup {
-            id: eqPopup
-            property real sliderWidth: units.gu(30)
-            GridLayout {
-                id: popupLayout
-                columns: 2
+    Popup {
+        id: eqPopup
+        property real sliderWidth: units.gu(30)
+        GridLayout {
+            id: popupLayout
+            columns: 2
 
-                Label {
-                    text: qsTr("Treble")
-                }
+            Label {
+                text: qsTr("Treble")
+            }
 
-                StyledSlider {
-                    id: trebleSlider
-                    sliderWidth: eqPopup.sliderWidth
-                    live: true
-                    from: -10
-                    to: 10
-                    value: player.treble // load value at startup
+            StyledSlider {
+                id: trebleSlider
+                sliderWidth: eqPopup.sliderWidth
+                live: true
+                from: -10
+                to: 10
+                value: player.treble // load value at startup
 
-                    Connections {
-                        target: player
-                        onBassChanged:{
-                            if (trebleSlider.pressed) {
-                                return
-                            }
-
-                            trebleSlider.value = player.treble
-                        }
-                    }
-
-                    onPressedChanged: {
-                        if (!pressed) {
-                            value = player.treble
-                        }
-                    }
-
-                    onMoved: {
-                        var treble = Math.round(value)
-                        if (treble === player.treble) {
+                Connections {
+                    target: player
+                    onBassChanged:{
+                        if (trebleSlider.pressed) {
                             return
                         }
-                        player.setTreble(treble)
+
+                        trebleSlider.value = player.treble
                     }
                 }
 
-                Label {
-                    text: qsTr("Bass")
+                onPressedChanged: {
+                    if (!pressed) {
+                        value = player.treble
+                    }
                 }
-                StyledSlider {
-                    id: bassSlider
-                    sliderWidth: eqPopup.sliderWidth
-                    live: true
-                    from: -10
-                    to: 10
-                    value: player.bass // load value at startup
 
-                    Connections {
-                        target: player
-                        onBassChanged: {
-                            if (bassSlider.pressed) {
-                                return;
-                            }
+                onMoved: {
+                    var treble = Math.round(value)
+                    if (treble === player.treble) {
+                        return
+                    }
+                    player.setTreble(treble)
+                }
+            }
 
-                            bassSlider.value = player.bass
+            Label {
+                text: qsTr("Bass")
+            }
+            StyledSlider {
+                id: bassSlider
+                sliderWidth: eqPopup.sliderWidth
+                live: true
+                from: -10
+                to: 10
+                value: player.bass // load value at startup
+
+                Connections {
+                    target: player
+                    onBassChanged: {
+                        if (bassSlider.pressed) {
+                            return;
                         }
-                    }
 
-                    onPressedChanged: {
-                        if (!pressed) {
-                            value = player.bass
-                        }
-                    }
-
-                    onMoved: {
-                        var bass = Math.round(value)
-                        if (bass === player.bass) {
-                            return
-                        }
-                        player.setBass(bass)
+                        bassSlider.value = player.bass
                     }
                 }
 
-                Label {
-                    text: qsTr("Nightmode")
-                }
-
-                CheckBox {
-                    id: nightmodeCheckbox
-                    checked: player.nightmodeEnabled
-
-                    onClicked: player.toggleNightmode()
-
-                    Connections {
-                        target: player
-                        onNightmodeEnabledChanged: nightmodeCheckbox.checked = player.nightmodeEnabled
+                onPressedChanged: {
+                    if (!pressed) {
+                        value = player.bass
                     }
                 }
 
+                onMoved: {
+                    var bass = Math.round(value)
+                    if (bass === player.bass) {
+                        return
+                    }
+                    player.setBass(bass)
+                }
+            }
+
+            Label {
+                text: qsTr("Nightmode")
+            }
+
+            CheckBox {
+                id: nightmodeCheckbox
+                checked: player.nightmodeEnabled
+
+                onClicked: player.toggleNightmode()
+
+                Connections {
+                    target: player
+                    onNightmodeEnabledChanged: nightmodeCheckbox.checked = player.nightmodeEnabled
+                }
+            }
+
+            Label {
+                text: qsTr("Play from TV")
+            }
+
+            CheckBox {
+                id: playTvCheckbox
+                checked: player.isTv
+
+                onClicked: {
+                    if (player.isTv) {
+                        player.playQueue(false)
+                    } else {
+                        player.playDigitalIN()
+                    }
+                }
+
+                Connections {
+                    target: player
+                    onNightmodeEnabledChanged: playTvCheckbox.checked = player.isTv
+                }
             }
         }
+    }
 }

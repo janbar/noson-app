@@ -123,12 +123,14 @@ Item {
         footer: Item {
             height: mainView.height - (styleMusic.view.expandHeight + queueList.currentHeight) + units.gu(8)
         }
-
-        model: DelegateModel {
+        DelegateModel {
             id: visualModel
             model: player.trackQueue.model
             delegate: dragDelegate
         }
+
+
+        model: player.isTv ? 0 : visualModel
 
         property int focusIndex: 0
 
