@@ -36,6 +36,7 @@ Item {
     property string currentMetaSource: ""
     property string currentMetaTitle: ""
     property string currentMetaURITitle: ""
+    property int currentProtocol: -1
     property int currentIndex: -1
     property int currentCount: 0
     property int duration: 1
@@ -247,6 +248,7 @@ Item {
         player.currentMetaTitle = playerLoader.item.currentMetaTitle || "";
         player.currentMetaURITitle = playerLoader.item.currentMetaURITitle || "";
         player.currentIndex = playerLoader.item.currentIndex;
+        player.currentProtocol = playerLoader.item.currentProtocol;
         player.duration = 1 + (1000 * playerLoader.item.currentTrackDuration);
         // reset position
         var npos = 1000 * playerLoader.item.currentTrackPosition();

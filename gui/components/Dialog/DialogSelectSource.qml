@@ -129,4 +129,17 @@ DialogBase {
         }
     }
 
+    onOpened: {
+        switch (player.currentProtocol) {
+            case 1:
+                selector.currentIndex = 1;
+                break;
+            case 5:
+                selector.currentIndex = 2;
+                break;
+            default:
+                selector.currentIndex = 0;
+        }
+    }
+
 }
