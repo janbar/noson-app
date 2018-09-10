@@ -164,6 +164,8 @@ namespace NSROOT
 
     // Helpers
     std::string GetItemIdFromUriMetadata(const DigitalItemPtr& uriMetadata);
+    Protocol_t GetURIProtocol(const std::string& uri);
+
 
   private:
     bool m_valid;

@@ -808,3 +808,15 @@ std::string Player::GetItemIdFromUriMetadata(const DigitalItemPtr& uriMetadata)
   }
   return itemId;
 }
+
+Protocol_t Player::GetURIProtocol(const std::string& uri)
+{
+  size_t pos = uri.find_first_of(":");
+  if (pos == std::string::npos)
+    return Protocol_unknown;
+  std::string proto = uri.substr(0, pos);
+  int i = 0;
+  while (i < Protocol_unknown && proto != ProtocolTable[i])
+    ++i;
+  return static_cast<Protocol_t>(i);
+}

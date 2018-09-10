@@ -34,6 +34,7 @@ Player::Player(QObject *parent)
 , m_connected(false)
 , m_currentIndex(-1)
 , m_currentTrackDuration(0)
+, m_currentProtocol(-1)
 {
 }
 
@@ -610,6 +611,8 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
   m_currentMetaURITitle = "";
   m_currentIndex = -1;
   m_currentTrackDuration = 0;
+  m_currentProtocol = SONOS::Protocol_unknown;
+
 
   if (m_player)
   {
@@ -618,6 +621,7 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
     QString url = "http://";
     url.append(m_player->GetHost().c_str()).append(":").append(port);
 
+    m_currentProtocol = m_player->GetURIProtocol(prop.CurrentTrackURI);
     m_currentMetaSource = QString::fromUtf8(prop.CurrentTrackURI.c_str());
     if (prop.r_EnqueuedTransportURIMetaData)
       m_currentMetaURITitle = QString::fromUtf8(prop.r_EnqueuedTransportURIMetaData->GetValue("dc:title").c_str());
