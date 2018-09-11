@@ -313,6 +313,17 @@ Item {
         return playerLoader.item.startPlayFavorite(modelItem.payload);
     }
 
+    function canSeekInStream() {
+        switch (currentProtocol) {
+        case 1:
+        case 2:
+        case 5:
+            return false;
+        default:
+            return true;
+        }
+    }
+
     property alias renderingModel: renderingModelLoader.item
 
     Loader {
