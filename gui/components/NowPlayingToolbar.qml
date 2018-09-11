@@ -162,6 +162,7 @@ Item {
             height: units.gu(6)
             width: height
             color: "transparent"
+            visible: player.canSeekInStream()
 
             Icon {
                 id: repeatIcon
@@ -190,6 +191,7 @@ Item {
             height: units.gu(6)
             width: height
             color: "transparent"
+            visible: player.canSeekInStream()
 
             Icon {
                 id: nowPlayingPreviousIndicator
@@ -233,6 +235,7 @@ Item {
             height: units.gu(6)
             width: height
             color: "transparent"
+            visible: player.canSeekInStream()
 
             Icon {
                 id: nowPlayingNextIndicator
@@ -257,6 +260,7 @@ Item {
             height: units.gu(6)
             width: height
             color: "transparent"
+            visible: player.canSeekInStream()
 
             Icon {
                 id: shuffleIcon
@@ -287,7 +291,7 @@ Item {
         }
         color: "transparent"
         height: units.gu(0.25)
-        visible: isListView
+        visible: isListView && player.canSeekInStream()
 
         Rectangle {
             id: playerControlsProgressBarHint
