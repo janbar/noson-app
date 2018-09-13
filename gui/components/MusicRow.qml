@@ -79,8 +79,8 @@ Row {
         height: contentHeight
         width: height
         source: imageSources !== undefined && imageSources.length ? imageSources[index].art : noCover
-        sourceSize.height: height
-        sourceSize.width: width
+        sourceSize.height: 512
+        sourceSize.width: 512
 
 
         onStatusChanged: {

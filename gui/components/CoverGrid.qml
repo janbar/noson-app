@@ -64,8 +64,13 @@ Item {
         height: coverGrid.size
         width: coverGrid.size
         source: noCover
-        sourceSize.height: 128
-        sourceSize.width: 128
+
+        ///@WARNING: Changing this property dynamically causes the image source
+        /// to be reloaded, potentially even from the network, if it is not in
+        /// the disk cache.
+        sourceSize.height: 512
+        sourceSize.width: 512
+
         visible: coverGrid.overlay
     }
 
@@ -88,8 +93,11 @@ Item {
                 source: coverGrid.covers.length !== 0 && coverGrid.covers[index] !== undefined && coverGrid.covers[index].art.length > 0
                         ? coverGrid.covers[index].art : ""
 
-                sourceSize.height: 128
-                sourceSize.width: 128
+                ///@WARNING: Changing this property dynamically causes the image source
+                /// to be reloaded, potentially even from the network, if it is not in
+                /// the disk cache.
+                sourceSize.height: 512
+                sourceSize.width: 512
 
                 onStatusChanged: {
                     if (status === Image.Error) {
