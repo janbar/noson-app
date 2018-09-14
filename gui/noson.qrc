@@ -157,5 +157,7 @@
         <file>components/ServiceEmptyState.qml</file>
         <file>images/settings.svg</file>
         <file>components/Dialog/DialogSoundSettings.qml</file>
+        <file>images/tv.png</file>
+        <file>images/linein.png</file>
     </qresource>
 </RCC>

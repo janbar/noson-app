@@ -263,7 +263,15 @@ Item {
         // reset position
         var npos = 1000 * playerLoader.item.currentTrackPosition();
         player.position = npos > player.duration ? 0 : npos;
-        player.covers = makeCoverSource(player.currentMetaArt, player.currentMetaArtist, player.currentMetaAlbum);
+
+        if (player.currentProtocol == 1) {
+            player.covers = [{art: "qrc:/images/linein.png"}];
+        } else if (player.currentProtocol == 5) {
+            player.covers = [{art: "qrc:/images/tv.png"}];
+        } else {
+            player.covers = makeCoverSource(player.currentMetaArt, player.currentMetaArtist, player.currentMetaAlbum);
+        }
+
         player.sourceChanged();
     }
 
