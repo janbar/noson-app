@@ -36,6 +36,7 @@ Item {
     property string currentMetaSource: ""
     property string currentMetaTitle: ""
     property string currentMetaURITitle: ""
+    property int currentProtocol: -1
     property int currentIndex: -1
     property int currentCount: 0
     property int duration: 1
@@ -43,6 +44,8 @@ Item {
     readonly property var playbackState: playerLoader.status == Loader.Ready ? playerLoader.item.playbackState : ""
     property int position: 0
     property int volumeMaster: 0
+    property int bass: 0
+    property int treble: 0
     property bool repeat: false
     property bool shuffle: false
     property bool mute: false
@@ -163,6 +166,14 @@ Item {
         return playerLoader.item.setVolume(uuid, volume);
     }
 
+    function setBass(value) {
+        return playerLoader.item.setBass(value)
+    }
+
+    function setTreble(value) {
+        return playerLoader.item.setTreble(value)
+    }
+
     function toggleMuteGroup() {
         return playerLoader.item.toggleMute();
     }
@@ -247,11 +258,20 @@ Item {
         player.currentMetaTitle = playerLoader.item.currentMetaTitle || "";
         player.currentMetaURITitle = playerLoader.item.currentMetaURITitle || "";
         player.currentIndex = playerLoader.item.currentIndex;
+        player.currentProtocol = playerLoader.item.currentProtocol;
         player.duration = 1 + (1000 * playerLoader.item.currentTrackDuration);
         // reset position
         var npos = 1000 * playerLoader.item.currentTrackPosition();
         player.position = npos > player.duration ? 0 : npos;
-        player.covers = makeCoverSource(player.currentMetaArt, player.currentMetaArtist, player.currentMetaAlbum);
+
+        if (player.currentProtocol == 1) {
+            player.covers = [{art: "qrc:/images/linein.png"}];
+        } else if (player.currentProtocol == 5) {
+            player.covers = [{art: "qrc:/images/tv.png"}];
+        } else {
+            player.covers = makeCoverSource(player.currentMetaArt, player.currentMetaArtist, player.currentMetaAlbum);
+        }
+
         player.sourceChanged();
     }
 
@@ -262,6 +282,8 @@ Item {
 
     function refreshRenderingGroup() {
         player.volumeMaster = playerLoader.item.volumeMaster;
+        player.treble = playerLoader.item.treble;
+        player.bass = playerLoader.item.bass;
         player.mute = playerLoader.item.muteMaster;
         player.nightmodeEnabled = playerLoader.item.nightmode;
     }
@@ -297,6 +319,17 @@ Item {
 
     function playFavorite(modelItem) {
         return playerLoader.item.startPlayFavorite(modelItem.payload);
+    }
+
+    function canSeekInStream() {
+        switch (currentProtocol) {
+        case 1:
+        case 2:
+        case 5:
+            return false;
+        default:
+            return true;
+        }
     }
 
     property alias renderingModel: renderingModelLoader.item

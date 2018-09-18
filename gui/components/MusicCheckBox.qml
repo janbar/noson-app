@@ -23,10 +23,12 @@ CheckBox {
     property color color: styleMusic.view.foregroundColor
     property color controlDownColor: styleMusic.view.highlightedColor
     property real zoom: 1.0
+    property alias textAlignment: label.horizontalAlignment
 
     opacity: checkable ? 1.0 : 0.1
 
     contentItem: Text {
+        id: label
         rightPadding: control.indicator.width + control.spacing
         //leftPadding: control.indicator.width + control.spacing
         text: control.text

@@ -26,9 +26,10 @@ Slider {
     property color handleColorPressed: "lightgrey"
     property color handleBorderColor: "darkgrey"
     property alias handleSize: thumb.size
+    property real  size: units.gu(38)
 
     background: Item {
-        implicitWidth: units.gu(38)
+        implicitWidth: control.size
         implicitHeight: units.gu(5)
 
         Rectangle {

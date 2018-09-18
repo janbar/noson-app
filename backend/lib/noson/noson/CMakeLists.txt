@@ -21,7 +21,7 @@ endif ()
 ###############################################################################
 # set lib version here
 set (noson_VERSION_MAJOR 1)
-set (noson_VERSION_MINOR 9)
+set (noson_VERSION_MINOR 10)
 set (noson_VERSION_PATCH 0)
 
 set (noson_VERSION ${noson_VERSION_MAJOR}.${noson_VERSION_MINOR}.${noson_VERSION_PATCH})

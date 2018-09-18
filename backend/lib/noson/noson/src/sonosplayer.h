@@ -111,6 +111,12 @@ namespace NSROOT
     bool GetNightmode(const std::string& uuid, uint8_t* value);
     bool SetNightmode(const std::string& uuid, uint8_t value);
 
+    bool GetBass(const std::string& uuid, int8_t* value);
+    bool SetBass(const std::string& uuid, int8_t value);
+
+    bool GetTreble(const std::string& uuid, int8_t* value);
+    bool SetTreble(const std::string& uuid, int8_t value);
+
     bool SetCurrentURI(const DigitalItemPtr& item);
     bool PlayStream(const std::string& streamURL, const std::string& title);
     bool PlayQueue(bool start);
@@ -158,6 +164,8 @@ namespace NSROOT
 
     // Helpers
     std::string GetItemIdFromUriMetadata(const DigitalItemPtr& uriMetadata);
+    Protocol_t GetURIProtocol(const std::string& uri);
+
 
   private:
     bool m_valid;

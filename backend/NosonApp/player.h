@@ -34,6 +34,8 @@ class Player : public QObject
   Q_PROPERTY(bool muteMaster READ muteMaster NOTIFY renderingGroupChanged)
   Q_PROPERTY(bool nightmode READ nightmode NOTIFY renderingGroupChanged)
   Q_PROPERTY(int volumeMaster READ volumeMaster NOTIFY renderingGroupChanged)
+  Q_PROPERTY(int treble READ treble NOTIFY renderingGroupChanged)
+  Q_PROPERTY(int bass READ bass NOTIFY renderingGroupChanged)
 
   // Read only
   Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged())
@@ -45,7 +47,8 @@ class Player : public QObject
   Q_PROPERTY(QString currentMetaURITitle READ currentMetaURITitle NOTIFY sourceChanged)
   Q_PROPERTY(int currentIndex READ currentIndex NOTIFY sourceChanged)
   Q_PROPERTY(int currentTrackDuration READ currentTrackDuration NOTIFY sourceChanged)
-  
+  Q_PROPERTY(int currentProtocol READ currentProtocol NOTIFY sourceChanged)
+
   Q_PROPERTY(QString playbackState READ playbackState NOTIFY playbackStateChanged)
   Q_PROPERTY(QString playMode READ playMode NOTIFY playModeChanged)
 
@@ -111,6 +114,8 @@ public:
   int volumeMaster() const { return m_RCGroup.volume; }
   int volumeLF() const { return m_RCGroup.volume; }
   int volumeRF() const { return m_RCGroup.volume; }
+  int treble() const { return m_RCGroup.treble; }
+  int bass() const { return m_RCGroup.bass; }
 
   struct RCProperty
   {
@@ -119,12 +124,17 @@ public:
     bool mute = false;
     bool nightmode = false;
     int volume = 0;
+    int treble = 0;
+    int bass = 0;
     double volumeFake = 0.;
   };
 
   typedef std::vector<RCProperty> RCTable;
 
   const RCTable& renderingTable() const { return m_RCTable; }
+
+  Q_INVOKABLE bool setTreble(double val);
+  Q_INVOKABLE bool setBass(double val);
 
   Q_INVOKABLE bool setVolumeGroup(double volume);
   Q_INVOKABLE bool setVolume(const QString& uuid, double volume);
@@ -140,6 +150,7 @@ public:
   const QString& currentMetaURITitle() const { return m_currentMetaURITitle; }
   int currentIndex() const { return m_currentIndex; }
   int currentTrackDuration() const { return m_currentTrackDuration; }
+  int currentProtocol() const { return m_currentProtocol; } // returns SONOS::Protocol_t
   QString playbackState() const { return QString::fromUtf8(m_AVTProperty.TransportState.c_str()); }
   QString playMode() const { return QString::fromUtf8(m_AVTProperty.CurrentPlayMode.c_str()); }
 
@@ -177,6 +188,7 @@ private:
   QString m_currentMetaURITitle;
   int m_currentIndex;
   int m_currentTrackDuration;
+  int m_currentProtocol;
 
   void connectSonos(Sonos* sonos);
   void disconnectSonos(Sonos* sonos);

@@ -128,20 +128,17 @@ Item {
             }
         }
 
-        /* Nightmode button */
+        /* equalizer button */
         Icon {
             id: nightmodeButton
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            height: units.gu(6)
+            height: units.gu(5) // smaller
             width: height
-            source: player.nightmodeEnabled ? "qrc:/images/nightmode-enabled.svg" : "qrc:/images/nightmode-disabled.svg"
-            objectName: "nightmodeShape"
+            source: "qrc:/images/settings.svg"
             opacity: 1.0
             onClicked: {
-                player.toggleNightmode()
-                player.refreshRenderingGroup()
-                player.refreshRendering()
+                dialogSoundSettings.open()
             }
         }
     }
@@ -165,6 +162,7 @@ Item {
             height: units.gu(6)
             width: height
             color: "transparent"
+            visible: player.canSeekInStream()
 
             Icon {
                 id: repeatIcon
@@ -193,6 +191,7 @@ Item {
             height: units.gu(6)
             width: height
             color: "transparent"
+            visible: player.canSeekInStream()
 
             Icon {
                 id: nowPlayingPreviousIndicator
@@ -236,6 +235,7 @@ Item {
             height: units.gu(6)
             width: height
             color: "transparent"
+            visible: player.canSeekInStream()
 
             Icon {
                 id: nowPlayingNextIndicator
@@ -260,6 +260,7 @@ Item {
             height: units.gu(6)
             width: height
             color: "transparent"
+            visible: player.canSeekInStream()
 
             Icon {
                 id: shuffleIcon
@@ -290,7 +291,7 @@ Item {
         }
         color: "transparent"
         height: units.gu(0.25)
-        visible: isListView
+        visible: isListView && player.canSeekInStream()
 
         Rectangle {
             id: playerControlsProgressBarHint
