@@ -76,6 +76,7 @@ Rectangle {
             inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhEmailCharactersOnly
             placeholderText: qsTr("User name")
             font.pointSize: units.fs("medium")
+            EnterKey.type: Qt.EnterKeyDone
         }
 
         TextField {
@@ -89,6 +90,7 @@ Rectangle {
             placeholderText: qsTr("Password")
             echoMode: TextInput.Password
             font.pointSize: units.fs("medium")
+            EnterKey.type: Qt.EnterKeyDone
         }
 
         Component.onCompleted: {

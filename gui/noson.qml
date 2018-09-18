@@ -1368,6 +1368,7 @@ ApplicationWindow {
                     font.pointSize: units.fs("medium")
                     placeholderText: qsTr("Enter a valid API key");
                     inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhUrlCharactersOnly
+                    EnterKey.type: Qt.EnterKeyDone
                     Layout.fillWidth: true
 
                     Component.onCompleted: apiKey.text = settings.lastfmKey

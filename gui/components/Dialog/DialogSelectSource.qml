@@ -43,6 +43,7 @@ DialogBase {
         font.pointSize: units.fs("medium")
         placeholderText: qsTr("Enter stream URL")
         inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhUrlCharactersOnly
+        EnterKey.type: Qt.EnterKeyDone
     }
 
     Connections {

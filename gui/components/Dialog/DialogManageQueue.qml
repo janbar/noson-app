@@ -41,6 +41,7 @@ DialogBase {
         font.pointSize: units.fs("medium")
         placeholderText: qsTr("Enter playlist name")
         inputMethodHints: Qt.ImhNone
+        EnterKey.type: Qt.EnterKeyDone
     }
 
     Button {

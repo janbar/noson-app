@@ -55,6 +55,7 @@ Rectangle {
             font.pointSize: units.fs("large")
             inputMethodHints: Qt.ImhNoPredictiveText
             placeholderText: qsTr("Search music")
+            EnterKey.type: Qt.EnterKeySearch
         }
     }
 
