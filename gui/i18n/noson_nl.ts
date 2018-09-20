@@ -353,27 +353,27 @@
         <translation>Voer afspeellijstnaam in</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogManageQueue.qml" line="48"/>
+        <location filename="../components/Dialog/DialogManageQueue.qml" line="49"/>
         <source>Save queue</source>
         <translation>Wachtrij opslaan</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogManageQueue.qml" line="54"/>
+        <location filename="../components/Dialog/DialogManageQueue.qml" line="55"/>
         <source>Saving failed.</source>
         <translation>Het opslaan is mislukt.</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogManageQueue.qml" line="60"/>
+        <location filename="../components/Dialog/DialogManageQueue.qml" line="61"/>
         <source>Please type in a name.</source>
         <translation>Voer een naam in.</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogManageQueue.qml" line="68"/>
+        <location filename="../components/Dialog/DialogManageQueue.qml" line="69"/>
         <source>Clearing the queue cannot be undone.</source>
         <translation>Het wissen van de wachtrij kan niet ongedaan worden gemaakt.</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogManageQueue.qml" line="77"/>
+        <location filename="../components/Dialog/DialogManageQueue.qml" line="78"/>
         <source>Clear queue</source>
         <translation>Wachtrij wissen</translation>
     </message>
@@ -392,12 +392,12 @@
         <translation>Voer afspeellijstnaam in</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogNewPlaylist.qml" line="48"/>
+        <location filename="../components/Dialog/DialogNewPlaylist.qml" line="49"/>
         <source>Create</source>
         <translation>Creëren</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogNewPlaylist.qml" line="57"/>
+        <location filename="../components/Dialog/DialogNewPlaylist.qml" line="58"/>
         <source>Please type in a name.</source>
         <translation>Voer een naam in.</translation>
     </message>
@@ -484,45 +484,45 @@
         <translation>Voer de stream-URL in</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="51"/>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="67"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="52"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="68"/>
         <source>Playing failed.</source>
         <translation>Het afspelen is mislukt.</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="59"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="60"/>
         <source>Play stream</source>
         <translation>Stream afspelen</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="73"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="74"/>
         <source>Please type in an URL.</source>
         <translation>Voer een URL in.</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="81"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="82"/>
         <source>Select the audio input.</source>
         <translation>Selecteer de audio-invoerbron.</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="90"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="91"/>
         <source>Queue</source>
         <translation>Wachtrij</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="91"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="92"/>
         <source>Play line IN</source>
         <translation>Line IN afspelen</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="92"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="93"/>
         <source>Play TV</source>
         <translation>TV afspelen</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="109"/>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="115"/>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="121"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="110"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="116"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="122"/>
         <source>Action can&apos;t be performed</source>
         <translation>De actie kan niet worden uitgevoerd</translation>
     </message>
@@ -620,6 +620,53 @@
         <location filename="../components/Dialog/DialogSongInfo.qml" line="44"/>
         <source>%1 - track #%2</source>
         <translation>%1 - nummer #%2</translation>
+    </message>
+</context>
+<context>
+    <name>DialogSoundSettings</name>
+    <message>
+        <location filename="../components/Dialog/DialogSoundSettings.qml" line="31"/>
+        <source>Sound settings</source>
+        <extracomment>this is a title of a dialog to configure sound settings</extracomment>
+        <translation>Geluidsinstellingen</translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogSoundSettings.qml" line="44"/>
+        <source>Treble</source>
+        <translation>Bovenstem</translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogSoundSettings.qml" line="137"/>
+        <source>Bass</source>
+        <translation>Bas</translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogSoundSettings.qml" line="203"/>
+        <source>Night mode</source>
+        <translation>Nacht modus</translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogSoundSettings.qml" line="222"/>
+        <source>Loudness</source>
+        <translation>Loudness</translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogSoundSettings.qml" line="240"/>
+        <source>Line IN</source>
+        <translation>Line IN</translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogSoundSettings.qml" line="249"/>
+        <location filename="../components/Dialog/DialogSoundSettings.qml" line="254"/>
+        <location filename="../components/Dialog/DialogSoundSettings.qml" line="276"/>
+        <location filename="../components/Dialog/DialogSoundSettings.qml" line="281"/>
+        <source>Action can&apos;t be performed</source>
+        <translation>De actie kan niet worden uitgevoerd</translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogSoundSettings.qml" line="268"/>
+        <source>TV</source>
+        <translation>TV</translation>
     </message>
 </context>
 <context>
@@ -905,12 +952,12 @@
 <context>
     <name>Player</name>
     <message>
-        <location filename="../components/Player.qml" line="279"/>
+        <location filename="../components/Player.qml" line="301"/>
         <source>Untitled</source>
         <translation>Naamloos</translation>
     </message>
     <message>
-        <location filename="../components/Player.qml" line="318"/>
+        <location filename="../components/Player.qml" line="351"/>
         <source>Action can&apos;t be performed</source>
         <translation>De actie kan niet worden uitgevoerd</translation>
     </message>
@@ -1063,18 +1110,18 @@
         <translation>Gebruikersnaam</translation>
     </message>
     <message>
-        <location filename="../components/ServiceLogin.qml" line="89"/>
+        <location filename="../components/ServiceLogin.qml" line="90"/>
         <source>Password</source>
         <translation>Wachtwoord</translation>
     </message>
     <message>
-        <location filename="../components/ServiceLogin.qml" line="102"/>
+        <location filename="../components/ServiceLogin.qml" line="104"/>
         <source>Submit</source>
         <extracomment>this appears in a button with limited space (around 30 characters)</extracomment>
         <translation>Versturen</translation>
     </message>
     <message>
-        <location filename="../components/ServiceLogin.qml" line="120"/>
+        <location filename="../components/ServiceLogin.qml" line="122"/>
         <source>Login failed.</source>
         <translation>Het inloggen is mislukt.</translation>
     </message>
@@ -1180,81 +1227,81 @@
         <translation>De index is geladen</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="485"/>
+        <location filename="../noson.qml" line="489"/>
         <source>Refreshing of index is running</source>
         <translation>Bezig met verversen van de index</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="488"/>
-        <location filename="../noson.qml" line="507"/>
-        <location filename="../noson.qml" line="515"/>
-        <location filename="../noson.qml" line="525"/>
-        <location filename="../noson.qml" line="530"/>
-        <location filename="../noson.qml" line="562"/>
-        <location filename="../noson.qml" line="579"/>
-        <location filename="../noson.qml" line="591"/>
-        <location filename="../noson.qml" line="602"/>
-        <location filename="../noson.qml" line="610"/>
-        <location filename="../noson.qml" line="620"/>
-        <location filename="../noson.qml" line="630"/>
-        <location filename="../noson.qml" line="637"/>
-        <location filename="../noson.qml" line="644"/>
-        <location filename="../noson.qml" line="653"/>
-        <location filename="../noson.qml" line="662"/>
-        <location filename="../noson.qml" line="670"/>
-        <location filename="../noson.qml" line="677"/>
-        <location filename="../noson.qml" line="684"/>
-        <location filename="../noson.qml" line="694"/>
+        <location filename="../noson.qml" line="492"/>
+        <location filename="../noson.qml" line="511"/>
+        <location filename="../noson.qml" line="519"/>
+        <location filename="../noson.qml" line="529"/>
+        <location filename="../noson.qml" line="534"/>
+        <location filename="../noson.qml" line="566"/>
+        <location filename="../noson.qml" line="583"/>
+        <location filename="../noson.qml" line="595"/>
+        <location filename="../noson.qml" line="606"/>
+        <location filename="../noson.qml" line="614"/>
+        <location filename="../noson.qml" line="624"/>
+        <location filename="../noson.qml" line="634"/>
+        <location filename="../noson.qml" line="641"/>
+        <location filename="../noson.qml" line="648"/>
+        <location filename="../noson.qml" line="657"/>
+        <location filename="../noson.qml" line="666"/>
+        <location filename="../noson.qml" line="674"/>
+        <location filename="../noson.qml" line="681"/>
+        <location filename="../noson.qml" line="688"/>
+        <location filename="../noson.qml" line="698"/>
         <source>Action can&apos;t be performed</source>
         <translation>De actie kan niet worden uitgevoerd</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="512"/>
-        <location filename="../noson.qml" line="575"/>
-        <location filename="../noson.qml" line="588"/>
-        <location filename="../noson.qml" line="650"/>
+        <location filename="../noson.qml" line="516"/>
+        <location filename="../noson.qml" line="579"/>
+        <location filename="../noson.qml" line="592"/>
+        <location filename="../noson.qml" line="654"/>
         <source>song added</source>
         <translation>nummer toegevoegd</translation>
     </message>
     <message numerus="yes">
-        <location filename="../noson.qml" line="559"/>
+        <location filename="../noson.qml" line="563"/>
         <source>%n song(s) added</source>
         <translation><numerusform>%n nummer toegevoegd</numerusform><numerusform>%n nummers toegevoegd</numerusform></translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="599"/>
+        <location filename="../noson.qml" line="603"/>
         <source>Queue cleared</source>
         <translation>Wachtrij gewist</translation>
     </message>
     <message numerus="yes">
-        <location filename="../noson.qml" line="659"/>
+        <location filename="../noson.qml" line="663"/>
         <source>%n song(s) removed</source>
         <translation><numerusform>%n nummer verwijderd</numerusform><numerusform>%n nummers verwijderd</numerusform></translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1042"/>
+        <location filename="../noson.qml" line="1046"/>
         <source>Standby timer</source>
         <translation>Standby-tijdsklok</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1049"/>
+        <location filename="../noson.qml" line="1053"/>
         <source>Sonos settings</source>
         <translation>Sonos-instellingen</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1054"/>
-        <location filename="../noson.qml" line="1156"/>
+        <location filename="../noson.qml" line="1058"/>
+        <location filename="../noson.qml" line="1160"/>
         <source>General settings</source>
         <translation>Algemene instellingen</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1059"/>
-        <location filename="../noson.qml" line="1377"/>
+        <location filename="../noson.qml" line="1063"/>
+        <location filename="../noson.qml" line="1382"/>
         <source>About</source>
         <translation>Over</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1071"/>
+        <location filename="../noson.qml" line="1075"/>
         <source>My Services</source>
         <translation>Mijn diensten</translation>
     </message>
@@ -1263,7 +1310,7 @@
         <translation type="vanished">Mijn radio&apos;s</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1073"/>
+        <location filename="../noson.qml" line="1077"/>
         <source>Favorites</source>
         <translation>Favorieten</translation>
     </message>
@@ -1280,72 +1327,72 @@
         <translation type="vanished">Genres</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1072"/>
+        <location filename="../noson.qml" line="1076"/>
         <source>My Index</source>
         <translation>Mijn Musiekindex</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1074"/>
+        <location filename="../noson.qml" line="1078"/>
         <source>Playlists</source>
         <translation>Afspeellijsten</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1075"/>
+        <location filename="../noson.qml" line="1079"/>
         <source>Alarm clock</source>
         <translation>Alarmklok</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1286"/>
+        <location filename="../noson.qml" line="1290"/>
         <source>Style</source>
         <translation>Stijl</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1317"/>
+        <location filename="../noson.qml" line="1321"/>
         <source>Theme</source>
         <translation>Thema</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1325"/>
+        <location filename="../noson.qml" line="1329"/>
         <source>Light</source>
         <translation>Licht</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1326"/>
+        <location filename="../noson.qml" line="1330"/>
         <source>Dark</source>
         <translation>Donker</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1327"/>
+        <location filename="../noson.qml" line="1331"/>
         <source>System default</source>
         <translation>Systeemstandaard</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1342"/>
+        <location filename="../noson.qml" line="1346"/>
         <source>Restart is required</source>
         <translation>Herstart is vereist</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1358"/>
+        <location filename="../noson.qml" line="1362"/>
         <source>Last.fm</source>
         <translation>Last.fm</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1365"/>
+        <location filename="../noson.qml" line="1369"/>
         <source>Enter a valid API key</source>
         <translation>Voer een geldige API-sleutel in</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1386"/>
+        <location filename="../noson.qml" line="1391"/>
         <source>The project has started in 2015 and is intented to make a fast and smart controller for your SONOS devices. You can browse your music library and play track or radio on any zones. You can manage grouping zones, queue, and playlists, and fully control the playback.</source>
         <translation>Dit project is begonnen in 2015 en heeft als doel om een snelle en slimme bediening te worden voor uw SONOS-apparaten. U kunt bladeren door uw muziekbibliotheek en nummers en radio afspelen in elke zone. U kunt gegroepeerde zones beheren, alsook de wachtrij en afspeellijsten en u kunt het afspelen volledig bedienen.</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1395"/>
+        <location filename="../noson.qml" line="1400"/>
         <source>Author: %1</source>
         <translation>Auteur: %1</translation>
     </message>
     <message>
-        <location filename="../noson.qml" line="1401"/>
+        <location filename="../noson.qml" line="1406"/>
         <source>Version: %1</source>
         <translation>Versie: %1</translation>
     </message>
