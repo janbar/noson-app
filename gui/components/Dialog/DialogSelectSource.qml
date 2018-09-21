@@ -26,6 +26,8 @@ DialogBase {
     title: qsTr("Select source")
     standardButtons: Dialog.Close
 
+    property bool showSelector: false
+
     Label {
         id: sourceOutput
         anchors.left: parent.left
@@ -77,12 +79,13 @@ DialogBase {
     }
 
     Label {
+        visible: showSelector
         anchors.left: parent.left
         anchors.right: parent.right
         text: qsTr("Select the audio input.")
         wrapMode: Text.WordWrap
         color: styleMusic.dialog.labelColor
-        font.pointSize: units.fs("medium")
+        font.pointSize: units.fs("small")
         font.weight: Font.Normal
     }
 
@@ -95,10 +98,11 @@ DialogBase {
 
     ComboBox {
         id: selector
+        visible: showSelector
         textRole: "text"
         model: selectorModel
         Layout.fillWidth: true
-        font.pointSize: units.fs("large")
+        font.pointSize: units.fs("medium")
         currentIndex: 0
         Component.onCompleted: {
             popup.font.pointSize = font.pointSize;
@@ -130,15 +134,18 @@ DialogBase {
     }
 
     onOpened: {
-        switch (player.currentProtocol) {
-            case 1:
-                selector.currentIndex = 1;
-                break;
-            case 5:
-                selector.currentIndex = 2;
-                break;
-            default:
-                selector.currentIndex = 0;
+        if (player.currentMetaSource === "") {
+            showSelector = true;
+            switch (player.currentProtocol) {
+                case 1:
+                    selector.currentIndex = 1;
+                    break;
+                case 5:
+                    selector.currentIndex = 2;
+                    break;
+                default:
+                    selector.currentIndex = 0;
+            }
         }
     }
 
