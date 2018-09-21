@@ -67,7 +67,7 @@ Item {
                 textRole: "name"
                 model: []
                 width: parent.width - roomLabel.width - parent.spacing - units.gu(0.5)
-                font.pointSize: units.fs("large")
+                font.pointSize: units.fs("medium")
                 currentIndex: -1
                 Component.onCompleted: {
                     popup.font.pointSize = font.pointSize;
@@ -84,7 +84,7 @@ Item {
                     text: qsTr("Start time")
                     color: styleMusic.dialog.labelColor
                     elide: Text.ElideRight
-                    font.pointSize: units.fs("large")
+                    font.pointSize: units.fs("medium")
                     horizontalAlignment: Text.AlignHCenter
                     opacity: 1.0
                 }
@@ -118,7 +118,7 @@ Item {
                     text: qsTr("Duration")
                     color: styleMusic.dialog.labelColor
                     elide: Text.ElideRight
-                    font.pointSize: units.fs("large")
+                    font.pointSize: units.fs("medium")
                     horizontalAlignment: Text.AlignHCenter
                     opacity: 1.0
                 }
