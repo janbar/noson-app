@@ -151,6 +151,11 @@ MusicPage {
                 column: Column {
                     spacing: units.gu(1)
 
+                    Item {
+                        width: parent.width
+                        height: units.gu(1)
+                    }
+
                     Label {
                         id: roomName
                         color: styleMusic.view.primaryColor
@@ -170,6 +175,11 @@ MusicPage {
                         color: styleMusic.view.secondaryColor
                         font.pointSize: units.fs("large")
                         text: model.startLocalTime
+                    }
+
+                    Item {
+                        width: parent.width
+                        height: units.gu(1)
                     }
 
                     function translateRecurrence(recurrence) {
