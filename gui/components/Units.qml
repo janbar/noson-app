@@ -33,7 +33,7 @@ Item {
             if (s === "medium")
                 return 11.0 * scaleFactor * fontScaleFactor;
             if (s === "large")
-                return 13.0 * scaleFactor * fontScaleFactor;
+                return 14.0 * scaleFactor * fontScaleFactor;
             if (s === "x-large")
                 return 18.0 * scaleFactor * fontScaleFactor;
         }
