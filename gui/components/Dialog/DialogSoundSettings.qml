@@ -202,7 +202,7 @@ Item {
                     anchors.leftMargin: units.gu(1)
                     text: qsTr("Night mode")
                     textAlignment: Text.AlignHCenter
-                    font.pointSize: units.fs("medium")
+                    font.pointSize: units.fs("small")
                     checked: player.nightmodeEnabled
                     onClicked: {
                         if (!player.toggleNightmode())
@@ -214,14 +214,14 @@ Item {
                     }
                 }
                 MusicCheckBox {
-                    id: loodness
+                    id: loudness
                     anchors.right: parent.right
                     anchors.rightMargin: units.gu(1)
                     anchors.left: parent.left
                     anchors.leftMargin: units.gu(1)
                     text: qsTr("Loudness")
                     textAlignment: Text.AlignHCenter
-                    font.pointSize: units.fs("medium")
+                    font.pointSize: units.fs("small")
                     checked: false
                     enabled: false
                 }
@@ -239,7 +239,7 @@ Item {
                     anchors.leftMargin: units.gu(1)
                     text: qsTr("Line IN")
                     textAlignment: Text.AlignHCenter
-                    font.pointSize: units.fs("medium")
+                    font.pointSize: units.fs("small")
                     checked: (player.currentProtocol === 1)
                     onClicked: {
                         if (checked) {
@@ -266,7 +266,7 @@ Item {
                     anchors.left: parent.left
                     anchors.leftMargin: units.gu(1)
                     text: qsTr("TV")
-                    font.pointSize: units.fs("medium")
+                    font.pointSize: units.fs("small")
                     textAlignment: Text.AlignHCenter
                     checked: (player.currentProtocol === 5)
                     onClicked: {
