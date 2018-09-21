@@ -29,6 +29,12 @@ DialogBase {
 
     onOpened: {
         remainingTime = player.remainingSleepTimerDuration();
+        for (var i = 0; i < selectorModel.count; ++i) {
+            if (remainingTime <= selectorModel.get(i).duration) {
+                selector.currentIndex = i;
+                break;
+            }
+        }
     }
 
     ListModel {
@@ -73,7 +79,7 @@ DialogBase {
         text: remainingTimeToString(remainingTime)
         color: styleMusic.dialog.labelColor
         elide: Text.ElideRight
-        font.pointSize: 2 * units.fs("x-large")
+        font.pointSize: 2 * units.fs("large")
         horizontalAlignment: Text.AlignHCenter
         opacity: 1.0
     }
