@@ -116,11 +116,12 @@ Row {
 
         onSourceComponentChanged: {
             for (var i=0; i < item.children.length; i++) {
-                item.children[i].elide = Text.ElideRight
-                item.children[i].maximumLineCount = 1
-                item.children[i].wrapMode = Text.NoWrap
-                item.children[i].verticalAlignment = Text.AlignVCenter
-
+                if (item.children[i].text !== undefined) {
+                    item.children[i].elide = Text.ElideRight
+                    item.children[i].maximumLineCount = 1
+                    item.children[i].wrapMode = Text.NoWrap
+                    item.children[i].verticalAlignment = Text.AlignVCenter
+                }
                 // binds to width so it is updated when screen size changes
                 item.children[i].width = Qt.binding(function () { return width; })
             }
