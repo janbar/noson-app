@@ -55,48 +55,6 @@ extern int string_to_uint16(const char *str, uint16_t *num);
 #define string_to_uint8 __str2uint8
 extern int string_to_uint8(const char *str, uint8_t *num);
 
-#define int64_to_string __int64str
-static CC_INLINE void int64_to_string(int64_t num, char *str)
-{
-  sprintf(str, "%lld", (long long)num);
-}
-
-#define int32_to_string __int32str
-static CC_INLINE void int32_to_string(int32_t num, char *str)
-{
-  sprintf(str, "%ld", (long)num);
-}
-
-#define int16_to_string __int16str
-static CC_INLINE void int16_to_string(int16_t num, char *str)
-{
-  sprintf(str, "%d", num);
-}
-
-#define int8_to_string __int8str
-static CC_INLINE void int8_to_string(int8_t num, char *str)
-{
-  sprintf(str, "%d", num);
-}
-
-#define uint32_to_string __uint32str
-static CC_INLINE void uint32_to_string(uint32_t num, char *str)
-{
-  sprintf(str, "%lu", (unsigned long)num);
-}
-
-#define uint16_to_string __uint16str
-static CC_INLINE void uint16_to_string(uint16_t num, char *str)
-{
-  sprintf(str, "%u", num);
-}
-
-#define uint8_to_string __uint8str
-static CC_INLINE void uint8_to_string(uint8_t num, char *str)
-{
-  sprintf(str, "%u", num);
-}
-
 #define TIMESTAMP_UTC_LEN (sizeof("YYYY-MM-DDTHH:MM:SSZ") - 1)
 #define TIMESTAMP_LEN     (sizeof("YYYY-MM-DDTHH:MM:SS") - 1)
 #define DATESTAMP_LEN     (sizeof("YYYY-MM-DD") - 1)
