@@ -8,4 +8,5 @@
     lrelease noson_fr.ts
     lrelease noson_nl.ts
     lrelease noson_de.ts
+    lrelease noson_da.ts
 
