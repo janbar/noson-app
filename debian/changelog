@@ -1,4 +1,9 @@
-noson-app (3.8) UNRELEASED; urgency=low
+noson-app (3.9) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 3.9
+  * add ui for managing EQ
+  * Graphic improvements
 
   [ janbar ]
   * Release 3.8
