@@ -120,6 +120,17 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         configure_file(${QT_ANDROID_SOURCE_DIR}/AndroidManifest.xml.in ${QT_ANDROID_APP_PACKAGE_SOURCE_ROOT}/AndroidManifest.xml @ONLY)
     endif()
 
+    # define the STL shared library path
+    if(ANDROID_STL_SHARED_LIBRARIES)
+        list(GET ANDROID_STL_SHARED_LIBRARIES 0 STL_LIBRARY_NAME) # we can only give one to androiddeployqt
+        if(ANDROID_STL_PATH)
+            set(QT_ANDROID_STL_PATH "${ANDROID_STL_PATH}/libs/${ANDROID_ABI}/lib${STL_LIBRARY_NAME}.so")
+        else()
+            set(QT_ANDROID_STL_PATH "${ANDROID_NDK}/sources/cxx-stl/${ANDROID_STL_PREFIX}/libs/${ANDROID_ABI}/lib${STL_LIBRARY_NAME}.so")
+        endif()
+        set(QT_STDCPP_PATH "\"stdcpp-path\": \"${QT_ANDROID_STL_PATH}\",")
+    endif()
+
     # set the list of dependant libraries
     if(ARG_DEPENDS)
         foreach(LIB ${ARG_DEPENDS})
@@ -156,6 +167,17 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         set(QT_ANDROID_APP_EXTRA_PLUGINS "\"android-extra-plugins\": \"${EXTRA_PLUGINS}\",")
     endif()
 
+    # set some toolchain variables used by androiddeployqt;
+    # unfortunately, Qt tries to build paths from these variables although these full paths
+    # are already available in the toochain file, so we have to parse them
+    string(REGEX MATCH "${ANDROID_NDK}/toolchains/(.*)-(.*)/prebuilt/.*" ANDROID_TOOLCHAIN_PARSED ${ANDROID_TOOLCHAIN_ROOT})
+    if(ANDROID_TOOLCHAIN_PARSED)
+        set(QT_ANDROID_TOOLCHAIN_PREFIX ${CMAKE_MATCH_1})
+        set(QT_ANDROID_TOOLCHAIN_VERSION ${CMAKE_MATCH_2})
+    else()
+        message(FATAL_ERROR "Failed to parse ANDROID_TOOLCHAIN_ROOT to get toolchain prefix and version")
+    endif()
+
     # make sure that the output directory for the Android package exists
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/libs/${ANDROID_ABI})
 
@@ -176,8 +198,8 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     endif()
 
     # specify the Android API level
-    if(ANDROID_NATIVE_API_LEVEL)
-        set(TARGET_LEVEL_OPTIONS --android-platform android-${ANDROID_NATIVE_API_LEVEL})
+    if(ANDROID_PLATFORM_LEVEL)
+        set(TARGET_LEVEL_OPTIONS --android-platform android-${ANDROID_PLATFORM_LEVEL})
     endif()
 
     # create a custom command that will run the androiddeployqt utility to prepare the Android package

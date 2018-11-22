@@ -4,14 +4,16 @@
  "sdk": "@QT_ANDROID_SDK_ROOT@",
  "ndk": "@QT_ANDROID_NDK_ROOT@",
  "sdkBuildToolsRevision": "@QT_ANDROID_SDK_BUILDTOOLS_REVISION@",
- "toolchain-prefix": "@ANDROID_TOOLCHAIN_MACHINE_NAME@",
- "tool-prefix": "@ANDROID_TOOLCHAIN_TOOL_PREFIX@",
- "toolchain-version": "@ANDROID_COMPILER_VERSION@",
+ "toolchain-prefix": "@QT_ANDROID_TOOLCHAIN_PREFIX@",
+ "tool-prefix": "@QT_ANDROID_TOOLCHAIN_TOOL_PREFIX@",
+ "toolchain-version": "@QT_ANDROID_TOOLCHAIN_VERSION@",
  "ndk-host": "@ANDROID_NDK_HOST_SYSTEM_NAME@",
  "target-architecture": "@ANDROID_ABI@",
  "application-binary": "@QT_ANDROID_APP_PATH@",
  "android-package": "@QT_ANDROID_APP_PACKAGE_NAME@",
  "android-app-name": "@QT_ANDROID_APP_NAME@",
+ "qml-root-path": "@CMAKE_SOURCE_DIR@",
+ @QT_STDCPP_PATH@
  @QT_ANDROID_APP_EXTRA_LIBS@
  @QT_ANDROID_APP_EXTRA_PLUGINS@
  "android-package-source-directory": "@QT_ANDROID_APP_PACKAGE_SOURCE_ROOT@"
