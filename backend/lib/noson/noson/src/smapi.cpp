@@ -47,7 +47,7 @@ namespace NSROOT
   }
   XMLDict SMAPIDict = __initSMAPIDict();
 
-  void __dumpInvalidResponse(tinyxml2::XMLDocument& doc)
+  void __traceSMAPIError(tinyxml2::XMLDocument& doc)
   {
     DBG(DBG_ERROR, "%s: invalid or not supported response\n", __FUNCTION__);
     tinyxml2::XMLPrinter out;
@@ -275,7 +275,7 @@ bool SMAPI::GetDeviceLinkCode(std::string& regUrl, std::string& linkCode)
   const tinyxml2::XMLElement* elem = rootdoc.RootElement();
   if (!elem || !(elem = elem->FirstChildElement(NULL)))
   {
-    __dumpInvalidResponse(rootdoc);
+    __traceSMAPIError(rootdoc);
     return false;
   }
   while (elem)
@@ -291,7 +291,7 @@ bool SMAPI::GetDeviceLinkCode(std::string& regUrl, std::string& linkCode)
   string_to_uint16(m_service->GetPolicy()->GetAttribut("PollInterval").c_str(), &poll);
   if (!m_authLinkTimeout)
     m_authLinkTimeout = new OS::CTimeout();
-  m_authLinkTimeout->Set(poll * 1000);
+  m_authLinkTimeout->Set((poll < 60 ? 60 : poll) * 1000);
   m_authLinkCode = vars.GetValue("linkCode");
   m_authLinkDeviceId = vars.GetValue("linkDeviceId");
   regUrl = vars.GetValue("regUrl");
@@ -322,21 +322,21 @@ bool SMAPI::GetAppLink(std::string& regUrl, std::string& linkCode)
   const tinyxml2::XMLElement* elem = rootdoc.RootElement();
   if (!elem || !(elem = elem->FirstChildElement(NULL)))
   {
-    __dumpInvalidResponse(rootdoc);
+    __traceSMAPIError(rootdoc);
     return false;
   }
   while (elem && !XMLNS::NameEqual(elem->Name(), "authorizeAccount"))
     elem = elem->NextSiblingElement(NULL);
   if (!elem || !(elem = elem->FirstChildElement(NULL)))
   {
-    __dumpInvalidResponse(rootdoc);
+    __traceSMAPIError(rootdoc);
     return false;
   }
   while (elem && !XMLNS::NameEqual(elem->Name(), "deviceLink"))
     elem = elem->NextSiblingElement(NULL);
   if (!elem || !(elem = elem->FirstChildElement(NULL)))
   {
-    __dumpInvalidResponse(rootdoc);
+    __traceSMAPIError(rootdoc);
     return false;
   }
   while (elem)
@@ -395,7 +395,7 @@ bool SMAPI::GetDeviceAuthToken(SMOAKeyring::Data& auth)
     const tinyxml2::XMLElement* elem = rootdoc.RootElement();
     if (!elem || !(elem = elem->FirstChildElement(NULL)))
     {
-      __dumpInvalidResponse(rootdoc);
+      __traceSMAPIError(rootdoc);
       return false;
     }
     while (elem)
@@ -423,6 +423,14 @@ bool SMAPI::GetDeviceAuthToken(SMOAKeyring::Data& auth)
     auth.token = oa.token;
   }
   return false;
+}
+
+const std::string& SMAPI::GetFaultString() const
+{
+  OS::CLockGuard lock(*m_mutex);
+  if (m_fault.GetValue("TAG") == "Fault")
+    return m_fault.GetValue("faultstring");
+  return m_fault.GetValue("errorstring");
 }
 
 bool SMAPI::parsePresentationMap(const std::string& xml)
@@ -610,6 +618,7 @@ ElementList SMAPI::DoCall(const std::string& action, const ElementList& args)
   if (rootdoc.Parse(data.c_str(), len) != tinyxml2::XML_SUCCESS)
   {
     DBG(DBG_ERROR, "%s: parse xml failed\n", __FUNCTION__);
+    SetFault(vars);
     return vars;
   }
   const tinyxml2::XMLElement* elem; // an element
@@ -617,17 +626,23 @@ ElementList SMAPI::DoCall(const std::string& action, const ElementList& args)
 
   if (!(elem = rootdoc.RootElement()) || !XMLNS::NameEqual(elem->Name(), "Envelope"))
   {
-    __dumpInvalidResponse(rootdoc);
+    __traceSMAPIError(rootdoc);
+    SetFault(vars);
     return vars;
   }
   // learn declared namespaces in the element Envelope for translations
   XMLNames xmlnames;
   xmlnames.AddXMLNS(elem);
 
-  if (!(elem = elem->FirstChildElement()) || !XMLNS::NameEqual(elem->Name(), "Body") ||
-          !(elem = elem->FirstChildElement()))
+  // search the element 'Body'
+  elem = elem->FirstChildElement();
+  while (elem && !XMLNS::NameEqual(elem->Name(), "Body"))
+    elem = elem->NextSiblingElement(NULL);
+
+  if (!elem || !(elem = elem->FirstChildElement()))
   {
-    __dumpInvalidResponse(rootdoc);
+    __traceSMAPIError(rootdoc);
+    SetFault(vars);
     return vars;
   }
   vars.push_back(ElementPtr(new Element("TAG", XMLNS::LocalName(elem->Name()))));
@@ -668,14 +683,18 @@ ElementList SMAPI::DoCall(const std::string& action, const ElementList& args)
     {
       if (elem->GetText())
       {
-        vars.push_back(ElementPtr(new Element(SMAPIDict.TranslateQName(xmlnames, elem->Name()), elem->GetText())));
+        // Some services supply malformed xml with undefined namespace and so translating qualified name will fail.
+        //vars.push_back(ElementPtr(new Element(SMAPIDict.TranslateQName(xmlnames, elem->Name()), elem->GetText())));
+        vars.push_back(ElementPtr(new Element(XMLNS::LocalName(elem->Name()), elem->GetText())));
         DBG(DBG_PROTO, "%s: %s = %s\n", __FUNCTION__, vars.back()->GetKey().c_str(), vars.back()->c_str());
       }
       else if (!elem->NoChildren())
       {
         tinyxml2::XMLPrinter out;
         elem->Accept(&out);
-        vars.push_back(ElementPtr(new Element(SMAPIDict.TranslateQName(xmlnames, elem->Name()), out.CStr())));
+        // Some services supply malformed xml with undefined namespace and so translating qualified name will fail.
+        //vars.push_back(ElementPtr(new Element(SMAPIDict.TranslateQName(xmlnames, elem->Name()), out.CStr())));
+        vars.push_back(ElementPtr(new Element(XMLNS::LocalName(elem->Name()), out.CStr())));
         DBG(DBG_PROTO, "%s: dump (%s)\n%s\n", __FUNCTION__, vars.back()->GetKey().c_str(), vars.back()->c_str());
       }
       elem = elem->NextSiblingElement(NULL);
@@ -727,16 +746,17 @@ ElementList SMAPI::Request(const std::string& action, const ElementList& args)
       // Retry the request
       vars = DoCall(action, args);
     }
-    else if (XMLNS::NameEqual(str.c_str(), "Client.AuthTokenExpired") && !m_authTokenExpired)
-    {
-      m_authTokenExpired = true;
-      makeSoapHeader(); // refresh hearder
-    }
-    // handle others fault like Client.SessionIdInvalid, Client.LoginInvalid
     else if (!m_authTokenExpired)
     {
-      m_authTokenExpired = true;
-      makeSoapHeader(); // refresh header;
+      if (XMLNS::NameEqual(str.c_str(), "Client.AuthTokenExpired") ||
+              XMLNS::NameEqual(str.c_str(), "Client.LoginDisabled") ||
+              XMLNS::NameEqual(str.c_str(), "Client.LoginInvalid") ||
+              XMLNS::NameEqual(str.c_str(), "Client.LoginUnauthorized") ||
+              XMLNS::NameEqual(str.c_str(), "Client.SessionIdInvalid"))
+      {
+        m_authTokenExpired = true;
+        makeSoapHeader(); // refresh hearder
+      }
     }
   }
   return vars;

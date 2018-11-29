@@ -179,7 +179,7 @@ void Alarm::parse(Element& elem)
       unsigned lon = strlen(RecurrenceTable[Recurrence_ON]);
       if (it->length() > lon && it->substr(0, lon) == RecurrenceTable[Recurrence_ON])
       {
-        std::string days = it->substr(lon + 1, std::string::npos);
+        std::string days = it->substr(lon, std::string::npos);
         for (unsigned i = 0; i < days.length(); ++i)
         {
           char dno = days[i] - 0x30;
