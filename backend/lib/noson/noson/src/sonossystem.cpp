@@ -311,7 +311,7 @@ std::string System::GetLogoForService(const SMServicePtr& service, const std::st
 
   // on first call we fill the container requesting sonos service
   if ((*ccPtr)++ == 0 && !LoadMSLogo(logos))
-    DBG(DBG_ERROR, "%s: cache for service images cannot be filled", __FUNCTION__);
+    DBG(DBG_ERROR, "%s: cache for service images cannot be filled\n", __FUNCTION__);
 
   const std::string& typeId = service->GetServiceType();
   for (ElementList::const_iterator it = logos.begin(); it != logos.end(); ++it)

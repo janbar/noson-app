@@ -56,8 +56,11 @@ void SMAPIMetadata::Reset(const SMServicePtr& svc, const std::string& xml, const
   m_list.clear();
   m_startIndex = m_itemCount = m_totalCount = 0;
   m_root.assign(root);
-  if (m_service)
+  // don't parse an empty content
+  if (!xml.empty() && m_service)
     m_valid = ParseMessage(xml);
+  else
+    m_valid = false;
 }
 
 SMAPIItemList SMAPIMetadata::GetItems()

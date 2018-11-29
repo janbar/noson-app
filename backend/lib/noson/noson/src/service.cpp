@@ -35,6 +35,17 @@
 
 using namespace NSROOT;
 
+namespace NSROOT
+{
+  void __traceServiceError(tinyxml2::XMLDocument& doc)
+  {
+    DBG(DBG_ERROR, "%s: invalid or not supported response\n", __FUNCTION__);
+    tinyxml2::XMLPrinter out;
+    doc.Accept(&out);
+    DBG(DBG_ERROR, "%s\n", out.CStr());
+  }
+}
+
 Service::Service(const std::string& serviceHost, unsigned servicePort)
 : m_host(serviceHost)
 , m_port(servicePort)
@@ -107,14 +118,22 @@ ElementList Service::Request(const std::string& action, const ElementList& args)
   }
   const tinyxml2::XMLElement* elem; // an element
   // Check for response: Envelope/Body/{respTag}
-  if (!(elem = rootdoc.RootElement()) || !XMLNS::NameEqual(elem->Name(), "Envelope") ||
-          !(elem = elem->FirstChildElement()) || !XMLNS::NameEqual(elem->Name(), "Body") ||
-          !(elem = elem->FirstChildElement()))
+  if (!(elem = rootdoc.RootElement()) || !XMLNS::NameEqual(elem->Name(), "Envelope"))
   {
-    DBG(DBG_ERROR, "%s: invalid or not supported response\n", __FUNCTION__);
-    tinyxml2::XMLPrinter out;
-    rootdoc.Accept(&out);
-    DBG(DBG_ERROR, "%s\n", out.CStr());
+    __traceServiceError(rootdoc);
+    SetFault(vars);
+    return vars;
+  }
+
+  // search the element 'Body'
+  elem = elem->FirstChildElement();
+  while (elem && !XMLNS::NameEqual(elem->Name(), "Body"))
+    elem = elem->NextSiblingElement(NULL);
+
+  if (!elem || !(elem = elem->FirstChildElement()))
+  {
+    __traceServiceError(rootdoc);
+    SetFault(vars);
     return vars;
   }
   vars.push_back(ElementPtr(new Element("TAG", XMLNS::LocalName(elem->Name()))));
