@@ -88,8 +88,10 @@ namespace NSROOT
     XMLNS* FindName(const char* name);
     const XMLNS* FindName(const char* name) const;
 
-  private:
     typedef std::list<XMLNS> XMLNSList;
+    XMLNSList List() { return m_names; }
+
+  private:
     XMLNSList m_names;
   };
 }

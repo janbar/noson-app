@@ -18,7 +18,7 @@ endif ()
 # set lib version here
 set (noson_VERSION_MAJOR 1)
 set (noson_VERSION_MINOR 10)
-set (noson_VERSION_PATCH 1)
+set (noson_VERSION_PATCH 2)
 
 set (noson_VERSION ${noson_VERSION_MAJOR}.${noson_VERSION_MINOR}.${noson_VERSION_PATCH})
 set (NOSON_LIB_VERSION ${noson_VERSION})
@@ -52,7 +52,7 @@ if (NOT MSVC)
   if(COMPILER_SUPPORTS_CXX11)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   else()
-    message(FATAL_ERROR "CXX compiler doesn't support standard c++11") 
+    message(FATAL_ERROR "CXX compiler doesn't support standard c++11")
   endif ()
 endif ()
 

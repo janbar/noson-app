@@ -47,7 +47,7 @@ namespace NSROOT
   }
   XMLDict SMAPIDict = __initSMAPIDict();
 
-  void __dumpInvalidResponse(tinyxml2::XMLDocument& doc)
+  void __traceSMAPIError(tinyxml2::XMLDocument& doc)
   {
     DBG(DBG_ERROR, "%s: invalid or not supported response\n", __FUNCTION__);
     tinyxml2::XMLPrinter out;
@@ -275,7 +275,7 @@ bool SMAPI::GetDeviceLinkCode(std::string& regUrl, std::string& linkCode)
   const tinyxml2::XMLElement* elem = rootdoc.RootElement();
   if (!elem || !(elem = elem->FirstChildElement(NULL)))
   {
-    __dumpInvalidResponse(rootdoc);
+    __traceSMAPIError(rootdoc);
     return false;
   }
   while (elem)
@@ -322,21 +322,21 @@ bool SMAPI::GetAppLink(std::string& regUrl, std::string& linkCode)
   const tinyxml2::XMLElement* elem = rootdoc.RootElement();
   if (!elem || !(elem = elem->FirstChildElement(NULL)))
   {
-    __dumpInvalidResponse(rootdoc);
+    __traceSMAPIError(rootdoc);
     return false;
   }
   while (elem && !XMLNS::NameEqual(elem->Name(), "authorizeAccount"))
     elem = elem->NextSiblingElement(NULL);
   if (!elem || !(elem = elem->FirstChildElement(NULL)))
   {
-    __dumpInvalidResponse(rootdoc);
+    __traceSMAPIError(rootdoc);
     return false;
   }
   while (elem && !XMLNS::NameEqual(elem->Name(), "deviceLink"))
     elem = elem->NextSiblingElement(NULL);
   if (!elem || !(elem = elem->FirstChildElement(NULL)))
   {
-    __dumpInvalidResponse(rootdoc);
+    __traceSMAPIError(rootdoc);
     return false;
   }
   while (elem)
@@ -395,7 +395,7 @@ bool SMAPI::GetDeviceAuthToken(SMOAKeyring::Data& auth)
     const tinyxml2::XMLElement* elem = rootdoc.RootElement();
     if (!elem || !(elem = elem->FirstChildElement(NULL)))
     {
-      __dumpInvalidResponse(rootdoc);
+      __traceSMAPIError(rootdoc);
       return false;
     }
     while (elem)
@@ -626,7 +626,7 @@ ElementList SMAPI::DoCall(const std::string& action, const ElementList& args)
 
   if (!(elem = rootdoc.RootElement()) || !XMLNS::NameEqual(elem->Name(), "Envelope"))
   {
-    __dumpInvalidResponse(rootdoc);
+    __traceSMAPIError(rootdoc);
     SetFault(vars);
     return vars;
   }
@@ -634,10 +634,14 @@ ElementList SMAPI::DoCall(const std::string& action, const ElementList& args)
   XMLNames xmlnames;
   xmlnames.AddXMLNS(elem);
 
-  if (!(elem = elem->FirstChildElement()) || !XMLNS::NameEqual(elem->Name(), "Body") ||
-          !(elem = elem->FirstChildElement()))
+  // search the element 'Body'
+  elem = elem->FirstChildElement();
+  while (elem && !XMLNS::NameEqual(elem->Name(), "Body"))
+    elem = elem->NextSiblingElement(NULL);
+
+  if (!elem || !(elem = elem->FirstChildElement()))
   {
-    __dumpInvalidResponse(rootdoc);
+    __traceSMAPIError(rootdoc);
     SetFault(vars);
     return vars;
   }
@@ -679,14 +683,18 @@ ElementList SMAPI::DoCall(const std::string& action, const ElementList& args)
     {
       if (elem->GetText())
       {
-        vars.push_back(ElementPtr(new Element(SMAPIDict.TranslateQName(xmlnames, elem->Name()), elem->GetText())));
+        // Some services supply malformed xml with undefined namespace and so translating qualified name will fail.
+        //vars.push_back(ElementPtr(new Element(SMAPIDict.TranslateQName(xmlnames, elem->Name()), elem->GetText())));
+        vars.push_back(ElementPtr(new Element(XMLNS::LocalName(elem->Name()), elem->GetText())));
         DBG(DBG_PROTO, "%s: %s = %s\n", __FUNCTION__, vars.back()->GetKey().c_str(), vars.back()->c_str());
       }
       else if (!elem->NoChildren())
       {
         tinyxml2::XMLPrinter out;
         elem->Accept(&out);
-        vars.push_back(ElementPtr(new Element(SMAPIDict.TranslateQName(xmlnames, elem->Name()), out.CStr())));
+        // Some services supply malformed xml with undefined namespace and so translating qualified name will fail.
+        //vars.push_back(ElementPtr(new Element(SMAPIDict.TranslateQName(xmlnames, elem->Name()), out.CStr())));
+        vars.push_back(ElementPtr(new Element(XMLNS::LocalName(elem->Name()), out.CStr())));
         DBG(DBG_PROTO, "%s: dump (%s)\n%s\n", __FUNCTION__, vars.back()->GetKey().c_str(), vars.back()->c_str());
       }
       elem = elem->NextSiblingElement(NULL);
