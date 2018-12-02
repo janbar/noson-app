@@ -36,7 +36,7 @@ namespace NSROOT
     static SSLSessionFactory& Instance();
     static void Destroy();
     bool isEnabled() const { return m_enabled; }
-    SecureSocket* NewSocket(bool disableSSLv2 = true);
+    SecureSocket* NewSocket();
 
   private:
     SSLSessionFactory();
