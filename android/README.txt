@@ -4,7 +4,7 @@ Requirements:
 - Android NDK r16-r17
 - Android SDK 26-28
 - Java jdk 1.8
-- Qt Creator 4.6-4.7
+- Qt Creator 4.6-4.8
 
 Configure the build:
 
