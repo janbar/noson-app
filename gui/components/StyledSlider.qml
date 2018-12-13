@@ -29,31 +29,26 @@ Slider {
     property real  size: units.gu(38)
 
     background: Item {
-        implicitWidth: control.size
-        implicitHeight: units.gu(5)
+        implicitWidth: (control.orientation == Qt.Horizontal ? control.size : units.gu(5))
+        implicitHeight: (control.orientation == Qt.Horizontal ? units.gu(5) : control.size)
 
         Rectangle {
-            x: control.leftPadding
-            y: control.topPadding + control.availableHeight / 2 - height / 2
-            anchors {
-                verticalCenter: parent.verticalCenter
-                left: parent.left
-                right: parent.right
-            }
-            width: control.availableWidth
-            height: units.dp(2)
+            x: (control.orientation == Qt.Horizontal ? control.leftPadding : control.leftPadding + control.availableWidth / 2)
+            y: (control.orientation == Qt.Horizontal ? control.topPadding + control.availableHeight / 2 : control.topPadding)
+            width: (control.orientation == Qt.Horizontal ? control.availableWidth : units.dp(2))
+            height: (control.orientation == Qt.Horizontal ? units.dp(2) : control.availableHeight)
             radius: 0
             color: control.backgroundColor
             opacity: 0.4
         }
 
         Rectangle {
-            anchors {
-                verticalCenter: parent.verticalCenter
-                left: parent.left
-            }
-            width: control.leftPadding + control.visualPosition * control.availableWidth
-            height: units.dp(2)
+            x: (control.orientation == Qt.Horizontal ? control.leftPadding
+                                                     : control.leftPadding + control.availableWidth / 2)
+            y: (control.orientation == Qt.Horizontal ? control.topPadding + control.availableHeight / 2
+                                                     : control.topPadding + control.visualPosition * control.availableHeight)
+            width: (control.orientation == Qt.Horizontal ? control.visualPosition * control.availableWidth : units.dp(2))
+            height: (control.orientation == Qt.Horizontal ? units.dp(2) : (1.0 - control.visualPosition) * control.availableHeight)
             color: control.foregroundColor
             radius: 2
         }
@@ -61,8 +56,10 @@ Slider {
 
     handle: Rectangle {
         id: thumb
-        x: control.leftPadding + control.visualPosition * (control.availableWidth - width)
-        y: control.topPadding + control.availableHeight / 2 - height / 2
+        x: (control.orientation == Qt.Horizontal ? control.leftPadding + control.visualPosition * (control.availableWidth - width)
+                                                 : control.leftPadding + (control.availableWidth + units.dp(2) - width) / 2)
+        y: (control.orientation == Qt.Horizontal ? control.topPadding + (control.availableHeight + units.dp(2) - height) / 2
+                                                 : control.topPadding + control.visualPosition * (control.availableHeight - height))
         property real size: units.gu(1.5)
         implicitWidth: size
         implicitHeight: size
