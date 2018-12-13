@@ -85,6 +85,7 @@ Item {
             anchors.rightMargin: units.gu(2)
             anchors.right: nightmodeButton.left
             anchors.verticalCenter: parent.verticalCenter
+            wheelEnabled: true
             live: true
             from: 0
             to: 100

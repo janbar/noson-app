@@ -54,6 +54,7 @@ Item {
                     live: true
                     from: -10
                     to: 10
+                    wheelEnabled: true
                     orientation: Qt.Horizontal
                     handleSize: units.gu(2)
                     handleColor: styleMusic.playerControls.volumeHandleColor
@@ -146,6 +147,7 @@ Item {
                     live: true
                     from: -10
                     to: 10
+                    wheelEnabled: true
                     orientation: Qt.Horizontal
                     handleSize: units.gu(2)
                     handleColor: styleMusic.playerControls.volumeHandleColor

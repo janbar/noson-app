@@ -96,6 +96,7 @@ MusicListView {
                     anchors.rightMargin: units.gu(2)
                     anchors.right: gripButton.left
                     anchors.verticalCenter: parent.verticalCenter
+                    wheelEnabled: true
                     live: true
                     from: 0
                     to: 100

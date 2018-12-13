@@ -170,6 +170,7 @@ Item {
                     to: 100
                     orientation: Qt.Vertical
                     height: startHour.height
+                    wheelEnabled: true
                 }
             }
         }
