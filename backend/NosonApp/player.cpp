@@ -583,6 +583,7 @@ bool Player::setVolume(const QString& uuid, double volume)
     fake /= m_RCTable.size();
     m_RCGroup.volume = roundDouble(m_RCGroup.volumeFake = fake);
     emit renderingGroupChanged();
+    return true;
   }
   return false;
 }
