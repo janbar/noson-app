@@ -86,11 +86,11 @@ Item {
             anchors.right: nightmodeButton.left
             anchors.verticalCenter: parent.verticalCenter
             wheelEnabled: true
+            stepSize: 5.0
             live: true
             from: 0
             to: 100
             objectName: "volumeGroupSliderShape"
-            value: player.volumeMaster // load value at startup
             opacity: 1.0
 
             handleSize: units.gu(2)
@@ -100,32 +100,39 @@ Item {
             backgroundColor: styleMusic.playerControls.volumeBackgroundColor
             foregroundColor: styleMusic.playerControls.volumeForegroundColor
 
-            Timer {
-                interval: 200
-                repeat: true
-                running: volumeGroupSlider.pressed
-                onTriggered: {
-                    if (volumeGroupSlider.value > player.volumeMaster + 20)
-                        volumeGroupSlider.value = player.volumeMaster + 20
-                    if (player.setVolumeGroup(volumeGroupSlider.value))
-                        player.volumeMaster = Math.round(volumeGroupSlider.value)
+            property double inValue
+
+            onValueChanged: {
+                if (Math.abs(value - inValue) >= 1.0) {
+                    if (value > inValue + 10.0)
+                        value = inValue + 10.0; // loop on value changed
+                    else {
+                        if (player.setVolumeGroup(volumeGroupSlider.value)) {
+                            volumeGroupSlider.inValue = player.volumeMaster = Math.round(volumeGroupSlider.value);
+                        } else {
+                            customdebug("Set volume failed");
+                        }
+                    }
                 }
             }
 
             onPressedChanged: {
-                if (!pressed) {
-                    if (volumeGroupSlider.value > player.volumeMaster + 20)
-                        volumeGroupSlider.value = player.volumeMaster + 20
-                    if (player.setVolumeGroup(volumeGroupSlider.value))
-                        player.volumeMaster = Math.round(volumeGroupSlider.value)
-                }
-                else if (pressed && player.renderingControlCount > 1)
-                    renderingBubble.open(volumeGroupSlider)
+                // open the bubble
+                if (pressed && player.renderingControlCount > 1)
+                    renderingBubble.open(musicToolbarFullVolumeContainer)
             }
 
             Connections {
                 target: player
-                onVolumeMasterChanged: volumeGroupSlider.value = player.volumeMaster
+                onVolumeMasterChanged: {
+                    // update an icoming change when released only to be smoothest
+                    if (!volumeGroupSlider.pressed)
+                        volumeGroupSlider.value = volumeGroupSlider.inValue = player.volumeMaster;
+                }
+            }
+
+            Component.onCompleted: {
+                value = inValue = player.volumeMaster;
             }
         }
 

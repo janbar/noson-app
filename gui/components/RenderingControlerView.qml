@@ -97,11 +97,12 @@ MusicListView {
                     anchors.right: gripButton.left
                     anchors.verticalCenter: parent.verticalCenter
                     wheelEnabled: true
+                    stepSize: 10.0
                     live: true
                     from: 0
                     to: 100
                     objectName: "volumeSliderShape"
-                    value: model.volume // load value at startup
+                    value: model.volume
                     opacity: 1.0
 
                     handleSize: units.gu(2)
@@ -110,24 +111,33 @@ MusicListView {
                     backgroundColor: styleMusic.playerControls.volumeBackgroundColor
                     foregroundColor: styleMusic.playerControls.volumeForegroundColor
 
+                    onValueChanged: {
+                        if (Math.abs(value - model.volume) >= 1.0) {
+                            setVolume.start();
+                        }
+                    }
+
+                    onPressedChanged: finger(held)
+
                     Timer {
                         interval: 200
                         repeat: true
                         running: volumeSlider.pressed
-                        onTriggered: {
-                            if (player.setVolume(model.uuid, volumeSlider.value))
-                                player.renderingModel.setVolume(index, volumeSlider.value)
-                            finger(held)
-                        }
+                        onTriggered: finger(held)
                     }
 
-                    onPressedChanged: {
-                        if (!pressed) {
-                            if (player.setVolume(model.uuid, volumeSlider.value))
-                                player.renderingModel.setVolume(index, volumeSlider.value)
+                    Timer {
+                        id: setVolume
+                        interval: 100
+                        onTriggered: {
+                            if (player.setVolume(model.uuid, volumeSlider.value)) {
+                                //player.renderingModel.setVolume(index, volumeSlider.value);
+                            } else {
+                                value = model.volume;
+                                customdebug("Set volume failed for zone " + model.uuid);
+                            }
+                            finger(held);
                         }
-                        else
-                            finger(held)
                     }
                 }
 

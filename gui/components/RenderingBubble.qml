@@ -36,6 +36,7 @@ Item {
         id: popover
         width: parent.width
         height: containerLayout.height
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
 
         background: Rectangle {
                 id: containerLayoutBackground
@@ -103,6 +104,7 @@ Item {
 
     function open(caller) {
         if (!renderingBubble.opened && containerLayout.height > containerLayout.minHeight) {
+            popover.parent = caller;
             var gc = renderingBubble.parent.mapToItem(null, 0, 0)
             if (gc.y > (mainView.height - mainView.header.height) / 2) {
                 popover.y = - (popover.height + units.gu(2))
