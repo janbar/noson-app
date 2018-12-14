@@ -162,12 +162,31 @@ ZonesModel* Sonos::getZones()
 
 bool Sonos::connectZone(const QString& zoneName)
 {
+  std::string name;
   SONOS::ZoneList zones = m_system.GetZoneList();
+  // default the name by current coordinator
+  if (zoneName.isEmpty() && m_system.IsConnected())
+    name.append(*(m_system.GetConnectedZone()->GetCoordinator()));
+  else
+    name.append(zoneName.toUtf8().constData());
+
+  // loop in zones
   for (SONOS::ZoneList::const_iterator it = zones.begin(); it != zones.end(); ++it)
   {
-    if (zoneName.isEmpty() || zoneName == QString::fromUtf8(it->second->GetZoneName().c_str()))
+    if (name.empty() || name == it->second->GetZoneName())
     {
       return m_system.ConnectZone(it->second, this, playerEventCB);
+    }
+    // loop in group to search the player with the given name
+    if (it->second->size() > 1)
+    {
+      for (std::vector<SONOS::ZonePlayerPtr>::const_iterator itp = it->second->begin(); itp != it->second->end(); ++itp)
+      {
+        if (name == **itp)
+        {
+          return m_system.ConnectZone(it->second, this, playerEventCB);
+        }
+      }
     }
   }
   return false;
