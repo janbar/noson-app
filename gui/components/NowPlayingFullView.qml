@@ -225,7 +225,7 @@ Flickable {
             to: player.duration  // load value at startup
             objectName: "progressSliderShape"
             value: player.position  // load value at startup
-            wheelEnabled: true
+            wheelEnabled: false
 
             foregroundColor: styleMusic.playerControls.progressForegroundColor
             backgroundColor: styleMusic.playerControls.progressBackgroundColor
