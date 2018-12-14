@@ -226,6 +226,7 @@ Flickable {
             objectName: "progressSliderShape"
             value: player.position  // load value at startup
             wheelEnabled: false
+            stepSize: 5000.0
 
             foregroundColor: styleMusic.playerControls.progressForegroundColor
             backgroundColor: styleMusic.playerControls.progressBackgroundColor
@@ -256,9 +257,17 @@ Flickable {
 
                 if (!pressed) {
                     seeked = true
-                    player.seek(value)
+                    seekInTrack.start(); // start or restart the request
 
                     fullviewPositionLabel.text = durationToString(value)
+                }
+            }
+
+            Timer {
+                id: seekInTrack
+                interval: 250
+                onTriggered: {
+                    player.seek(progressSliderMusic.value);
                 }
             }
 
