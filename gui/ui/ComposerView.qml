@@ -52,18 +52,18 @@ MusicPage {
             id: blurredHeader
             isFavorite: composerViewPage.isFavorite
             rightColumn: Column {
-                spacing: units.gu(2)
+                spacing: units.gu(1)
                 ShuffleButton {
                     model: songComposerModel
-                    width: blurredHeader.width > units.gu(60) ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
+                    width: units.gu(24)
                 }
                 QueueAllButton {
                     containerItem: composerViewPage.containerItem
-                    width: blurredHeader.width > units.gu(60) ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
+                    width: units.gu(24)
                 }
                 PlayAllButton {
                     containerItem: composerViewPage.containerItem
-                    width: blurredHeader.width > units.gu(60) ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
+                    width: units.gu(24)
                 }
             }
             height: contentHeight

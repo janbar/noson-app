@@ -52,19 +52,19 @@ MusicPage {
             id: blurredHeader
             isFavorite: artistViewPage.isFavorite
             rightColumn: Column {
-                spacing: units.gu(2)
+                spacing: units.gu(1)
                 ShuffleButton {
                     model: songArtistModel
-                    width: blurredHeader.width > units.gu(60) ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
+                    width: units.gu(24)
                 }
                 QueueAllButton {
                     containerItem: artistViewPage.containerItem
-                    width: blurredHeader.width > units.gu(60) ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
+                    width: units.gu(24)
                     visible: containerItem ? true : false
                 }
                 PlayAllButton {
                     containerItem: artistViewPage.containerItem
-                    width: blurredHeader.width > units.gu(60) ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
+                    width: units.gu(24)
                     visible: containerItem ? true : false
                 }
             }

@@ -27,6 +27,7 @@ Icon {
         //: this appears in a button with limited space (around 14 characters)
         text: qsTr("Play all")
         font.pointSize: units.fs("medium")
+        width: parent.width - units.gu(6)
     }
 
     property var containerItem
