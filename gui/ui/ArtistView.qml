@@ -60,10 +60,12 @@ MusicPage {
                 QueueAllButton {
                     containerItem: artistViewPage.containerItem
                     width: blurredHeader.width > units.gu(60) ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
+                    visible: containerItem ? true : false
                 }
                 PlayAllButton {
                     containerItem: artistViewPage.containerItem
                     width: blurredHeader.width > units.gu(60) ? units.gu(23.5) : (blurredHeader.width - units.gu(13)) / 2
+                    visible: containerItem ? true : false
                 }
             }
             height: contentHeight
@@ -185,6 +187,7 @@ MusicPage {
     optionsMenuVisible: true
     optionsMenuContentItems: [
         MenuItem {
+            enabled: containerItem ? true : false
             text: artistViewPage.isFavorite ?  qsTr("Remove from favorites") : qsTr("Add to favorites")
             font.pointSize: units.fs("medium")
             onTriggered: {
@@ -203,7 +206,8 @@ MusicPage {
     Connections {
         target: AllFavoritesModel
         onCountChanged: {
-            isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
+            if (containerItem)
+                isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
         }
     }
 
@@ -219,6 +223,7 @@ MusicPage {
     }
 
     Component.onCompleted: {
-        isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
+        if (containerItem)
+            isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
     }
 }

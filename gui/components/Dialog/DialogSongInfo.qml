@@ -17,6 +17,7 @@
 
 import QtQuick 2.9
 import QtQuick.Controls 2.2
+//import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import NosonApp 1.0
 import "../Delegates"
@@ -26,11 +27,45 @@ Item {
     id: songInfo
     property var model: null
     property var covers: []
-    property bool actionsVisible: false
+    property bool actionPlay: false
+    property bool actionMore: false
 
     DialogBase {
         id: dialog
-        standardButtons: Dialog.Close
+
+        footer: Row {
+            leftPadding: units.gu(1)
+            rightPadding: units.gu(1)
+            spacing: units.gu(1)
+            layoutDirection: Qt.RightToLeft
+
+            Button {
+                flat: true
+                text: qsTr("Close")
+                onClicked: dialog.close()
+            }
+            Button {
+                flat: true
+                text: qsTr("Play")
+                onClicked: dialog.accept()
+                visible: actionPlay
+            }
+            Button {
+                flat: true
+                text: qsTr("More")
+                visible: actionMore
+                onClicked: {
+                    dialog.close();
+                    stackView.push("qrc:/ui/ArtistView.qml",
+                                       {
+                                           "artistSearch": "A:ARTIST/" + model.author,
+                                           "artist": model.author,
+                                           "covers": makeCoverSource(undefined, model.author, undefined),
+                                           "pageTitle": qsTr("Artist")
+                                       });
+                }
+            }
+        }
 
         width: mainView.minimumWidth - units.gu(2)
 
@@ -43,8 +78,9 @@ Item {
                 card.tertiaryLabelVisible = songInfo.model.album.length !== "";
                 card.tertiaryText = qsTr("%1 - track #%2").arg(songInfo.model.album).arg(songInfo.model.albumTrackNo);
             }
-            if (actionsVisible)
-                standardButtons |= Dialog.Open;
+            // do not stack more than one page for artist view
+            if (actionMore === true && stackView.find(function(item) { return item.objectName === "artistViewPage"; }))
+                actionMore = false;
         }
 
         onAccepted: {
@@ -170,10 +206,11 @@ Item {
 
     }
 
-    function open(model, covers, showActions) {
+    function open(model, covers, showActionPlay, showActionMore) {
         songInfo.model = model;
         songInfo.covers = covers;
-        songInfo.actionsVisible = showActions;
+        songInfo.actionPlay = showActionPlay;
+        songInfo.actionMore = showActionMore;
         return dialog.open();
     }
 }

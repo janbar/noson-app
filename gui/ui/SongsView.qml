@@ -168,10 +168,10 @@ MusicPage {
             onClick: {
                 if (isAlbum)
                     // header covers
-                    dialogSongInfo.open(model, covers, true); // show action play
+                    dialogSongInfo.open(model, covers, true, true); // show actions
                 else
                     // item cover
-                    dialogSongInfo.open(model, [{art: imageSource}], true); // show action play
+                    dialogSongInfo.open(model, [{art: imageSource}], true, true); // show actions
             }
 
             color: "transparent"
@@ -456,6 +456,7 @@ MusicPage {
     optionsMenuVisible: true
     optionsMenuContentItems: [
         MenuItem {
+            enabled: containerItem ? true : false
             text: songStackPage.isFavorite ?  qsTr("Remove from favorites") : qsTr("Add to favorites")
             font.pointSize: units.fs("medium")
             onTriggered: {
@@ -494,11 +495,13 @@ MusicPage {
     Connections {
         target: AllFavoritesModel
         onCountChanged: {
-            isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
+            if (containerItem)
+                isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
         }
     }
 
     Component.onCompleted: {
-        isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
+        if (containerItem)
+            isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
     }
 }

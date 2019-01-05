@@ -61,7 +61,7 @@ Item {
                 listview.reorder(from, to)
             }
 
-            onClick: dialogSongInfo.open(model, [{art: imageSource}], false) // don't show actions
+            onClick: dialogSongInfo.open(model, [{art: imageSource}], false, false) // don't show actions
 
             imageSources: makeCoverSource(model.art, model.author, model.album)
             description: qsTr("Song")
