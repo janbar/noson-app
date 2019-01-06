@@ -98,7 +98,7 @@ Item {
 
         Item {
             id: card
-            height: coverGrid.height + labels.childrenRect.height - units.gu(10)
+            height: coverGrid.height
 
             property alias coverSources: coverGrid.covers
             property alias primaryText: primaryLabel.text
@@ -111,73 +111,72 @@ Item {
                 id: coverGrid
                 size: parent.width
                 noCover: ""
-            }
 
-            Rectangle {
-                id: labelsBackground
-                anchors.top: coverGrid.top
-                anchors.topMargin: coverGrid.height - units.gu(10)
-                height: labels.childrenRect.height < units.gu(10) ? units.gu(10)
-                                                                  : labels.childrenRect.height + units.gu(3)
-                width: parent.width
-                color: styleMusic.dialog.backgroundColor
-                opacity: 0.60
-                clip: true
-            }
-
-            /* Column for labels */
-            Column {
-                id: labels
-                anchors {
-                    left: parent.left
-                    leftMargin: units.gu(1.5)
-                    right: parent.right
-                    rightMargin: units.gu(1.5)
-                    top: labelsBackground.top
-                    topMargin: units.gu(1.5)
+                Rectangle {
+                    id: labelsBackground
+                    anchors.bottom: parent.bottom
+                    height: labels.height < units.gu(6) ? units.gu(9)
+                                                         : labels.height + units.gu(3)
+                    width: parent.width
+                    color: styleMusic.dialog.backgroundColor
+                    opacity: 0.60
+                    clip: true
                 }
 
-                spacing: units.gu(0.5)
-
-                Label {
-                    id: primaryLabel
+                /* Column for labels */
+                Column {
+                    id: labels
                     anchors {
                         left: parent.left
+                        leftMargin: units.gu(1.5)
                         right: parent.right
+                        rightMargin: units.gu(1.5)
+                        bottom: parent.bottom
+                        bottomMargin: units.gu(1.5)
                     }
-                    color: styleMusic.dialog.labelColor
-                    elide: Text.ElideRight
-                    font.pointSize: units.fs("large")
-                    font.bold: true
-                    opacity: 1.0
-                    wrapMode: Text.WordWrap
-                }
 
-                Label {
-                    id: secondaryLabel
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                    }
-                    color: styleMusic.dialog.labelColor
-                    elide: Text.ElideRight
-                    font.pointSize: units.fs("medium")
-                    opacity: 0.9
-                    wrapMode: Text.WordWrap
-                }
+                    spacing: units.gu(0.5)
 
-                Label {
-                    id: tertiaryLabel
-                    anchors {
-                        left: parent.left
-                        right: parent.right
+                    Label {
+                        id: primaryLabel
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                        }
+                        color: styleMusic.dialog.labelColor
+                        elide: Text.ElideRight
+                        font.pointSize: units.fs("large")
+                        font.bold: true
+                        opacity: 1.0
+                        wrapMode: Text.WordWrap
                     }
-                    color: styleMusic.dialog.labelColor
-                    elide: Text.ElideRight
-                    font.pointSize: units.fs("medium")
-                    opacity: 0.9
-                    wrapMode: Text.WordWrap
-                    font.italic: true
+
+                    Label {
+                        id: secondaryLabel
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                        }
+                        color: styleMusic.dialog.labelColor
+                        elide: Text.ElideRight
+                        font.pointSize: units.fs("medium")
+                        opacity: 0.9
+                        wrapMode: Text.WordWrap
+                    }
+
+                    Label {
+                        id: tertiaryLabel
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                        }
+                        color: styleMusic.dialog.labelColor
+                        elide: Text.ElideRight
+                        font.pointSize: units.fs("medium")
+                        opacity: 0.9
+                        wrapMode: Text.WordWrap
+                        font.italic: true
+                    }
                 }
             }
         }
