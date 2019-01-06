@@ -21,10 +21,27 @@ import QtQuick.Controls 2.2
 import QtQml.Models 2.3
 
 DialogBase {
-    id: dialogSearchMusic
-    standardButtons: Dialog.Ok | Dialog.Cancel
+    id: dialog
 
     property var searchableModel
+
+    footer: Row {
+        leftPadding: units.gu(1)
+        rightPadding: units.gu(1)
+        spacing: units.gu(1)
+        layoutDirection: Qt.RightToLeft
+
+        Button {
+            flat: true
+            text: qsTr("Cancel")
+            onClicked: dialog.reject()
+        }
+        Button {
+            flat: true
+            text: qsTr("Ok")
+            onClicked: dialog.accept()
+        }
+    }
 
     Label {
         //: this is a title of a dialog to setup search
@@ -99,6 +116,6 @@ DialogBase {
         if (searchableModel !== null && selector.currentIndex >= 0 && searchField.text.length) {
             searchableModel.asyncLoadSearch(selectorModel.get(selector.currentIndex).id, searchField.text);
         }
-        dialogSearchMusic.close();
+        dialog.close();
     }
 }

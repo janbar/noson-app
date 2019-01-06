@@ -20,10 +20,22 @@ import QtQuick.Controls 2.2
 
 
 DialogBase {
-    id: dialogManageQueue
+    id: dialog
     //: this is a title of a dialog to manage queue
     title: qsTr("Manage queue")
-    standardButtons: Dialog.Close
+
+    footer: Row {
+        leftPadding: units.gu(1)
+        rightPadding: units.gu(1)
+        spacing: units.gu(1)
+        layoutDirection: Qt.RightToLeft
+
+        Button {
+            flat: true
+            text: qsTr("Close")
+            onClicked: dialog.reject()
+        }
+    }
 
     Label {
         id: newplaylistoutput
@@ -54,7 +66,7 @@ DialogBase {
                     newplaylistoutput.color = "red"
                     newplaylistoutput.text = qsTr("Saving failed.")
                 } else {
-                    dialogManageQueue.accept()
+                    dialog.accept()
                 }
             } else {
                 newplaylistoutput.visible = true
@@ -79,7 +91,7 @@ DialogBase {
         onClicked: {
             // clearing queue
             removeAllTracksFromQueue()
-            dialogManageQueue.accept()
+            dialog.accept()
         }
     }
 

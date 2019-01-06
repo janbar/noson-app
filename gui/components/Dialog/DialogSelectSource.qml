@@ -21,12 +21,24 @@ import QtQuick.Layouts 1.3
 
 
 DialogBase {
-    id: dialogSelectSource
+    id: dialog
     //: this is a title of a dialog to select source
     title: qsTr("Select source")
-    standardButtons: Dialog.Close
 
     property bool showSelector: false
+
+    footer: Row {
+        leftPadding: units.gu(1)
+        rightPadding: units.gu(1)
+        spacing: units.gu(1)
+        layoutDirection: Qt.RightToLeft
+
+        Button {
+            flat: true
+            text: qsTr("Close")
+            onClicked: dialog.reject()
+        }
+    }
 
     Label {
         id: sourceOutput
@@ -113,19 +125,19 @@ DialogBase {
                     if (!player.playQueue(false))
                         popInfo.open(qsTr("Action can't be performed"))
                     else
-                        dialogSelectSource.accept()
+                        dialog.accept()
                     break;
                 case 1:
                     if (!player.playLineIN())
                         popInfo.open(qsTr("Action can't be performed"))
                     else
-                        dialogSelectSource.accept()
+                        dialog.accept()
                     break;
                 case 2:
                     if (!player.playDigitalIN())
                         popInfo.open(qsTr("Action can't be performed"))
                     else
-                        dialogSelectSource.accept()
+                        dialog.accept()
                     break;
                 default:
                     break;

@@ -20,10 +20,22 @@ import QtQuick.Controls 2.2
 
 
 DialogBase {
-    id: dialogNewPlaylist
+    id: dialog
     //: this is a title of a dialog with a prompt to add a new playlist
     title: qsTr("New playlist")
-    standardButtons: Dialog.Close
+
+    footer: Row {
+        leftPadding: units.gu(1)
+        rightPadding: units.gu(1)
+        spacing: units.gu(1)
+        layoutDirection: Qt.RightToLeft
+
+        Button {
+            flat: true
+            text: qsTr("Close")
+            onClicked: dialog.reject()
+        }
+    }
 
     Label {
         id: newplaylistoutput
@@ -51,7 +63,7 @@ DialogBase {
             newplaylistoutput.visible = false // make sure its hidden now if there was an error last time
             if (playlistName.text.length > 0) { // make sure something is acually inputed
                 createPlaylist(playlistName.text)
-                dialogNewPlaylist.accept()
+                dialog.accept()
             }
             else {
                 newplaylistoutput.visible = true

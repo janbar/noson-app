@@ -21,8 +21,25 @@ import QtQuick.Controls 2.2
 import QtQml.Models 2.3
 
 DialogBase {
-    id: dialogRemovePlaylist
-    standardButtons: Dialog.Cancel | Dialog.Ok
+    id: dialog
+
+    footer: Row {
+        leftPadding: units.gu(1)
+        rightPadding: units.gu(1)
+        spacing: units.gu(1)
+        layoutDirection: Qt.RightToLeft
+
+        Button {
+            flat: true
+            text: qsTr("Cancel")
+            onClicked: dialog.reject()
+        }
+        Button {
+            flat: true
+            text: qsTr("Ok")
+            onClicked: dialog.accept()
+        }
+    }
 
     Label {
         anchors.left: parent.left

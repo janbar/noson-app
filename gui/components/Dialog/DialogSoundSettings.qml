@@ -29,9 +29,21 @@ Item {
 
         //: this is a title of a dialog to configure sound settings
         title: qsTr("Sound settings")
-        standardButtons: Dialog.Close
         contentSpacing: units.gu(1)
         edgeMargins: units.gu(0)
+
+        footer: Row {
+            leftPadding: units.gu(1)
+            rightPadding: units.gu(1)
+            spacing: units.gu(1)
+            layoutDirection: Qt.RightToLeft
+
+            Button {
+                flat: true
+                text: qsTr("Close")
+                onClicked: dialog.reject()
+            }
+        }
 
         Column {
             spacing: 0

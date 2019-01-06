@@ -61,7 +61,7 @@ Dialog {
     x: Math.round((mainView.width - width) / 2)
     y: Math.round((mainView.height - (height + header.height + footer.height)) / 2)
     width: Math.max(Math.round(Math.min(mainView.width, mainView.height) / 3 * 2), dialog.minimumWidth)
-    readonly property real h: footer.height + contentsColumn.height +
+    readonly property real h: contentsColumn.height + units.gu(6) +
                               2 * dialog.edgeMargins + dialog.header.height + dialog.footer.height
     height: Math.max(Math.min(h, Math.round(mainView.height / 4 * 3)), dialog.minimumHeight)
 
@@ -75,7 +75,7 @@ Dialog {
     Flickable {
         anchors.fill: background
         contentWidth: contentsColumn.width
-        contentHeight: contentsColumn.height + units.gu(1.5) // add a bottom margin
+        contentHeight: contentsColumn.height
         boundsBehavior: Flickable.StopAtBounds
         clip: true
 

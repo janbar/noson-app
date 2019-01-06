@@ -38,9 +38,26 @@ Item {
 
         //: this is a title of a dialog to configure an alarm
         title: qsTr("Alarm")
-        standardButtons: Dialog.Close | Dialog.Save
         contentSpacing: units.gu(1)
         edgeMargins: units.gu(0)
+
+        footer: Row {
+            leftPadding: units.gu(1)
+            rightPadding: units.gu(1)
+            spacing: units.gu(1)
+            layoutDirection: Qt.RightToLeft
+
+            Button {
+                flat: true
+                text: qsTr("Close")
+                onClicked: dialog.reject()
+            }
+            Button {
+                flat: true
+                text: qsTr("Save")
+                onClicked: dialog.accept()
+            }
+        }
 
         Row {
             width: parent.width

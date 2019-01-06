@@ -1159,7 +1159,24 @@ ApplicationWindow {
         id: applicationSettingsDialog
         title: qsTr("General settings")
 
-        standardButtons: Dialog.Ok | Dialog.Cancel
+        footer: Row {
+            leftPadding: units.gu(1)
+            rightPadding: units.gu(1)
+            spacing: units.gu(1)
+            layoutDirection: Qt.RightToLeft
+
+            Button {
+                flat: true
+                text: qsTr("Cancel")
+                onClicked: applicationSettingsDialog.reject()
+            }
+            Button {
+                flat: true
+                text: qsTr("Ok")
+                onClicked: applicationSettingsDialog.accept()
+            }
+        }
+
         onAccepted: {
             var needRestart = (styleBox.currentIndex !== styleBox.styleIndex ||
                     scaleBox.realValue !== scaleBox.acceptedValue);
@@ -1174,8 +1191,6 @@ ApplicationWindow {
                     thumbValid = true;
             }
 
-            applicationSettingsDialog.close();
-
             if (needRestart)
                 Qt.exit(16);
         }
@@ -1183,8 +1198,8 @@ ApplicationWindow {
             styleBox.currentIndex = styleBox.styleIndex
             mainView.width = Math.round(scaleBox.acceptedValue * mainView.width / settings.scaleFactor);
             mainView.height = Math.round(scaleBox.acceptedValue * mainView.height / settings.scaleFactor);
-            settings.scaleFactor = scaleBox.acceptedValue
-            applicationSettingsDialog.close()
+            settings.fontScaleFactor = fontScaleBox.acceptedValue;
+            settings.scaleFactor = scaleBox.acceptedValue;
         }
 
         ColumnLayout {
@@ -1381,7 +1396,18 @@ ApplicationWindow {
         id: aboutDialog
         title: qsTr("About")
 
-        standardButtons: Dialog.Close
+        footer: Row {
+            leftPadding: units.gu(1)
+            rightPadding: units.gu(1)
+            spacing: units.gu(1)
+            layoutDirection: Qt.RightToLeft
+
+            Button {
+                flat: true
+                text: qsTr("Close")
+                onClicked: aboutDialog.reject()
+            }
+        }
 
         contentSpacing: units.gu(1)
 

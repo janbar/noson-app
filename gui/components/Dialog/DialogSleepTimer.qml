@@ -20,12 +20,24 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 
 DialogBase {
-    id: dialogSleepTimer
+    id: dialog
     //: this is a title of a dialog to configure standby timer
     title: qsTr("Standby timer")
-    standardButtons: Dialog.Close
 
     property int remainingTime: player.remainingSleepTimerDuration() // Load at startup
+
+    footer: Row {
+        leftPadding: units.gu(1)
+        rightPadding: units.gu(1)
+        spacing: units.gu(1)
+        layoutDirection: Qt.RightToLeft
+
+        Button {
+            flat: true
+            text: qsTr("Close")
+            onClicked: dialog.reject()
+        }
+    }
 
     onOpened: {
         remainingTime = player.remainingSleepTimerDuration();

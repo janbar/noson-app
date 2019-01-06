@@ -21,9 +21,21 @@ import QtQuick.Controls 2.2
 import QtQml.Models 2.3
 
 DialogBase {
-    id: dialogSettings
+    id: dialog
     title: qsTr("Sonos settings")
-    standardButtons: Dialog.Close
+
+    footer: Row {
+        leftPadding: units.gu(1)
+        rightPadding: units.gu(1)
+        spacing: units.gu(1)
+        layoutDirection: Qt.RightToLeft
+
+        Button {
+            flat: true
+            text: qsTr("Close")
+            onClicked: dialog.reject()
+        }
+    }
 
     Text {
         anchors.left: parent.left
@@ -40,7 +52,7 @@ DialogBase {
         text: qsTr("Update music index now")
         onClicked: {
             updateMusicIndex();
-            dialogSettings.close()
+            dialog.accept()
         }
     }
 
