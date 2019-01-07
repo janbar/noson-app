@@ -78,9 +78,14 @@ Item {
                 card.tertiaryLabelVisible = songInfo.model.album.length !== "";
                 card.tertiaryText = qsTr("%1 - track #%2").arg(songInfo.model.album).arg(songInfo.model.albumTrackNo);
             }
-            // do not stack more than one page for artist view
-            if (actionMore === true && stackView.find(function(item) { return item.objectName === "artistViewPage"; }))
-                actionMore = false;
+            if (actionMore === true) {
+                // do not stack more than one page for artist view
+                if (stackView.find(function(item) { return item.objectName === "artistViewPage"; }))
+                    actionMore = false;
+                // do not show the artist view for an item of service
+                if (Sonos.isItemFromService(songInfo.model.payload))
+                    actionMore = false;
+            }
         }
 
         onAccepted: {
