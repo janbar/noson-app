@@ -7,12 +7,7 @@ export ANDROID_SDK=/Users/Shared/Android/Sdk
 export ANDROID_NDK=$ANDROID_SDK/ndk-bundle
 export QT_DIR=/Users/Shared/Qt/5.11.3/android_x86
 
-unset LIBSTL
-## Addon for NDK>=18
-#LIBSTL="-DANDROID_STL_SHARED_LIBRARIES=c++_shared \
-#-DANDROID_STL_PATH=$ANDROID_NDK/sources/cxx-stl/llvm-libc++"
-
-cmake ../.. -DCMAKE_SYSTEM_NAME=Android $LIBSTL \
+cmake ../.. -DCMAKE_SYSTEM_NAME=Android \
 -DCMAKE_PREFIX_PATH=$QT_DIR \
 -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake \
 -DCMAKE_MAKE_PROGRAM=$ANDROID_NDK/prebuilt/darwin-x86_64/bin/make \
