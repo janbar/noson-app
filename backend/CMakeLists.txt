@@ -12,6 +12,7 @@ if(NOT noson_FOUND)
 endif()
 
 set(QML_IMPORT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/qml)
+set(QML_IMPORT_PATH ${QML_IMPORT_DIRECTORY} CACHE string "QML Import path" INTERNAL)
 
 add_subdirectory(NosonApp)
 add_subdirectory(NosonThumbnailer)
