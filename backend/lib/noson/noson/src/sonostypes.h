@@ -184,6 +184,8 @@ namespace NSROOT
     , MuteLF(0)
     , MuteRF(0)
     , NightMode(0)
+    , Treble(0)
+    , Bass(0)
     { }
 
     virtual ~RCSProperty() { }
