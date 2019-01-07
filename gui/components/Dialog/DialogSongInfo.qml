@@ -45,15 +45,17 @@ Item {
                 onClicked: dialog.close()
             }
             Button {
+                id: buttonPlay
                 flat: true
                 text: qsTr("Play")
+                visible: false
                 onClicked: dialog.accept()
-                visible: actionPlay
             }
             Button {
+                id: buttonMore
                 flat: true
                 text: qsTr("More")
-                visible: actionMore
+                visible: false
                 onClicked: {
                     dialog.close();
                     stackView.push("qrc:/ui/ArtistView.qml",
@@ -78,13 +80,20 @@ Item {
                 card.tertiaryLabelVisible = songInfo.model.album.length !== "";
                 card.tertiaryText = qsTr("%1 - track #%2").arg(songInfo.model.album).arg(songInfo.model.albumTrackNo);
             }
-            if (actionMore === true) {
-                // do not stack more than one page for artist view
-                if (stackView.find(function(item) { return item.objectName === "artistViewPage"; }))
-                    actionMore = false;
-                // do not show the artist view for an item of service
-                if (Sonos.isItemFromService(songInfo.model.payload))
-                    actionMore = false;
+
+            if (actionPlay) {
+                buttonPlay.visible = true;
+            } else {
+                buttonPlay.visible = false;
+            }
+            // do not stack more than one page for artist view
+            // do not show the artist view for an item of service
+            if (actionMore &&
+                    !stackView.find(function(item) { return item.objectName === "artistViewPage"; }) &&
+                    !Sonos.isItemFromService(songInfo.model.payload)) {
+                buttonMore.visible = true;
+            } else {
+                buttonMore.visible = false;
             }
         }
 
@@ -99,6 +108,8 @@ Item {
             card.secondaryText = "";
             card.tertiaryLabelVisible = "";
             card.tertiaryText = "";
+            buttonMore.visible = false;
+            buttonPlay.visible = false;
         }
 
         Item {
