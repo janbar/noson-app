@@ -49,7 +49,7 @@ Item {
 
             Button {
                 flat: true
-                text: qsTr("Close")
+                text: qsTr("Cancel")
                 onClicked: dialog.reject()
             }
             Button {
