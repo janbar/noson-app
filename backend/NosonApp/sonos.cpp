@@ -413,6 +413,16 @@ bool Sonos::destroyAlarm(const QString& id)
   return m_system.DestroyAlarm(id.toUtf8().constData());
 }
 
+bool Sonos::isItemFromService(const QVariant &itemPayload)
+{
+  SONOS::DigitalItemPtr ptr = itemPayload.value<SONOS::DigitalItemPtr>();
+  if (ptr && m_system.IsItemFromService(ptr))
+  {
+    return true;
+  }
+  return false;
+}
+
 SONOS::System &Sonos::getSystem()
 {
   return m_system;

@@ -96,6 +96,8 @@ public:
   Q_INVOKABLE bool updateAlarm(const QVariant& alarmPayload);
   Q_INVOKABLE bool destroyAlarm(const QString& id);
 
+  Q_INVOKABLE bool isItemFromService(const QVariant& itemPayload);
+
   SONOS::System& getSystem();
   const SONOS::PlayerPtr& getPlayer() const;
 
