@@ -288,9 +288,13 @@
         <translation>Alarm</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogAlarm.qml" line="52"/>
         <source>Close</source>
-        <translation>Luk</translation>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogAlarm.qml" line="52"/>
+        <source>Cancel</source>
+        <translation>Afbestille</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogAlarm.qml" line="57"/>
@@ -667,32 +671,32 @@
         <translation>Luk</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSongInfo.qml" line="49"/>
+        <location filename="../components/Dialog/DialogSongInfo.qml" line="50"/>
         <source>Play</source>
         <translation>Afspil</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSongInfo.qml" line="55"/>
+        <location filename="../components/Dialog/DialogSongInfo.qml" line="57"/>
         <source>More</source>
         <translation>Mere</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSongInfo.qml" line="64"/>
+        <location filename="../components/Dialog/DialogSongInfo.qml" line="66"/>
         <source>Artist</source>
         <translation>Kunstner</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSongInfo.qml" line="76"/>
+        <location filename="../components/Dialog/DialogSongInfo.qml" line="78"/>
         <source>Unknown Album</source>
         <translation>Ukendt album</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSongInfo.qml" line="77"/>
+        <location filename="../components/Dialog/DialogSongInfo.qml" line="79"/>
         <source>Unknown Artist</source>
         <translation>Ukendt kunstner</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSongInfo.qml" line="79"/>
+        <location filename="../components/Dialog/DialogSongInfo.qml" line="81"/>
         <source>%1 - track #%2</source>
         <translation>%1 - nummer #%2</translation>
     </message>
