@@ -1162,6 +1162,7 @@ ApplicationWindow {
         footer: Row {
             leftPadding: units.gu(1)
             rightPadding: units.gu(1)
+            bottomPadding: units.gu(1)
             spacing: units.gu(1)
             layoutDirection: Qt.RightToLeft
 
@@ -1177,6 +1178,12 @@ ApplicationWindow {
             }
         }
 
+        onOpened: {
+            fontScaleBox.acceptedValue = settings.fontScaleFactor;
+            scaleBox.acceptedValue = settings.scaleFactor;
+            themeBox.acceptedValue = settings.theme;
+            apiKey.text = settings.lastfmKey;
+        }
         onAccepted: {
             var needRestart = (styleBox.currentIndex !== styleBox.styleIndex ||
                     scaleBox.realValue !== scaleBox.acceptedValue);
@@ -1200,6 +1207,8 @@ ApplicationWindow {
             mainView.height = Math.round(scaleBox.acceptedValue * mainView.height / settings.scaleFactor);
             settings.fontScaleFactor = fontScaleBox.acceptedValue;
             settings.scaleFactor = scaleBox.acceptedValue;
+            settings.theme = themeBox.acceptedValue;
+            apiKey.text = settings.lastfmKey;
         }
 
         ColumnLayout {
@@ -1241,10 +1250,6 @@ ApplicationWindow {
                         return Number.fromLocaleString(locale, text) * 100
                     }
 
-                    Component.onCompleted: {
-                        acceptedValue = realValue;
-                    }
-
                     onValueModified: {
                         settings.fontScaleFactor = realValue
                     }
@@ -1284,10 +1289,6 @@ ApplicationWindow {
 
                     valueFromText: function(text, locale) {
                         return Number.fromLocaleString(locale, text) * 100
-                    }
-
-                    Component.onCompleted: {
-                        acceptedValue = realValue;
                     }
 
                     onValueModified: {
@@ -1336,10 +1337,9 @@ ApplicationWindow {
                     text: qsTr("Theme")
                     font.pointSize: units.fs("medium");
                 }
-
                 ComboBox {
                     id: themeBox
-
+                    property int acceptedValue: 0
                     model: [
                         qsTr("Light"),
                         qsTr("Dark"),
@@ -1353,7 +1353,9 @@ ApplicationWindow {
 
                     Layout.fillWidth: true
                     font.pointSize: units.fs("medium");
-                    Component.onCompleted: popup.font.pointSize = units.fs("medium")
+                    Component.onCompleted: {
+                        popup.font.pointSize = units.fs("medium");
+                    }
                 }
             }
 
@@ -1385,8 +1387,6 @@ ApplicationWindow {
                     inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhUrlCharactersOnly
                     EnterKey.type: Qt.EnterKeyDone
                     Layout.fillWidth: true
-
-                    Component.onCompleted: apiKey.text = settings.lastfmKey
                 }
             }
         }
@@ -1399,6 +1399,7 @@ ApplicationWindow {
         footer: Row {
             leftPadding: units.gu(1)
             rightPadding: units.gu(1)
+            bottomPadding: units.gu(1)
             spacing: units.gu(1)
             layoutDirection: Qt.RightToLeft
 

@@ -29,6 +29,7 @@ DialogBase {
     footer: Row {
         leftPadding: units.gu(1)
         rightPadding: units.gu(1)
+        bottomPadding: units.gu(1)
         spacing: units.gu(1)
         layoutDirection: Qt.RightToLeft
 
