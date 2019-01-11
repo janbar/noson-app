@@ -100,8 +100,8 @@ ApplicationWindow {
         id: player
     }
 
-    onApplicationStateChanged: {
-        if (!noZone && applicationState && player.connected) {
+    onApplicationSuspendedChanged: {
+        if (!noZone && !applicationSuspended && player.connected) {
             mainView.jobRunning = true
             delayPlayerWakeUp.start()
         }
@@ -128,7 +128,7 @@ ApplicationWindow {
     property bool startup: true
 
     // Property to store the state of an application (active or suspended)
-    property bool applicationState: Qt.application.active
+    property bool applicationSuspended: Qt.application.state === Qt.ApplicationSuspended
 
     // setting alias to check first run
     property alias firstRun: settings.firstRun
