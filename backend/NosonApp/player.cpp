@@ -716,6 +716,9 @@ void Player::handleRenderingControlChange()
     {
       double volume = 0.0;
       bool mute = true;
+      bool nightmode = false;
+      double treble = 0.0;
+      double bass = 0.0;
       SONOS::SRPList::const_iterator it = props.begin();
       while (it != props.end())
       {
@@ -732,12 +735,18 @@ void Player::handleRenderingControlChange()
         if (!item.mute)
           mute = false; // exists active audio in group
         volume += item.volumeFake;
+        nightmode = nightmode || item.nightmode;
+        treble += item.treble;
+        bass += item.bass;
         ++it;
       }
       volume /= (double)props.size();
       m_RCGroup.volumeFake = volume;
       m_RCGroup.volume = roundDouble(volume);
       m_RCGroup.mute = mute;
+      m_RCGroup.nightmode = nightmode;
+      m_RCGroup.treble =  treble > 0 ? treble / props.size() : 0;
+      m_RCGroup.bass =  bass > 0 ? bass / props.size() : 0;
       signalMask |= RENDERING_GROUP_CHANGED | RENDERING_CHANGED; // handles group & subordinate update
     }
     else

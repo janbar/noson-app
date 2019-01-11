@@ -225,7 +225,7 @@ Item {
                     }
                     Connections {
                         target: player
-                        onNightmodeEnabledChanged: nightmodeCheckbox.checked = player.nightmodeEnabled
+                        onNightmodeEnabledChanged: nightMode.checked = player.nightmodeEnabled
                     }
                 }
                 MusicCheckBox {
