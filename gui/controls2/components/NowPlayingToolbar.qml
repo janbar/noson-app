@@ -86,10 +86,9 @@ Item {
             anchors.right: settingsButton.left
             anchors.verticalCenter: parent.verticalCenter
             wheelEnabled: true
-            stepSize: 1.0
             live: true
             from: 0
-            to: 100
+            to: 1
             objectName: "volumeGroupSliderShape"
             enabled: !player.outputFixed
             opacity: (player.outputFixed ? 0.2 : 1.0)
@@ -101,6 +100,18 @@ Item {
             backgroundColor: styleMusic.playerControls.volumeBackgroundColor
             foregroundColor: styleMusic.playerControls.volumeForegroundColor
 
+            // https://en.wikipedia.org/wiki/Stevens%27s_power_law
+            readonly property real loudnessToVoltageExponent: 0.67
+            readonly property real voltageToLoudnessExponent: 1/0.67
+
+            function linearVolume() {
+                return  Math.pow(value, voltageToLoudnessExponent) * 100
+            }
+
+            function setLinearVolume(linear) {
+                value = Math.pow(linear/100, loudnessToVoltageExponent);
+            }
+
             property double inValue
 
             onMoved: {
@@ -109,11 +120,11 @@ Item {
             }
 
             onValueChanged: {
-                if (Math.abs(value - inValue) >= 1.0) {
-                    if (pressed && value > inValue + 5.0) {
-                        value = inValue + 2.0; // loop on value changed
+                if (Math.abs(linearVolume() - inValue) >= 1.0) {
+                    if (pressed && linearVolume() > inValue + 5.0) {
+                        setLinearVolume(inValue + 5.0); // loop on value changed
                     } else {
-                        volumeGroupSlider.inValue = player.volumeMaster = Math.round(value);
+                        volumeGroupSlider.inValue = player.volumeMaster = Math.round(linearVolume());
                         if (pressed)
                             setVolume.start();
                     }
@@ -132,15 +143,15 @@ Item {
                 property bool ready: true // false: delay the call
                 onTriggered: {
                     if (!ready) {
-                        if (player.setVolumeForFake(volumeGroupSlider.value))
-                            volumeGroupSlider.inValue = player.volumeMaster = Math.round(volumeGroupSlider.value);
+                        if (player.setVolumeForFake(volumeGroupSlider.linearVolume()))
+                            volumeGroupSlider.inValue = player.volumeMaster = Math.round(volumeGroupSlider.linearVolume());
                         restart();
                     } else {
                         ready = false;
-                        player.setVolumeGroup(volumeGroupSlider.value, function(result) {
+                        player.setVolumeGroup(volumeGroupSlider.linearVolume(), function(result) {
                             ready = true; // become ready on finished
                             if (result) {
-                                volumeGroupSlider.inValue = player.volumeMaster = Math.round(volumeGroupSlider.value);
+                                volumeGroupSlider.inValue = player.volumeMaster = Math.round(volumeGroupSlider.linearVolume());
                             } else {
                                 customdebug("Set volume failed");
                             }
@@ -153,13 +164,16 @@ Item {
                 target: player
                 onVolumeMasterChanged: {
                     // update an icoming change when released only to be smoothest
-                    if (!volumeGroupSlider.pressed)
-                        volumeGroupSlider.value = volumeGroupSlider.inValue = player.volumeMaster;
+                    if (!volumeGroupSlider.pressed) {
+                        volumeGroupSlider.inValue = player.volumeMaster;
+                        volumeGroupSlider.setLinearVolume(volumeGroupSlider.inValue)
+                    }
                 }
             }
 
             Component.onCompleted: {
-                value = inValue = player.volumeMaster;
+                inValue = player.volumeMaster;
+                setLinearVolume(inValue)
             }
         }
 
