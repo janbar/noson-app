@@ -39,7 +39,7 @@ DialogBase {
         }
         Button {
             flat: true
-            text: qsTr("Ok")
+            text: qsTr("Search")
             onClicked: dialog.accept()
         }
     }
