@@ -711,7 +711,6 @@ void Player::handleRenderingControlChange()
     {
       double volume = 0.0;
       bool mute = true;
-      bool nightmode = false;
       SONOS::SRPList::const_iterator it = props.begin();
       while (it != props.end())
       {
