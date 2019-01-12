@@ -91,12 +91,6 @@ Item {
                         }
                     }
 
-                    onPressedChanged: {
-                        if (!pressed) {
-                            value = player.treble
-                        }
-                    }
-
                     onMoved: {
                         var treble = Math.round(value)
                         if (treble === player.treble) {
@@ -181,12 +175,6 @@ Item {
                             }
 
                             bassSlider.value = player.bass
-                        }
-                    }
-
-                    onPressedChanged: {
-                        if (!pressed) {
-                            value = player.bass
                         }
                     }
 
