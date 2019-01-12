@@ -262,12 +262,10 @@ bool Player::toggleNightmode()
     for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     {
       if (m_player->SetNightmode(it->uuid, nightmode ? 1 : 0))
-        it->nightmode = nightmode;
+        m_RCGroup.nightmode = it->nightmode = nightmode;
       else
         ret = false;
     }
-    if (ret)
-      m_RCGroup.nightmode = nightmode;
     return ret;
   }
   return false;
@@ -503,12 +501,10 @@ bool Player::setTreble(double val)
     for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     {
       if (m_player->SetTreble(it->uuid, val))
-        it->treble = val;
+        m_RCGroup.treble = it->treble = val;
       else
         ret = false;
     }
-    if (ret)
-      m_RCGroup.treble = val;
     return ret;
   }
   return false;
@@ -522,12 +518,10 @@ bool Player::setBass(double val)
     for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     {
       if (m_player->SetBass(it->uuid, val))
-        it->bass = val;
+        m_RCGroup.bass = it->bass = val;
       else
         ret = false;
     }
-    if (ret)
-      m_RCGroup.bass = val;
     return ret;
   }
   return false;
@@ -711,14 +705,13 @@ void Player::handleRenderingControlChange()
     unsigned signalMask = RENDERING_UNCHANGED;
 
     SONOS::SRPList props = m_player->GetRenderingProperty();
-    // Setup fake volumes
+    // At initial callback the table of properties for the connected zone is empty
+    // So fill it for each subordinate attached to the zone
     if (m_RCTable.empty())
     {
       double volume = 0.0;
       bool mute = true;
       bool nightmode = false;
-      double treble = 0.0;
-      double bass = 0.0;
       SONOS::SRPList::const_iterator it = props.begin();
       while (it != props.end())
       {
@@ -735,18 +728,22 @@ void Player::handleRenderingControlChange()
         if (!item.mute)
           mute = false; // exists active audio in group
         volume += item.volumeFake;
-        nightmode = nightmode || item.nightmode;
-        treble += item.treble;
-        bass += item.bass;
+
+        // As the sound settings relate the connected group and doesn't handle separately each subordinate,
+        // i gatherer data only from the master zone that is the first on the array.
+        if (it == props.begin())
+        {
+          m_RCGroup.nightmode = item.nightmode;
+          m_RCGroup.treble = item.treble;
+          m_RCGroup.bass = item.bass;
+        }
+
         ++it;
       }
       volume /= (double)props.size();
       m_RCGroup.volumeFake = volume;
       m_RCGroup.volume = roundDouble(volume);
       m_RCGroup.mute = mute;
-      m_RCGroup.nightmode = nightmode;
-      m_RCGroup.treble =  treble > 0 ? treble / props.size() : 0;
-      m_RCGroup.bass =  bass > 0 ? bass / props.size() : 0;
       signalMask |= RENDERING_GROUP_CHANGED | RENDERING_CHANGED; // handles group & subordinate update
     }
     else
@@ -754,36 +751,51 @@ void Player::handleRenderingControlChange()
       double volume = 0.0;
       bool mute = true;
       bool nightmode = false;
-      double treble = 0.0;
-      double bass = 0.0;
+      int treble = 0, bass = 0;
       SONOS::SRPList::const_iterator it = props.begin();
       std::vector<RCProperty>::iterator itz = m_RCTable.begin();
       while (it != props.end())
       {
-        bool _mute = it->property.MuteMaster ? true : false;
-        if (_mute != itz->mute)
+        if (it->property.MuteMaster != itz->mute)
         {
-          itz->mute = _mute;
+          itz->mute = it->property.MuteMaster;
           signalMask |= RENDERING_CHANGED;
         }
-        bool _nightmode = it->property.NightMode ? true : false;
-        if (_nightmode != itz->nightmode)
+        if (it->property.NightMode != itz->nightmode)
         {
-          itz->nightmode = _nightmode;
+          itz->nightmode = it->property.NightMode;
           signalMask |= RENDERING_CHANGED;
         }
-        double _treble = it->property.Treble;
-        if (_treble != itz->treble)
+        if (it->property.Treble != itz->treble)
         {
-          itz->treble = _treble;
+          itz->treble = it->property.Treble;
           signalMask |= RENDERING_CHANGED;
         }
-        double _bass = it->property.Bass;
-        if (_bass != itz->bass)
+        if (it->property.Bass != itz->bass)
         {
-          itz->bass = _bass;
+          itz->bass = it->property.Bass;
           signalMask |= RENDERING_CHANGED;
         }
+
+        // As the sound settings relate the connected group and doesn't handle separately each subordinate,
+        // i gatherer data from the master zone that is the first on the array.
+        if (it == props.begin())
+        {
+          nightmode = it->property.NightMode;
+          treble = it->property.Treble;
+          bass = it->property.Bass;
+        }
+        // And override data from the first subordinate updated accordinaly with sended values
+        else
+        {
+          if (it->property.NightMode == m_RCGroup.nightmode)
+            nightmode = it->property.NightMode;
+          if (it->property.Treble == m_RCGroup.treble)
+            treble = it->property.Treble;
+          if (it->property.Bass == m_RCGroup.bass)
+            bass = it->property.Bass;
+        }
+
         if (it->property.VolumeMaster != itz->volume)
         {
           itz->volume = it->property.VolumeMaster;
@@ -808,10 +820,6 @@ void Player::handleRenderingControlChange()
         SONOS::DBG(DBG_DEBUG, "%s: [%s] sig=%d volume: %3.3f [%d]\n", __FUNCTION__, it->uuid.c_str(), signalMask, itz->volumeFake, itz->volume);
         if (!itz->mute)
           mute = false; // exists active audio in group
-        if (itz->nightmode)
-          nightmode = true;
-        treble = itz->treble;
-        bass = itz->bass;
         volume += itz->volumeFake;
         ++it;
         ++itz;
