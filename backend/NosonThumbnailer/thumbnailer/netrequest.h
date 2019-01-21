@@ -60,33 +60,38 @@ namespace thumbnailer
     void setOperation(QNetworkAccessManager::Operation operation);
 
     void setHeader(QNetworkRequest::KnownHeaders header, const QVariant& value);
+    void setHeader(const QString &header, const QString &value);
 
     void setData(const QByteArray& data);
 
-    QNetworkAccessManager::Operation getOperation()
+    QNetworkAccessManager::Operation getOperation() const
     {
       return m_operation;
     }
 
-    const QByteArray& getData()
+    const QByteArray& getData() const
     {
       return m_postData;
     }
 
-    bool error()
+    bool error() const
     {
       return m_httpReplyError;
     }
 
-    int errorCode()
+    int errorCode() const
     {
       return m_errorCode;
     }
 
-    QString errorString()
+    const QString& errorString() const
     {
       return m_errorString;
     }
+
+    QStringList getAllResponseHeaders() const;
+
+    QString getResponseHeader(const QString& header) const;
 
     signals:
     void readyRead(NetRequest*);

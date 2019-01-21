@@ -103,9 +103,36 @@ void NetRequest::setHeader(QNetworkRequest::KnownHeaders header, const QVariant 
   m_request.setHeader(header, value);
 }
 
+void NetRequest::setHeader(const QString &header, const QString &value)
+{
+  m_request.setRawHeader(header.toUtf8(), value.toUtf8());
+}
+
 void NetRequest::setData(const QByteArray &data)
 {
   m_postData = data;
+}
+
+QStringList NetRequest::getAllResponseHeaders() const
+{
+  Q_ASSERT(m_reply);
+  QStringList list;
+  foreach(QNetworkReply::RawHeaderPair e, m_reply->rawHeaderPairs())
+  {
+    QByteArray h;
+    h.append(e.first).append(": ").append(e.second);
+    list.push_back(QString::fromUtf8(h));
+  }
+  return list;
+}
+
+QString NetRequest::getResponseHeader(const QString& header) const
+{
+  Q_ASSERT(m_reply);
+  QByteArray h = header.toUtf8();
+  if (m_reply->hasRawHeader(h))
+    return QString::fromUtf8(m_reply->rawHeader(h));
+  return QString();
 }
 
 void NetRequest::requestAborted()
