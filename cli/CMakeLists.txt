@@ -28,11 +28,13 @@ if(NOT noson_FOUND)
     add_dependencies(noson-cli noson)
 endif()
 
+set(noson-cli_LIBRARIES ${noson_LIBRARIES})
+
 if(MSVC)
-    target_link_libraries (noson-cli ${noson_LIBRARIES} ws2_32)
-else()
-    target_link_libraries (noson-cli ${noson_LIBRARIES})
+  list(APPEND noson-cli_LIBRARIES ws2_32)
 endif()
+
+target_link_libraries (noson-cli ${noson-cli_LIBRARIES} )
 
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/noson-cli
     DESTINATION ${PLUGINS_DIR})

@@ -31,18 +31,24 @@
 #include <sys/time.h>
 #endif
 
-#include "private/debug.h"
 #include <noson/sonossystem.h>
 #include <noson/contentdirectory.h>
 #include <noson/didlparser.h>
+#include <noson/imageservice.h>
+#ifdef HAVE_PULSEAUDIO
+#include <noson/pulsestreamer.h>
+#endif
 
 #include <cstdlib>
 #include <cstdio>
 #include <iostream>
 #include <string>
+#include <algorithm> // std::find
 
+#include "private/debug.h"
 #include "private/tokenizer.h"
 #include "private/builtin.h"
+#include "requestbroker.h"
 
 #define PRINT(a) fprintf(stdout, a)
 #define PRINT1(a,b) fprintf(stdout, a, b)
@@ -54,7 +60,9 @@
 #define ERROR2(a,b,c) fprintf(stderr, a, b, c)
 #define ERROR3(a,b,c,d) fprintf(stderr, a, b, c, d)
 
-void readStream(std::istream*);
+static const char * getCmd(char **begin, char **end, const std::string& option);
+static const char * getCmdOption(char **begin, char **end, const std::string& option);
+static void readStream(std::istream*);
 
 SONOS::System * gSonos = 0;
 
@@ -73,6 +81,11 @@ void handleEventCB(void* handle)
 int main(int argc, char** argv)
 {
   int ret = 0;
+  SONOS::DBGLevel(DBG_ERROR);
+
+  if (getCmd(argv, argv + argc, "--debug"))
+    SONOS::DBGLevel(DBG_DEBUG);
+
 #ifdef __WINDOWS__
   //Initialize Winsock
   WSADATA wsaData;
@@ -83,13 +96,20 @@ int main(int argc, char** argv)
   PRINT1("Noson CLI using libnoson %s, Copyright (C) 2018 Jean-Luc Barriere\n", SONOS::libVersionString());
   gSonos = new SONOS::System(0, handleEventCB);
   ERROR("Searching... ");
-  //SONOS::DBGLevel(DBG_PROTO);
   if (!gSonos->Discover())
   {
     ERROR("No SONOS zone found.\n");
-    return EXIT_FAILURE;
+    //return EXIT_FAILURE;
   }
   ERROR("Succeeded\n");
+
+  /*
+   * Register handlers to process remote request
+   */
+  gSonos->RegisterRequestBroker(SONOS::RequestBrokerPtr(new SONOS::ImageService()));
+#ifdef HAVE_PULSEAUDIO
+  gSonos->RegisterRequestBroker(SONOS::RequestBrokerPtr(new SONOS::PulseStreamer()));
+#endif
   /*
    * Print Players list
    */
@@ -114,6 +134,26 @@ int main(int argc, char** argv)
   return ret;
 }
 
+static const char * getCmd(char **begin, char **end, const std::string& option)
+{
+  char **itr = std::find(begin, end, option);
+  if (itr != end)
+  {
+    return *itr;
+  }
+  return NULL;
+}
+
+static const char * getCmdOption(char **begin, char **end, const std::string& option)
+{
+  char **itr = std::find(begin, end, option);
+  if (itr != end && ++itr != end)
+  {
+    return *itr;
+  }
+  return NULL;
+}
+
 std::string& upstr(std::string& str)
 {
   std::string::iterator c = str.begin();
@@ -125,7 +165,7 @@ std::string& upstr(std::string& str)
   return str;
 }
 
-bool parseCommand(const std::string& line)
+static bool parseCommand(const std::string& line)
 {
   std::vector<std::string> tokens;
   tokenize(line, " ", tokens, true);
@@ -144,6 +184,9 @@ bool parseCommand(const std::string& line)
       PRINT("EXIT                          Exit from CLI\n");
       PRINT("CONNECT {zone name}           Connect to a zone for control\n");
       PRINT("STATUS                        Show the playing status\n");
+#ifdef HAVE_PULSEAUDIO
+      PRINT("PLAYPULSE                     Play stream from Pulse\n");
+#endif
       PRINT("PLAYURL {stream URL}          Play stream from URL\n");
       PRINT("PLAYFV {URI}                  Play the given favorite\n");
       PRINT("PLAYSQ {URI}                  Play the given playlist\n");
@@ -500,6 +543,16 @@ bool parseCommand(const std::string& line)
       else
         ERROR("Error: Missing arguments.\n");
     }
+#ifdef HAVE_PULSEAUDIO
+    else if (token == "PLAYPULSE")
+    {
+      SONOS::RequestBroker::ResourcePtr res = gSonos->GetRequestBroker("pulse")->GetResource("pulse");
+      if (res && gSonos->GetPlayer()->PlayMyStream(res->uri, res->description, res->iconUri))
+        ERROR("Succeeded\n");
+      else
+        ERROR("Failed\n");
+    }
+#endif
     else if (token == "PLAYURL")
     {
       if (++it != tokens.end())
@@ -688,7 +741,7 @@ bool parseCommand(const std::string& line)
   return true;
 }
 
-void readStream(std::istream *file)
+static void readStream(std::istream *file)
 {
   while (*file)
   {
