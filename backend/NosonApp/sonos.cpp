@@ -23,6 +23,11 @@
 #include <noson/contentdirectory.h>
 #include "listmodel.h"
 #include "alarmsmodel.h"
+#include <noson/requestbroker.h>
+#include <noson/imageservice.h>
+#ifdef HAVE_PULSEAUDIO
+#include <noson/pulsestreamer.h>
+#endif
 
 #include <QString>
 
@@ -83,6 +88,11 @@ Sonos::Sonos(QObject* parent)
 , m_locale("en_US")
 {
   SONOS::DBGLevel(2);
+  // Register handlers to process remote request
+  m_system.RegisterRequestBroker(SONOS::RequestBrokerPtr(new SONOS::ImageService()));
+#ifdef HAVE_PULSEAUDIO
+  m_system.RegisterRequestBroker(SONOS::RequestBrokerPtr(new SONOS::PulseStreamer()));
+#endif
 }
 
 Sonos::~Sonos()
