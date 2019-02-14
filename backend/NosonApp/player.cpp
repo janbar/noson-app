@@ -327,6 +327,49 @@ bool Player::playStream(const QString& url, const QString& title)
   return false;
 }
 
+class playPulseWorker : public SONOS::OS::CWorker
+{
+public:
+  playPulseWorker(Player& player)
+  : m_player(player)
+  { }
+
+  virtual void Process()
+  {
+    m_player.beginJob();
+    if (!m_player.playPulse())
+      emit m_player.jobFailed();
+    m_player.endJob();
+  }
+private:
+  Player& m_player;
+};
+
+bool Player::startPlayPulse()
+{
+  return m_sonos->startJob(new playPulseWorker(*this));
+}
+
+bool Player::playPulse()
+{
+  if (m_player && m_sonos->havePulseAudio())
+  {
+    SONOS::RequestBroker::ResourcePtr res = m_sonos->getSystem().GetRequestBroker("pulse")->GetResource("pulse");
+    return (res && m_player->PlayMyStream(res->uri, res->description, res->iconUri));
+  }
+  return false;
+}
+
+bool Player::isPulseStream(const QString &url)
+{
+  if (m_player)
+  {
+    SONOS::RequestBroker::ResourcePtr res = m_sonos->getSystem().GetRequestBroker("pulse")->GetResource("pulse");
+    return url.contains(res->uri.c_str()) && m_player->IsMyStream(url.toUtf8().constData());
+  }
+  return false;
+}
+
 bool Player::playLineIN()
 {
   return m_player ? m_player->PlayLineIN() : false;

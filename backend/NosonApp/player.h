@@ -84,6 +84,11 @@ public:
 
   Q_INVOKABLE bool startPlayStream(const QString& url, const QString& title); // asynchonous
   Q_INVOKABLE bool playStream(const QString& url, const QString& title);
+
+  Q_INVOKABLE bool startPlayPulse(); // asynchonous
+  Q_INVOKABLE bool playPulse();
+  Q_INVOKABLE bool isPulseStream(const QString& url);
+
   Q_INVOKABLE bool playLineIN();
   Q_INVOKABLE bool playDigitalIN();
   Q_INVOKABLE bool playQueue(bool start);
