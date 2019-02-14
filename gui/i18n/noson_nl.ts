@@ -517,61 +517,67 @@
 <context>
     <name>DialogSelectSource</name>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="26"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="27"/>
         <source>Select source</source>
         <extracomment>this is a title of a dialog to select source</extracomment>
         <translation>Bron selecteren</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="39"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="40"/>
         <source>Close</source>
         <translation>Sluiten</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="59"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="60"/>
         <source>Enter stream URL</source>
         <translation>Voer de stream-URL in</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="67"/>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="83"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="68"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="84"/>
         <source>Playing failed.</source>
         <translation>Het afspelen is mislukt.</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="75"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="76"/>
         <source>Play stream</source>
         <translation>Stream afspelen</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="89"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="90"/>
         <source>Please type in an URL.</source>
         <translation>Voer een URL in.</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="98"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="99"/>
         <source>Select the audio input.</source>
         <translation>Selecteer de audio-invoerbron.</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="107"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="108"/>
         <source>Queue</source>
         <translation>Wachtrij</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="108"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="109"/>
         <source>Play line IN</source>
         <translation>Line IN afspelen</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="109"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="110"/>
         <source>Play TV</source>
         <translation>TV afspelen</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="127"/>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="133"/>
-        <location filename="../components/Dialog/DialogSelectSource.qml" line="139"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="114"/>
+        <source>Play PulseAudio</source>
+        <translation>PulseAudio afspelen</translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="134"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="140"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="146"/>
+        <location filename="../components/Dialog/DialogSelectSource.qml" line="152"/>
         <source>Action can&apos;t be performed</source>
         <translation>De actie kan niet worden uitgevoerd</translation>
     </message>
@@ -740,10 +746,12 @@
         <translation>Line IN</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogSoundSettings.qml" line="252"/>
+        <location filename="../components/Dialog/DialogSoundSettings.qml" line="251"/>
         <location filename="../components/Dialog/DialogSoundSettings.qml" line="257"/>
         <location filename="../components/Dialog/DialogSoundSettings.qml" line="279"/>
-        <location filename="../components/Dialog/DialogSoundSettings.qml" line="284"/>
+        <location filename="../components/Dialog/DialogSoundSettings.qml" line="285"/>
+        <location filename="../components/Dialog/DialogSoundSettings.qml" line="308"/>
+        <location filename="../components/Dialog/DialogSoundSettings.qml" line="314"/>
         <source>Action can&apos;t be performed</source>
         <translation>De actie kan niet worden uitgevoerd</translation>
     </message>
@@ -1041,7 +1049,7 @@
         <translation>Naamloos</translation>
     </message>
     <message>
-        <location filename="../components/Player.qml" line="351"/>
+        <location filename="../components/Player.qml" line="361"/>
         <source>Action can&apos;t be performed</source>
         <translation>De actie kan niet worden uitgevoerd</translation>
     </message>
