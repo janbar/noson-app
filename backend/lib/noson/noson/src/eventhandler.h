@@ -23,6 +23,8 @@
 
 #include "local_config.h"
 #include "sharedptr.h"
+#include "requestbroker.h"
+#include "locked.h"
 
 #include <string>
 #include <vector>
@@ -57,7 +59,7 @@ namespace NSROOT
   class EventSubscriber
   {
   public:
-    virtual ~EventSubscriber() {};
+    virtual ~EventSubscriber() {}
     virtual void HandleEventMessage(EventMessagePtr msg) = 0;
   };
 
@@ -73,6 +75,11 @@ namespace NSROOT
     unsigned GetPort() const { return m_imp ? m_imp->GetPort(): 0; }
     bool IsRunning() { return m_imp ? m_imp->IsRunning() : false; }
 
+    void RegisterRequestBroker(RequestBrokerPtr rb) { if (m_imp) m_imp->RegisterRequestBroker(rb); }
+    void UnregisterRequestBroker(const std::string& name) { if (m_imp) m_imp->UnregisterRequestBroker(name); }
+    RequestBrokerPtr GetRequestBroker(const std::string& name) { return m_imp ? m_imp->GetRequestBroker(name) : RequestBrokerPtr(); }
+    std::vector<RequestBrokerPtr> AllRequestBroker() { return m_imp ? m_imp->AllRequestBroker() : std::vector<RequestBrokerPtr>(); }
+
     unsigned CreateSubscription(EventSubscriber *sub) { return m_imp ? m_imp->CreateSubscription(sub) : 0; }
     bool SubscribeForEvent(unsigned subid, EVENT_t event) { return m_imp ? m_imp->SubscribeForEvent(subid, event) : false; }
     void RevokeSubscription(unsigned subid) { if (m_imp) m_imp->RevokeSubscription(subid); }
@@ -84,8 +91,8 @@ namespace NSROOT
     public:
       EventHandlerThread(unsigned bindingPort);
       virtual ~EventHandlerThread();
-      virtual std::string GetAddress() const { return m_listenerAddress; }
-      virtual unsigned GetPort() const { return m_port; }
+      std::string GetAddress() const { return m_listenerAddress; }
+      unsigned GetPort() const { return m_port; }
       virtual bool Start() = 0;
       virtual void Stop() = 0;
       virtual bool IsRunning() = 0;
@@ -94,6 +101,15 @@ namespace NSROOT
       virtual void RevokeSubscription(unsigned subid) = 0;
       virtual void RevokeAllSubscriptions(EventSubscriber *sub) = 0;
       virtual void DispatchEvent(const EventMessage& msg) = 0;
+
+      /**
+       * @brief Configure a callback to handle any other requests than supported by the event broker.
+       * @param rb the pointer to the request broker instance or null
+       */
+      virtual void RegisterRequestBroker(RequestBrokerPtr rb) = 0;
+      virtual void UnregisterRequestBroker(const std::string& name) = 0;
+      virtual RequestBrokerPtr GetRequestBroker(const std::string& name) = 0;
+      virtual std::vector<RequestBrokerPtr> AllRequestBroker() = 0;
 
     protected:
       std::string m_listenerAddress;

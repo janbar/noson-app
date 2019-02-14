@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2015 Jean-Luc Barriere
+ *      Copyright (C) 2014-2019 Jean-Luc Barriere
  *
  *  This library is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -147,11 +147,17 @@ static int __connectAddr(struct addrinfo *addr, net_socket_t *s, int rcvbuf)
   if (getsockopt(*s, SOL_SOCKET, SO_RCVBUF, (char *)&opt_rcvbuf, &size))
     DBG(DBG_WARN, "%s: could not get rcvbuf from socket (%d)\n", __FUNCTION__, LASTERROR);
 
+#ifdef SO_NOSIGPIPE
+  int opt_set = 1;
+  if (setsockopt(*s, SOL_SOCKET, SO_NOSIGPIPE, (void *)&opt_set, sizeof(int)))
+    DBG(DBG_WARN, "%s: could not set nosigpipe from socket (%d)\n", __FUNCTION__, LASTERROR);
+#endif
+
 #ifndef __WINDOWS__
   old_sighandler = signal(SIGALRM, __sigHandler);
   old_alarm = alarm(5);
-#endif
   my_socket = *s;
+#endif
   if (connect(*s, addr->ai_addr, addr->ai_addrlen) < 0)
   {
     err = LASTERROR;
@@ -163,8 +169,8 @@ static int __connectAddr(struct addrinfo *addr, net_socket_t *s, int rcvbuf)
 #endif
     return err;
   }
-  my_socket = INVALID_SOCKET_VALUE;
 #ifndef __WINDOWS__
+  my_socket = INVALID_SOCKET_VALUE;
   signal(SIGALRM, old_sighandler);
   alarm(old_alarm);
 #endif
@@ -231,12 +237,69 @@ bool TcpSocket::SendData(const char *msg, size_t size)
 {
   if (IsValid())
   {
+
+#if defined(__WINDOWS__) || defined(SO_NOSIGPIPE)
     size_t s = send(m_socket, msg, size, 0);
     if (s != size)
     {
       m_errno = LASTERROR;
       return false;
     }
+#elif defined(MSG_NOSIGNAL)
+    size_t s = send(m_socket, msg, size, MSG_NOSIGNAL);
+    if (s != size)
+    {
+      m_errno = LASTERROR;
+      return false;
+    }
+#else
+    sigset_t sig_block, sig_restore, sig_pending;
+    sigemptyset(&sig_block);
+    sigaddset(&sig_block, SIGPIPE);
+    /*
+     * Block SIGPIPE for this thread.
+     * This works since kernel sends SIGPIPE to the thread that called write(),
+     * not to the whole process.
+     */
+    if (pthread_sigmask(SIG_BLOCK, &sig_block, &sig_restore) != 0)
+      return false;
+    /*
+     * Check if SIGPIPE is already pending.
+     */
+    int sigpipe_pending = -1;
+    if (sigpending(&sig_pending) != -1)
+      sigpipe_pending = sigismember(&sig_pending, SIGPIPE);
+    if (sigpipe_pending == -1)
+    {
+      pthread_sigmask(SIG_SETMASK, &sig_restore, NULL);
+      return false;
+    }
+
+    size_t s = send(m_socket, msg, size, 0);
+    if (s != size)
+    {
+      m_errno = LASTERROR;
+      /*
+       * Fetch generated SIGPIPE if write() failed with EPIPE.
+       * However, if SIGPIPE was already pending before calling write(), it was
+       * also generated and blocked by caller, and caller may expect that it can
+       * fetch it later. Since signals are not queued, we don't fetch it in this
+       * case.
+       */
+      if (m_errno == EPIPE && sigpipe_pending == 0)
+      {
+        struct timespec ts;
+        ts.tv_sec = 0;
+        ts.tv_nsec = 0;
+        int sig;
+        while ((sig = sigtimedwait(&sig_block, 0, &ts)) == -1 && LASTERROR == EINTR);
+      }
+      pthread_sigmask(SIG_SETMASK, &sig_restore, NULL);
+      return false;
+    }
+    pthread_sigmask(SIG_SETMASK, &sig_restore, NULL);
+#endif
+
     m_errno = 0;
     return true;
   }
@@ -469,6 +532,7 @@ bool TcpServerSocket::Create(SOCKET_AF_t af)
     DBG(DBG_ERROR, "%s: could not set reuseaddr from socket (%d)\n", __FUNCTION__, m_errno);
     return false;
   }
+
   return true;
 }
 
@@ -540,6 +604,13 @@ bool TcpServerSocket::AcceptConnection(TcpSocket& socket)
     DBG(DBG_ERROR, "%s: accept failed (%d)\n", __FUNCTION__, m_errno);
     return false;
   }
+
+#ifdef SO_NOSIGPIPE
+  int opt_set = 1;
+  if (setsockopt(socket.m_socket, SOL_SOCKET, SO_NOSIGPIPE, (void *)&opt_set, sizeof(int)))
+    DBG(DBG_WARN, "%s: could not set nosigpipe from socket (%d)\n", __FUNCTION__, LASTERROR);
+#endif
+
   socket.SetReadAttempt(0);
   return true;
 }

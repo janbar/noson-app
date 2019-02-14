@@ -118,6 +118,9 @@ namespace NSROOT
     bool SetTreble(const std::string& uuid, int8_t value);
 
     bool SetCurrentURI(const DigitalItemPtr& item);
+    bool PlayMyStream(const std::string& streamURI, const std::string& title, const std::string& iconURI);
+    bool IsMyStream(const std::string& streamURL);
+    bool PlayStream(const std::string& streamURL, const std::string& title, const std::string& iconURL);
     bool PlayStream(const std::string& streamURL, const std::string& title);
     bool PlayQueue(bool start);
     unsigned AddURIToQueue(const DigitalItemPtr& item, unsigned position);
@@ -177,6 +180,11 @@ namespace NSROOT
     EventCB m_eventCB;
     Locked<bool> m_eventSignaled;
     Locked<unsigned char> m_eventMask;
+
+    // the name and address of this controller
+    std::string m_controllerName;
+    std::string m_controllerHost;
+    std::string m_controllerUri;
 
     // special uri
     std::string m_queueURI;

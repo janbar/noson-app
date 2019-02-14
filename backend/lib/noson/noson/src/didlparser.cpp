@@ -77,11 +77,14 @@ bool DIDLParser::Parse()
     {
       struct { const char* id; const char* parentID; bool restricted; } ref;
       if ((XMLNS::NameEqual(elem->Name(), "item") ||
-              XMLNS::NameEqual(elem->Name(), "container")) &&
-              (ref.id = elem->Attribute("id")) &&
-              (ref.parentID = elem->Attribute("parentID")))
+              XMLNS::NameEqual(elem->Name(), "container")))
       {
-        const char* val = elem->Attribute("restricted");
+        const char* val;
+        val = elem->Attribute("id");
+        ref.id = val ? val : "-1";
+        val = elem->Attribute("parentID");
+        ref.parentID = val ? val : "-1";
+        val = elem->Attribute("restricted");
         if (val && strncmp(val, "true", 4) == 0)
           ref.restricted = true;
         else

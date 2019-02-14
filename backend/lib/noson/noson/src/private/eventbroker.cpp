@@ -238,40 +238,46 @@ void EventBroker::Process()
   }
 
   // Check for others request
-  WSStatus status(HSC_Internal_Server_Error);
-  switch (rb.GetParsedMethod())
+  if (rb.GetParsedMethod() == HRM_HEAD || rb.GetParsedMethod() == HRM_GET)
   {
-    case HRM_HEAD:
-    case HRM_GET:
+    if (rb.GetParsedURI().compare("/") == 0)
     {
-      if (rb.GetParsedURI().compare("/") == 0)
-      {
-        static const char* version_string = "<html><h1>Noson Event Broker</h1><p>Version <b>" LIBVERSION "</b>, compiled on " __DATE__ " at " __TIME__ "</html>";
-        status.Set(HSC_OK);
-        resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage()).append("\r\n");
-        resp.append("CONTENT-TYPE: text/html\r\n");
-        resp.append("CONTENT-LENGTH: ").append(std::to_string(strlen(version_string))).append("\r\n");
-        resp.append("\r\n");
-        resp.append(version_string);
-      }
-      else
-      {
-        EventMessage msg;
-        msg.event = EVENT_UNKNOWN;
-        msg.subject.push_back("GET");
-        msg.subject.push_back(rb.GetParsedURI());
-        m_handler->DispatchEvent(msg);
-        status.Set(HSC_OK);
-        resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage());
-        resp.append("\r\n\r\n");
-      }
-      break;
+      static const char* version_string = "<h1>Noson Event Broker</h1><p>Version <b>" LIBVERSION "</b>, compiled on " __DATE__ " at " __TIME__ " ";
+
+      std::string doc;
+      doc.append("<html><body>")
+          .append(version_string).append("<br>");
+      doc.append("</body></html>");
+
+      WSStatus status(HSC_OK);
+      resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage()).append("\r\n");
+      resp.append("CONTENT-TYPE: text/html\r\n");
+      resp.append("CONTENT-LENGTH: ").append(std::to_string(doc.length())).append("\r\n");
+      resp.append("\r\n");
+      resp.append(doc);
+      m_sockPtr->SendData(resp.c_str(), resp.size());
+      m_sockPtr->Disconnect();
+      return;
     }
-    default:
-      status.Set(HSC_Internal_Server_Error);
-      resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage());
-      resp.append("\r\n\r\n");
+    else
+    {
+      std::vector<RequestBrokerPtr> vect = m_handler->AllRequestBroker();
+      for (std::vector<RequestBrokerPtr>::iterator itrb = vect.begin(); itrb != vect.end(); ++itrb)
+      {
+        // loop until the request is processed
+        if ((*itrb)->HandleRequest(m_sockPtr.get(), rb.GetParsedURI().c_str()))
+        {
+          m_sockPtr->Disconnect();
+          return;
+        }
+      }
+      // bad request!!!
+    }
   }
+
+  WSStatus status(HSC_Bad_Request);
+  resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage());
+  resp.append("\r\n\r\n");
   m_sockPtr->SendData(resp.c_str(), resp.size());
   m_sockPtr->Disconnect();
 }

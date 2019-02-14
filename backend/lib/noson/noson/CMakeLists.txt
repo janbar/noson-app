@@ -17,8 +17,8 @@ endif ()
 ###############################################################################
 # set lib version here
 set (noson_VERSION_MAJOR 1)
-set (noson_VERSION_MINOR 10)
-set (noson_VERSION_PATCH 4)
+set (noson_VERSION_MINOR 11)
+set (noson_VERSION_PATCH 0)
 
 set (noson_VERSION ${noson_VERSION_MAJOR}.${noson_VERSION_MINOR}.${noson_VERSION_PATCH})
 set (NOSON_LIB_VERSION ${noson_VERSION})
@@ -52,7 +52,7 @@ if (NOT MSVC)
   if(COMPILER_SUPPORTS_CXX11)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   else()
-    message(FATAL_ERROR "CXX compiler doesn't support standard c++11") 
+    message(FATAL_ERROR "CXX compiler doesn't support standard c++11")
   endif ()
 endif ()
 
@@ -118,64 +118,108 @@ else ()
    set (CC_INLINE)
 endif ()
 
+# About streamer
+find_package(FLAC)
+find_package(FLAC++)
+find_package(Pulse)
+find_package(Pulse-simple)
+
+if (FLAC++_FOUND AND FLAC_FOUND)
+  set (HAVE_FLAC 1 CACHE INTERNAL "Enable FLAC feature" FORCE)
+  if (PULSESIMPLE_FOUND AND PULSE_FOUND)
+    set (HAVE_PULSEAUDIO 1 CACHE INTERNAL "Enable PulseAudio feature" FORCE)
+  endif ()
+endif ()
+
+set (noson_PUBLIC_DIR "${CMAKE_CURRENT_BINARY_DIR}/public/noson")
+
 # configure the public config file
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/src/local_config.h.in
-                 ${CMAKE_CURRENT_BINARY_DIR}/public/noson/local_config.h)
+                 ${noson_PUBLIC_DIR}/local_config.h)
 
 # Copy the header files to the public folder
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/locked.h
-           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/intrinsic.h
-           DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/sharedptr.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/avtransport.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/contentdirectory.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/deviceproperties.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/didlparser.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/digitalitem.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/element.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/eventhandler.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/renderingcontrol.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/service.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/subscription.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/sonosplayer.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/sonossystem.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/sonostypes.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/sonoszone.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/zonegrouptopology.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/musicservices.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/smapi.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/smapimetadata.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/smaccount.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/alarmclock.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/alarm.h
-          DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+          DESTINATION ${noson_PUBLIC_DIR})
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/requestbroker.h
+          DESTINATION ${noson_PUBLIC_DIR})
 
-file (GLOB PUBLIC_HEADER_FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/public/noson/*.h)
+# Copy headers for streams
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/audioencoder.h
+          DESTINATION ${noson_PUBLIC_DIR})
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/audioformat.h
+          DESTINATION ${noson_PUBLIC_DIR})
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/audiosource.h
+          DESTINATION ${noson_PUBLIC_DIR})
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/audiostream.h
+          DESTINATION ${noson_PUBLIC_DIR})
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/iodevice.h
+          DESTINATION ${noson_PUBLIC_DIR})
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/streambuffer.h
+          DESTINATION ${noson_PUBLIC_DIR})
+if(HAVE_FLAC)
+  file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/flacencoder.h
+            DESTINATION ${noson_PUBLIC_DIR})
+  if(HAVE_PULSEAUDIO)
+    file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/pacontrol.h
+              DESTINATION ${noson_PUBLIC_DIR})
+    file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/pasource.h
+              DESTINATION ${noson_PUBLIC_DIR})
+    file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/pulsestreamer.h
+              DESTINATION ${noson_PUBLIC_DIR})
+  endif()
+endif()
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/imageservice.h
+          DESTINATION ${noson_PUBLIC_DIR})
 
-include_directories (${CMAKE_CURRENT_BINARY_DIR}/public/noson)
+file (GLOB PUBLIC_HEADER_FILES ${noson_PUBLIC_DIR}/*.h)
+
+include_directories (${noson_PUBLIC_DIR})
 
 ###############################################################################
 # add sources
@@ -183,19 +227,97 @@ file (GLOB SRC_FILES
   src/private/*.c
   src/private/*.cpp
   src/private/*.h
-  src/*.cpp
-  src/*.h)
+)
 
-file (GLOB OS_SRC_FILES
-  src/private/os/threads/threadpool.cpp)
+list (APPEND SRC_FILES
+  src/alarmclock.cpp
+  src/alarmclock.h
+  src/alarm.cpp
+  src/alarm.h
+  src/audioencoder.cpp
+  src/audioencoder.h
+  src/audioformat.h
+  src/audiosource.cpp
+  src/audiosource.h
+  src/audiostream.h
+  src/avtransport.cpp
+  src/avtransport.h
+  src/contentdirectory.cpp
+  src/contentdirectory.h
+  src/deviceproperties.cpp
+  src/deviceproperties.h
+  src/didlparser.cpp
+  src/didlparser.h
+  src/digitalitem.cpp
+  src/digitalitem.h
+  src/element.h
+  src/eventhandler.cpp
+  src/eventhandler.h
+  src/imageservice.cpp
+  src/imageservice.h
+  src/intrinsic.cpp
+  src/intrinsic.h
+  src/iodevice.cpp
+  src/iodevice.h
+  src/locked.cpp
+  src/locked.h
+  src/musicservices.cpp
+  src/musicservices.h
+  src/renderingcontrol.cpp
+  src/renderingcontrol.h
+  src/requestbroker.cpp
+  src/requestbroker.h
+  src/service.cpp
+  src/service.h
+  src/sharedptr.h
+  src/smaccount.cpp
+  src/smaccount.h
+  src/smapi.cpp
+  src/smapi.h
+  src/smapimetadata.cpp
+  src/smapimetadata.h
+  src/sonosplayer.cpp
+  src/sonosplayer.h
+  src/sonossystem.cpp
+  src/sonossystem.h
+  src/sonostypes.cpp
+  src/sonostypes.h
+  src/sonoszone.cpp
+  src/sonoszone.h
+  src/streambuffer.cpp
+  src/streambuffer.h
+  src/subscription.cpp
+  src/subscription.h
+  src/zonegrouptopology.cpp
+  src/zonegrouptopology.h
+)
 
-if (MSVC)
-  list (APPEND OS_SRC_FILES
-    src/private/os/windows/winpthreads.c)
+if (HAVE_FLAC)
+  include_directories (${FLAC++_INCLUDE_DIR} ${FLAC_INCLUDE_DIR})
+  list (APPEND STREAM_SRC_FILES
+    src/flacencoder.cpp
+    src/flacencoder.h
+  )
+  if (HAVE_PULSEAUDIO)
+    include_directories (${PULSESIMPLE_INCLUDE_DIR} ${PULSE_INCLUDE_DIR})
+    list (APPEND STREAM_SRC_FILES
+      src/pacontrol.cpp
+      src/pacontrol.h
+      src/pasource.cpp
+      src/pasource.h
+      src/pulsestreamer.cpp
+      src/pulsestreamer.h
+    )
+  endif ()
 endif ()
 
-set (NOSON_SOURCES
-  ${SRC_FILES} ${OS_SRC_FILES})
+set (OS_SRC_FILES src/private/os/threads/threadpool.cpp)
+
+if (MSVC)
+  list (APPEND OS_SRC_FILES src/private/os/windows/winpthreads.c)
+endif ()
+
+set (NOSON_SOURCES ${SRC_FILES} ${OS_SRC_FILES} ${STREAM_SRC_FILES})
 
 ###############################################################################
 # add targets
@@ -206,6 +328,13 @@ endif ()
 if (OPENSSL_FOUND)
   list (APPEND noson_LIBRARIES ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY})
 endif ()
+if(HAVE_FLAC)
+  list(APPEND noson_LIBRARIES ${FLAC++_LIBRARIES} ${FLAC_LIBRARIES})
+endif()
+if(HAVE_PULSEAUDIO)
+  list(APPEND noson_LIBRARIES ${PULSESIMPLE_LIBRARIES} ${PULSE_LIBRARIES})
+endif()
+
 if (MSVC)
   list (APPEND noson_LIBRARIES ws2_32)
 else ()

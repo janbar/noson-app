@@ -28,6 +28,8 @@
 #include "private/debug.h"
 #include "private/uriparser.h"
 #include "private/tokenizer.h"
+#include "private/urlencoder.h"
+#include "private/socket.h"
 #include "didlparser.h"
 #include "sonossystem.h"
 #include "smapimetadata.h"
@@ -165,6 +167,15 @@ void Player::SubordinateRC::FillSRProperty(SRProperty& srp) const
 
 void Player::Init(const Zone& zone)
 {
+  TcpSocket sock;
+  sock.Connect(m_host.c_str(), m_port, 0);
+  m_controllerName = TcpSocket::GetMyHostName();
+  m_controllerHost = sock.GetHostAddrInfo();
+  sock.Disconnect();
+  m_controllerUri.assign(ProtocolTable[Protocol_http])
+      .append("://").append(m_controllerHost)
+      .append(":").append(std::to_string(m_eventHandler.GetPort()));
+
   unsigned subId = m_eventHandler.CreateSubscription(this);
   m_eventHandler.SubscribeForEvent(subId, EVENT_HANDLER_STATUS);
 
@@ -451,25 +462,86 @@ bool Player::SetCurrentURI(const DigitalItemPtr& item)
   return m_AVTransport->SetCurrentURI(item->GetValue("res"), item->DIDL());
 }
 
-bool Player::PlayStream(const std::string& streamURL, const std::string& title)
+bool Player::PlayMyStream(const std::string& streamURI, const std::string& title, const std::string& iconURI)
+{
+  bool hasParam = (streamURI.find("?") != std::string::npos);
+  // define the stream URL for the local handler
+  std::string streamURL;
+  streamURL.assign(m_controllerUri).append(streamURI)
+      .append(hasParam ? "&" : "?")
+      .append("acr=").append(m_controllerName).append(":").append(std::to_string(m_eventHandler.GetPort()));
+  // define the icon URL for the local handler
+  std::string iconURL;
+  iconURL.assign(m_controllerUri).append(iconURI);
+
+  // write my formatted name
+  std::string _title = title;
+  _title.replace(title.find("%s"), 2, m_controllerName);
+  return PlayStream(streamURL, _title, iconURL);
+}
+
+bool Player::IsMyStream(const std::string &streamURL)
+{
+  return (streamURL.find(m_controllerUri) == 0);
+}
+
+bool Player::PlayStream(const std::string& streamURL, const std::string& title, const std::string& iconURL)
 {
   URIParser _uri(streamURL);
-  if (_uri.Scheme())
+  if (_uri.Scheme() && _uri.Path())
   {
-    std::string val;
-    std::string protocolInfo;
-    val.assign(ProtocolTable[Protocol_xRinconMP3Radio]).append(streamURL.substr(streamURL.find(":")));
-    protocolInfo.assign(ProtocolTable[Protocol_xRinconMP3Radio]).append(":*:*:*");
-    // Setup the digital item
-    DigitalItemPtr item(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
-    item->SetProperty(ElementPtr(new Element(DIDL_QNAME_DC "title", title)));
-    ElementPtr res(new Element("res", val));
-    res->SetAttribut("protocolInfo", protocolInfo);
-    item->SetProperty(res);
-    DBG(DBG_DEBUG, "%s: %s\n%s\n", __FUNCTION__, item->GetValue("res").c_str(), item->DIDL().c_str());
-    return SetCurrentURI(item) && m_AVTransport->Play();
+    std::string path(_uri.Path());
+    std::string file = path.substr(0, path.find('?'));
+    std::string mime = file.substr(file.find_last_of('.'));
+    /*
+     * Configure an audio FLAC transfer for any resource with the corresponding extension
+     */
+    if (mime == ".flac")
+    {
+      std::string protocolInfo;
+      protocolInfo.assign(ProtocolTable[Protocol_httpGet]).append(":*:audio/flac:*");
+      // Setup the digital item
+      DigitalItemPtr item(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
+      item->SetProperty(DIDL_QNAME_DC "title", title);
+      if (!iconURL.empty())
+        item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", iconURL);
+      if (!title.empty())
+        item->SetProperty(DIDL_QNAME_RINC "streamContent", title);
+      ElementPtr res(new Element("res", streamURL));
+      res->SetAttribut("protocolInfo", protocolInfo);
+      item->SetProperty(res);
+      DBG(DBG_DEBUG, "%s: %s\n%s\n", __FUNCTION__, item->GetValue("res").c_str(), item->DIDL().c_str());
+      return SetCurrentURI(item) && m_AVTransport->Play();
+    }
+    /*
+     * Else configure as MP3Radio
+     */
+    else
+    {
+      std::string val;
+      std::string protocolInfo;
+      val.assign(ProtocolTable[Protocol_xRinconMP3Radio]).append(streamURL.substr(streamURL.find(":")));
+      protocolInfo.assign(ProtocolTable[Protocol_xRinconMP3Radio]).append(":*:*:*");
+      // Setup the digital item
+      DigitalItemPtr item(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
+      item->SetProperty(DIDL_QNAME_DC "title", title);
+      if (!iconURL.empty())
+        item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", iconURL);
+      if (!title.empty())
+        item->SetProperty(DIDL_QNAME_RINC "streamContent", title);
+      ElementPtr res(new Element("res", val));
+      res->SetAttribut("protocolInfo", protocolInfo);
+      item->SetProperty(res);
+      DBG(DBG_DEBUG, "%s: %s\n%s\n", __FUNCTION__, item->GetValue("res").c_str(), item->DIDL().c_str());
+      return SetCurrentURI(item) && m_AVTransport->Play();
+    }
   }
   return false;
+}
+
+bool Player::PlayStream(const std::string& streamURL, const std::string& title)
+{
+  return PlayStream(streamURL, title, "");
 }
 
 bool Player::PlayQueue(bool start)

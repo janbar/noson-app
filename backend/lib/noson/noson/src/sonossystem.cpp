@@ -60,7 +60,6 @@ System::System(void* CBHandle, EventCB eventCB)
 
   m_subId = m_eventHandler.CreateSubscription(this);
   m_eventHandler.SubscribeForEvent(m_subId, EVENT_HANDLER_STATUS);
-  m_eventHandler.SubscribeForEvent(m_subId, EVENT_UNKNOWN);
   if (!m_eventHandler.Start())
     DBG(DBG_ERROR, "%s: starting event handler failed\n", __FUNCTION__);
 }
@@ -194,11 +193,6 @@ bool System::IsConnected() const
 
 void System::HandleEventMessage(EventMessagePtr msg)
 {
-  if (msg->subject.size() > 0)
-  {
-    if (msg->subject[0] == "GET" && msg->subject[1] == "/stop")
-      m_eventHandler.Stop();
-  }
 }
 
 AlarmList System::GetAlarmList() const
@@ -228,6 +222,21 @@ bool System::DestroyAlarm(const std::string& id)
   if (!m_alarmClock)
     return false;
   return m_alarmClock->DestroyAlarm(id);
+}
+
+void System::RegisterRequestBroker(RequestBrokerPtr rb)
+{
+  m_eventHandler.RegisterRequestBroker(rb);
+}
+
+void System::UnregisterRequestBroker(const std::string& name)
+{
+  m_eventHandler.UnregisterRequestBroker(name);
+}
+
+RequestBrokerPtr System::GetRequestBroker(const std::string &name)
+{
+  return m_eventHandler.GetRequestBroker(name);
 }
 
 bool System::ExtractObjectFromFavorite(const DigitalItemPtr& favorite, DigitalItemPtr& item)
