@@ -1,4 +1,9 @@
-noson-app (3.9) UNRELEASED; urgency=low
+noson-app (3.10) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 3.10
+  * Streams the pulseaudio output
+  * minor fixes
 
   [ janbar ]
   * Release 3.9
