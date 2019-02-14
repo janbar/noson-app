@@ -246,12 +246,12 @@ Item {
                     checked: (player.currentProtocol === 1)
                     onClicked: {
                         if (checked) {
-                            playTV.checked = false;
                             if (!player.playLineIN()) {
                                 checked = false;
                                 popInfo.open(qsTr("Action can't be performed"));
                             } else {
                                 playTV.checked = false
+                                playPulse.checked = false
                             }
                         } else if (!player.playQueue(false)) {
                             popInfo.open(qsTr("Action can't be performed"));
@@ -279,6 +279,7 @@ Item {
                                 popInfo.open(qsTr("Action can't be performed"));
                             } else {
                                 playIN.checked = false
+                                playPulse.checked = false
                             }
                         } else if (!player.playQueue(false)) {
                             popInfo.open(qsTr("Action can't be performed"))
@@ -287,6 +288,35 @@ Item {
                     Connections {
                         target: player
                         onCurrentProtocolChanged: playTV.checked = (player.currentProtocol === 5)
+                    }
+                }
+                MusicCheckBox {
+                    id: playPulse
+                    visible: Sonos.havePulseAudio()
+                    anchors.right: parent.right
+                    anchors.rightMargin: units.gu(1)
+                    anchors.left: parent.left
+                    anchors.leftMargin: units.gu(1)
+                    text: "PulseAudio" // not translated
+                    textAlignment: Text.AlignHCenter
+                    font.pointSize: units.fs("small")
+                    checked: (player.isPulseStream())
+                    onClicked: {
+                        if (checked) {
+                            if (!player.playPulse()) {
+                                checked = false;
+                                popInfo.open(qsTr("Action can't be performed"));
+                            } else {
+                                playIN.checked = false
+                                playTV.checked = false
+                            }
+                        } else if (!player.playQueue(false)) {
+                            popInfo.open(qsTr("Action can't be performed"));
+                        }
+                    }
+                    Connections {
+                        target: player
+                        onCurrentMetaSourceChanged: playPulse.checked = (player.isPulseStream())
                     }
                 }
             }

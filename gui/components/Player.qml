@@ -309,6 +309,14 @@ Item {
         return playerLoader.item.playDigitalIN()
     }
 
+    function playPulse() {
+        return playerLoader.item.playPulse()
+    }
+
+    function isPulseStream() {
+        return playerLoader.item.isPulseStream(currentMetaSource);
+    }
+
     function addItemToFavorites(modelItem, description, artURI) {
         return playerLoader.item.addItemToFavorites(modelItem.payload, description, artURI);
     }

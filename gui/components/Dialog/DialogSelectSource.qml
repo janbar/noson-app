@@ -18,6 +18,7 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
+import NosonApp 1.0
 
 
 DialogBase {
@@ -107,6 +108,12 @@ DialogBase {
         ListElement { text: qsTr("Queue") }
         ListElement { text: qsTr("Play line IN") }
         ListElement { text: qsTr("Play TV") }
+
+        Component.onCompleted: {
+            if (Sonos.havePulseAudio()) {
+                selectorModel.append( {'text': qsTr("Play PulseAudio") } );
+            }
+        }
     }
 
     ComboBox {
@@ -136,6 +143,12 @@ DialogBase {
                     break;
                 case 2:
                     if (!player.playDigitalIN())
+                        popInfo.open(qsTr("Action can't be performed"))
+                    else
+                        dialog.accept()
+                    break;
+                case 3:
+                    if (!player.playPulse())
                         popInfo.open(qsTr("Action can't be performed"))
                     else
                         dialog.accept()
