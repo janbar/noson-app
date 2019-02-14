@@ -54,6 +54,7 @@ const char* NSROOT::ProtocolTable[Protocol_unknown + 1] = {
   "http-get",
   "file",
   "aac",
+  "http",
   ""
 };
 

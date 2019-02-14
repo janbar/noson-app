@@ -195,6 +195,11 @@ public:
     return normalizedString(str);
   }
 
+  Q_INVOKABLE static bool havePulseAudio()
+  {
+    return SONOS::System::HavePulseAudio();
+  }
+
 signals:
   void initDone(bool succeeded);
   void loadingStarted();

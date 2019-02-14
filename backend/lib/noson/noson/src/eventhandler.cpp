@@ -162,6 +162,11 @@ namespace NSROOT
     virtual bool Start();
     virtual void Stop();
     virtual bool IsRunning();
+    virtual void RegisterRequestBroker(RequestBrokerPtr rb);
+    virtual void UnregisterRequestBroker(const std::string& name);
+    virtual void UnregisterAllRequestBroker();
+    virtual RequestBrokerPtr GetRequestBroker(const std::string& name);
+    virtual std::vector<RequestBrokerPtr> AllRequestBroker();
     virtual unsigned CreateSubscription(EventSubscriber *sub);
     virtual bool SubscribeForEvent(unsigned subid, EVENT_t event);
     virtual void RevokeSubscription(unsigned subid);
@@ -182,14 +187,18 @@ namespace NSROOT
     virtual void* Process(void);
     void AnnounceStatus(const char *status);
     void AnnounceTimer();
+
+    typedef std::map<std::string, RequestBrokerPtr> RBList;
+    Locked<RBList> m_RBList;
   };
 }
 
 BasicEventHandler::BasicEventHandler(unsigned bindingPort)
 : EventHandlerThread(bindingPort), OS::CThread()
 , m_socket(new TcpServerSocket)
+, m_RBList(RBList())
 {
-  m_threadpool.SetMaxSize(5);
+  m_threadpool.SetMaxSize(8);
   m_threadpool.SetKeepAlive(60000);
   m_threadpool.Start();
 }
@@ -197,6 +206,7 @@ BasicEventHandler::BasicEventHandler(unsigned bindingPort)
 BasicEventHandler::~BasicEventHandler()
 {
   Stop();
+  UnregisterAllRequestBroker();
   m_threadpool.Suspend();
   {
     OS::CLockGuard lock(m_mutex);
@@ -235,6 +245,56 @@ void BasicEventHandler::Stop()
 bool BasicEventHandler::IsRunning()
 {
   return OS::CThread::IsRunning();
+}
+
+void BasicEventHandler::RegisterRequestBroker(RequestBrokerPtr rb)
+{
+  if (!rb)
+    return;
+  DBG(DBG_DEBUG, "%s: register (%s)\n", __FUNCTION__, rb->CommonName());
+  m_RBList.Get()->insert(std::make_pair(rb->CommonName(), rb));
+}
+
+void BasicEventHandler::UnregisterRequestBroker(const std::string &name)
+{
+  DBG(DBG_DEBUG, "%s: unregister (%s)\n", __FUNCTION__, name.c_str());
+  Locked<RBList>::pointer p = m_RBList.Get();
+  RBList::const_iterator it = p->find(name);
+  if (it != p->end())
+  {
+    it->second->Abort();
+    p->erase(it);
+  }
+}
+
+void BasicEventHandler::UnregisterAllRequestBroker()
+{
+  Locked<RBList>::pointer p = m_RBList.Get();
+  for (RBList::iterator it = p->begin(); it != p->end(); ++it)
+  {
+    DBG(DBG_DEBUG, "%s: unregister (%s)\n", __FUNCTION__, it->second->CommonName());
+    it->second->Abort();
+  }
+  p->clear();
+}
+
+RequestBrokerPtr BasicEventHandler::GetRequestBroker(const std::string &name)
+{
+  Locked<RBList>::pointer p = m_RBList.Get();
+  RBList::const_iterator it = p->find(name);
+  if (it != p->end())
+    return it->second;
+  return RequestBrokerPtr();
+}
+
+std::vector<RequestBrokerPtr> BasicEventHandler::AllRequestBroker()
+{
+  std::vector<RequestBrokerPtr> vect;
+  Locked<RBList>::pointer p = m_RBList.Get();
+  vect.reserve(p->size());
+  for (RBList::iterator it = p->begin(); it != p->end(); ++it)
+    vect.push_back(it->second);
+  return vect;
 }
 
 unsigned BasicEventHandler::CreateSubscription(EventSubscriber* sub)
@@ -350,7 +410,7 @@ void *BasicEventHandler::Process()
         SHARED_PTR<TcpSocket> sockPtr(new TcpSocket);
         if (!m_socket->AcceptConnection(*sockPtr))
         {
-          DBG(DBG_DEBUG, "%s: accept failed (%d)\n", __FUNCTION__, m_socket->GetErrNo());
+          DBG(DBG_ERROR, "%s: accept failed (%d)\n", __FUNCTION__, m_socket->GetErrNo());
           AnnounceStatus(EVENTHANDLER_FAILED);
           break;
         }

@@ -309,6 +309,14 @@ Item {
         return playerLoader.item.playDigitalIN()
     }
 
+    function playPulse() {
+        return playerLoader.item.playPulse()
+    }
+
+    function isPulseStream() {
+        return playerLoader.item.isPulseStream(currentMetaSource);
+    }
+
     function addItemToFavorites(modelItem, description, artURI) {
         return playerLoader.item.addItemToFavorites(modelItem.payload, description, artURI);
     }
@@ -323,9 +331,11 @@ Item {
 
     function canSeekInStream() {
         switch (currentProtocol) {
-        case 1:
-        case 2:
-        case 5:
+        case 1:  // x-rincon-stream
+        case 2:  // x-rincon-mp3radio
+        case 5:  // x-sonos-htastream
+        case 14: // http-get
+        case 17: // http
             return false;
         default:
             return true;

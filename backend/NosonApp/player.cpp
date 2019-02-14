@@ -327,6 +327,49 @@ bool Player::playStream(const QString& url, const QString& title)
   return false;
 }
 
+class playPulseWorker : public SONOS::OS::CWorker
+{
+public:
+  playPulseWorker(Player& player)
+  : m_player(player)
+  { }
+
+  virtual void Process()
+  {
+    m_player.beginJob();
+    if (!m_player.playPulse())
+      emit m_player.jobFailed();
+    m_player.endJob();
+  }
+private:
+  Player& m_player;
+};
+
+bool Player::startPlayPulse()
+{
+  return m_sonos->startJob(new playPulseWorker(*this));
+}
+
+bool Player::playPulse()
+{
+  if (m_player && m_sonos->havePulseAudio())
+  {
+    SONOS::RequestBroker::ResourcePtr res = m_sonos->getSystem().GetRequestBroker("pulse")->GetResource("pulse");
+    return (res && m_player->PlayMyStream(res->uri, res->description, res->iconUri));
+  }
+  return false;
+}
+
+bool Player::isPulseStream(const QString &url)
+{
+  if (m_player)
+  {
+    SONOS::RequestBroker::ResourcePtr res = m_sonos->getSystem().GetRequestBroker("pulse")->GetResource("pulse");
+    return url.contains(res->uri.c_str()) && m_player->IsMyStream(url.toUtf8().constData());
+  }
+  return false;
+}
+
 bool Player::playLineIN()
 {
   return m_player ? m_player->PlayLineIN() : false;
@@ -613,8 +656,8 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
   {
     QString port;
     port.setNum(m_player->GetPort());
-    QString url = "http://";
-    url.append(m_player->GetHost().c_str()).append(":").append(port);
+    QString playerUrl = "http://";
+    playerUrl.append(m_player->GetHost().c_str()).append(":").append(port);
 
     m_currentProtocol = m_player->GetURIProtocol(prop.CurrentTrackURI);
     m_currentMetaSource = QString::fromUtf8(prop.CurrentTrackURI.c_str());
@@ -625,38 +668,41 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
     if (sscanf(prop.CurrentTrackDuration.c_str(), "%u:%u:%u", &hh, &hm, &hs) == 3)
       m_currentTrackDuration = hh * 3600 + hm * 60 + hs;
 
-    if (prop.CurrentTrackMetaData)
+    QString artUri;
+    // Postulate: stream has 0 duration
+    if (m_currentTrackDuration == 0)
     {
-      QString uri;
-      // Postulate: stream has 0 duration
-      if (m_currentTrackDuration == 0)
+      // stream
+      if (prop.AVTransportURIMetaData)
       {
-        // stream
-        uri = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:albumArtURI").c_str());
+        artUri = QString::fromUtf8(prop.AVTransportURIMetaData->GetValue("upnp:albumArtURI").c_str());
         if (prop.TransportState.compare("TRANSITIONING") == 0)
           m_currentMetaTitle = m_currentMetaURITitle;
         else
         {
-          m_currentMetaTitle = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("r:streamContent").c_str());
+          m_currentMetaTitle = QString::fromUtf8(prop.AVTransportURIMetaData->GetValue("r:streamContent").c_str());
           // fallback to uri title then title
           if (m_currentMetaTitle.isEmpty())
-            m_currentMetaTitle = !m_currentMetaURITitle.isEmpty() ? m_currentMetaURITitle : QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("dc:title").c_str());
+            m_currentMetaTitle = !m_currentMetaURITitle.isEmpty() ? m_currentMetaURITitle : QString::fromUtf8(prop.AVTransportURIMetaData->GetValue("dc:title").c_str());
         }
-        m_currentMetaAlbum = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:album").c_str());
+        m_currentMetaAlbum = QString::fromUtf8(prop.AVTransportURIMetaData->GetValue("upnp:album").c_str());
         m_currentMetaArtist = "";
       }
-      else
-      {
-        // file
-        uri = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:albumArtURI").c_str());
-        m_currentMetaTitle = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("dc:title").c_str());
-        m_currentMetaAlbum = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:album").c_str());
-        m_currentMetaArtist = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("dc:creator").c_str());
-        m_currentIndex = prop.CurrentTrack - 1; // playing queue
-      }
-      if (!uri.isEmpty())
-        m_currentMetaArt = url + uri;
     }
+    else if (prop.CurrentTrackMetaData)
+    {
+      // file
+      artUri = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:albumArtURI").c_str());
+      m_currentMetaTitle = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("dc:title").c_str());
+      m_currentMetaAlbum = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:album").c_str());
+      m_currentMetaArtist = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("dc:creator").c_str());
+      m_currentIndex = prop.CurrentTrack - 1; // playing queue
+    }
+
+    if (artUri.startsWith("/"))
+      m_currentMetaArt = playerUrl + artUri;
+    else
+      m_currentMetaArt = artUri;
   }
 }
 

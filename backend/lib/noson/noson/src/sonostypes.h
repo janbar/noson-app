@@ -87,6 +87,7 @@ namespace NSROOT
     Protocol_httpGet,
     Protocol_file,
     Protocol_aac,
+    Protocol_http,
     Protocol_unknown,
   } Protocol_t;
 
