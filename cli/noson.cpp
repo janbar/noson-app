@@ -84,7 +84,7 @@ int main(int argc, char** argv)
   SONOS::DBGLevel(DBG_ERROR);
 
   if (getCmd(argv, argv + argc, "--debug"))
-    SONOS::DBGLevel(DBG_DEBUG);
+    SONOS::DBGLevel(DBG_PROTO);
 
 #ifdef __WINDOWS__
   //Initialize Winsock

@@ -697,10 +697,13 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
         else
         {
           m_currentMetaTitle = m_currentMetaURITitle;
-          const std::string& radioShowMd = prop.CurrentTrackMetaData->GetValue("r:radioShowMd");
-          std::string radioShow = radioShowMd.substr(0, radioShowMd.find_last_of(","));
-          if (!radioShow.empty())
-            m_currentMetaArtist = QString::fromUtf8(radioShow.c_str());
+          std::string content = prop.CurrentTrackMetaData->GetValue("r:streamContent");
+          if (content.empty())
+          {
+            const std::string& radioShowMd = prop.CurrentTrackMetaData->GetValue("r:radioShowMd");
+            content = radioShowMd.substr(0, radioShowMd.find_last_of(","));
+          }
+          m_currentMetaArtist = QString::fromUtf8(content.c_str());
         }
       }
     }
