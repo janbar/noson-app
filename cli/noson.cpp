@@ -230,10 +230,12 @@ static bool parseCommand(const std::string& line)
         while(++it != tokens.end())
           param.append(" ").append(*it);
         SONOS::ZoneList zones = gSonos->GetZoneList();
+        bool found = false;
         for (SONOS::ZoneList::const_iterator iz = zones.begin(); iz != zones.end(); ++iz)
         {
           if (iz->second->GetZoneName() == param)
           {
+            found = true;
             if (gSonos->ConnectZone(iz->second, 0, 0))
               ERROR1("Connected to zone %s\n", gSonos->GetConnectedZone()->GetZoneName().c_str());
             else
@@ -241,6 +243,8 @@ static bool parseCommand(const std::string& line)
             break;
           }
         }
+        if (!found)
+          ERROR("Not found\n");
       }
       else
         ERROR("Error: Missing arguments.\n");
@@ -262,6 +266,8 @@ static bool parseCommand(const std::string& line)
       PRINT1("CurrentTrackDuration = %s\n", props.CurrentTrackDuration.c_str());
       PRINT1("CurrentTrackURI = [%s]\n", props.CurrentTrackURI.c_str());
       PRINT1("CurrentTrackTitle = [%s]\n", props.CurrentTrackMetaData ? props.CurrentTrackMetaData->GetValue("dc:title").c_str() : "null");
+      PRINT1("CurrentTrackAlbum = [%s]\n", props.CurrentTrackMetaData ? props.CurrentTrackMetaData->GetValue("upnp:album").c_str() : "null");
+      PRINT1("CurrentTrackArtist = [%s]\n", props.CurrentTrackMetaData ? props.CurrentTrackMetaData->GetValue("dc:creator").c_str() : "null");
       PRINT1("CurrentCrossfadeMode = %s\n", props.CurrentCrossfadeMode.c_str());
       PRINT1("CurrentPlayMode = %s\n", props.CurrentPlayMode.c_str());
       PRINT1("CurrentTransportActions = %s\n", props.CurrentTransportActions.c_str());
