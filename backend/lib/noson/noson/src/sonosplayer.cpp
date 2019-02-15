@@ -503,10 +503,9 @@ bool Player::PlayStream(const std::string& streamURL, const std::string& title, 
       // Setup the digital item
       DigitalItemPtr item(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
       item->SetProperty(DIDL_QNAME_DC "title", title);
+      item->SetProperty(DIDL_QNAME_RINC "streamContent", "");
       if (!iconURL.empty())
         item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", iconURL);
-      if (!title.empty())
-        item->SetProperty(DIDL_QNAME_RINC "streamContent", title);
       ElementPtr res(new Element("res", streamURL));
       res->SetAttribut("protocolInfo", protocolInfo);
       item->SetProperty(res);
@@ -525,10 +524,9 @@ bool Player::PlayStream(const std::string& streamURL, const std::string& title, 
       // Setup the digital item
       DigitalItemPtr item(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
       item->SetProperty(DIDL_QNAME_DC "title", title);
+      item->SetProperty(DIDL_QNAME_RINC "streamContent", "");
       if (!iconURL.empty())
         item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", iconURL);
-      if (!title.empty())
-        item->SetProperty(DIDL_QNAME_RINC "streamContent", title);
       ElementPtr res(new Element("res", val));
       res->SetAttribut("protocolInfo", protocolInfo);
       item->SetProperty(res);
