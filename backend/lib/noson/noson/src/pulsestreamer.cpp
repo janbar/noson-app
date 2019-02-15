@@ -27,7 +27,7 @@
 #include <cstring>
 
 #define PULSESTREAMER_URI       "/music/track.flac?id=pulse"
-#define PULSESTREAMER_ICON_URI  "/images/pulseaudio.png"
+#define PULSESTREAMER_ICON_URI  "/images/pulseaudio.png?id=2"
 #define PULSESTREAMER_CONTENT   "audio/flac"
 #define PULSESTREAMER_DESC      "Audio stream from %s"
 #define PULSESTREAMER_TIMEOUT   10000
