@@ -15,6 +15,7 @@ The build can be achieved on any platform supporting Qt version 5.9. See `debian
 
 ### Linux/BSD
 
+- Install the packages `libpulse-dev`, `libflac-dev`, `libflac++-dev` to enable the stream output feature. 
 - `git clone https://github.com/janbar/noson-app.git`
 - `cd noson-app && mkdir build && cd build`
 - `cmake -DCMAKE_BUILD_TYPE=Release ..`
