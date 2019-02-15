@@ -686,27 +686,25 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
     // Handle stream. Postulate: duration is zero
     if (m_currentTrackDuration == 0)
     {
-      // stream
       if (prop.CurrentTrackMetaData)
       {
         artUri = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:albumArtURI").c_str());
         // On the transitionning state, use the title from the metadata of transport
         if (prop.TransportState.compare("TRANSITIONING") == 0)
+        {
           m_currentMetaTitle = m_currentMetaURITitle;
+        }
         else
         {
-          std::string title;
+          m_currentMetaTitle = m_currentMetaURITitle;
           const std::string& radioShowMd = prop.CurrentTrackMetaData->GetValue("r:radioShowMd");
-          title = radioShowMd.substr(0, radioShowMd.find_last_of(","));
-          if (title.empty())
-            m_currentMetaTitle = m_currentMetaURITitle;
-          else
-            m_currentMetaTitle = QString::fromUtf8(title.c_str());
+          std::string radioShow = radioShowMd.substr(0, radioShowMd.find_last_of(","));
+          if (!radioShow.empty())
+            m_currentMetaArtist = QString::fromUtf8(radioShow.c_str());
         }
-        m_currentMetaAlbum = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:album").c_str());
-        m_currentMetaArtist = "";
       }
     }
+    // Handle track
     else if (prop.CurrentTrackMetaData)
     {
       // file
@@ -714,7 +712,7 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
       m_currentMetaTitle = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("dc:title").c_str());
       m_currentMetaAlbum = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:album").c_str());
       m_currentMetaArtist = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("dc:creator").c_str());
-      m_currentIndex = prop.CurrentTrack - 1; // playing queue
+      m_currentIndex = static_cast<int>(prop.CurrentTrack) - 1; // playing queue
     }
 
     if (artUri.startsWith("/"))
