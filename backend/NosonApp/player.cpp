@@ -667,33 +667,43 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
     QString playerUrl = "http://";
     playerUrl.append(m_player->GetHost().c_str()).append(":").append(port);
 
+    // Set the protocol
     m_currentProtocol = m_player->GetURIProtocol(prop.CurrentTrackURI);
+
+    // Set the source (URI)
     m_currentMetaSource = QString::fromUtf8(prop.CurrentTrackURI.c_str());
+
+    // Set the URI title from 'r_EnqueuedTransportURIMetaData'. Also it is the default title.
     if (prop.r_EnqueuedTransportURIMetaData)
       m_currentMetaURITitle = QString::fromUtf8(prop.r_EnqueuedTransportURIMetaData->GetValue("dc:title").c_str());
 
+    // Set the duration for a track. It is zero for a stream.
     unsigned hh, hm, hs;
     if (sscanf(prop.CurrentTrackDuration.c_str(), "%u:%u:%u", &hh, &hm, &hs) == 3)
-      m_currentTrackDuration = hh * 3600 + hm * 60 + hs;
+      m_currentTrackDuration = static_cast<int>(hh * 3600 + hm * 60 + hs);
 
     QString artUri;
-    // Postulate: stream has 0 duration
+    // Handle stream. Postulate: duration is zero
     if (m_currentTrackDuration == 0)
     {
       // stream
-      if (prop.AVTransportURIMetaData)
+      if (prop.CurrentTrackMetaData)
       {
-        artUri = QString::fromUtf8(prop.AVTransportURIMetaData->GetValue("upnp:albumArtURI").c_str());
+        artUri = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:albumArtURI").c_str());
+        // On the transitionning state, use the title from the metadata of transport
         if (prop.TransportState.compare("TRANSITIONING") == 0)
           m_currentMetaTitle = m_currentMetaURITitle;
         else
         {
-          m_currentMetaTitle = QString::fromUtf8(prop.AVTransportURIMetaData->GetValue("r:streamContent").c_str());
-          // fallback to uri title then title
-          if (m_currentMetaTitle.isEmpty())
-            m_currentMetaTitle = !m_currentMetaURITitle.isEmpty() ? m_currentMetaURITitle : QString::fromUtf8(prop.AVTransportURIMetaData->GetValue("dc:title").c_str());
+          std::string title;
+          const std::string& radioShowMd = prop.CurrentTrackMetaData->GetValue("r:radioShowMd");
+          title = radioShowMd.substr(0, radioShowMd.find_last_of(","));
+          if (title.empty())
+            m_currentMetaTitle = m_currentMetaURITitle;
+          else
+            m_currentMetaTitle = QString::fromUtf8(title.c_str());
         }
-        m_currentMetaAlbum = QString::fromUtf8(prop.AVTransportURIMetaData->GetValue("upnp:album").c_str());
+        m_currentMetaAlbum = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("upnp:album").c_str());
         m_currentMetaArtist = "";
       }
     }
