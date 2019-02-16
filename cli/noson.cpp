@@ -99,9 +99,10 @@ int main(int argc, char** argv)
   if (!gSonos->Discover())
   {
     ERROR("No SONOS zone found.\n");
-    //return EXIT_FAILURE;
+    return EXIT_FAILURE;
   }
-  ERROR("Succeeded\n");
+  else
+    ERROR("Succeeded\n");
 
   /*
    * Register handlers to process remote request
