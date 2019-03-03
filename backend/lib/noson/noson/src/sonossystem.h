@@ -87,6 +87,7 @@ namespace NSROOT
     void RegisterRequestBroker(RequestBrokerPtr rb);
     void UnregisterRequestBroker(const std::string& name);
     RequestBrokerPtr GetRequestBroker(const std::string& name);
+    const std::string& GetSystemLocalUri() { return m_systemLocalUri; }
 
     // helpers
     static bool ExtractObjectFromFavorite(const DigitalItemPtr& favorite, DigitalItemPtr& item);
@@ -132,6 +133,7 @@ namespace NSROOT
     mutable OS::CMutex* m_mutex;
     OS::CEvent* m_cbzgt;
     EventHandler m_eventHandler;
+    std::string m_systemLocalUri;
     unsigned m_subId;
     Subscription m_ZGTSubscription;
     ZoneGroupTopology* m_groupTopology;

@@ -15,19 +15,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#include <map>
-
 #include "imageservice.h"
 #include "private/debug.h"
-#include "data/favicon_ico.h"
-#ifdef HAVE_PULSEAUDIO
-#include "data/pulseaudio_png.h"
-#endif
+#include "data/datareader.h"
+#include "filepicreader.h"
 
+#include <map>
 #include <cstring>
 
+/* Important: It MUST match with the static declaration from datareader.cpp */
 #define IMAGESERVICE_FAVICON  "/favicon.ico"
 #define IMAGESERVICE_IMAGES   "/images/"
+#define RESOURCE_FILEPICTURE  "filePicture"
 
 using namespace NSROOT;
 
@@ -35,7 +34,18 @@ ImageService::ImageService()
 : SONOS::RequestBroker()
 , m_resources()
 {
-  LoadInternalResources(m_resources);
+  // initialize the static resource for favicon
+  {
+    ResourcePtr ptr(new Resource());
+    ptr->uri = IMAGESERVICE_FAVICON;
+    ptr->title = "favicon";
+    ptr->sourcePath = IMAGESERVICE_FAVICON;
+    ptr->delegate = DataReader::Instance();
+    m_resources.insert(std::make_pair(ptr->uri, ptr));
+  }
+
+  // register the picture extractor for local media file
+  RegisterResource(RESOURCE_FILEPICTURE, "The file picture reader", "/file", FilePicReader::Instance());
 }
 
 bool ImageService::HandleRequest(void* handle, const char* uri)
@@ -46,7 +56,7 @@ bool ImageService::HandleRequest(void* handle, const char* uri)
     if (requrl.compare(0, strlen(IMAGESERVICE_IMAGES), IMAGESERVICE_IMAGES) == 0 ||
             requrl.compare(0, strlen(IMAGESERVICE_FAVICON), IMAGESERVICE_FAVICON) == 0)
     {
-      ReplyContent(handle, requrl.substr(0, requrl.find('?')));
+      ReplyContent(handle, uri);
       return true;
     }
   }
@@ -71,10 +81,19 @@ RequestBroker::ResourceList ImageService::GetResourceList()
   return list;
 }
 
-RequestBroker::ResourcePtr ImageService::RegisterResource(const std::string& sourceUrl)
+RequestBroker::ResourcePtr ImageService::RegisterResource(const std::string& title,
+                                                          const std::string& description,
+                                                          const std::string& path,
+                                                          StreamReader * delegate)
 {
-  (void)sourceUrl;
-  return ResourcePtr();
+  ResourcePtr ptr(new Resource());
+  ptr->title = title;
+  ptr->description = description;
+  ptr->sourcePath = path;
+  ptr->delegate = delegate;
+  ptr->uri = RequestBroker::buildUri(IMAGESERVICE_IMAGES, path);
+  m_resources.insert(std::make_pair(ptr->uri, ptr));
+  return ptr;
 }
 
 void ImageService::UnregisterResource(const std::string& uri)
@@ -84,25 +103,46 @@ void ImageService::UnregisterResource(const std::string& uri)
 
 void ImageService::ReplyContent(void * handle, const std::string& uri)
 {
-  ResourceMap::const_iterator it = m_resources.find(uri);
+  // extract the resource uri without trailing args
+  std::string resUri = uri.substr(0, uri.find('?'));
+  ResourceMap::const_iterator it = m_resources.find(resUri);
   if (it == m_resources.end())
     Reply400(handle);
-  else if (!it->second || !it->second->data)
+  else if (!it->second || !it->second->delegate)
     Reply500(handle);
   else
   {
-    ResourcePtr res = it->second;
-    std::string resp;
-    resp.assign("HTTP/1.1 200 OK\r\n")
-        .append("Content-type: ").append(res->contentType).append("\r\n")
-        .append("Content-length: ").append(std::to_string(res->dataSize)).append("\r\n")
-        .append("Server: Linux UPnP/1.0 Noson/1.0 (ACR_noson)\r\n")
-        .append("Connection: close\r\n")
-        .append("\r\n");
-    if (Reply(handle, resp.c_str(), resp.length()))
-      Reply(handle, res->data, res->dataSize);
+    const RequestBroker::ResourcePtr& res = it->second;
+    StreamReader::STREAM * stream = res->delegate->OpenStream(RequestBroker::buildDelegateUrl(*res, uri));
+    if (stream && stream->contentLength)
+    {
+      // override content type with stream type
+      const char * contentType = stream->contentType != nullptr ? stream->contentType : res->contentType.c_str();
+      std::string resp;
+      resp.assign("HTTP/1.1 200 OK\r\n")
+          .append("Content-type: ").append(contentType).append("\r\n")
+          .append("Content-length: ").append(std::to_string(stream->contentLength)).append("\r\n")
+          .append("Server: Linux UPnP/1.0 Noson/1.0 (ACR_noson)\r\n")
+          .append("Connection: close\r\n")
+          .append("\r\n");
+      if (Reply(handle, resp.c_str(), resp.length()))
+      {
+        while (res->delegate->ReadStream(stream) > 0)
+          Reply(handle, stream->data, stream->size);
+      }
+      res->delegate->CloseStream(stream);
+    }
+    else if (stream)
+    {
+      Reply404(handle);
+    }
+    else
+    {
+      Reply500(handle);
+    }
   }
 }
+
 
 void ImageService::Reply500(void* handle)
 {
@@ -124,26 +164,12 @@ void ImageService::Reply400(void* handle)
   Reply(handle, resp.c_str(), resp.length());
 }
 
-void ImageService::LoadInternalResources(ResourceMap& map)
+void ImageService::Reply404(void* handle)
 {
-  {
-    ResourcePtr ptr(new Resource());
-    ptr->title = "favicon";
-    ptr->uri = IMAGESERVICE_FAVICON;
-    ptr->contentType = "image/x-icon";
-    ptr->data = (char*)favicon_ico;
-    ptr->dataSize = favicon_ico_len;
-    map.insert(std::make_pair(ptr->uri, ptr));
-  }
-#ifdef HAVE_PULSEAUDIO
-  {
-    ResourcePtr ptr(new Resource());
-    ptr->title = "pulseaudio icon";
-    ptr->uri = IMAGESERVICE_IMAGES "pulseaudio.png";
-    ptr->contentType = "image/png";
-    ptr->data = (char*)pulseaudio_png;
-    ptr->dataSize = pulseaudio_png_len;
-    map.insert(std::make_pair(ptr->uri, ptr));
-  }
-#endif
+  std::string resp;
+  resp.append("HTTP/1.1 404 Not Found\r\n")
+      .append("Server: Linux UPnP/1.0 Noson/1.0 (ACR_noson)\r\n")
+      .append("Connection: close\r\n")
+      .append("\r\n");
+  Reply(handle, resp.c_str(), resp.length());
 }

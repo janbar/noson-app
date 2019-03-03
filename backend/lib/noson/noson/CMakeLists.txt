@@ -17,8 +17,8 @@ endif ()
 ###############################################################################
 # set lib version here
 set (noson_VERSION_MAJOR 1)
-set (noson_VERSION_MINOR 11)
-set (noson_VERSION_PATCH 2)
+set (noson_VERSION_MINOR 12)
+set (noson_VERSION_PATCH 0)
 
 set (noson_VERSION ${noson_VERSION_MAJOR}.${noson_VERSION_MINOR}.${noson_VERSION_PATCH})
 set (NOSON_LIB_VERSION ${noson_VERSION})
@@ -119,12 +119,16 @@ else ()
 endif ()
 
 # About streamer
-find_package(FLAC)
-find_package(FLAC++)
+if (NOT FLAC_FOUND)
+    find_package(FLAC)
+endif ()
+if (NOT FLACXX_FOUND)
+    find_package(FLACXX)
+endif ()
 find_package(Pulse)
 find_package(Pulse-simple)
 
-if (FLAC++_FOUND AND FLAC_FOUND)
+if (FLACXX_FOUND AND FLAC_FOUND)
   set (HAVE_FLAC 1 CACHE INTERNAL "Enable FLAC feature" FORCE)
   if (PULSESIMPLE_FOUND AND PULSE_FOUND)
     set (HAVE_PULSEAUDIO 1 CACHE INTERNAL "Enable PulseAudio feature" FORCE)
@@ -202,6 +206,10 @@ file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/iodevice.h
           DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/streambuffer.h
           DESTINATION ${noson_PUBLIC_DIR})
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/streamreader.h
+        DESTINATION ${noson_PUBLIC_DIR})
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/filestreamer.h
+        DESTINATION ${noson_PUBLIC_DIR})
 if(HAVE_FLAC)
   file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/flacencoder.h
             DESTINATION ${noson_PUBLIC_DIR})
@@ -230,6 +238,8 @@ file (GLOB SRC_FILES
 )
 
 list (APPEND SRC_FILES
+  src/data/datareader.cpp
+  src/data/datareader.h
   src/alarmclock.cpp
   src/alarmclock.h
   src/alarm.cpp
@@ -253,6 +263,10 @@ list (APPEND SRC_FILES
   src/element.h
   src/eventhandler.cpp
   src/eventhandler.h
+  src/filepicreader.cpp
+  src/filepicreader.h
+  src/filestreamer.cpp
+  src/filestreamer.h
   src/imageservice.cpp
   src/imageservice.h
   src/intrinsic.cpp
@@ -286,6 +300,7 @@ list (APPEND SRC_FILES
   src/sonoszone.h
   src/streambuffer.cpp
   src/streambuffer.h
+  src/streamreader.h
   src/subscription.cpp
   src/subscription.h
   src/zonegrouptopology.cpp
@@ -293,7 +308,7 @@ list (APPEND SRC_FILES
 )
 
 if (HAVE_FLAC)
-  include_directories (${FLAC++_INCLUDE_DIR} ${FLAC_INCLUDE_DIR})
+  include_directories (${FLACXX_INCLUDE_DIR})
   list (APPEND STREAM_SRC_FILES
     src/flacencoder.cpp
     src/flacencoder.h
@@ -329,7 +344,7 @@ if (OPENSSL_FOUND)
   list (APPEND noson_LIBRARIES ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY})
 endif ()
 if(HAVE_FLAC)
-  list(APPEND noson_LIBRARIES ${FLAC++_LIBRARIES} ${FLAC_LIBRARIES})
+  list(APPEND noson_LIBRARIES ${FLACXX_LIBRARIES} ${FLAC_LIBRARIES})
 endif()
 if(HAVE_PULSEAUDIO)
   list(APPEND noson_LIBRARIES ${PULSESIMPLE_LIBRARIES} ${PULSE_LIBRARIES})

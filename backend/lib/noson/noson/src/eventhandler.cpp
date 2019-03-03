@@ -32,6 +32,9 @@
 #include <map>
 #include <list>
 
+#define EVENTHANDLER_LOOP_ADDRESS     "127.0.0.1"   // IPv4 localhost
+#define EVENTHANDLER_THREAD_KEEPALIVE 60000         // 60 sec
+
 using namespace NSROOT;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -186,7 +189,6 @@ namespace NSROOT
 
     virtual void* Process(void);
     void AnnounceStatus(const char *status);
-    void AnnounceTimer();
 
     typedef std::map<std::string, RequestBrokerPtr> RBList;
     Locked<RBList> m_RBList;
@@ -198,8 +200,9 @@ BasicEventHandler::BasicEventHandler(unsigned bindingPort)
 , m_socket(new TcpServerSocket)
 , m_RBList(RBList())
 {
-  m_threadpool.SetMaxSize(8);
-  m_threadpool.SetKeepAlive(60000);
+  m_listenerAddress = EVENTHANDLER_LOOP_ADDRESS;
+  m_threadpool.SetMaxSize(EVENTHANDLER_THREADS);
+  m_threadpool.SetKeepAlive(EVENTHANDLER_THREAD_KEEPALIVE);
   m_threadpool.Start();
 }
 
@@ -395,7 +398,6 @@ void *BasicEventHandler::Process()
   }
   if (bound)
   {
-    m_listenerAddress = "127.0.0.1"; // IPv4 localhost
     AnnounceStatus(EVENTHANDLER_STARTED);
     while (!OS::CThread::IsStopped())
     {
@@ -420,7 +422,6 @@ void *BasicEventHandler::Process()
       }
     }
     AnnounceStatus(EVENTHANDLER_STOPPED);
-    m_listenerAddress.clear();
   }
   else
   {
@@ -440,14 +441,6 @@ void BasicEventHandler::AnnounceStatus(const char *status)
   msg.subject.push_back(status);
   msg.subject.push_back(m_listenerAddress);
   msg.subject.push_back(std::to_string((uint16_t)m_port));
-  DispatchEvent(msg);
-}
-
-void BasicEventHandler::AnnounceTimer()
-{
-  EventMessage msg;
-  msg.event = EVENT_HANDLER_TIMER;
-  msg.subject.push_back("");
   DispatchEvent(msg);
 }
 

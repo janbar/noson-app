@@ -15,25 +15,29 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef PULSESTREAMER_H
-#define PULSESTREAMER_H
+#ifndef FILESTREAMER_H
+#define FILESTREAMER_H
 
 #include "requestbroker.h"
 #include "locked.h"
 
-#define PULSESTREAMER_CNAME   "pulse"
+#include <string>
+#include <vector>
+
+#define FILESTREAMER_CNAME      "file"
+#define FILESTREAMER_PARAM_PATH "path"
 
 namespace NSROOT
 {
 
-class PulseStreamer : public RequestBroker
+class FileStreamer : public RequestBroker
 {
 public:
-  PulseStreamer(RequestBroker * imageService = nullptr);
-  ~PulseStreamer() override { }
+  FileStreamer();
+  ~FileStreamer() override { }
   virtual bool HandleRequest(void* handle, const char* uri) override;
 
-  const char * CommonName() override { return PULSESTREAMER_CNAME; }
+  const char * CommonName() override { return FILESTREAMER_CNAME; }
   RequestBroker::ResourcePtr GetResource(const std::string& title) override;
   RequestBroker::ResourceList GetResourceList() override;
   RequestBroker::ResourcePtr RegisterResource(const std::string& title,
@@ -45,14 +49,38 @@ public:
 private:
   ResourceList m_resources;
 
-  // store current index of the pa sink
-  LockedNumber<unsigned> m_sinkIndex;
   // count current running playback
   LockedNumber<int> m_playbackCount;
 
-  std::string GetPASink();
-  void FreePASink();
-  void streamSink(void * handle);
+  typedef struct {
+    const char * codec;
+    const char * suffix;
+    const char * mime;
+  } codec_type;
+
+  static codec_type codecTypeTab[];
+  static int codecTypeTabSize;
+
+  enum FileType {
+    Mime_flac = 0,
+    Mime_mpeg,
+  };
+
+  typedef struct {
+    const char * mime;
+    bool (*probe)(const std::string& filePath);
+  } file_type;
+
+  static file_type fileTypeTab[];
+  static int fileTypeTabSize;
+
+  static void readParameters(const std::string& streamUrl, std::vector<std::string>& params);
+  static std::string getParamValue(const std::vector<std::string>& params, const std::string& name);
+  static bool probe(const std::string& filePath, const std::string& mimeType);
+  static bool probeFLAC(const std::string& filePath);
+  static bool probeMPEG(const std::string& filePath);
+  void streamFile(void * handle, const std::string& filePath, const std::string& mimeType);
+
 
   void Reply500(void * handle);
   void Reply400(void * handle);
@@ -61,5 +89,5 @@ private:
 
 }
 
-#endif /* PULSESTREAMER_H */
+#endif /* FILESTREAMER_H */
 
