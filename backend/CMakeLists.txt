@@ -16,3 +16,6 @@ set(QML_IMPORT_PATH ${QML_IMPORT_DIRECTORY} CACHE string "QML Import path" INTER
 
 add_subdirectory(NosonApp)
 add_subdirectory(NosonThumbnailer)
+# Disable non-streamable medias
+set(DISABLE_MP4PARSER ON)
+add_subdirectory(NosonMediaScanner)
