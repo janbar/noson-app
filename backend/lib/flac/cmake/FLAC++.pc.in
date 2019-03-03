@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: FLAC++
+Description: C++ wrapper for FLAC - Free Lossless Audio Codec
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -lFLAC++ -lFLAC
+Cflags: -I${includedir}

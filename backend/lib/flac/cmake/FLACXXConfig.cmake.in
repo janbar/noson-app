@@ -1,0 +1,15 @@
+# - Config file for the FLACXX package
+# It defines the following variables
+#  FLACXX_INCLUDE_DIR  - include directory for FLAC++
+#  FLACXX_LIBRARIES    - libraries to link against
+
+# Compute paths
+get_filename_component(FLACXX_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+set(FLACXX_INCLUDE_DIR "@includedir@")
+
+# Our library dependencies (contains definitions for IMPORTED targets)
+if(NOT TARGET FLACXX AND NOT FLACXX_BINARY_DIR)
+	include("${FLACXX_CMAKE_DIR}/FLAC++Targets.cmake")
+endif()
+
+set(FLACXX_LIBRARIES FLAC++)

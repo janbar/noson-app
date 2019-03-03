@@ -1,0 +1,98 @@
+
+/* Name of package */
+#define PACKAGE "@PACKAGE_NAME@"
+
+/* Define to the address where bug reports for this package should be sent. */
+#define PACKAGE_BUGREPORT "flac-dev@xiph.org"
+
+/* Define to the full name of this package. */
+#define PACKAGE_NAME "@PACKAGE_NAME@"
+
+/* Define to the full name and version of this package. */
+#define PACKAGE_STRING "@PACKAGE_STRING@"
+
+/* Define to the one symbol short name of this package. */
+#define PACKAGE_TARNAME "@PACKAGE_NAME@"
+
+/* Define to the home page for this package. */
+#define PACKAGE_URL "https://www.xiph.org/flac/"
+
+/* Define to the version of this package. */
+#define PACKAGE_VERSION "@PACKAGE_VERSION@"
+
+#define SIZEOF_OFF_T @SIZEOF_OFF_T@
+
+#define SIZEOF_INT @SIZEOF_INT@
+
+#cmakedefine HAVE_STDINT_H @HAVE_STDINT_H@
+
+#cmakedefine HAVE_BYTESWAP_H @HAVE_BYTESWAP_H@
+
+#cmakedefine HAVE_CPUID_H @HAVE_CPUID_H@
+
+#cmakedefine HAVE_INTTYPES_H @HAVE_INTTYPES_H@
+
+#cmakedefine HAVE_UNISTD_H @HAVE_UNISTD_H@
+
+#cmakedefine HAVE_SYS_PARAM_H @HAVE_SYS_PARAM_H@
+
+#cmakedefine HAVE_LROUND @HAVE_LROUND@
+
+#cmakedefine HAVE_BSWAP16 @HAVE_BSWAP16@
+
+#cmakedefine HAVE_BSWAP32 @HAVE_BSWAP32@
+
+#cmakedefine HAVE_BSWAP64 @HAVE_BSWAP64@
+
+#cmakedefine HAVE_CLOCK_GETTIME @HAVE_CLOCK_GETTIME@
+
+#cmakedefine HAVE_GETOPT_LONG @HAVE_GETOPT_LONG@
+
+#cmakedefine HAVE_ICONV @HAVE_ICONV@
+
+#cmakedefine FLAC__NO_ASM @FLAC__NO_ASM@
+
+#cmakedefine FLAC__HAS_NASM @FLAC__HAS_NASM@
+
+#cmakedefine FLAC__HAS_X86INTRIN @FLAC__HAS_X86INTRIN@
+
+#cmakedefine FLAC__SYS_DARWIN @FLAC__SYS_DARWIN@
+
+#cmakedefine FLAC__SYS_LINUX @FLAC__SYS_LINUX@
+
+#cmakedefine FLAC__USE_ALTIVEC @FLAC__USE_ALTIVEC@
+
+#cmakedefine FLAC__USE_AVX @FLAC__USE_AVX@
+
+#cmakedefine FLAC__CPU_IA32
+
+#cmakedefine FLAC__CPU_X86_64
+
+#define CPU_IS_BIG_ENDIAN @CPU_IS_BIG_ENDIAN@
+
+#define CPU_IS_LITTLE_ENDIAN @CPU_IS_LITTLE_ENDIAN@
+
+#define ENABLE_64_BIT_WORDS 0
+
+#define FLAC__ALIGN_MALLOC_DATA 1
+
+#define FLAC__HAS_OGG @FLAC__HAS_OGG@
+
+/* Version number of package */
+#define VERSION "@PACKAGE_VERSION@"
+
+/* Target processor is big endian. */
+#define WORDS_BIGENDIAN @CPU_IS_BIG_ENDIAN@
+
+/* Enable large inode numbers on Mac OS X 10.5.  */
+#ifndef _DARWIN_USE_64_BIT_INODE
+# define _DARWIN_USE_64_BIT_INODE 1
+#endif
+
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
+#ifndef __cplusplus
+/* #undef inline */
+#endif
+
+

@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.1.0)
 
 option(BUILD_DEPENDENCIES "Build dependencies from sources" off)
 
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 if(CMAKE_COMPILER_IS_GNUCC)
     add_definitions ("-fPIC")
 endif()
@@ -40,6 +42,27 @@ if(NOT OPENSSL_FOUND)
     set(OPENSSL_INCLUDE_DIR "${openssl_BINARY_DIR}/include" "${openssl_BINARY_DIR}")
     set(OPENSSL_FOUND ON)
     message(STATUS "Build OpenSSL: ${openssl_BINARY_DIR}")
+endif()
+
+# Provides dependency FLAC
+if(NOT BUILD_DEPENDENCIES)
+    find_package(FLAC)
+    find_package(FLACXX)
+endif()
+if(NOT FLAC_FOUND OR NOT FLACXX_FOUND)
+    add_subdirectory(
+        ${CMAKE_CURRENT_SOURCE_DIR}/flac
+        ${CMAKE_CURRENT_BINARY_DIR}/flac
+        EXCLUDE_FROM_ALL
+    )
+    # Cache all vars for the childs and parent
+    set(FLAC_LIBRARIES FLAC                             PARENT_SCOPE)
+    set(FLAC_INCLUDE_DIR "${FLAC_SOURCE_DIR}/include"   PARENT_SCOPE)
+    set(FLAC_FOUND ON                                   PARENT_SCOPE)
+    set(FLACXX_LIBRARIES FLACXX                         PARENT_SCOPE)
+    set(FLACXX_INCLUDE_DIR "${FLAC_SOURCE_DIR}/include" PARENT_SCOPE)
+    set(FLACXX_FOUND ON                                 PARENT_SCOPE)
+    message(STATUS "Build FLAC FLAC++: ${FLAC_BINARY_DIR}")
 endif()
 
 # Provides dependency noson
