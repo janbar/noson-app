@@ -164,6 +164,7 @@ ApplicationWindow {
     // Constants
     readonly property int queueBatchSize: 100
     readonly property real minSizeGU: 45
+    readonly property string tr_undefined: qsTr("<Undefined>")
 
     minimumHeight: units.gu(minSizeGU)
     minimumWidth: units.gu(minSizeGU)
@@ -1077,6 +1078,7 @@ ApplicationWindow {
         ListElement { title: qsTr("Favorites"); source: "qrc:/ui/Favorites.qml"; visible: false }
         ListElement { title: qsTr("Playlists"); source: "qrc:/ui/Playlists.qml"; visible: true }
         ListElement { title: qsTr("Alarm clock"); source: "qrc:/ui/Alarms.qml"; visible: true }
+        ListElement { title: qsTr("This Device"); source: "qrc:/ui/ThisDevice.qml"; visible: true }
 
         function initialIndex() {
             return (settings.tabIndex === -1 ? 0

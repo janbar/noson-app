@@ -25,6 +25,7 @@
 #include "alarmsmodel.h"
 #include <noson/requestbroker.h>
 #include <noson/imageservice.h>
+#include <noson/filestreamer.h>
 #ifdef HAVE_PULSEAUDIO
 #include <noson/pulsestreamer.h>
 #endif
@@ -88,11 +89,15 @@ Sonos::Sonos(QObject* parent)
 , m_locale("en_US")
 {
   SONOS::DBGLevel(2);
+  // Set the local URI of my http listener
+  m_systemLocalURI = QString::fromUtf8(m_system.GetSystemLocalUri().c_str());
   // Register handlers to process remote request
-  m_system.RegisterRequestBroker(SONOS::RequestBrokerPtr(new SONOS::ImageService()));
+  SONOS::RequestBrokerPtr imageService(new SONOS::ImageService());
+  m_system.RegisterRequestBroker(imageService);
 #ifdef HAVE_PULSEAUDIO
-  m_system.RegisterRequestBroker(SONOS::RequestBrokerPtr(new SONOS::PulseStreamer()));
+  m_system.RegisterRequestBroker(SONOS::RequestBrokerPtr(new SONOS::PulseStreamer(imageService.get())));
 #endif
+  m_system.RegisterRequestBroker(SONOS::RequestBrokerPtr(new SONOS::FileStreamer()));
 }
 
 Sonos::~Sonos()

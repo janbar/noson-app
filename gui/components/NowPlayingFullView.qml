@@ -195,7 +195,7 @@ Flickable {
         }
         height: units.gu(2)
         width: parent.width
-        visible: player.canSeekInStream()
+        visible: player.isPlayingQueued()
 
         /* Position label */
         Label {

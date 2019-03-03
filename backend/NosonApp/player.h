@@ -38,7 +38,8 @@ class Player : public QObject
   Q_PROPERTY(int bass READ bass NOTIFY renderingGroupChanged)
 
   // Read only
-  Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged())
+  Q_PROPERTY(QString controllerURI READ controllerURI NOTIFY connectedChanged)
+  Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
   Q_PROPERTY(QString currentMetaAlbum READ currentMetaAlbum NOTIFY sourceChanged)
   Q_PROPERTY(QString currentMetaArt READ currentMetaArt NOTIFY sourceChanged)
   Q_PROPERTY(QString currentMetaArtist READ currentMetaArtist NOTIFY sourceChanged)
@@ -58,8 +59,10 @@ public:
 
   Q_INVOKABLE bool init(QObject* sonos);
   bool connected() const { return m_connected; }
+  QString controllerURI() const { return m_controllerURI; }
   void beginJob();
   void endJob();
+
   Q_INVOKABLE void renewSubscriptions();
   Q_INVOKABLE bool ping();
 
@@ -87,7 +90,16 @@ public:
 
   Q_INVOKABLE bool startPlayPulse(); // asynchonous
   Q_INVOKABLE bool playPulse();
-  Q_INVOKABLE bool isPulseStream(const QString& url);
+  Q_INVOKABLE bool isPulseStream(const QString& url); // return true if the given url is pulse stream from this player
+
+  Q_INVOKABLE bool isMyStream(const QString& url);    // return true if the given url connects to this player
+
+  Q_INVOKABLE QVariant makeFileStreamItem(const QString& filePath,
+                                          const QString& codec,
+                                          const QString& title,
+                                          const QString& album,
+                                          const QString& author,
+                                          const QString& duration);
 
   Q_INVOKABLE bool playLineIN();
   Q_INVOKABLE bool playDigitalIN();
@@ -184,6 +196,7 @@ private:
   RCProperty m_RCGroup; // Rendering control of the group
 
   bool m_connected;
+  QString m_controllerURI; // Filled with the public URI of this controller when connected
 
   QString m_currentMetaAlbum;
   QString m_currentMetaArt;

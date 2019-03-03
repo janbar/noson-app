@@ -160,5 +160,15 @@
         <file>images/tv.png</file>
         <file>images/linein.png</file>
         <file>i18n/noson_da.qm</file>
+        <file>ui/ThisDevice.qml</file>
+        <file>ui/ThisDevice/Artists.qml</file>
+        <file>ui/ThisDevice/Albums.qml</file>
+        <file>ui/ThisDevice/Genres.qml</file>
+        <file>ui/ThisDevice/SongsView.qml</file>
+        <file>ui/ThisDevice/ArtistView.qml</file>
+        <file>ui/ThisDevice/AddToQueue.qml</file>
+        <file>ui/ThisDevice/PlayAllButton.qml</file>
+        <file>ui/ThisDevice/QueueAllButton.qml</file>
+        <file>ui/ThisDevice/ShuffleButton.qml</file>
     </qresource>
 </RCC>

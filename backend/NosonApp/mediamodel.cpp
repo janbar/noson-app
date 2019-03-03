@@ -43,7 +43,9 @@ MediaItem::MediaItem(const SONOS::SMAPIItem& data)
   m_title = QString::fromUtf8(data.item->GetValue("dc:title").c_str());
   m_normalized = normalizedString(m_title);
   m_description = QString::fromUtf8(data.item->GetValue("r:description").c_str());
-  m_art = QString::fromUtf8(data.item->GetValue("upnp:albumArtURI").c_str());
+  QString uri = QString::fromUtf8(data.item->GetValue("upnp:albumArtURI").c_str());
+  if (!uri.isEmpty() && uri.at(0) != '/')
+      m_art.append(uri);
 
   if (data.uriMetadata)
   {
