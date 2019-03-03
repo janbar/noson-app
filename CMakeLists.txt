@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.1.0)
 
 option(INSTALL_TESTS "Install the tests on make install" on)
 
-set(APP_VERSION       "3.10.4")
-set(APP_VERSION_CODE  25)
+set(APP_VERSION       "3.11.0")
+set(APP_VERSION_CODE  26)
 set(APP_NAME          "noson")
 set(APP_ID            "io.github.janbar.noson")
 set(EXEC              "noson-app")
@@ -72,6 +72,7 @@ if(ANDROID)
   include(android/AddQtAndroidApk.cmake)
   add_dependencies(noson-gui NosonApp NosonApp-qmldir
       NosonThumbnailer NosonThumbnailer-qmldir
+      NosonMediaScanner NosonMediaScanner-qmldir
   )
   add_qt_android_apk(noson-apk noson-gui
       NAME ${APP_NAME}
@@ -79,7 +80,7 @@ if(ANDROID)
       PACKAGE_NAME ${APP_ID}
       PACKAGE_SOURCES ${CMAKE_SOURCE_DIR}/android/package-sources
       BUILDTOOLS_REVISION ${QT_ANDROID_SDK_BUILDTOOLS_REVISION}
-      DEPENDS ssl crypto
+      DEPENDS ssl crypto FLAC FLACXX
       PLUGINS ${CMAKE_BINARY_DIR}/backend/qml
       KEYSTORE ${KEYSTORE_FILE} ${KEYSTORE_ALIAS}
       KEYSTORE_PASSWORD ${KEYSTORE_PASSWORD}
@@ -91,7 +92,9 @@ endif()
 add_custom_target(
   "run"
   QML2_IMPORT_PATH=${CMAKE_BINARY_DIR}/backend/qml ${CMAKE_BINARY_DIR}/gui/noson-gui
-  DEPENDS NosonApp NosonApp-qmldir NosonThumbnailer NosonThumbnailer-qmldir
+  DEPENDS NosonApp NosonApp-qmldir
+        NosonThumbnailer NosonThumbnailer-qmldir
+        NosonMediaScanner NosonMediaScanner-qmldir
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/gui
 )
 
