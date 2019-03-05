@@ -29,17 +29,16 @@
 #include <string>
 #include <vector>
 
-#define EVENTHANDLER_STARTED        "STARTED"
-#define EVENTHANDLER_STOPPED        "STOPPED"
-#define EVENTHANDLER_FAILED         "FAILED"
-#define EVENTHANDLER_TIMEOUT        1 // 1 sec
+#define EVENTHANDLER_STARTED        "STARTED"   // Message on started
+#define EVENTHANDLER_STOPPED        "STOPPED"   // Message on stopped
+#define EVENTHANDLER_FAILED         "FAILED"    // Message on failed
+#define EVENTHANDLER_THREADS        10          // Max worker threads
 
 namespace NSROOT
 {
   typedef enum
   {
     EVENT_HANDLER_STATUS = 0,     // Internal event: Backend status change
-    EVENT_HANDLER_TIMER,          // Internal event: Every cycle without event
     EVENT_UPNP_PROPCHANGE,        // upnp:propchange
     EVENT_UNKNOWN,
   } EVENT_t;

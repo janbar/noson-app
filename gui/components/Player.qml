@@ -30,6 +30,7 @@ Item {
     objectName: "controller"
     property alias zonePlayer: playerLoader.item
     property bool connected: false
+    property string controllerURI: ""
     property string currentMetaAlbum: ""
     property string currentMetaArt: ""
     property string currentMetaArtist: ""
@@ -151,7 +152,9 @@ Item {
     }
 
     function seek(position) {
-        return playerLoader.item.seekTime(Math.floor(position / 1000));
+        if (player.canSeekInStream())
+            return playerLoader.item.seekTime(Math.floor(position / 1000));
+        return false;
     }
 
     function setSource(modelItem) {
@@ -196,6 +199,10 @@ Item {
 
     function addItemToQueue(modelItem, nr) {
         return playerLoader.item.addItemToQueue(modelItem.payload, nr);
+    }
+
+    function makeFileStreamItem(filePath, codec, title, album, author, duration) {
+        return playerLoader.item.makeFileStreamItem(filePath, codec, title, album, author, duration);
     }
 
     function addMultipleItemsToQueue(modelItemList) {
@@ -259,7 +266,7 @@ Item {
         player.currentMetaURITitle = playerLoader.item.currentMetaURITitle || "";
         player.currentIndex = playerLoader.item.currentIndex;
         player.currentProtocol = playerLoader.item.currentProtocol;
-        player.duration = 1 + (1000 * playerLoader.item.currentTrackDuration);
+        player.duration = 1000 * playerLoader.item.currentTrackDuration;
         // reset position
         var npos = 1000 * playerLoader.item.currentTrackPosition();
         player.position = npos > player.duration ? 0 : npos;
@@ -317,6 +324,10 @@ Item {
         return playerLoader.item.isPulseStream(currentMetaSource);
     }
 
+    function isMyStream(metaSource) {
+        return playerLoader.item.isMyStream(metaSource);
+    }
+
     function addItemToFavorites(modelItem, description, artURI) {
         return playerLoader.item.addItemToFavorites(modelItem.payload, description, artURI);
     }
@@ -329,6 +340,10 @@ Item {
         return playerLoader.item.startPlayFavorite(modelItem.payload);
     }
 
+    function isPlayingQueued() {
+        return player.duration > 0;
+    }
+
     function canSeekInStream() {
         switch (currentProtocol) {
         case 1:  // x-rincon-stream
@@ -338,7 +353,7 @@ Item {
         case 17: // http
             return false;
         default:
-            return true;
+            return isPlayingQueued();
         }
     }
 
@@ -359,7 +374,10 @@ Item {
         sourceComponent: Component {
             ZonePlayer {
                 onJobFailed: popInfo.open(qsTr("Action can't be performed"));
-                onConnectedChanged: player.connected = connected
+                onConnectedChanged: {
+                    player.connected = connected;
+                    player.controllerURI = controllerURI;
+                }
                 onRenderingGroupChanged: player.refreshRenderingGroup()
                 onRenderingChanged: player.refreshRendering()
                 onSourceChanged: player.refreshSource()

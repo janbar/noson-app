@@ -35,6 +35,7 @@
 #include <noson/contentdirectory.h>
 #include <noson/didlparser.h>
 #include <noson/imageservice.h>
+#include <noson/filestreamer.h>
 #ifdef HAVE_PULSEAUDIO
 #include <noson/pulsestreamer.h>
 #endif
@@ -48,7 +49,6 @@
 #include "private/debug.h"
 #include "private/tokenizer.h"
 #include "private/builtin.h"
-#include "requestbroker.h"
 
 #define PRINT(a) fprintf(stdout, a)
 #define PRINT1(a,b) fprintf(stdout, a, b)
@@ -107,10 +107,14 @@ int main(int argc, char** argv)
   /*
    * Register handlers to process remote request
    */
-  gSonos->RegisterRequestBroker(SONOS::RequestBrokerPtr(new SONOS::ImageService()));
+  {
+    SONOS::RequestBrokerPtr imageService(new SONOS::ImageService());
+    gSonos->RegisterRequestBroker(imageService);
 #ifdef HAVE_PULSEAUDIO
-  gSonos->RegisterRequestBroker(SONOS::RequestBrokerPtr(new SONOS::PulseStreamer()));
+    gSonos->RegisterRequestBroker(SONOS::RequestBrokerPtr(new SONOS::PulseStreamer(imageService.get())));
 #endif
+    gSonos->RegisterRequestBroker(SONOS::RequestBrokerPtr(new SONOS::FileStreamer()));
+  }
   /*
    * Print Players list
    */

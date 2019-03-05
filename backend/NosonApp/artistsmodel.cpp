@@ -32,7 +32,7 @@ ArtistItem::ArtistItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
   {
     m_artist = QString::fromUtf8(ptr->GetValue("dc:title").c_str());
     m_normalized = normalizedString(m_artist);
-    (void)baseURL; //m_art.append(baseURL).append(uri);
+    (void)baseURL;
     m_valid = true;
   }
 }

@@ -170,7 +170,7 @@ Item {
             height: units.gu(6)
             width: height
             color: "transparent"
-            visible: player.canSeekInStream()
+            visible: player.isPlayingQueued()
 
             Icon {
                 id: repeatIcon
@@ -199,7 +199,7 @@ Item {
             height: units.gu(6)
             width: height
             color: "transparent"
-            visible: player.canSeekInStream()
+            visible: player.isPlayingQueued()
 
             Icon {
                 id: nowPlayingPreviousIndicator
@@ -243,7 +243,7 @@ Item {
             height: units.gu(6)
             width: height
             color: "transparent"
-            visible: player.canSeekInStream()
+            visible: player.isPlayingQueued()
 
             Icon {
                 id: nowPlayingNextIndicator
@@ -268,7 +268,7 @@ Item {
             height: units.gu(6)
             width: height
             color: "transparent"
-            visible: player.canSeekInStream()
+            visible: player.isPlayingQueued()
 
             Icon {
                 id: shuffleIcon
@@ -299,7 +299,7 @@ Item {
         }
         color: "transparent"
         height: units.gu(0.25)
-        visible: isListView && player.canSeekInStream()
+        visible: isListView && player.isPlayingQueued()
 
         Rectangle {
             id: playerControlsProgressBarHint
@@ -314,7 +314,7 @@ Item {
             Connections {
                 target: player
                 onPositionChanged: {
-                    playerControlsProgressBarHint.width = (player.position / player.duration) * playerControlsProgressBar.width
+                    playerControlsProgressBarHint.width = player.duration > 0 ? (player.position / player.duration) * playerControlsProgressBar.width : 0
                 }
                 onStopped: {
                     playerControlsProgressBarHint.width = 0;

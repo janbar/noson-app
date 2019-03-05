@@ -297,7 +297,7 @@ Item {
                 Connections {
                     target: player
                     onPositionChanged: {
-                        playerControlsProgressBarHint.width = (player.position / player.duration) * playerControlsProgressBar.width
+                        playerControlsProgressBarHint.width = player.duration > 0 ? (player.position / player.duration) * playerControlsProgressBar.width : 0
                     }
                     onStopped: {
                         playerControlsProgressBarHint.width = 0;

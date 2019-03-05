@@ -29,14 +29,17 @@ namespace NSROOT
 class PulseStreamer : public RequestBroker
 {
 public:
-  PulseStreamer();
-  ~PulseStreamer() { }
+  PulseStreamer(RequestBroker * imageService = nullptr);
+  ~PulseStreamer() override { }
   virtual bool HandleRequest(void* handle, const char* uri) override;
 
   const char * CommonName() override { return PULSESTREAMER_CNAME; }
   RequestBroker::ResourcePtr GetResource(const std::string& title) override;
   RequestBroker::ResourceList GetResourceList() override;
-  RequestBroker::ResourcePtr RegisterResource(const std::string& sourceUrl) override;
+  RequestBroker::ResourcePtr RegisterResource(const std::string& title,
+                                              const std::string& description,
+                                              const std::string& path,
+                                              StreamReader * delegate) override;
   void UnregisterResource(const std::string& uri) override;
 
 private:

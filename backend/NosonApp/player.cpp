@@ -62,7 +62,7 @@ bool Player::init(QObject* sonos)
         handleRenderingControlChange();
       if (!m_player->TransportPropertyEmpty())
         handleTransportChange();
-
+      m_controllerURI = QString::fromUtf8(m_player->GetControllerUri().c_str());
       m_connected = true;
       emit connectedChanged();
       return true;
@@ -371,11 +371,65 @@ bool Player::isPulseStream(const QString &url)
     SONOS::RequestBrokerPtr rb = m_sonos->getSystem().GetRequestBroker("pulse");
     if (rb)
     {
-      SONOS::RequestBroker::ResourcePtr res = rb->GetResource("pulse");
-      return (res && url.contains(res->uri.c_str()) && m_player->IsMyStream(url.toUtf8().constData()));
+      SONOS::RequestBroker::ResourceList list = rb->GetResourceList();
+      for (SONOS::RequestBroker::ResourceList::iterator it = list.begin(); it != list.end(); ++it)
+        return (url.contains((*it)->uri.c_str()) && m_player->IsMyStream(url.toUtf8().constData()));
     }
   }
   return false;
+}
+
+bool Player::isMyStream(const QString &url)
+{
+  return (m_player && m_player->IsMyStream(url.toUtf8().constData()));
+}
+
+QVariant Player::makeFileStreamItem(const QString& filePath,
+                                    const QString& codec,
+                                    const QString& title,
+                                    const QString& album,
+                                    const QString& author,
+                                    const QString& duration)
+{
+  SONOS::DigitalItemPtr item(nullptr);
+  if (m_player)
+  {
+    SONOS::RequestBrokerPtr rbf = m_sonos->getSystem().GetRequestBroker("file");
+    if (!rbf)
+      return 0;
+    SONOS::RequestBroker::ResourcePtr res = rbf->GetResource(codec.toUtf8().constData());
+    if (!res)
+      return 0;
+
+    std::string pathParm(QUrl::toPercentEncoding(filePath).constData());
+    std::string streamUri;
+    std::string iconUri;
+
+    // make the stream uri
+    if (res->uri.find('?') != std::string::npos)
+      streamUri.assign(res->uri).append("&path=").append(pathParm);
+    else
+      streamUri.assign(res->uri).append("?path=").append(pathParm);
+
+    // make the cover uri
+    SONOS::RequestBrokerPtr rbi = m_sonos->getSystem().GetRequestBroker("images");
+    if (rbi)
+    {
+      SONOS::RequestBroker::ResourcePtr rim = rbi->GetResource("filePicture");
+      if (rim)
+      {
+        if (rim->uri.find('?') != std::string::npos)
+          iconUri.assign(rim->uri).append("&path=").append(pathParm).append("&type=3");
+        else
+          iconUri.assign(rim->uri).append("?path=").append(pathParm).append("&type=3");
+      }
+    }
+    item = m_player->MakeFileStreamItem(streamUri, iconUri, title.toUtf8().constData(), album.toUtf8().constData(), author.toUtf8().constData(),
+                                        duration.toUtf8().constData());
+  }
+  QVariant var;
+  var.setValue<SONOS::DigitalItemPtr>(item);
+  return var;
 }
 
 bool Player::playLineIN()

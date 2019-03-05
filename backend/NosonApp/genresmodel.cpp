@@ -32,7 +32,7 @@ GenreItem::GenreItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
   {
     m_genre = QString::fromUtf8(ptr->GetValue("dc:title").c_str());
     m_normalized = normalizedString(m_genre);
-    (void)baseURL; //m_art.append(baseURL).append(uri);
+    (void)baseURL;
     m_valid = true;
   }
 }

@@ -447,6 +447,8 @@ bool Player::SetTreble(const std::string &uuid, int8_t value)
 
 bool Player::SetCurrentURI(const DigitalItemPtr& item)
 {
+  if (!item)
+    return false;
   // Fix items from 'My radios' haven't required tag desc
   SMServicePtr svc = GetServiceForMedia(item->GetValue("res"));
   if (svc && item->GetValue("desc").empty())
@@ -555,7 +557,9 @@ bool Player::PlayQueue(bool start)
 
 unsigned Player::AddURIToQueue(const DigitalItemPtr& item, unsigned position)
 {
-  return m_AVTransport->AddURIToQueue(item->GetValue("res"), item->DIDL(), position);
+  if (item)
+    return m_AVTransport->AddURIToQueue(item->GetValue("res"), item->DIDL(), position);
+  return 0;
 }
 
 unsigned Player::AddMultipleURIsToQueue(const std::vector<DigitalItemPtr>& items)
@@ -568,8 +572,11 @@ unsigned Player::AddMultipleURIsToQueue(const std::vector<DigitalItemPtr>& items
   {
     while (uris.size() < 16 && it != items.end())
     {
-      uris.push_back((*it)->GetValue("res"));
-      metadatas.push_back((*it)->DIDL());
+      if (*it)
+      {
+        uris.push_back((*it)->GetValue("res"));
+        metadatas.push_back((*it)->DIDL());
+      }
       ++it;
     }
     unsigned r = m_AVTransport->AddMultipleURIsToQueue(uris, metadatas);
@@ -610,7 +617,9 @@ bool Player::CreateSavedQueue(const std::string& title)
 
 unsigned Player::AddURIToSavedQueue(const std::string& SQObjectID, const DigitalItemPtr& item, unsigned containerUpdateID)
 {
-  return m_AVTransport->AddURIToSavedQueue(SQObjectID, item->GetValue("res"), item->DIDL(), containerUpdateID);
+  if (item)
+    return m_AVTransport->AddURIToSavedQueue(SQObjectID, item->GetValue("res"), item->DIDL(), containerUpdateID);
+  return 0;
 }
 
 bool Player::ReorderTracksInSavedQueue(const std::string& SQObjectID, const std::string& trackList, const std::string& newPositionList, unsigned containerUpdateID)
@@ -625,6 +634,8 @@ bool Player::DestroySavedQueue(const std::string& SQObjectID)
 
 bool Player::AddURIToFavorites(const DigitalItemPtr& item, const std::string& description, const std::string& artURI)
 {
+  if (!item)
+    return false;
   DigitalItemPtr favorite(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_unknown));
   favorite->SetProperty(DIDL_QNAME_DC "title", item->GetValue(DIDL_QNAME_DC "title"));
   favorite->SetProperty(DIDL_QNAME_RINC "type", "instantPlay");
@@ -889,4 +900,98 @@ Protocol_t Player::GetURIProtocol(const std::string& uri)
   while (i < Protocol_unknown && proto != ProtocolTable[i])
     ++i;
   return static_cast<Protocol_t>(i);
+}
+
+DigitalItemPtr Player::MakeFileStreamItem(const std::string& streamURI, const std::string& iconURI, const std::string& title, const std::string& album,
+                                          const std::string& author, const std::string& duration) const
+{
+  // define the stream URL for the local handler
+  std::string streamURL;
+  streamURL.assign(m_controllerUri).append(streamURI);
+  std::string itemId("00092020"); // disabled seeking
+  itemId.append(m_controllerName).append(":").append(streamURI);
+
+  // define the icon URL for the local handler
+  std::string iconURL;
+  iconURL.assign(m_controllerUri).append(iconURI);
+
+  // build the digital item
+  DigitalItemPtr item(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
+  item->SetParentID("-1");
+  item->SetObjectID(itemId);
+  item->SetProperty(DIDL_QNAME_DC "title", title);
+  item->SetProperty(DIDL_QNAME_UPNP "album", album);
+  item->SetProperty(DIDL_QNAME_DC "creator", author);
+  item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", iconURL);
+
+  std::string hms;
+  unsigned hh, hm, hs;
+  if (sscanf(duration.c_str(), "%u:%u:%u", &hh, &hm, &hs) == 3)
+    hms.assign(duration);
+  else
+  {
+    char str[9];
+    unsigned val = 0;
+    string_to_uint32(duration.c_str(), &val);
+    if (val > 0)
+    {
+      unsigned hh, hm, hs;
+      hh = val / 3600;
+      hm = (val - (hh * 3600)) / 60;
+      hs = val - (hh * 3600) - (hm * 60);
+      snprintf(str, sizeof(str), "%02u:%02u:%02u", hh, hm, hs);
+    }
+    else
+      strncpy(str, "00:59:59", sizeof(str)); // default by long duration
+    hms.assign(str, sizeof(str) - 1);
+  }
+
+  std::string file = streamURI.substr(0, streamURI.find('?'));
+  std::string mime = file.substr(file.find_last_of('.'));
+  /*
+   * Configure an audio FLAC transfer for any resource with the corresponding extension
+   */
+  if (mime == ".flac")
+  {
+    std::string protocolInfo;
+    protocolInfo.assign(ProtocolTable[Protocol_httpGet]).append(":*:audio/flac:*");
+    ElementPtr res(new Element("res", streamURL));
+    res->SetAttribut("protocolInfo", protocolInfo);
+    res->SetAttribut("duration", hms);
+    item->SetProperty(res);
+    DBG(DBG_DEBUG, "%s: %s\n%s\n", __FUNCTION__, item->GetValue("res").c_str(), item->DIDL().c_str());
+    return item;
+  }
+  /*
+   * Configure an audio mpeg transfer for any resource with the corresponding extension
+   * MP2 codec is not supported
+   */
+  if (mime == ".mp3")
+  {
+    std::string protocolInfo;
+    protocolInfo.assign(ProtocolTable[Protocol_httpGet]).append(":*:audio/mpeg:*");
+    ElementPtr res(new Element("res", streamURL));
+    res->SetAttribut("protocolInfo", protocolInfo);
+    res->SetAttribut("duration", hms);
+    item->SetProperty(res);
+    DBG(DBG_DEBUG, "%s: %s\n%s\n", __FUNCTION__, item->GetValue("res").c_str(), item->DIDL().c_str());
+    return item;
+  }
+  /*
+   * Configure an audio aac transfer for any resource with the corresponding extension
+   */
+  if (mime == ".aac")
+  {
+    std::string protocolInfo;
+    protocolInfo.assign(ProtocolTable[Protocol_httpGet]).append(":*:audio/aac:*");
+    ElementPtr res(new Element("res", streamURL));
+    res->SetAttribut("protocolInfo", protocolInfo);
+    res->SetAttribut("duration", hms);
+    item->SetProperty(res);
+    DBG(DBG_DEBUG, "%s: %s\n%s\n", __FUNCTION__, item->GetValue("res").c_str(), item->DIDL().c_str());
+    return item;
+  }
+
+  DBG(DBG_ERROR, "%s: file type not supported (%s)\n", __FUNCTION__, file.c_str());
+  return DigitalItemPtr();
 }

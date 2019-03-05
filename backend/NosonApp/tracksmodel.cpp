@@ -38,7 +38,12 @@ TrackItem::TrackItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
     m_albumTrackNo = QString::fromUtf8(ptr->GetValue("upnp:originalTrackNumber").c_str());
     QString uri = QString::fromUtf8(ptr->GetValue("upnp:albumArtURI").c_str());
     if (!uri.isEmpty())
-      m_art.append(baseURL).append(uri);
+    {
+      if (uri.at(0) == '/')
+        m_art.append(baseURL).append(uri);
+      else
+        m_art.append(uri);
+    }
     m_isService = SONOS::System::IsItemFromService(ptr);
     m_valid = true;
   }

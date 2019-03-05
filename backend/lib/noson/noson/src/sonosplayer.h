@@ -168,7 +168,9 @@ namespace NSROOT
     // Helpers
     std::string GetItemIdFromUriMetadata(const DigitalItemPtr& uriMetadata);
     Protocol_t GetURIProtocol(const std::string& uri);
-
+    const std::string& GetControllerUri() const { return m_controllerUri; }
+    DigitalItemPtr MakeFileStreamItem(const std::string& streamURI, const std::string& iconURI, const std::string& title, const std::string& album,
+                                      const std::string& author, const std::string& duration) const;
 
   private:
     bool m_valid;

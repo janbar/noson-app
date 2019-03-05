@@ -68,7 +68,7 @@ MusicPage {
             coverSources: []
             coverFlow: 4
             objectName: "genresPageGridItem" + index
-            primaryText: model.genre || qsTr("<Undefined>")
+            primaryText: model.genre || tr_undefined
             secondaryTextVisible: false
 
             // check favorite on data loaded
@@ -168,7 +168,7 @@ MusicPage {
                                        "genre": model.genre,
                                        "pageTitle": qsTr("Genre"),
                                        "line1": "",
-                                       "line2": model.genre
+                                       "line2": model.genre || tr_undefined
                                    })
             }
             onPressAndHold: {

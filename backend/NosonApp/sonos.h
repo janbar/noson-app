@@ -48,6 +48,7 @@ class Sonos : public QObject
 {
   Q_OBJECT
   Q_PROPERTY(int jobCount READ jobCount NOTIFY jobCountChanged)
+  Q_PROPERTY(QString systemLocalURI READ systemLocalURI CONSTANT)
 
 public:
   explicit Sonos(QObject *parent = 0);
@@ -117,6 +118,8 @@ public:
   int jobCount() { return *(m_jobCount.Get()); }
   void beginJob();
   void endJob();
+
+  const QString& systemLocalURI() { return m_systemLocalURI; }
 
   // Define singleton provider functions
   static QObject* sonos_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
@@ -230,6 +233,7 @@ private:
   SONOS::System m_system;
   SONOS::OS::CThreadPool m_threadpool;
   SONOS::LockedNumber<int> m_jobCount;
+  QString m_systemLocalURI;
 
   SONOS::Locked<QString> m_locale; // language_COUNTRY
 
