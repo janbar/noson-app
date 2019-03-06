@@ -246,7 +246,7 @@ void FileStreamer::streamFile(void * handle, const std::string& filePath, const 
       while (!IsAborted() && (r = fread(buf + 5, 1, 4000, file)) > 0)
       {
         char str[6];
-        snprintf(str, 6, "%.3x\r\n", (unsigned)r);
+        snprintf(str, sizeof(str), "%03x\r\n", (unsigned)r & 0xfff);
         memcpy(buf, str, 5);
         memcpy(buf + 5 + r, "\r\n", 2);
         if (!Reply(handle, buf, r + 7))

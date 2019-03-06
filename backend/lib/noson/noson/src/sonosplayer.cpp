@@ -939,7 +939,7 @@ DigitalItemPtr Player::MakeFileStreamItem(const std::string& streamURI, const st
       hh = val / 3600;
       hm = (val - (hh * 3600)) / 60;
       hs = val - (hh * 3600) - (hm * 60);
-      snprintf(str, sizeof(str), "%02u:%02u:%02u", hh, hm, hs);
+      snprintf(str, sizeof(str), "%02u:%02u:%02u", hh & 0x3f, hm & 0x3f, hs & 0x3f);
     }
     else
       strncpy(str, "00:59:59", sizeof(str)); // default by long duration
