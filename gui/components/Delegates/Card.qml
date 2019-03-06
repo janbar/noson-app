@@ -84,9 +84,10 @@ Item {
             onImageError: card.imageError(index)
         }
 
+        // Adjust spacing
         Item {
             height: units.gu(0.5)
-            width: units.gu(1)
+            width: parent.width
         }
 
         // Labels are ~1.5GU per line
@@ -121,11 +122,6 @@ Item {
             // Allow wrapping of 2 lines unless primary has been wrapped
             maximumLineCount: primaryLabel.lineCount > 1 ? 1 : 2
             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
-        }
-
-        Item {
-            height: cardColumn.spacing + units.gu(1)
-            width: units.gu(1)
         }
     }
 

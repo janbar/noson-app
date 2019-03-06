@@ -253,7 +253,7 @@ MusicPage {
     MusicGridView {
         id: mediaGrid
         itemWidth: displayType == 3 /*Editorial*/ ? units.gu(12) : units.gu(15)
-        heightOffset: units.gu(9.5)
+        heightOffset: units.gu(9)
 
         model: mediaModel
 

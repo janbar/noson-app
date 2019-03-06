@@ -90,7 +90,7 @@ MusicPage {
         delegate: Card {
             id: favoriteCard
             primaryText: model.title
-            secondaryText: ""
+            secondaryTextVisible: false
 
             coverSources: [{art: model.art}]
 

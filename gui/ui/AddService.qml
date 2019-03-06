@@ -33,7 +33,7 @@ MusicPage {
     MusicGridView {
         id: serviceGrid
         itemWidth: units.gu(15)
-        heightOffset: units.gu(9.5)
+        heightOffset: units.gu(7)
 
         model: SortFilterModel {
             model: AllServicesModel
@@ -48,7 +48,7 @@ MusicPage {
         delegate: Card {
             id: serviceCard
             primaryText: model.title
-            secondaryText: model.nickName
+            secondaryTextVisible: false
             isFavorite: false
 
             noCover: "qrc:/images/radio.png"

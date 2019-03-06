@@ -48,7 +48,7 @@ MusicPage {
     MusicGridView {
         id: albumGridView
         itemWidth: units.gu(15)
-        heightOffset: units.gu(9.5)
+        heightOffset: units.gu(9)
 
         model: SortFilterModel {
             model: AllAlbumsModel

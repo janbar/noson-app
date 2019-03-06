@@ -62,7 +62,7 @@ MusicPage {
     MusicGridView {
         id: addtoPlaylistView
         itemWidth: units.gu(12)
-        heightOffset: units.gu(9.5)
+        heightOffset: units.gu(7)
         model: AllPlaylistsModel
         delegate: Card {
             id: playlist
