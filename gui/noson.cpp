@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 #ifdef Q_OS_ANDROID
             QQuickStyle::setStyle("Material");
 #else
-            QQuickStyle::setStyle("Universal");
+            QQuickStyle::setStyle("Material");
 #endif
             settings.setValue("style", QQuickStyle::name());
         }

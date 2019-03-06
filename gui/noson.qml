@@ -22,7 +22,7 @@ ApplicationWindow {
 
     Settings {
         id: settings
-        property string style: "Default"
+        property string style: "Material"
         property int theme: 0
 
         property real scaleFactor: 1.0
