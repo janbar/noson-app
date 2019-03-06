@@ -389,17 +389,22 @@ QVariant Player::makeFileStreamItem(const QString& filePath,
                                     const QString& title,
                                     const QString& album,
                                     const QString& author,
-                                    const QString& duration)
+                                    const QString& duration,
+                                    bool hasArt)
 {
+  QVariant var;
   SONOS::DigitalItemPtr item(nullptr);
+  var.setValue<SONOS::DigitalItemPtr>(item);
   if (m_player)
   {
+    // find the service for file streaming or return null
     SONOS::RequestBrokerPtr rbf = m_sonos->getSystem().GetRequestBroker("file");
     if (!rbf)
-      return 0;
+      return var;
+    // find the resource for my codec or return null
     SONOS::RequestBroker::ResourcePtr res = rbf->GetResource(codec.toUtf8().constData());
     if (!res)
-      return 0;
+      return var;
 
     std::string pathParm(QUrl::toPercentEncoding(filePath).constData());
     std::string streamUri;
@@ -411,24 +416,27 @@ QVariant Player::makeFileStreamItem(const QString& filePath,
     else
       streamUri.assign(res->uri).append("?path=").append(pathParm);
 
-    // make the cover uri
-    SONOS::RequestBrokerPtr rbi = m_sonos->getSystem().GetRequestBroker("images");
-    if (rbi)
+    // fill the icon uri to retrieve artwork when available
+    if (hasArt)
     {
-      SONOS::RequestBroker::ResourcePtr rim = rbi->GetResource("filePicture");
-      if (rim)
+      // find the service for loading image
+      SONOS::RequestBrokerPtr rbi = m_sonos->getSystem().GetRequestBroker("images");
+      if (rbi)
       {
-        if (rim->uri.find('?') != std::string::npos)
-          iconUri.assign(rim->uri).append("&path=").append(pathParm).append("&type=3");
-        else
-          iconUri.assign(rim->uri).append("?path=").append(pathParm).append("&type=3");
+        // find the resource for extracting picture
+        SONOS::RequestBroker::ResourcePtr rim = rbi->GetResource("filePicture");
+        if (rim)
+        {
+          if (rim->uri.find('?') != std::string::npos)
+            iconUri.assign(rim->uri).append("&path=").append(pathParm).append("&type=3");
+          else
+            iconUri.assign(rim->uri).append("?path=").append(pathParm).append("&type=3");
+        }
       }
     }
-    item = m_player->MakeFileStreamItem(streamUri, iconUri, title.toUtf8().constData(), album.toUtf8().constData(), author.toUtf8().constData(),
-                                        duration.toUtf8().constData());
+    var.setValue<SONOS::DigitalItemPtr>(m_player->MakeFileStreamItem(streamUri, iconUri, title.toUtf8().constData(), album.toUtf8().constData(), author.toUtf8().constData(),
+                                        duration.toUtf8().constData()));
   }
-  QVariant var;
-  var.setValue<SONOS::DigitalItemPtr>(item);
   return var;
 }
 

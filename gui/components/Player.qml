@@ -201,8 +201,8 @@ Item {
         return playerLoader.item.addItemToQueue(modelItem.payload, nr);
     }
 
-    function makeFileStreamItem(filePath, codec, title, album, author, duration) {
-        return playerLoader.item.makeFileStreamItem(filePath, codec, title, album, author, duration);
+    function makeFileStreamItem(filePath, codec, title, album, author, duration, hasArt) {
+        return playerLoader.item.makeFileStreamItem(filePath, codec, title, album, author, duration, hasArt);
     }
 
     function addMultipleItemsToQueue(modelItemList) {

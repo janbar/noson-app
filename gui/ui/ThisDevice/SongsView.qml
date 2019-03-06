@@ -77,7 +77,7 @@ MusicPage {
 
     function makeItemPayload(modelItem) {
         return player.makeFileStreamItem(modelItem.filePath, modelItem.codec, modelItem.title, modelItem.album,
-                                         modelItem.author, modelItem.duration.toString());
+                                         modelItem.author, modelItem.duration.toString(), modelItem.hasArt);
     }
 
     function makeContainerPayloads(model) {

@@ -99,7 +99,8 @@ public:
                                           const QString& title,
                                           const QString& album,
                                           const QString& author,
-                                          const QString& duration);
+                                          const QString& duration,
+                                          bool hasArt);
 
   Q_INVOKABLE bool playLineIN();
   Q_INVOKABLE bool playDigitalIN();
