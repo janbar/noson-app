@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.1.0)
 
 option(INSTALL_TESTS "Install the tests on make install" on)
 
-set(APP_VERSION       "3.11.0")
-set(APP_VERSION_CODE  26)
+set(APP_VERSION       "3.11.1")
+set(APP_VERSION_CODE  27)
 set(APP_NAME          "noson")
 set(APP_ID            "io.github.janbar.noson")
 set(EXEC              "noson-app")

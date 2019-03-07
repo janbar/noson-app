@@ -1,4 +1,9 @@
-noson-app (3.10) UNRELEASED; urgency=low
+noson-app (3.11) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 3.11
+  * Streams local files
+  * minor fixes
 
   [ janbar ]
   * Release 3.10
