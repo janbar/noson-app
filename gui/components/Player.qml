@@ -201,6 +201,10 @@ Item {
         return playerLoader.item.addItemToQueue(modelItem.payload, nr);
     }
 
+    function makeFilePictureLocalURL(filePath) {
+        return playerLoader.item.makeFilePictureLocalURL(filePath);
+    }
+
     function makeFileStreamItem(filePath, codec, title, album, author, duration, hasArt) {
         return playerLoader.item.makeFileStreamItem(filePath, codec, title, album, author, duration, hasArt);
     }

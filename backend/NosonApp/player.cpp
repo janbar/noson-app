@@ -384,6 +384,20 @@ bool Player::isMyStream(const QString &url)
   return (m_player && m_player->IsMyStream(url.toUtf8().constData()));
 }
 
+QString Player::makeFilePictureURL(const QString& filePath)
+{
+  if (m_player)
+    return QString::fromUtf8(m_player->MakeFilePictureUrl(filePath.toUtf8().constData()).c_str());
+  return QString("");
+}
+
+QString Player::makeFilePictureLocalURL(const QString& filePath)
+{
+  if (m_player)
+    return QString::fromUtf8(m_player->MakeFilePictureLocalUrl(filePath.toUtf8().constData()).c_str());
+  return QString("");
+}
+
 QVariant Player::makeFileStreamItem(const QString& filePath,
                                     const QString& codec,
                                     const QString& title,
@@ -393,50 +407,14 @@ QVariant Player::makeFileStreamItem(const QString& filePath,
                                     bool hasArt)
 {
   QVariant var;
-  SONOS::DigitalItemPtr item(nullptr);
-  var.setValue<SONOS::DigitalItemPtr>(item);
   if (m_player)
   {
-    // find the service for file streaming or return null
-    SONOS::RequestBrokerPtr rbf = m_sonos->getSystem().GetRequestBroker("file");
-    if (!rbf)
-      return var;
-    // find the resource for my codec or return null
-    SONOS::RequestBroker::ResourcePtr res = rbf->GetResource(codec.toUtf8().constData());
-    if (!res)
-      return var;
-
-    std::string pathParm(QUrl::toPercentEncoding(filePath).constData());
-    std::string streamUri;
-    std::string iconUri;
-
-    // make the stream uri
-    if (res->uri.find('?') != std::string::npos)
-      streamUri.assign(res->uri).append("&path=").append(pathParm);
-    else
-      streamUri.assign(res->uri).append("?path=").append(pathParm);
-
-    // fill the icon uri to retrieve artwork when available
-    if (hasArt)
-    {
-      // find the service for loading image
-      SONOS::RequestBrokerPtr rbi = m_sonos->getSystem().GetRequestBroker("images");
-      if (rbi)
-      {
-        // find the resource for extracting picture
-        SONOS::RequestBroker::ResourcePtr rim = rbi->GetResource("filePicture");
-        if (rim)
-        {
-          if (rim->uri.find('?') != std::string::npos)
-            iconUri.assign(rim->uri).append("&path=").append(pathParm).append("&type=3");
-          else
-            iconUri.assign(rim->uri).append("?path=").append(pathParm).append("&type=3");
-        }
-      }
-    }
-    var.setValue<SONOS::DigitalItemPtr>(m_player->MakeFileStreamItem(streamUri, iconUri, title.toUtf8().constData(), album.toUtf8().constData(), author.toUtf8().constData(),
-                                        duration.toUtf8().constData()));
+    var.setValue<SONOS::DigitalItemPtr>(m_player->MakeFileStreamItem(filePath.toUtf8().constData(), codec.toUtf8().constData(),
+            title.toUtf8().constData(), album.toUtf8().constData(), author.toUtf8().constData(), duration.toUtf8().constData(),
+            hasArt));
   }
+  else
+    var.setValue<SONOS::DigitalItemPtr>(SONOS::DigitalItemPtr(nullptr));
   return var;
 }
 

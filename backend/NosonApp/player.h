@@ -94,6 +94,8 @@ public:
 
   Q_INVOKABLE bool isMyStream(const QString& url);    // return true if the given url connects to this player
 
+  Q_INVOKABLE QString makeFilePictureURL(const QString& filePath);
+  Q_INVOKABLE QString makeFilePictureLocalURL(const QString& filePath);
   Q_INVOKABLE QVariant makeFileStreamItem(const QString& filePath,
                                           const QString& codec,
                                           const QString& title,

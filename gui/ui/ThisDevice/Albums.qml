@@ -39,7 +39,7 @@ MusicPage {
     function makeFileCoverSource(hasArt, filePath, artist, album) {
         var art = "";
         if (hasArt)
-            art = Sonos.systemLocalURI + "/images/file?path=" + encodeURIComponent(filePath);
+            art = player.makeFilePictureLocalURL(filePath);
         return makeCoverSource(art, artist, album);
     }
 

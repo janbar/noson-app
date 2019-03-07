@@ -71,7 +71,7 @@ MusicPage {
     function makeFileCoverSource(modelItem) {
         var art = "";
         if (modelItem.hasArt)
-            art = Sonos.systemLocalURI + "/images/file?path=" + encodeURIComponent(modelItem.filePath);
+            art = player.makeFilePictureLocalURL(modelItem.filePath);
         return makeCoverSource(art, modelItem.artist, modelItem.album);
     }
 
@@ -108,7 +108,7 @@ MusicPage {
                     songStackPage.covers = [{art: item.art}];
                     hasCover = true;
                 } else if (item.hasArt) {
-                    item.art = Sonos.systemLocalURI + "/images/file?path=" + encodeURIComponent(item.filePath);
+                    item.art = player.makeFilePictureLocalURL(item.filePath);
                     songStackPage.covers = [{art: item.art}];
                     hasCover = true;
                 }
