@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2017 Jean-Luc Barriere
+ *      Copyright (C) 2017-2019 Jean-Luc Barriere
  *
  *  This library is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published
@@ -35,9 +35,10 @@ inline std::string __urlencode(const std::string& str) {
   {
     if (isalnum(*cstr) || *cstr == '-' || *cstr == '_' || *cstr == '.' || *cstr == '~')
       out.push_back(*cstr);
-    else {
+    else
+    {
       char buf[4];
-      sprintf(buf, "%%%.2x", static_cast<unsigned char>(*cstr));
+      sprintf(buf, "%%%02x", static_cast<unsigned char>(*cstr));
       out.append(buf);
     }
     ++cstr;

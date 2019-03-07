@@ -169,8 +169,11 @@ namespace NSROOT
     std::string GetItemIdFromUriMetadata(const DigitalItemPtr& uriMetadata);
     Protocol_t GetURIProtocol(const std::string& uri);
     const std::string& GetControllerUri() const { return m_controllerUri; }
-    DigitalItemPtr MakeFileStreamItem(const std::string& streamURI, const std::string& iconURI, const std::string& title, const std::string& album,
-                                      const std::string& author, const std::string& duration) const;
+
+    std::string MakeFilePictureUrl(const std::string& filePath);
+    std::string MakeFilePictureLocalUrl(const std::string& filePath);
+    DigitalItemPtr MakeFileStreamItem(const std::string& filePath, const std::string& codec, const std::string& title, const std::string& album,
+                                      const std::string& author, const std::string& duration, bool hasArt);
 
   private:
     bool m_valid;
@@ -184,6 +187,7 @@ namespace NSROOT
     Locked<unsigned char> m_eventMask;
 
     // the name and address of this controller
+    std::string m_controllerLocalUri;
     std::string m_controllerName;
     std::string m_controllerHost;
     std::string m_controllerUri;

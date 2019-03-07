@@ -19,6 +19,7 @@
 #include "private/debug.h"
 #include "data/datareader.h"
 #include "filepicreader.h"
+#include "private/urlencoder.h"
 
 #include <map>
 #include <cstring>
@@ -99,6 +100,24 @@ RequestBroker::ResourcePtr ImageService::RegisterResource(const std::string& tit
 void ImageService::UnregisterResource(const std::string& uri)
 {
   (void)uri;
+}
+
+std::string ImageService::MakeFilePictureURI(const std::string& filePath)
+{
+  std::string pictureUri;
+  // find the resource for extracting picture
+  ResourcePtr res = GetResource(RESOURCE_FILEPICTURE);
+  if (!res)
+    return pictureUri;
+  // encode the file path
+  std::string pathParm(urlencode(filePath));
+  // make the picture uri
+  if (res->uri.find('?') != std::string::npos)
+    pictureUri.assign(res->uri).append("&path=").append(pathParm).append("&type=3");
+  else
+    pictureUri.assign(res->uri).append("?path=").append(pathParm).append("&type=3");
+
+  return pictureUri;
 }
 
 void ImageService::ReplyContent(void * handle, const std::string& uri)

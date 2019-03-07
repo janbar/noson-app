@@ -33,6 +33,10 @@
 #include "didlparser.h"
 #include "sonossystem.h"
 #include "smapimetadata.h"
+#include "filestreamer.h"
+#include "imageservice.h"
+
+#include <cassert>
 
 using namespace NSROOT;
 
@@ -51,6 +55,10 @@ Player::Player(const ZonePtr& zone, EventHandler& eventHandler, void* CBHandle, 
 , m_contentDirectory(0)
 , m_musicServices(0)
 {
+  m_controllerLocalUri.assign(ProtocolTable[Protocol_http])
+    .append("://").append(m_eventHandler.GetAddress())
+    .append(":").append(std::to_string(m_eventHandler.GetPort()));
+
   if (!zone)
     DBG(DBG_ERROR, "%s: invalid zone\n", __FUNCTION__);
   else
@@ -89,6 +97,10 @@ Player::Player(const ZonePlayerPtr& zonePlayer, EventHandler& eventHandler, void
 , m_contentDirectory(0)
 , m_musicServices(0)
 {
+  m_controllerLocalUri.assign(ProtocolTable[Protocol_http])
+    .append("://").append(m_eventHandler.GetAddress())
+    .append(":").append(std::to_string(m_eventHandler.GetPort()));
+
   if (zonePlayer && zonePlayer->IsValid())
   {
     DBG(DBG_DEBUG, "%s: initialize player '%s' (%s:%u)\n", __FUNCTION__, zonePlayer->c_str(), zonePlayer->GetHost().c_str(), zonePlayer->GetPort());
@@ -902,18 +914,59 @@ Protocol_t Player::GetURIProtocol(const std::string& uri)
   return static_cast<Protocol_t>(i);
 }
 
-DigitalItemPtr Player::MakeFileStreamItem(const std::string& streamURI, const std::string& iconURI, const std::string& title, const std::string& album,
-                                          const std::string& author, const std::string& duration) const
+std::string Player::MakeFilePictureUrl(const std::string& filePath)
 {
-  // define the stream URL for the local handler
+  std::string pictureURL;
+  RequestBrokerPtr imageService = m_eventHandler.GetRequestBroker(IMAGESERVICE_CNAME);
+  if (imageService)
+  {
+    std::string pictureURI = static_cast<ImageService*>(imageService.get())->MakeFilePictureURI(filePath);
+    if (!pictureURI.empty())
+      pictureURL.assign(m_controllerUri).append(pictureURI);
+  }
+  return pictureURL;
+}
+
+std::string Player::MakeFilePictureLocalUrl(const std::string& filePath)
+{
+  std::string pictureURL;
+  RequestBrokerPtr imageService = m_eventHandler.GetRequestBroker(IMAGESERVICE_CNAME);
+  if (imageService)
+  {
+    std::string pictureURI = static_cast<ImageService*>(imageService.get())->MakeFilePictureURI(filePath);
+    if (!pictureURI.empty())
+      pictureURL.assign(m_controllerLocalUri).append(pictureURI);
+  }
+  return pictureURL;
+}
+
+DigitalItemPtr Player::MakeFileStreamItem(const std::string& filePath, const std::string& codec, const std::string& title, const std::string& album,
+                                          const std::string& author, const std::string& duration, bool hasArt)
+{
+  // find the service else return null
+  RequestBrokerPtr rbfs = m_eventHandler.GetRequestBroker(FILESTREAMER_CNAME);
+  if (!rbfs)
+  {
+    DBG(DBG_ERROR, "%s: service unavaible\n", __FUNCTION__);
+    return DigitalItemPtr();
+  }
+  FileStreamer * fileStreamer = static_cast<FileStreamer*>(rbfs.get());
+  std::string streamURI = fileStreamer->MakeFileStreamURI(filePath, codec);
+  if (streamURI.empty())
+  {
+    DBG(DBG_ERROR, "%s: file type not supported (%s)\n", __FUNCTION__, codec.c_str());
+    return DigitalItemPtr();
+  }
+  // define the base URL for the local handler
   std::string streamURL;
   streamURL.assign(m_controllerUri).append(streamURI);
   std::string itemId("00092020"); // disabled seeking
   itemId.append(m_controllerName).append(":").append(streamURI);
 
-  // define the icon URL for the local handler
-  std::string iconURL;
-  iconURL.assign(m_controllerUri).append(iconURI);
+  // define the picture URL for the local handler
+  std::string pictureURL;
+  if (hasArt)
+    pictureURL = MakeFilePictureUrl(filePath);
 
   // build the digital item
   DigitalItemPtr item(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
@@ -922,7 +975,7 @@ DigitalItemPtr Player::MakeFileStreamItem(const std::string& streamURI, const st
   item->SetProperty(DIDL_QNAME_DC "title", title);
   item->SetProperty(DIDL_QNAME_UPNP "album", album);
   item->SetProperty(DIDL_QNAME_DC "creator", author);
-  item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", iconURL);
+  item->SetProperty(DIDL_QNAME_UPNP "albumArtURI", pictureURL);
 
   std::string hms;
   unsigned hh, hm, hs;
@@ -946,52 +999,15 @@ DigitalItemPtr Player::MakeFileStreamItem(const std::string& streamURI, const st
     hms.assign(str, sizeof(str) - 1);
   }
 
-  std::string file = streamURI.substr(0, streamURI.find('?'));
-  std::string mime = file.substr(file.find_last_of('.'));
-  /*
-   * Configure an audio FLAC transfer for any resource with the corresponding extension
-   */
-  if (mime == ".flac")
-  {
-    std::string protocolInfo;
-    protocolInfo.assign(ProtocolTable[Protocol_httpGet]).append(":*:audio/flac:*");
-    ElementPtr res(new Element("res", streamURL));
-    res->SetAttribut("protocolInfo", protocolInfo);
-    res->SetAttribut("duration", hms);
-    item->SetProperty(res);
-    DBG(DBG_DEBUG, "%s: %s\n%s\n", __FUNCTION__, item->GetValue("res").c_str(), item->DIDL().c_str());
-    return item;
-  }
-  /*
-   * Configure an audio mpeg transfer for any resource with the corresponding extension
-   * MP2 codec is not supported
-   */
-  if (mime == ".mp3")
-  {
-    std::string protocolInfo;
-    protocolInfo.assign(ProtocolTable[Protocol_httpGet]).append(":*:audio/mpeg:*");
-    ElementPtr res(new Element("res", streamURL));
-    res->SetAttribut("protocolInfo", protocolInfo);
-    res->SetAttribut("duration", hms);
-    item->SetProperty(res);
-    DBG(DBG_DEBUG, "%s: %s\n%s\n", __FUNCTION__, item->GetValue("res").c_str(), item->DIDL().c_str());
-    return item;
-  }
-  /*
-   * Configure an audio aac transfer for any resource with the corresponding extension
-   */
-  if (mime == ".aac")
-  {
-    std::string protocolInfo;
-    protocolInfo.assign(ProtocolTable[Protocol_httpGet]).append(":*:audio/aac:*");
-    ElementPtr res(new Element("res", streamURL));
-    res->SetAttribut("protocolInfo", protocolInfo);
-    res->SetAttribut("duration", hms);
-    item->SetProperty(res);
-    DBG(DBG_DEBUG, "%s: %s\n%s\n", __FUNCTION__, item->GetValue("res").c_str(), item->DIDL().c_str());
-    return item;
-  }
+  const FileStreamer::codec_type * codecType = fileStreamer->GetCodec(codec);
+  assert(codecType);
 
-  DBG(DBG_ERROR, "%s: file type not supported (%s)\n", __FUNCTION__, file.c_str());
-  return DigitalItemPtr();
+  std::string protocolInfo;
+  protocolInfo.assign(ProtocolTable[Protocol_httpGet]).append(":*:").append(codecType->mime).append(":*");
+  ElementPtr res(new Element("res", streamURL));
+  res->SetAttribut("protocolInfo", protocolInfo);
+  res->SetAttribut("duration", hms);
+  item->SetProperty(res);
+  DBG(DBG_DEBUG, "%s: %s\n%s\n", __FUNCTION__, item->GetValue("res").c_str(), item->DIDL().c_str());
+  return item;
 }

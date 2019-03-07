@@ -131,6 +131,32 @@ void FileStreamer::UnregisterResource(const std::string& uri)
   (void)uri;
 }
 
+const FileStreamer::codec_type * FileStreamer::GetCodec(const std::string& codecName)
+{
+  for (int i = 0; i < codecTypeTabSize; ++i)
+    if (codecName.compare(codecTypeTab[i].codec) == 0)
+      return &codecTypeTab[i];
+  return nullptr;
+}
+
+std::string FileStreamer::MakeFileStreamURI(const std::string& filePath, const std::string& codecName)
+{
+  std::string streamUri;
+  // find the resource for my codec else return null
+  ResourcePtr res = GetResource(codecName);
+  if (!res)
+    return streamUri;
+  // encode the file path
+  std::string pathParm(urlencode(filePath));
+  // make the stream uri
+  if (res->uri.find('?') != std::string::npos)
+    streamUri.assign(res->uri).append("&path=").append(pathParm);
+  else
+    streamUri.assign(res->uri).append("?path=").append(pathParm);
+
+  return streamUri;
+}
+
 void FileStreamer::readParameters(const std::string& streamUrl, std::vector<std::string>& params)
 {
   size_t s = streamUrl.find('?');

@@ -44,6 +44,13 @@ public:
                                               StreamReader * delegate) override;
   void UnregisterResource(const std::string& uri) override;
 
+  /**
+   * Return the URI for the picture of the given file
+   * @param filePath absolute path of the file
+   * @return the picture URI for the file
+   */
+  std::string MakeFilePictureURI(const std::string& filePath);
+
 private:
   typedef std::map<std::string, ResourcePtr> ResourceMap;
   ResourceMap m_resources;

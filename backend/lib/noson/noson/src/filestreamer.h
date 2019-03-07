@@ -46,17 +46,27 @@ public:
                                               StreamReader * delegate) override;
   void UnregisterResource(const std::string& uri) override;
 
-private:
-  ResourceList m_resources;
-
-  // count current running playback
-  LockedNumber<int> m_playbackCount;
-
   typedef struct {
     const char * codec;
     const char * suffix;
     const char * mime;
   } codec_type;
+
+  static const codec_type * GetCodec(const std::string& codecName);
+
+  /**
+   * Return the URI for the given file with codec
+   * @param filePath absolute path of the file to stream
+   * @param codecName codec of the audio track
+   * @return the stream URI for the file
+   */
+  std::string MakeFileStreamURI(const std::string& filePath, const std::string& codecName);
+
+private:
+  ResourceList m_resources;
+
+  // count current running playback
+  LockedNumber<int> m_playbackCount;
 
   static codec_type codecTypeTab[];
   static int codecTypeTabSize;
