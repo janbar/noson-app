@@ -118,7 +118,8 @@ namespace NSROOT
     bool SetTreble(const std::string& uuid, int8_t value);
 
     bool SetCurrentURI(const DigitalItemPtr& item);
-    bool PlayMyStream(const std::string& streamURI, const std::string& title, const std::string& iconURI);
+    bool PlayPulse();
+    bool IsPulseStream(const std::string& streamURL);
     bool IsMyStream(const std::string& streamURL);
     bool PlayStream(const std::string& streamURL, const std::string& title, const std::string& iconURL);
     bool PlayStream(const std::string& streamURL, const std::string& title);

@@ -557,15 +557,8 @@ static bool parseCommand(const std::string& line)
 #ifdef HAVE_PULSEAUDIO
     else if (token == "PLAYPULSE")
     {
-      SONOS::RequestBrokerPtr rb = gSonos->GetRequestBroker("pulse");
-      if (rb)
-      {
-        SONOS::RequestBroker::ResourcePtr res = rb->GetResource("pulse");
-        if (res && gSonos->GetPlayer()->PlayMyStream(res->uri, res->description, res->iconUri))
-          ERROR("Succeeded\n");
-        else
-          ERROR("Failed\n");
-      }
+      if (gSonos->GetPlayer()->PlayPulse())
+        ERROR("Succeeded\n");
       else
         ERROR("Failed\n");
     }

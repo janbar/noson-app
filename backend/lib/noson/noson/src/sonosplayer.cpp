@@ -35,6 +35,9 @@
 #include "smapimetadata.h"
 #include "filestreamer.h"
 #include "imageservice.h"
+#ifdef HAVE_PULSEAUDIO
+#include "pulsestreamer.h"
+#endif
 
 #include <cassert>
 
@@ -476,25 +479,52 @@ bool Player::SetCurrentURI(const DigitalItemPtr& item)
   return m_AVTransport->SetCurrentURI(item->GetValue("res"), item->DIDL());
 }
 
-bool Player::PlayMyStream(const std::string& streamURI, const std::string& title, const std::string& iconURI)
+bool Player::PlayPulse()
 {
-  bool hasParam = (streamURI.find("?") != std::string::npos);
-  // define the stream URL for the local handler
-  std::string streamURL;
-  streamURL.assign(m_controllerUri).append(streamURI)
-      .append(hasParam ? "&" : "?")
-      .append("acr=").append(m_controllerName).append(":").append(std::to_string(m_eventHandler.GetPort()));
-  // define the icon URL for the local handler
-  std::string iconURL;
-  iconURL.assign(m_controllerUri).append(iconURI);
+  RequestBroker::ResourcePtr res(nullptr);
+#ifdef HAVE_PULSEAUDIO
+  RequestBrokerPtr rb = m_eventHandler.GetRequestBroker(PULSESTREAMER_CNAME);
+  if (rb)
+    res = rb->GetResource(PULSESTREAMER_CNAME);
+#endif
+  if (res)
+  {
+    bool hasParam = (res->uri.find("?") != std::string::npos);
+    // define the stream URL for the local handler
+    std::string streamURL;
+    streamURL.assign(m_controllerUri).append(res->uri)
+        .append(hasParam ? "&" : "?")
+        .append("acr=").append(m_controllerName).append(":").append(std::to_string(m_eventHandler.GetPort()));
+    // define the icon URL for the local handler
+    std::string iconURL;
+    iconURL.assign(m_controllerUri).append(res->iconUri);
 
-  // write my formatted name
-  std::string _title = title;
-  _title.replace(title.find("%s"), 2, m_controllerName);
-  return PlayStream(streamURL, _title, iconURL);
+    // write my formatted name
+    std::string _title = res->description;
+    _title.replace(res->description.find("%s"), 2, m_controllerName);
+    return PlayStream(streamURL, _title, iconURL);
+  }
+  DBG(DBG_ERROR, "%s: service unavaible\n", __FUNCTION__);
+  return false;
 }
 
-bool Player::IsMyStream(const std::string &streamURL)
+bool Player::IsPulseStream(const std::string& streamURL)
+{
+  RequestBrokerPtr rb(nullptr);
+#ifdef HAVE_PULSEAUDIO
+  rb = m_eventHandler.GetRequestBroker(PULSESTREAMER_CNAME);
+#endif
+  if (rb && IsMyStream(streamURL))
+  {
+    RequestBroker::ResourceList list = rb->GetResourceList();
+    for (RequestBroker::ResourceList::iterator it = list.begin(); it != list.end(); ++it)
+      if (streamURL.find((*it)->uri) != std::string::npos)
+        return true;
+  }
+  return false;
+}
+
+bool Player::IsMyStream(const std::string& streamURL)
 {
   return (streamURL.find(m_controllerUri) == 0);
 }

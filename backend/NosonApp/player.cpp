@@ -352,31 +352,12 @@ bool Player::startPlayPulse()
 
 bool Player::playPulse()
 {
-  if (m_player && m_sonos->havePulseAudio())
-  {
-    SONOS::RequestBrokerPtr rb = m_sonos->getSystem().GetRequestBroker("pulse");
-    if (rb)
-    {
-      SONOS::RequestBroker::ResourcePtr res = rb->GetResource("pulse");
-      return (res && m_player->PlayMyStream(res->uri, res->description, res->iconUri));
-    }
-  }
-  return false;
+  return (m_player && m_player->PlayPulse());
 }
 
 bool Player::isPulseStream(const QString &url)
 {
-  if (m_player)
-  {
-    SONOS::RequestBrokerPtr rb = m_sonos->getSystem().GetRequestBroker("pulse");
-    if (rb)
-    {
-      SONOS::RequestBroker::ResourceList list = rb->GetResourceList();
-      for (SONOS::RequestBroker::ResourceList::iterator it = list.begin(); it != list.end(); ++it)
-        return (url.contains((*it)->uri.c_str()) && m_player->IsMyStream(url.toUtf8().constData()));
-    }
-  }
-  return false;
+  return (m_player && m_player->IsPulseStream(url.toUtf8().constData()));
 }
 
 bool Player::isMyStream(const QString &url)
