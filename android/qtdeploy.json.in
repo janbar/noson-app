@@ -13,6 +13,7 @@
  "android-package": "@QT_ANDROID_APP_PACKAGE_NAME@",
  "android-app-name": "@QT_ANDROID_APP_NAME@",
  "qml-root-path": "@CMAKE_SOURCE_DIR@",
+ "useLLVM": @QT_ANDROID_USE_LLVM@,
  @QT_STDCPP_PATH@
  @QT_ANDROID_APP_EXTRA_LIBS@
  @QT_ANDROID_APP_EXTRA_PLUGINS@
