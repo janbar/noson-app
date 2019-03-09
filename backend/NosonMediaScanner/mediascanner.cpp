@@ -59,13 +59,25 @@ MediaScanner::~MediaScanner()
 
 void MediaScanner::start(int maxThread /*=MEDIASCANNER_MAX_THREAD*/) {
   m_engine->setMaxThread(maxThread);
-  m_engine->start();
-  qDebug("MediaScanner is started");
+  if (!m_engine->isRunning())
+  {
+    m_engine->start();
+  }
 }
 
 void MediaScanner::debug(bool enable)
 {
   m_debug = enable;
+}
+
+bool MediaScanner::emptyState() const
+{
+  return m_engine ? m_engine->emptyState() : true;
+}
+
+bool MediaScanner::working() const
+{
+  return m_engine ? m_engine->working() : false;
 }
 
 void MediaScanner::registerModel(ListModel * model)

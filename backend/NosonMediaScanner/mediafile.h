@@ -41,6 +41,7 @@ struct MediaFile
   MediaParserPtr parser;
   int retry;
   bool isValid;
+  bool signaled;
   MediaInfoPtr mediaInfo;
 
   MediaFile(unsigned id)
@@ -49,6 +50,7 @@ struct MediaFile
   , isDirectory(false)
   , retry(0)
   , isValid(false)
+  , signaled(false)
   , mediaInfo(nullptr)
   { }
 };

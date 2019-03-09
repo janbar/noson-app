@@ -43,9 +43,24 @@ MusicPage {
 
     ListModel {
       id: indexModel
+      Component.onCompleted: {
+          indexModel.append({
+              title: qsTr("Artists"),
+              art: "qrc:/images/folder_artist.png",
+              source: "qrc:/ui/ThisDevice/Artists.qml"
+          });
+          indexModel.append({
+              title: qsTr("Albums"),
+              art: "qrc:/images/folder_album.png",
+              source: "qrc:/ui/ThisDevice/Albums.qml"
+          });
+          indexModel.append({
+              title: qsTr("Genres"),
+              art: "qrc:/images/folder_genre.png",
+              source: "qrc:/ui/ThisDevice/Genres.qml"
+          });
+      }
     }
-
-    property bool noIndex: false
 
     MusicListView {
         id: indexList
@@ -72,9 +87,6 @@ MusicPage {
                     text: model.title
                 }
             }
-
-            Component.onCompleted: {
-            }
         }
 
         visible: isListView ? true : false
@@ -95,9 +107,6 @@ MusicPage {
             coverSources: [{art: model.art}]
 
             onClicked: clickItem(model)
-            onPressAndHold: {
-                // search...
-            }
         }
 
         visible: isListView ? false : true
@@ -108,47 +117,14 @@ MusicPage {
     }
 
     Component.onCompleted: {
+        genres.init();
         MediaScanner.start();
-        if (genres.isNew()) {
-            genres.init();
-        } else {
-            resetIndexModel();
-        }
-    }
-
-    function resetIndexModel() {
-        indexModel.clear();
-        if (genres.count > 0) {
-            noIndex = false;
-            indexModel.append({
-                title: qsTr("Artists"),
-                art: "qrc:/images/folder_artist.png",
-                source: "qrc:/ui/ThisDevice/Artists.qml"
-            });
-            indexModel.append({
-                title: qsTr("Albums"),
-                art: "qrc:/images/folder_album.png",
-                source: "qrc:/ui/ThisDevice/Albums.qml"
-            });
-            indexModel.append({
-                title: qsTr("Genres"),
-                art: "qrc:/images/folder_genre.png",
-                source: "qrc:/ui/ThisDevice/Genres.qml"
-            });
-        } else {
-            noIndex = true;
-        }
-    }
-
-    Connections {
-        target: genres
-        onCountChanged: resetIndexModel()
     }
 
     // Overlay to show when no index found
     Loader {
         anchors.fill: parent
-        active: noIndex
+        active: MediaScanner.emptyState
         asynchronous: true
         source: "qrc:/components/IndexEmptyState.qml"
         visible: active
@@ -157,5 +133,4 @@ MusicPage {
     function clickItem(model) {
         stackView.push(model.source, { "pageTitle": pageTitle });
     }
-
 }

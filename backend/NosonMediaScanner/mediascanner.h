@@ -46,6 +46,8 @@ class ListModel;
 class MediaScanner : public QObject
 {
   Q_OBJECT
+  Q_PROPERTY(bool emptyState READ emptyState NOTIFY emptyStateChanged)
+  Q_PROPERTY(bool working READ working NOTIFY workingChanged)
 
 private:
     static MediaScanner * _instance;
@@ -57,13 +59,17 @@ public:
 
   Q_INVOKABLE void start(int maxThread = MEDIASCANNER_MAX_THREAD);
   Q_INVOKABLE void debug(bool enable);
-  bool isDebug() { return m_debug; }
+  bool isDebug() const { return m_debug; }
+  bool emptyState() const;
+  bool working() const;
 
   void registerModel(ListModel * model);
   void unregisterModel(ListModel * model);
   QList<MediaFilePtr> allParsedFiles() const;
 
 signals:
+  void emptyStateChanged();
+  void workingChanged();
   void put(MediaFilePtr filePtr);
   void remove(MediaFilePtr filePtr);
 
