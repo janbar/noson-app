@@ -85,8 +85,6 @@ if(ANDROID)
       KEYSTORE ${KEYSTORE_FILE} ${KEYSTORE_ALIAS}
       KEYSTORE_PASSWORD ${KEYSTORE_PASSWORD}
   )
-else()
-  add_subdirectory(cli)
 endif()
 
 add_custom_target(

@@ -19,3 +19,8 @@ add_subdirectory(NosonThumbnailer)
 # Disable non-streamable medias
 set(DISABLE_MP4PARSER ON)
 add_subdirectory(NosonMediaScanner)
+
+# build the cli tool for desktop only
+if(NOT ANDROID)
+    add_subdirectory(cli)
+endif()
