@@ -4,9 +4,7 @@ option(BUILD_DEPENDENCIES "Build dependencies from sources" off)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-if(CMAKE_COMPILER_IS_GNUCC)
-    add_definitions ("-fPIC")
-endif()
+set (CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Disable install rules
 set(SKIP_INSTALL_ALL ON)
