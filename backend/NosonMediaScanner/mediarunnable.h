@@ -20,7 +20,6 @@
 
 #include <QRunnable>
 #include <QElapsedTimer>
-#include <QSharedPointer>
 
 namespace mediascanner
 {

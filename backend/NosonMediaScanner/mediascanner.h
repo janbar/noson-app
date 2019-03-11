@@ -18,7 +18,6 @@
 #ifndef MEDIASCANNER_H
 #define MEDIASCANNER_H
 
-#include "locked.h"
 #include "mediafile.h"
 
 #include <QObject>

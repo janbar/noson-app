@@ -21,9 +21,9 @@ using namespace mediascanner;
 
 MediaRunnable::MediaRunnable(bool debug)
 : QRunnable()
+, m_debug(debug)
 , m_timer(nullptr)
 , m_timeout(0)
-, m_debug(debug)
 {
 }
 
