@@ -17,6 +17,7 @@ file(GLOB APP_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.qml *.js *.json)
 add_subdirectory(components)
 add_subdirectory(ui)
 
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 11)
 
 # Make the files visible on qtcreator

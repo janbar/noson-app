@@ -10,10 +10,11 @@ find_package(Qt5Gui REQUIRED)
 find_package(Qt5Qml REQUIRED)
 find_package(Qt5Quick REQUIRED)
 
-###############################################################################
-# configure
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 11)
 
+###############################################################################
+# configure
 if(DISABLE_MP4PARSER)
   add_definitions("-DDISABLE_MP4PARSER")
 endif()

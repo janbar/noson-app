@@ -5,10 +5,11 @@ set(CMAKE_AUTOMOC ON)
 find_package(Qt5Qml REQUIRED)
 find_package(Qt5Quick REQUIRED)
 
-###############################################################################
-# configure
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 11)
 
+###############################################################################
+# configure
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 set(
