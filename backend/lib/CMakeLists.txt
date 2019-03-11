@@ -68,6 +68,8 @@ add_subdirectory(
     ${CMAKE_CURRENT_SOURCE_DIR}/noson/noson
     EXCLUDE_FROM_ALL
 )
-set(noson_INCLUDE_DIRS "${noson_BINARY_DIR}/public/noson" "${noson_BINARY_DIR}/public" PARENT_SCOPE)
-set(noson_LIBRARIES noson PARENT_SCOPE)
+set(noson_LIBRARIES noson                               PARENT_SCOPE)
+set(noson_INCLUDE_DIRS "${noson_BINARY_DIR}/public/noson"
+    "${noson_BINARY_DIR}/public"                        PARENT_SCOPE)
+set(noson_FOUND ON                                      PARENT_SCOPE)
 message(STATUS "Build noson: ${noson_BINARY_DIR}")
