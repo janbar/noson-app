@@ -34,10 +34,12 @@ endif()
 set(noson-cli_LIBRARIES ${noson_LIBRARIES})
 
 if(MSVC)
-  list(APPEND noson-cli_LIBRARIES ws2_32)
+    list(APPEND noson-cli_LIBRARIES ws2_32)
 endif()
 
-target_link_libraries (noson-cli ${noson-cli_LIBRARIES} )
+target_link_libraries(noson-cli ${noson-cli_LIBRARIES})
 
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/noson-cli
-    DESTINATION ${PLUGINS_DIR})
+if(NOT MSVC)
+    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/noson-cli
+        DESTINATION ${PLUGINS_DIR})
+endif()
