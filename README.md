@@ -1,4 +1,5 @@
 [![Gitter](https://badges.gitter.im/janbar/noson-app.svg)](https://gitter.im/janbar/noson-app?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Build Status](https://travis-ci.org/janbar/noson-app.svg?branch=master)](https://travis-ci.org/janbar/noson-app)
 
 ## Noson
 A fast and smart SONOS controller for Linux platforms.
