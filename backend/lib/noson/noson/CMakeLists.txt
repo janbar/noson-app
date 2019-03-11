@@ -1,5 +1,5 @@
-cmake_minimum_required (VERSION 2.8.9 FATAL_ERROR)
-cmake_policy (VERSION 2.8)
+cmake_minimum_required (VERSION 3.1.0 FATAL_ERROR)
+cmake_policy (VERSION 3.1)
 
 project (noson)
 
@@ -40,21 +40,9 @@ if (MSVC)
   set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W3 /Od /RTC1 /EHsc /nologo")
 endif ()
 
-if (NOT MSVC)
-  if (NOT CYGWIN)
-    add_definitions ("-fPIC")
-  endif ()
-
-  add_definitions ("-Wall")
-
-  include(CheckCXXCompilerFlag)
-  CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
-  if(COMPILER_SUPPORTS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-  else()
-    message(FATAL_ERROR "CXX compiler doesn't support standard c++11")
-  endif ()
-endif ()
+set (CMAKE_POSITION_INDEPENDENT_CODE ON)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)
+set (CMAKE_CXX_STANDARD 11)
 
 ###############################################################################
 # configure

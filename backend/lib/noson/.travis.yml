@@ -22,6 +22,9 @@ addons:
       - gcc-4.8
       - g++-4.8
       - clang
+      - libpulse-dev
+      - libflac-dev
+      - libflac++-dev
 
 before_script:
   - if [ "$TRAVIS_OS_NAME" = "linux" -a "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
