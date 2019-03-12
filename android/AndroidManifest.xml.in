@@ -29,6 +29,7 @@
 			<!--<meta-data android:name="android.app.ministro_not_found_msg" android:value="@string/ministro_not_found_msg"/>
 			<meta-data android:name="android.app.ministro_needed_msg" android:value="@string/ministro_needed_msg"/>
 			<meta-data android:name="android.app.fatal_error_msg" android:value="@string/fatal_error_msg"/>-->
+			<meta-data android:name="android.app.background_running" android:value="true"/>
 		</activity>
 	</application>
 	<supports-screens android:anyDensity="true" android:normalScreens="true" android:smallScreens="true" android:largeScreens="true"/>
