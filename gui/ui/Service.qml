@@ -191,6 +191,7 @@ MusicPage {
                     : model.type === 5 ? qsTr("Radio")
                     : ""
             onActionPressed: playItem(model)
+            onClick: clickItem(model)
             actionVisible: model.canPlay
             actionIconSource: "qrc:/images/media-preview-start.svg"
             menuVisible: model.canPlay || model.canQueue
@@ -330,6 +331,16 @@ MusicPage {
         if (model.isContainer) {
             servicePage.parentDisplayType = model.displayType;
             mediaModel.asyncLoadChild(model.id, model.title, servicePage.displayType, model.index);
+        } else {
+            var songModel = {
+                "id": model.id,
+                "payload": model.payload,
+                "title": model.title,
+                "author": model.artist,
+                "album": model.album,
+                "description": model.description
+            };
+            dialogSongInfo.open(songModel, [{art: model.art}], model.canPlay && model.canQueue, false); // show actions
         }
     }
 

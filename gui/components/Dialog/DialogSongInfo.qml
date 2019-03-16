@@ -78,8 +78,14 @@ Item {
                 card.coverSources = covers
                 card.primaryText = songInfo.model.title !== "" ? songInfo.model.title : qsTr("Unknown Album");
                 card.secondaryText = songInfo.model.author !== "" ? songInfo.model.author : qsTr("Unknown Artist");
-                card.tertiaryLabelVisible = songInfo.model.album.length !== "";
-                card.tertiaryText = qsTr("%1 - track #%2").arg(songInfo.model.album).arg(songInfo.model.albumTrackNo);
+                card.tertiaryLabelVisible = (songInfo.model.album.length > 0);
+                if (songInfo.model.albumTrackNo) {
+                    card.tertiaryText = qsTr("%1 - track #%2").arg(songInfo.model.album).arg(songInfo.model.albumTrackNo);
+                } else if (songInfo.model.description) {
+                    card.tertiaryText = songInfo.model.description;
+                } else {
+                    card.tertiaryText = songInfo.model.album;
+                }
             }
 
             if (actionPlay) {
