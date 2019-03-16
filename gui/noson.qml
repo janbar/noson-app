@@ -1200,8 +1200,10 @@ ApplicationWindow {
                     thumbValid = true;
             }
 
-            if (needRestart)
+            if (needRestart) {
+                jobRunning = true;
                 Qt.exit(16);
+            }
         }
         onRejected: {
             styleBox.currentIndex = styleBox.styleIndex

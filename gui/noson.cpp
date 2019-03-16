@@ -10,6 +10,7 @@
 #include <QProcess>
 #include <QPixmap>
 #include <QIcon>
+#include <QTime>
 
 #include "diskcache/diskcachefactory.h"
 
@@ -159,6 +160,11 @@ void doExit(int code)
 #ifndef Q_OS_ANDROID
   if (code == 16)
   {
+    // loop a short time to flush setting changes
+    QTime syncTime = QTime::currentTime().addSecs(1);
+    while (QTime::currentTime() < syncTime)
+      QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 100);
+
     QStringList args = QCoreApplication::arguments();
     args.removeFirst();
     QProcess::startDetached(QCoreApplication::applicationFilePath(), args);
