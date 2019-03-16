@@ -448,10 +448,6 @@ MusicPage {
         }
     }
 
-    /*DialogEditPlaylist {
-        id: dialogEditPlaylist
-    }*/
-
     // Page actions
     optionsMenuVisible: true
     optionsMenuContentItems: [
@@ -469,16 +465,6 @@ MusicPage {
                 }
             }
         },
-        /*MenuItem {
-            visible: songStackPage.isPlaylist
-            height: (visible ? implicitHeight : 0)
-            text: qsTr("Rename")
-            font.pointSize: units.fs("medium")
-            onTriggered: {
-                if (isPlaylist)
-                    dialogEditPlaylist.open()
-            }
-        },*/
         MenuItem {
             visible: songStackPage.isPlaylist
             height: (visible ? implicitHeight : 0)
