@@ -279,7 +279,7 @@ MusicPage {
                 }
             }
 
-            canPlay: model.isContainer && model.canPlay ? true : false
+            canPlay: model.canPlay
 
             overlay: false // item icon could be transparent
             noCover: model.type === 2 ? "qrc:/images/none.png"
@@ -330,11 +330,6 @@ MusicPage {
         if (model.isContainer) {
             servicePage.parentDisplayType = model.displayType;
             mediaModel.asyncLoadChild(model.id, model.title, servicePage.displayType, model.index);
-        } else if (model.canPlay) {
-            if (model.canQueue)
-                trackClicked(model);
-            else
-                radioClicked(model);
         }
     }
 

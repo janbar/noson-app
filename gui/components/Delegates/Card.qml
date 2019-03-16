@@ -135,7 +135,7 @@ Item {
         height: canPlay ? (card.width * 0.40) : 0
         width: height
         enabled: canPlay
-        opacity: 0.3
+        opacity: 0.5
         onClicked: card.playClicked(mouse)
         onPressAndHold: card.pressAndHold(mouse)
         source: "qrc:/images/media-preview-start.svg"
