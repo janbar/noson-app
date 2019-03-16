@@ -170,5 +170,7 @@
         <file>ui/ThisDevice/PlayAllButton.qml</file>
         <file>ui/ThisDevice/QueueAllButton.qml</file>
         <file>ui/ThisDevice/ShuffleButton.qml</file>
+        <file>components/Dialog/DialogAbout.qml</file>
+        <file>components/Dialog/DialogApplicationSettings.qml</file>
     </qresource>
 </RCC>
