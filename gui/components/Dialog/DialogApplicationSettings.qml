@@ -239,15 +239,33 @@ DialogBase {
             Layout.fillHeight: true
         }
 
-        RowLayout {
-            visible: true
-            spacing: units.gu(1)
-            Layout.fillWidth: true
-            Label {
-                text: qsTr("Last.fm")
-                font.pointSize: units.fs("medium");
-            }
 
+        ColumnLayout {
+            visible: true
+            spacing: units.gu(0.5)
+            Layout.fillWidth: true
+            RowLayout {
+                spacing: units.gu(1)
+                Image {
+                    height: units.gu(2.5)
+                    fillMode: Image.PreserveAspectCrop
+                    source: "qrc:/images/lastfm.svg"
+                    sourceSize.height: height
+                }
+                Text {
+                    id: link
+                    font.pointSize: units.fs("x-small")
+                    text: "<a href='https://www.last.fm/api/account/create'>" + qsTr("Get an API account") + "</a>"
+                    onLinkHovered: {
+                        if (hoveredLink)
+                            font.bold = true;
+                        else
+                            font.bold = false;
+                    }
+                    onLinkActivated: Qt.openUrlExternally(link)
+                    linkColor: styleMusic.view.linkColor
+                }
+            }
             TextField {
                 id: apiKey
                 font.pointSize: units.fs("medium")
