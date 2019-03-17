@@ -26,7 +26,7 @@ Build-Depends: cmake,
                qml-module-qtquick-templates2,
                qml-module-qtquick-window2,
                libqt5svg5
-Standards-Version: 3.9.6
+Standards-Version: 3.11.0
 Homepage: https://github.com/janbar/noson-app
 
 Package: noson-app
