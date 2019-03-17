@@ -73,14 +73,16 @@ Dialog {
     }
 
     Flickable {
-        anchors.fill: background
+        anchors.fill: parent
+        anchors.leftMargin: dialog.edgeMargins
         contentWidth: contentsColumn.width
         contentHeight: contentsColumn.height
         boundsBehavior: Flickable.StopAtBounds
         clip: true
 
         ScrollBar.vertical: ScrollBar {
-            policy: ScrollBar.AsNeeded
+            policy: ScrollBar.AlwaysOn
+            visible: (parent.visibleArea.heightRatio < 1.0)
         }
 
         Column {
