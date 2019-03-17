@@ -86,7 +86,7 @@ Item {
             anchors.right: nightmodeButton.left
             anchors.verticalCenter: parent.verticalCenter
             wheelEnabled: true
-            stepSize: 5.0
+            stepSize: 2.5
             live: true
             from: 0
             to: 100

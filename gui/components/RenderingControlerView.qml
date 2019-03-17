@@ -97,7 +97,7 @@ MusicListView {
                     anchors.right: gripButton.left
                     anchors.verticalCenter: parent.verticalCenter
                     wheelEnabled: true
-                    stepSize: 10.0
+                    stepSize: 2.5
                     live: true
                     from: 0
                     to: 100
@@ -112,9 +112,8 @@ MusicListView {
                     foregroundColor: styleMusic.playerControls.volumeForegroundColor
 
                     onValueChanged: {
-                        if (Math.abs(value - model.volume) >= 1.0) {
+                        if (pressed)
                             setVolume.start();
-                        }
                     }
 
                     onPressedChanged: finger(held)
@@ -128,12 +127,9 @@ MusicListView {
 
                     Timer {
                         id: setVolume
-                        interval: 100
+                        interval: 200
                         onTriggered: {
-                            if (player.setVolume(model.uuid, volumeSlider.value)) {
-                                //player.renderingModel.setVolume(index, volumeSlider.value);
-                            } else {
-                                value = model.volume;
+                            if (!player.setVolume(model.uuid, volumeSlider.value)) {
                                 customdebug("Set volume failed for zone " + model.uuid);
                             }
                             finger(held);
