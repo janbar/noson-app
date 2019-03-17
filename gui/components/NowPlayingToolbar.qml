@@ -104,14 +104,11 @@ Item {
 
             onValueChanged: {
                 if (Math.abs(value - inValue) >= 1.0) {
-                    if (value > inValue + 10.0)
-                        value = inValue + 10.0; // loop on value changed
-                    else {
-                        if (player.setVolumeGroup(volumeGroupSlider.value)) {
-                            volumeGroupSlider.inValue = player.volumeMaster = Math.round(volumeGroupSlider.value);
-                        } else {
-                            customdebug("Set volume failed");
-                        }
+                    if (pressed && value > inValue + 5.0) {
+                        value = inValue + 5.0; // loop on value changed
+                    } else {
+                        volumeGroupSlider.inValue = player.volumeMaster = Math.round(value);
+                        setVolume.start();
                     }
                 }
             }
@@ -120,6 +117,18 @@ Item {
                 // open the bubble
                 if (pressed && player.renderingControlCount > 1)
                     renderingBubble.open(musicToolbarFullVolumeContainer)
+            }
+
+            Timer {
+                id: setVolume
+                interval: 200
+                onTriggered: {
+                    if (player.setVolumeGroup(volumeGroupSlider.value)) {
+                        volumeGroupSlider.inValue = player.volumeMaster = Math.round(volumeGroupSlider.value);
+                    } else {
+                        customdebug("Set volume failed");
+                    }
+                }
             }
 
             Connections {
