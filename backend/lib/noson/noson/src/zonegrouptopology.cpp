@@ -130,9 +130,15 @@ bool ZoneGroupTopology::ParseZoneGroupState(const std::string& xml)
     DBG(DBG_ERROR, "%s: parse xml failed\n", __FUNCTION__);
     return false;
   }
+
   const tinyxml2::XMLElement* elem; // an element
-  // Check for response: ZPSupportInfo
-  if (!(elem = rootdoc.RootElement()) || !XMLNS::NameEqual(elem->Name(), "ZoneGroups"))
+  if ((elem = rootdoc.RootElement()))
+  {
+    // since API version 10.2 (build 50163230): the root element is 'ZoneGroupState'
+    if (XMLNS::NameEqual(elem->Name(), "ZoneGroupState"))
+      elem = elem->FirstChildElement();
+  }
+  else
   {
     DBG(DBG_ERROR, "%s: invalid or not supported content\n", __FUNCTION__);
     tinyxml2::XMLPrinter out;
@@ -145,63 +151,73 @@ bool ZoneGroupTopology::ParseZoneGroupState(const std::string& xml)
   Locked<ZonePlayerList>::pointer zonePlayers = m_zonePlayers.Get();
   zones->clear();
   zonePlayers->clear();
-  elem = elem->FirstChildElement();
+
   while (elem)
   {
-    const tinyxml2::XMLAttribute* attr = elem->FirstAttribute();
-    Element zoneGroup(elem->Name());
-    while (attr)
+    // VanishedDevices: Added in API version 10.2 (build 50163230)
+    // ZoneGroups
+    if (XMLNS::NameEqual(elem->Name(), "ZoneGroups"))
     {
-      zoneGroup.SetAttribut(attr->Name(), attr->Value());
-      attr = attr->Next();
-    }
-    ZonePtr zone(new Zone(zoneGroup.GetAttribut("ID")));
-    const std::string& cuuid = zoneGroup.GetAttribut("Coordinator");
-    DBG(DBG_INFO, "%s: new group '%s' with coordinator '%s'\n", __FUNCTION__, zone->GetGroup().c_str(), cuuid.c_str());
-    // browse childs
-    const tinyxml2::XMLElement* child = elem->FirstChildElement();
-    while (child)
-    {
-      if (XMLNS::NameEqual(child->Name(), "ZoneGroupMember"))
+      const tinyxml2::XMLElement* gelem = elem->FirstChildElement();
+      while (gelem)
       {
-        const tinyxml2::XMLAttribute* cattr = child->FirstAttribute();
-        Element zoneGroupMember(child->Name());
-        while (cattr)
+        const tinyxml2::XMLAttribute* attr = gelem->FirstAttribute();
+        Element zoneGroup(gelem->Name());
+        while (attr)
         {
-          zoneGroupMember.SetAttribut(cattr->Name(), cattr->Value());
-          cattr = cattr->Next();
+          zoneGroup.SetAttribut(attr->Name(), attr->Value());
+          attr = attr->Next();
         }
-        if (zoneGroupMember.GetAttribut("Invisible") == "1")
+        ZonePtr zone(new Zone(zoneGroup.GetAttribut("ID")));
+        const std::string& cuuid = zoneGroup.GetAttribut("Coordinator");
+        DBG(DBG_INFO, "%s: new group '%s' with coordinator '%s'\n", __FUNCTION__, zone->GetGroup().c_str(), cuuid.c_str());
+        // browse childs
+        const tinyxml2::XMLElement* child = gelem->FirstChildElement();
+        while (child)
         {
-          const std::string& mname = zoneGroupMember.GetAttribut("ZoneName");
-          const std::string& muuid = zoneGroupMember.GetAttribut("UUID");
-          DBG(DBG_INFO, "%s: discard invisible group member '%s' (%s)\n", __FUNCTION__, muuid.c_str(), mname.c_str());
+          if (XMLNS::NameEqual(child->Name(), "ZoneGroupMember"))
+          {
+            const tinyxml2::XMLAttribute* cattr = child->FirstAttribute();
+            Element zoneGroupMember(child->Name());
+            while (cattr)
+            {
+              zoneGroupMember.SetAttribut(cattr->Name(), cattr->Value());
+              cattr = cattr->Next();
+            }
+            if (zoneGroupMember.GetAttribut("Invisible") == "1")
+            {
+              const std::string& mname = zoneGroupMember.GetAttribut("ZoneName");
+              const std::string& muuid = zoneGroupMember.GetAttribut("UUID");
+              DBG(DBG_INFO, "%s: discard invisible group member '%s' (%s)\n", __FUNCTION__, muuid.c_str(), mname.c_str());
+            }
+            else
+            {
+              ZonePlayerPtr zp(new ZonePlayer(zoneGroupMember.GetAttribut("ZoneName")));
+              const std::string& muuid = zoneGroupMember.GetAttribut("UUID");
+              zp->SetAttribut(ZP_UUID, muuid);
+              if (muuid == cuuid)
+                zp->SetAttribut(ZP_COORDINATOR, "true");
+              else
+                zp->SetAttribut(ZP_COORDINATOR, "false");
+              zp->SetAttribut(ZP_LOCATION, zoneGroupMember.GetAttribut("Location"));
+              zp->SetAttribut(ZP_ICON, zoneGroupMember.GetAttribut("Icon"));
+              zp->SetAttribut(ZP_VERSION, zoneGroupMember.GetAttribut("SoftwareVersion"));
+              zp->SetAttribut(ZP_MCVERSION, zoneGroupMember.GetAttribut("MinCompatibleVersion"));
+              zp->SetAttribut(ZP_LCVERSION, zoneGroupMember.GetAttribut("LegacyCompatibleVersion"));
+              DBG(DBG_INFO, "%s: new group member '%s' (%s)\n", __FUNCTION__, muuid.c_str(), zp->c_str());
+              zonePlayers->insert(std::make_pair(*zp, zp));
+              zone->push_back(zp);
+            }
+          }
+          child = child->NextSiblingElement(NULL);
         }
-        else
+        if (!zone->empty())
         {
-          ZonePlayerPtr zp(new ZonePlayer(zoneGroupMember.GetAttribut("ZoneName")));
-          const std::string& muuid = zoneGroupMember.GetAttribut("UUID");
-          zp->SetAttribut(ZP_UUID, muuid);
-          if (muuid == cuuid)
-            zp->SetAttribut(ZP_COORDINATOR, "true");
-          else
-            zp->SetAttribut(ZP_COORDINATOR, "false");
-          zp->SetAttribut(ZP_LOCATION, zoneGroupMember.GetAttribut("Location"));
-          zp->SetAttribut(ZP_ICON, zoneGroupMember.GetAttribut("Icon"));
-          zp->SetAttribut(ZP_VERSION, zoneGroupMember.GetAttribut("SoftwareVersion"));
-          zp->SetAttribut(ZP_MCVERSION, zoneGroupMember.GetAttribut("MinCompatibleVersion"));
-          zp->SetAttribut(ZP_LCVERSION, zoneGroupMember.GetAttribut("LegacyCompatibleVersion"));
-          DBG(DBG_INFO, "%s: new group member '%s' (%s)\n", __FUNCTION__, muuid.c_str(), zp->c_str());
-          zonePlayers->insert(std::make_pair(*zp, zp));
-          zone->push_back(zp);
+          zone->Revamp();
+          zones->insert(std::make_pair(zone->GetGroup(), zone));
         }
+        gelem = gelem->NextSiblingElement(NULL);
       }
-      child = child->NextSiblingElement(NULL);
-    }
-    if (!zone->empty())
-    {
-      zone->Revamp();
-      zones->insert(std::make_pair(zone->GetGroup(), zone));
     }
     elem = elem->NextSiblingElement(NULL);
   }
@@ -212,5 +228,5 @@ bool ZoneGroupTopology::ParseZoneGroupState(const std::string& xml)
     keyStr.append(it->first);
   m_topologyKey = __hashvalue(0xFFFFFFFF, keyStr.c_str());
   DBG(DBG_INFO, "%s: topology key %u\n", __FUNCTION__, m_topologyKey);
-  return true;
+  return (!zones->empty());
 }
