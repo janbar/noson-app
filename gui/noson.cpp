@@ -169,6 +169,8 @@ void doExit(int code)
     args.removeFirst();
     QProcess::startDetached(QCoreApplication::applicationFilePath(), args);
   }
+#else
+  (void)code;
 #endif
   QCoreApplication::quit();
 }
