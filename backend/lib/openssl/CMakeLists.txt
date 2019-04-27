@@ -63,15 +63,15 @@ endif()
 
 add_subdirectory( crypto )
 add_subdirectory( ssl )
-add_subdirectory( apps )
+#add_subdirectory( apps )
 
 file ( COPY e_os2.h DESTINATION ${PROJECT_BINARY_DIR}/include/openssl )
 
 install( DIRECTORY ${PROJECT_BINARY_DIR}/include/openssl DESTINATION include )
 
-install( FILES tools/c_hash tools/c_info tools/c_issuer tools/c_name tools/c_rehash
-    FAQ LICENSE PROBLEMS README README.ASN1 README.ENGINE
-    DESTINATION share/openssl )
+#install( FILES tools/c_hash tools/c_info tools/c_issuer tools/c_name tools/#c_rehash
+#    FAQ LICENSE PROBLEMS README README.ASN1 README.ENGINE
+#    DESTINATION share/openssl )
 
 install( DIRECTORY doc DESTINATION share )
 
