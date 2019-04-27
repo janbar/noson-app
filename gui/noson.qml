@@ -320,8 +320,10 @@ ApplicationWindow {
         loadedUI = true;
 
         // resize main view according to user settings
-        mainView.width = (settings.widthGU >= minSizeGU ? units.gu(settings.widthGU) : units.gu(minSizeGU));
-        mainView.height = (settings.heightGU >= minSizeGU ? units.gu(settings.heightGU) : units.gu(minSizeGU));
+        if (!Android) {
+            mainView.width = (settings.widthGU >= minSizeGU ? units.gu(settings.widthGU) : units.gu(minSizeGU));
+            mainView.height = (settings.heightGU >= minSizeGU ? units.gu(settings.heightGU) : units.gu(minSizeGU));
+        }
     }
 
     // Show/hide page NoZoneState
