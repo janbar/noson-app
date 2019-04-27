@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.1.0)
 # Automatically create moc files
 set(CMAKE_AUTOMOC ON)
 
+option(QT_STATICPLUGIN "Build a static plugin" OFF)
+
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Qml REQUIRED)
@@ -18,8 +20,16 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
+if(QT_STATICPLUGIN)
+    set(CMAKE_AUTOMOC_MOC_OPTIONS -Muri=NosonApp)
+    add_definitions(-DQT_PLUGIN)
+    add_definitions(-DQT_STATICPLUGIN)
+endif()
+
 set(
-    NosonApp-static_SRCS
+    NosonApp_SRCS
+    plugin.cpp
+    plugin.h
     tools.h
     sonos.cpp
     sonos.h
@@ -65,30 +75,23 @@ set(
     composersmodel.h
 )
 
-add_library(NosonApp-static STATIC ${NosonApp-static_SRCS})
-
-if(NOT noson_FOUND)
-    add_dependencies (NosonApp-static noson)
+if(QT_STATICPLUGIN)
+    add_library(NosonApp STATIC ${NosonApp_SRCS})
+else()
+    add_library(NosonApp MODULE ${NosonApp_SRCS})
 endif()
 
-target_link_libraries(NosonApp-static ${noson_LIBRARIES}
-    Qt5::Gui Qt5::Qml Qt5::Quick)
-
-set(
-    NosonApp_SRCS
-    plugin.cpp
-    plugin.h
-)
-
-add_library(NosonApp MODULE ${NosonApp_SRCS})
+if(NOT noson_FOUND)
+    add_dependencies (NosonApp noson)
+endif()
 
 set_target_properties(NosonApp PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_DIRECTORY}/NosonApp)
-target_link_libraries(NosonApp NosonApp-static)
+target_link_libraries(NosonApp ${noson_LIBRARIES} Qt5::Gui Qt5::Qml Qt5::Quick)
 
 # Copy qmldir file to build dir for running in QtCreator
 add_custom_target(NosonApp-qmldir ALL
-    COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QML_IMPORT_DIRECTORY}/NosonApp
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QML_IMPORT_DIRECTORY}/NosonApp/qmldir
     DEPENDS ${QMLFILES}
 )
 

@@ -28,10 +28,8 @@
 #include <QtQml>
 #include <QtQml/QQmlContext>
 
-void BackendPlugin::registerTypes(const char *uri)
+void NosonAppPlugin::registerTypes(const char *uri)
 {
-  Q_ASSERT(uri == QLatin1String("NosonApp"));
-
   // register utils types
   qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 0, "SortFilterModel");
   qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
@@ -70,7 +68,7 @@ void BackendPlugin::registerTypes(const char *uri)
   qmlRegisterType<AlarmsModel>(uri, 1, 0, "AlarmsModel");
 }
 
-void BackendPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
+void NosonAppPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
   QQmlExtensionPlugin::initializeEngine(engine, uri);
 }

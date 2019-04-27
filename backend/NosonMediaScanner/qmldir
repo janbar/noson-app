@@ -1,2 +1,3 @@
 module NosonMediaScanner
 plugin NosonMediaScanner
+classname MediaScannerPlugin

@@ -29,35 +29,23 @@
 
 #define CACHE_SIZE    50000000L
 
-namespace mediascanner
+void MediaScannerPlugin::registerTypes(const char* uri)
 {
+  // register the singleton
+  qmlRegisterSingletonType<mediascanner::MediaScanner>(uri, 1, 0, "MediaScanner", MediaScannerPlugin::createMediaScanner);
+  qmlRegisterType<mediascanner::Artists>(uri, 1, 0, "ArtistList");
+  qmlRegisterType<mediascanner::Genres>(uri, 1, 0, "GenreList");
+  qmlRegisterType<mediascanner::Albums>(uri, 1, 0, "AlbumList");
+  qmlRegisterType<mediascanner::Tracks>(uri, 1, 0, "TrackList");
+}
 
-  namespace qml
-  {
+void MediaScannerPlugin::initializeEngine(QQmlEngine* engine, const char* uri)
+{
+  QQmlExtensionPlugin::initializeEngine(engine, uri);
+}
 
-    void MediaScannerPlugin::registerTypes(const char* uri)
-    {
-      Q_ASSERT(uri == QLatin1String("NosonMediaScanner"));
-
-      // register the singleton
-      qmlRegisterSingletonType<MediaScanner>(uri, 1, 0, "MediaScanner", MediaScannerPlugin::createMediaScanner);
-      qmlRegisterType<Artists>(uri, 1, 0, "ArtistList");
-      qmlRegisterType<Genres>(uri, 1, 0, "GenreList");
-      qmlRegisterType<Albums>(uri, 1, 0, "AlbumList");
-      qmlRegisterType<Tracks>(uri, 1, 0, "TrackList");
-    }
-
-    void MediaScannerPlugin::initializeEngine(QQmlEngine* engine, const char* uri)
-    {
-      QQmlExtensionPlugin::initializeEngine(engine, uri);
-    }
-
-    QObject * MediaScannerPlugin::createMediaScanner(QQmlEngine *engine, QJSEngine *scriptEngine)
-    {
-      Q_UNUSED(scriptEngine)
-      return ::mediascanner::MediaScanner::instance(engine);
-    }
-
-  } // namespace qml
-
-} // namespace mediascanner
+QObject * MediaScannerPlugin::createMediaScanner(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+  Q_UNUSED(scriptEngine)
+  return ::mediascanner::MediaScanner::instance(engine);
+}

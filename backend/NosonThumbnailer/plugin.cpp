@@ -30,84 +30,74 @@
 
 #define CACHE_SIZE 100000000L
 
-namespace thumbnailer
+std::shared_ptr<thumbnailer::Thumbnailer> ThumbnailerPlugin::g_thumbnailer(nullptr);
+
+ThumbnailerPlugin::ThumbnailerPlugin(QObject *parent)
+: QQmlExtensionPlugin(parent)
 {
+}
 
-  namespace qml
+void ThumbnailerPlugin::registerTypes(const char* uri)
+{
+  qmlRegisterSingletonType<thumbnailer::Proxy>(uri, 1, 0, "Thumbnailer", ThumbnailerPlugin::proxy);
+}
+
+void ThumbnailerPlugin::initializeEngine(QQmlEngine* engine, const char* uri)
+{
+  Q_ASSERT(g_thumbnailer.get() == nullptr);
+
+  QQmlExtensionPlugin::initializeEngine(engine, uri);
+
+  g_thumbnailer.reset(new thumbnailer::Thumbnailer(engine->offlineStoragePath(), CACHE_SIZE, QString("")));
+
+  try
   {
-    ThumbnailerPlugin* ThumbnailerPlugin::_instance_ = nullptr;
+    engine->addImageProvider("albumart", new thumbnailer::qml::AlbumArtGenerator(g_thumbnailer));
+  }
+  // LCOV_EXCL_START
+  catch (const std::exception& e)
+  {
+    qWarning() << "ThumbnailerPlugin::initializeEngine(): Failed to register albumart image provider: " << e.what();
+  }
+  catch (...)
+  {
+    qWarning() << "ThumbnailerPlugin::initializeEngine(): Failed to register "
+            "albumart image provider: unknown exception";
+  }
+  // LCOV_EXCL_STOP
 
-    ThumbnailerPlugin::ThumbnailerPlugin(QObject *parent)
-    : QQmlExtensionPlugin(parent)
-    , m_thumbnailer(nullptr)
-    {
-      Q_ASSERT(ThumbnailerPlugin::_instance_ == nullptr);
-      ThumbnailerPlugin::_instance_ = this;
-    }
+  try
+  {
+    engine->addImageProvider("artistart", new thumbnailer::qml::ArtistArtGenerator(g_thumbnailer));
+  }
+  // LCOV_EXCL_START
+  catch (const std::exception& e)
+  {
+    qWarning() << "ThumbnailerPlugin::initializeEngine(): Failed to register artistart image provider: " << e.what();
+  }
+  catch (...)
+  {
+    qWarning() << "ThumbnailerPlugin::initializeEngine(): Failed to register "
+            "artistart image provider: unknown exception";
+  }
+  // LCOV_EXCL_STOP
+}
 
-    void ThumbnailerPlugin::registerTypes(const char* uri)
-    {
-      qmlRegisterSingletonType<Proxy>(uri, 1, 0, "Thumbnailer", ThumbnailerPlugin::proxy);
-    }
+QObject* ThumbnailerPlugin::proxy(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+  Q_UNUSED(engine)
+  Q_UNUSED(scriptEngine)
+  return new thumbnailer::Proxy(ThumbnailerPlugin::g_thumbnailer);
+}
 
-    void ThumbnailerPlugin::initializeEngine(QQmlEngine* engine, const char* uri)
-    {
-      QQmlExtensionPlugin::initializeEngine(engine, uri);
+thumbnailer::Proxy::Proxy(std::shared_ptr<thumbnailer::Thumbnailer>& thumbnailer, QObject *parent)
+: QObject(parent)
+, m_p(thumbnailer)
+{
+}
 
-      m_thumbnailer.reset(new thumbnailer::Thumbnailer(engine->offlineStoragePath(), CACHE_SIZE, QString("")));
-
-      try
-      {
-        engine->addImageProvider("albumart", new AlbumArtGenerator(m_thumbnailer));
-      }
-      // LCOV_EXCL_START
-      catch (const std::exception& e)
-      {
-        qWarning() << "ThumbnailerPlugin::initializeEngine(): Failed to register albumart image provider: " << e.what();
-      }
-      catch (...)
-      {
-        qWarning() << "ThumbnailerPlugin::initializeEngine(): Failed to register "
-                "albumart image provider: unknown exception";
-      }
-      // LCOV_EXCL_STOP
-
-      try
-      {
-        engine->addImageProvider("artistart", new ArtistArtGenerator(m_thumbnailer));
-      }
-      // LCOV_EXCL_START
-      catch (const std::exception& e)
-      {
-        qWarning() << "ThumbnailerPlugin::initializeEngine(): Failed to register artistart image provider: " << e.what();
-      }
-      catch (...)
-      {
-        qWarning() << "ThumbnailerPlugin::initializeEngine(): Failed to register "
-                "artistart image provider: unknown exception";
-      }
-      // LCOV_EXCL_STOP
-    }
-
-    QObject* ThumbnailerPlugin::proxy(QQmlEngine *engine, QJSEngine *scriptEngine)
-    {
-      Q_UNUSED(engine)
-      Q_UNUSED(scriptEngine)
-      return new Proxy(ThumbnailerPlugin::_instance_->m_thumbnailer);
-    }
-
-    Proxy::Proxy(std::shared_ptr<thumbnailer::Thumbnailer>& thumbnailer, QObject *parent)
-    : QObject(parent)
-    , m_p(thumbnailer)
-    {
-    }
-
-    bool Proxy::setApiKey(const QString &apiKey)
-    {
-      m_p->setApiKey(apiKey);
-      return m_p->isValid();
-    }
-
-  } // namespace qml
-
-} // namespace thumbnailer
+bool thumbnailer::Proxy::setApiKey(const QString &apiKey)
+{
+  m_p->setApiKey(apiKey);
+  return m_p->isValid();
+}

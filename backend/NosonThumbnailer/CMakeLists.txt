@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.1.0)
 # Automatically create moc files
 set(CMAKE_AUTOMOC ON)
 
+option(QT_STATICPLUGIN "Build a static plugin" OFF)
+
 find_package(Qt5Qml REQUIRED)
 find_package(Qt5Quick REQUIRED)
 
@@ -12,8 +14,16 @@ set(CMAKE_CXX_STANDARD 11)
 # configure
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+if(QT_STATICPLUGIN)
+    set(CMAKE_AUTOMOC_MOC_OPTIONS -Muri=NosonThumbnailer)
+    add_definitions(-DQT_PLUGIN)
+    add_definitions(-DQT_STATICPLUGIN)
+endif()
+
 set(
-  NosonThumbnailer-static_SRCS
+  NosonThumbnailer_SRCS
+  plugin.cpp
+  plugin.h
   albumartgenerator.cpp
   albumartgenerator.h
   artistartgenerator.cpp
@@ -40,25 +50,19 @@ set(
   thumbnailer/xmldict.cpp
 )
 
-add_library(NosonThumbnailer-static STATIC ${NosonThumbnailer-static_SRCS})
-
-target_link_libraries(NosonThumbnailer-static Qt5::Qml Qt5::Quick)
-
-set(
-  NosonThumbnailer_SRCS
-  plugin.cpp
-  plugin.h
-)
-
-add_library(NosonThumbnailer MODULE ${NosonThumbnailer_SRCS})
+if(QT_STATICPLUGIN)
+    add_library(NosonThumbnailer STATIC ${NosonThumbnailer_SRCS})
+else()
+    add_library(NosonThumbnailer MODULE ${NosonThumbnailer_SRCS})
+endif()
 
 set_target_properties(NosonThumbnailer PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_DIRECTORY}/NosonThumbnailer)
-target_link_libraries(NosonThumbnailer NosonThumbnailer-static)
+target_link_libraries(NosonThumbnailer Qt5::Qml Qt5::Quick)
 
 # Copy qmldir file to build dir for running in QtCreator
 add_custom_target(NosonThumbnailer-qmldir ALL
-    COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QML_IMPORT_DIRECTORY}/NosonThumbnailer
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QML_IMPORT_DIRECTORY}/NosonThumbnailer/qmldir
     DEPENDS ${QMLFILES}
 )
 

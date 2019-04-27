@@ -24,13 +24,13 @@
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlExtensionPlugin>
 
-class BackendPlugin : public QQmlExtensionPlugin
+class NosonAppPlugin : public QQmlExtensionPlugin
 {
   Q_OBJECT
   Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
 
 public:
-  BackendPlugin(QObject* parent = 0)
+  NosonAppPlugin(QObject* parent = 0)
   : QQmlExtensionPlugin(parent) { }
 
   void registerTypes(const char *uri);

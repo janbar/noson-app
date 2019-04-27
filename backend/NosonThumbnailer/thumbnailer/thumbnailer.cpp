@@ -353,7 +353,7 @@ namespace thumbnailer
     valid_ = !apiKey_.isEmpty();
 
     // initialize the random generator
-    std::srand(static_cast<unsigned>(std::time(nullptr)));
+    srand(static_cast<unsigned>(std::time(nullptr)));
   }
 
   ThumbnailerImpl::~ThumbnailerImpl()

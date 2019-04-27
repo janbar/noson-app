@@ -21,29 +21,20 @@
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlExtensionPlugin>
 
-namespace mediascanner
+class MediaScannerPlugin : public QQmlExtensionPlugin
 {
 
-  namespace qml
-  {
+  Q_OBJECT
+  Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
 
-    class MediaScannerPlugin : public QQmlExtensionPlugin
-    {
+public:
+  MediaScannerPlugin(QObject* parent = nullptr)
+  : QQmlExtensionPlugin(parent) { }
 
-      Q_OBJECT
-      Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
+  virtual void registerTypes(const char* uri) override;
+  virtual void initializeEngine(QQmlEngine* engine, const char* uri) override;
+  static QObject* createMediaScanner(QQmlEngine *engine, QJSEngine *scriptEngine);
+};
 
-    public:
-      MediaScannerPlugin(QObject* parent = nullptr)
-      : QQmlExtensionPlugin(parent) { }
-
-      virtual void registerTypes(const char* uri) override;
-      virtual void initializeEngine(QQmlEngine* engine, const char* uri) override;
-      static QObject* createMediaScanner(QQmlEngine *engine, QJSEngine *scriptEngine);
-    };
-
-  } // namespace qml
-
-} // namespace mediascanner
 #endif /* MEDIASCANNERPLUGIN_H */
 
