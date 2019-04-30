@@ -216,9 +216,12 @@ void Tracks::clear()
   LockGuard lock(m_lock);
   if (m_dataState == ListModel::New)
       return;
-  beginRemoveRows(QModelIndex(), 0, m_items.count()-1);
-  m_items.clear();
-  endRemoveRows();
+  if (m_items.count() > 0)
+  {
+    beginRemoveRows(QModelIndex(), 0, m_items.count()-1);
+    m_items.clear();
+    endRemoveRows();
+  }
   m_dataState = ListModel::NoData;
 }
 
