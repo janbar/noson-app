@@ -29,10 +29,12 @@
 
 #define CACHE_SIZE    50000000L
 
+using namespace mediascanner;
+
 void MediaScannerPlugin::registerTypes(const char* uri)
 {
   // register the singleton
-  qmlRegisterSingletonType<mediascanner::MediaScanner>(uri, 1, 0, "MediaScanner", MediaScannerPlugin::createMediaScanner);
+  qmlRegisterSingletonType<MediaScanner>(uri, 1, 0, "MediaScanner", MediaScannerPlugin::createMediaScanner);
   qmlRegisterType<mediascanner::Artists>(uri, 1, 0, "ArtistList");
   qmlRegisterType<mediascanner::Genres>(uri, 1, 0, "GenreList");
   qmlRegisterType<mediascanner::Albums>(uri, 1, 0, "AlbumList");
@@ -47,5 +49,5 @@ void MediaScannerPlugin::initializeEngine(QQmlEngine* engine, const char* uri)
 QObject * MediaScannerPlugin::createMediaScanner(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
   Q_UNUSED(scriptEngine)
-  return ::mediascanner::MediaScanner::instance(engine);
+  return MediaScanner::instance(engine);
 }

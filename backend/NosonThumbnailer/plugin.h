@@ -35,7 +35,6 @@ class ThumbnailerPlugin : public QQmlExtensionPlugin
 
 public:
   ThumbnailerPlugin(QObject* parent = nullptr);
-  virtual ~ThumbnailerPlugin() override { }
 
   virtual void registerTypes(const char* uri) override;
   virtual void initializeEngine(QQmlEngine* engine, const char* uri) override;
@@ -43,31 +42,33 @@ public:
   static QObject* proxy(QQmlEngine *engine, QJSEngine *scriptEngine);
 
 private:
-  static std::shared_ptr<thumbnailer::Thumbnailer> g_thumbnailer;
+  static std::shared_ptr<::thumbnailer::Thumbnailer> g_thumbnailer;
 };
 
-namespace thumbnailer {
+namespace thumbnailer
+{
 
-  class Proxy : public QObject
-  {
-    Q_OBJECT
+class Proxy : public QObject
+{
+  Q_OBJECT
 
-  public:
-    Proxy(std::shared_ptr<Thumbnailer>& thumbnailer, QObject* parent = nullptr);
-    virtual ~Proxy() { }
+public:
+  Proxy(std::shared_ptr<Thumbnailer>& thumbnailer, QObject* parent = nullptr);
+  virtual ~Proxy() { }
 
-    Q_INVOKABLE bool setApiKey(const QString& apiKey);
+  Q_INVOKABLE bool setApiKey(const QString& apiKey);
 
-    Q_INVOKABLE void setTrace(bool trace) { m_p->setTrace(trace); }
+  Q_INVOKABLE void setTrace(bool trace) { m_p->setTrace(trace); }
 
-    Q_INVOKABLE void clearCache() { m_p->clearCache(); }
+  Q_INVOKABLE void clearCache() { m_p->clearCache(); }
 
-    Q_INVOKABLE void reset() { m_p->reset(); }
+  Q_INVOKABLE void reset() { m_p->reset(); }
 
-  private:
-    std::shared_ptr<Thumbnailer> m_p;
-  };
+private:
+  std::shared_ptr<Thumbnailer> m_p;
+};
 
 } // namespace thumbnailer
+
 #endif /* THUMBNAILERPLUGIN_H */
 

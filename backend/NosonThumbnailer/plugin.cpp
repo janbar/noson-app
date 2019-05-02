@@ -30,7 +30,9 @@
 
 #define CACHE_SIZE 100000000L
 
-std::shared_ptr<thumbnailer::Thumbnailer> ThumbnailerPlugin::g_thumbnailer(nullptr);
+using namespace thumbnailer;
+
+std::shared_ptr<Thumbnailer> ThumbnailerPlugin::g_thumbnailer(nullptr);
 
 ThumbnailerPlugin::ThumbnailerPlugin(QObject *parent)
 : QQmlExtensionPlugin(parent)
@@ -39,7 +41,7 @@ ThumbnailerPlugin::ThumbnailerPlugin(QObject *parent)
 
 void ThumbnailerPlugin::registerTypes(const char* uri)
 {
-  qmlRegisterSingletonType<thumbnailer::Proxy>(uri, 1, 0, "Thumbnailer", ThumbnailerPlugin::proxy);
+  qmlRegisterSingletonType<Proxy>(uri, 1, 0, "Thumbnailer", ThumbnailerPlugin::proxy);
 }
 
 void ThumbnailerPlugin::initializeEngine(QQmlEngine* engine, const char* uri)
@@ -48,11 +50,11 @@ void ThumbnailerPlugin::initializeEngine(QQmlEngine* engine, const char* uri)
 
   QQmlExtensionPlugin::initializeEngine(engine, uri);
 
-  g_thumbnailer.reset(new thumbnailer::Thumbnailer(engine->offlineStoragePath(), CACHE_SIZE, QString("")));
+  g_thumbnailer.reset(new Thumbnailer(engine->offlineStoragePath(), CACHE_SIZE, QString("")));
 
   try
   {
-    engine->addImageProvider("albumart", new thumbnailer::qml::AlbumArtGenerator(g_thumbnailer));
+    engine->addImageProvider("albumart", new qml::AlbumArtGenerator(g_thumbnailer));
   }
   // LCOV_EXCL_START
   catch (const std::exception& e)
@@ -68,7 +70,7 @@ void ThumbnailerPlugin::initializeEngine(QQmlEngine* engine, const char* uri)
 
   try
   {
-    engine->addImageProvider("artistart", new thumbnailer::qml::ArtistArtGenerator(g_thumbnailer));
+    engine->addImageProvider("artistart", new qml::ArtistArtGenerator(g_thumbnailer));
   }
   // LCOV_EXCL_START
   catch (const std::exception& e)
@@ -87,16 +89,16 @@ QObject* ThumbnailerPlugin::proxy(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
   Q_UNUSED(engine)
   Q_UNUSED(scriptEngine)
-  return new thumbnailer::Proxy(ThumbnailerPlugin::g_thumbnailer);
+  return new Proxy(::ThumbnailerPlugin::g_thumbnailer);
 }
 
-thumbnailer::Proxy::Proxy(std::shared_ptr<thumbnailer::Thumbnailer>& thumbnailer, QObject *parent)
+Proxy::Proxy(std::shared_ptr<Thumbnailer>& thumbnailer, QObject *parent)
 : QObject(parent)
 , m_p(thumbnailer)
 {
 }
 
-bool thumbnailer::Proxy::setApiKey(const QString &apiKey)
+bool Proxy::setApiKey(const QString &apiKey)
 {
   m_p->setApiKey(apiKey);
   return m_p->isValid();
