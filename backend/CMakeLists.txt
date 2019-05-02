@@ -21,6 +21,6 @@ set(DISABLE_MP4PARSER ON)
 add_subdirectory(NosonMediaScanner)
 
 # build the cli tool for desktop only
-if(NOT ANDROID)
+if(NOT ANDROID AND NOT IOS)
     add_subdirectory(cli)
 endif()

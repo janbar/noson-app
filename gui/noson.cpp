@@ -3,7 +3,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QSettings>
-#include <QQuickStyle>
+#include <QtQuickControls2>
 #include <QTranslator>
 #include <QDebug>
 #include <QDir>
@@ -34,6 +34,18 @@ void setupApp(QGuiApplication& app);
 void prepareTranslator(QGuiApplication& app, const QString& translationPath, const QString& translationPrefix, const QLocale& locale);
 void doExit(int code);
 
+#if defined(Q_OS_IOS)
+#include "../backend/NosonApp/plugin.h"
+#include "../backend/NosonThumbnailer/plugin.h"
+#include "../backend/NosonMediaScanner/plugin.h"
+void importStaticPlugins(QQmlApplicationEngine* engine)
+{
+  { NosonAppPlugin e; e.initializeEngine(engine, "NosonApp"); e.registerTypes("NosonApp"); }
+  { ThumbnailerPlugin e; e.initializeEngine(engine, "NosonThumbnailer"); e.registerTypes("NosonThumbnailer"); }
+  { MediaScannerPlugin e; e.initializeEngine(engine, "NosonMediaScanner"); e.registerTypes("NosonMediaScanner"); }
+}
+#endif
+
 int main(int argc, char *argv[])
 {
     int ret = 0;
@@ -59,7 +71,7 @@ int main(int argc, char *argv[])
     {
         if (settings.value("style").isNull())
         {
-#ifdef Q_OS_ANDROID
+#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
             QQuickStyle::setStyle("Material");
 #else
             QQuickStyle::setStyle("Material");
@@ -77,21 +89,19 @@ int main(int argc, char *argv[])
     // bind arguments
     engine.rootContext()->setContextProperty("ApplicationArguments", app.arguments());
     // bind Android flag
-#ifdef Q_OS_ANDROID
+#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
     engine.rootContext()->setContextProperty("Android", QVariant(true));
 #else
     engine.rootContext()->setContextProperty("Android", QVariant(false));
 #endif
     // select and bind styles available and known to work
     QStringList availableStyles;
+#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
+    availableStyles.append("Default");
+    availableStyles.append("Material");
+#else
     for (QString style : QQuickStyle::availableStyles())
     {
-#ifdef Q_OS_ANDROID
-      if (style == "Default")
-        availableStyles.append(style);
-      else if (style == "Material")
-        availableStyles.append(style);
-#else
       if (style == "Default")
         availableStyles.append(style);
       else if (style == "Fusion")
@@ -102,12 +112,16 @@ int main(int argc, char *argv[])
         availableStyles.append(style);
       else if (style == "Universal")
         availableStyles.append(style);
-#endif
     }
+#endif
     engine.rootContext()->setContextProperty("AvailableStyles", availableStyles);
 
     // handle signal exit(int) issued by the qml instance
     QObject::connect(&engine, &QQmlApplicationEngine::exit, doExit);
+
+#if defined(Q_OS_IOS)
+    importStaticPlugins(&engine);
+#endif
 
     engine.load(QUrl("qrc:/noson.qml"));
     if (engine.rootObjects().isEmpty()) {
@@ -157,7 +171,7 @@ void prepareTranslator(QGuiApplication& app, const QString& translationPath, con
 
 void doExit(int code)
 {
-#ifndef Q_OS_ANDROID
+#if !defined(Q_OS_ANDROID) && !defined(Q_OS_IOS)
   if (code == 16)
   {
     // loop a short time to flush setting changes
