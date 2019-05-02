@@ -18,12 +18,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef QSORTFILTERPROXYMODELQML_H
-#define QSORTFILTERPROXYMODELQML_H
+#ifndef NOSONAPPQSORTFILTERPROXYMODELQML_H
+#define NOSONAPPQSORTFILTERPROXYMODELQML_H
 
 #include <QSortFilterProxyModel>
 #include "qmlsortbehavior.h"
 #include "qmlfilterbehavior.h"
+
+namespace nosonapp
+{
 
 class Q_DECL_EXPORT QSortFilterProxyModelQML : public QSortFilterProxyModel
 {
@@ -65,4 +68,6 @@ private:
     int roleByName(const QString& roleName) const;
 };
 
-#endif // QSORTFILTERPROXYMODELQML_H
+}
+
+#endif // NOSONAPPQSORTFILTERPROXYMODELQML_H

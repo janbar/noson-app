@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef PLUGIN_H
-#define PLUGIN_H
+#ifndef NOSONAPPPLUGIN_H
+#define NOSONAPPPLUGIN_H
 
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlExtensionPlugin>
@@ -36,6 +36,7 @@ public:
   void registerTypes(const char *uri);
   void initializeEngine(QQmlEngine *engine, const char *uri);
 };
-#endif // PLUGIN_H
+
+#endif // NOSONAPPPLUGIN_H
 
 

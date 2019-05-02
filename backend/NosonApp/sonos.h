@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef SONOS_H
-#define SONOS_H
+#ifndef NOSONAPPSONOS_H
+#define NOSONAPPSONOS_H
 
 #include <noson/sonossystem.h>
 #include "private/os/threads/threadpool.h"
@@ -43,6 +43,9 @@
 #include <QObject>
 #include <QString>
 #include <QQmlEngine>
+
+namespace nosonapp
+{
 
 class Sonos : public QObject
 {
@@ -68,7 +71,7 @@ public:
 
   Q_INVOKABLE void renewSubscriptions();
 
-  Q_INVOKABLE ZonesModel* getZones();
+  Q_INVOKABLE QVariantList getZones();
 
   Q_INVOKABLE bool connectZone(const QString& zoneName);
 
@@ -78,7 +81,7 @@ public:
 
   Q_INVOKABLE QString getZoneShortName() const;
 
-  Q_INVOKABLE RoomsModel* getZoneRooms();
+  Q_INVOKABLE QVariantList getZoneRooms();
 
   Q_INVOKABLE bool joinRoom(const QVariant& roomPayload, const QVariant& toZonePayload);
 
@@ -195,7 +198,7 @@ public:
   // Helpers
   Q_INVOKABLE static QString normalizedInputString(const QString& str)
   {
-    return normalizedString(str);
+    return nosonapp::normalizedString(str);
   }
 
   Q_INVOKABLE static bool havePulseAudio()
@@ -241,4 +244,6 @@ private:
   static void systemEventCB(void* handle);
 };
 
-#endif // SONOS_H
+}
+
+#endif // NOSONAPPSONOS_H

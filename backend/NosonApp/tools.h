@@ -18,13 +18,13 @@
  *
  */
 
-#ifndef TOOLS_H
-#define TOOLS_H
+#ifndef NOSONAPPTOOLS_H
+#define NOSONAPPTOOLS_H
 
 #include <cmath>
 #include <QString>
 
-namespace
+namespace nosonapp
 {
 
   static inline int roundDouble(double value)
@@ -48,5 +48,5 @@ namespace
 
 }
 
-#endif /* TOOLS_H */
+#endif /* NOSONAPPTOOLS_H */
 

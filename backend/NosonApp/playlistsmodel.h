@@ -18,12 +18,15 @@
  *
  */
 
-#ifndef PLAYLISTSMODEL_H
-#define PLAYLISTSMODEL_H
+#ifndef NOSONAPPPLAYLISTSMODEL_H
+#define NOSONAPPPLAYLISTSMODEL_H
 
 #include "listmodel.h"
 
 #include <QAbstractListModel>
+
+namespace nosonapp
+{
 
 class PlaylistItem
 {
@@ -115,6 +118,7 @@ private:
   QList<PlaylistItem*> m_data;
 };
 
+}
 
-#endif /* PLAYLISTSMODEL_H */
+#endif /* NOSONAPPPLAYLISTSMODEL_H */
 

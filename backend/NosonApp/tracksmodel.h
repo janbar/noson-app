@@ -18,13 +18,16 @@
  *
  */
 
-#ifndef TRACKSMODEL_H
-#define TRACKSMODEL_H
+#ifndef NOSONAPPTRACKSMODEL_H
+#define NOSONAPPTRACKSMODEL_H
 
 #include "listmodel.h"
 #include <noson/contentdirectory.h>
 
 #include <QAbstractListModel>
+
+namespace nosonapp
+{
 
 class TrackItem
 {
@@ -144,5 +147,7 @@ private:
 
 };
 
-#endif /* TRACKSMODEL_H */
+}
+
+#endif /* NOSONAPPTRACKSMODEL_H */
 

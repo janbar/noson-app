@@ -18,13 +18,16 @@
  *
  */
 
-#ifndef ZONESMODEL_H
-#define ZONESMODEL_H
+#ifndef NOSONAPPZONESMODEL_H
+#define NOSONAPPZONESMODEL_H
 
 #include "listmodel.h"
 #include <noson/sonoszone.h>
 
 #include <QAbstractListModel>
+
+namespace nosonapp
+{
 
 class ZoneItem
 {
@@ -113,5 +116,7 @@ private:
   QList<ZoneItem*> m_data;
 };
 
-#endif /* ZONESMODEL_H */
+}
+
+#endif /* NOSONAPPZONESMODEL_H */
 

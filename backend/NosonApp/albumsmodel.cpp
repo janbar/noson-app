@@ -23,6 +23,8 @@
 #include "tools.h"
 #include <noson/contentdirectory.h>
 
+using namespace nosonapp;
+
 AlbumItem::AlbumItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
 : m_ptr(ptr)
 , m_valid(false)
@@ -59,7 +61,8 @@ AlbumsModel::AlbumsModel(QObject* parent)
 
 AlbumsModel::~AlbumsModel()
 {
-  clearData();
+  qDeleteAll(m_data);
+  m_data.clear();
   qDeleteAll(m_items);
   m_items.clear();
 }
@@ -67,8 +70,8 @@ AlbumsModel::~AlbumsModel()
 void AlbumsModel::addItem(AlbumItem* item)
 {
   {
-    SONOS::LockGuard lock(m_lock);
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    LockGuard g(m_lock);
+    beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items << item;
     endInsertRows();
   }
@@ -78,13 +81,17 @@ void AlbumsModel::addItem(AlbumItem* item)
 int AlbumsModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   return m_items.count();
 }
 
 QVariant AlbumsModel::data(const QModelIndex& index, int role) const
 {
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -110,7 +117,7 @@ QVariant AlbumsModel::data(const QModelIndex& index, int role) const
 
 bool AlbumsModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return false;
 
@@ -139,7 +146,7 @@ QHash<int, QByteArray> AlbumsModel::roleNames() const
 
 QVariantMap AlbumsModel::get(int row)
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const AlbumItem* item = m_items[row];
@@ -166,7 +173,7 @@ bool AlbumsModel::init(QObject* sonos, const QString& root, bool fill)
 
 void AlbumsModel::clearData()
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
@@ -187,8 +194,9 @@ bool AlbumsModel::loadData()
     return false;
   }
 
-  SONOS::LockGuard lock(m_lock);
-  clearData();
+  LockGuard g(m_lock);
+  qDeleteAll(m_data);
+  m_data.clear();
   m_dataState = ListModel::NoData;
   QString port;
   port.setNum(player->GetPort());
@@ -230,9 +238,9 @@ bool AlbumsModel::asyncLoad()
 void AlbumsModel::resetModel()
 {
   {
-    SONOS::LockGuard lock(m_lock);
+    LockGuard g(m_lock);
     if (m_dataState != ListModel::Loaded)
-        return;
+      return;
     beginResetModel();
     if (m_items.count() > 0)
     {
@@ -257,9 +265,11 @@ void AlbumsModel::resetModel()
 
 void AlbumsModel::clearModel()
 {
+  LockGuard g(m_lock);
   if (m_dataState != ListModel::New)
   {
-    clearData();
+    qDeleteAll(m_data);
+    m_data.clear();
     m_dataState = ListModel::Loaded;
     emit loaded(true);
   }

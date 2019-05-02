@@ -18,12 +18,15 @@
  *
  */
 
-#ifndef COMPOSERSMODEL_H
-#define COMPOSERSMODEL_H
+#ifndef NOSONAPPCOMPOSERSMODEL_H
+#define NOSONAPPCOMPOSERSMODEL_H
 
 #include "listmodel.h"
 
 #include <QAbstractListModel>
+
+namespace nosonapp
+{
 
 class ComposerItem
 {
@@ -112,5 +115,7 @@ private:
   QList<ComposerItem*> m_data;
 };
 
-#endif /* COMPOSERSMODEL_H */
+}
+
+#endif /* NOSONAPPCOMPOSERSMODEL_H */
 

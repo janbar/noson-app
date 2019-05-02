@@ -28,6 +28,8 @@
 #include <QtQml>
 #include <QtQml/QQmlContext>
 
+using namespace nosonapp;
+
 void NosonAppPlugin::registerTypes(const char *uri)
 {
   // register utils types

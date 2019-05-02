@@ -17,10 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef FILTERBEHAVIOR_H
-#define FILTERBEHAVIOR_H
+#ifndef NOSONAPPFILTERBEHAVIOR_H
+#define NOSONAPPFILTERBEHAVIOR_H
 
 #include <QSortFilterProxyModel>
+
+namespace nosonapp
+{
 
 class FilterBehavior : public QObject {
     Q_OBJECT
@@ -45,4 +48,6 @@ private:
     QRegExp m_pattern;
 };
 
-#endif // FILTERBEHAVIOR_H
+}
+
+#endif // NOSONAPPFILTERBEHAVIOR_H

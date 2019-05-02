@@ -18,13 +18,16 @@
  *
  */
 
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef NOSONAPPPLAYER_H
+#define NOSONAPPPLAYER_H
 
 #include "private/os/threads/threadpool.h"
 #include <noson/sonosplayer.h>
 
 #include <QObject>
+
+namespace nosonapp
+{
 
 class Sonos;
 
@@ -215,4 +218,6 @@ private:
   void disconnectSonos(Sonos* sonos);
 };
 
-#endif // PLAYER_H
+}
+
+#endif // NOSONAPPPLAYER_H

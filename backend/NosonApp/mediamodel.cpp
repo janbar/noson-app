@@ -31,6 +31,8 @@
 #define ROOT_TAG            "root"
 #define SEARCH_TAG          "SEARCH"
 
+using namespace nosonapp;
+
 MediaItem::MediaItem(const SONOS::SMAPIItem& data)
 : m_ptr(data.uriMetadata)
 , m_valid(false)
@@ -113,7 +115,8 @@ MediaModel::MediaModel(QObject* parent)
 
 MediaModel::~MediaModel()
 {
-  clearData();
+  qDeleteAll(m_data);
+  m_data.clear();
   qDeleteAll(m_items);
   m_items.clear();
   SAFE_DELETE(m_smapi);
@@ -122,8 +125,8 @@ MediaModel::~MediaModel()
 void MediaModel::addItem(MediaItem* item)
 {
   {
-    SONOS::LockGuard lock(m_lock);
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    LockGuard g(m_lock);
+    beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items << item;
     endInsertRows();
   }
@@ -133,13 +136,17 @@ void MediaModel::addItem(MediaItem* item)
 int MediaModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   return m_items.count();
 }
 
 QVariant MediaModel::data(const QModelIndex& index, int role) const
 {
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -204,7 +211,7 @@ QHash<int, QByteArray> MediaModel::roleNames() const
 
 QVariantMap MediaModel::get(int row)
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const MediaItem* item = m_items[row];
@@ -255,7 +262,7 @@ bool MediaModel::init(QObject* sonos, const QVariant& service, bool fill)
 
 void MediaModel::clearData()
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
@@ -263,14 +270,15 @@ void MediaModel::clearData()
 bool MediaModel::loadData()
 {
   setUpdateSignaled(false);
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (!m_smapi)
   {
     emit loaded(false);
     return false;
   }
 
-  clearData();
+  qDeleteAll(m_data);
+  m_data.clear();
   m_dataState = ListModel::NoData;
   m_searching = false; // enable browse state
   m_nextIndex = m_totalCount = 0;
@@ -309,7 +317,9 @@ bool MediaModel::loadData()
 
 QString MediaModel::pathName() const
 {
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   if (m_path.empty())
     return ROOT_TAG;
   else
@@ -318,7 +328,9 @@ QString MediaModel::pathName() const
 
 QString MediaModel::pathId() const
 {
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   if (m_path.empty())
     return ROOT_TAG;
   else
@@ -327,7 +339,9 @@ QString MediaModel::pathId() const
 
 int MediaModel::parentDisplayType() const
 {
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   if (m_path.empty())
     return ROOT_DISPLAY_TYPE;
   else
@@ -336,7 +350,7 @@ int MediaModel::parentDisplayType() const
 
 int MediaModel::viewIndex() const
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (m_path.empty())
     return 0;
   else
@@ -346,7 +360,7 @@ int MediaModel::viewIndex() const
 QList<QString> MediaModel::listSearchCategories() const
 {
   QList<QString> list;
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (m_smapi)
   {
     SONOS::ElementList el = m_smapi->AvailableSearchCategories();
@@ -436,7 +450,7 @@ bool MediaModel::asyncLoad()
 
 bool MediaModel::loadMoreData()
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (!m_smapi)
   {
     emit loadedMore(false);
@@ -499,11 +513,13 @@ bool MediaModel::loadChild(const QString& id, const QString& title, int displayT
 {
   if (id.isEmpty())
     return false;
-  SONOS::LockGuard lock(m_lock);
-  // save current view index for this path item
-  if (!m_path.empty())
-    m_path.top().viewIndex = viewIndex;
-  m_path.push(Path(id, title, displayType));
+  {
+    LockGuard g(m_lock);
+    // save current view index for this path item
+    if (!m_path.empty())
+      m_path.top().viewIndex = viewIndex;
+    m_path.push(Path(id, title, displayType));
+  }
   emit pathChanged();
   return loadData();
 }
@@ -513,31 +529,34 @@ bool MediaModel::asyncLoadChild(const QString &id, const QString &title, int dis
   if (id.isEmpty())
     return false;
   {
-    SONOS::LockGuard lock(m_lock);
+    LockGuard g(m_lock);
     // save current view index for this path item
     if (!m_path.empty())
       m_path.top().viewIndex = viewIndex;
     m_path.push(Path(id, title, displayType));
-    emit pathChanged();
   }
+  emit pathChanged();
   return asyncLoad();
 }
 
 bool MediaModel::loadParent()
 {
-  SONOS::LockGuard lock(m_lock);
-  if (!m_path.empty())
-    m_path.pop();
-  // reload current search else the parent item
-  if (pathName() == SEARCH_TAG)
+  bool searching;
   {
-    m_searching = true; // reset state before signal the change
+    LockGuard g(m_lock);
+    if (!m_path.empty())
+      m_path.pop();
+    // reload current search else the parent item
+    // also reset state before signal the change
+    m_searching = searching = (pathName() == SEARCH_TAG);
+  }
+  if (searching)
+  {
     emit pathChanged();
     return search();
   }
   else
   {
-    m_searching = false; // reset state before signal the change
     emit pathChanged();
     return loadData();
   }
@@ -553,12 +572,14 @@ bool MediaModel::asyncLoadParent()
 
 bool MediaModel::loadSearch(const QString &category, const QString &term)
 {
-  SONOS::LockGuard lock(m_lock);
-  m_searchCategory = category.toUtf8().constData();
-  m_searchTerm = term.toUtf8().constData();
-  m_searching = true; // enable search state
-  m_path.clear();
-  m_path.push(Path("", SEARCH_TAG, ROOT_DISPLAY_TYPE));
+  {
+    LockGuard g(m_lock);
+    m_searchCategory = category.toUtf8().constData();
+    m_searchTerm = term.toUtf8().constData();
+    m_searching = true; // enable search state
+    m_path.clear();
+    m_path.push(Path("", SEARCH_TAG, ROOT_DISPLAY_TYPE));
+  }
   emit pathChanged();
   return search();
 }
@@ -566,7 +587,7 @@ bool MediaModel::loadSearch(const QString &category, const QString &term)
 bool MediaModel::asyncLoadSearch(const QString &category, const QString &term)
 {
   {
-    SONOS::LockGuard lock(m_lock);
+    LockGuard g(m_lock);
     m_searchCategory = category.toUtf8().constData();
     m_searchTerm = term.toUtf8().constData();
     m_searching = true; // enable search state
@@ -582,6 +603,7 @@ bool MediaModel::asyncLoadSearch(const QString &category, const QString &term)
 
 bool MediaModel::search()
 {
+  LockGuard g(m_lock);
   if (!m_smapi)
   {
     emit loaded(false);
@@ -598,7 +620,9 @@ bool MediaModel::search()
     emit loaded(false);
     return false;
   }
-  clearData();
+
+  qDeleteAll(m_data);
+  m_data.clear();
   m_dataState = ListModel::NoData;
   m_totalCount = meta.TotalCount();
   m_nextIndex = meta.ItemCount();
@@ -625,9 +649,9 @@ bool MediaModel::search()
 void MediaModel::resetModel()
 {
   {
-    SONOS::LockGuard lock(m_lock);
+    LockGuard g(m_lock);
     if (m_dataState != ListModel::Loaded)
-        return;
+      return;
     beginResetModel();
     if (m_items.count() > 0)
     {
@@ -653,7 +677,7 @@ void MediaModel::resetModel()
 void MediaModel::appendModel()
 {
   {
-    SONOS::LockGuard lock(m_lock);
+    LockGuard g(m_lock);
     if (m_dataState != ListModel::Loaded)
       return;
     int cnt = m_items.count();
@@ -678,7 +702,9 @@ bool MediaModel::customizedLoad(int id)
     case 2:
       return loadParent();
     case 3:
+    {
       return search();
+    }
     default:
       return false;
   }

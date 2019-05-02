@@ -18,14 +18,14 @@
  *
  */
 
-#ifndef LISTMODEL
-#define LISTMODEL
+#ifndef NOSONAPPLISTMODEL_H
+#define NOSONAPPLISTMODEL_H
 
+#include "locked.h"
 #include <noson/digitalitem.h>
 #include <noson/sonoszone.h>
 #include <noson/musicservices.h>
 #include <noson/alarm.h>
-#include <noson/locked.h>
 
 #include <QObject>
 
@@ -34,6 +34,11 @@ Q_DECLARE_METATYPE(SONOS::ZonePtr)
 Q_DECLARE_METATYPE(SONOS::ZonePlayerPtr)
 Q_DECLARE_METATYPE(SONOS::SMServicePtr)
 Q_DECLARE_METATYPE(SONOS::AlarmPtr)
+
+#define USE_RECURSIVE_MUTEX
+
+namespace nosonapp
+{
 
 class Sonos;
 
@@ -58,7 +63,7 @@ public:
   };
 
 protected:
-  SONOS::LockGuard::Lockable* m_lock;
+  QMutex* m_lock;
   Sonos* m_provider;
   unsigned m_updateID;
   QString m_root;
@@ -75,8 +80,10 @@ protected:
   virtual bool customizedLoad(int id) { (void)id; return false; }
 
 private:
-  SONOS::Locked<bool> m_updateSignaled;
+  nosonapp::Locked<bool> m_updateSignaled;
 };
 
-#endif // LISTMODEL
+}
+
+#endif // NOSONAPPLISTMODEL_H
 

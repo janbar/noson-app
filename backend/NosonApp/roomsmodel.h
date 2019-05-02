@@ -18,13 +18,17 @@
  *
  */
 
-#ifndef ROOMSMODEL_H
-#define ROOMSMODEL_H
+#ifndef NOSONAPPROOMSMODEL_H
+#define NOSONAPPROOMSMODEL_H
 
-#include "listmodel.h"
 #include <noson/sonosplayer.h>
 
 #include <QAbstractListModel>
+
+namespace nosonapp
+{
+
+class Sonos;
 
 class RoomItem
 {
@@ -104,5 +108,7 @@ private:
   QString m_zoneId;
 };
 
-#endif /* ROOMSMODEL_H */
+}
+
+#endif /* NOSONAPPROOMSMODEL_H */
 

@@ -19,6 +19,8 @@
 
 #include "qmlsortbehavior.h"
 
+using namespace nosonapp;
+
 SortBehavior::SortBehavior(QObject *parent)
     : QObject(parent)
     , m_property(QString())

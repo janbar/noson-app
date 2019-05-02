@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef MEDIAMODEL_H
-#define MEDIAMODEL_H
+#ifndef NOSONAPPMEDIAMODEL_H
+#define NOSONAPPMEDIAMODEL_H
 
 #include "listmodel.h"
 #include <noson/smapi.h>
@@ -27,6 +27,9 @@
 #include <QAbstractListModel>
 #include <QStack>
 #include <QPair>
+
+namespace nosonapp
+{
 
 class MediaType : public QObject
 {
@@ -287,5 +290,7 @@ private:
   bool search();
 };
 
-#endif /* MEDIAMODEL_H */
+}
+
+#endif /* NOSONAPPMEDIAMODEL_H */
 

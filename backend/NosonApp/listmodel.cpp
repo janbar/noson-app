@@ -21,39 +21,48 @@
 #include "listmodel.h"
 #include "sonos.h"
 
+using namespace nosonapp;
+
 ListModel::ListModel()
 : m_lock(0)
 , m_provider(0)
 , m_updateID(0)
+, m_root("")
 , m_pending(false)
 , m_dataState(ListModel::New)
 , m_updateSignaled(false)
 {
-  m_lock = SONOS::LockGuard::CreateLock();
+#ifdef USE_RECURSIVE_MUTEX
+  m_lock = new QMutex(QMutex::Recursive);
+#else
+  m_lock = new QMutex();
+#endif
 }
 
 ListModel::~ListModel()
 {
   {
-    SONOS::LockGuard lock(m_lock);
+    LockGuard g(m_lock);
     if (m_provider)
       m_provider->unregisterModel(this);
   }
-  SONOS::LockGuard::DestroyLock(m_lock);
+  delete m_lock;
 }
 
 bool ListModel::init(QObject* sonos, const QString& root, bool fill /*= false*/)
 {
-  SONOS::LockGuard lock(m_lock);
-  Sonos* _sonos = reinterpret_cast<Sonos*> (sonos);
-  if (m_provider)
-    m_provider->unregisterModel(this);
-  if (_sonos)
-    _sonos->registerModel(this, root);
-  m_provider = _sonos;
-  m_root = root;
-  // Reset container status to allow async reload
-  m_dataState = ListModel::NoData;
+  {
+    LockGuard g(m_lock);
+    Sonos* _sonos = reinterpret_cast<Sonos*> (sonos);
+    if (m_provider)
+      m_provider->unregisterModel(this);
+    if (_sonos)
+      _sonos->registerModel(this, root);
+    m_provider = _sonos;
+    m_root = root;
+    // Reset container status to allow async reload
+    m_dataState = ListModel::NoData;
+  }
   if (fill)
     return this->loadData();
   return false; // not filled

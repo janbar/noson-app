@@ -18,12 +18,15 @@
  *
  */
 
-#ifndef ALBUMSMODEL
-#define ALBUMSMODEL
+#ifndef NOSONAPPALBUMSMODEL_H
+#define NOSONAPPALBUMSMODEL_H
 
 #include "listmodel.h"
 
 #include <QAbstractListModel>
+
+namespace nosonapp
+{
 
 class AlbumItem
 {
@@ -120,5 +123,7 @@ private:
   QList<AlbumItem*> m_data;
 };
 
-#endif // ALBUMSMODEL
+}
+
+#endif // NOSONAPPALBUMSMODEL_H
 

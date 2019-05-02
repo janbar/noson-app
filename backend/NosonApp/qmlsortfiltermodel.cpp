@@ -94,6 +94,7 @@
  * \endlist
  */
 
+using namespace nosonapp;
 
 QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent)
     : QSortFilterProxyModel(parent)

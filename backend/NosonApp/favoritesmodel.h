@@ -18,13 +18,16 @@
  *
  */
 
-#ifndef FAVORITESMODEL_H
-#define FAVORITESMODEL_H
+#ifndef NOSONAPPFAVORITESMODEL_H
+#define NOSONAPPFAVORITESMODEL_H
 
 #include "listmodel.h"
 
 #include <QAbstractListModel>
 #include <QMap>
+
+namespace nosonapp
+{
 
 class FavoriteType : public QObject
 {
@@ -174,5 +177,7 @@ private:
   QMap<QString, QString> m_objectIDs;
 };
 
-#endif /* FAVORITESMODEL_H */
+}
+
+#endif /* NOSONAPPFAVORITESMODEL_H */
 

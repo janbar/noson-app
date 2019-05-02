@@ -18,11 +18,14 @@
  *
  */
 
-#ifndef QUEUEMODEL_H
-#define QUEUEMODEL_H
+#ifndef NOSONAPPQUEUEMODEL_H
+#define NOSONAPPQUEUEMODEL_H
 
 #include "tracksmodel.h"
 #include "listmodel.h"
+
+namespace nosonapp
+{
 
 class QueueModel : public QAbstractListModel, public ListModel
 {
@@ -86,5 +89,7 @@ private:
   QList<TrackItem*> m_data;
 };
 
-#endif /* QUEUEMODEL_H */
+}
+
+#endif /* NOSONAPPQUEUEMODEL_H */
 

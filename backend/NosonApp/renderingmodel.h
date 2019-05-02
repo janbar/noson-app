@@ -18,12 +18,15 @@
  *
  */
 
-#ifndef RENDERINGMODEL_H
-#define RENDERINGMODEL_H
+#ifndef NOSONAPPRENDERINGMODEL_H
+#define NOSONAPPRENDERINGMODEL_H
 
 #include "player.h"
 
 #include <QAbstractListModel>
+
+namespace nosonapp
+{
 
 class RenderingItem
 {
@@ -100,5 +103,7 @@ private:
   Player* m_player;
 };
 
-#endif /* RENDERINGMODEL_H */
+}
+
+#endif /* NOSONAPPRENDERINGMODEL_H */
 

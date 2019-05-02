@@ -24,6 +24,8 @@
 
 #define LOAD_BULKSIZE 100
 
+using namespace nosonapp;
+
 TrackItem::TrackItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
 : m_ptr(ptr)
 , m_valid(false)
@@ -70,7 +72,8 @@ TracksModel::TracksModel(QObject* parent)
 
 TracksModel::~TracksModel()
 {
-  clearData();
+  qDeleteAll(m_data);
+  m_data.clear();
   qDeleteAll(m_items);
   m_items.clear();
   SAFE_DELETE(m_contentList)
@@ -80,8 +83,8 @@ TracksModel::~TracksModel()
 void TracksModel::addItem(TrackItem* item)
 {
   {
-    SONOS::LockGuard lock(m_lock);
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    LockGuard g(m_lock);
+    beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items << item;
     endInsertRows();
   }
@@ -91,13 +94,17 @@ void TracksModel::addItem(TrackItem* item)
 int TracksModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   return m_items.count();
 }
 
 QVariant TracksModel::data(const QModelIndex& index, int role) const
 {
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -127,7 +134,7 @@ QVariant TracksModel::data(const QModelIndex& index, int role) const
 
 bool TracksModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return false;
 
@@ -158,7 +165,7 @@ QHash<int, QByteArray> TracksModel::roleNames() const
 
 QVariantMap TracksModel::get(int row)
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const TrackItem* item = m_items[row];
@@ -187,7 +194,7 @@ bool TracksModel::init(QObject* sonos, const QString& root, bool fill)
 
 void TracksModel::clearData()
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
@@ -208,7 +215,7 @@ bool TracksModel::loadData()
     return false;
   }
 
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   SAFE_DELETE(m_contentList);
   SAFE_DELETE(m_contentDirectory);
   m_contentDirectory = new SONOS::ContentDirectory(player->GetHost(), player->GetPort());
@@ -227,7 +234,8 @@ bool TracksModel::loadData()
   QString url = "http://";
   url.append(m_contentDirectory->GetHost().c_str()).append(":").append(port);
 
-  clearData();
+  qDeleteAll(m_data);
+  m_data.clear();
   m_dataState = ListModel::NoData;
   unsigned cnt = 0;
   while (cnt < LOAD_BULKSIZE && m_iterator != m_contentList->end())
@@ -271,7 +279,7 @@ bool TracksModel::asyncLoad()
 
 bool TracksModel::loadMoreData()
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (!m_contentDirectory || !m_contentList)
   {
     emit loadedMore(false);
@@ -330,9 +338,9 @@ bool TracksModel::asyncLoadMore()
 void TracksModel::resetModel()
 {
   {
-    SONOS::LockGuard lock(m_lock);
+    LockGuard g(m_lock);
     if (m_dataState != ListModel::Loaded)
-        return;
+      return;
     beginResetModel();
     if (m_items.count() > 0)
     {
@@ -358,7 +366,7 @@ void TracksModel::resetModel()
 void TracksModel::appendModel()
 {
   {
-    SONOS::LockGuard lock(m_lock);
+    LockGuard g(m_lock);
     if (m_dataState != ListModel::Loaded)
       return;
     int cnt = m_items.count();

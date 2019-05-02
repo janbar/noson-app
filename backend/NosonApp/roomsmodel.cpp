@@ -21,6 +21,8 @@
 #include "roomsmodel.h"
 #include "sonos.h"
 
+using namespace nosonapp;
+
 RoomItem::RoomItem(const SONOS::ZonePlayerPtr& ptr)
 : m_ptr(ptr)
 , m_valid(false)
@@ -48,15 +50,16 @@ RoomsModel::RoomsModel(QObject* parent)
 
 RoomsModel::~RoomsModel()
 {
-  clearData();
+  qDeleteAll(m_data);
+  m_data.clear();
   qDeleteAll(m_items);
   m_items.clear();
 }
 
 int RoomsModel::rowCount(const QModelIndex& parent) const
 {
-    Q_UNUSED(parent);
-    return m_items.count();
+  Q_UNUSED(parent);
+  return m_items.count();
 }
 
 QVariant RoomsModel::data(const QModelIndex& index, int role) const
@@ -119,7 +122,8 @@ bool RoomsModel::loadData()
   if (!m_provider)
     return false;
 
-  clearData();
+  qDeleteAll(m_data);
+  m_data.clear();
 
   if (m_zoneId.isNull())
   {

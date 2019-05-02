@@ -31,6 +31,7 @@ set(
     plugin.cpp
     plugin.h
     tools.h
+    locked.h
     sonos.cpp
     sonos.h
     player.cpp

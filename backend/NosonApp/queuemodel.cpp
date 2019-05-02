@@ -22,6 +22,8 @@
 #include "sonos.h"
 #include <noson/contentdirectory.h>
 
+using namespace nosonapp;
+
 QueueModel::QueueModel(QObject* parent)
 : QAbstractListModel(parent)
 {
@@ -29,7 +31,8 @@ QueueModel::QueueModel(QObject* parent)
 
 QueueModel::~QueueModel()
 {
-  clearData();
+  qDeleteAll(m_data);
+  m_data.clear();
   qDeleteAll(m_items);
   m_items.clear();
 }
@@ -37,8 +40,8 @@ QueueModel::~QueueModel()
 void QueueModel::addItem(TrackItem* item)
 {
   {
-    SONOS::LockGuard lock(m_lock);
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    LockGuard g(m_lock);
+    beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items << item;
     endInsertRows();
   }
@@ -48,13 +51,17 @@ void QueueModel::addItem(TrackItem* item)
 int QueueModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   return m_items.count();
 }
 
 QVariant QueueModel::data(const QModelIndex& index, int role) const
 {
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -84,7 +91,7 @@ QVariant QueueModel::data(const QModelIndex& index, int role) const
 
 bool QueueModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return false;
 
@@ -115,7 +122,7 @@ QHash<int, QByteArray> QueueModel::roleNames() const
 
 QVariantMap QueueModel::get(int row)
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const TrackItem* item = m_items[row];
@@ -144,7 +151,7 @@ bool QueueModel::init(QObject* sonos, const QString& root, bool fill)
 
 void QueueModel::clearData()
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
@@ -165,8 +172,9 @@ bool QueueModel::loadData()
     return false;
   }
 
-  SONOS::LockGuard lock(m_lock);
-  clearData();
+  LockGuard g(m_lock);
+  qDeleteAll(m_data);
+  m_data.clear();
   m_dataState = ListModel::NoData;
   QString port;
   port.setNum(player->GetPort());
@@ -204,9 +212,9 @@ bool QueueModel::asyncLoad()
 void QueueModel::resetModel()
 {
   {
-    SONOS::LockGuard lock(m_lock);
+    LockGuard g(m_lock);
     if (m_dataState != ListModel::Loaded)
-        return;
+      return;
     beginResetModel();
     if (m_items.count() > 0)
     {

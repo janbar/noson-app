@@ -23,6 +23,8 @@
 #include "tools.h"
 #include <noson/contentdirectory.h>
 
+using namespace nosonapp;
+
 PlaylistItem::PlaylistItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
 : m_ptr(ptr)
 , m_valid(false)
@@ -56,7 +58,8 @@ PlaylistsModel::PlaylistsModel(QObject* parent)
 
 PlaylistsModel::~PlaylistsModel()
 {
-  clearData();
+  qDeleteAll(m_data);
+  m_data.clear();
   qDeleteAll(m_items);
   m_items.clear();
 }
@@ -64,8 +67,8 @@ PlaylistsModel::~PlaylistsModel()
 void PlaylistsModel::addItem(PlaylistItem* item)
 {
   {
-    SONOS::LockGuard lock(m_lock);
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    LockGuard g(m_lock);
+    beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items << item;
     endInsertRows();
   }
@@ -75,13 +78,17 @@ void PlaylistsModel::addItem(PlaylistItem* item)
 int PlaylistsModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   return m_items.count();
 }
 
 QVariant PlaylistsModel::data(const QModelIndex& index, int role) const
 {
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -119,7 +126,7 @@ QHash<int, QByteArray> PlaylistsModel::roleNames() const
 
 QVariantMap PlaylistsModel::get(int row)
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const PlaylistItem* item = m_items[row];
@@ -146,7 +153,7 @@ bool PlaylistsModel::init(QObject* sonos, const QString& root, bool fill)
 
 void PlaylistsModel::clearData()
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
@@ -167,8 +174,9 @@ bool PlaylistsModel::loadData()
     return false;
   }
 
-  SONOS::LockGuard lock(m_lock);
-  clearData();
+  LockGuard g(m_lock);
+  qDeleteAll(m_data);
+  m_data.clear();
   m_dataState = ListModel::NoData;
   QString port;
   port.setNum(player->GetPort());
@@ -208,10 +216,9 @@ void PlaylistsModel::handleDataUpdate()
 void PlaylistsModel::resetModel()
 {
   {
-    SONOS::LockGuard lock(m_lock);
+    LockGuard g(m_lock);
     if (m_dataState != ListModel::Loaded)
-        return;
-
+      return;
     beginResetModel();
     if (m_items.count() > 0)
     {

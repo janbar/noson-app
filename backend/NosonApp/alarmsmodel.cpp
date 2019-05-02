@@ -22,6 +22,8 @@
 #include "sonos.h"
 #include "private/tokenizer.h"
 
+using namespace nosonapp;
+
 AlarmItem::AlarmItem(const SONOS::AlarmPtr& ptr)
 : m_ptr(ptr)
 {
@@ -163,7 +165,8 @@ AlarmsModel::AlarmsModel(QObject* parent)
 
 AlarmsModel::~AlarmsModel()
 {
-  clearData();
+  qDeleteAll(m_data);
+  m_data.clear();
   qDeleteAll(m_items);
   m_items.clear();
 }
@@ -171,8 +174,8 @@ AlarmsModel::~AlarmsModel()
 void AlarmsModel::addItem(AlarmItem* item)
 {
   {
-    SONOS::LockGuard lock(m_lock);
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    LockGuard g(m_lock);
+    beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items << item;
     endInsertRows();
   }
@@ -181,13 +184,18 @@ void AlarmsModel::addItem(AlarmItem* item)
 
 int AlarmsModel::rowCount(const QModelIndex& parent) const
 {
-    Q_UNUSED(parent);
-    return m_items.count();
+  Q_UNUSED(parent);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
+  return m_items.count();
 }
 
 QVariant AlarmsModel::data(const QModelIndex& index, int role) const
 {
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -227,7 +235,7 @@ QVariant AlarmsModel::data(const QModelIndex& index, int role) const
 
 bool AlarmsModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return false;
 
@@ -277,33 +285,33 @@ bool AlarmsModel::setData(const QModelIndex& index, const QVariant& value, int r
 bool AlarmsModel::insertRow(int row, const QModelIndex& parent)
 {
   Q_UNUSED(parent);
-  SONOS::LockGuard lock(m_lock);
-  if (row >= 0 && row <= m_items.count())
   {
+    LockGuard g(m_lock);
+    if (row < 0 || row > m_items.count())
+      return false;
     SONOS::AlarmPtr ptr(new SONOS::Alarm());
     beginInsertRows(QModelIndex(), row, row);
     m_items.insert(row, new AlarmItem(ptr));
     endInsertRows();
-    emit countChanged();
-    return true;
   }
-  return false;
+  emit countChanged();
+  return true;
 }
 
 bool AlarmsModel::removeRow(int row, const QModelIndex& parent)
 {
   Q_UNUSED(parent);
-  SONOS::LockGuard lock(m_lock);
-  if (row >= 0 && row < m_items.count())
   {
+    LockGuard g(m_lock);
+    if (row < 0 || row >= m_items.count())
+      return false;
     beginRemoveRows(QModelIndex(), row, row);
     delete m_items.at(row);
     m_items.removeAt(row);
     endRemoveRows();
-    emit countChanged();
-    return true;
   }
-  return false;
+  emit countChanged();
+  return true;
 }
 
 int AlarmsModel::append()
@@ -341,7 +349,7 @@ QHash<int, QByteArray> AlarmsModel::roleNames() const
 
 QVariantMap AlarmsModel::get(int row)
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const AlarmItem* item = m_items[row];
@@ -365,7 +373,7 @@ QVariantMap AlarmsModel::get(int row)
 
 void AlarmsModel::clearData()
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
@@ -380,8 +388,9 @@ bool AlarmsModel::loadData()
     return false;
   }
 
-  SONOS::LockGuard lock(m_lock);
-  clearData();
+  LockGuard g(m_lock);
+  qDeleteAll(m_data);
+  m_data.clear();
   m_dataState = ListModel::NoData;
   SONOS::AlarmList alarms = m_provider->getSystem().GetAlarmList();
   for (SONOS::AlarmList::iterator it = alarms.begin(); it != alarms.end(); ++it)
@@ -410,9 +419,9 @@ bool AlarmsModel::asyncLoad()
 void AlarmsModel::resetModel()
 {
   {
-    SONOS::LockGuard lock(m_lock);
+    LockGuard g(m_lock);
     if (m_dataState != ListModel::Loaded)
-        return;
+      return;
     beginResetModel();
     if (m_items.count() > 0)
     {

@@ -18,13 +18,16 @@
  *
  */
 
-#ifndef ALLSERVICESMODEL_H
-#define ALLSERVICESMODEL_H
+#ifndef NOSONAPPALLSERVICESMODEL_H
+#define NOSONAPPALLSERVICESMODEL_H
 
 #include "listmodel.h"
 #include "servicesmodel.h"
 
 #include <QAbstractListModel>
+
+namespace nosonapp
+{
 
 class AllServicesModel : public QAbstractListModel, public ListModel
 {
@@ -81,5 +84,7 @@ private:
   QList<ServiceItem*> m_data;
 };
 
-#endif /* ALLSERVICESMODEL_H */
+}
+
+#endif /* NOSONAPPALLSERVICESMODEL_H */
 

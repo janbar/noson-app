@@ -26,6 +26,8 @@
 #include <cstdio> // for strncpy
 #include <cctype> // for isdigit
 
+using namespace nosonapp;
+
 FavoriteItem::FavoriteItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
 : m_ptr(ptr)
 , m_valid(false)
@@ -99,7 +101,8 @@ FavoritesModel::FavoritesModel(QObject* parent)
 
 FavoritesModel::~FavoritesModel()
 {
-  clearData();
+  qDeleteAll(m_data);
+  m_data.clear();
   qDeleteAll(m_items);
   m_items.clear();
 }
@@ -107,8 +110,8 @@ FavoritesModel::~FavoritesModel()
 void FavoritesModel::addItem(FavoriteItem* item)
 {
   {
-    SONOS::LockGuard lock(m_lock);
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    LockGuard g(m_lock);
+    beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items << item;
     m_objectIDs.insert(item->objectId(), item->id());
     endInsertRows();
@@ -119,13 +122,17 @@ void FavoritesModel::addItem(FavoriteItem* item)
 int FavoritesModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   return m_items.count();
 }
 
 QVariant FavoritesModel::data(const QModelIndex& index, int role) const
 {
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -167,7 +174,7 @@ QVariant FavoritesModel::data(const QModelIndex& index, int role) const
 
 bool FavoritesModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return false;
 
@@ -204,7 +211,7 @@ QHash<int, QByteArray> FavoritesModel::roleNames() const
 
 QVariantMap FavoritesModel::get(int row)
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const FavoriteItem* item = m_items[row];
@@ -239,7 +246,7 @@ bool FavoritesModel::init(QObject* sonos, const QString& root, bool fill)
 
 void FavoritesModel::clearData()
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
@@ -260,8 +267,9 @@ bool FavoritesModel::loadData()
     return false;
   }
 
-  SONOS::LockGuard lock(m_lock);
-  clearData();
+  LockGuard g(m_lock);
+  qDeleteAll(m_data);
+  m_data.clear();
   m_dataState = ListModel::NoData;
   QString port;
   port.setNum(player->GetPort());
@@ -302,9 +310,9 @@ bool FavoritesModel::asyncLoad()
 void FavoritesModel::resetModel()
 {
   {
-    SONOS::LockGuard lock(m_lock);
+    LockGuard g(m_lock);
     if (m_dataState != ListModel::Loaded)
-        return;
+      return;
     beginResetModel();
     if (m_items.count() > 0)
     {
@@ -347,7 +355,7 @@ QString FavoritesModel::findFavorite(const QVariant& payload) const
   SONOS::PlayerPtr player = m_provider->getPlayer();
   if (ptr && player)
   {
-    SONOS::LockGuard lock(m_lock);
+    LockGuard g(m_lock);
     //@FIXME handle queued item
     QString objId = QString::fromUtf8(player->GetItemIdFromUriMetadata(ptr).c_str());
     QMap<QString, QString>::ConstIterator it = m_objectIDs.find(objId);

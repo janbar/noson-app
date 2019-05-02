@@ -18,12 +18,15 @@
  *
  */
 
-#ifndef GENRESMODEL_H
-#define GENRESMODEL_H
+#ifndef NOSONAPPGENRESMODEL_H
+#define NOSONAPPGENRESMODEL_H
 
 #include "listmodel.h"
 
 #include <QAbstractListModel>
+
+namespace nosonapp
+{
 
 class GenreItem
 {
@@ -108,5 +111,7 @@ private:
   QList<GenreItem*> m_data;
 };
 
-#endif /* GENRESMODEL_H */
+}
+
+#endif /* NOSONAPPGENRESMODEL_H */
 

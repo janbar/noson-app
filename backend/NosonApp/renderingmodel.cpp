@@ -20,6 +20,8 @@
 
 #include "renderingmodel.h"
 
+using namespace nosonapp;
+
 RenderingItem::RenderingItem(const Player::RCProperty& rcp)
 : m_volume(0)
 , m_mute(0)
@@ -37,14 +39,15 @@ RenderingModel::RenderingModel(QObject* parent)
 
 RenderingModel::~RenderingModel()
 {
-  clearData();
+  qDeleteAll(m_data);
+  m_data.clear();
   qDeleteAll(m_items);
   m_items.clear();
 }
 
 void RenderingModel::addItem(RenderingItem* item)
 {
-  beginInsertRows(QModelIndex(), rowCount(), rowCount());
+  beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
   m_items << item;
   endInsertRows();
   emit countChanged();
@@ -119,7 +122,8 @@ bool RenderingModel::loadData()
   if (!m_player)
     return false;
 
-  clearData();
+  qDeleteAll(m_data);
+  m_data.clear();
   const Player::RCTable& tab = m_player->renderingTable();
   for (Player::RCTable::const_iterator it = tab.begin(); it != tab.end(); ++it)
     m_data << new RenderingItem(*it);

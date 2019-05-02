@@ -17,10 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SORTBEHAVIOR_H
-#define SORTBEHAVIOR_H
+#ifndef NOSONAPPSORTBEHAVIOR_H
+#define NOSONAPPSORTBEHAVIOR_H
 
 #include <QSortFilterProxyModel>
+
+namespace nosonapp
+{
 
 class SortBehavior : public QObject {
     Q_OBJECT
@@ -45,4 +48,6 @@ private:
     Qt::SortOrder m_order;
 };
 
-#endif // SORTBEHAVIOR_H
+}
+
+#endif // NOSONAPPSORTBEHAVIOR_H

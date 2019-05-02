@@ -25,6 +25,8 @@
 #include <cstdio> // for strncpy
 #include <cctype> // for isdigit
 
+using namespace nosonapp;
+
 ServiceItem::ServiceItem(const SONOS::SMServicePtr& ptr)
 : m_ptr(ptr)
 , m_valid(false)
@@ -54,7 +56,8 @@ ServicesModel::ServicesModel(QObject* parent)
 
 ServicesModel::~ServicesModel()
 {
-  clearData();
+  qDeleteAll(m_data);
+  m_data.clear();
   qDeleteAll(m_items);
   m_items.clear();
 }
@@ -62,8 +65,8 @@ ServicesModel::~ServicesModel()
 void ServicesModel::addItem(ServiceItem* item)
 {
   {
-    SONOS::LockGuard lock(m_lock);
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    LockGuard g(m_lock);
+    beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items << item;
     endInsertRows();
   }
@@ -73,13 +76,17 @@ void ServicesModel::addItem(ServiceItem* item)
 int ServicesModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   return m_items.count();
 }
 
 QVariant ServicesModel::data(const QModelIndex& index, int role) const
 {
-  SONOS::LockGuard lock(m_lock);
+#ifdef USE_RECURSIVE_MUTEX
+  LockGuard g(m_lock);
+#endif
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -126,7 +133,7 @@ QHash<int, QByteArray> ServicesModel::roleNames() const
 
 QVariantMap ServicesModel::get(int row)
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const ServiceItem* item = m_items[row];
@@ -146,7 +153,7 @@ QVariantMap ServicesModel::get(int row)
 
 void ServicesModel::clearData()
 {
-  SONOS::LockGuard lock(m_lock);
+  LockGuard g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
@@ -167,8 +174,9 @@ bool ServicesModel::loadData()
     return false;
   }
 
-  SONOS::LockGuard lock(m_lock);
-  clearData();
+  LockGuard g(m_lock);
+  qDeleteAll(m_data);
+  m_data.clear();
   m_dataState = ListModel::NoData;
   SONOS::SMServiceList list = player->GetEnabledServices();
   for (SONOS::SMServiceList::const_iterator it = list.begin(); it != list.end(); ++it)
@@ -197,9 +205,9 @@ bool ServicesModel::asyncLoad()
 void ServicesModel::resetModel()
 {
   {
-    SONOS::LockGuard lock(m_lock);
+    LockGuard g(m_lock);
     if (m_dataState != ListModel::Loaded)
-        return;
+      return;
     beginResetModel();
     if (m_items.count() > 0)
     {

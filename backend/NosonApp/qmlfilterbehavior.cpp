@@ -19,6 +19,8 @@
 
 #include "qmlfilterbehavior.h"
 
+using namespace nosonapp;
+
 FilterBehavior::FilterBehavior(QObject *parent)
     : QObject(parent)
     , m_property(QString())

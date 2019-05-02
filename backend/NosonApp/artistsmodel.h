@@ -18,12 +18,15 @@
  *
  */
 
-#ifndef ARTISTSMODEL_H
-#define ARTISTSMODEL_H
+#ifndef NOSONAPPARTISTSMODEL_H
+#define NOSONAPPARTISTSMODEL_H
 
 #include "listmodel.h"
 
 #include <QAbstractListModel>
+
+namespace nosonapp
+{
 
 class ArtistItem
 {
@@ -112,5 +115,7 @@ private:
   QList<ArtistItem*> m_data;
 };
 
-#endif /* ARTISTSMODEL_H */
+}
+
+#endif /* NOSONAPPARTISTSMODEL_H */
 

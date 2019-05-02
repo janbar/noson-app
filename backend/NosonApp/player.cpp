@@ -27,6 +27,8 @@
 #include <string>
 #include <vector>
 
+using namespace nosonapp;
+
 Player::Player(QObject *parent)
 : QObject(parent)
 , m_sonos(0)

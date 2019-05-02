@@ -18,13 +18,16 @@
  *
  */
 
-#ifndef ALARMSMODEL_H
-#define ALARMSMODEL_H
+#ifndef NOSONAPPALARMSMODEL_H
+#define NOSONAPPALARMSMODEL_H
 
 #include "listmodel.h"
 #include <noson/alarm.h>
 
 #include <QAbstractListModel>
+
+namespace nosonapp
+{
 
 class AlarmItem
 {
@@ -146,5 +149,7 @@ private:
   static void alarmEventCB(void* handle);
 };
 
-#endif /* ALARMSMODEL_H */
+}
+
+#endif /* NOSONAPPALARMSMODEL_H */
 

@@ -18,13 +18,16 @@
  *
  */
 
-#ifndef SERVICESMODEL_H
-#define SERVICESMODEL_H
+#ifndef NOSONAPPSERVICESMODEL_H
+#define NOSONAPPSERVICESMODEL_H
 
 #include "listmodel.h"
 #include <noson/musicservices.h>
 
 #include <QAbstractListModel>
+
+namespace nosonapp
+{
 
 class ServiceItem
 {
@@ -123,5 +126,7 @@ private:
   QList<ServiceItem*> m_data;
 };
 
-#endif /* SERVICESMODEL_H */
+}
+
+#endif /* NOSONAPPSERVICESMODEL_H */
 
