@@ -797,9 +797,9 @@ ApplicationWindow {
         for (var i = 0; i < alarmsModel.count; ++i) {
             var alarm = alarmsModel.get(i);
             if (alarm.enabled) {
-                for (var r = 0; r < rooms.count; ++r) {
-                    if (rooms.get(r).id === alarm.roomId) {
-                        if (alarm.includeLinkedZones || rooms.count === 1)
+                for (var r = 0; r < rooms.length; ++r) {
+                    if (rooms[r]['id'] === alarm.roomId) {
+                        if (alarm.includeLinkedZones || rooms.length === 1)
                             return true;
                     }
                 }
