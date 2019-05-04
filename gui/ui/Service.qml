@@ -392,7 +392,7 @@ MusicPage {
                     if (!loginService.active) {
                         // first try with saved login/password
                         auth = mediaModel.getDeviceAuth();
-                        if (auth.key.length === 0 || mediaModel.requestSessionId(auth.username, auth.key) === 0)
+                        if (auth['key'].length === 0 || mediaModel.requestSessionId(auth['username'], auth['key']) === 0)
                             loginService.active = true; // show login registration
                         else {
                             // refresh the model
@@ -415,12 +415,12 @@ MusicPage {
                 var acls = deserializeACLS(settings.accounts);
                 var _acls = [];
                 for (var i = 0; i < acls.length; ++i) {
-                    if (acls[i].type === auth.type && acls[i].sn === auth.serialNum)
+                    if (acls[i].type === auth['type'] && acls[i].sn === auth['serialNum'])
                         continue;
                     else
                         _acls.push(acls[i]);
                 }
-                _acls.push({type: auth.type, sn: auth.serialNum, key: auth.key, token: auth.token, username: auth.username});
+                _acls.push({type: auth['type'], sn: auth['serialNum'], key: auth['key'], token: auth['token'], username: auth['username']});
                 settings.accounts = serializeACLS(_acls);
                 // refresh the model
                 mediaModel.asyncLoad();

@@ -431,11 +431,17 @@ int MediaModel::requestDeviceAuth()
   return 2;
 }
 
-MediaAuth* MediaModel::getDeviceAuth()
+QVariantMap MediaModel::getDeviceAuth()
 {
-  MediaAuth* _auth = new MediaAuth();
-  _auth->resetAuth(m_auth);
-  return _auth;
+  MediaAuth auth;
+  auth.resetAuth(m_auth);
+  QVariantMap model;
+  model["type"] = auth.type();
+  model["serialNum"] = auth.serialNum();
+  model["key"] = auth.key();
+  model["token"] = auth.token();
+  model["username"] = auth.username();
+  return model;
 }
 
 bool MediaModel::asyncLoad()

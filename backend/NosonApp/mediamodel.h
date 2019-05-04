@@ -216,7 +216,7 @@ public:
 
   Q_INVOKABLE int requestDeviceAuth(); // 0: retry, 1: succeeded, 2: failed
 
-  Q_INVOKABLE MediaAuth* getDeviceAuth();
+  Q_INVOKABLE QVariantMap getDeviceAuth();
 
   Q_INVOKABLE bool asyncLoad();
 
