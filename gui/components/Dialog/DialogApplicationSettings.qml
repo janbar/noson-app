@@ -248,9 +248,11 @@ DialogBase {
             RowLayout {
                 spacing: units.gu(1)
                 Image {
+                    width: units.gu(10)
                     height: units.gu(2.5)
                     fillMode: Image.PreserveAspectCrop
-                    source: "qrc:/images/lastfm.svg"
+                    source: "qrc:/images/lastfm.png"
+                    sourceSize.width: width
                     sourceSize.height: height
                 }
                 Text {
