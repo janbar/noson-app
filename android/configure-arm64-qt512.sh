@@ -5,7 +5,7 @@ cd build-arm64
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home/
 export ANDROID_SDK=/Users/Shared/Android/Sdk
 export ANDROID_NDK=$ANDROID_SDK/ndk-bundle
-export QT_DIR=/Users/Shared/Qt/5.12.1/android_arm64_v8a
+export QT_DIR=/Users/Shared/Qt/5.12.3/android_arm64_v8a
 
 cmake ../.. -DCMAKE_SYSTEM_NAME=Android \
 -DCMAKE_PREFIX_PATH=$QT_DIR \
