@@ -29,6 +29,91 @@
 
 using namespace nosonapp;
 
+namespace nosonapp
+{
+
+class playSourceWorker : public SONOS::OS::CWorker
+{
+public:
+  playSourceWorker(Player& player, const QVariant& payload)
+  : m_player(player)
+  , m_payload(payload)
+  { }
+
+  virtual void Process()
+  {
+    m_player.beginJob();
+    if (!m_player.setSource(m_payload) || !m_player.play())
+      emit m_player.jobFailed();
+    m_player.endJob();
+  }
+private:
+  Player& m_player;
+  QVariant m_payload;
+};
+
+class playStreamWorker : public SONOS::OS::CWorker
+{
+public:
+  playStreamWorker(Player& player, const QString& url, const QString& title)
+  : m_player(player)
+  , m_url(url)
+  , m_title(title)
+  { }
+
+  virtual void Process()
+  {
+    m_player.beginJob();
+    if (!m_player.playStream(m_url, m_title))
+      emit m_player.jobFailed();
+    m_player.endJob();
+  }
+private:
+  Player& m_player;
+  const QString m_url;
+  const QString m_title;
+};
+
+class playPulseWorker : public SONOS::OS::CWorker
+{
+public:
+  playPulseWorker(Player& player)
+  : m_player(player)
+  { }
+
+  virtual void Process()
+  {
+    m_player.beginJob();
+    if (!m_player.playPulse())
+      emit m_player.jobFailed();
+    m_player.endJob();
+  }
+private:
+  Player& m_player;
+};
+
+class playFavoriteWorker : public SONOS::OS::CWorker
+{
+public:
+  playFavoriteWorker(Player& player, const QVariant& payload)
+  : m_player(player)
+  , m_payload(payload)
+  { }
+
+  virtual void Process()
+  {
+    m_player.beginJob();
+    if (!m_player.playFavorite(m_payload))
+      emit m_player.jobFailed();
+    m_player.endJob();
+  }
+private:
+  Player& m_player;
+  QVariant m_payload;
+};
+
+}
+
 Player::Player(QObject *parent)
 : QObject(parent)
 , m_sonos(0)
@@ -123,26 +208,6 @@ int Player::remainingSleepTimerDuration()
   }
   return 0;
 }
-
-class playSourceWorker : public SONOS::OS::CWorker
-{
-public:
-  playSourceWorker(Player& player, const QVariant& payload)
-  : m_player(player)
-  , m_payload(payload)
-  { }
-
-  virtual void Process()
-  {
-    m_player.beginJob();
-    if (!m_player.setSource(m_payload) || !m_player.play())
-      emit m_player.jobFailed();
-    m_player.endJob();
-  }
-private:
-  Player& m_player;
-  QVariant m_payload;
-};
 
 bool Player::startPlaySource(const QVariant& payload)
 {
@@ -295,28 +360,6 @@ bool Player::toggleNightmode(const QString &uuid)
   return false;
 }
 
-class playStreamWorker : public SONOS::OS::CWorker
-{
-public:
-  playStreamWorker(Player& player, const QString& url, const QString& title)
-  : m_player(player)
-  , m_url(url)
-  , m_title(title)
-  { }
-
-  virtual void Process()
-  {
-    m_player.beginJob();
-    if (!m_player.playStream(m_url, m_title))
-      emit m_player.jobFailed();
-    m_player.endJob();
-  }
-private:
-  Player& m_player;
-  const QString m_url;
-  const QString m_title;
-};
-
 bool Player::startPlayStream(const QString& url, const QString& title)
 {
   return m_sonos->startJob(new playStreamWorker(*this, url, title));
@@ -328,24 +371,6 @@ bool Player::playStream(const QString& url, const QString& title)
     return m_player->PlayStream(url.toUtf8().constData(), title.toUtf8().constData());
   return false;
 }
-
-class playPulseWorker : public SONOS::OS::CWorker
-{
-public:
-  playPulseWorker(Player& player)
-  : m_player(player)
-  { }
-
-  virtual void Process()
-  {
-    m_player.beginJob();
-    if (!m_player.playPulse())
-      emit m_player.jobFailed();
-    m_player.endJob();
-  }
-private:
-  Player& m_player;
-};
 
 bool Player::startPlayPulse()
 {
@@ -521,26 +546,6 @@ bool Player::destroyFavorite(const QString& FVid)
 {
   return m_player ? m_player->DestroyFavorite(FVid.toUtf8().constData()) : false;
 }
-
-class playFavoriteWorker : public SONOS::OS::CWorker
-{
-public:
-  playFavoriteWorker(Player& player, const QVariant& payload)
-  : m_player(player)
-  , m_payload(payload)
-  { }
-
-  virtual void Process()
-  {
-    m_player.beginJob();
-    if (!m_player.playFavorite(m_payload))
-      emit m_player.jobFailed();
-    m_player.endJob();
-  }
-private:
-  Player& m_player;
-  QVariant m_payload;
-};
 
 bool Player::startPlayFavorite(const QVariant& payload)
 {
