@@ -53,13 +53,12 @@ if(NOT FLAC_FOUND OR NOT FLACXX_FOUND)
         ${CMAKE_CURRENT_BINARY_DIR}/flac
         EXCLUDE_FROM_ALL
     )
-    # Cache all vars for the childs and parent
-    set(FLAC_LIBRARIES FLAC                             PARENT_SCOPE)
-    set(FLAC_INCLUDE_DIR "${FLAC_SOURCE_DIR}/include"   PARENT_SCOPE)
-    set(FLAC_FOUND ON                                   PARENT_SCOPE)
-    set(FLACXX_LIBRARIES FLACXX                         PARENT_SCOPE)
-    set(FLACXX_INCLUDE_DIR "${FLAC_SOURCE_DIR}/include" PARENT_SCOPE)
-    set(FLACXX_FOUND ON                                 PARENT_SCOPE)
+    set(FLAC_LIBRARIES FLAC)
+    set(FLAC_INCLUDE_DIR "${FLAC_SOURCE_DIR}/include")
+    set(FLAC_FOUND ON)
+    set(FLACXX_LIBRARIES FLACXX)
+    set(FLACXX_INCLUDE_DIR "${FLAC_SOURCE_DIR}/include")
+    set(FLACXX_FOUND ON)
     message(STATUS "Build FLAC FLAC++: ${FLAC_BINARY_DIR}")
 endif()
 
