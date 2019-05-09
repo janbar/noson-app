@@ -162,11 +162,9 @@ endif()
 
 set(FLAC_LIBRARIES
     FLAC ${FLAC_link_libraries}
-    CACHE INTERNAL "" FORCE
 )
 set(FLAC_INCLUDE_DIR
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    CACHE INTERNAL "" FORCE
 )
 
 set(
@@ -195,6 +193,13 @@ else()
     )
     set(FLACXX_TGTS FLACXX)
 endif()
+
+set(FLACXX_LIBRARIES
+    FLACXX ${FLAC_LIBRARIES}
+)
+set(FLACXX_INCLUDE_DIR
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
 
 export(PACKAGE FLAC)
 export(PACKAGE FLACXX)
