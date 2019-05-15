@@ -28,6 +28,7 @@
 #define IMAGESERVICE_FAVICON  "/favicon.ico"
 #define IMAGESERVICE_IMAGES   "/images/"
 #define RESOURCE_FILEPICTURE  "filePicture"
+#define SERVER_PRODUCT_NAME   "libnoson/" LIBVERSION
 
 using namespace NSROOT;
 
@@ -141,7 +142,7 @@ void ImageService::ReplyContent(void * handle, const std::string& uri)
       resp.assign("HTTP/1.1 200 OK\r\n")
           .append("Content-type: ").append(contentType).append("\r\n")
           .append("Content-length: ").append(std::to_string(stream->contentLength)).append("\r\n")
-          .append("Server: Linux UPnP/1.0 Noson/1.0 (ACR_noson)\r\n")
+          .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
           .append("Connection: close\r\n")
           .append("\r\n");
       if (Reply(handle, resp.c_str(), resp.length()))
@@ -167,7 +168,7 @@ void ImageService::Reply500(void* handle)
 {
   std::string resp;
   resp.assign("HTTP/1.1 500 Internal Server Error\r\n")
-      .append("Server: Linux UPnP/1.0 Noson/1.0 (ACR_noson)\r\n")
+      .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
       .append("Connection: close\r\n")
       .append("\r\n");
   Reply(handle, resp.c_str(), resp.length());
@@ -177,7 +178,7 @@ void ImageService::Reply400(void* handle)
 {
   std::string resp;
   resp.append("HTTP/1.1 400 Bad Request\r\n")
-      .append("Server: Linux UPnP/1.0 Noson/1.0 (ACR_noson)\r\n")
+      .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
       .append("Connection: close\r\n")
       .append("\r\n");
   Reply(handle, resp.c_str(), resp.length());
@@ -187,7 +188,7 @@ void ImageService::Reply404(void* handle)
 {
   std::string resp;
   resp.append("HTTP/1.1 404 Not Found\r\n")
-      .append("Server: Linux UPnP/1.0 Noson/1.0 (ACR_noson)\r\n")
+      .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
       .append("Connection: close\r\n")
       .append("\r\n");
   Reply(handle, resp.c_str(), resp.length());

@@ -28,8 +28,9 @@
 #include <cassert>
 
 #define FILESTREAMER_URI      "/music/track"
-#define FILESTREAMER_TIMEOUT   10000
-#define FILESTREAMER_MAX_PB    5
+#define FILESTREAMER_TIMEOUT  10000
+#define FILESTREAMER_MAX_PB   5
+#define SERVER_PRODUCT_NAME   "libnoson/" LIBVERSION
 
 using namespace NSROOT;
 
@@ -261,7 +262,7 @@ void FileStreamer::streamFile(void * handle, const std::string& filePath, const 
     resp.assign("HTTP/1.1 200 OK\r\n")
         .append("Content-type: ").append(mimeType).append("\r\n")
         .append("Transfer-encoding: chunked\r\n")
-        .append("Server: Linux UPnP/1.0 Noson/1.0 (ACR_noson)\r\n")
+        .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
         .append("Connection: close\r\n")
         .append("\r\n");
 
@@ -293,7 +294,7 @@ void FileStreamer::Reply500(void* handle)
 {
   std::string resp;
   resp.assign("HTTP/1.1 500 Internal Server Error\r\n")
-      .append("Server: Linux UPnP/1.0 Noson/1.0 (ACR_noson)\r\n")
+      .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
       .append("Connection: close\r\n")
       .append("\r\n");
   Reply(handle, resp.c_str(), resp.length());
@@ -303,7 +304,7 @@ void FileStreamer::Reply400(void* handle)
 {
   std::string resp;
   resp.append("HTTP/1.1 400 Bad Request\r\n")
-      .append("Server: Linux UPnP/1.0 Noson/1.0 (ACR_noson)\r\n")
+      .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
       .append("Connection: close\r\n")
       .append("\r\n");
   Reply(handle, resp.c_str(), resp.length());
@@ -313,7 +314,7 @@ void FileStreamer::Reply429(void* handle)
 {
   std::string resp;
   resp.append("HTTP/1.1 429 Too Many Requests\r\n")
-      .append("Server: Linux UPnP/1.0 Noson/1.0 (ACR_noson)\r\n")
+      .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
       .append("Connection: close\r\n")
       .append("\r\n");
   Reply(handle, resp.c_str(), resp.length());

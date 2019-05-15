@@ -37,6 +37,7 @@
 #define PULSESTREAMER_MAX_PB    3
 #define PA_SINK_NAME            "noson"
 #define PA_CLIENT_NAME          PA_SINK_NAME
+#define SERVER_PRODUCT_NAME     "libnoson/" LIBVERSION
 
 using namespace NSROOT;
 
@@ -182,7 +183,7 @@ void PulseStreamer::streamSink(void * handle)
     resp.assign("HTTP/1.1 200 OK\r\n")
         .append("Content-type: audio/flac\r\n")
         .append("Transfer-encoding: chunked\r\n")
-        .append("Server: Linux UPnP/1.0 Noson/1.0 (ACR_noson)\r\n")
+        .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
         .append("Connection: close\r\n")
         .append("\r\n");
 
@@ -216,7 +217,7 @@ void PulseStreamer::Reply500(void* handle)
 {
   std::string resp;
   resp.assign("HTTP/1.1 500 Internal Server Error\r\n")
-      .append("Server: Linux UPnP/1.0 Noson/1.0 (ACR_noson)\r\n")
+      .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
       .append("Connection: close\r\n")
       .append("\r\n");
   Reply(handle, resp.c_str(), resp.length());
@@ -226,7 +227,7 @@ void PulseStreamer::Reply400(void* handle)
 {
   std::string resp;
   resp.append("HTTP/1.1 400 Bad Request\r\n")
-      .append("Server: Linux UPnP/1.0 Noson/1.0 (ACR_noson)\r\n")
+      .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
       .append("Connection: close\r\n")
       .append("\r\n");
   Reply(handle, resp.c_str(), resp.length());
@@ -236,7 +237,7 @@ void PulseStreamer::Reply429(void* handle)
 {
   std::string resp;
   resp.append("HTTP/1.1 429 Too Many Requests\r\n")
-      .append("Server: Linux UPnP/1.0 Noson/1.0 (ACR_noson)\r\n")
+      .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
       .append("Connection: close\r\n")
       .append("\r\n");
   Reply(handle, resp.c_str(), resp.length());

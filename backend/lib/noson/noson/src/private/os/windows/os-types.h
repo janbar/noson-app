@@ -64,7 +64,12 @@ __inline unsigned int sleep(unsigned int sec)
 
 /* Using MS Visual C++ compilers */
 #if defined(_MSC_VER)
+
+#if (_MSC_VER < 1800)
 #include "msc_inttypes.h"
+#else
+#include <inttypes.h>
+#endif
 
 struct timezone
 {
