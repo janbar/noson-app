@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2015 Jean-Luc Barriere <jlbarriere68@gmail.com> -->
 <component type="desktop-application">
   <id>@APP_ID@</id>
   <launchable type="desktop-id">@APP_ID@.desktop</launchable>
   <name>@APP_NAME@</name>
   <project_license>GPL-3.0-only</project_license>
   <developer_name>Jean-Luc Barriere</developer_name>
+  <update_contact>jlbarriere68_AT_gmail.com</update_contact>
   <summary>Controller for SONOS</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <url type="homepage">http://janbar.github.io/noson-app/</url>
@@ -13,7 +15,8 @@
     You can manage grouping zones, queue, and playlists, and fully control the playback.</p>
   </description>
   <screenshots>
-    <screenshot>
+    <screenshot type="default">
+      <caption>The main window.</caption>
       <image type="source">http://janbar.github.io/noson-app/download/noson3.png</image>
     </screenshot>
   </screenshots>
