@@ -409,7 +409,7 @@ bool SMAPI::GetDeviceAuthToken(SMOAKeyring::Data& auth)
     }
     oa.key = vars.GetValue("privateKey");
     oa.token = vars.GetValue("authToken");
-    if (!oa.key.empty())
+    if (!oa.key.empty() || !oa.token.empty())
     {
       // set credentials for the account and reset the auth expiration
       m_service->GetAccount()->SetCredentials(oa);
@@ -557,7 +557,8 @@ bool SMAPI::makeSoapHeader()
       SMAccount::Credentials auth = m_service->GetAccount()->GetCredentials();
       m_soapHeader.append("<loginToken>");
       m_soapHeader.append("<token>").append(auth.token.empty() ? auth.devId : auth.token).append("</token>");
-      m_soapHeader.append("<key>").append(auth.key).append("</key>");
+      if (!auth.key.empty())
+        m_soapHeader.append("<key>").append(auth.key).append("</key>");
       m_soapHeader.append("<householdId>").append(m_deviceHouseholdID).append("</householdId>");
       m_soapHeader.append("</loginToken>");
     }
