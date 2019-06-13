@@ -183,7 +183,8 @@ bool SMAPI::GetMetadata(const std::string& id, int index, int count, bool recurs
   args.push_back(ElementPtr(new Element("id", urldecode(id)))); // id is url encoded
   args.push_back(ElementPtr(new Element("index", std::to_string(index))));
   args.push_back(ElementPtr(new Element("count", std::to_string(count))));
-  args.push_back(ElementPtr(new Element("recursive", recursive ? "true" : "false")));
+  if (recursive)
+    args.push_back(ElementPtr(new Element("recursive", "true")));
 
   metadata.Reset(m_service, Request("getMetadata", args).GetValue("getMetadataResult"), id);
   return metadata.IsValid();
