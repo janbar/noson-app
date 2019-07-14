@@ -713,6 +713,17 @@ bool UdpSocket::Open(SOCKET_AF_t af, const char* target, unsigned port)
       sa->sin_family = AF_INET;
       memcpy(&(sa->sin_addr.s_addr), _addr, sizeof(in_addr_t));
       sa->sin_port = htons(port);
+      if (sa->sin_addr.s_addr == INADDR_BROADCAST)
+      {
+        // set broadcast permission
+        int broadcast=1;
+        if (setsockopt(m_socket, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast)))
+        {
+          m_errno = LASTERROR;
+          DBG(DBG_ERROR, "%s: could not set SO_BROADCAST from socket (%d)\n", __FUNCTION__, m_errno);
+          return false;
+        }
+      }
       break;
     }
     case AF_INET6:

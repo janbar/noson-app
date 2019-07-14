@@ -350,16 +350,16 @@ void System::DeleteServiceOAuth(const std::string& type, const std::string& sn)
 
 bool System::FindDeviceDescription(std::string& url)
 {
-#define MULTICAST_ADDR      "239.255.255.250"
-#define MULTICAST_STRP      "1900"
-#define MULTICAST_NUMP      1900
+#define SSDP_ADDR           "239.255.255.250"
+#define SSDP_STRP           "1900"
+#define SSDP_NUMP           1900
 #define DISCOVER_TIMEOUT    5000
 #define DISCOVER_ST         "urn:schemas-upnp-org:device:ZonePlayer:1"
 #define HTTP_TOKEN_MAXSIZE  20
 
   static const char* msearch =
   "M-SEARCH * HTTP/1.1\r\n"
-  "HOST: " MULTICAST_ADDR ":" MULTICAST_STRP "\r\n"
+  "HOST: " SSDP_ADDR ":" SSDP_STRP "\r\n"
   "MAN: \"ssdp:discover\"\r\n"
   "MX: 1\r\n"
   "ST: " DISCOVER_ST "\r\n"
@@ -369,8 +369,7 @@ bool System::FindDeviceDescription(std::string& url)
 
   bool ret = false;
   UdpSocket sock;
-  sock.Open(SOCKET_AF_INET4, MULTICAST_ADDR, MULTICAST_NUMP);
-  sock.SetMulticastTTL(4);
+  sock.Open(SOCKET_AF_INET4, "255.255.255.255", SSDP_NUMP);
 
   OS::CTimeout timeout(DISCOVER_TIMEOUT);
   while (!ret && timeout.TimeLeft() > 0)
