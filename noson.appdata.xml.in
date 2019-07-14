@@ -16,7 +16,7 @@
   </description>
   <screenshots>
     <screenshot type="default">
-      <caption>The main window.</caption>
+      <caption>The main window</caption>
       <image type="source">http://janbar.github.io/noson-app/download/noson3.png</image>
     </screenshot>
   </screenshots>
