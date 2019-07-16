@@ -54,7 +54,7 @@ Dialog {
      */
     property string text
 
-    property real minimumWidth: units.gu(mainView.minSizeGU - 2)
+    property real minimumWidth: units.gu(minSizeGU - 2)
     property real minimumHeight: Math.max(256, units.gu(32))
     property real contentSpacing: units.gu(1)
 

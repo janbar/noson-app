@@ -180,7 +180,7 @@ ApplicationWindow {
 
     // Constants
     readonly property int queueBatchSize: 100
-    readonly property real minSizeGU: 45
+    readonly property real minSizeGU: 42
     readonly property string tr_undefined: qsTr("<Undefined>")
 
     minimumHeight: units.gu(minSizeGU)
