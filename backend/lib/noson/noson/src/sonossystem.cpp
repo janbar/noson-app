@@ -368,18 +368,26 @@ bool System::FindDeviceDescription(std::string& url)
   static struct timeval socket_timeout = { 0, 500000 };
 
   bool ret = false;
-  UdpSocket sock;
-  sock.Open(SOCKET_AF_INET4, "255.255.255.255", SSDP_NUMP);
+  std::list<UdpSocket*> lsock;
+  UdpSocket * sock = new UdpSocket;
+  sock->Open(SOCKET_AF_INET4, "255.255.255.255", SSDP_NUMP);
+  lsock.push_back(sock);
+  sock = new UdpSocket;
+  sock->Open(SOCKET_AF_INET4, SSDP_ADDR, SSDP_NUMP);
+  sock->SetMulticastTTL(4);
+  lsock.push_back(sock);
 
   OS::CTimeout timeout(DISCOVER_TIMEOUT);
   while (!ret && timeout.TimeLeft() > 0)
   {
-    sock.SendData(msearch, strlen(msearch));
-    sock.SetTimeout(socket_timeout);
+    sock = lsock.front();
+    lsock.pop_front();
+    sock->SendData(msearch, strlen(msearch));
+    sock->SetTimeout(socket_timeout);
     std::string strread;
     size_t len = 0;
     unsigned _context = 0;
-    while (_context != 0xF && WSResponse::ReadHeaderLine(&sock, "\r\n", strread, &len))
+    while (_context != 0xF && WSResponse::ReadHeaderLine(sock, "\r\n", strread, &len))
     {
       const char* line = strread.c_str();
       if (_context == 0 && strstr(line, "HTTP/1."))
@@ -451,7 +459,15 @@ bool System::FindDeviceDescription(std::string& url)
       }
     }
     ret = (_context == 0xF);
+    // listen to next socket
+    lsock.push_back(sock);
+    _context = 0;
   }
+  do
+  {
+    delete lsock.front();
+    lsock.pop_front();
+  } while (!lsock.empty());
   return ret;
 }
 
