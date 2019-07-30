@@ -350,6 +350,7 @@ void System::DeleteServiceOAuth(const std::string& type, const std::string& sn)
 
 bool System::FindDeviceDescription(std::string& url)
 {
+#define IPBC_ADDR           "255.255.255.255"
 #define SSDP_ADDR           "239.255.255.250"
 #define SSDP_STRP           "1900"
 #define SSDP_NUMP           1900
@@ -368,26 +369,29 @@ bool System::FindDeviceDescription(std::string& url)
   static struct timeval socket_timeout = { 0, 500000 };
 
   bool ret = false;
-  std::list<UdpSocket*> lsock;
-  UdpSocket * sock = new UdpSocket;
-  sock->Open(SOCKET_AF_INET4, "255.255.255.255", SSDP_NUMP);
-  lsock.push_back(sock);
-  sock = new UdpSocket;
-  sock->Open(SOCKET_AF_INET4, SSDP_ADDR, SSDP_NUMP);
-  sock->SetMulticastTTL(4);
-  lsock.push_back(sock);
+  std::list<std::pair<std::string, unsigned> > laddr;
+  laddr.push_back(std::make_pair(IPBC_ADDR, SSDP_NUMP));
+  laddr.push_back(std::make_pair(SSDP_ADDR, SSDP_NUMP));
+  UdpSocket sock;
+  sock.Open(SOCKET_AF_INET4, true);
+  sock.SetMulticastTTL(4);
 
   OS::CTimeout timeout(DISCOVER_TIMEOUT);
-  while (!ret && timeout.TimeLeft() > 0)
+  while (!ret && timeout.TimeLeft() > 0 && !laddr.empty())
   {
-    sock = lsock.front();
-    lsock.pop_front();
-    sock->SendData(msearch, strlen(msearch));
-    sock->SetTimeout(socket_timeout);
+    std::pair<std::string, unsigned> addr = laddr.front();
+    laddr.pop_front();
+    if (sock.SetAddress(addr.first.c_str(), addr.second))
+    {
+      if (!sock.SendData(msearch, strlen(msearch)))
+        DBG(DBG_ERROR, "%s: send data failed (%d)(%s:%d)\n", __FUNCTION__, sock.GetErrNo(), addr.first.c_str(), addr.second);
+      laddr.push_back(addr);
+    }
+    sock.SetTimeout(socket_timeout);
     std::string strread;
     size_t len = 0;
     unsigned _context = 0;
-    while (_context != 0xF && WSResponse::ReadHeaderLine(sock, "\r\n", strread, &len))
+    while (_context != 0xF && WSResponse::ReadHeaderLine(&sock, "\r\n", strread, &len))
     {
       const char* line = strread.c_str();
       if (_context == 0 && strstr(line, "HTTP/1."))
@@ -459,15 +463,7 @@ bool System::FindDeviceDescription(std::string& url)
       }
     }
     ret = (_context == 0xF);
-    // listen to next socket
-    lsock.push_back(sock);
-    _context = 0;
   }
-  do
-  {
-    delete lsock.front();
-    lsock.pop_front();
-  } while (!lsock.empty());
   return ret;
 }
 

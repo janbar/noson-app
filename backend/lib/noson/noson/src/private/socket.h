@@ -254,13 +254,29 @@ namespace NSROOT
     bool IsValid() const;
 
     /**
-     * Open the socket for the given destination.
+     * Open the socket and configure the given destination.
      * @param af the protocol
      * @param target the address name of destination
      * @param port
      * @return true on success, else false
      */
-    bool Open(SOCKET_AF_t af, const char *target, unsigned port);
+    bool Open(SOCKET_AF_t af, const char* target, unsigned port);
+
+    /**
+     * Open the socket.
+     * @param af the protocol
+     * @param broadcast enable broadcast permission
+     * @return true on success, else false
+     */
+    bool Open(SOCKET_AF_t af, bool broadcast = false);
+
+    /**
+     * Configure the destination.
+     * @param target the address name of destination
+     * @param port
+     * @return true on success, else false
+     */
+    bool SetAddress(const char* target, unsigned port);
 
     /**
      * Configure hop limit value to be used for multicast packets on the opened
