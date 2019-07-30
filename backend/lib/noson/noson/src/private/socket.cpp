@@ -695,7 +695,7 @@ bool UdpSocket::Open(SOCKET_AF_t af, bool broadcast /*= false*/)
     {
       // set broadcast permission
       int _broadcast = 1;
-      if (setsockopt(m_socket, SOL_SOCKET, SO_BROADCAST, &_broadcast, sizeof(_broadcast)))
+      if (setsockopt(m_socket, SOL_SOCKET, SO_BROADCAST, (char*)&_broadcast, sizeof(_broadcast)))
       {
         m_errno = LASTERROR;
         DBG(DBG_ERROR, "%s: could not set SO_BROADCAST from socket (%d)\n", __FUNCTION__, m_errno);
