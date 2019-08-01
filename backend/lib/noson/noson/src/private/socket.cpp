@@ -70,17 +70,17 @@ namespace NSROOT
 
   struct SocketAddress
   {
-    char data[sizeof(sockaddr_in6)];
+    sockaddr_storage data;
     socklen_t sa_len;
 
     SocketAddress() { Clear(AF_UNSPEC); }
     SocketAddress(int family) { Clear(family); }
     inline sockaddr* sa() { return (sockaddr*)&data; }
-    inline int sa_family() { return ((sockaddr*)&data)->sa_family; }
+    inline int sa_family() { return data.ss_family; }
     void Clear(int family)
     {
       memset(&data, 0, sizeof(data));
-      ((sockaddr*)&data)->sa_family = family;
+      data.ss_family = family;
       sa_len = (family == AF_INET ? sizeof(sockaddr_in) : sizeof(sockaddr_in6));
     }
   };
@@ -490,7 +490,7 @@ const char* TcpSocket::GetMyHostName()
 TcpServerSocket::TcpServerSocket()
 : m_socket(INVALID_SOCKET_VALUE)
 , m_errno(0)
-, m_maxconnections(5)
+, m_requestQueueSize(0)
 {
   m_addr = new(SocketAddress);
 }
@@ -572,18 +572,18 @@ bool TcpServerSocket::Bind(unsigned port)
   return true;
 }
 
-bool TcpServerSocket::ListenConnection(int maxConnections /*= SOCKET_CONNECTION_REQUESTS*/)
+bool TcpServerSocket::ListenConnection(int queueSize /*= SOCKET_CONNECTION_REQUESTS*/)
 {
   if (!IsValid())
     return false;
 
-  if (listen(m_socket, maxConnections))
+  if (listen(m_socket, queueSize))
   {
     m_errno = LASTERROR;
     DBG(DBG_ERROR, "%s: listen failed (%d)\n", __FUNCTION__, m_errno);
     return false;
   }
-  m_maxconnections = maxConnections;
+  m_requestQueueSize = queueSize;
   return true;
 }
 

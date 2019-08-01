@@ -28,7 +28,7 @@
 #include <cstddef>  // for size_t
 #include <string>
 
-#define SOCKET_HOSTNAME_MAXSIZE       1025
+#define SOCKET_HOSTNAME_MAXSIZE       256
 #define SOCKET_RCVBUF_MINSIZE         16384
 #define SOCKET_READ_TIMEOUT_SEC       10
 #define SOCKET_READ_TIMEOUT_USEC      0
@@ -188,9 +188,10 @@ namespace NSROOT
 
     /**
      * Prepare to accept connections on the socket.
+     * @param queueSize the maximum length for the queue of pending connections
      * @return true on success, else false
      */
-    bool ListenConnection(int maxConnections = SOCKET_CONNECTION_REQUESTS);
+    bool ListenConnection(int queueSize = SOCKET_CONNECTION_REQUESTS);
 
     /**
      * Await a connection.
@@ -213,7 +214,7 @@ namespace NSROOT
     SocketAddress* m_addr;
     net_socket_t m_socket;
     int m_errno;
-    unsigned m_maxconnections;
+    unsigned m_requestQueueSize;
 
     // prevent copy
     TcpServerSocket(const TcpServerSocket&);
