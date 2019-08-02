@@ -1,3 +1,7 @@
+#if (defined(_WIN32) || defined(_WIN64))
+#define WIN32_LEAN_AND_MEAN
+#endif
+
 #include <QtGlobal>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -16,11 +20,7 @@
 
 #define CACHE_SIZE 100000000L
 
-#if (defined(_WIN32) || defined(_WIN64))
-#define __WINDOWS__
-#endif
-
-#ifdef __WINDOWS__
+#ifdef Q_OS_WIN
 #include <winsock2.h>
 #else
 #include "signalhandler.h"
@@ -49,12 +49,12 @@ void importStaticPlugins(QQmlApplicationEngine* engine)
 int main(int argc, char *argv[])
 {
     int ret = 0;
-#ifdef __WINDOWS__
+#ifdef Q_OS_WIN
     //Initialize Winsock
     WSADATA wsaData;
     if ((ret = WSAStartup(MAKEWORD(2, 2), &wsaData)))
         return ret;
-#endif /* __WINDOWS__ */
+#endif
 
     QGuiApplication::setApplicationName("noson");
     QGuiApplication::setOrganizationName("janbar");
@@ -130,14 +130,14 @@ int main(int argc, char *argv[])
     }
 
     ret = app.exec();
-#ifdef __WINDOWS__
+#ifdef Q_OS_WIN
     WSACleanup();
-#endif /* __WINDOWS__ */
+#endif
     return ret;
 }
 
 void setupApp(QGuiApplication& app) {
-#ifndef __WINDOWS__
+#ifndef Q_OS_WIN
     SignalHandler *sh = new SignalHandler(&app);
     sh->catchSignal(SIGHUP, 0);
     sh->catchSignal(SIGALRM, 0);
