@@ -6,7 +6,7 @@ project(FLACXX)
 enable_language(C)
 enable_language(CXX)
 
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 option(ENABLE_OGG "Enbale build with OGG library" OFF)
 
@@ -132,8 +132,11 @@ set(
 if(NOT MSVC)
     set(FLAC_link_libraries m)
 else()
+    include(MSVCRuntime)
+    configure_msvc_runtime()
     set(extra_SRCS ${windows_unicode_compat_SRCS})
     set(FLAC_link_libraries ws2_32)
+    add_definitions(-DFLAC__NO_DLL)
 endif()
 
 if(ENABLE_OGG)
