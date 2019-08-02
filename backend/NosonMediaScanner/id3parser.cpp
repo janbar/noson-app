@@ -22,15 +22,11 @@
 #include "mediafile.h"
 #include "mediainfo.h"
 #include "byteorder.h"
+#include "packed.h"
 
 #include <QDebug>
 #include <cstdio>
 #include <cassert>
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
 
 #define ID3V2_HEADER_SIZE 10
 #define ID3V2_FOOTER_SIZE 10
@@ -83,6 +79,7 @@ struct ID3v2FrameHeader
   int data_length_indicator;
 };
 
+PACK (
 struct ID3v1Tag
 {
   char title[30];
@@ -91,17 +88,17 @@ struct ID3v1Tag
   char year[4];
   char comments[30];
   char genre;
-} __attribute__ ((packed));
+});
 
 static QByteArray _cs_conv_latin1(const char * data, unsigned size);
 static QByteArray _cs_conv_utf16(const char * data, unsigned size);
 static QByteArray _cs_conv_utf16be(const char * data, unsigned size);
 static QByteArray _cs_conv_utf8(const char * data, unsigned size);
 static QByteArray _cs_conv_utf16le(const char * data, unsigned size);
-static long _find_id3v2(int fd, off_t * sync_offset);
-static int _parse_id3v2(int fd, long id3v2_offset, ID3Iinfo * info, off_t * ptag_size);
-static int _parse_id3v1(int fd, ID3Iinfo * info, cs_conv_t csconv);
-static int _parse_mpeg_header(int fd, off_t off, MediaInfo * audio_info, size_t size);
+static long _find_id3v2(FILE * fp, off_t * sync_offset);
+static int _parse_id3v2(FILE * fp, long id3v2_offset, ID3Iinfo * info, off_t * ptag_size);
+static int _parse_id3v1(FILE * fp, ID3Iinfo * info, cs_conv_t csconv);
+static int _parse_mpeg_header(FILE * fp, off_t off, MediaInfo * audio_info, size_t size);
 
 bool ID3Parser::parse(MediaFile * file, MediaInfo * info, bool debug)
 {
@@ -110,25 +107,23 @@ bool ID3Parser::parse(MediaFile * file, MediaInfo * info, bool debug)
   id3info.artist_priority = 0;
   id3info.has_art = false;
 
-  int r, fd;
+  int r;
   long id3v2_offset;
   off_t sync_offset = 0;
 
-  fd = open(file->filePath.toUtf8().constData(), O_RDONLY);
-  if (fd < 0)
-  {
-    qWarning("%s: open", __FUNCTION__);
+  std::string path(file->filePath.toUtf8().constData());
+  FILE * fp = fopen(path.c_str(), "rb");
+  if (!fp)
     return false;
-  }
 
-  id3v2_offset = _find_id3v2(fd, &sync_offset);
+  id3v2_offset = _find_id3v2(fp, &sync_offset);
   if (id3v2_offset >= 0)
   {
     off_t id3v2_size = 3;
 
     sync_offset = id3v2_offset;
 
-    if (_parse_id3v2(fd, id3v2_offset, &id3info, &id3v2_size) != 0 ||
+    if (_parse_id3v2(fp, id3v2_offset, &id3info, &id3v2_size) != 0 ||
             id3info.title.isEmpty() ||
             id3info.artist.isEmpty() ||
             id3info.album.isEmpty() ||
@@ -147,13 +142,13 @@ bool ID3Parser::parse(MediaFile * file, MediaInfo * info, bool debug)
   {
     char tag[3];
     /* check for id3v1 tag */
-    if (lseek(fd, -128, SEEK_END) == -1)
+    if (fseek(fp, -128, SEEK_END) != 0)
     {
       r = -3;
       goto done;
     }
 
-    if (read(fd, &tag, 3) == -1)
+    if (fread(&tag, 1, 3, fp) != 3)
     {
       r = -4;
       goto done;
@@ -161,7 +156,7 @@ bool ID3Parser::parse(MediaFile * file, MediaInfo * info, bool debug)
 
     if (memcmp(tag, "TAG", 3) == 0)
     {
-      if (_parse_id3v1(fd, &id3info, _cs_conv_utf8) != 0)
+      if (_parse_id3v1(fp, &id3info, _cs_conv_utf8) != 0)
       {
         r = -5;
         goto done;
@@ -177,10 +172,10 @@ bool ID3Parser::parse(MediaFile * file, MediaInfo * info, bool debug)
   info->trackNo = id3info.track_no > 0 ? id3info.track_no : 0;
   info->hasArt = id3info.has_art;
 
-  _parse_mpeg_header(fd, sync_offset, info, file->size);
+  _parse_mpeg_header(fp, sync_offset, info, file->size);
 
 done:
-  close(fd);
+  fclose(fp);
   return true;
 }
 
@@ -259,14 +254,14 @@ static inline int _is_id3v2_second_synch_byte(unsigned char byte)
 /**
  * Returns the offset in fd to the position after the ID3 tag
  */
-static long _find_id3v2(int fd, off_t * sync_offset)
+static long _find_id3v2(FILE * fp, off_t * sync_offset)
 {
   static const char pattern[3] = {'I', 'D', '3'};
   char buffer[3];
   unsigned int prev_part_match, prev_part_match_sync = 0;
   long buffer_offset;
 
-  if (read(fd, buffer, sizeof(buffer)) != sizeof(buffer))
+  if (fread(buffer, 1, sizeof(buffer), fp) != sizeof(buffer))
     return -1;
 
   if (memcmp(buffer, pattern, sizeof(pattern)) == 0)
@@ -357,12 +352,10 @@ static long _find_id3v2(int fd, off_t * sync_offset)
       }
     }
 
-    if (read(fd, buffer, sizeof(buffer)) != sizeof(buffer))
+    if (fread(buffer, 1, sizeof(buffer), fp) != sizeof(buffer))
       return -1;
     buffer_offset += sizeof(buffer);
   }
-
-  return -1;
 }
 
 static unsigned int _get_id3v2_frame_header_size(unsigned int version)
@@ -580,7 +573,7 @@ static void _parse_id3v2_frame(struct ID3v2FrameHeader * fh, const char * frame_
     _get_id3v2_trackno(frame_data, frame_size, info, csconv);
 }
 
-static int _parse_id3v2(int fd, long id3v2_offset, ID3Iinfo * info, off_t * ptag_size)
+static int _parse_id3v2(FILE * fp, long id3v2_offset, ID3Iinfo * info, off_t * ptag_size)
 {
   char header_data[10], frame_header_data[10];
   unsigned int tag_size, major_version, frame_data_pos, frame_data_length, frame_header_size;
@@ -588,10 +581,10 @@ static int _parse_id3v2(int fd, long id3v2_offset, ID3Iinfo * info, off_t * ptag
   struct ID3v2FrameHeader fh;
   size_t nread;
 
-  lseek(fd, id3v2_offset, SEEK_SET);
+  fseek(fp, id3v2_offset, SEEK_SET);
 
   /* parse header */
-  if (read(fd, header_data, ID3V2_HEADER_SIZE) != ID3V2_HEADER_SIZE)
+  if (fread(header_data, 1, ID3V2_HEADER_SIZE, fp) != ID3V2_HEADER_SIZE)
     return -1;
 
   tag_size = _to_uint_max7b(header_data + 6, 4);
@@ -615,7 +608,7 @@ static int _parse_id3v2(int fd, long id3v2_offset, ID3Iinfo * info, off_t * ptag
     char extended_header_data[6];
     bool crc;
 
-    if (read(fd, extended_header_data, 4) != 4)
+    if (fread(extended_header_data, 1, 4, fp) != 4)
       return -1;
 
     extended_header_size = _to_uint(extended_header_data, 4);
@@ -623,7 +616,7 @@ static int _parse_id3v2(int fd, long id3v2_offset, ID3Iinfo * info, off_t * ptag
 
     *ptag_size += extended_header_size + (crc * 4);
 
-    lseek(fd, extended_header_size - 6, SEEK_CUR);
+    fseek(fp, extended_header_size - 6, SEEK_CUR);
     frame_data_pos += extended_header_size;
     frame_data_length -= extended_header_size;
   }
@@ -635,7 +628,7 @@ static int _parse_id3v2(int fd, long id3v2_offset, ID3Iinfo * info, off_t * ptag
   frame_header_size = _get_id3v2_frame_header_size(major_version);
   while (frame_data_pos < frame_data_length - frame_header_size)
   {
-    nread = read(fd, frame_header_data, frame_header_size);
+    nread = fread(frame_header_data, 1, frame_header_size, fp);
     if (nread == 0)
       break;
 
@@ -655,10 +648,10 @@ static int _parse_id3v2(int fd, long id3v2_offset, ID3Iinfo * info, off_t * ptag
       char *frame_data;
 
       if (fh.data_length_indicator)
-        lseek(fd, 4, SEEK_CUR);
+        fseek(fp, 4, SEEK_CUR);
 
       frame_data = (char*) malloc(sizeof(char) * fh.frame_size);
-      if (read(fd, frame_data, fh.frame_size) != (int) fh.frame_size)
+      if (fread(frame_data, 1, fh.frame_size, fp) != (int) fh.frame_size)
       {
         free(frame_data);
         return -1;
@@ -675,9 +668,9 @@ static int _parse_id3v2(int fd, long id3v2_offset, ID3Iinfo * info, off_t * ptag
         info->has_art = true;
       
       if (fh.data_length_indicator)
-        lseek(fd, fh.frame_size + 4, SEEK_CUR);
+        fseek(fp, fh.frame_size + 4, SEEK_CUR);
       else
-        lseek(fd, fh.frame_size, SEEK_CUR);
+        fseek(fp, fh.frame_size, SEEK_CUR);
     }
 
     frame_data_pos += fh.frame_size + frame_header_size;
@@ -713,10 +706,10 @@ static inline void _id3v1_str_get(QByteArray * str, const char * buf, int maxlen
   *str = csconv(buf + start, len);
 }
 
-static int _parse_id3v1(int fd, ID3Iinfo * info, cs_conv_t csconv)
+static int _parse_id3v1(FILE * fp, ID3Iinfo * info, cs_conv_t csconv)
 {
   struct ID3v1Tag tag;
-  if (read(fd, &tag, sizeof(struct ID3v1Tag)) == -1)
+  if (fread(&tag, 1, sizeof(struct ID3v1Tag), fp) != sizeof(struct ID3v1Tag))
     return -1;
 
   if (info->title.isEmpty())
@@ -848,10 +841,10 @@ _samples_per_frame_table[MPEG_AUDIO_VERSION_COUNT][MPEG_AUDIO_LAYER_COUNT] = {
 static int _fill_mpeg_header(struct mpeg_header * hdr, const uint8_t b[4]);
 static int _fill_aac_header(struct mpeg_header * hdr, const uint8_t b[4]);
 static int _fill_mp3_header(struct mpeg_header *hdr, const uint8_t b[4]);
-static int _parse_vbr_headers(int fd, off_t mpeg_offset, struct mpeg_header * hdr);
-static int _estimate_mp3_bitrate_from_frames(int fd, off_t mpeg_offset, struct mpeg_header * orig_hdr);
+static int _parse_vbr_headers(FILE * fp, off_t mpeg_offset, struct mpeg_header * hdr);
+static int _estimate_mp3_bitrate_from_frames(FILE * fp, off_t mpeg_offset, struct mpeg_header * orig_hdr);
 
-static int _parse_mpeg_header(int fd, off_t off, MediaInfo * audio_info, size_t size)
+static int _parse_mpeg_header(FILE * fp, off_t off, MediaInfo * audio_info, size_t size)
 {
   uint8_t buffer[32];
   const uint8_t *p, *p_end;
@@ -859,13 +852,13 @@ static int _parse_mpeg_header(int fd, off_t off, MediaInfo * audio_info, size_t 
   struct mpeg_header hdr = {};
   int r;
 
-  lseek(fd, off, SEEK_SET);
+  fseek(fp, off, SEEK_SET);
 
   /* Find sync word */
   prev_read = 0;
   do
   {
-    int nread = read(fd, buffer + prev_read, sizeof(buffer) - prev_read);
+    int nread = fread(buffer + prev_read, 1, sizeof(buffer) - prev_read, fp);
     if (nread < MPEG_HEADER_SIZE)
       return -1;
 
@@ -905,14 +898,14 @@ found:
   else
   {
     if ((r = _fill_mp3_header(&hdr, p) < 0) ||
-            (r = _parse_vbr_headers(fd, off, &hdr) < 0))
+            (r = _parse_vbr_headers(fp, off, &hdr) < 0))
       return r;
 
     if (hdr.cbr)
       hdr.bitrate = _bitrate_table[hdr.version][hdr.layer][hdr.bitrate_idx] * 1000;
     else if (!hdr.bitrate)
     {
-      r = _estimate_mp3_bitrate_from_frames(fd, off, &hdr);
+      r = _estimate_mp3_bitrate_from_frames(fp, off, &hdr);
       if (r < 0)
         return r;
     }
@@ -1030,7 +1023,7 @@ static inline int _fill_mp3_header(struct mpeg_header * hdr, const uint8_t b[4])
   return 0;
 }
 
-static int _parse_vbr_headers(int fd, off_t mpeg_offset, struct mpeg_header * hdr)
+static int _parse_vbr_headers(FILE * fp, off_t mpeg_offset, struct mpeg_header * hdr)
 {
   unsigned int sampling_rate, samples_per_frame, flags, nframes = 0, size = 0;
   int xing_offset_table[2][2] = {/* [(version == 1)][channels == 1)] */
@@ -1044,8 +1037,8 @@ static int _parse_vbr_headers(int fd, off_t mpeg_offset, struct mpeg_header * hd
   xing_offset = mpeg_offset + 4 + 2 * hdr->crc
           + xing_offset_table[(hdr->version == 1)][(hdr->channels == 1)];
 
-  lseek(fd, xing_offset, SEEK_SET);
-  if (read(fd, buf, sizeof(buf)) != sizeof(buf))
+  fseek(fp, xing_offset, SEEK_SET);
+  if (fread(buf, 1, sizeof(buf), fp) != sizeof(buf))
     return -1;
 
   hdr->cbr = (memcmp(buf, "Info", 4) == 0);
@@ -1063,8 +1056,8 @@ static int _parse_vbr_headers(int fd, off_t mpeg_offset, struct mpeg_header * hd
 
   /* VBRI is found in files encoded by Fraunhofer Encoder. Fixed location: 32
    * bytes after the mpeg header */
-  lseek(fd, mpeg_offset + 36, SEEK_SET);
-  if (read(fd, buf, sizeof(buf)) != sizeof(buf))
+  fseek(fp, mpeg_offset + 36, SEEK_SET);
+  if (fread(buf, 1, sizeof(buf), fp) != sizeof(buf))
     return -1;
 
   if (memcmp(buf, "VBRI", 4) == 0 && read16be(buf) == 1)
@@ -1091,7 +1084,7 @@ proceed:
   return 0;
 }
 
-static int _estimate_mp3_bitrate_from_frames(int fd, off_t mpeg_offset, struct mpeg_header * orig_hdr)
+static int _estimate_mp3_bitrate_from_frames(FILE * fp, off_t mpeg_offset, struct mpeg_header * orig_hdr)
 {
   struct mpeg_header hdr = *orig_hdr;
   off_t offset = mpeg_offset;
@@ -1134,8 +1127,8 @@ static int _estimate_mp3_bitrate_from_frames(int fd, off_t mpeg_offset, struct m
 
     offset += framesize;
 
-    lseek(fd, offset, SEEK_SET);
-    r = read(fd, buf, sizeof(buf));
+    fseek(fp, offset, SEEK_SET);
+    r = fread(buf, 1, sizeof(buf), fp);
 
     if (r < 0)
     {

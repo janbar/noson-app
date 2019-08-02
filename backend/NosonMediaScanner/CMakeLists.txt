@@ -55,6 +55,7 @@ set(
   byteorder.h
   locked.h
   tools.h
+  packed.h
   aggregate/aggregate.h
   aggregate/artists.cpp
   aggregate/artists.h
