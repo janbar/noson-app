@@ -26,6 +26,8 @@
 #include <winsock2.h>
 #include <Windows.h>
 #include <time.h>
+#define usleep(t) Sleep((DWORD)(t)/1000)
+#define sleep(t)  Sleep((DWORD)(t)*1000)
 #else
 #include <unistd.h>
 #include <sys/time.h>
@@ -50,15 +52,23 @@
 #include "private/tokenizer.h"
 #include "private/builtin.h"
 
+#ifdef __WINDOWS__
+#define PRINT(a) fprintf(stderr, a)
+#define PRINT1(a,b) fprintf(stderr, a, b)
+#define PRINT2(a,b,c) fprintf(stderr, a, b, c)
+#define PRINT3(a,b,c,d) fprintf(stderr, a, b, c, d)
+#define PRINT4(a,b,c,d,e) fprintf(stderr, a, b, c, d, e)
+#else
 #define PRINT(a) fprintf(stdout, a)
 #define PRINT1(a,b) fprintf(stdout, a, b)
 #define PRINT2(a,b,c) fprintf(stdout, a, b, c)
 #define PRINT3(a,b,c,d) fprintf(stdout, a, b, c, d)
 #define PRINT4(a,b,c,d,e) fprintf(stdout, a, b, c, d, e)
-#define ERROR(a) fprintf(stderr, a)
-#define ERROR1(a,b) fprintf(stderr, a, b)
-#define ERROR2(a,b,c) fprintf(stderr, a, b, c)
-#define ERROR3(a,b,c,d) fprintf(stderr, a, b, c, d)
+#endif
+#define PERROR(a) fprintf(stderr, a)
+#define PERROR1(a,b) fprintf(stderr, a, b)
+#define PERROR2(a,b,c) fprintf(stderr, a, b, c)
+#define PERROR3(a,b,c,d) fprintf(stderr, a, b, c, d)
 
 static const char * getCmd(char **begin, char **end, const std::string& option);
 static const char * getCmdOption(char **begin, char **end, const std::string& option);
@@ -95,14 +105,14 @@ int main(int argc, char** argv)
 
   PRINT1("Noson CLI using libnoson %s, Copyright (C) 2018 Jean-Luc Barriere\n", SONOS::libVersionString());
   gSonos = new SONOS::System(0, handleEventCB);
-  ERROR("Searching... ");
+  PERROR("Searching... ");
   if (!gSonos->Discover())
   {
-    ERROR("No SONOS zone found.\n");
+    PERROR("No SONOS zone found.\n");
     return EXIT_FAILURE;
   }
   else
-    ERROR("Succeeded\n");
+    PERROR("Succeeded\n");
 
   /*
    * Register handlers to process remote request
@@ -242,21 +252,21 @@ static bool parseCommand(const std::string& line)
           {
             found = true;
             if (gSonos->ConnectZone(iz->second, 0, 0))
-              ERROR1("Connected to zone %s\n", gSonos->GetConnectedZone()->GetZoneName().c_str());
+              PERROR1("Connected to zone %s\n", gSonos->GetConnectedZone()->GetZoneName().c_str());
             else
-              ERROR("Failed\n");
+              PERROR("Failed\n");
             break;
           }
         }
         if (!found)
-          ERROR("Not found\n");
+          PERROR("Not found\n");
       }
       else
-        ERROR("Error: Missing arguments.\n");
+        PERROR("Error: Missing arguments.\n");
     }
     else if (!gSonos->IsConnected())
     {
-      ERROR("Error: Not connected.\n");
+      PERROR("Error: Not connected.\n");
     }
     else if (token == "STATUS")
     {
@@ -296,12 +306,12 @@ static bool parseCommand(const std::string& line)
         uint16_t value = 0;
         string_to_uint16(param.c_str(), &value);
         if (gSonos->GetPlayer()->ConfigureSleepTimer((unsigned)value))
-          ERROR("Succeeded\n");
+          PERROR("Succeeded\n");
         else
-          ERROR("Failed\n");
+          PERROR("Failed\n");
       }
       else
-        ERROR("Error: Missing arguments.\n");
+        PERROR("Error: Missing arguments.\n");
     }
     else if (token == "SHOWAC")
     {
@@ -348,12 +358,12 @@ static bool parseCommand(const std::string& line)
         alarm.SetDuration(duration);
         alarm.SetVolume(volume);
         if (gSonos->CreateAlarm(alarm))
-          ERROR("Succeeded\n");
+          PERROR("Succeeded\n");
         else
-          ERROR("Failed\n");
+          PERROR("Failed\n");
       }
       else
-        ERROR("Error: Missing arguments.\n");
+        PERROR("Error: Missing arguments.\n");
     }
     else if (token == "ENABLEAC")
     {
@@ -373,15 +383,15 @@ static bool parseCommand(const std::string& line)
         {
           ptr->SetEnabled(true);
           if (gSonos->UpdateAlarm(*ptr))
-            ERROR("Succeeded\n");
+            PERROR("Succeeded\n");
           else
-            ERROR("Failed\n");
+            PERROR("Failed\n");
         }
         else
-          ERROR("Error: Invalid alarm ID.\n");
+          PERROR("Error: Invalid alarm ID.\n");
       }
       else
-        ERROR("Error: Missing arguments.\n");
+        PERROR("Error: Missing arguments.\n");
     }
     else if (token == "DISABLEAC")
     {
@@ -401,27 +411,27 @@ static bool parseCommand(const std::string& line)
         {
           ptr->SetEnabled(false);
           if (gSonos->UpdateAlarm(*ptr))
-            ERROR("Succeeded\n");
+            PERROR("Succeeded\n");
           else
-            ERROR("Failed\n");
+            PERROR("Failed\n");
         }
         else
-          ERROR("Error: Invalid alarm ID.\n");
+          PERROR("Error: Invalid alarm ID.\n");
       }
       else
-        ERROR("Error: Missing arguments.\n");
+        PERROR("Error: Missing arguments.\n");
     }
     else if (token == "DESTROYAC")
     {
       if (++it != tokens.end())
       {
         if (gSonos->DestroyAlarm(*it))
-          ERROR("Succeeded\n");
+          PERROR("Succeeded\n");
         else
-          ERROR("Failed\n");
+          PERROR("Failed\n");
       }
       else
-        ERROR("Error: Missing arguments.\n");
+        PERROR("Error: Missing arguments.\n");
     }
     else if (token == "UPDATEAC")
     {
@@ -495,50 +505,50 @@ static bool parseCommand(const std::string& line)
             }
           }
           if (gSonos->UpdateAlarm(*ptr))
-            ERROR("Succeeded\n");
+            PERROR("Succeeded\n");
           else
-            ERROR("Failed\n");
+            PERROR("Failed\n");
         }
         else
-          ERROR("Error: Invalid alarm ID.\n");
+          PERROR("Error: Invalid alarm ID.\n");
       }
       else
-        ERROR("Error: Missing arguments.\n");
+        PERROR("Error: Missing arguments.\n");
     }
     else if (token == "PLAY")
     {
       if (gSonos->GetPlayer()->Play())
-        ERROR("Succeeded\n");
+        PERROR("Succeeded\n");
       else
-        ERROR("Failed\n");
+        PERROR("Failed\n");
     }
     else if (token == "STOP")
     {
       if (gSonos->GetPlayer()->Stop())
-        ERROR("Succeeded\n");
+        PERROR("Succeeded\n");
       else
-        ERROR("Failed\n");
+        PERROR("Failed\n");
     }
     else if (token == "PAUSE")
     {
       if (gSonos->GetPlayer()->Pause())
-        ERROR("Succeeded\n");
+        PERROR("Succeeded\n");
       else
-        ERROR("Failed\n");
+        PERROR("Failed\n");
     }
     else if (token == "PREVIOUS")
     {
       if (gSonos->GetPlayer()->Previous())
-        ERROR("Succeeded\n");
+        PERROR("Succeeded\n");
       else
-        ERROR("Failed\n");
+        PERROR("Failed\n");
     }
     else if (token == "NEXT")
     {
       if (gSonos->GetPlayer()->Next())
-        ERROR("Succeeded\n");
+        PERROR("Succeeded\n");
       else
-        ERROR("Failed\n");
+        PERROR("Failed\n");
     }
     else if (token == "SEEK")
     {
@@ -547,20 +557,20 @@ static bool parseCommand(const std::string& line)
         uint32_t value;
         string_to_uint32(it->c_str(), &value);
         if (gSonos->GetPlayer()->SeekTrack(value))
-          ERROR("Succeeded\n");
+          PERROR("Succeeded\n");
         else
-          ERROR("Failed\n");
+          PERROR("Failed\n");
       }
       else
-        ERROR("Error: Missing arguments.\n");
+        PERROR("Error: Missing arguments.\n");
     }
 #ifdef HAVE_PULSEAUDIO
     else if (token == "PLAYPULSE")
     {
       if (gSonos->GetPlayer()->PlayPulse())
-        ERROR("Succeeded\n");
+        PERROR("Succeeded\n");
       else
-        ERROR("Failed\n");
+        PERROR("Failed\n");
     }
 #endif
     else if (token == "PLAYURL")
@@ -571,12 +581,12 @@ static bool parseCommand(const std::string& line)
         while(++it != tokens.end())
           param.append(" ").append(*it);
         if (gSonos->GetPlayer()->PlayStream(param, ""))
-          ERROR("Succeeded\n");
+          PERROR("Succeeded\n");
         else
-          ERROR("Failed\n");
+          PERROR("Failed\n");
       }
       else
-        ERROR("Error: Missing arguments.\n");
+        PERROR("Error: Missing arguments.\n");
     }
     else if (token == "VOLUME")
     {
@@ -603,14 +613,14 @@ static bool parseCommand(const std::string& line)
             uint8_t value = 0;
             string_to_uint8(param2.c_str(), &value);
             if (gSonos->GetPlayer()->SetVolume((*ip)->GetUUID(), value))
-              ERROR3("%s [%s]: volume %u\n", (*ip)->c_str(), (*ip)->GetUUID().c_str(), value);
+              PERROR3("%s [%s]: volume %u\n", (*ip)->c_str(), (*ip)->GetUUID().c_str(), value);
             else
-              ERROR("Failed\n");
+              PERROR("Failed\n");
           }
         }
       }
       else
-        ERROR("Error: Missing arguments.\n");
+        PERROR("Error: Missing arguments.\n");
     }
     else if (token == "SHOWQUEUE")
     {
@@ -629,23 +639,23 @@ static bool parseCommand(const std::string& line)
     else if (token == "PLAYQUEUE")
     {
       if (gSonos->GetPlayer()->PlayQueue(true))
-        ERROR("Succeeded\n");
+        PERROR("Succeeded\n");
       else
-        ERROR("Failed\n");
+        PERROR("Failed\n");
     }
     else if (token == "PLAYLINEIN")
     {
       if (gSonos->GetPlayer()->PlayLineIN())
-        ERROR("Succeeded\n");
+        PERROR("Succeeded\n");
       else
-        ERROR("Failed\n");
+        PERROR("Failed\n");
     }
     else if (token == "PLAYDIGITALIN")
     {
       if (gSonos->GetPlayer()->PlayDigitalIN())
-        ERROR("Succeeded\n");
+        PERROR("Succeeded\n");
       else
-        ERROR("Failed\n");
+        PERROR("Failed\n");
     }
     else if (token == "SHOWFV")
     {
@@ -680,23 +690,23 @@ static bool parseCommand(const std::string& line)
               {
                 PRINT2("Playing item [%s] [%s]\n", (*ic)->GetValue("dc:title").c_str(), (*ic)->GetValue("res").c_str());
                 if (player->RemoveAllTracksFromQueue() && player->PlayQueue(false) && player->AddURIToQueue(item, 1) && player->SeekTrack(1) && player->Play())
-                  ERROR("Succeeded\n");
+                  PERROR("Succeeded\n");
                 else
-                  ERROR("Failed\n");
+                  PERROR("Failed\n");
               }
               else if (player->SetCurrentURI(item) && player->Play())
-                ERROR("Succeeded\n");
+                PERROR("Succeeded\n");
               else
-                ERROR("Failed\n");
+                PERROR("Failed\n");
             }
             else
-              ERROR("Failed\n");
+              PERROR("Failed\n");
           }
           ++ic;
         }
       }
       else
-        ERROR("Error: Missing arguments.\n");
+        PERROR("Error: Missing arguments.\n");
     }
     else if (token == "SHOWSQ")
     {
@@ -726,26 +736,26 @@ static bool parseCommand(const std::string& line)
             SONOS::PlayerPtr player = gSonos->GetPlayer();
             PRINT2("Playing item [%s] [%s]\n", (*ic)->GetValue("dc:title").c_str(), (*ic)->GetValue("res").c_str());
             if (player->RemoveAllTracksFromQueue() && player->PlayQueue(false) && player->AddURIToQueue(*ic, 1) && player->SeekTrack(1) && player->Play())
-              ERROR("Succeeded\n");
+              PERROR("Succeeded\n");
             else
-              ERROR("Failed\n");
+              PERROR("Failed\n");
           }
           ++ic;
         }
       }
       else
-        ERROR("Error: Missing arguments.\n");
+        PERROR("Error: Missing arguments.\n");
     }
     else if (token == "PLAYDIGITALIN")
     {
       if (gSonos->GetPlayer()->PlayDigitalIN())
-        ERROR("Succeeded\n");
+        PERROR("Succeeded\n");
       else
-        ERROR("Failed\n");
+        PERROR("Failed\n");
     }
     else
     {
-      ERROR("Error: Command invalid.\n");
+      PERROR("Error: Command invalid.\n");
     }
   }
   return true;
