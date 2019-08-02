@@ -27,6 +27,11 @@
 project( openssl )
 cmake_minimum_required( VERSION 2.8.3 )
 
+set(CMAKE_DISABLE_SOURCE_CHANGES ON)
+set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+option(WITH_APPS "Build applications" OFF)
+
 set( VERSION_MAJOR 1  )
 set( VERSION_MINOR 0  )
 set( VERSION_PATCH 2p )
@@ -43,6 +48,16 @@ include_directories ( BEFORE SYSTEM
 
 add_definitions( -DOPENSSL_NO_ASM )
 
+if(MSVC)
+  include(MSVCRuntime)
+  configure_msvc_runtime()
+endif()
+
+if(WIN32)
+  set(CMAKE_SHARED_LIBRARY_PREFIX "lib")
+  set(CMAKE_STATIC_LIBRARY_PREFIX "lib")
+endif()
+
 if ( APPLE )
   set( CMAKE_MACOSX_RPATH ON )
   add_definitions( -DOPENSSL_SYSNAME_MACOSX )
@@ -51,19 +66,30 @@ endif()
 if( WIN32 AND NOT CYGWIN )
   add_definitions( -DOPENSSL_SYSNAME_WIN32 )
   add_definitions( -DWIN32_LEAN_AND_MEAN )
+  add_definitions( -D_CRT_SECURE_NO_WARNINGS )
 
-  # avoid conflict: ocsp.h and wincrypt.h
-  add_definitions( -D_WINDLL )
-
-endif ( )
+  if (BUILD_SHARED_LIBS)
+    # avoid conflict: ocsp.h and wincrypt.h
+    add_definitions( -D_WINDLL )
+  endif()
+endif()
 
 if( MINGW )
   set( CMAKE_SHARED_LINKER_FLAGS "-Wl,--export-all" )
 endif()
 
+if ( ANDROID )
+  set ( BUILD_SHARED_LIBS ON )
+elseif ( IOS )
+  set ( BUILD_SHARED_LIBS OFF )
+endif()
+
 add_subdirectory( crypto )
 add_subdirectory( ssl )
-#add_subdirectory( apps )
+
+if( WITH_APPS AND NOT ANDROID AND NOT IOS )
+  add_subdirectory( apps )
+endif()
 
 file ( COPY e_os2.h DESTINATION ${PROJECT_BINARY_DIR}/include/openssl )
 

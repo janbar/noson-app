@@ -35,6 +35,12 @@ set ( E_SRC openssl.c #
   pkeyparam.c pkeyutl.c spkac.c smime.c cms.c rand.c engine.c ocsp.c prime.c ts.c
   srp.c )
 
+if ( WIN32 )
+  if ( EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/winrand.c" )
+    list( APPEND E_SRC winrand.c )
+  endif()
+endif()
+
 add_executable ( openssl ${E_SRC} )
 target_link_libraries ( openssl crypto ssl )
 

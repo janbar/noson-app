@@ -39,11 +39,8 @@ set ( LIBSRC
   bio_ssl.c ssl_err.c kssl.c t1_reneg.c tls_srp.c t1_trce.c ssl_utst.c
   )
 
-if( ANDROID )
-  add_library ( ssl SHARED ${LIBSRC} )
-else()
-  add_library ( ssl ${LIBSRC} )
-endif()
+add_library ( ssl ${LIBSRC} )
+
 target_link_libraries ( ssl crypto )
 
 set_target_properties( ssl PROPERTIES
