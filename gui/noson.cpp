@@ -21,7 +21,7 @@
 #define CACHE_SIZE 100000000L
 
 #ifdef Q_OS_WIN
-#include <winsock2.h>
+#include <WinSock2.h>
 #else
 #include "signalhandler.h"
 #endif
