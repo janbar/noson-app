@@ -14,9 +14,9 @@
 
 /* Disable warning C4005: '_WINSOCKAPI_' : macro redefinition */
 #pragma warning(disable:4005)
-#include <winsock2.h>
+#include <WinSock2.h>
 #pragma warning(default:4005)
-#include <windows.h>
+#include <Windows.h>
 #include <wchar.h>
 #include <time.h>
 #include <sys/timeb.h>

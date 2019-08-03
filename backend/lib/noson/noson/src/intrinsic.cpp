@@ -31,7 +31,7 @@ typedef std::atomic<int> counter_t;
 
 #elif defined _MSC_VER
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#include <Windows.h>
 typedef volatile LONG counter_t;
 #define GETVALUE(p)   (*(p))
 #define INCREMENT(p)  InterlockedIncrement(p)

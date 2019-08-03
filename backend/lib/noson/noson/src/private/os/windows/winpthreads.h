@@ -36,7 +36,7 @@
 #ifndef WIN_PTHREADS
 #define WIN_PTHREADS
 
-#include <windows.h>
+#include <Windows.h>
 #include <errno.h>
 
 #ifdef __cplusplus

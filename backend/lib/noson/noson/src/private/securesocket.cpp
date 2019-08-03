@@ -26,7 +26,7 @@
 #include <errno.h>
 
 #ifdef __WINDOWS__
-#include <winsock2.h>
+#include <WinSock2.h>
 #define LASTERROR WSAGetLastError()
 #define ERRNO_INTR WSAEINTR
 #else

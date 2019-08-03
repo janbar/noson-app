@@ -27,7 +27,7 @@
 #include <cstring>
 
 #ifdef __WINDOWS__
-#include <Ws2tcpip.h>
+#include <WS2tcpip.h>
 #define SHUT_RDWR SD_BOTH
 #define SHUT_WR   SD_SEND
 #define LASTERROR WSAGetLastError()
