@@ -226,7 +226,11 @@ void MediaScannerEngine::scanDir(const QString &dirPath, const QList<MediaParser
   {
     QString o = di.next();
     QFileInfo info = di.fileInfo();
-    if (!info.isHidden() && info.isReadable())
+    if (!info.isHidden() && info.isReadable()
+            // current and parent path aren't hidden on windows platform
+            // so exclude any path not strictly included in the base path
+            && info.absoluteFilePath().length() > dirPath.length()
+            )
     {
       if (info.isFile())
       {
