@@ -50,6 +50,8 @@ qt5_add_resources(noson-gui-resources noson.qrc)
 
 if(ANDROID)
   add_library(noson-gui SHARED ${noson-gui-sources} ${noson-gui-resources} ${extra-sources})
+elseif(MSVC)
+  add_executable(noson-gui WIN32 ${noson-gui-sources} ${noson-gui-resources} ${extra-sources})
 else()
   add_executable(noson-gui ${noson-gui-sources} ${noson-gui-resources} ${extra-sources})
 endif()
@@ -57,7 +59,7 @@ endif()
 target_link_libraries(noson-gui Qt5::Gui Qt5::Qml Qt5::Quick Qt5::QuickControls2 Qt5::Widgets Qt5::Xml Qt5::Svg)
 
 if(MSVC)
-  target_link_libraries (noson-gui ws2_32)
+  target_link_libraries(noson-gui ws2_32)
 endif()
 
 install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/noson-gui

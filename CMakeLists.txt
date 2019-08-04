@@ -1,5 +1,6 @@
 project(noson-app C CXX)
 cmake_minimum_required(VERSION 3.1.0)
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 option(INSTALL_TESTS "Install the tests on make install" on)
 
@@ -62,8 +63,15 @@ install(
   DESTINATION ${APPDATA_DIR} RENAME ${APP_ID}.appdata.xml
 )
 
+if(MSVC)
+  include(MSVCRuntime)
+  set(MSVC_RUNTIME "dynamic")
+  configure_msvc_runtime()
+endif()
+
 add_subdirectory(backend)
 add_subdirectory(gui)
+
 if(ANDROID)
   configure_file(
     ${CMAKE_SOURCE_DIR}/android/AndroidManifest.xml.in
