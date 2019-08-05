@@ -719,7 +719,7 @@ bool UdpSocket::SetAddress(const char* target, unsigned port)
   if (inet_pton(m_addr->sa_family(), target, &_addr) == 0)
   {
     m_errno = LASTERROR;
-    DBG(DBG_ERROR, "%s: invalid address (%s:%u)\n", __FUNCTION__, target, port);
+    DBG(DBG_ERROR, "%s: invalid address (%s)\n", __FUNCTION__, target);
     return false;
   }
 
@@ -741,6 +741,7 @@ bool UdpSocket::SetAddress(const char* target, unsigned port)
       break;
     }
     default:
+      m_errno = EINVAL;
       DBG(DBG_ERROR, "%s: address familly unknown (%d)\n", __FUNCTION__, m_addr->sa_family());
       return false;
   }
@@ -956,7 +957,6 @@ bool UdpServerSocket::Create(SOCKET_AF_t af)
     return false;
   }
 
-  // TIME_WAIT
   int opt_reuseaddr = 1;
   if (setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, (char*)&opt_reuseaddr, sizeof(opt_reuseaddr)))
   {
@@ -976,7 +976,6 @@ bool UdpServerSocket::Bind(unsigned port)
 {
   if (!IsValid())
     return false;
-  int r = 0;
 
   m_addr->Clear(m_addr->sa_family());
   switch (m_addr->sa_family())
@@ -986,7 +985,6 @@ bool UdpServerSocket::Bind(unsigned port)
       sockaddr_in* sa = (sockaddr_in*)m_addr->sa();
       sa->sin_addr.s_addr = htonl(INADDR_ANY);
       sa->sin_port = htons(port);
-      r = bind(m_socket, m_addr->sa(), m_addr->sa_len);
       break;
     }
     case AF_INET6:
@@ -994,17 +992,21 @@ bool UdpServerSocket::Bind(unsigned port)
       sockaddr_in6* sa = (sockaddr_in6*)m_addr->sa();
       sa->sin6_addr = in6addr_any;
       sa->sin6_port = htons(port);
-      r = bind(m_socket, m_addr->sa(), m_addr->sa_len);
       break;
     }
+    default:
+      m_errno = EINVAL;
+      DBG(DBG_ERROR, "%s: address familly unknown (%d)\n", __FUNCTION__, m_addr->sa_family());
+      return false;
   }
 
-  if (r)
+  if (bind(m_socket, m_addr->sa(), m_addr->sa_len) != 0)
   {
     m_errno = LASTERROR;
     DBG(DBG_ERROR, "%s: could not bind to address (%d)\n", __FUNCTION__, m_errno);
     return false;
   }
+  m_errno = 0;
   return true;
 }
 
