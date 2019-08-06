@@ -248,6 +248,7 @@ void PAControl::pa_state_cb(pa_context * c, void * h)
 // structure
 void PAControl::pa_sourcelist_cb(pa_context * c, const pa_source_info * l, int eol, void * h)
 {
+  (void)c;
   if (eol > 0)
     return;
  
@@ -267,6 +268,7 @@ void PAControl::pa_sourcelist_cb(pa_context * c, const pa_source_info * l, int e
 // structure
 void PAControl::pa_sinklist_cb(pa_context * c, const pa_sink_info * l, int eol, void * h)
 {
+  (void)c;
   if (eol > 0)
     return;
 

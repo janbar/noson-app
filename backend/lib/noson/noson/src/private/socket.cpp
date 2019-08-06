@@ -519,7 +519,19 @@ bool TcpServerSocket::Create(SOCKET_AF_t af)
     return false;
   }
 
-  // TIME_WAIT
+#ifdef __WINDOWS__
+  // The bind will succeed even an other socket is currently listening on the
+  // same address. So enable the option SO_EXCLUSIVEADDRUSE will fix the issue.
+  int opt_exclusive = 1;
+  if (setsockopt(m_socket, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, (char*)&opt_exclusive, sizeof(opt_exclusive)))
+  {
+    m_errno = LASTERROR;
+    DBG(DBG_ERROR, "%s: could not set exclusiveaddruse from socket (%d)\n", __FUNCTION__, m_errno);
+    return false;
+  }
+#else
+  // Reuse address. The bind will fail only if an other socket is currently
+  // listening on the same address.
   int opt_reuseaddr = 1;
   if (setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, (char*)&opt_reuseaddr, sizeof(opt_reuseaddr)))
   {
@@ -527,6 +539,7 @@ bool TcpServerSocket::Create(SOCKET_AF_t af)
     DBG(DBG_ERROR, "%s: could not set reuseaddr from socket (%d)\n", __FUNCTION__, m_errno);
     return false;
   }
+#endif
 
   return true;
 }

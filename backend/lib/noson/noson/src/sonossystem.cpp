@@ -197,6 +197,7 @@ bool System::IsConnected() const
 
 void System::HandleEventMessage(EventMessagePtr msg)
 {
+  (void)msg;
 }
 
 AlarmList System::GetAlarmList() const
