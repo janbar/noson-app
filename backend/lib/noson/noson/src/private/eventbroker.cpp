@@ -56,6 +56,18 @@ void EventBroker::Process()
     return;
   }
 
+  if (rb.GetParsedMethod() == HRM_HEAD)
+  {
+    WSStatus status(HSC_OK);
+    resp.append(REQUEST_PROTOCOL " ").append(status.GetString()).append(" ").append(status.GetMessage()).append("\r\n");
+    resp.append("Server: ").append(REQUEST_USER_AGENT).append("\r\n");
+    resp.append("Connection: close\r\n");
+    resp.append("\r\n");
+    m_sockPtr->SendData(resp.c_str(), resp.size());
+    m_sockPtr->Disconnect();
+    return;
+  }
+
   RequestBroker::opaque payload = { m_sockPtr.get(), &rb };
   RequestBroker::handle handle { m_handler, &payload };
   std::vector<RequestBrokerPtr> vect = m_handler->AllRequestBroker();
