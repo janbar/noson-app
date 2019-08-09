@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2018-2019 Jean-Luc Barriere
+ *      Copyright (C) 2019 Jean-Luc Barriere
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,26 +15,25 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef PULSESTREAMER_H
-#define PULSESTREAMER_H
+#ifndef MAINPAGEBROKER_H
+#define MAINPAGEBROKER_H
 
-#include "requestbroker.h"
-#include "locked.h"
+#include "../requestbroker.h"
 
-#define PULSESTREAMER_CNAME   "pulse"
-#define PULSESTREAMER_URI     "/music/pulse.flac"
+#define MAINPAGEBROKER_CNAME    "[main-page]"
+#define MAINPAGE_URI            "/"
 
 namespace NSROOT
 {
 
-class PulseStreamer : public RequestBroker
+class MainPageBroker : public RequestBroker
 {
 public:
-  PulseStreamer(RequestBroker * imageService = nullptr);
-  ~PulseStreamer() override { }
+  MainPageBroker();
+  ~MainPageBroker() override { }
   virtual bool HandleRequest(handle * handle) override;
 
-  const char * CommonName() override { return PULSESTREAMER_CNAME; }
+  const char * CommonName() override { return MAINPAGEBROKER_CNAME; }
   RequestBroker::ResourcePtr GetResource(const std::string& title) override;
   RequestBroker::ResourceList GetResourceList() override;
   RequestBroker::ResourcePtr RegisterResource(const std::string& title,
@@ -44,23 +43,11 @@ public:
   void UnregisterResource(const std::string& uri) override;
 
 private:
-  ResourceList m_resources;
 
-  // store current index of the pa sink
-  LockedNumber<unsigned> m_sinkIndex;
-  // count current running playback
-  LockedNumber<int> m_playbackCount;
-
-  std::string GetPASink();
-  void FreePASink();
-  void streamSink(handle * handle);
-
-  void Reply500(handle * handle);
-  void Reply400(handle * handle);
-  void Reply429(handle * handle);
+  void Process(handle * handle);
 };
 
 }
 
-#endif /* PULSESTREAMER_H */
+#endif /* MAINPAGEBROKER_H */
 

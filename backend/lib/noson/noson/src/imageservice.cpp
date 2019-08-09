@@ -26,9 +26,7 @@
 
 /* Important: It MUST match with the static declaration from datareader.cpp */
 #define IMAGESERVICE_FAVICON  "/favicon.ico"
-#define IMAGESERVICE_IMAGES   "/images/"
 #define RESOURCE_FILEPICTURE  "filePicture"
-#define SERVER_PRODUCT_NAME   "libnoson/" LIBVERSION
 
 using namespace NSROOT;
 
@@ -47,18 +45,18 @@ ImageService::ImageService()
   }
 
   // register the picture extractor for local media file
-  RegisterResource(RESOURCE_FILEPICTURE, "The file picture reader", "/file", FilePicReader::Instance());
+  RegisterResource(RESOURCE_FILEPICTURE, "The cover art extractor", "/track", FilePicReader::Instance());
 }
 
-bool ImageService::HandleRequest(void* handle, const char* uri)
+bool ImageService::HandleRequest(handle * handle)
 {
   if (!IsAborted())
   {
-    std::string requrl(uri);
-    if (requrl.compare(0, strlen(IMAGESERVICE_IMAGES), IMAGESERVICE_IMAGES) == 0 ||
+    const std::string& requrl = RequestBroker::GetRequestURI(handle);
+    if (requrl.compare(0, strlen(IMAGESERVICE_URI), IMAGESERVICE_URI) == 0 ||
             requrl.compare(0, strlen(IMAGESERVICE_FAVICON), IMAGESERVICE_FAVICON) == 0)
     {
-      ReplyContent(handle, uri);
+      ReplyContent(handle);
       return true;
     }
   }
@@ -93,7 +91,7 @@ RequestBroker::ResourcePtr ImageService::RegisterResource(const std::string& tit
   ptr->description = description;
   ptr->sourcePath = path;
   ptr->delegate = delegate;
-  ptr->uri = RequestBroker::buildUri(IMAGESERVICE_IMAGES, path);
+  ptr->uri = RequestBroker::buildUri(IMAGESERVICE_URI, path);
   m_resources.insert(std::make_pair(ptr->uri, ptr));
   return ptr;
 }
@@ -121,8 +119,9 @@ std::string ImageService::MakeFilePictureURI(const std::string& filePath)
   return pictureUri;
 }
 
-void ImageService::ReplyContent(void * handle, const std::string& uri)
+void ImageService::ReplyContent(handle * handle)
 {
+  const std::string& uri = RequestBroker::GetRequestURI(handle);
   // extract the resource uri without trailing args
   std::string resUri = uri.substr(0, uri.find('?'));
   ResourceMap::const_iterator it = m_resources.find(resUri);
@@ -139,16 +138,14 @@ void ImageService::ReplyContent(void * handle, const std::string& uri)
       // override content type with stream type
       const char * contentType = stream->contentType != nullptr ? stream->contentType : res->contentType.c_str();
       std::string resp;
-      resp.assign("HTTP/1.1 200 OK\r\n")
+      resp.assign(RequestBroker::MakeResponseHeader(Status_OK))
           .append("Content-type: ").append(contentType).append("\r\n")
           .append("Content-length: ").append(std::to_string(stream->contentLength)).append("\r\n")
-          .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
-          .append("Connection: close\r\n")
           .append("\r\n");
-      if (Reply(handle, resp.c_str(), resp.length()))
+      if (RequestBroker::Reply(handle, resp.c_str(), resp.length()))
       {
         while (res->delegate->ReadStream(stream) > 0)
-          Reply(handle, stream->data, stream->size);
+          RequestBroker::Reply(handle, stream->data, stream->size);
       }
       res->delegate->CloseStream(stream);
     }
@@ -164,32 +161,26 @@ void ImageService::ReplyContent(void * handle, const std::string& uri)
 }
 
 
-void ImageService::Reply500(void* handle)
+void ImageService::Reply500(handle * handle)
 {
   std::string resp;
-  resp.assign("HTTP/1.1 500 Internal Server Error\r\n")
-      .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
-      .append("Connection: close\r\n")
+  resp.assign(RequestBroker::MakeResponseHeader(Status_Internal_Server_Error))
       .append("\r\n");
-  Reply(handle, resp.c_str(), resp.length());
+  RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }
 
-void ImageService::Reply400(void* handle)
+void ImageService::Reply400(handle * handle)
 {
   std::string resp;
-  resp.append("HTTP/1.1 400 Bad Request\r\n")
-      .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
-      .append("Connection: close\r\n")
+  resp.append(RequestBroker::MakeResponseHeader(Status_Bad_Request))
       .append("\r\n");
-  Reply(handle, resp.c_str(), resp.length());
+  RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }
 
-void ImageService::Reply404(void* handle)
+void ImageService::Reply404(handle * handle)
 {
   std::string resp;
-  resp.append("HTTP/1.1 404 Not Found\r\n")
-      .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
-      .append("Connection: close\r\n")
+  resp.append(RequestBroker::MakeResponseHeader(Status_Not_Found))
       .append("\r\n");
-  Reply(handle, resp.c_str(), resp.length());
+  RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }

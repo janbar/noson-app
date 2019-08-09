@@ -24,7 +24,8 @@
 #include <string>
 #include <vector>
 
-#define FILESTREAMER_CNAME      "file"
+#define FILESTREAMER_CNAME      "track"
+#define FILESTREAMER_URI        "/music/track"
 #define FILESTREAMER_PARAM_PATH "path"
 
 namespace NSROOT
@@ -35,7 +36,7 @@ class FileStreamer : public RequestBroker
 public:
   FileStreamer();
   ~FileStreamer() override { }
-  virtual bool HandleRequest(void* handle, const char* uri) override;
+  virtual bool HandleRequest(handle * handle) override;
 
   const char * CommonName() override { return FILESTREAMER_CNAME; }
   RequestBroker::ResourcePtr GetResource(const std::string& title) override;
@@ -89,12 +90,12 @@ private:
   static bool probe(const std::string& filePath, const std::string& mimeType);
   static bool probeFLAC(const std::string& filePath);
   static bool probeMPEG(const std::string& filePath);
-  void streamFile(void * handle, const std::string& filePath, const std::string& mimeType);
+  void streamFile(handle * handle, const std::string& filePath, const std::string& mimeType);
 
 
-  void Reply500(void * handle);
-  void Reply400(void * handle);
-  void Reply429(void * handle);
+  void Reply500(handle * handle);
+  void Reply400(handle * handle);
+  void Reply429(handle * handle);
 };
 
 }

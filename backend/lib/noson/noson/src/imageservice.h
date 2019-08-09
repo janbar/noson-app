@@ -23,7 +23,8 @@
 
 #include <map>
 
-#define IMAGESERVICE_CNAME   "images"
+#define IMAGESERVICE_CNAME    "images"
+#define IMAGESERVICE_URI      "/images/"
 
 namespace NSROOT
 {
@@ -33,7 +34,7 @@ class ImageService : public RequestBroker
 public:
   ImageService();
   ~ImageService() override { }
-  virtual bool HandleRequest(void* handle, const char* uri) override;
+  virtual bool HandleRequest(handle * handle) override;
 
   const char * CommonName() override { return IMAGESERVICE_CNAME; }
   RequestBroker::ResourcePtr GetResource(const std::string& title) override;
@@ -55,11 +56,11 @@ private:
   typedef std::map<std::string, ResourcePtr> ResourceMap;
   ResourceMap m_resources;
 
-  void ReplyContent(void * handle, const std::string& uri);
+  void ReplyContent(handle * handle);
 
-  void Reply500(void * handle);
-  void Reply400(void * handle);
-  void Reply404(void * handle);
+  void Reply500(handle * handle);
+  void Reply400(handle * handle);
+  void Reply404(handle * handle);
 };
 
 }

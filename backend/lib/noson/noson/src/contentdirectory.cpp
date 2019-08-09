@@ -19,10 +19,11 @@
  */
 
 #include "contentdirectory.h"
-#include "private/builtin.h"
-#include "private/debug.h"
 #include "eventhandler.h"
 #include "didlparser.h"
+#include "private/builtin.h"
+#include "private/tokenizer.h"
+#include "private/debug.h"
 #include "private/cppdef.h"
 
 #include <list>
@@ -33,23 +34,6 @@ const std::string ContentDirectory::Name("ContentDirectory");
 const std::string ContentDirectory::ControlURL("/MediaServer/ContentDirectory/Control");
 const std::string ContentDirectory::EventURL("/MediaServer/ContentDirectory/Event");
 const std::string ContentDirectory::SCPDURL("/xml/ContentDirectory1.xml");
-
-inline void __tokenize(const std::string& str, const char *delimiters, std::vector<std::string>& tokens, bool trimnull = false)
-{
-  std::string::size_type pa = 0, pb = 0;
-  unsigned n = 0;
-  // Counter n will break infinite loop. Max count is 255 tokens
-  while ((pb = str.find_first_of(delimiters, pb)) != std::string::npos && ++n < 255)
-  {
-    tokens.push_back(str.substr(pa, pb - pa));
-    do
-    {
-      pa = ++pb;
-    }
-    while (trimnull && str.find_first_of(delimiters, pb) == pb);
-  }
-  tokens.push_back(str.substr(pa));
-}
 
 ContentDirectory::ContentDirectory(const std::string& serviceHost, unsigned servicePort)
 : Service(serviceHost, servicePort)
@@ -147,7 +131,7 @@ void ContentDirectory::HandleEventMessage(EventMessagePtr msg)
         {
           prop->ContainerUpdateIDs.clear();
           std::vector<std::string> tokens;
-          __tokenize((*++it).c_str(), ",", tokens);
+          tokenize((*++it).c_str(), ",", tokens);
           std::vector<std::string>::const_iterator itt = tokens.begin();
           while (itt != tokens.end())
           {

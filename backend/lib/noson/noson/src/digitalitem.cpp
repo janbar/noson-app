@@ -19,29 +19,13 @@
  */
 
 #include "digitalitem.h"
-#include "private/builtin.h"
 #include "didlparser.h"
+#include "private/builtin.h"
+#include "private/tokenizer.h"
 
 #include <vector>
 
 using namespace NSROOT;
-
-inline void __tokenize(const std::string& str, const char *delimiters, std::vector<std::string>& tokens, bool trimnull = false)
-{
-  std::string::size_type pa = 0, pb = 0;
-  unsigned n = 0;
-  // Counter n will break infinite loop. Max count is 255 tokens
-  while ((pb = str.find_first_of(delimiters, pb)) != std::string::npos && ++n < 255)
-  {
-    tokens.push_back(str.substr(pa, pb - pa));
-    do
-    {
-      pa = ++pb;
-    }
-    while (trimnull && str.find_first_of(delimiters, pb) == pb);
-  }
-  tokens.push_back(str.substr(pa));
-}
 
 const char* DigitalItem::TypeTable[Type_unknown + 1] = {
   "container", "item", ""
@@ -94,7 +78,7 @@ DigitalItem::DigitalItem(const std::string& objectID, const std::string& parentI
   if ((it = vars.FindKey(DIDL_QNAME_UPNP "class")) != vars.end())
   {
     std::vector<std::string> tokens;
-    __tokenize((*it)->c_str(), ".", tokens);
+    tokenize((*it)->c_str(), ".", tokens);
     if (tokens.size() >= 2 && tokens[0] == "object")
     {
       if (tokens[1] == TypeTable[Type_container])

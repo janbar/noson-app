@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2018 Jean-Luc Barriere
+ *      Copyright (C) 2014-2019 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -19,6 +19,8 @@
  */
 
 #include "eventhandler.h"
+#include "private/upnpnotificationbroker.h"
+#include "private/mainpagebroker.h"
 #include "private/os/threads/threadpool.h"
 #include "private/socket.h"
 #include "private/cppdef.h"
@@ -42,12 +44,12 @@ using namespace NSROOT;
 //// EventHandlerThread
 ////
 
-EventHandler::EventHandlerThread::EventHandlerThread(unsigned bindingPort)
+EventHandlerThread::EventHandlerThread(unsigned bindingPort)
 : m_port(bindingPort)
 {
 }
 
-EventHandler::EventHandlerThread::~EventHandlerThread()
+EventHandlerThread::~EventHandlerThread()
 {
 }
 
@@ -156,12 +158,12 @@ void *SubscriptionHandlerThread::Process()
 
 namespace NSROOT
 {
-  class BasicEventHandler : public EventHandler::EventHandlerThread, private OS::CThread
+  class BasicEventHandler : public EventHandlerThread, private OS::CThread
   {
   public:
     BasicEventHandler(unsigned bindingPort);
     virtual ~BasicEventHandler();
-    // Implements MythEventHandlerThread
+    // Implements EventHandlerThread
     virtual bool Start();
     virtual void Stop();
     virtual bool IsRunning();
@@ -459,4 +461,8 @@ EventHandler::EventHandler(unsigned bindingPort)
 {
   // Choose implementation
   m_imp = EventHandlerThreadPtr(new BasicEventHandler(bindingPort));
+  // Enable the main page
+  RegisterRequestBroker(RequestBrokerPtr(new MainPageBroker()));
+  // Load the request broker to process UPNP notifications
+  RegisterRequestBroker(RequestBrokerPtr(new UPNPNotificationBroker()));
 }

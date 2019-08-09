@@ -28,7 +28,6 @@
 
 #include <cstring>
 
-#define PULSESTREAMER_URI       "/music/pulse.flac"
 /* Important: It MUST match with the static declaration from datareader.cpp */
 #define PULSESTREAMER_ICON      "/pulseaudio.png"
 #define PULSESTREAMER_CONTENT   "audio/flac"
@@ -37,7 +36,6 @@
 #define PULSESTREAMER_MAX_PB    3
 #define PA_SINK_NAME            "noson"
 #define PA_CLIENT_NAME          PA_SINK_NAME
-#define SERVER_PRODUCT_NAME     "libnoson/" LIBVERSION
 
 using namespace NSROOT;
 
@@ -67,9 +65,9 @@ PulseStreamer::PulseStreamer(RequestBroker * imageService /*= nullptr*/)
 }
 
 
-bool PulseStreamer::HandleRequest(void* handle, const char* uri)
+bool PulseStreamer::HandleRequest(handle * handle)
 {
-  std::string requrl(uri);
+  const std::string& requrl = RequestBroker::GetRequestURI(handle);
   if (!IsAborted() && requrl.compare(0, strlen(PULSESTREAMER_URI), PULSESTREAMER_URI) == 0)
   {
     streamSink(handle);
@@ -159,7 +157,7 @@ void PulseStreamer::FreePASink()
   }
 }
 
-void PulseStreamer::streamSink(void * handle)
+void PulseStreamer::streamSink(handle * handle)
 {
   m_playbackCount.Add(1);
 
@@ -180,14 +178,12 @@ void PulseStreamer::streamSink(void * handle)
     ai.start();
 
     std::string resp;
-    resp.assign("HTTP/1.1 200 OK\r\n")
+    resp.assign(RequestBroker::MakeResponseHeader(Status_OK))
         .append("Content-type: audio/flac\r\n")
         .append("Transfer-encoding: chunked\r\n")
-        .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
-        .append("Connection: close\r\n")
         .append("\r\n");
 
-    if (Reply(handle, resp.c_str(), resp.length()))
+    if (RequestBroker::Reply(handle, resp.c_str(), resp.length()))
     {
       char buf[4008];
       int r = 0;
@@ -197,11 +193,11 @@ void PulseStreamer::streamSink(void * handle)
         snprintf(str, sizeof(str), "%03x\r\n", (unsigned)r & 0xfff);
         memcpy(buf, str, 5);
         memcpy(buf + 5 + r, "\r\n", 2);
-        if (!Reply(handle, buf, r + 7))
+        if (!RequestBroker::Reply(handle, buf, r + 7))
           break;
       }
       if (r == 0)
-        Reply(handle, "0\r\n\r\n", 5);
+        RequestBroker::Reply(handle, "0\r\n\r\n", 5);
     }
 
     ai.stop();
@@ -213,32 +209,26 @@ void PulseStreamer::streamSink(void * handle)
   m_playbackCount.Sub(1);
 }
 
-void PulseStreamer::Reply500(void* handle)
+void PulseStreamer::Reply500(handle * handle)
 {
   std::string resp;
-  resp.assign("HTTP/1.1 500 Internal Server Error\r\n")
-      .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
-      .append("Connection: close\r\n")
+  resp.assign(RequestBroker::MakeResponseHeader(Status_Internal_Server_Error))
       .append("\r\n");
-  Reply(handle, resp.c_str(), resp.length());
+  RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }
 
-void PulseStreamer::Reply400(void* handle)
+void PulseStreamer::Reply400(handle * handle)
 {
   std::string resp;
-  resp.append("HTTP/1.1 400 Bad Request\r\n")
-      .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
-      .append("Connection: close\r\n")
+  resp.append(RequestBroker::MakeResponseHeader(Status_Bad_Request))
       .append("\r\n");
-  Reply(handle, resp.c_str(), resp.length());
+  RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }
 
-void PulseStreamer::Reply429(void* handle)
+void PulseStreamer::Reply429(handle * handle)
 {
   std::string resp;
-  resp.append("HTTP/1.1 429 Too Many Requests\r\n")
-      .append("Server: ").append(SERVER_PRODUCT_NAME).append("\r\n")
-      .append("Connection: close\r\n")
+  resp.append(RequestBroker::MakeResponseHeader(Status_Too_Many_Requests))
       .append("\r\n");
-  Reply(handle, resp.c_str(), resp.length());
+  RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2019 Jean-Luc Barriere
+ *      Copyright (C) 2019 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -17,33 +17,18 @@
  *  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#ifndef REQUESTBROKEROPAQUE_H
+#define REQUESTBROKEROPAQUE_H
 
-#ifndef EVENTBROKER_H
-#define	EVENTBROKER_H
+#include "../requestbroker.h"
 
-#include "local_config.h"
-#include "os/threads/threadpool.h"
-#include "wsrequestbroker.h"
-#include "socket.h"
-#include "../eventhandler.h"
-#include "../sharedptr.h"
+using namespace NSROOT;
 
-namespace NSROOT
+struct RequestBroker::opaque
 {
+  TcpSocket * socket;
+  WSRequestBroker * request;
+};
 
-  class EventBroker : public OS::CWorker
-  {
-  public:
-    EventBroker(EventHandlerThread* handler, SHARED_PTR<TcpSocket>& sockPtr);
-    virtual ~EventBroker();
-    virtual void Process();
-
-  private:
-    EventHandlerThread* m_handler;
-    SHARED_PTR<TcpSocket> m_sockPtr;
-  };
-}
-
-
-#endif	/* EVENTBROKER_H */
+#endif /* REQUESTBROKEROPAQUE_H */
 

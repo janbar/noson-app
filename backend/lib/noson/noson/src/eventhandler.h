@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2016 Jean-Luc Barriere
+ *      Copyright (C) 2014-2019 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -36,6 +36,7 @@
 
 namespace NSROOT
 {
+
   typedef enum
   {
     EVENT_HANDLER_STATUS = 0,     // Internal event: Backend status change
@@ -62,6 +63,39 @@ namespace NSROOT
     virtual void HandleEventMessage(EventMessagePtr msg) = 0;
   };
 
+  class EventHandlerThread
+  {
+    friend class EventHandler;
+  public:
+    EventHandlerThread(unsigned bindingPort);
+    virtual ~EventHandlerThread();
+    std::string GetAddress() const { return m_listenerAddress; }
+    unsigned GetPort() const { return m_port; }
+    virtual bool Start() = 0;
+    virtual void Stop() = 0;
+    virtual bool IsRunning() = 0;
+    virtual unsigned CreateSubscription(EventSubscriber *sub) = 0;
+    virtual bool SubscribeForEvent(unsigned subid, EVENT_t event) = 0;
+    virtual void RevokeSubscription(unsigned subid) = 0;
+    virtual void RevokeAllSubscriptions(EventSubscriber *sub) = 0;
+    virtual void DispatchEvent(const EventMessage& msg) = 0;
+
+    /**
+     * @brief Configure a callback to handle any other requests than supported by the event broker.
+     * @param rb the pointer to the request broker instance or null
+     */
+    virtual void RegisterRequestBroker(RequestBrokerPtr rb) = 0;
+    virtual void UnregisterRequestBroker(const std::string& name) = 0;
+    virtual RequestBrokerPtr GetRequestBroker(const std::string& name) = 0;
+    virtual std::vector<RequestBrokerPtr> AllRequestBroker() = 0;
+
+  protected:
+    std::string m_listenerAddress;
+    unsigned m_port;
+  };
+
+  typedef SHARED_PTR<EventHandlerThread> EventHandlerThreadPtr;
+
   class EventHandler
   {
   public:
@@ -83,39 +117,6 @@ namespace NSROOT
     bool SubscribeForEvent(unsigned subid, EVENT_t event) { return m_imp ? m_imp->SubscribeForEvent(subid, event) : false; }
     void RevokeSubscription(unsigned subid) { if (m_imp) m_imp->RevokeSubscription(subid); }
     void RevokeAllSubscriptions(EventSubscriber *sub) { if (m_imp) m_imp->RevokeAllSubscriptions(sub); }
-
-    class EventHandlerThread
-    {
-      friend class EventHandler;
-    public:
-      EventHandlerThread(unsigned bindingPort);
-      virtual ~EventHandlerThread();
-      std::string GetAddress() const { return m_listenerAddress; }
-      unsigned GetPort() const { return m_port; }
-      virtual bool Start() = 0;
-      virtual void Stop() = 0;
-      virtual bool IsRunning() = 0;
-      virtual unsigned CreateSubscription(EventSubscriber *sub) = 0;
-      virtual bool SubscribeForEvent(unsigned subid, EVENT_t event) = 0;
-      virtual void RevokeSubscription(unsigned subid) = 0;
-      virtual void RevokeAllSubscriptions(EventSubscriber *sub) = 0;
-      virtual void DispatchEvent(const EventMessage& msg) = 0;
-
-      /**
-       * @brief Configure a callback to handle any other requests than supported by the event broker.
-       * @param rb the pointer to the request broker instance or null
-       */
-      virtual void RegisterRequestBroker(RequestBrokerPtr rb) = 0;
-      virtual void UnregisterRequestBroker(const std::string& name) = 0;
-      virtual RequestBrokerPtr GetRequestBroker(const std::string& name) = 0;
-      virtual std::vector<RequestBrokerPtr> AllRequestBroker() = 0;
-
-    protected:
-      std::string m_listenerAddress;
-      unsigned m_port;
-    };
-
-    typedef SHARED_PTR<EventHandlerThread> EventHandlerThreadPtr;
 
   private:
     EventHandlerThreadPtr m_imp;
