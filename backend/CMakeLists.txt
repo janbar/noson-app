@@ -4,7 +4,7 @@ OPTION (BUILD_LIBNOSON "Build libnoson from sources." ON)
 
 if(NOT BUILD_DEPENDENCIES)
     if(NOT BUILD_LIBNOSON)
-        find_package(noson 1.12 REQUIRED)
+        find_package(noson 1.13 REQUIRED)
     endif()
 endif()
 if(NOT noson_FOUND)
