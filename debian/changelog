@@ -1,4 +1,9 @@
-noson-app (3.11) UNRELEASED; urgency=low
+noson-app (3.12) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 3.12
+  * Improvements
+  * minor fixes
 
   [ janbar ]
   * Release 3.11
