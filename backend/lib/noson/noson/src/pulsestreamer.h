@@ -55,7 +55,7 @@ private:
   void FreePASink();
   void streamSink(handle * handle);
 
-  void Reply500(handle * handle);
+  void Reply503(handle * handle);
   void Reply400(handle * handle);
   void Reply429(handle * handle);
 };

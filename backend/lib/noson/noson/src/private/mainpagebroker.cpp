@@ -34,11 +34,19 @@ bool MainPageBroker::HandleRequest(handle * handle)
 {
   if (!IsAborted())
   {
-    if (RequestBroker::GetRequestMethod(handle) == Method_GET &&
-            RequestBroker::GetRequestURI(handle).compare("/") == 0)
+    if (RequestBroker::GetRequestURI(handle).compare(MAINPAGE_URI) == 0)
     {
-      Process(handle);
-      return true;
+      switch (RequestBroker::GetRequestMethod(handle))
+      {
+      case Method_GET:
+        ProcessGET(handle);
+        return true;
+      case Method_HEAD:
+        ProcessHEAD(handle);
+        return true;
+      default:
+        return false; // unhandled method
+      }
     }
   }
   return false;
@@ -72,7 +80,7 @@ void MainPageBroker::UnregisterResource(const std::string& uri)
   (void)uri;
 }
 
-void MainPageBroker::Process(handle * handle)
+void MainPageBroker::ProcessGET(handle * handle)
 {
   static const char * _begin = "<!DOCTYPE html>"
   "<html lang=\"en\"><head><meta charset=\"utf-8\"><title>Noson Event Broker</title>"
@@ -99,7 +107,7 @@ void MainPageBroker::Process(handle * handle)
     data.append(
       "<table class=\"paleGreyRows\"><thead><tr>"
       "<th>Module</th><th style=\"text-align: center;\">Enabled</th>"
-      "<th style=\"text-align: center;\">200</th>"
+      "<th style=\"text-align: center;\">OK</th>"
       "<th style=\"text-align: center;\">400</th>"
       "<th style=\"text-align: center;\">404</th>"
       "<th style=\"text-align: center;\">429</th>"
@@ -136,5 +144,15 @@ void MainPageBroker::Process(handle * handle)
       .append("\r\n");
   RequestBroker::Reply(handle, resp.c_str(), resp.length());
   RequestBroker::Reply(handle, data.c_str(), data.length());
+  return;
+}
+
+void MainPageBroker::ProcessHEAD(handle * handle)
+{
+  std::string resp;
+  resp.assign(RequestBroker::MakeResponseHeader(Status_OK));
+  resp.append("Content-type: text/html\r\n")
+      .append("\r\n");
+  RequestBroker::Reply(handle, resp.c_str(), resp.length());
   return;
 }

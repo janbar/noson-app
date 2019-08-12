@@ -56,8 +56,17 @@ bool ImageService::HandleRequest(handle * handle)
     if (requrl.compare(0, strlen(IMAGESERVICE_URI), IMAGESERVICE_URI) == 0 ||
             requrl.compare(0, strlen(IMAGESERVICE_FAVICON), IMAGESERVICE_FAVICON) == 0)
     {
-      ReplyContent(handle);
-      return true;
+      switch (RequestBroker::GetRequestMethod(handle))
+      {
+      case Method_GET:
+        ProcessGET(handle);
+        return true;
+      case Method_HEAD:
+        ProcessHEAD(handle);
+        return true;
+      default:
+        return false; // unhandled method
+      }
     }
   }
   return false;
@@ -119,7 +128,7 @@ std::string ImageService::MakeFilePictureURI(const std::string& filePath)
   return pictureUri;
 }
 
-void ImageService::ReplyContent(handle * handle)
+void ImageService::ProcessGET(handle * handle)
 {
   const std::string& uri = RequestBroker::GetRequestURI(handle);
   // extract the resource uri without trailing args
@@ -151,6 +160,7 @@ void ImageService::ReplyContent(handle * handle)
     }
     else if (stream)
     {
+      res->delegate->CloseStream(stream);
       Reply404(handle);
     }
     else
@@ -160,6 +170,42 @@ void ImageService::ReplyContent(handle * handle)
   }
 }
 
+void ImageService::ProcessHEAD(handle * handle)
+{
+  const std::string& uri = RequestBroker::GetRequestURI(handle);
+  // extract the resource uri without trailing args
+  std::string resUri = uri.substr(0, uri.find('?'));
+  ResourceMap::const_iterator it = m_resources.find(resUri);
+  if (it == m_resources.end())
+    Reply400(handle);
+  else if (!it->second || !it->second->delegate)
+    Reply500(handle);
+  else
+  {
+    const RequestBroker::ResourcePtr& res = it->second;
+    StreamReader::STREAM * stream = res->delegate->OpenStream(RequestBroker::buildDelegateUrl(*res, uri));
+    if (stream && stream->contentLength)
+    {
+      // override content type with stream type
+      const char * contentType = stream->contentType != nullptr ? stream->contentType : res->contentType.c_str();
+      res->delegate->CloseStream(stream);
+      std::string resp;
+      resp.assign(RequestBroker::MakeResponseHeader(Status_OK))
+          .append("Content-type: ").append(contentType).append("\r\n")
+          .append("\r\n");
+      RequestBroker::Reply(handle, resp.c_str(), resp.length());
+    }
+    else if (stream)
+    {
+      res->delegate->CloseStream(stream);
+      Reply404(handle);
+    }
+    else
+    {
+      Reply500(handle);
+    }
+  }
+}
 
 void ImageService::Reply500(handle * handle)
 {

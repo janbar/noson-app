@@ -81,7 +81,25 @@ bool FileStreamer::HandleRequest(handle * handle)
       readParameters(requrl, params);
       std::string filePath = getParamValue(params, FILESTREAMER_PARAM_PATH);
       if (probe(filePath, (*it)->contentType))
-        streamFile(handle, filePath, (*it)->contentType);
+      {
+        switch (RequestBroker::GetRequestMethod(handle))
+        {
+        case Method_GET:
+          streamFile(handle, filePath, (*it)->contentType);
+          return true;
+        case Method_HEAD:
+        {
+          std::string resp;
+          resp.assign(RequestBroker::MakeResponseHeader(Status_OK))
+              .append("Content-type: ").append((*it)->contentType).append("\r\n")
+              .append("\r\n");
+          RequestBroker::Reply(handle, resp.c_str(), resp.length());
+          return true;
+        }
+        default:
+          return false; // unhandled method
+        }
+      }
       else
       {
         DBG(DBG_WARN, "%s: probing file failed (%s)\n", __FUNCTION__, filePath.c_str());

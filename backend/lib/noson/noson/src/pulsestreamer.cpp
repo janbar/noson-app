@@ -67,11 +67,29 @@ PulseStreamer::PulseStreamer(RequestBroker * imageService /*= nullptr*/)
 
 bool PulseStreamer::HandleRequest(handle * handle)
 {
-  const std::string& requrl = RequestBroker::GetRequestURI(handle);
-  if (!IsAborted() && requrl.compare(0, strlen(PULSESTREAMER_URI), PULSESTREAMER_URI) == 0)
+  if (!IsAborted())
   {
-    streamSink(handle);
-    return true;
+    const std::string& requrl = RequestBroker::GetRequestURI(handle);
+    if (requrl.compare(0, strlen(PULSESTREAMER_URI), PULSESTREAMER_URI) == 0)
+    {
+      switch (RequestBroker::GetRequestMethod(handle))
+      {
+      case Method_GET:
+        streamSink(handle);
+        return true;
+      case Method_HEAD:
+      {
+        std::string resp;
+        resp.assign(RequestBroker::MakeResponseHeader(Status_OK))
+            .append("Content-type: audio/flac\r\n")
+            .append("\r\n");
+        RequestBroker::Reply(handle, resp.c_str(), resp.length());
+        return true;
+      }
+      default:
+        return false; // unhandled method
+      }
+    }
   }
   return false;
 }
@@ -166,7 +184,7 @@ void PulseStreamer::streamSink(handle * handle)
   if (deviceName.empty())
   {
     DBG(DBG_WARN, "%s: no sink available", __FUNCTION__);
-    Reply500(handle);
+    Reply503(handle);
   }
   else if (m_playbackCount.Load() > PULSESTREAMER_MAX_PB)
     Reply429(handle);
@@ -209,10 +227,10 @@ void PulseStreamer::streamSink(handle * handle)
   m_playbackCount.Sub(1);
 }
 
-void PulseStreamer::Reply500(handle * handle)
+void PulseStreamer::Reply503(handle * handle)
 {
   std::string resp;
-  resp.assign(RequestBroker::MakeResponseHeader(Status_Internal_Server_Error))
+  resp.assign(RequestBroker::MakeResponseHeader(Status_Service_Unavailable))
       .append("\r\n");
   RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }

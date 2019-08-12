@@ -56,7 +56,8 @@ private:
   typedef std::map<std::string, ResourcePtr> ResourceMap;
   ResourceMap m_resources;
 
-  void ReplyContent(handle * handle);
+  void ProcessGET(handle * handle);
+  void ProcessHEAD(handle * handle);
 
   void Reply500(handle * handle);
   void Reply400(handle * handle);

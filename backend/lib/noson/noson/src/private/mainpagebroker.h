@@ -44,7 +44,8 @@ public:
 
 private:
 
-  void Process(handle * handle);
+  void ProcessGET(handle * handle);
+  void ProcessHEAD(handle * handle);
 };
 
 }
