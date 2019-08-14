@@ -37,6 +37,7 @@ NetRequest::NetRequest(QObject* parent)
 , m_httpRequestAborted(false)
 , m_httpReplyError(false)
 , m_errorCode(QNetworkReply::NoError)
+, m_httpStatusCode(0)
 {
 }
 
@@ -162,6 +163,8 @@ void NetRequest::replyFinished()
   else
   {
     const QVariant redirectionTarget = m_reply->attribute(QNetworkRequest::RedirectionTargetAttribute);
+    const QVariant statusCode = m_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    m_httpStatusCode = statusCode.toInt();
 
     if (!redirectionTarget.isNull())
     {

@@ -20,8 +20,8 @@
 
 #include "thumbnailer.h"
 #include "ratelimiter.h"
-#include "lfm-artistinfo.h"
-#include "lfm-albuminfo.h"
+#include "artistinfo.h"
+#include "albuminfo.h"
 #include "diskcachemanager.h"
 #include "netmanager.h"
 
@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <ctime>
+#include <atomic>
 
 
 #define MAX_BACKLOG 4   // Maximum number of pending requests before the thumbnailer starts queuing them.
@@ -72,7 +73,7 @@ namespace thumbnailer
     QSize requested_size_;
     ThumbnailerImpl& thumbnailer_;
     std::unique_ptr<Job> job_;
-    std::function<void() > send_request_;
+    std::function<void()> send_request_;
 
     RateLimiter::CancelFunc cancel_func_;
     QString error_message_;
@@ -91,12 +92,11 @@ namespace thumbnailer
   public:
     Q_DISABLE_COPY(ThumbnailerImpl)
     explicit ThumbnailerImpl(const QString& offlineStoragePath,
-            qint64 maxCacheSize,
-            const QString& apiKey);
+            qint64 maxCacheSize);
     ~ThumbnailerImpl();
 
     bool isValid() const;
-    void setApiKey(const QString& apiKey);
+    void configure(const QString& apiName, const QString& apiKey);
     void setTrace(bool trace_client);
     void clearCache();
     void reset();
@@ -109,9 +109,11 @@ namespace thumbnailer
     Q_INVOKABLE void pump_limiter();
 
   public slots:
-    void onNetworkError(); // will provide data only from the cache
-    void onFatalError(); // will reject any future request
-    void onReply(bool cached); // will reset the network error count
+    void onNetworkError();      // will provide data only from the cache
+    void onFatalError();        // will reject any future request
+    void onQuotaExceeded();     // will suspend the job scheduler for time
+    void onQuotaTimer();        // will resume the job scheduler
+    void onReply(bool cached);  // will reset the network error count
 
   private:
     QSharedPointer<Request> createRequest(QString const& details,
@@ -122,12 +124,13 @@ namespace thumbnailer
     RateLimiter* limiter_;
     DiskCacheManager* cache_;
     NetManager* nam_;
-    QString apiKey_;
+    AbstractAPI* api_;
     bool valid_;
 
     bool netFailed_;
     std::atomic<int> nwerr_;
     std::atomic<int> fatal_;
+    std::atomic<int> quota_;
   };
 
 
@@ -202,27 +205,33 @@ namespace thumbnailer
     Q_ASSERT(job_);
     Q_ASSERT(!finished_);
 
-    if (job_->error() != ReplySuccess)
+    switch(job_->error())
     {
-      switch(job_->error())
-      {
-        case ReplyNetworkError:
-          thumbnailer_.onNetworkError();
-          break;
-        case ReplyFatalError:
-          thumbnailer_.onFatalError();
-          break;
-        default:
-          // reset the network error count
-          thumbnailer_.onReply(job_->isCached());
-          break;
-      }
-      finishWithError("Thumbnailer: " + job_->errorString());
-      return;
-    }
+      case ReplySuccess:
+        // reset the network error count
+        thumbnailer_.onReply(job_->isCached());
+        break; // continue
 
-    // reset the network error count
-    thumbnailer_.onReply(job_->isCached());
+      case ReplyNetworkError:
+        thumbnailer_.onNetworkError();
+        finishWithError("Thumbnailer: " + job_->errorString());
+        return;
+      case ReplyFatalError:
+        thumbnailer_.onFatalError();
+        finishWithError("Thumbnailer: " + job_->errorString());
+        return;
+      case ReplyQuotaExceeded:
+        thumbnailer_.onQuotaExceeded();
+        // before renew the request all connected signal must be cleared
+        disconnect(job_.get(), SIGNAL(finished()), this, SLOT(callFinished()));
+        public_request_->start(); // reschedule the request
+        return;
+      default:
+        // reset the network error count
+        thumbnailer_.onReply(job_->isCached());
+        finishWithError("Thumbnailer: " + job_->errorString());
+        return;
+    }
 
     try
     {
@@ -332,25 +341,24 @@ namespace thumbnailer
   }
 
   ThumbnailerImpl::ThumbnailerImpl(const QString& offlineStoragePath,
-            qint64 maxCacheSize,
-            const QString& apiKey)
+            qint64 maxCacheSize)
   : QObject(nullptr)
   , trace_client_(false)
   , limiter_(nullptr)
   , cache_(nullptr)
   , nam_(nullptr)
-  , apiKey_(apiKey)
+  , api_(nullptr)
   , valid_(false)
   , netFailed_(false)
   , nwerr_(0)
   , fatal_(0)
+  , quota_(0)
   {
     qInfo().noquote() << "installing thumbnails cache in folder \"" + offlineStoragePath + "\"";
     limiter_ = new RateLimiter(MAX_BACKLOG);
     cache_ = new DiskCacheManager(offlineStoragePath, maxCacheSize);
     nam_ = new NetManager();
-    qInfo().noquote() << "thumbnailer Last.fm is initialized";
-    valid_ = !apiKey_.isEmpty();
+    qInfo().noquote() << "thumbnailer is initialized";
 
     // initialize the random generator
     srand(static_cast<unsigned>(std::time(nullptr)));
@@ -368,12 +376,19 @@ namespace thumbnailer
     return valid_;
   }
 
-  void ThumbnailerImpl::setApiKey(const QString &apiKey)
+  void ThumbnailerImpl::configure(const QString& apiName, const QString &apiKey)
   {
-    qInfo().noquote() << "thumbnailer: configure key [" + apiKey + "]";
-    apiKey_ = apiKey;
+    qInfo().noquote() << "thumbnailer: configure API [" + apiName + "]";
     fatal_.store(0); // reset fatal event count
-    valid_ = !apiKey_.isEmpty();
+    valid_ = false;
+    api_ = nullptr;
+
+    AbstractAPI* api = AbstractAPI::forName(apiName);
+    if (!api || !api->configure(nam_, apiKey))
+      return;
+
+    api_ = api;
+    valid_ = true;
   }
 
   void ThumbnailerImpl::setTrace(bool trace_client)
@@ -394,7 +409,8 @@ namespace thumbnailer
     nwerr_.store(0);
     netFailed_ = false;
     fatal_.store(0);
-    valid_ = !apiKey_.isEmpty();
+    // check the api is configured
+    valid_ = (api_ ? true : false);
   }
 
   QSharedPointer<Request> ThumbnailerImpl::getAlbumArt(QString const& artist, QString const& album, QSize const& requestedSize)
@@ -403,7 +419,7 @@ namespace thumbnailer
     QTextStream s(&details, QIODevice::WriteOnly);
     s << "getAlbumArt: (" << requestedSize.width() << "," << requestedSize.height()
             << ") \"" << artist << "\", \"" << album << "\"";
-    Job* job = new Job(new AlbumInfo(cache_, nam_, apiKey_, artist, album, requestedSize, netFailed_));
+    Job* job = new Job(new AlbumInfo(cache_, nam_, api_, artist, album, requestedSize, netFailed_));
     return createRequest(details, requestedSize, job);
   }
 
@@ -413,7 +429,7 @@ namespace thumbnailer
     QTextStream s(&details, QIODevice::WriteOnly);
     s << "getArtistArt: (" << requestedSize.width() << "," << requestedSize.height()
             << ") \"" << artist << "\"";
-    Job* job = new Job(new ArtistInfo(cache_, nam_, apiKey_, artist, requestedSize, netFailed_));
+    Job* job = new Job(new ArtistInfo(cache_, nam_, api_, artist, requestedSize, netFailed_));
     return createRequest(details, requestedSize, job);
   }
 
@@ -441,14 +457,14 @@ namespace thumbnailer
 
   void ThumbnailerImpl::pump_limiter()
   {
-    return limiter_->done();
+    return limiter_->pump();
   }
 
   void ThumbnailerImpl::onNetworkError()
   {
     if (nwerr_.fetch_add(1) > MAX_NETWORK_ERROR && !netFailed_)
     {
-      qWarning().noquote() << "thumbnailer: remote call suspended due to network error";
+      qWarning().noquote() << "thumbnailer: remote call disabled due to network error";
       netFailed_ = true;
     }
   }
@@ -457,9 +473,26 @@ namespace thumbnailer
   {
     if (fatal_.fetch_add(1) >= 0 && valid_)
     {
-      qWarning().noquote() << "thumbnailer: service suspended due to fatal error";
+      qWarning().noquote() << "thumbnailer: service disabled due to fatal error";
       valid_ = false;
     }
+  }
+
+  void ThumbnailerImpl::onQuotaExceeded()
+  {
+    if (quota_.fetch_add(1) == 0)
+    {
+      qInfo().noquote() << "thumbnailer: service suspended due to exceeded quota limit";
+      limiter_->suspend();
+      QTimer::singleShot(api_->delayOnQuotaExceeded(), this, SLOT(onQuotaTimer()));
+    }
+  }
+
+  void ThumbnailerImpl::onQuotaTimer()
+  {
+    qInfo().noquote() << "thumbnailer: service resumed after timeout";
+    quota_.store(0);
+    limiter_->resume();
   }
 
   void ThumbnailerImpl::onReply(bool cached)
@@ -475,7 +508,9 @@ namespace thumbnailer
     impl->setRequest(this);
   }
 
-  Request::~Request() = default;
+  Request::~Request()
+  {
+  }
 
   void Request::start()
   {
@@ -523,13 +558,14 @@ namespace thumbnailer
   }
 
   Thumbnailer::Thumbnailer(const QString& offlineStoragePath,
-          qint64 maxCacheSize,
-          const QString& apiKey)
-  : p_(new ThumbnailerImpl(offlineStoragePath, maxCacheSize, apiKey))
+          qint64 maxCacheSize)
+  : p_(new ThumbnailerImpl(offlineStoragePath, maxCacheSize))
   {
   }
 
-  Thumbnailer::~Thumbnailer() = default;
+  Thumbnailer::~Thumbnailer()
+  {
+  }
   
   QSharedPointer<Request> Thumbnailer::getAlbumArt(QString const& artist, QString const& album, QSize const& requestedSize)
   {
@@ -546,9 +582,9 @@ namespace thumbnailer
     return p_->isValid();
   }
 
-  void Thumbnailer::setApiKey(const QString &apiKey)
+  void Thumbnailer::configure(const QString& apiName, const QString &apiKey)
   {
-    p_->setApiKey(apiKey);
+    p_->configure(apiName, apiKey);
   }
 
   void Thumbnailer::setTrace(bool trace_client)

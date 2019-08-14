@@ -175,8 +175,7 @@ namespace thumbnailer
     operations. Do not needlessly destroy a Thumbnailer only to re-create it again later.
      */
     explicit Thumbnailer(const QString& offlineStoragePath,
-            qint64 maxCacheSize,
-            const QString& apiKey);
+            qint64 maxCacheSize);
 
     /**
     \brief Destroys a thumbnailer instance.
@@ -205,7 +204,7 @@ namespace thumbnailer
 
     bool isValid();
 
-    void setApiKey(const QString& apiKey);
+    void configure(const QString& apiName, const QString& apiKey);
 
     void setTrace(bool trace_client);
 

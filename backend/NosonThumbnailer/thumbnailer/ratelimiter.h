@@ -23,6 +23,7 @@
 #include <functional>
 #include <memory>
 #include <list>
+#include <atomic>
 
 namespace thumbnailer
 {
@@ -60,9 +61,14 @@ namespace thumbnailer
     // be called only if the cancel function returns false.
     void done();
 
+    void pump();
+    void suspend();
+    void resume();
+
   private:
     int const concurrency_; // Max number of outstanding requests.
-    int running_; // Actual number of outstanding requests.
+    std::atomic<int> running_; // Actual number of outstanding requests.
+    bool suspended_;
     // We store a shared_ptr so we can detect on cancellation
     // whether a job completed before it was cancelled.
     std::list<std::shared_ptr<std::function<void()>>> list_;

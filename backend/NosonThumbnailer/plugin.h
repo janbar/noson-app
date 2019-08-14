@@ -56,7 +56,7 @@ public:
   Proxy(std::shared_ptr<Thumbnailer>& thumbnailer, QObject* parent = nullptr);
   virtual ~Proxy() { }
 
-  Q_INVOKABLE bool setApiKey(const QString& apiKey);
+  Q_INVOKABLE bool configure(const QString& apiName, const QString& apiKey);
 
   Q_INVOKABLE void setTrace(bool trace) { m_p->setTrace(trace); }
 

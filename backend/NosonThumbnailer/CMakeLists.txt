@@ -50,12 +50,24 @@ set(
   thumbnailer/netmanager.h
   thumbnailer/diskcachemanager.cpp
   thumbnailer/diskcachemanager.h
-  thumbnailer/lfm-artistinfo.cpp
-  thumbnailer/lfm-artistinfo.h
-  thumbnailer/lfm-albuminfo.cpp
-  thumbnailer/lfm-albuminfo.h
+  thumbnailer/artistinfo.cpp
+  thumbnailer/artistinfo.h
+  thumbnailer/albuminfo.cpp
+  thumbnailer/albuminfo.h
+  thumbnailer/abstractapi.cpp
+  thumbnailer/abstractapi.h
   thumbnailer/tinyxml2.cpp
   thumbnailer/xmldict.cpp
+  thumbnailer/jsonparser.cpp
+  thumbnailer/jsonparser.h
+  thumbnailer/lastfm/lastfm.cpp
+  thumbnailer/lastfm/lastfm.h
+  thumbnailer/lastfm/lfm-artistinfo.cpp
+  thumbnailer/lastfm/lfm-albuminfo.cpp
+  thumbnailer/deezer/deezer.cpp
+  thumbnailer/deezer/deezer.h
+  thumbnailer/deezer/deezer-artistinfo.cpp
+  thumbnailer/deezer/deezer-albuminfo.cpp
 )
 
 if(QT_STATICPLUGIN)

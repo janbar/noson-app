@@ -24,6 +24,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QByteArray>
+#include <QString>
 #include <QUrl>
 #include <QTimer>
 
@@ -89,6 +90,11 @@ namespace thumbnailer
       return m_errorString;
     }
 
+    int httpStatusCode() const
+    {
+      return m_httpStatusCode;
+    }
+
     QStringList getAllResponseHeaders() const;
 
     QString getResponseHeader(const QString& header) const;
@@ -116,6 +122,7 @@ namespace thumbnailer
     bool m_httpRequestAborted;
     bool m_httpReplyError;
     int m_errorCode;
+    int m_httpStatusCode;
     QString m_errorString;
   };
 

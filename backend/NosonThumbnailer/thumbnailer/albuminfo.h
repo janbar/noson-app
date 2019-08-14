@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2018-2019 Jean-Luc Barriere
+ *      Copyright (C) 2019 Jean-Luc Barriere
  *
  *  This file is part of Noson-App
  *
@@ -18,10 +18,10 @@
  *
  */
 
-#ifndef LFMARTISTINFO_H
-#define LFMARTISTINFO_H
+#ifndef ALBUMINFO_H
+#define ALBUMINFO_H
 
-#include "thumbnailerjob.h"
+#include "abstractapi.h"
 
 #include <QIODevice>
 #include <QSize>
@@ -35,14 +35,15 @@ namespace thumbnailer
   class DiskCacheManager;
   class NetManager;
   class NetRequest;
+  class AbstractAlbumInfo;
 
-  class ArtistInfo final : public AbstractWorker
+  class AlbumInfo final : public AbstractWorker
   {
     Q_OBJECT
 
   public:
-    ArtistInfo(DiskCacheManager* cache, NetManager* nam, const QString& apiKey, const QString& artist, const QSize& requestedSize, bool cached, QObject* parent = 0);
-    ~ArtistInfo();
+    AlbumInfo(DiskCacheManager* cache, NetManager* nam, AbstractAPI* api, const QString& artist, const QString& album, const QSize& requestedSize, bool cached, QObject* parent = 0);
+    ~AlbumInfo();
 
     void run();
 
@@ -56,26 +57,24 @@ namespace thumbnailer
 
     bool isCached() const;
 
-    signals:
-    void doRequest(NetRequest*, QUrl);
-
   private slots:
+    void queryInfo();
     void readInfo();
     void processInfo();
     void readImage();
     void processImage();
 
   private:
-    void queryInfo();
-    bool parseInfo();
-    void queryImage(const QUrl& url);
+    AbstractAPI::Parse_Status parseInfo();
     bool parseServerError();
+    void queryImage(const QUrl& url);
     void fakeImage();
 
     DiskCacheManager* m_cache;
     NetManager* m_nam;
-    QString m_apiKey;
+    AbstractAPI* m_api;
     QString m_artist;
+    QString m_album;
     QSize m_requestedSize;
     bool m_cached;
     QUrl m_cacheUrl;
@@ -83,23 +82,15 @@ namespace thumbnailer
 
     QIODevice* m_cacheDev;
     std::unique_ptr<NetRequest> m_call;
-    ReplyStatus m_error;
-    int m_errorCode;
-    QString m_errorString;
+    AbstractAPI::error_t m_error;
     QByteArray m_info;
     QByteArray m_image;
+    AbstractAlbumInfo::metadata_t m_meta;
 
-    struct {
-      QString name;
-      QString mbid;
-      QString url;
-      QString image_small;
-      QString image_medium;
-      QString image_large;
-      QString image_extralarge;
-    } m_meta;
+    AbstractAlbumInfo* m_p;
+    int m_try;
   };
 
 }
-#endif /* LFMARTISTINFO_H */
+#endif /* ALBUMINFO_H */
 

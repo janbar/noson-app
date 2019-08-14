@@ -50,7 +50,7 @@ void ThumbnailerPlugin::initializeEngine(QQmlEngine* engine, const char* uri)
 
   QQmlExtensionPlugin::initializeEngine(engine, uri);
 
-  g_thumbnailer.reset(new Thumbnailer(engine->offlineStoragePath(), CACHE_SIZE, QString("")));
+  g_thumbnailer.reset(new Thumbnailer(engine->offlineStoragePath(), CACHE_SIZE));
 
   try
   {
@@ -98,8 +98,8 @@ Proxy::Proxy(std::shared_ptr<Thumbnailer>& thumbnailer, QObject *parent)
 {
 }
 
-bool Proxy::setApiKey(const QString &apiKey)
+bool Proxy::configure(const QString& apiName, const QString& apiKey)
 {
-  m_p->setApiKey(apiKey);
+  m_p->configure(apiName, apiKey);
   return m_p->isValid();
 }

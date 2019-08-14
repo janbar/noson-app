@@ -31,9 +31,11 @@ namespace thumbnailer
   typedef enum {
     ReplySuccess        = 0,
     ReplyNetworkError   = 1,
-    ReplyServerError    = 2,
-    ReplyFatalError     = 3,
+    ReplyFatalError     = 2,
+    ReplyServerError    = 3,
     ReplyInvalid        = 4,
+    ReplyNoDataFound    = 6,
+    ReplyQuotaExceeded  = 7,
   } ReplyStatus;
 
   class AbstractWorker : public QObject
