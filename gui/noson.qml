@@ -296,8 +296,15 @@ ApplicationWindow {
 
         customdebug("LANG=" + Qt.locale().name);
         Sonos.setLocale(Qt.locale().name);
-        if (Thumbnailer.setApiKey(settings.lastfmKey))
-            thumbValid = true;
+
+        // configure the thumbnailer
+        if (settings.lastfmKey && settings.lastfmKey.length > 1) {
+            if (Thumbnailer.configure("LASTFM", settings.lastfmKey))
+                thumbValid = true;
+        } else {
+            if (Thumbnailer.configure("DEEZER", "n/a"))
+                thumbValid = true;
+        }
 
         // init SMAPI third party accounts
         var acls = deserializeACLS(settings.accounts);

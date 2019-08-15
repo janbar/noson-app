@@ -61,8 +61,13 @@ DialogBase {
         if (settings.lastfmKey !== apiKey.text) {
             settings.lastfmKey = apiKey.text;
             Thumbnailer.reset(); // reset thumbnailer state
-            if (Thumbnailer.setApiKey(apiKey.text))
-                thumbValid = true;
+            if (apiKey.length > 1) {
+                if (Thumbnailer.configure("LASTFM", apiKey.text))
+                    thumbValid = true;
+            } else {
+                if (Thumbnailer.configure("DEEZER", "n/a"))
+                    thumbValid = true;
+            }
         }
 
         if (needRestart) {
