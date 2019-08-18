@@ -1,4 +1,8 @@
-noson-app (3.12) UNRELEASED; urgency=low
+noson-app (3.13) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 3.13
+  * Fetch thumbnails from DEEZER by default
 
   [ janbar ]
   * Release 3.12
