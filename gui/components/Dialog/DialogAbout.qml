@@ -17,6 +17,7 @@
 
 import QtQuick 2.9
 import QtQuick.Controls 2.2
+import QtQuick.Layouts 1.3
 import NosonApp 1.0
 
 
@@ -75,5 +76,46 @@ DialogBase {
         }
         onLinkActivated: Qt.openUrlExternally(link)
         linkColor: styleMusic.view.linkColor
+    }
+
+    Item {
+        width: dialog.availableWidth
+        height: units.gu(0.5)
+    }
+
+    Text {
+        color: styleMusic.dialog.foregroundColor
+        width: dialog.availableWidth
+        text: qsTr("Thumbnails powered by:")
+        font.pointSize: units.fs("medium")
+    }
+    GridLayout {
+        Layout.fillWidth: true
+        Image {
+            Layout.alignment: Qt.AlignCenter
+            width: units.gu(10)
+            height: units.gu(2.5)
+            fillMode: Image.PreserveAspectCrop
+            source: "qrc:/images/deezer.png"
+            sourceSize.width: width
+            sourceSize.height: height
+            MouseArea {
+                anchors.fill: parent
+                onClicked: Qt.openUrlExternally("https://www.deezer.com")
+            }
+        }
+        Image {
+            Layout.alignment: Qt.AlignCenter
+            width: units.gu(10)
+            height: units.gu(2.5)
+            fillMode: Image.PreserveAspectCrop
+            source: "qrc:/images/lastfm.png"
+            sourceSize.width: width
+            sourceSize.height: height
+            MouseArea {
+                anchors.fill: parent
+                onClicked: Qt.openUrlExternally("https://www.last.fm")
+            }
+        }
     }
 }

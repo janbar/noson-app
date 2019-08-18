@@ -173,5 +173,6 @@
         <file>components/Dialog/DialogAbout.qml</file>
         <file>components/Dialog/DialogApplicationSettings.qml</file>
         <file>images/lastfm.png</file>
+        <file>images/deezer.png</file>
     </qresource>
 </RCC>
