@@ -4,8 +4,8 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 option(INSTALL_TESTS "Install the tests on make install" on)
 
-set(APP_VERSION       "3.13.0")
-set(APP_VERSION_CODE  35)
+set(APP_VERSION       "3.13.1")
+set(APP_VERSION_CODE  36)
 set(APP_NAME          "noson")
 set(APP_ID            "io.github.janbar.noson")
 set(EXEC              "noson-app")
