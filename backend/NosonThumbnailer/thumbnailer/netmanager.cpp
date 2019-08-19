@@ -24,6 +24,13 @@
 
 using namespace thumbnailer;
 
+namespace
+{
+  // @IMPORTANT
+  // configure requirements for SSL handshakes
+  bool dummy = NetManager::initSSLDefaultConfiguration();
+}
+
 NetManager::NetManager(QObject* parent)
 : QObject(parent)
 , m_nam(new QNetworkAccessManager())
@@ -39,6 +46,17 @@ NetManager::~NetManager()
 QNetworkAccessManager* NetManager::networkAccessManager()
 {
   return m_nam;
+}
+
+bool NetManager::initSSLDefaultConfiguration()
+{
+  QSslConfiguration sslConf = QSslConfiguration::defaultConfiguration();
+  // use the protocol TLSv1.2
+  sslConf.setProtocol(QSsl::TlsV1_2);
+  // do not request a certificate from the peer, no validation will be done
+  sslConf.setPeerVerifyMode(QSslSocket::VerifyNone);
+  QSslConfiguration::setDefaultConfiguration(sslConf);
+  return true;
 }
 
 void NetManager::onRequest(NetRequest* wr)

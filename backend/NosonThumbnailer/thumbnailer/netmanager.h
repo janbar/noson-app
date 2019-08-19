@@ -37,6 +37,8 @@ namespace thumbnailer
 
     QNetworkAccessManager* networkAccessManager();
 
+    static bool initSSLDefaultConfiguration();
+
   signals:
     void request(NetRequest*);
 
