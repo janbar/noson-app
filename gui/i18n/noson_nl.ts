@@ -1027,7 +1027,7 @@
         <location filename="../components/MusicPage.qml" line="349"/>
         <location filename="../components/MusicPage.qml" line="403"/>
         <source>Done</source>
-        <translation>Afgerond</translation>
+        <translation>Gereed</translation>
     </message>
     <message>
         <location filename="../components/MusicPage.qml" line="393"/>
