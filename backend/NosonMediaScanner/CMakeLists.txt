@@ -54,6 +54,8 @@ set(
   id3v1genres.h
   m4aparser.cpp
   m4aparser.h
+  oggparser.cpp
+  oggparser.h
   listmodel.cpp
   listmodel.h
   mediaparser.h

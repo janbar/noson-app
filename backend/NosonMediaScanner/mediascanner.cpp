@@ -21,6 +21,7 @@
 #include "flacparser.h"
 #include "id3parser.h"
 #include "m4aparser.h"
+#include "oggparser.h"
 #include "listmodel.h"
 
 #include <QDebug>
@@ -38,6 +39,7 @@ MediaScanner::MediaScanner(QObject *parent)
 {
   m_engine->addParser(new FLACParser);
   m_engine->addParser(new ID3Parser);
+  m_engine->addParser(new OGGParser);
 #ifdef ENABLE_MP4PARSER
   m_engine->addParser(new M4AParser);
 #endif
