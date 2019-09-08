@@ -3,6 +3,7 @@
 #include "private/tokenizer.h"
 #include "private/urlencoder.h"
 #include "private/byteorder.h"
+#include "private/base64.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -89,6 +90,22 @@ StreamReader::STREAM * FilePicReader::OpenStream(const std::string& streamUrl)
       return stream;
     }
   }
+  if (suffix.compare("ogg") == 0)
+  {
+    Picture * picture = ExtractOGGSPicture(filePath, picType, error);
+    if (!picture && !error)
+      picture = ExtractOGGSPicture(filePath, PictureType::Any, error);
+    if (picture)
+    {
+      STREAM * stream = new STREAM();
+      stream->opaque = picture;
+      stream->contentType = picture->mime;
+      stream->contentLength = picture->size;
+      stream->data = nullptr;
+      stream->size = 0;
+      return stream;
+    }
+  }
 
   // error flag has been cleaned but no picture has been found
   // return null stream
@@ -158,6 +175,11 @@ std::string FilePicReader::getParamValue(const std::vector<std::string>& params,
   return std::string();
 }
 
+
+/////////////////////////////////////////////////////////////////////////////
+//// Media file FLAC/Vorbis
+/////////////////////////////////////////////////////////////////////////////
+
 FilePicReader::Picture * FilePicReader::ExtractFLACPicture(const std::string& filePath, PictureType pictureType, bool& error)
 {
   unsigned char buf[8];
@@ -217,6 +239,7 @@ FilePicReader::Picture * FilePicReader::ExtractFLACPicture(const std::string& fi
         pic->data = picbuf + mime_type_len + desc_len + 28; // image data
         pic->size = data_len; // image data length
         DBG(DBG_PROTO, "%s: found picture (%s) size (%u)\n", __FUNCTION__, pic->mime, pic->size);
+        break;
       }
     }
     if (fseek(file, v, SEEK_CUR) != 0)
@@ -233,6 +256,11 @@ void FilePicReader::FreeFLACPicture(void * payload)
   char * pic = static_cast<char*>(payload);
   delete [] pic;
 }
+
+
+/////////////////////////////////////////////////////////////////////////////
+//// Media file MPEG/ID3
+/////////////////////////////////////////////////////////////////////////////
 
 FilePicReader::Picture * FilePicReader::ExtractID3Picture(const std::string& filePath, PictureType pictureType, bool& error)
 {
@@ -468,7 +496,7 @@ int FilePicReader::parse_id3v2_pic_v2(FILE * file, unsigned frame_size, Picture 
     mime_type = mime_types[1];
 
   if (mime_type &&
-          (buffer[4] == (int)pictureType || pictureType == FilePicReader::PictureType::Any))
+          (buffer[4] == (int)pictureType || pictureType == PictureType::Any))
   {
     static const char csend[2] = { '\0', '\0' };
     unsigned csz;
@@ -497,13 +525,14 @@ int FilePicReader::parse_id3v2_pic_v2(FILE * file, unsigned frame_size, Picture 
       desc_len += csz;
 
     data_len = frame_size - 5 - csz - desc_len;
-    *pic = new FilePicReader::Picture();
-    (*pic)->payload = picbuf; // allocated pointer
-    (*pic)->free = &FilePicReader::FreeID3Picture; // handler to free the payload
-    (*pic)->mime = mime_type;
-    (*pic)->data = picbuf + desc_len + csz + 5; // image data
-    (*pic)->size = data_len; // image data length
-    DBG(DBG_PROTO, "%s: found picture (%s) size (%u)\n", __FUNCTION__, (*pic)->mime, (*pic)->size);
+    Picture * p = new Picture();
+    p->payload = picbuf; // allocated pointer
+    p->free = &FilePicReader::FreeID3Picture; // handler to free the payload
+    p->mime = mime_type;
+    p->data = picbuf + desc_len + csz + 5; // image data
+    p->size = data_len; // image data length
+    DBG(DBG_PROTO, "%s: found picture (%s) size (%u)\n", __FUNCTION__, p->mime, p->size);
+    *pic = p;
     return 0;
   }
   else
@@ -526,7 +555,7 @@ int FilePicReader::parse_id3v2_pic_v3(FILE * file, unsigned frame_size, Picture 
     ++mime_type_len;
 
   if (buffer[mime_type_len + 1] == 0 &&
-          (buffer[mime_type_len + 2] == (int)pictureType || pictureType == FilePicReader::PictureType::Any))
+          (buffer[mime_type_len + 2] == (int)pictureType || pictureType == PictureType::Any))
   {
     static const char csend[2] = { '\0', '\0' };
     unsigned csz;
@@ -555,14 +584,15 @@ int FilePicReader::parse_id3v2_pic_v3(FILE * file, unsigned frame_size, Picture 
       desc_len += csz;
 
     data_len = frame_size - 3 - csz - mime_type_len - desc_len;
-    *pic = new FilePicReader::Picture();
-    (*pic)->payload = picbuf; // allocated pointer
-    (*pic)->free = &FilePicReader::FreeID3Picture; // handler to free the payload
-    (*pic)->mime = picbuf + 1; // mime type string
+    Picture * p = new Picture();
+    p->payload = picbuf; // allocated pointer
+    p->free = &FilePicReader::FreeID3Picture; // handler to free the payload
+    p->mime = picbuf + 1; // mime type string
     picbuf[mime_type_len + 1] = 0; // terminate the mime type string with zero
-    (*pic)->data = picbuf + mime_type_len + desc_len + csz + 3; // image data
-    (*pic)->size = data_len; // image data length
-    DBG(DBG_PROTO, "%s: found picture (%s) size (%u)\n", __FUNCTION__, (*pic)->mime, (*pic)->size);
+    p->data = picbuf + mime_type_len + desc_len + csz + 3; // image data
+    p->size = data_len; // image data length
+    DBG(DBG_PROTO, "%s: found picture (%s) size (%u)\n", __FUNCTION__, p->mime, p->size);
+    *pic = p;
     return 0;
   }
   else
@@ -673,4 +703,227 @@ int FilePicReader::parse_id3v2(FILE * file, long id3v2_offset, Picture ** pic, o
   }
 
   return 0;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
+//// Media file OGG/Vorbis
+/////////////////////////////////////////////////////////////////////////////
+
+#define OGG_BLOCK_SIZE   27
+#define OGG_PACKET_RSVSIZE 200*1024
+#define OGG_PACKET_MAXSIZE 500*1024
+
+FilePicReader::Picture * FilePicReader::ExtractOGGSPicture(const std::string& filePath, PictureType pictureType, bool& error)
+{
+  unsigned char buf[OGG_BLOCK_SIZE];
+  unsigned char lacing[255];
+  bool isLast = false;
+  packet_t packet = { nullptr, 0, 0 };
+  Picture * pic = nullptr;
+  FILE * file = fopen(filePath.c_str(), "rb");
+  if (!file)
+  {
+    DBG(DBG_INFO, "%s: file not found (%s)\n", __FUNCTION__, filePath.c_str());
+    error = true;
+    return pic;
+  }
+
+  while (!isLast)
+  {
+    // check the magic file header, else close and return a null payload
+    if (fread(buf, 1, OGG_BLOCK_SIZE, file) != OGG_BLOCK_SIZE || memcmp(buf, "OggS", 4) != 0)
+    {
+      DBG(DBG_INFO, "%s: bad magic header (%s)\n", __FUNCTION__, filePath.c_str());
+      break;
+    }
+    //char stream_structure_version = read8(buf + 4);
+    unsigned char header_type_flag = (unsigned char)read8(buf + 5);
+    unsigned char number_page_segments = (unsigned char)read8(buf + 26);
+
+    uint32_t segment_table = 0;
+    if (fread(lacing, 1, number_page_segments, file) != number_page_segments)
+    {
+      DBG(DBG_INFO, "%s: file read error (%s)\n", __FUNCTION__, filePath.c_str());
+      break;
+    }
+
+    for (int i = 0; i < number_page_segments; ++i)
+      segment_table += (unsigned char)read8(lacing + i);
+
+    if ((header_type_flag & 0x04) == 0x04)
+    // bit 0x04: this is the last page of a logical bitstream (eos)
+    {
+      isLast = true;
+      // fill last page and process current packet
+      if (!fill_packet(&packet, segment_table, file))
+      {
+        DBG(DBG_INFO, "%s: file read error (%s)\n", __FUNCTION__, filePath.c_str());
+        break;
+      }
+    }
+    else if ((header_type_flag & 0x01) == 0x01)
+    // bit 0x01: page contains data of a packet continued from the previous page
+    {
+      if (packet.size == 0)
+        break;
+      resize_packet(&packet, packet.datalen + segment_table);
+      if (!fill_packet(&packet,segment_table, file))
+      {
+        DBG(DBG_INFO, "%s: file read error (%s)\n", __FUNCTION__, filePath.c_str());
+        break;
+      }
+      continue;
+    }
+    else if ((header_type_flag & 0x02) == 0x02)
+    // bit 0x02: this is the first page of a logical bitstream (bos)
+    {
+      resize_packet(&packet, OGG_PACKET_RSVSIZE);
+      if (!fill_packet(&packet, segment_table, file))
+      {
+        DBG(DBG_INFO, "%s: file read error (%s)\n", __FUNCTION__, filePath.c_str());
+        break;
+      }
+      continue;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
+    //// Process the packet
+    /////////////////////////////////////////////////////////////////////////////
+
+    if (packet.datalen == 0)
+    {
+      DBG(DBG_INFO, "%s: missing BOS packet (%s)\n", __FUNCTION__, filePath.c_str());
+      break;
+    }
+
+    unsigned char block = (unsigned char)read8(packet.buf);
+
+    if ((block & 0x01) == 0x01)
+    {
+      // check the magic packet header, else break
+      if (packet.datalen < 7 || memcmp(packet.buf + 1, "vorbis", 6) != 0)
+      {
+        DBG(DBG_INFO, "%s: bad packet header (%s)\n", __FUNCTION__, filePath.c_str());
+        break;
+      }
+
+      if (block == 0x03)
+      {
+        // parse comment header
+        parse_comment(&packet, &pic, pictureType);
+        break;
+      }
+      else
+      {
+        // consume data
+        packet.datalen = 0;
+      }
+    }
+    else
+    {
+      // consume data
+      packet.datalen = 0;
+    }
+
+    if (!isLast && !fill_packet(&packet, segment_table, file))
+    {
+      DBG(DBG_INFO, "%s: file read error (%s)\n", __FUNCTION__, filePath.c_str());
+      break;
+    }
+  }
+
+  if (packet.buf != nullptr)
+    delete [] packet.buf;
+  fclose(file);
+  error = (!isLast && pic == nullptr);
+  return pic;
+}
+
+void FilePicReader::FreeOGGSPicture(void *payload)
+{
+  assert(payload);
+  char * pic = static_cast<char*>(payload);
+  delete [] pic;
+}
+
+bool FilePicReader::resize_packet(packet_t * packet, uint32_t size)
+{
+  if (size <= packet->size)
+    return true;
+  if (size > OGG_PACKET_MAXSIZE)
+    return false;
+  unsigned char * _buf = new unsigned char [size];
+  if (packet->buf != nullptr)
+  {
+    memcpy(_buf, packet->buf, packet->datalen);
+    delete [] packet->buf;
+  }
+  packet->buf = _buf;
+  packet->size = size;
+  return true;
+}
+
+bool FilePicReader::fill_packet(packet_t * packet, uint32_t len, FILE * fp)
+{
+  if (!resize_packet(packet, packet->datalen + len) ||
+      fread(packet->buf + packet->datalen, 1, len, fp) != len)
+    return false;
+  packet->datalen += len;
+  return true;
+}
+
+bool FilePicReader::parse_comment(packet_t * packet, Picture ** pic, PictureType pictureType)
+{
+  bool gotoLast = false;
+  unsigned char * vorbis = packet->buf;
+  unsigned char * ve = vorbis + packet->datalen;
+  unsigned char * vp = vorbis + 7; // pass magic string
+  vp += read32le(vp) + 4; // pass vendor string
+  int count = read32le(vp); // comment list length;
+  vp += 4;
+  while (count > 0)
+  {
+    int len = read32le(vp);
+    vp += 4;
+    if ((vp + len) > ve)
+      break; // buffer overflow
+    if (gotoLast)
+      continue; // bypass to last
+    if (len > 23 && memcmp(vp, "METADATA_BLOCK_PICTURE=", 23) == 0)
+    {
+      char * picbuf = nullptr;
+      size_t lenbuf = Base64::b64decode(vp + 23, len - 23, &picbuf);
+      // check picture type matches with requirement
+      if (lenbuf > 8 && (read32be(picbuf) == pictureType || pictureType == -1))
+      {
+        unsigned mime_type_len;
+        unsigned desc_len;
+        unsigned data_len;
+        // check for sanity
+        if ((mime_type_len = read32be(picbuf + 4)) > lenbuf - 8 ||
+                (desc_len = read32be(picbuf + 8 + mime_type_len)) > lenbuf - 12 - mime_type_len ||
+                (data_len = read32be(picbuf + mime_type_len + desc_len + 28)) > lenbuf - 32 - desc_len - mime_type_len)
+        {
+          delete [] picbuf;
+          break;
+        }
+        Picture * p = new Picture();
+        p->payload = picbuf; // allocated pointer
+        p->free = &FilePicReader::FreeOGGSPicture; // handler to free the payload
+        p->mime = picbuf + 8; // mime type string
+        picbuf[mime_type_len + 8] = 0; // terminate the mime type string with zero
+        p->data = picbuf + mime_type_len + desc_len + 32; // image data
+        p->size = data_len; // image data length
+        DBG(DBG_PROTO, "%s: found picture (%s) size (%u)\n", __FUNCTION__, p->mime, p->size);
+        *pic = p;
+        gotoLast = true;
+      }
+    }
+    vp += len;
+    --count;
+  }
+  packet->datalen = (uint32_t)(ve - vp - *vp);
+  memmove(packet->buf, vp + *vp, packet->datalen);
+  return (count == 0);
 }

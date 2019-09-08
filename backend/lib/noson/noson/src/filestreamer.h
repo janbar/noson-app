@@ -72,14 +72,17 @@ private:
   static codec_type codecTypeTab[];
   static int codecTypeTabSize;
 
-  enum FileType {
-    Mime_flac = 0,
-    Mime_mpeg,
+  enum TransferType
+  {
+    Transfer_Chunked = 0,
+    Transfer_ByRange,
   };
 
-  typedef struct {
+  typedef struct
+  {
     const char * mime;
     bool (*probe)(const std::string& filePath);
+    TransferType transfer;
   } file_type;
 
   static file_type fileTypeTab[];
@@ -87,11 +90,18 @@ private:
 
   static void readParameters(const std::string& streamUrl, std::vector<std::string>& params);
   static std::string getParamValue(const std::vector<std::string>& params, const std::string& name);
+  static size_t getFileLength(FILE * file);
+  static size_t getFileLength(const std::string& filePath);
   static bool probe(const std::string& filePath, const std::string& mimeType);
   static bool probeFLAC(const std::string& filePath);
   static bool probeMPEG(const std::string& filePath);
-  void streamFile(handle * handle, const std::string& filePath, const std::string& mimeType);
+  static bool probeOGGS(const std::string& filePath);
 
+  typedef struct { size_t start; size_t end; } range;
+  static range bytesRange(const std::string& rangeValue, size_t size);
+
+  void streamFileByChunk(handle * handle, const std::string& filePath, const std::string& mimeType);
+  void streamFileByRange(handle * handle, const std::string& filePath, const std::string& mimetype, const std::string& rangeValue);
 
   void Reply500(handle * handle);
   void Reply400(handle * handle);

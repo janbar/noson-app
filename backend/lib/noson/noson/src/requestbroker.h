@@ -100,6 +100,7 @@ namespace NSROOT
     enum Status
     {
       Status_OK,
+      Status_Partial_Content,
       Status_Bad_Request,
       Status_Not_Found,
       Status_Too_Many_Requests,

@@ -48,6 +48,7 @@ std::string RequestBroker::MakeResponseHeader(Status status)
   switch (status)
   {
   case Status_OK: hsc = HSC_OK; m_200.Increment(); break;
+  case Status_Partial_Content: hsc = HSC_Partial_Content; m_200.Increment(); break;
   case Status_Bad_Request: hsc = HSC_Bad_Request; m_400.Increment(); break;
   case Status_Not_Found: hsc = HSC_Not_Found; m_404.Increment(); break;
   case Status_Too_Many_Requests: hsc = HSC_Too_Many_Requests; m_429.Increment(); break;
