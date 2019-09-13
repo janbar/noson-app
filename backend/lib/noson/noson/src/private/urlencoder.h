@@ -56,7 +56,7 @@ inline std::string __urldecode(const std::string& str) {
     char c = *cstr;
     if (c == '%')
     {
-      int v;
+      unsigned v;
       char buf[3];
       strncpy(buf, cstr + 1, 3);
       buf[2] = '\0';
