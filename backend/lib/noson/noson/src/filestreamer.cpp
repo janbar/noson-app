@@ -21,7 +21,6 @@
 #include "private/debug.h"
 #include "private/urlencoder.h"
 #include "private/tokenizer.h"
-#include "private/os/unix/os-types.h"
 
 #include <cstring>
 #include <cstdio>
