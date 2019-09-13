@@ -96,12 +96,12 @@ DialogBase {
             width: units.gu(10)
             height: units.gu(2.5)
             fillMode: Image.PreserveAspectCrop
-            source: "qrc:/images/deezer.png"
+            source: "qrc:/images/lastfm.png"
             sourceSize.width: width
             sourceSize.height: height
             MouseArea {
                 anchors.fill: parent
-                onClicked: Qt.openUrlExternally("https://www.deezer.com")
+                onClicked: Qt.openUrlExternally("https://www.last.fm")
             }
         }
         Image {
@@ -109,12 +109,12 @@ DialogBase {
             width: units.gu(10)
             height: units.gu(2.5)
             fillMode: Image.PreserveAspectCrop
-            source: "qrc:/images/lastfm.png"
+            source: "qrc:/images/deezer.png"
             sourceSize.width: width
             sourceSize.height: height
             MouseArea {
                 anchors.fill: parent
-                onClicked: Qt.openUrlExternally("https://www.last.fm")
+                onClicked: Qt.openUrlExternally("https://www.deezer.com")
             }
         }
     }
