@@ -33,7 +33,12 @@
 
 using namespace mediascanner;
 
-static const char * _exts[] = {"MP3", "MP2", "AAC"};
+static const char * _exts[] = {
+  "MP3", "AAC",
+#ifdef ENABLE_MEDIA_MP2
+  "MP2",
+#endif
+};
 static int _exts_len = sizeof(_exts) / sizeof(const char*);
 
 bool ID3Parser::match(const QFileInfo& fileInfo)
