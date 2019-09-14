@@ -161,6 +161,8 @@ namespace NSROOT
     // prevent copy
     SMAPI(const SMAPI&);
     SMAPI& operator=(const SMAPI&);
+
+    static std::string toLocale(const std::string& locale);
   };
 }
 

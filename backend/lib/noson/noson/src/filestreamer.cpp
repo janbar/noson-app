@@ -418,7 +418,7 @@ void FileStreamer::streamFileByRange(handle * handle, const std::string& filePat
       if (len != flen)
       {
         resp.assign(RequestBroker::MakeResponseHeader(Status_Partial_Content))
-            .append("Content-Range: bytes ")
+            .append("Content-range: bytes ")
             .append(std::to_string(rg.start)).append("-").append(std::to_string(rg.end))
             .append("/").append(std::to_string(flen)).append("\r\n");
       }
