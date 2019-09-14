@@ -151,13 +151,8 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
         break;
       }
 
-      if (block == 0x01)
+      if (block == 0x01 && !isInfoValid) // only one identification block is allowed
       {
-        if (isInfoValid)
-        {
-          isInfoValid = false;
-          break; // only one identification block is allowed
-        }
         // parse identification header
         isInfoValid = parse_identification(&packet, info, debug);
         info->container = file->suffix.toLower();
@@ -165,9 +160,11 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
       else if (block == 0x03)
       {
         // parse comment header
-        isInfoValid = parse_comment(&packet, info, debug);
-        if (!isInfoValid)
+        if (!parse_comment(&packet, info, debug))
+        {
+          isInfoValid = false;
           break;
+        }
         if (info->title.isEmpty())
           info->title = file->baseName; // default title
         // required infos have been gathered
@@ -254,6 +251,8 @@ bool OGGParser::parse_identification(packet_t * packet, MediaInfo *info, bool de
   info->channels = channels;
   info->bitRate = (bitRateNominal > 0 ? bitRateNominal : bitRateMaximum);
   info->duration = 0; // not set
+  if (debug)
+    qDebug("%s: codec:%s sr:%d ch:%d bps:%d", __FUNCTION__, info->codec.toUtf8().constData(), info->sampleRate, info->channels, info->bitRate);
   packet->datalen = 0; // all is consumed
   return true;
 }
