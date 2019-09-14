@@ -938,7 +938,7 @@
     <message>
         <location filename="../ui/Index.qml" line="35"/>
         <source>My Index</source>
-        <translation>Mijn Musiekindex</translation>
+        <translation>Mijn Muziekindex</translation>
     </message>
     <message>
         <location filename="../ui/Index.qml" line="120"/>
@@ -1027,7 +1027,7 @@
         <location filename="../components/MusicPage.qml" line="349"/>
         <location filename="../components/MusicPage.qml" line="403"/>
         <source>Done</source>
-        <translation>Afgerond</translation>
+        <translation>Gereed</translation>
     </message>
     <message>
         <location filename="../components/MusicPage.qml" line="393"/>
@@ -1541,7 +1541,7 @@
     <message>
         <location filename="../noson.qml" line="1094"/>
         <source>My Index</source>
-        <translation>Mijn Musiekindex</translation>
+        <translation>Mijn Muziekindex</translation>
     </message>
     <message>
         <location filename="../noson.qml" line="1096"/>
