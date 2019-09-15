@@ -32,7 +32,7 @@ bool UPNPNotificationBroker::HandleRequest(handle * handle)
 {
   if (!IsAborted())
   {
-    if (RequestBroker::GetRequestMethod(handle) == Method_NOTIFY &&
+    if (RequestBroker::GetRequestMethod(handle) == RequestBroker::Method_NOTIFY &&
           RequestBroker::GetRequestHeader(handle, "NT") == "upnp:event" &&
           RequestBroker::GetRequestHeader(handle, "CONTENT-TYPE").compare(0, 8, "text/xml") == 0 &&
           RequestBroker::HasContent(handle))
@@ -75,7 +75,7 @@ void UPNPNotificationBroker::UnregisterResource(const std::string& uri)
 void UPNPNotificationBroker::Reply500(handle * handle)
 {
   std::string resp;
-  resp.assign(RequestBroker::MakeResponseHeader(Status_Internal_Server_Error))
+  resp.assign(RequestBroker::MakeResponseHeader(RequestBroker::Status_Internal_Server_Error))
       .append("\r\n");
   RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }
@@ -228,7 +228,7 @@ void UPNPNotificationBroker::Process(handle * handle)
 
   handle->handler->DispatchEvent(msg);
   std::string resp;
-  resp.assign(RequestBroker::MakeResponseHeader(Status_OK))
+  resp.assign(RequestBroker::MakeResponseHeader(RequestBroker::Status_OK))
       .append("\r\n");
   RequestBroker::Reply(handle, resp.c_str(), resp.length());
   return;

@@ -38,10 +38,10 @@ bool MainPageBroker::HandleRequest(handle * handle)
     {
       switch (RequestBroker::GetRequestMethod(handle))
       {
-      case Method_GET:
+      case RequestBroker::Method_GET:
         ProcessGET(handle);
         return true;
-      case Method_HEAD:
+      case RequestBroker::Method_HEAD:
         ProcessHEAD(handle);
         return true;
       default:
@@ -98,7 +98,7 @@ void MainPageBroker::ProcessGET(handle * handle)
   static const char * _end = "</div></body></html>";
 
   std::string resp;
-  resp.assign(RequestBroker::MakeResponseHeader(Status_OK));
+  resp.assign(RequestBroker::MakeResponseHeader(RequestBroker::Status_OK));
   std::string data;
   data.assign(_begin);
   std::vector<RequestBrokerPtr> rbs = handle->handler->AllRequestBroker();
@@ -139,8 +139,8 @@ void MainPageBroker::ProcessGET(handle * handle)
     data.append("</tbody></table>");
   }
   data.append(_end);
-  resp.append("Content-type: text/html\r\n")
-      .append("Content-length: ").append(std::to_string(data.length())).append("\r\n")
+  resp.append("Content-Type: text/html\r\n")
+      .append("Content-Length: ").append(std::to_string(data.length())).append("\r\n")
       .append("\r\n");
   RequestBroker::Reply(handle, resp.c_str(), resp.length());
   RequestBroker::Reply(handle, data.c_str(), data.length());
@@ -150,8 +150,8 @@ void MainPageBroker::ProcessGET(handle * handle)
 void MainPageBroker::ProcessHEAD(handle * handle)
 {
   std::string resp;
-  resp.assign(RequestBroker::MakeResponseHeader(Status_OK));
-  resp.append("Content-type: text/html\r\n")
+  resp.assign(RequestBroker::MakeResponseHeader(RequestBroker::Status_OK));
+  resp.append("Content-Type: text/html\r\n")
       .append("\r\n");
   RequestBroker::Reply(handle, resp.c_str(), resp.length());
   return;

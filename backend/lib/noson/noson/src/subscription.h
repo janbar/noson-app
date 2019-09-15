@@ -26,7 +26,7 @@
 
 #include <string>
 
-#define SUBSCRIPTION_TIMEOUT 300
+#define SUBSCRIPTION_TIMEOUT 3600
 
 namespace NSROOT
 {

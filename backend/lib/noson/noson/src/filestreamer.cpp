@@ -100,19 +100,19 @@ bool FileStreamer::HandleRequest(handle * handle)
         
         switch (RequestBroker::GetRequestMethod(handle))
         {
-        case Method_GET:
+        case RequestBroker::Method_GET:
           if (transfer == Transfer_ByRange)
             streamFileByRange(handle, filePath, (*it)->contentType, RequestBroker::GetRequestHeader(handle, "RANGE"));
           else
             streamFileByChunk(handle, filePath, (*it)->contentType);
           return true;
-        case Method_HEAD:
+        case RequestBroker::Method_HEAD:
         {
           std::string resp;
-          resp.assign(RequestBroker::MakeResponseHeader(Status_OK))
-              .append("Content-type: ").append((*it)->contentType).append("\r\n");
+          resp.assign(RequestBroker::MakeResponseHeader(RequestBroker::Status_OK))
+              .append("Content-Type: ").append((*it)->contentType).append("\r\n");
           if (transfer == Transfer_ByRange)
-            resp.append("Content-length: ").append(std::to_string(getFileLength(filePath))).append("\r\n");
+            resp.append("Content-Length: ").append(std::to_string(getFileLength(filePath))).append("\r\n");
           resp.append("\r\n");
           RequestBroker::Reply(handle, resp.c_str(), resp.length());
           return true;
@@ -360,9 +360,9 @@ void FileStreamer::streamFileByChunk(handle * handle, const std::string& filePat
     DBG(DBG_INFO, "%s: open stream #%d (%s) type (%s)\n", __FUNCTION__, id, filePath.c_str(), mimeType.c_str());
     size_t tb = 0; // count transfered bytes
     std::string resp;
-    resp.assign(RequestBroker::MakeResponseHeader(Status_OK))
-        .append("Content-type: ").append(mimeType).append("\r\n")
-        .append("Transfer-encoding: chunked\r\n")
+    resp.assign(RequestBroker::MakeResponseHeader(RequestBroker::Status_OK))
+        .append("Content-Type: ").append(mimeType).append("\r\n")
+        .append("Transfer-Encoding: chunked\r\n")
         .append("\r\n");
 
     if (RequestBroker::Reply(handle, resp.c_str(), resp.length()))
@@ -417,17 +417,17 @@ void FileStreamer::streamFileByRange(handle * handle, const std::string& filePat
       std::string resp;
       if (len != flen)
       {
-        resp.assign(RequestBroker::MakeResponseHeader(Status_Partial_Content))
-            .append("Content-range: bytes ")
+        resp.assign(RequestBroker::MakeResponseHeader(RequestBroker::Status_Partial_Content))
+            .append("Content-Range: bytes ")
             .append(std::to_string(rg.start)).append("-").append(std::to_string(rg.end))
             .append("/").append(std::to_string(flen)).append("\r\n");
       }
       else
       {
-        resp.assign(RequestBroker::MakeResponseHeader(Status_OK));
+        resp.assign(RequestBroker::MakeResponseHeader(RequestBroker::Status_OK));
       }
-      resp.append("Content-type: ").append(mimeType).append("\r\n")
-          .append("Content-length: ").append(std::to_string(len)).append("\r\n")
+      resp.append("Content-Type: ").append(mimeType).append("\r\n")
+          .append("Content-Length: ").append(std::to_string(len)).append("\r\n")
           .append("\r\n");
 
       if (RequestBroker::Reply(handle, resp.c_str(), resp.length()))
@@ -462,7 +462,7 @@ void FileStreamer::streamFileByRange(handle * handle, const std::string& filePat
 void FileStreamer::Reply500(handle * handle)
 {
   std::string resp;
-  resp.assign(RequestBroker::MakeResponseHeader(Status_Internal_Server_Error))
+  resp.assign(RequestBroker::MakeResponseHeader(RequestBroker::Status_Internal_Server_Error))
       .append("\r\n");
   RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }
@@ -470,7 +470,7 @@ void FileStreamer::Reply500(handle * handle)
 void FileStreamer::Reply400(handle * handle)
 {
   std::string resp;
-  resp.append(RequestBroker::MakeResponseHeader(Status_Bad_Request))
+  resp.append(RequestBroker::MakeResponseHeader(RequestBroker::Status_Bad_Request))
       .append("\r\n");
   RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }
@@ -478,7 +478,7 @@ void FileStreamer::Reply400(handle * handle)
 void FileStreamer::Reply429(handle * handle)
 {
   std::string resp;
-  resp.append(RequestBroker::MakeResponseHeader(Status_Too_Many_Requests))
+  resp.append(RequestBroker::MakeResponseHeader(RequestBroker::Status_Too_Many_Requests))
       .append("\r\n");
   RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }

@@ -34,6 +34,7 @@
 #define PULSESTREAMER_DESC      "Audio stream from %s"
 #define PULSESTREAMER_TIMEOUT   10000
 #define PULSESTREAMER_MAX_PB    3
+#define PULSESTREAMER_CHUNK     16384
 #define PA_SINK_NAME            "noson"
 #define PA_CLIENT_NAME          PA_SINK_NAME
 
@@ -74,14 +75,14 @@ bool PulseStreamer::HandleRequest(handle * handle)
     {
       switch (RequestBroker::GetRequestMethod(handle))
       {
-      case Method_GET:
+      case RequestBroker::Method_GET:
         streamSink(handle);
         return true;
-      case Method_HEAD:
+      case RequestBroker::Method_HEAD:
       {
         std::string resp;
-        resp.assign(RequestBroker::MakeResponseHeader(Status_OK))
-            .append("Content-type: audio/flac\r\n")
+        resp.assign(RequestBroker::MakeResponseHeader(RequestBroker::Status_OK))
+            .append("Content-Type: audio/flac\r\n")
             .append("\r\n");
         RequestBroker::Reply(handle, resp.c_str(), resp.length());
         return true;
@@ -196,24 +197,25 @@ void PulseStreamer::streamSink(handle * handle)
     ai.start();
 
     std::string resp;
-    resp.assign(RequestBroker::MakeResponseHeader(Status_OK))
-        .append("Content-type: audio/flac\r\n")
-        .append("Transfer-encoding: chunked\r\n")
+    resp.assign(RequestBroker::MakeResponseHeader(RequestBroker::Status_OK))
+        .append("Content-Type: audio/flac\r\n")
+        .append("Transfer-Encoding: chunked\r\n")
         .append("\r\n");
 
     if (RequestBroker::Reply(handle, resp.c_str(), resp.length()))
     {
-      char buf[4008];
+      char * buf = new char [PULSESTREAMER_CHUNK + 16];
       int r = 0;
-      while (!IsAborted() && (r = ai.read(buf + 5, 4000, PULSESTREAMER_TIMEOUT)) > 0)
+      while (!IsAborted() && (r = ai.read(buf + 7, PULSESTREAMER_CHUNK, PULSESTREAMER_TIMEOUT)) > 0)
       {
-        char str[6];
-        snprintf(str, sizeof(str), "%03x\r\n", (unsigned)r & 0xfff);
-        memcpy(buf, str, 5);
-        memcpy(buf + 5 + r, "\r\n", 2);
-        if (!RequestBroker::Reply(handle, buf, r + 7))
+        char str[8];
+        snprintf(str, sizeof(str), "%05x\r\n", (unsigned)r & 0xfffff);
+        memcpy(buf, str, 7);
+        memcpy(buf + r + 7, "\r\n", 2);
+        if (!RequestBroker::Reply(handle, buf, r + 7 + 2))
           break;
       }
+      delete [] buf;
       if (r == 0)
         RequestBroker::Reply(handle, "0\r\n\r\n", 5);
     }
@@ -230,7 +232,7 @@ void PulseStreamer::streamSink(handle * handle)
 void PulseStreamer::Reply503(handle * handle)
 {
   std::string resp;
-  resp.assign(RequestBroker::MakeResponseHeader(Status_Service_Unavailable))
+  resp.assign(RequestBroker::MakeResponseHeader(RequestBroker::Status_Service_Unavailable))
       .append("\r\n");
   RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }
@@ -238,7 +240,7 @@ void PulseStreamer::Reply503(handle * handle)
 void PulseStreamer::Reply400(handle * handle)
 {
   std::string resp;
-  resp.append(RequestBroker::MakeResponseHeader(Status_Bad_Request))
+  resp.append(RequestBroker::MakeResponseHeader(RequestBroker::Status_Bad_Request))
       .append("\r\n");
   RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }
@@ -246,7 +248,7 @@ void PulseStreamer::Reply400(handle * handle)
 void PulseStreamer::Reply429(handle * handle)
 {
   std::string resp;
-  resp.append(RequestBroker::MakeResponseHeader(Status_Too_Many_Requests))
+  resp.append(RequestBroker::MakeResponseHeader(RequestBroker::Status_Too_Many_Requests))
       .append("\r\n");
   RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }

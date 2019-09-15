@@ -58,10 +58,10 @@ bool ImageService::HandleRequest(handle * handle)
     {
       switch (RequestBroker::GetRequestMethod(handle))
       {
-      case Method_GET:
+      case RequestBroker::Method_GET:
         ProcessGET(handle);
         return true;
-      case Method_HEAD:
+      case RequestBroker::Method_HEAD:
         ProcessHEAD(handle);
         return true;
       default:
@@ -147,9 +147,9 @@ void ImageService::ProcessGET(handle * handle)
       // override content type with stream type
       const char * contentType = stream->contentType != nullptr ? stream->contentType : res->contentType.c_str();
       std::string resp;
-      resp.assign(RequestBroker::MakeResponseHeader(Status_OK))
-          .append("Content-type: ").append(contentType).append("\r\n")
-          .append("Content-length: ").append(std::to_string(stream->contentLength)).append("\r\n")
+      resp.assign(RequestBroker::MakeResponseHeader(RequestBroker::Status_OK))
+          .append("Content-Type: ").append(contentType).append("\r\n")
+          .append("Content-Length: ").append(std::to_string(stream->contentLength)).append("\r\n")
           .append("\r\n");
       if (RequestBroker::Reply(handle, resp.c_str(), resp.length()))
       {
@@ -190,8 +190,8 @@ void ImageService::ProcessHEAD(handle * handle)
       const char * contentType = stream->contentType != nullptr ? stream->contentType : res->contentType.c_str();
       res->delegate->CloseStream(stream);
       std::string resp;
-      resp.assign(RequestBroker::MakeResponseHeader(Status_OK))
-          .append("Content-type: ").append(contentType).append("\r\n")
+      resp.assign(RequestBroker::MakeResponseHeader(RequestBroker::Status_OK))
+          .append("Content-Type: ").append(contentType).append("\r\n")
           .append("\r\n");
       RequestBroker::Reply(handle, resp.c_str(), resp.length());
     }
@@ -210,7 +210,7 @@ void ImageService::ProcessHEAD(handle * handle)
 void ImageService::Reply500(handle * handle)
 {
   std::string resp;
-  resp.assign(RequestBroker::MakeResponseHeader(Status_Internal_Server_Error))
+  resp.assign(RequestBroker::MakeResponseHeader(RequestBroker::Status_Internal_Server_Error))
       .append("\r\n");
   RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }
@@ -218,7 +218,7 @@ void ImageService::Reply500(handle * handle)
 void ImageService::Reply400(handle * handle)
 {
   std::string resp;
-  resp.append(RequestBroker::MakeResponseHeader(Status_Bad_Request))
+  resp.append(RequestBroker::MakeResponseHeader(RequestBroker::Status_Bad_Request))
       .append("\r\n");
   RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }
@@ -226,7 +226,7 @@ void ImageService::Reply400(handle * handle)
 void ImageService::Reply404(handle * handle)
 {
   std::string resp;
-  resp.append(RequestBroker::MakeResponseHeader(Status_Not_Found))
+  resp.append(RequestBroker::MakeResponseHeader(RequestBroker::Status_Not_Found))
       .append("\r\n");
   RequestBroker::Reply(handle, resp.c_str(), resp.length());
 }
