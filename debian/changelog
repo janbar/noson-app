@@ -1,6 +1,12 @@
 noson-app (3.13) UNRELEASED; urgency=low
 
   [ janbar ]
+  * Release 3.14
+  * Add support for files OGG/Vorbis
+  * Fix language range to be compliant with RFC-4647
+  * minor fixes
+
+  [ janbar ]
   * Release 3.13
   * Fetch thumbnails from DEEZER by default
 
