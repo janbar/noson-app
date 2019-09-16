@@ -72,7 +72,12 @@ private:
 
   static Picture * ExtractOGGSPicture(const std::string& filePath, PictureType pictureType, bool& error);
   static void FreeOGGSPicture(void * payload);
-  typedef struct { unsigned char * buf; uint32_t size; uint32_t datalen; } packet_t;
+  typedef struct {
+    unsigned char * buf;
+    uint32_t size;
+    unsigned char * data;
+    uint32_t datalen;
+  } packet_t;
   static bool resize_packet(packet_t * packet, uint32_t size);
   static bool fill_packet(packet_t * packet, uint32_t len, FILE * fp);
   static bool parse_comment(packet_t * packet, Picture ** pic, PictureType pictureType);

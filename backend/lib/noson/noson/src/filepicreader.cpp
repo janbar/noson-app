@@ -719,7 +719,7 @@ FilePicReader::Picture * FilePicReader::ExtractOGGSPicture(const std::string& fi
   unsigned char buf[OGG_BLOCK_SIZE];
   unsigned char lacing[255];
   bool isLast = false;
-  packet_t packet = { nullptr, 0, 0 };
+  packet_t packet = { nullptr, 0, nullptr, 0 };
   Picture * pic = nullptr;
   FILE * file = fopen(filePath.c_str(), "rb");
   if (!file)
@@ -729,7 +729,7 @@ FilePicReader::Picture * FilePicReader::ExtractOGGSPicture(const std::string& fi
     return pic;
   }
 
-  while (!isLast)
+  for (;;)
   {
     // check the magic file header, else close and return a null payload
     if (fread(buf, 1, OGG_BLOCK_SIZE, file) != OGG_BLOCK_SIZE || memcmp(buf, "OggS", 4) != 0)
@@ -751,35 +751,37 @@ FilePicReader::Picture * FilePicReader::ExtractOGGSPicture(const std::string& fi
     for (int i = 0; i < number_page_segments; ++i)
       segment_table += (unsigned char)read8(lacing + i);
 
-    if ((header_type_flag & 0x04) == 0x04)
     // bit 0x04: this is the last page of a logical bitstream (eos)
+    if ((header_type_flag & 0x04) == 0x04)
     {
+      // append data and process the packet
       isLast = true;
-      // fill last page and process current packet
-      if (!fill_packet(&packet, segment_table, file))
-      {
-        DBG(DBG_INFO, "%s: file read error (%s)\n", __FUNCTION__, filePath.c_str());
-        break;
-      }
-    }
-    else if ((header_type_flag & 0x01) == 0x01)
-    // bit 0x01: page contains data of a packet continued from the previous page
-    {
-      if (packet.size == 0)
-        break;
       resize_packet(&packet, packet.datalen + segment_table);
       if (!fill_packet(&packet,segment_table, file))
       {
         DBG(DBG_INFO, "%s: file read error (%s)\n", __FUNCTION__, filePath.c_str());
         break;
       }
-      continue;
     }
-    else if ((header_type_flag & 0x02) == 0x02)
     // bit 0x02: this is the first page of a logical bitstream (bos)
+    else if ((header_type_flag & 0x02) == 0x02)
     {
+      // fill fresh data and read next page
+      packet.datalen = 0;
       resize_packet(&packet, OGG_PACKET_RSVSIZE);
       if (!fill_packet(&packet, segment_table, file))
+      {
+        DBG(DBG_INFO, "%s: file read error (%s)\n", __FUNCTION__, filePath.c_str());
+        break;
+      }
+      continue;
+    }
+    // bit 0x01: page contains data of a packet continued from the previous page
+    else if ((header_type_flag & 0x01) == 0x01)
+    {
+      // append data and read next page
+      resize_packet(&packet, packet.datalen + segment_table);
+      if (!fill_packet(&packet,segment_table, file))
       {
         DBG(DBG_INFO, "%s: file read error (%s)\n", __FUNCTION__, filePath.c_str());
         break;
@@ -797,36 +799,22 @@ FilePicReader::Picture * FilePicReader::ExtractOGGSPicture(const std::string& fi
       break;
     }
 
-    unsigned char block = (unsigned char)read8(packet.buf);
-
-    if ((block & 0x01) == 0x01)
+    // check for vorbis comment header
+    unsigned char block = (unsigned char)read8(packet.data);
+    if (block == 0x03 && packet.datalen > 7 &&
+        memcmp(packet.data + 1, "vorbis", 6) == 0)
     {
-      // check the magic packet header, else break
-      if (packet.datalen < 7 || memcmp(packet.buf + 1, "vorbis", 6) != 0)
-      {
-        DBG(DBG_INFO, "%s: bad packet header (%s)\n", __FUNCTION__, filePath.c_str());
-        break;
-      }
-
-      if (block == 0x03)
-      {
-        // parse comment header
-        parse_comment(&packet, &pic, pictureType);
-        break;
-      }
-      else
-      {
-        // consume data
-        packet.datalen = 0;
-      }
-    }
-    else
-    {
-      // consume data
-      packet.datalen = 0;
+      // parse comment header
+      parse_comment(&packet, &pic, pictureType);
+      break;
     }
 
-    if (!isLast && !fill_packet(&packet, segment_table, file))
+    if (isLast)
+      break; // finish
+
+    // fill fresh data and read next page
+    packet.datalen = 0;
+    if (!fill_packet(&packet, segment_table, file))
     {
       DBG(DBG_INFO, "%s: file read error (%s)\n", __FUNCTION__, filePath.c_str());
       break;
@@ -869,6 +857,7 @@ bool FilePicReader::fill_packet(packet_t * packet, uint32_t len, FILE * fp)
   if (!resize_packet(packet, packet->datalen + len) ||
       fread(packet->buf + packet->datalen, 1, len, fp) != len)
     return false;
+  packet->data = packet->buf;
   packet->datalen += len;
   return true;
 }
@@ -876,9 +865,8 @@ bool FilePicReader::fill_packet(packet_t * packet, uint32_t len, FILE * fp)
 bool FilePicReader::parse_comment(packet_t * packet, Picture ** pic, PictureType pictureType)
 {
   bool gotoLast = false;
-  unsigned char * vorbis = packet->buf;
-  unsigned char * ve = vorbis + packet->datalen;
-  unsigned char * vp = vorbis + 7; // pass magic string
+  unsigned char * ve = packet->data + packet->datalen;
+  unsigned char * vp = packet->data + 7; // pass magic string
   vp += read32le(vp) + 4; // pass vendor string
   int count = read32le(vp); // comment list length;
   vp += 4;
@@ -923,7 +911,7 @@ bool FilePicReader::parse_comment(packet_t * packet, Picture ** pic, PictureType
     vp += len;
     --count;
   }
-  packet->datalen = (uint32_t)(ve - vp - *vp);
-  memmove(packet->buf, vp + *vp, packet->datalen);
+  packet->data = vp + *vp;
+  packet->datalen -= ve - vp - *vp;
   return (count == 0);
 }
