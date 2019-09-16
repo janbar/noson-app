@@ -31,7 +31,13 @@ public:
   bool parse(MediaFile * file, MediaInfo * info, bool debug) override;
 
 private:
-  typedef struct { unsigned char * buf; uint32_t size; uint32_t datalen; } packet_t;
+  typedef struct
+  {
+    unsigned char * buf;
+    uint32_t size;
+    unsigned char * data;
+    uint32_t datalen;
+  } packet_t;
   static bool resize_packet(packet_t * packet, uint32_t size);
   static bool fill_packet(packet_t * packet, uint32_t len, FILE * fp);
   static bool parse_identification(packet_t * packet, MediaInfo * info, bool debug);

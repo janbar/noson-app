@@ -54,12 +54,12 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
   bool isLast = false;
   bool isInfoValid = false;
   bool gotoLast = false;
-  packet_t packet = { nullptr, 0, 0 };
+  packet_t packet = { nullptr, 0, nullptr, 0 };
   FILE * fp = fopen(path.c_str(), "rb");
   if (!fp)
     return false;
 
-  while (!isLast)
+  for (;;)
   {
     // check the magic file header, else close and return a null payload
     if (fread(buf, 1, OGG_BLOCK_SIZE, fp) != OGG_BLOCK_SIZE || memcmp(buf, "OggS", 4) != 0)
@@ -86,41 +86,44 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
     for (int i = 0; i < number_page_segments; ++i)
       segment_table += (unsigned char)read8(lacing + i);
 
-    if ((header_type_flag & 0x04) == 0x04)
     // bit 0x04: this is the last page of a logical bitstream (eos)
+    if ((header_type_flag & 0x04) == 0x04)
     {
+      // append data and process the packet
       isLast = true;
-      // fill last page and process current packet
-      if (!fill_packet(&packet, segment_table, fp))
-      {
-        qWarning("%s: file read error %s", __FUNCTION__, path.c_str());
-        break;
-      }
-    }
-    else if (gotoLast)
-    // bypass the page until last
-    {
-      fseek(fp, segment_table, SEEK_CUR);
-      continue;
-    }
-    else if ((header_type_flag & 0x01) == 0x01)
-    // bit 0x01: page contains data of a packet continued from the previous page
-    {
-      if (packet.size == 0)
-        break;
       resize_packet(&packet, packet.datalen + segment_table);
       if (!fill_packet(&packet,segment_table, fp))
       {
         qWarning("%s: file read error %s", __FUNCTION__, path.c_str());
         break;
       }
+    }
+    else if (gotoLast)
+    {
+      // bypass the page until last
+      packet.datalen = 0;
+      fseek(fp, segment_table, SEEK_CUR);
       continue;
     }
-    else if ((header_type_flag & 0x02) == 0x02)
     // bit 0x02: this is the first page of a logical bitstream (bos)
+    else if ((header_type_flag & 0x02) == 0x02)
     {
+      // fill fresh data and read next page
+      packet.datalen = 0;
       resize_packet(&packet, OGG_PACKET_RSVSIZE);
       if (!fill_packet(&packet, segment_table, fp))
+      {
+        qWarning("%s: file read error %s", __FUNCTION__, path.c_str());
+        break;
+      }
+      continue;
+    }
+    // bit 0x01: page contains data of a packet continued from the previous page
+    else if ((header_type_flag & 0x01) == 0x01)
+    {
+      // append data and read next page
+      resize_packet(&packet, packet.datalen + segment_table);
+      if (!fill_packet(&packet,segment_table, fp))
       {
         qWarning("%s: file read error %s", __FUNCTION__, path.c_str());
         break;
@@ -138,18 +141,13 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
       break;
     }
 
-    unsigned char block = (unsigned char)read8(packet.buf);
-    if (debug)
-      qDebug("%s: on block type %02x size %u", __FUNCTION__, block, packet.datalen);
-
-    if ((block & 0x01) == 0x01)
+    // check for vorbis header
+    unsigned char block = (unsigned char)read8(packet.data);
+    if ((block & 0x01) == 0x01 && packet.datalen > 7 &&
+        memcmp(packet.data + 1, "vorbis", 6) == 0)
     {
-      // check the magic packet header, else break
-      if (packet.datalen < 7 || memcmp(packet.buf + 1, "vorbis", 6) != 0)
-      {
-        qWarning("%s: ERROR: bad packet header in file %s", __FUNCTION__, path.c_str());
-        break;
-      }
+      if (debug)
+        qDebug("%s: on block type %02x len %u", __FUNCTION__, block, (unsigned)packet.datalen);
 
       if (block == 0x01 && !isInfoValid) // only one identification block is allowed
       {
@@ -167,21 +165,8 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
         }
         if (info->title.isEmpty())
           info->title = file->baseName; // default title
-        // required infos have been gathered
-        // so now search the last page to compute the duration of the stream
-        gotoLast = true;
-        packet.datalen = 0;
+        gotoLast = isInfoValid;
       }
-      else
-      {
-        // consume data
-        packet.datalen = 0;
-      }
-    }
-    else
-    {
-      // consume data
-      packet.datalen = 0;
     }
 
     if (isLast)
@@ -190,8 +175,12 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
         qDebug("%s: granule_position=%" PRIu64 " sample_rate=%d", __FUNCTION__, granule_position, info->sampleRate);
       if (info->sampleRate > 0)
         info->duration = granule_position / info->sampleRate;
+      break; // finish
     }
-    else if (!fill_packet(&packet, segment_table, fp))
+
+    // fill fresh data and read next page
+    packet.datalen = 0;
+    if (!fill_packet(&packet, segment_table, fp))
     {
       qWarning("%s: ERROR: reading file %s", __FUNCTION__, path.c_str());
       break;
@@ -232,13 +221,14 @@ bool OGGParser::fill_packet(packet_t * packet, uint32_t len, FILE * fp)
   if (!resize_packet(packet, packet->datalen + len) ||
       fread(packet->buf + packet->datalen, 1, len, fp) != len)
     return false;
+  packet->data = packet->buf;
   packet->datalen += len;
   return true;
 }
 
 bool OGGParser::parse_identification(packet_t * packet, MediaInfo *info, bool debug)
 {
-  unsigned char * vorbis = packet->buf;
+  unsigned char * vorbis = packet->data;
   int channels = read8(vorbis + 11);
   int sampleRate = read32le(vorbis + 12);
   int bitRateMaximum = read32le(vorbis + 16);
@@ -251,17 +241,17 @@ bool OGGParser::parse_identification(packet_t * packet, MediaInfo *info, bool de
   info->channels = channels;
   info->bitRate = (bitRateNominal > 0 ? bitRateNominal : bitRateMaximum);
   info->duration = 0; // not set
+  // consume the rest of data
+  packet->datalen = 0;
   if (debug)
     qDebug("%s: codec:%s sr:%d ch:%d bps:%d", __FUNCTION__, info->codec.toUtf8().constData(), info->sampleRate, info->channels, info->bitRate);
-  packet->datalen = 0; // all is consumed
   return true;
 }
 
 bool OGGParser::parse_comment(packet_t * packet, MediaInfo *info, bool debug)
 {
-  unsigned char * vorbis = packet->buf;
-  unsigned char * ve = vorbis + packet->datalen;
-  unsigned char * vp = vorbis + 7; // pass magic string
+  unsigned char * ve = packet->data + packet->datalen;
+  unsigned char * vp = packet->data + 7; // pass magic string
   vp += read32le(vp) + 4; // pass vendor string
   int count = read32le(vp); // comment list length;
   vp += 4;
@@ -291,7 +281,7 @@ bool OGGParser::parse_comment(packet_t * packet, MediaInfo *info, bool debug)
     if (debug)
       qDebug("%s", str.toUtf8().constData());
   }
-  packet->datalen = (uint32_t)(ve - vp - *vp);
-  memmove(packet->buf, vp + *vp, packet->datalen);
+  packet->data = vp + *vp;
+  packet->datalen -= ve - vp - *vp;
   return (count == 0);
 }
