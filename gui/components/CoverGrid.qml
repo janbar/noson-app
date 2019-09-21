@@ -74,6 +74,18 @@ Item {
         visible: coverGrid.overlay
     }
 
+    // for debug
+    //property real progress: 0.0
+    //Text {
+    //    id: showProgress
+    //    anchors.centerIn: parent
+    //    width: parent.width
+    //    font.pointSize: units.fs("x-large")
+    //    horizontalAlignment: Text.AlignHCenter
+    //    text: "" + Math.round(100 * progress) + "%"
+    //    color: "black"
+    //}
+
     // Flow of the cover arts in either 1, 1x1, 2x1, 2x2
     Flow {
         id: imageRow
@@ -92,6 +104,9 @@ Item {
                 width: coverGrid.size / (imageRow.flowCount > 2 && !(imageRow.flowCount === 3 && index === 2) ? 2 : 1)
                 source: coverGrid.covers.length !== 0 && coverGrid.covers[index] !== undefined && coverGrid.covers[index].art.length > 0
                         ? coverGrid.covers[index].art : ""
+
+                // for debug
+                //onProgressChanged: { coverGrid.progress = progress; }
 
                 ///@WARNING: Changing this property dynamically causes the image source
                 /// to be reloaded, potentially even from the network, if it is not in
