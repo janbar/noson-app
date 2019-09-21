@@ -92,7 +92,7 @@ struct ID3v1Tag
   char album[30];
   char year[4];
   char comments[30];
-  char genre;
+  unsigned char genre;
 });
 
 static QByteArray _cs_conv_latin1(const char * data, unsigned size);
@@ -451,7 +451,6 @@ static int _get_id3v1_genre(unsigned int genre, QByteArray * out)
 
 static inline int _parse_id3v1_genre(const char * str_genre, QByteArray * out)
 {
-
   return _get_id3v1_genre(atoi(str_genre), out);
 }
 
@@ -502,7 +501,7 @@ static void _get_id3v2_genre(const char * frame_data, unsigned int frame_size, Q
         /* ) is the last character and only appears once in the
          * string get the id3v1 genre enclosed by parentheses
          */
-        if (_parse_id3v1_genre(genre.constData() + 1, out) != 0)
+        if (_parse_id3v1_genre(genre.constData() + 1, out) == 0)
         {
           return;
         }
