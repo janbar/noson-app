@@ -268,7 +268,7 @@ void AlbumInfo::processInfo()
     {
       m_error.status = ReplyNoDataFound;
       m_error.errorCode = 0;
-      m_error.errorString = ERRMSG_NOT_FOUND;
+      m_error.errorString = QStringLiteral(ERRMSG_NOT_FOUND " for album=[%1] artist=[%2] size=%3").arg(m_album).arg(m_artist).arg(m_size);
       fakeImage();
       emit finished();
     }
