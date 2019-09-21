@@ -245,7 +245,6 @@ MusicPage {
 
         onAtYEndChanged: {
             if (mediaList.atYEnd && mediaModel.totalCount > mediaModel.count) {
-                focusViewIndex = true;
                 mediaModel.asyncLoadMore()
             }
         }
