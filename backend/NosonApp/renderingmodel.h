@@ -47,11 +47,16 @@ public:
 
   void setMute(bool mute) { m_mute = mute; }
 
+  bool outputFixed() const { return m_outputFixed; }
+
+  void setOutputFixed(bool fixed) { m_outputFixed = fixed; }
+
 private:
   QString m_uuid;
   QString m_name;
   double m_volume;
   bool m_mute;
+  bool m_outputFixed;
 };
 
 class RenderingModel : public QAbstractListModel
@@ -66,6 +71,7 @@ public:
     NameRole,
     VolumeRole,
     MuteRole,
+    OutputFixedRole,
   };
 
   RenderingModel(QObject* parent = 0);
@@ -90,6 +96,8 @@ public:
   Q_INVOKABLE void setVolume(int index, const QVariant& volume);
 
   Q_INVOKABLE void setMute(int index, const QVariant& mute);
+
+  Q_INVOKABLE void setOutputFixed(int index, const QVariant& fixed);
 
 signals:
   void countChanged();

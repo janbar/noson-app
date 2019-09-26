@@ -78,6 +78,8 @@ bool RenderingControl::GetVolume(uint8_t* value, const char* channel)
 
 bool RenderingControl::SetVolume(uint8_t value, const char* channel)
 {
+  if (m_property.Get()->OutputFixed)
+    return false;
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   args.push_back(ElementPtr(new Element("Channel", channel)));
@@ -127,7 +129,6 @@ bool RenderingControl::GetNightmode(uint8_t *value)
       return (string_to_uint8((*it)->c_str(), value) == 0);
   }
   return false;
-
 }
 
 bool RenderingControl::SetNightmode(uint8_t value)
@@ -193,6 +194,45 @@ bool RenderingControl::SetBass(int8_t value)
   return false;
 }
 
+bool RenderingControl::GetSupportsOutputFixed(uint8_t *value)
+{
+  ElementList args;
+  args.push_back(ElementPtr(new Element("InstanceID", "0")));
+  ElementList vars = Request("GetSupportsOutputFixed", args);
+  if (!vars.empty() && vars[0]->compare("GetSupportsOutputFixedResponse") == 0)
+  {
+    ElementList::const_iterator it = vars.FindKey("CurrentSupportsFixed");
+    if (it != vars.end())
+      return (string_to_uint8((*it)->c_str(), value) == 0);
+  }
+  return false;
+}
+
+bool RenderingControl::GetOutputFixed(uint8_t *value)
+{
+  ElementList args;
+  args.push_back(ElementPtr(new Element("InstanceID", "0")));
+  ElementList vars = Request("GetOutputFixed", args);
+  if (!vars.empty() && vars[0]->compare("GetOutputFixedResponse") == 0)
+  {
+    ElementList::const_iterator it = vars.FindKey("CurrentFixed");
+    if (it != vars.end())
+      return (string_to_uint8((*it)->c_str(), value) == 0);
+  }
+  return false;
+}
+
+bool RenderingControl::SetOutputFixed(uint8_t value)
+{
+  ElementList args;
+  args.push_back(ElementPtr(new Element("InstanceID", "0")));
+  args.push_back(ElementPtr(new Element("DesiredFixed", std::to_string(value))));
+  ElementList vars = Request("SetOutputFixed", args);
+  if (!vars.empty() && vars[0]->compare("SetOutputFixedResponse") == 0)
+    return true;
+  return false;
+}
+
 void RenderingControl::HandleEventMessage(EventMessagePtr msg)
 {
   if (!msg)
@@ -252,6 +292,11 @@ void RenderingControl::HandleEventMessage(EventMessagePtr msg)
         {
           if (string_to_int32((*++it).c_str(), &num) == 0)
             prop->Treble = num;
+        }
+        else if (*it == "OutputFixed")
+        {
+          if (string_to_int32((*++it).c_str(), &num) == 0)
+            prop->OutputFixed = num;
         }
 
         ++it;

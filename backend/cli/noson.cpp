@@ -615,7 +615,7 @@ static bool parseCommand(const std::string& line)
             if (gSonos->GetPlayer()->SetVolume((*ip)->GetUUID(), value))
               PERROR3("%s [%s]: volume %u\n", (*ip)->c_str(), (*ip)->GetUUID().c_str(), value);
             else
-              PERROR("Failed\n");
+              PERROR2("%s [%s]: Failed\n", (*ip)->c_str(), (*ip)->GetUUID().c_str());
           }
         }
       }

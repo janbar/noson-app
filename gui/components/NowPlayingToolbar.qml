@@ -91,9 +91,10 @@ Item {
             from: 0
             to: 100
             objectName: "volumeGroupSliderShape"
-            opacity: 1.0
+            enabled: !player.outputFixed
+            opacity: (player.outputFixed ? 0.2 : 1.0)
 
-            handleSize: units.gu(2)
+            handleSize: (player.outputFixed ? 0 : units.gu(2))
             handleColor: styleMusic.playerControls.volumeHandleColor
             handleColorPressed: styleMusic.playerControls.backgroundColor
             handleBorderColor: handleColor

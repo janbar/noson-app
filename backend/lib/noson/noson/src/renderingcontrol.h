@@ -75,6 +75,12 @@ namespace NSROOT
 
     bool SetBass(int8_t value);
 
+    bool GetSupportsOutputFixed(uint8_t* value);
+
+    bool GetOutputFixed(uint8_t* value);
+
+    bool SetOutputFixed(uint8_t value);
+
     // Implements EventSubscriber
     virtual void HandleEventMessage(EventMessagePtr msg);
 

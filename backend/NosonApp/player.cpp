@@ -307,12 +307,8 @@ bool Player::toggleMute(const QString& uuid)
     {
       if (it->uuid == _uuid)
       {
-        bool mute = !it->mute;
-        if (m_player->SetMute(it->uuid, mute ? 1 : 0))
-        {
-          it->mute = !mute;
+        if (m_player->SetMute(it->uuid, it->mute ? 0 : 1))
           return true;
-        }
         return false;
       }
     }
@@ -347,12 +343,26 @@ bool Player::toggleNightmode(const QString &uuid)
     {
       if (it->uuid == _uuid)
       {
-        bool nightmode = !it->nightmode;
-        if (m_player->SetNightmode(it->uuid, nightmode ? 1 : 0))
-        {
-          it->nightmode = !nightmode;
+        if (m_player->SetNightmode(it->uuid, it->nightmode ? 0 : 1))
           return true;
-        }
+        return false;
+      }
+    }
+  }
+  return false;
+}
+
+bool Player::toggleOutputFixed(const QString &uuid)
+{
+  if (m_player)
+  {
+    std::string _uuid = uuid.toUtf8().constData();
+    for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+    {
+      if (it->uuid == _uuid)
+      {
+        if (m_player->SetOutputFixed(it->uuid, it->outputFixed ? 0 : 1))
+          return true;
         return false;
       }
     }
@@ -619,6 +629,8 @@ bool Player::setVolumeGroup(double volume)
        r /= m_RCGroup.volumeFake;
     for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     {
+      if (it->outputFixed)
+        continue; // output is fixed
       double fake = it->volumeFake * r;
       int v = roundDouble(fake < 1.0 ? 0.0 : fake < 100.0 ? fake : 100.0);
       SONOS::DBG(DBG_DEBUG, "%s: req=%3.3f ratio=%3.3f fake=%3.3f vol=%d\n", __FUNCTION__, volume, r, fake, v);
@@ -641,19 +653,28 @@ bool Player::setVolume(const QString& uuid, double volume)
   {
     double fake = 0.0;
     std::string _uuid = uuid.toUtf8().constData();
+    size_t count = m_RCTable.size();
     for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     {
-      if (it->uuid == _uuid)
+      if (it->outputFixed)
+        --count; // remove it from the count
+      else
       {
-        int v = roundDouble(volume);
-        if (!m_player->SetVolume(it->uuid, v))
-          return false;
-        it->volumeFake = (v == 0 ? 100.0 / 101.0 : volume);
-        it->volume = v;
+        if (it->uuid == _uuid)
+        {
+          int v = roundDouble(volume);
+          if (!m_player->SetVolume(it->uuid, v))
+            return false;
+          it->volumeFake = (v == 0 ? 100.0 / 101.0 : volume);
+          it->volume = v;
+        }
+        fake += it->volumeFake;
       }
-      fake += it->volumeFake;
     }
-    fake /= m_RCTable.size();
+    if (count == 0)
+      fake = 100.0; // all output fixed
+    else
+      fake /= count;
     m_RCGroup.volume = roundDouble(m_RCGroup.volumeFake = fake);
     emit renderingGroupChanged();
     return true;
@@ -798,20 +819,23 @@ void Player::handleRenderingControlChange()
     unsigned signalMask = RENDERING_UNCHANGED;
 
     SONOS::SRPList props = m_player->GetRenderingProperty();
+    size_t count = props.size(); // the count of renderer
     // At initial callback the table of properties for the connected zone is empty
     // So fill it for each subordinate attached to the zone
     if (m_RCTable.empty())
     {
       double volume = 0.0;
       bool mute = true;
+      bool outputFixed = true;
       SONOS::SRPList::const_iterator it = props.begin();
       while (it != props.end())
       {
         RCProperty item;
         item.uuid = it->uuid;
         item.name = it->subordinateName;
-        item.mute = it->property.MuteMaster ? true : false;
-        item.nightmode = it->property.NightMode ? true : false;
+        item.mute = it->property.MuteMaster != 0 ? true : false;
+        item.nightmode = it->property.NightMode != 0 ? true : false;
+        item.outputFixed = it->property.OutputFixed != 0 ? true : false;
         item.volume = it->property.VolumeMaster;
         item.volumeFake = it->property.VolumeMaster > 0 ? (double)it->property.VolumeMaster : 100.0 / 101.0;
         item.treble = it->property.Treble;
@@ -819,8 +843,13 @@ void Player::handleRenderingControlChange()
         m_RCTable.push_back(item);
         if (!item.mute)
           mute = false; // exists active audio in group
-        volume += item.volumeFake;
-
+        if (item.outputFixed)
+          --count; // remove it from the count
+        else
+        {
+          outputFixed = false; // exists ajustable output in group
+          volume += item.volumeFake;
+        }
         // As the sound settings relate the connected group and doesn't handle separately each subordinate,
         // i gatherer data only from the master zone that is the first on the array.
         if (it == props.begin())
@@ -832,30 +861,47 @@ void Player::handleRenderingControlChange()
 
         ++it;
       }
-      volume /= (double)props.size();
+
+      if (count == 0)
+        volume = 100.0;
+      else
+        volume /= (double)count;
+
       m_RCGroup.volumeFake = volume;
       m_RCGroup.volume = roundDouble(volume);
       m_RCGroup.mute = mute;
+      m_RCGroup.outputFixed = outputFixed;
       signalMask |= RENDERING_GROUP_CHANGED | RENDERING_CHANGED; // handles group & subordinate update
     }
     else
     {
       double volume = 0.0;
       bool mute = true;
+      bool outputFixed = true;
       bool nightmode = false;
       int treble = 0, bass = 0;
       SONOS::SRPList::const_iterator it = props.begin();
       std::vector<RCProperty>::iterator itz = m_RCTable.begin();
       while (it != props.end())
       {
-        if (it->property.MuteMaster != itz->mute)
+        // cast to bool before comparing
+        bool MuteMasterAsBool = it->property.MuteMaster != 0 ? true : false;
+        bool NightModeAsBool = it->property.NightMode != 0 ? true : false;
+        bool OutputFixedAsBool = it->property.OutputFixed != 0 ? true : false;
+
+        if (MuteMasterAsBool != itz->mute)
         {
-          itz->mute = it->property.MuteMaster;
+          itz->mute = MuteMasterAsBool;
           signalMask |= RENDERING_CHANGED;
         }
-        if (it->property.NightMode != itz->nightmode)
+        if (NightModeAsBool != itz->nightmode)
         {
-          itz->nightmode = it->property.NightMode;
+          itz->nightmode = NightModeAsBool;
+          signalMask |= RENDERING_CHANGED;
+        }
+        if (OutputFixedAsBool != itz->outputFixed)
+        {
+          itz->outputFixed = OutputFixedAsBool;
           signalMask |= RENDERING_CHANGED;
         }
         if (it->property.Treble != itz->treble)
@@ -873,15 +919,15 @@ void Player::handleRenderingControlChange()
         // i gatherer data from the master zone that is the first on the array.
         if (it == props.begin())
         {
-          nightmode = it->property.NightMode;
+          nightmode = NightModeAsBool;
           treble = it->property.Treble;
           bass = it->property.Bass;
         }
         // And override data from the first subordinate updated accordinaly with sended values
         else
         {
-          if (it->property.NightMode == m_RCGroup.nightmode)
-            nightmode = it->property.NightMode;
+          if (NightModeAsBool == m_RCGroup.nightmode)
+            nightmode = NightModeAsBool;
           if (it->property.Treble == m_RCGroup.treble)
             treble = it->property.Treble;
           if (it->property.Bass == m_RCGroup.bass)
@@ -912,17 +958,30 @@ void Player::handleRenderingControlChange()
         SONOS::DBG(DBG_DEBUG, "%s: [%s] sig=%d volume: %3.3f [%d]\n", __FUNCTION__, it->uuid.c_str(), signalMask, itz->volumeFake, itz->volume);
         if (!itz->mute)
           mute = false; // exists active audio in group
-        volume += itz->volumeFake;
+        if (!itz->outputFixed)
+          outputFixed = false; // exists ajustable output in group
+
+        if (itz->outputFixed)
+          --count; // remove it from the count
+        else
+          volume += itz->volumeFake;
+
         ++it;
         ++itz;
       }
-      volume /= (double)props.size();
+
+      if (count == 0)
+        volume = 100.0;
+      else
+        volume /= (double)count;
+
       m_RCGroup.volumeFake = volume;
       m_RCGroup.volume = roundDouble(volume);
       m_RCGroup.mute = mute;
       m_RCGroup.nightmode = nightmode;
       m_RCGroup.treble = treble;
       m_RCGroup.bass = bass;
+      m_RCGroup.outputFixed = outputFixed;
       signalMask |= RENDERING_GROUP_CHANGED; // handles group update
     }
 

@@ -460,6 +460,36 @@ bool Player::SetTreble(const std::string &uuid, int8_t value)
   return false;
 }
 
+bool Player::GetSupportsOutputFixed(const std::string &uuid, uint8_t* value)
+{
+  for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+  {
+    if (it->uuid == uuid)
+      return it->renderingControl->GetSupportsOutputFixed(value);
+  }
+  return false;
+}
+
+bool Player::GetOutputFixed(const std::string &uuid, uint8_t* value)
+{
+  for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+  {
+    if (it->uuid == uuid)
+      return it->renderingControl->GetOutputFixed(value);
+  }
+  return false;
+}
+
+bool Player::SetOutputFixed(const std::string &uuid, uint8_t value)
+{
+  for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+  {
+    if (it->uuid == uuid)
+      return it->renderingControl->SetOutputFixed(value);
+  }
+  return false;
+}
+
 bool Player::SetCurrentURI(const DigitalItemPtr& item)
 {
   if (!item)

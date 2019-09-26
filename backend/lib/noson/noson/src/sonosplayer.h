@@ -117,6 +117,10 @@ namespace NSROOT
     bool GetTreble(const std::string& uuid, int8_t* value);
     bool SetTreble(const std::string& uuid, int8_t value);
 
+    bool GetSupportsOutputFixed(const std::string& uuid, uint8_t* value);
+    bool GetOutputFixed(const std::string& uuid, uint8_t* value);
+    bool SetOutputFixed(const std::string& uuid, uint8_t value);
+
     bool SetCurrentURI(const DigitalItemPtr& item);
     bool PlayPulse();
     bool IsPulseStream(const std::string& streamURL);

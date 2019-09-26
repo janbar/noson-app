@@ -187,6 +187,7 @@ namespace NSROOT
     , NightMode(0)
     , Treble(0)
     , Bass(0)
+    , OutputFixed(0)
     { }
 
     virtual ~RCSProperty() { }
@@ -200,6 +201,7 @@ namespace NSROOT
     int NightMode;
     int Treble;
     int Bass;
+    int OutputFixed;
   };
 
   class SRProperty

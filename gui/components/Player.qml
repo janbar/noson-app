@@ -50,6 +50,7 @@ Item {
     property bool repeat: false
     property bool shuffle: false
     property bool mute: false
+    property bool outputFixed: false
     property int renderingControlCount: 0
     property bool sleepTimerEnabled: false
     property bool nightmodeEnabled: false
@@ -297,6 +298,7 @@ Item {
         player.bass = playerLoader.item.bass;
         player.mute = playerLoader.item.muteMaster;
         player.nightmodeEnabled = playerLoader.item.nightmode;
+        player.outputFixed = playerLoader.item.outputFixed;
     }
 
     function refreshRendering() {

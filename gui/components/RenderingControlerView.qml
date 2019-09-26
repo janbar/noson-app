@@ -103,9 +103,10 @@ MusicListView {
                     to: 100
                     objectName: "volumeSliderShape"
                     value: model.volume
-                    opacity: 1.0
+                    enabled: !model.outputFixed
+                    opacity: (model.outputFixed ? 0.2 : 1.0)
 
-                    handleSize: units.gu(2)
+                    handleSize: (model.outputFixed ? 0 : units.gu(2))
                     handleColor: labelColor
                     handleBorderColor: handleColor
                     backgroundColor: styleMusic.playerControls.volumeBackgroundColor

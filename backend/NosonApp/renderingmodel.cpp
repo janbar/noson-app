@@ -24,12 +24,14 @@ using namespace nosonapp;
 
 RenderingItem::RenderingItem(const Player::RCProperty& rcp)
 : m_volume(0)
-, m_mute(0)
+, m_mute(false)
+, m_outputFixed(false)
 {
   m_uuid = QString::fromUtf8(rcp.uuid.c_str());
   m_name = QString::fromUtf8(rcp.name.c_str());
   m_volume = rcp.volumeFake;
   m_mute = rcp.mute;
+  m_outputFixed = rcp.outputFixed;
 }
 
 RenderingModel::RenderingModel(QObject* parent)
@@ -75,6 +77,8 @@ QVariant RenderingModel::data(const QModelIndex& index, int role) const
     return item->volume();
   case MuteRole:
     return item->mute();
+  case OutputFixedRole:
+    return item->outputFixed();
   default:
     return QVariant();
   }
@@ -94,6 +98,9 @@ bool RenderingModel::setData(const QModelIndex& index, const QVariant& value, in
   case MuteRole:
     item->setMute(value.toBool());
     break;
+  case OutputFixedRole:
+    item->setOutputFixed(value.toBool());
+    break;
   default:
     return false;
   }
@@ -108,6 +115,7 @@ QHash<int, QByteArray> RenderingModel::roleNames() const
   roles[NameRole] = "name";
   roles[VolumeRole] = "volume";
   roles[MuteRole] = "mute";
+  roles[OutputFixedRole] = "outputFixed";
   return roles;
 }
 
@@ -169,4 +177,9 @@ void RenderingModel::setVolume(int index, const QVariant& volume)
 void RenderingModel::setMute(int index, const QVariant& mute)
 {
   setData(QAbstractListModel::index(index), mute, MuteRole);
+}
+
+void RenderingModel::setOutputFixed(int index, const QVariant& fixed)
+{
+  setData(QAbstractListModel::index(index), fixed, OutputFixedRole);
 }
