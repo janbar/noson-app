@@ -370,6 +370,25 @@ bool Player::toggleOutputFixed(const QString &uuid)
   return false;
 }
 
+bool Player::supportsOutputFixed(const QString &uuid)
+{
+  if (m_player)
+  {
+    std::string _uuid = uuid.toUtf8().constData();
+    for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+    {
+      if (it->uuid == _uuid)
+      {
+        uint8_t val = 0;
+        if (m_player->GetSupportsOutputFixed(it->uuid, &val))
+          return (val == 1);
+        return false;
+      }
+    }
+  }
+  return false;
+}
+
 bool Player::startPlayStream(const QString& url, const QString& title)
 {
   return m_sonos->startJob(new playStreamWorker(*this, url, title));

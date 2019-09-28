@@ -89,6 +89,7 @@ public:
   Q_INVOKABLE bool toggleNightmode();
   Q_INVOKABLE bool toggleNightmode(const QString& uuid);
   Q_INVOKABLE bool toggleOutputFixed(const QString& uuid);
+  Q_INVOKABLE bool supportsOutputFixed(const QString& uuid);
 
   Q_INVOKABLE bool startPlayStream(const QString& url, const QString& title); // asynchonous
   Q_INVOKABLE bool playStream(const QString& url, const QString& title);
