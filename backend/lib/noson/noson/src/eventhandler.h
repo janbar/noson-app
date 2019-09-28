@@ -54,7 +54,7 @@ namespace NSROOT
     {}
   };
 
-  typedef SHARED_PTR<EventMessage> EventMessagePtr;
+  typedef SHARED_PTR<const EventMessage> EventMessagePtr;
 
   class EventSubscriber
   {
@@ -78,7 +78,7 @@ namespace NSROOT
     virtual bool SubscribeForEvent(unsigned subid, EVENT_t event) = 0;
     virtual void RevokeSubscription(unsigned subid) = 0;
     virtual void RevokeAllSubscriptions(EventSubscriber *sub) = 0;
-    virtual void DispatchEvent(const EventMessage& msg) = 0;
+    virtual void DispatchEvent(const EventMessagePtr& msg) = 0;
 
     /**
      * @brief Configure a callback to handle any other requests than supported by the event broker.

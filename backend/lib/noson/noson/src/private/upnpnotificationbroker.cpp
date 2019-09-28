@@ -121,10 +121,10 @@ void UPNPNotificationBroker::Process(handle * handle)
   }
 
   // Setup new event message
-  EventMessage msg;
-  msg.event = EVENT_UPNP_PROPCHANGE;
-  msg.subject.push_back(RequestBroker::GetRequestHeader(handle, "SID"));
-  msg.subject.push_back(RequestBroker::GetRequestHeader(handle, "SEQ"));
+  EventMessage* msg = new EventMessage();
+  msg->event = EVENT_UPNP_PROPCHANGE;
+  msg->subject.push_back(RequestBroker::GetRequestHeader(handle, "SID"));
+  msg->subject.push_back(RequestBroker::GetRequestHeader(handle, "SEQ"));
 
   // Parse document
   const tinyxml2::XMLElement* root; // root element
@@ -145,6 +145,7 @@ void UPNPNotificationBroker::Process(handle * handle)
           DBG(DBG_ERROR, "%s: invalid or not supported content\n", __FUNCTION__);
           DBG(DBG_ERROR, "%s: dump => %s\n", __FUNCTION__, data.c_str());
           Reply500(handle);
+          delete msg;
           return;
         }
 
@@ -156,18 +157,18 @@ void UPNPNotificationBroker::Process(handle * handle)
          */
         if (docns.FindName(NS_RCS) && (node = elem->FirstChildElement("InstanceID")))
         {
-          msg.subject.push_back("RCS");
+          msg->subject.push_back("RCS");
           elem = node->FirstChildElement(NULL);
           while (elem)
           {
             std::string name(RCSDict.TranslateQName(docns, elem->Name()));
             if ((str = elem->Attribute("channel")))
               name.append("/").append(str);
-            msg.subject.push_back(name);
+            msg->subject.push_back(name);
             if ((str = elem->Attribute("val")))
-              msg.subject.push_back(str);
+              msg->subject.push_back(str);
             else
-              msg.subject.push_back("");
+              msg->subject.push_back("");
             DBG(DBG_PROTO, "%s: %s = %s\n", __FUNCTION__, name.c_str(), str);
             elem = elem->NextSiblingElement(NULL);
           }
@@ -177,16 +178,16 @@ void UPNPNotificationBroker::Process(handle * handle)
          */
         else if (docns.FindName(NS_AVT) && (node = elem->FirstChildElement("InstanceID")))
         {
-          msg.subject.push_back("AVT");
+          msg->subject.push_back("AVT");
           elem = node->FirstChildElement(NULL);
           while (elem)
           {
             std::string name(AVTDict.TranslateQName(docns, elem->Name()));
-            msg.subject.push_back(name);
+            msg->subject.push_back(name);
             if ((str = elem->Attribute("val")))
-              msg.subject.push_back(str);
+              msg->subject.push_back(str);
             else
-              msg.subject.push_back("");
+              msg->subject.push_back("");
             DBG(DBG_PROTO, "%s: %s = %s\n", __FUNCTION__, name.c_str(), str);
             elem = elem->NextSiblingElement(NULL);
           }
@@ -200,17 +201,17 @@ void UPNPNotificationBroker::Process(handle * handle)
       // Else treat propertyset/property/
       else
       {
-        msg.subject.push_back("PROPERTY");
+        msg->subject.push_back("PROPERTY");
         do
         {
           if ((elem = node->FirstChildElement(NULL)))
           {
             std::string name(XMLNS::LocalName(elem->Name()));
-            msg.subject.push_back(name);
+            msg->subject.push_back(name);
             if ((str = elem->GetText()))
-              msg.subject.push_back(str);
+              msg->subject.push_back(str);
             else
-              msg.subject.push_back("");
+              msg->subject.push_back("");
             DBG(DBG_PROTO, "%s: %s = %s\n", __FUNCTION__, name.c_str(), str);
           }
           node = node->NextSibling();
@@ -223,10 +224,11 @@ void UPNPNotificationBroker::Process(handle * handle)
     DBG(DBG_ERROR, "%s: invalid or not supported content\n", __FUNCTION__);
     DBG(DBG_ERROR, "%s: dump => %s\n", __FUNCTION__, data.c_str());
     Reply500(handle);
+    delete msg;
     return;
   }
 
-  handle->handler->DispatchEvent(msg);
+  handle->handler->DispatchEvent(EventMessagePtr(msg));
   std::string resp;
   resp.assign(RequestBroker::MakeResponseHeader(RequestBroker::Status_OK))
       .append("\r\n");

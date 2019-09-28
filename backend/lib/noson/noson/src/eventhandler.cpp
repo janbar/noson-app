@@ -67,7 +67,7 @@ namespace NSROOT
     virtual ~SubscriptionHandlerThread();
     EventSubscriber *GetHandle() { return m_handle; }
     bool IsRunning() { return OS::CThread::IsRunning(); }
-    void PostMessage(const EventMessage& msg);
+    void PostMessage(const EventMessagePtr& msg);
 
   private:
     EventSubscriber *m_handle;
@@ -123,11 +123,11 @@ void SubscriptionHandlerThread::Stop()
   }
 }
 
-void SubscriptionHandlerThread::PostMessage(const EventMessage& msg)
+void SubscriptionHandlerThread::PostMessage(const EventMessagePtr& msg)
 {
   // Critical section
   OS::CLockGuard lock(m_mutex);
-  m_msgQueue.push_back(EventMessagePtr(new EventMessage(msg)));
+  m_msgQueue.push_back(msg);
   m_queueContent.Signal();
 }
 
@@ -176,7 +176,7 @@ namespace NSROOT
     virtual bool SubscribeForEvent(unsigned subid, EVENT_t event);
     virtual void RevokeSubscription(unsigned subid);
     virtual void RevokeAllSubscriptions(EventSubscriber *sub);
-    virtual void DispatchEvent(const EventMessage& msg);
+    virtual void DispatchEvent(const EventMessagePtr& msg);
 
   private:
     OS::CMutex m_mutex;
@@ -366,12 +366,12 @@ void BasicEventHandler::RevokeAllSubscriptions(EventSubscriber *sub)
   }
 }
 
-void BasicEventHandler::DispatchEvent(const EventMessage& msg)
+void BasicEventHandler::DispatchEvent(const EventMessagePtr& msg)
 {
   OS::CLockGuard lock(m_mutex);
   std::vector<std::list<unsigned>::iterator> revoked;
-  std::list<unsigned>::iterator it1 = m_subscriptionsByEvent[msg.event].begin();
-  while (it1 != m_subscriptionsByEvent[msg.event].end())
+  std::list<unsigned>::iterator it1 = m_subscriptionsByEvent[msg->event].begin();
+  while (it1 != m_subscriptionsByEvent[msg->event].end())
   {
     subscriptions_t::const_iterator it2 = m_subscriptions.find(*it1);
     if (it2 != m_subscriptions.end())
@@ -382,7 +382,7 @@ void BasicEventHandler::DispatchEvent(const EventMessage& msg)
   }
   std::vector<std::list<unsigned>::iterator>::const_iterator itr;
   for (itr = revoked.begin(); itr != revoked.end(); ++itr)
-    m_subscriptionsByEvent[msg.event].erase(*itr);
+    m_subscriptionsByEvent[msg->event].erase(*itr);
 }
 
 void *BasicEventHandler::Process()
@@ -438,12 +438,12 @@ void *BasicEventHandler::Process()
 void BasicEventHandler::AnnounceStatus(const char *status)
 {
   DBG(DBG_DEBUG, "%s: (%p) %s\n", __FUNCTION__, this, status);
-  EventMessage msg;
-  msg.event = EVENT_HANDLER_STATUS;
-  msg.subject.push_back(status);
-  msg.subject.push_back(m_listenerAddress);
-  msg.subject.push_back(std::to_string((uint16_t)m_port));
-  DispatchEvent(msg);
+  EventMessage* msg = new EventMessage();
+  msg->event = EVENT_HANDLER_STATUS;
+  msg->subject.push_back(status);
+  msg->subject.push_back(m_listenerAddress);
+  msg->subject.push_back(std::to_string((uint16_t)m_port));
+  DispatchEvent(EventMessagePtr(msg));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
