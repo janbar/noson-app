@@ -85,6 +85,7 @@ namespace NSROOT
     bool IsValid() const { return m_valid; }
     const std::string& GetHost() const { return m_host; }
     unsigned GetPort() const { return m_port; }
+    const std::string& GetZoneUUID() { return m_uuid; }
     void RenewSubscriptions();
     unsigned char LastEvents();
     bool RenderingPropertyEmpty();
