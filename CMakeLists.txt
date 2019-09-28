@@ -4,8 +4,8 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 option(INSTALL_TESTS "Install the tests on make install" on)
 
-set(APP_VERSION       "3.14.5")
-set(APP_VERSION_CODE  41)
+set(APP_VERSION       "3.15.0")
+set(APP_VERSION_CODE  42)
 set(APP_NAME          "noson")
 set(APP_ID            "io.github.janbar.noson")
 set(EXEC              "noson-app")
@@ -97,7 +97,7 @@ endif()
 
 add_custom_target(
   "run"
-  QML2_IMPORT_PATH=${CMAKE_BINARY_DIR}/backend/qml ${CMAKE_BINARY_DIR}/gui/noson-gui
+  QML2_IMPORT_PATH=${CMAKE_BINARY_DIR}/backend/qml ${CMAKE_BINARY_DIR}/gui/noson-gui --debug
   DEPENDS NosonApp NosonApp-qmldir
         NosonThumbnailer NosonThumbnailer-qmldir
         NosonMediaScanner NosonMediaScanner-qmldir

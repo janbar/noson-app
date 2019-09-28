@@ -1,4 +1,9 @@
-noson-app (3.14) UNRELEASED; urgency=low
+noson-app (3.15) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 3.15
+  * Supports output fixed
+  * Improvements
 
   [ janbar ]
   * Release 3.14
