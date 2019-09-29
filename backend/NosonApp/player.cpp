@@ -324,6 +324,7 @@ bool Player::toggleNightmode()
     bool nightmode = !m_RCGroup.nightmode;
     for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     {
+      // it could fail when device doesn't support the setting. Anyway force the flag for the group
       if (m_player->SetNightmode(it->uuid, nightmode ? 1 : 0))
         m_RCGroup.nightmode = it->nightmode = nightmode;
       else
@@ -344,6 +345,43 @@ bool Player::toggleNightmode(const QString &uuid)
       if (it->uuid == _uuid)
       {
         if (m_player->SetNightmode(it->uuid, it->nightmode ? 0 : 1))
+          return true;
+        return false;
+      }
+    }
+  }
+  return false;
+}
+
+bool Player::toggleLoudness()
+{
+  if (m_player)
+  {
+    bool ret = true;
+    bool loudness = !m_RCGroup.loudness;
+    for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+    {
+      // it could fail when device doesn't support the setting. Anyway force the flag for the group
+      if (m_player->SetLoudness(it->uuid, loudness ? 1 : 0))
+        m_RCGroup.loudness = it->loudness = loudness;
+      else
+        ret = false;
+    }
+    return ret;
+  }
+  return false;
+}
+
+bool Player::toggleLoudness(const QString &uuid)
+{
+  if (m_player)
+  {
+    std::string _uuid = uuid.toUtf8().constData();
+    for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+    {
+      if (it->uuid == _uuid)
+      {
+        if (m_player->SetLoudness(it->uuid, it->loudness ? 0 : 1))
           return true;
         return false;
       }
@@ -854,6 +892,7 @@ void Player::handleRenderingControlChange()
         item.name = it->subordinateName;
         item.mute = it->property.MuteMaster != 0 ? true : false;
         item.nightmode = it->property.NightMode != 0 ? true : false;
+        item.loudness = it->property.LoudnessMaster != 0 ? true : false;
         item.outputFixed = it->property.OutputFixed != 0 ? true : false;
         item.volume = it->property.VolumeMaster;
         item.volumeFake = it->property.VolumeMaster > 0 ? (double)it->property.VolumeMaster : 100.0 / 101.0;
@@ -874,6 +913,7 @@ void Player::handleRenderingControlChange()
         if (it == props.begin())
         {
           m_RCGroup.nightmode = item.nightmode;
+          m_RCGroup.loudness = item.loudness;
           m_RCGroup.treble = item.treble;
           m_RCGroup.bass = item.bass;
         }
@@ -898,6 +938,7 @@ void Player::handleRenderingControlChange()
       bool mute = true;
       bool outputFixed = true;
       bool nightmode = false;
+      bool loudness = false;
       int treble = 0, bass = 0;
       SONOS::SRPList::const_iterator it = props.begin();
       std::vector<RCProperty>::iterator itz = m_RCTable.begin();
@@ -906,6 +947,7 @@ void Player::handleRenderingControlChange()
         // cast to bool before comparing
         bool MuteMasterAsBool = it->property.MuteMaster != 0 ? true : false;
         bool NightModeAsBool = it->property.NightMode != 0 ? true : false;
+        bool LoudnessAsBool = it->property.LoudnessMaster != 0 ? true : false;
         bool OutputFixedAsBool = it->property.OutputFixed != 0 ? true : false;
 
         if (MuteMasterAsBool != itz->mute)
@@ -916,6 +958,11 @@ void Player::handleRenderingControlChange()
         if (NightModeAsBool != itz->nightmode)
         {
           itz->nightmode = NightModeAsBool;
+          signalMask |= RENDERING_CHANGED;
+        }
+        if (LoudnessAsBool != itz->loudness)
+        {
+          itz->loudness = LoudnessAsBool;
           signalMask |= RENDERING_CHANGED;
         }
         if (OutputFixedAsBool != itz->outputFixed)
@@ -939,6 +986,7 @@ void Player::handleRenderingControlChange()
         if (it == props.begin())
         {
           nightmode = NightModeAsBool;
+          loudness = LoudnessAsBool;
           treble = it->property.Treble;
           bass = it->property.Bass;
         }
@@ -947,6 +995,8 @@ void Player::handleRenderingControlChange()
         {
           if (NightModeAsBool == m_RCGroup.nightmode)
             nightmode = NightModeAsBool;
+          if (LoudnessAsBool == m_RCGroup.loudness)
+            loudness = LoudnessAsBool;
           if (it->property.Treble == m_RCGroup.treble)
             treble = it->property.Treble;
           if (it->property.Bass == m_RCGroup.bass)
@@ -998,6 +1048,7 @@ void Player::handleRenderingControlChange()
       m_RCGroup.volume = roundDouble(volume);
       m_RCGroup.mute = mute;
       m_RCGroup.nightmode = nightmode;
+      m_RCGroup.loudness = loudness;
       m_RCGroup.treble = treble;
       m_RCGroup.bass = bass;
       m_RCGroup.outputFixed = outputFixed;

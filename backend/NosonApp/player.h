@@ -36,6 +36,7 @@ class Player : public QObject
   Q_OBJECT
   Q_PROPERTY(bool muteMaster READ muteMaster NOTIFY renderingGroupChanged)
   Q_PROPERTY(bool nightmode READ nightmode NOTIFY renderingGroupChanged)
+  Q_PROPERTY(bool loudness READ loudness NOTIFY renderingGroupChanged)
   Q_PROPERTY(bool outputFixed READ outputFixed NOTIFY renderingGroupChanged)
   Q_PROPERTY(int volumeMaster READ volumeMaster NOTIFY renderingGroupChanged)
   Q_PROPERTY(int treble READ treble NOTIFY renderingGroupChanged)
@@ -88,6 +89,8 @@ public:
 
   Q_INVOKABLE bool toggleNightmode();
   Q_INVOKABLE bool toggleNightmode(const QString& uuid);
+  Q_INVOKABLE bool toggleLoudness();
+  Q_INVOKABLE bool toggleLoudness(const QString& uuid);
   Q_INVOKABLE bool toggleOutputFixed(const QString& uuid);
   Q_INVOKABLE bool supportsOutputFixed(const QString& uuid);
 
@@ -134,6 +137,7 @@ public:
   Q_INVOKABLE bool playFavorite(const QVariant& payload);
 
   bool nightmode() const { return m_RCGroup.nightmode; }
+  bool loudness() const { return m_RCGroup.loudness; }
   bool muteMaster() const { return m_RCGroup.mute; }
   bool outputFixed() const { return m_RCGroup.outputFixed; }
   int muteLF() const { return m_RCGroup.mute; }
@@ -150,6 +154,7 @@ public:
     std::string name;
     bool mute = false;
     bool nightmode = false;
+    bool loudness = false;
     bool outputFixed = false;
     int volume = 0;
     int treble = 0;
