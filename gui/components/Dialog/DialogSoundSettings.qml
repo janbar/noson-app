@@ -225,8 +225,15 @@ Item {
                     text: qsTr("Loudness")
                     textAlignment: Text.AlignHCenter
                     font.pointSize: units.fs("small")
-                    checked: false
-                    enabled: false
+                    checked: player.loudnessEnabled
+                    onClicked: {
+                        if (!player.toggleLoudness())
+                            checked = player.loudnessEnabled;
+                    }
+                    Connections {
+                        target: player
+                        onLoudnessEnabledChanged: loudness.checked = player.loudnessEnabled
+                    }
                 }
             }
 

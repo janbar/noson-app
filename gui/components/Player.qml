@@ -54,6 +54,7 @@ Item {
     property int renderingControlCount: 0
     property bool sleepTimerEnabled: false
     property bool nightmodeEnabled: false
+    property bool loudnessEnabled: false
     property var covers: []
 
     property string queueInfo: queueOverviewString()
@@ -190,6 +191,10 @@ Item {
         return playerLoader.item.toggleNightmode();
     }
 
+    function toggleLoudness() {
+        return playerLoader.item.toggleLoudness();
+    }
+
     function playQueue(start) {
         return playerLoader.item.playQueue(start);
     }
@@ -298,6 +303,7 @@ Item {
         player.bass = playerLoader.item.bass;
         player.mute = playerLoader.item.muteMaster;
         player.nightmodeEnabled = playerLoader.item.nightmode;
+        player.loudnessEnabled = playerLoader.item.loudness;
         player.outputFixed = playerLoader.item.outputFixed;
     }
 
