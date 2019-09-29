@@ -420,6 +420,26 @@ bool Player::SetNightmode(const std::string &uuid, uint8_t value)
   return false;
 }
 
+bool Player::GetLoudness(const std::string &uuid, uint8_t *value)
+{
+  for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+  {
+    if (it->uuid == uuid)
+      return it->renderingControl->GetLoudness(value);
+  }
+  return false;
+}
+
+bool Player::SetLoudness(const std::string &uuid, uint8_t value)
+{
+  for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+  {
+    if (it->uuid == uuid)
+      return it->renderingControl->SetLoudness(value);
+  }
+  return false;
+}
+
 bool Player::GetBass(const std::string &uuid, int8_t* value)
 {
   for (RCTable::const_iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)

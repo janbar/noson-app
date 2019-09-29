@@ -110,6 +110,8 @@ namespace NSROOT
 
     bool GetNightmode(const std::string& uuid, uint8_t* value);
     bool SetNightmode(const std::string& uuid, uint8_t value);
+    bool GetLoudness(const std::string& uuid, uint8_t* value);
+    bool SetLoudness(const std::string& uuid, uint8_t value);
 
     bool GetBass(const std::string& uuid, int8_t* value);
     bool SetBass(const std::string& uuid, int8_t value);

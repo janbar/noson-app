@@ -233,6 +233,33 @@ bool RenderingControl::SetOutputFixed(uint8_t value)
   return false;
 }
 
+bool RenderingControl::GetLoudness(uint8_t* value, const char* channel)
+{
+  ElementList args;
+  args.push_back(ElementPtr(new Element("InstanceID", "0")));
+  args.push_back(ElementPtr(new Element("Channel", channel)));
+  ElementList vars = Request("GetLoudness", args);
+  if (!vars.empty() && vars[0]->compare("GetLoudnessResponse") == 0)
+  {
+    ElementList::const_iterator it = vars.FindKey("CurrentLoudness");
+    if (it != vars.end())
+      return (string_to_uint8((*it)->c_str(), value) == 0);
+  }
+  return false;
+}
+
+bool RenderingControl::SetLoudness(uint8_t value, const char* channel)
+{
+  ElementList args;
+  args.push_back(ElementPtr(new Element("InstanceID", "0")));
+  args.push_back(ElementPtr(new Element("Channel", channel)));
+  args.push_back(ElementPtr(new Element("DesiredLoudness", std::to_string(value))));
+  ElementList vars = Request("SetLoudness", args);
+  if (!vars.empty() && vars[0]->compare("SetLoudnessResponse") == 0)
+    return true;
+  return false;
+}
+
 void RenderingControl::HandleEventMessage(EventMessagePtr msg)
 {
   if (!msg)
@@ -297,6 +324,11 @@ void RenderingControl::HandleEventMessage(EventMessagePtr msg)
         {
           if (string_to_int32((*++it).c_str(), &num) == 0)
             prop->OutputFixed = num;
+        }
+        else if (*it == "Loudness/Master")
+        {
+          if (string_to_int32((*++it).c_str(), &num) == 0)
+            prop->LoudnessMaster = num;
         }
 
         ++it;

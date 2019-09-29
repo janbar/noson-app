@@ -81,6 +81,10 @@ namespace NSROOT
 
     bool SetOutputFixed(uint8_t value);
 
+    bool GetLoudness(uint8_t* value, const char* channel = CH_MASTER);
+
+    bool SetLoudness(uint8_t value, const char* channel = CH_MASTER);
+
     // Implements EventSubscriber
     virtual void HandleEventMessage(EventMessagePtr msg);
 
