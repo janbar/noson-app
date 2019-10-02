@@ -94,7 +94,7 @@ bool SMAPI::Init(const SMServicePtr& smsvc, const std::string& locale)
   m_service = smsvc;
   if (!m_service)
     return false;
-  m_locale.assign(toLocale(locale));
+  m_language.assign(language(locale));
   string_to_uint32(smsvc->GetCapabilities().c_str(), &m_capabilities);
   tz_t tz;
   m_tz.assign(time_tz(time(0), &tz)->tz_str);
@@ -595,10 +595,7 @@ ElementList SMAPI::DoCall(const std::string& action, const ElementList& args)
 
   WSRequest request(*m_uri, HRM_POST);
   request.SetUserAgent(m_service->GetAgent());
-  if (!m_locale.empty())
-    request.SetHeader("Accept-Language", std::string(m_locale).append(",en-US;q=0.9,en;q=0.5"));
-  else
-    request.SetHeader("Accept-Language", "en-US,en;q=0.9");
+  request.SetHeader("Accept-Language", m_language);
   request.SetHeader("SOAPAction", soapaction);
   request.SetContentCustom(CT_XML, content.c_str());
   WSResponse response(request);
@@ -765,23 +762,35 @@ ElementList SMAPI::Request(const std::string& action, const ElementList& args)
   return vars;
 }
 
-std::string SMAPI::toLocale(const std::string& locale)
+std::string SMAPI::language(const std::string& locale)
 {
   int part = 0;
-  std::string ret;
+  std::string pritag;
+  std::string subtag;
+  std::string language;
   for (std::string::const_iterator it = locale.cbegin(); it != locale.cend(); ++it)
   {
     if (isalpha(*it))
     {
       if (part == 0)
-        ret.push_back((char)tolower(*it));
+        pritag.push_back((char)tolower(*it));
       else
-        ret.push_back((char)toupper(*it));
+        subtag.push_back(*it);
     }
-    else if (0 == part++)
-      ret.push_back('-');
-    else
+    else if (++part > 1)
       break;
   }
-  return ret;
+  if (pritag == "c" || (pritag == "en" && subtag == "US"))
+    language.assign("en,en-US;q=0.9");
+  else
+  {
+    language.assign(pritag);
+    if (!subtag.empty())
+      language.append(",").append(pritag).append("-").append(subtag).append(";q=0.9");
+    if (pritag == "en")
+      language.append(",en-US;q=0.5");
+    else
+      language.append(",en-US;q=0.5,en;q=0.3");
+  }
+  return language;
 }

@@ -127,7 +127,7 @@ namespace NSROOT
   private:
     OS::CMutex* m_mutex;
     PlayerPtr m_player;
-    std::string m_locale;
+    std::string m_language;
     std::string m_deviceSerialNumber;
     std::string m_deviceHouseholdID;
     std::string m_soapHeader;
@@ -162,7 +162,7 @@ namespace NSROOT
     SMAPI(const SMAPI&);
     SMAPI& operator=(const SMAPI&);
 
-    static std::string toLocale(const std::string& locale);
+    static std::string language(const std::string& locale);
   };
 }
 
