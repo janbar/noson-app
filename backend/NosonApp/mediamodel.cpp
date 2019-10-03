@@ -419,7 +419,7 @@ int MediaModel::requestDeviceAuth()
     SONOS::SMOAKeyring::Data auth;
     if (m_smapi->GetDeviceAuthToken(auth))
       return 0; // retry
-    if (!auth.key.empty())
+    if (!auth.token.empty())
     {
       m_auth = auth;
       emit authStatusChanged();
