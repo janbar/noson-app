@@ -153,7 +153,8 @@ bool SMAPI::Init(const SMServicePtr& smsvc, const std::string& locale)
   {
     m_policyAuth = Auth_DeviceLink;
     // check credentials status
-    if (credentials.key.empty())
+    // The key can be null when the API doesn't support the refreshing of token
+    if (credentials.token.empty())
       m_authTokenExpired = true;
     // make sure devId is fulfilled
     if (credentials.devId.empty())
@@ -163,7 +164,8 @@ bool SMAPI::Init(const SMServicePtr& smsvc, const std::string& locale)
   {
     m_policyAuth = Auth_AppLink;
     // check credentials status
-    if (credentials.key.empty())
+    // The key can be null when the API doesn't support the refreshing of token
+    if (credentials.token.empty())
       m_authTokenExpired = true;
     // make sure devId is fulfilled
     if (credentials.devId.empty())
