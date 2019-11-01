@@ -9,6 +9,18 @@ find_package(Qt5Gui REQUIRED)
 find_package(Qt5Qml REQUIRED)
 find_package(Qt5Quick REQUIRED)
 
+if(UNIX AND NOT APPLE)
+#    include( FindPkgConfig )
+#    pkg_check_modules(DBUS QUIET dbus-1)
+    find_library(DBUS_LIBRARIES dbus-1)
+    if(DBUS_LIBRARIES)
+        find_package(Qt5DBus REQUIRED)
+        set(HAVE_DBUS 1)
+        add_definitions(-DHAVE_DBUS)
+        message(STATUS "Enable interface MPRIS")
+    endif()
+endif()
+
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 11)
 
@@ -18,6 +30,7 @@ include_directories(
     ${noson_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}/../lib/noson/noson/src
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 if(QT_STATICPLUGIN)
@@ -35,59 +48,74 @@ if (MSVC)
 endif ()
 
 set(
-    NosonApp_SRCS
+    NosonApp_SOURCES
     plugin.cpp
+    sonos.cpp
+    player.cpp
+    listmodel.cpp
+    albumsmodel.cpp
+    artistsmodel.cpp
+    genresmodel.cpp
+    tracksmodel.cpp
+    queuemodel.cpp
+    playlistsmodel.cpp
+    zonesmodel.cpp
+    renderingmodel.cpp
+    roomsmodel.cpp
+    favoritesmodel.cpp
+    servicesmodel.cpp
+    mediamodel.cpp
+    qmlfilterbehavior.cpp
+    qmlsortbehavior.cpp
+    qmlsortfiltermodel.cpp
+    allservicesmodel.cpp
+    alarmsmodel.cpp
+    composersmodel.cpp
+)
+
+set(
+    NosonApp_HEADERS
     plugin.h
     tools.h
     locked.h
-    sonos.cpp
     sonos.h
-    player.cpp
     player.h
-    listmodel.cpp
     listmodel.h
-    albumsmodel.cpp
     albumsmodel.h
-    artistsmodel.cpp
     artistsmodel.h
-    genresmodel.cpp
     genresmodel.h
-    tracksmodel.cpp
     tracksmodel.h
-    queuemodel.cpp
     queuemodel.h
-    playlistsmodel.cpp
     playlistsmodel.h
-    zonesmodel.cpp
     zonesmodel.h
-    renderingmodel.cpp
     renderingmodel.h
-    roomsmodel.cpp
     roomsmodel.h
-    favoritesmodel.cpp
     favoritesmodel.h
-    servicesmodel.cpp
     servicesmodel.h
-    mediamodel.cpp
     mediamodel.h
-    qmlfilterbehavior.cpp
     qmlfilterbehavior.h
-    qmlsortbehavior.cpp
     qmlsortbehavior.h
-    qmlsortfiltermodel.cpp
     qmlsortfiltermodel.h
-    allservicesmodel.cpp
     allservicesmodel.h
-    alarmsmodel.cpp
     alarmsmodel.h
-    composersmodel.cpp
     composersmodel.h
 )
 
+if(HAVE_DBUS)
+    set(NosonApp_SOURCES ${NosonApp_SOURCES} dbus/mpris2.cpp)
+    set(NosonApp_HEADERS ${NosonApp_HEADERS} dbus/mpris2.h)
+    qt5_add_dbus_adaptor(NosonApp_SOURCES
+        dbus/org.mpris.MediaPlayer2.xml
+        dbus/mpris2.h nosonapp::Mpris2 mpris2_root Mpris2Root)
+    qt5_add_dbus_adaptor(NosonApp_SOURCES
+        dbus/org.mpris.MediaPlayer2.Player.xml
+        dbus/mpris2.h nosonapp::Mpris2 mpris2_player Mpris2Player)
+endif()
+
 if(QT_STATICPLUGIN)
-    add_library(NosonApp STATIC ${NosonApp_SRCS})
+    add_library(NosonApp STATIC ${NosonApp_SOURCES})
 else()
-    add_library(NosonApp MODULE ${NosonApp_SRCS})
+    add_library(NosonApp MODULE ${NosonApp_SOURCES})
 endif()
 
 if(NOT noson_FOUND)
@@ -97,6 +125,10 @@ endif()
 set_target_properties(NosonApp PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_DIRECTORY}/NosonApp)
 target_link_libraries(NosonApp ${noson_LIBRARIES} Qt5::Gui Qt5::Qml Qt5::Quick)
+
+if(HAVE_DBUS)
+  target_link_libraries(NosonApp Qt5::DBus)
+endif()
 
 # Copy qmldir file to build dir for running in QtCreator
 add_custom_target(NosonApp-qmldir ALL

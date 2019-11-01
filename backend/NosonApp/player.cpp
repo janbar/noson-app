@@ -22,6 +22,9 @@
 #include "sonos.h"
 #include "tools.h"
 #include "private/debug.h"
+#ifdef HAVE_DBUS
+#include "dbus/mpris2.h"
+#endif
 
 #include <cstdio> // for sscanf
 #include <string>
@@ -123,6 +126,10 @@ Player::Player(QObject *parent)
 , m_currentTrackDuration(0)
 , m_currentProtocol(-1)
 {
+#ifdef HAVE_DBUS
+  // Enable MPRIS interface
+  new Mpris2(this, this);
+#endif
 }
 
 Player::~Player()

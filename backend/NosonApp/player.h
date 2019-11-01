@@ -55,6 +55,7 @@ class Player : public QObject
   Q_PROPERTY(int currentTrackDuration READ currentTrackDuration NOTIFY sourceChanged)
   Q_PROPERTY(int currentProtocol READ currentProtocol NOTIFY sourceChanged)
 
+  Q_PROPERTY(int numberOfTracks READ numberOfTracks NOTIFY playbackStateChanged)
   Q_PROPERTY(QString playbackState READ playbackState NOTIFY playbackStateChanged)
   Q_PROPERTY(QString playMode READ playMode NOTIFY playModeChanged)
 
@@ -184,6 +185,7 @@ public:
   int currentIndex() const { return m_currentIndex; }
   int currentTrackDuration() const { return m_currentTrackDuration; }
   int currentProtocol() const { return m_currentProtocol; } // returns SONOS::Protocol_t
+  int numberOfTracks() const { return m_AVTProperty.NumberOfTracks; }
   QString playbackState() const { return QString::fromUtf8(m_AVTProperty.TransportState.c_str()); }
   QString playMode() const { return QString::fromUtf8(m_AVTProperty.CurrentPlayMode.c_str()); }
 
@@ -193,8 +195,6 @@ signals:
   void renderingChanged();
   void renderingGroupChanged();
   void sourceChanged();
-  void statusChanged();
-  void stopped();
   void playbackStateChanged();
   void playModeChanged();
   void sleepTimerChanged();
