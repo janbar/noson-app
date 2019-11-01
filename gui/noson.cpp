@@ -56,7 +56,8 @@ int main(int argc, char *argv[])
         return ret;
 #endif
 
-    QGuiApplication::setApplicationName("noson");
+    QGuiApplication::setApplicationName("io.github.janbar.noson");
+    QGuiApplication::setApplicationDisplayName("noson");
     QGuiApplication::setOrganizationName("janbar");
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
