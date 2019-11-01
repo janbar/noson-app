@@ -394,8 +394,7 @@ Item {
                 onRenderingChanged: player.refreshRendering()
                 onSourceChanged: player.refreshSource()
                 onPlayModeChanged: player.refreshPlayMode()
-                onStatusChanged: {}
-                onStopped: player.stopped()
+                //onPlaybackStateChanged: {}
                 onSleepTimerChanged: player.sleepTimerEnabled = player.remainingSleepTimerDuration() > 0 ? true : false
             }
         }
