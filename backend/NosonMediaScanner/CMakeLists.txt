@@ -36,53 +36,57 @@ if (MSVC)
 endif ()
 
 set(
-  NosonMediaScanner_SRCS
+  NosonMediaScanner_SOURCES
   plugin.cpp
-  plugin.h
   mediascanner.cpp
-  mediascanner.h
   mediascannerengine.cpp
-  mediascannerengine.h
   mediarunnable.cpp
-  mediarunnable.h
   mediaextractor.cpp
-  mediaextractor.h
   flacparser.cpp
-  flacparser.h
   id3parser.cpp
+  m4aparser.cpp
+  oggparser.cpp
+  listmodel.cpp
+  byteorder.cpp
+  aggregate/artists.cpp
+  aggregate/genres.cpp
+  aggregate/albums.cpp
+  aggregate/tracks.cpp
+)
+
+set(
+  NosonMediaScanner_HEADERS
+  plugin.h
+  mediascanner.h
+  mediascannerengine.h
+  mediarunnable.h
+  mediaextractor.h
+  flacparser.h
   id3parser.h
   id3v1genres.h
-  m4aparser.cpp
   m4aparser.h
-  oggparser.cpp
   oggparser.h
-  listmodel.cpp
   listmodel.h
   mediaparser.h
   mediafile.h
   mediainfo.h
-  byteorder.cpp
   byteorder.h
   locked.h
   tools.h
   packed.h
   aggregate/aggregate.h
-  aggregate/artists.cpp
   aggregate/artists.h
-  aggregate/genres.cpp
   aggregate/genres.h
-  aggregate/albums.cpp
   aggregate/albums.h
-  aggregate/tracks.cpp
   aggregate/tracks.h
 )
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR})
 
 if(QT_STATICPLUGIN)
-    add_library(NosonMediaScanner STATIC ${NosonMediaScanner_SRCS})
+    add_library(NosonMediaScanner STATIC ${NosonMediaScanner_SOURCES})
 else()
-    add_library(NosonMediaScanner MODULE ${NosonMediaScanner_SRCS})
+    add_library(NosonMediaScanner MODULE ${NosonMediaScanner_SOURCES})
 endif()
 
 set_target_properties(NosonMediaScanner PROPERTIES

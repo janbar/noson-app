@@ -20,11 +20,11 @@ if (MSVC)
 endif ()
 
 set(
-  noson-cli-sources
+  noson-cli_SOURCES
   noson.cpp
 )
 
-add_executable (noson-cli ${noson-cli-sources})
+add_executable (noson-cli ${noson-cli_SOURCES})
 
 if(NOT noson_FOUND)
     add_dependencies(noson-cli noson)

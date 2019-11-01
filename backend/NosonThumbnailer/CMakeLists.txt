@@ -29,51 +29,55 @@ if (MSVC)
 endif ()
 
 set(
-  NosonThumbnailer_SRCS
+  NosonThumbnailer_SOURCES
   plugin.cpp
-  plugin.h
   albumartgenerator.cpp
-  albumartgenerator.h
   artistartgenerator.cpp
-  artistartgenerator.h
   thumbnailerimageresponse.cpp
-  thumbnailerimageresponse.h
   thumbnailer/thumbnailer.cpp
-  thumbnailer/thumbnailer.h
   thumbnailer/thumbnailerjob.cpp
-  thumbnailer/thumbnailerjob.h
   thumbnailer/ratelimiter.cpp
-  thumbnailer/ratelimiter.h
   thumbnailer/netrequest.cpp
-  thumbnailer/netrequest.h
   thumbnailer/netmanager.cpp
-  thumbnailer/netmanager.h
   thumbnailer/diskcachemanager.cpp
-  thumbnailer/diskcachemanager.h
   thumbnailer/artistinfo.cpp
-  thumbnailer/artistinfo.h
   thumbnailer/albuminfo.cpp
-  thumbnailer/albuminfo.h
   thumbnailer/abstractapi.cpp
-  thumbnailer/abstractapi.h
   thumbnailer/tinyxml2.cpp
   thumbnailer/xmldict.cpp
   thumbnailer/jsonparser.cpp
-  thumbnailer/jsonparser.h
   thumbnailer/lastfm/lastfm.cpp
-  thumbnailer/lastfm/lastfm.h
   thumbnailer/lastfm/lfm-artistinfo.cpp
   thumbnailer/lastfm/lfm-albuminfo.cpp
   thumbnailer/deezer/deezer.cpp
-  thumbnailer/deezer/deezer.h
   thumbnailer/deezer/deezer-artistinfo.cpp
   thumbnailer/deezer/deezer-albuminfo.cpp
 )
 
+set(
+  NosonThumbnailer_HEADERS
+  plugin.h
+  albumartgenerator.h
+  artistartgenerator.h
+  thumbnailerimageresponse.h
+  thumbnailer/thumbnailer.h
+  thumbnailer/thumbnailerjob.h
+  thumbnailer/ratelimiter.h
+  thumbnailer/netrequest.h
+  thumbnailer/netmanager.h
+  thumbnailer/diskcachemanager.h
+  thumbnailer/artistinfo.h
+  thumbnailer/albuminfo.h
+  thumbnailer/abstractapi.h
+  thumbnailer/jsonparser.h
+  thumbnailer/lastfm/lastfm.h
+  thumbnailer/deezer/deezer.h
+)
+
 if(QT_STATICPLUGIN)
-    add_library(NosonThumbnailer STATIC ${NosonThumbnailer_SRCS})
+    add_library(NosonThumbnailer STATIC ${NosonThumbnailer_SOURCES})
 else()
-    add_library(NosonThumbnailer MODULE ${NosonThumbnailer_SRCS})
+    add_library(NosonThumbnailer MODULE ${NosonThumbnailer_SOURCES})
 endif()
 
 set_target_properties(NosonThumbnailer PROPERTIES

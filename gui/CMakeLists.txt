@@ -32,24 +32,23 @@ if (MSVC)
 endif ()
 
 set(
-  noson-gui-sources
+  noson-gui_SOURCES
   noson.cpp
   diskcache/diskcachefactory.cpp
-  diskcache/diskcachefactory.h
   diskcache/cachingnetworkaccessmanager.cpp
-  diskcache/cachingnetworkaccessmanager.h
   diskcache/cachereply.cpp
+)
+
+set(
+  noson-gui_HEADERS
+  diskcache/diskcachefactory.h
+  diskcache/cachingnetworkaccessmanager.h
   diskcache/cachereply.h
 )
 
 if(UNIX)
-  set(
-    extra-sources
-    signalhandler.cpp
-    signalhandler.h
-  )
-else()
-  unset(extra-sources)
+  set(noson-gui_SOURCES ${noson-gui_SOURCES} signalhandler.cpp)
+  set(noson-gui_HEADERS ${noson-gui_HEADERS} signalhandler.h)
 endif()
 
 add_definitions(-DAPP_VERSION="${APP_VERSION}")
@@ -57,11 +56,11 @@ add_definitions(-DAPP_VERSION="${APP_VERSION}")
 qt5_add_resources(noson-gui-resources noson.qrc)
 
 if(ANDROID)
-  add_library(noson-gui SHARED ${noson-gui-sources} ${noson-gui-resources} ${extra-sources})
+  add_library(noson-gui SHARED ${noson-gui_SOURCES} ${noson-gui-resources})
 elseif(MSVC)
-  add_executable(noson-gui WIN32 ${noson-gui-sources} ${noson-gui-resources} ${extra-sources})
+  add_executable(noson-gui WIN32 ${noson-gui_SOURCES} ${noson-gui-resources})
 else()
-  add_executable(noson-gui ${noson-gui-sources} ${noson-gui-resources} ${extra-sources})
+  add_executable(noson-gui ${noson-gui_SOURCES} ${noson-gui-resources})
 endif()
 
 target_link_libraries(noson-gui Qt5::Gui Qt5::Qml Qt5::Quick Qt5::QuickControls2 Qt5::Widgets Qt5::Xml Qt5::Svg)
