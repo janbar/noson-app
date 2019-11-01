@@ -227,93 +227,99 @@ include_directories (${noson_PUBLIC_DIR})
 file (GLOB SRC_FILES
   src/private/*.c
   src/private/*.cpp
+)
+
+file (GLOB HDR_FILES
   src/private/*.h
 )
 
 list (APPEND SRC_FILES
   src/data/datareader.cpp
-  src/data/datareader.h
   src/alarmclock.cpp
-  src/alarmclock.h
   src/alarm.cpp
-  src/alarm.h
   src/audioencoder.cpp
+  src/audiosource.cpp
+  src/avtransport.cpp
+  src/contentdirectory.cpp
+  src/deviceproperties.cpp
+  src/didlparser.cpp
+  src/digitalitem.cpp
+  src/eventhandler.cpp
+  src/filepicreader.cpp
+  src/filestreamer.cpp
+  src/imageservice.cpp
+  src/intrinsic.cpp
+  src/iodevice.cpp
+  src/locked.cpp
+  src/musicservices.cpp
+  src/renderingcontrol.cpp
+  src/requestbroker.cpp
+  src/service.cpp
+  src/smaccount.cpp
+  src/smapi.cpp
+  src/smapimetadata.cpp
+  src/sonosplayer.cpp
+  src/sonossystem.cpp
+  src/sonostypes.cpp
+  src/sonoszone.cpp
+  src/streambuffer.cpp
+  src/subscription.cpp
+  src/zonegrouptopology.cpp
+)
+
+list (APPEND HDR_FILES
+  src/data/datareader.h
+  src/alarmclock.h
+  src/alarm.h
   src/audioencoder.h
   src/audioformat.h
-  src/audiosource.cpp
   src/audiosource.h
   src/audiostream.h
-  src/avtransport.cpp
   src/avtransport.h
-  src/contentdirectory.cpp
   src/contentdirectory.h
-  src/deviceproperties.cpp
   src/deviceproperties.h
-  src/didlparser.cpp
   src/didlparser.h
-  src/digitalitem.cpp
   src/digitalitem.h
   src/element.h
-  src/eventhandler.cpp
   src/eventhandler.h
-  src/filepicreader.cpp
   src/filepicreader.h
-  src/filestreamer.cpp
   src/filestreamer.h
-  src/imageservice.cpp
   src/imageservice.h
-  src/intrinsic.cpp
   src/intrinsic.h
-  src/iodevice.cpp
   src/iodevice.h
-  src/locked.cpp
   src/locked.h
-  src/musicservices.cpp
   src/musicservices.h
-  src/renderingcontrol.cpp
   src/renderingcontrol.h
-  src/requestbroker.cpp
   src/requestbroker.h
-  src/service.cpp
   src/service.h
   src/sharedptr.h
-  src/smaccount.cpp
   src/smaccount.h
-  src/smapi.cpp
   src/smapi.h
-  src/smapimetadata.cpp
   src/smapimetadata.h
-  src/sonosplayer.cpp
   src/sonosplayer.h
-  src/sonossystem.cpp
   src/sonossystem.h
-  src/sonostypes.cpp
   src/sonostypes.h
-  src/sonoszone.cpp
   src/sonoszone.h
-  src/streambuffer.cpp
   src/streambuffer.h
   src/streamreader.h
-  src/subscription.cpp
   src/subscription.h
-  src/zonegrouptopology.cpp
   src/zonegrouptopology.h
 )
 
 if (HAVE_FLAC)
   include_directories (${FLACXX_INCLUDE_DIR})
-  list (APPEND STREAM_SRC_FILES
-    src/flacencoder.cpp
-    src/flacencoder.h
-  )
+  list (APPEND STREAM_SRC_FILES src/flacencoder.cpp)
+  list (APPEND STREAM_HDR_FILES src/flacencoder.h)
   if (HAVE_PULSEAUDIO)
     include_directories (${PULSESIMPLE_INCLUDE_DIR} ${PULSE_INCLUDE_DIR})
     list (APPEND STREAM_SRC_FILES
       src/pacontrol.cpp
-      src/pacontrol.h
       src/pasource.cpp
-      src/pasource.h
       src/pulsestreamer.cpp
+    )
+    list (APPEND STREAM_HDR_FILES
+      src/pacontrol.h
+      src/pasource.h
       src/pulsestreamer.h
     )
   endif ()
@@ -325,7 +331,7 @@ if (MSVC)
   list (APPEND OS_SRC_FILES src/private/os/windows/winpthreads.c)
 endif ()
 
-set (NOSON_SOURCES ${SRC_FILES} ${OS_SRC_FILES} ${STREAM_SRC_FILES})
+set (noson_SOURCES ${SRC_FILES} ${OS_SRC_FILES} ${STREAM_SRC_FILES})
 
 ###############################################################################
 # add targets
@@ -354,9 +360,9 @@ else ()
 endif ()
 
 if (BUILD_SHARED_LIBS)
-  add_library (noson SHARED ${NOSON_SOURCES})
+  add_library (noson SHARED ${noson_SOURCES})
 else ()
-  add_library (noson STATIC ${NOSON_SOURCES})
+  add_library (noson STATIC ${noson_SOURCES})
 endif ()
 target_link_libraries (noson ${noson_LIBRARIES})
 set_target_properties (noson PROPERTIES
