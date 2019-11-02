@@ -74,12 +74,10 @@ void Mpris2::connectionStateChanged()
 {
   m_metadata = QVariantMap();
   emitNotification("Metadata");
-  emitNotification("CanPlay", CanPlay());
-  emitNotification("CanPause", CanPause());
-  emitNotification("PlaybackStatus", PlaybackStatus());
-  if (m_player->playbackState() == "PLAYING")
-    emitNotification("CanSeek", CanSeek());
-}
+  emitNotification("Volume");
+  emitNotification("Position");
+  playbackStateChanged();
+  playModeChanged();}
 
 void Mpris2::playbackStateChanged()
 {
@@ -411,6 +409,7 @@ void Mpris2::SetPosition(const QDBusObjectPath& trackId, qlonglong offset)
 
 void Mpris2::OpenUri(const QString& uri)
 {
+  Q_UNUSED(uri);
 }
 
 TrackIds Mpris2::Tracks() const
