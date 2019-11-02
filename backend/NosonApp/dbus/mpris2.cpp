@@ -283,7 +283,7 @@ void Mpris2::currentTrackChanged()
   addMetadata("mpris:artUrl", m_player->currentMetaArt(), &m_metadata);
   addMetadata("xesam:title", m_player->currentMetaTitle(), &m_metadata);
   addMetadata("xesam:album", m_player->currentMetaAlbum(), &m_metadata);
-  addMetadataAsList("xesam:albumArtist", m_player->currentMetaArtist(), &m_metadata);
+  addMetadataAsList("xesam:artist", m_player->currentMetaArtist(), &m_metadata);
 
   emitNotification("Metadata", m_metadata);
 }
