@@ -25,10 +25,6 @@
 #include <QtDBus>
 #include <QMetaObject>
 
-typedef QList<QVariantMap> TrackMetadata;
-typedef QList<QDBusObjectPath> TrackIds;
-Q_DECLARE_METATYPE(TrackMetadata)
-
 namespace nosonapp
 {
 
@@ -71,15 +67,11 @@ public:
   Q_PROPERTY(bool CanPause READ CanPause)
   Q_PROPERTY(bool CanSeek READ CanSeek)
   Q_PROPERTY(bool CanControl READ CanControl)
-
-  // org.mpris.MediaPlayer2.TrackList MPRIS 2.0 Player interface
-  Q_PROPERTY(TrackIds Tracks READ Tracks)
-  Q_PROPERTY(bool CanEditTracks READ CanEditTracks)
   
   // Root Properties
   bool CanQuit() const { return false; }
   bool CanRaise() const { return false; }
-  bool HasTrackList() const { return true; }
+  bool HasTrackList() const { return false; }
   QString Identity() const;
   QString DesktopEntry() const;
   QStringList SupportedUriSchemes() const;
@@ -126,25 +118,9 @@ public:
   void SetPosition(const QDBusObjectPath& trackId, qlonglong offset);
   void OpenUri(const QString& uri);
 
-  // TrackList Properties
-  TrackIds Tracks() const;
-  bool CanEditTracks() const { return false; }
-
-  // Methods
-  TrackMetadata GetTracksMetadata(const TrackIds& tracks) const;
-  void AddTrack(const QString& uri, const QDBusObjectPath& afterTrack, bool setAsCurrent);
-  void RemoveTrack(const QDBusObjectPath& trackId);
-  void GoTo(const QDBusObjectPath& trackId);
-
 signals:
   // Player
   void Seeked(qlonglong position);
-
-  // TrackList
-  void TrackListReplaced(const TrackIds& Tracks, QDBusObjectPath CurrentTrack);
-  void TrackAdded(const TrackMetadata& Metadata, QDBusObjectPath AfterTrack);
-  void TrackRemoved(const QDBusObjectPath& trackId);
-  void TrackMetadataChanged(const QDBusObjectPath& trackId, const TrackMetadata& metadata);
 
 private slots:
   void connectionStateChanged();

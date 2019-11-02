@@ -110,9 +110,6 @@ if(HAVE_DBUS)
     qt5_add_dbus_adaptor(NosonApp_SOURCES
         dbus/org.mpris.MediaPlayer2.Player.xml
         dbus/mpris2.h nosonapp::Mpris2 mpris2_player Mpris2Player)
-    qt5_add_dbus_adaptor(NosonApp_SOURCES
-        dbus/org.mpris.MediaPlayer2.TrackList.xml
-        dbus/mpris2.h nosonapp::Mpris2 mpris2_tracklist Mpris2TrackList)
 endif()
 
 if(QT_STATICPLUGIN)
