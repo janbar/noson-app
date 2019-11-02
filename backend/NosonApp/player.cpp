@@ -193,6 +193,27 @@ bool Player::ping()
   return false;
 }
 
+QString Player::zoneId() const
+{
+  if (m_sonos)
+    return m_sonos->getZoneId();
+  return QString();
+}
+
+QString Player::zoneName() const
+{
+  if (m_sonos)
+    return m_sonos->getZoneName();
+  return QString();
+}
+
+QString Player::zoneShortName() const
+{
+  if (m_sonos)
+    return m_sonos->getZoneShortName();
+  return QString();
+}
+
 bool Player::refreshShareIndex()
 {
   return m_player ? m_player->RefreshShareIndex() : false;

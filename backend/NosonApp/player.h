@@ -71,6 +71,9 @@ public:
 
   Q_INVOKABLE void renewSubscriptions();
   Q_INVOKABLE bool ping();
+  Q_INVOKABLE QString zoneId() const;
+  Q_INVOKABLE QString zoneName() const;
+  Q_INVOKABLE QString zoneShortName() const;
 
   Q_INVOKABLE bool refreshShareIndex();
   Q_INVOKABLE bool configureSleepTimer(int seconds);

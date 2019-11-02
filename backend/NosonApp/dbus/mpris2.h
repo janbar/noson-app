@@ -187,12 +187,11 @@ signals:
   }
 
  private:
-  static QString serviceName;
-  static QString servicePath;
-
-  QVariantMap m_metadata;
-
   Player* m_player;
+  bool m_registered;
+  QString m_serviceName;
+  QString m_servicePath;
+  QVariantMap m_metadata;
 };
 
 }

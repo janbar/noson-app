@@ -28,6 +28,7 @@
 #include "mpris2_player.h"
 #include "mpris2_tracklist.h"
 #include "player.h"
+#include "tools.h"
 
 #define MPRIS_OBJECT_PATH     "/org/mpris/MediaPlayer2"
 #define DBUS_MEDIAPLAYER_SVC  "org.mpris.MediaPlayer2"
@@ -35,24 +36,17 @@
 
 using namespace nosonapp;
 
-QString Mpris2::serviceName = QString(DBUS_MEDIAPLAYER_SVC ".%1").arg(QGuiApplication::applicationDisplayName());
-QString Mpris2::servicePath = QString("/%1").arg(QString(QGuiApplication::applicationName()).replace('.', '/'));
-
 Mpris2::Mpris2(Player* app, QObject* parent)
 : QObject(parent)
 , m_player(app)
+, m_registered(false)
+, m_serviceName()
+, m_servicePath()
+, m_metadata()
 {
   new Mpris2Root(this);
   new Mpris2Player(this);
   new Mpris2TrackList(this);
-
-  if (!QDBusConnection::sessionBus().registerService(serviceName))
-  {
-    qWarning() << "Failed to register" << serviceName << "on the session bus";
-    return;
-  }
-
-  QDBusConnection::sessionBus().registerObject(MPRIS_OBJECT_PATH, this);
 
   if (m_player)
   {
@@ -67,17 +61,56 @@ Mpris2::Mpris2(Player* app, QObject* parent)
 
 Mpris2::~Mpris2()
 {
-  QDBusConnection::sessionBus().unregisterService(serviceName);
+  if (m_registered)
+    QDBusConnection::sessionBus().unregisterService(m_serviceName);
 }
 
 void Mpris2::connectionStateChanged()
 {
+  if (m_registered)
+    QDBusConnection::sessionBus().unregisterService(m_serviceName);
+  m_registered = false;
+
+  // Try to make a friendly name for the player according to the Dbus specs.
+  // A valid name must only contain the ASCII characters "[A-Z][a-z][0-9]_" and
+  // must not begin with a digit.
+  QString zoneId;
+  QString zone_ = normalizedString(m_player->zoneShortName().split('+').front());
+  foreach (QChar c, zone_)
+  {
+    switch (c.category())
+    {
+    case QChar::Letter_Lowercase:
+    case QChar::Letter_Uppercase:
+    case QChar::Number_DecimalDigit:
+      zoneId.append(c);
+      break;
+    default:
+      zoneId.append('_');
+    }
+  }
+
+  m_serviceName = QString(DBUS_MEDIAPLAYER_SVC ".%1_%2")
+          .arg(QGuiApplication::applicationDisplayName(), zoneId);
+  if (!QDBusConnection::sessionBus().registerService(m_serviceName))
+  {
+    qWarning() << "Failed to register" << m_serviceName << "on the session bus";
+    return;
+  }
+  m_registered = true;
+
+  m_servicePath = QString("/%1/%2")
+          .arg(QString(QGuiApplication::applicationName()).replace('.', '/'), zoneId);
+
+  QDBusConnection::sessionBus().registerObject(MPRIS_OBJECT_PATH, this);
+
   m_metadata = QVariantMap();
   emitNotification("Metadata");
   emitNotification("Volume");
   emitNotification("Position");
   playbackStateChanged();
-  playModeChanged();}
+  playModeChanged();
+}
 
 void Mpris2::playbackStateChanged()
 {
@@ -265,7 +298,7 @@ QVariantMap Mpris2::Metadata() const
 
 QString Mpris2::makeTrackId(int index) const
 {
-  return QString("%1/track/%2").arg(servicePath).arg(QString::number(index));
+  return QString("%1/track/%2").arg(m_servicePath).arg(QString::number(index));
 }
 
 void Mpris2::currentTrackChanged()
