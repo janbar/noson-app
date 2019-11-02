@@ -23,6 +23,11 @@
 
 #include <QObject>
 #include <QtDBus>
+#include <QMetaObject>
+
+typedef QList<QVariantMap> TrackMetadata;
+typedef QList<QDBusObjectPath> TrackIds;
+Q_DECLARE_METATYPE(TrackMetadata)
 
 namespace nosonapp
 {
@@ -67,6 +72,10 @@ class Mpris2 : public QObject
   Q_PROPERTY(bool CanSeek READ CanSeek)
   Q_PROPERTY(bool CanControl READ CanControl)
 
+  // org.mpris.MediaPlayer2.TrackList MPRIS 2.0 Player interface
+  Q_PROPERTY(TrackIds Tracks READ Tracks)
+  Q_PROPERTY(bool CanEditTracks READ CanEditTracks)
+  
   // Root Properties
   bool CanQuit() const { return false; }
   bool CanRaise() const { return false; }
@@ -116,6 +125,16 @@ class Mpris2 : public QObject
   void Seek(qlonglong offset);
   void SetPosition(const QDBusObjectPath& trackId, qlonglong offset);
   void OpenUri(const QString& uri);
+
+  // TrackList Properties
+  TrackIds Tracks() const;
+  bool CanEditTracks() const { return false; }
+
+  // Methods
+  TrackMetadata GetTracksMetadata(const TrackIds& tracks) const;
+  void AddTrack(const QString& uri, const QDBusObjectPath& afterTrack, bool setAsCurrent);
+  void RemoveTrack(const QDBusObjectPath& trackId);
+  void GoTo(const QDBusObjectPath& trackId);
 
 signals:
   // Player

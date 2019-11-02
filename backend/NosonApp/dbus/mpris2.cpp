@@ -24,8 +24,9 @@
 #include <QDBusConnection>
 #include <QDebug>
 
-#include "mpris2_player.h"
 #include "mpris2_root.h"
+#include "mpris2_player.h"
+#include "mpris2_tracklist.h"
 #include "player.h"
 
 #define MPRIS_OBJECT_PATH     "/org/mpris/MediaPlayer2"
@@ -43,6 +44,7 @@ Mpris2::Mpris2(Player* app, QObject* parent)
 {
   new Mpris2Root(this);
   new Mpris2Player(this);
+  new Mpris2TrackList(this);
 
   if (!QDBusConnection::sessionBus().registerService(serviceName))
   {
@@ -202,7 +204,6 @@ void Mpris2::Raise()
 
 void Mpris2::Quit()
 {
-  //qApp->quit();
 }
 
 QString Mpris2::PlaybackStatus() const
@@ -410,4 +411,51 @@ void Mpris2::SetPosition(const QDBusObjectPath& trackId, qlonglong offset)
 
 void Mpris2::OpenUri(const QString& uri)
 {
+}
+
+TrackIds Mpris2::Tracks() const
+{
+  TrackIds ids;
+  QDBusObjectPath path;
+  path.setPath(makeTrackId(m_player->currentIndex()));
+  ids.append(path);
+  return ids;
+}
+
+TrackMetadata Mpris2::GetTracksMetadata(const TrackIds& tracks) const
+{
+  TrackMetadata list;
+  QString path = makeTrackId(m_player->currentIndex());
+  foreach(QDBusObjectPath id, tracks)
+  {
+    if (id.path() == path)
+    {
+      QVariantMap metadata;
+      addMetadata("mpris:trackid", id.path(), &metadata);
+      addMetadata("mpris:length", (qint64)(1000000L * m_player->currentTrackDuration()), &metadata);
+      addMetadata("mpris:artUrl", m_player->currentMetaArt(), &metadata);
+      addMetadata("xesam:title", m_player->currentMetaTitle(), &metadata);
+      addMetadata("xesam:album", m_player->currentMetaAlbum(), &metadata);
+      addMetadataAsList("xesam:artist", m_player->currentMetaArtist(), &metadata);
+      list.append(metadata);
+    }
+  }
+  return list;
+}
+
+void Mpris2::AddTrack(const QString& uri, const QDBusObjectPath& afterTrack, bool setAsCurrent)
+{
+  Q_UNUSED(uri);
+  Q_UNUSED(afterTrack);
+  Q_UNUSED(setAsCurrent);
+}
+
+void Mpris2::RemoveTrack(const QDBusObjectPath& trackId)
+{
+  Q_UNUSED(trackId);
+}
+
+void Mpris2::GoTo(const QDBusObjectPath& trackId)
+{
+  Q_UNUSED(trackId);
 }
