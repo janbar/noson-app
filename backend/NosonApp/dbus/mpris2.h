@@ -79,7 +79,7 @@ public:
   // Root Properties
   bool CanQuit() const { return false; }
   bool CanRaise() const { return false; }
-  bool HasTrackList() const { return false; }
+  bool HasTrackList() const { return true; }
   QString Identity() const;
   QString DesktopEntry() const;
   QStringList SupportedUriSchemes() const;
