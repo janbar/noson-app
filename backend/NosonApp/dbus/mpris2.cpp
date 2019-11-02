@@ -53,7 +53,6 @@ Mpris2::Mpris2(Player* app, QObject* parent)
     QObject::connect(m_player, SIGNAL(renderingGroupChanged()), SLOT(volumeChanged()));
     QObject::connect(m_player, SIGNAL(playModeChanged()), SLOT(playModeChanged()));
     QObject::connect(m_player, SIGNAL(sourceChanged()), SLOT(currentTrackChanged()));
-    //QObject::connect(m_player, SIGNAL(?), SIGNAL(Seeked(qlonglong)));
   }
 }
 
@@ -103,42 +102,41 @@ void Mpris2::connectionStateChanged()
   QDBusConnection::sessionBus().registerObject(MPRIS_OBJECT_PATH, this);
 
   m_metadata = QVariantMap();
-  emitNotification("Metadata");
-  emitNotification("Volume");
-  emitNotification("Position");
+  emitPlayerNotification("Metadata", Metadata());
+  emitPlayerNotification("Volume", Volume());
   playbackStateChanged();
   playModeChanged();
+  emit Seeked(Position());
 }
 
 void Mpris2::playbackStateChanged()
 {
-  emitNotification("CanPlay", CanPlay());
-  emitNotification("CanPause", CanPause());
-  emitNotification("PlaybackStatus", PlaybackStatus());
+  emitPlayerNotification("CanPlay", CanPlay());
+  emitPlayerNotification("CanPause", CanPause());
+  emitPlayerNotification("PlaybackStatus", PlaybackStatus());
   if (m_player->playbackState() == "PLAYING")
-    emitNotification("CanSeek", CanSeek());
+    emitPlayerNotification("CanSeek", CanSeek());
 }
 
 void Mpris2::volumeChanged()
 {
-  emitNotification("Volume");
+  emitPlayerNotification("Volume", Volume());
 }
 
 void Mpris2::playModeChanged()
 {
-  emitNotification("Shuffle");
-  emitNotification("LoopStatus");
-  emitNotification("CanGoNext", CanGoNext());
-  emitNotification("CanGoPrevious", CanGoPrevious());
+  emitPlayerNotification("Shuffle", Shuffle());
+  emitPlayerNotification("LoopStatus", LoopStatus());
+  emitPlayerNotification("CanGoNext", CanGoNext());
+  emitPlayerNotification("CanGoPrevious", CanGoPrevious());
 }
 
-void Mpris2::emitNotification(const QString& name, const QVariant& val)
+void Mpris2::emitPlayerNotification(const QString& name, const QVariant& val)
 {
   emitNotification(name, val, "org.mpris.MediaPlayer2.Player");
 }
 
-void Mpris2::emitNotification(const QString& name, const QVariant& val,
-                              const QString& mprisEntity)
+void Mpris2::emitNotification(const QString& name, const QVariant& val, const QString& mprisEntity)
 {
   QDBusMessage msg = QDBusMessage::createSignal(MPRIS_OBJECT_PATH, DBUS_FREEDESKTOP_SVC, "PropertiesChanged");
   QVariantMap map;
@@ -146,36 +144,6 @@ void Mpris2::emitNotification(const QString& name, const QVariant& val,
   QVariantList args = QVariantList() << mprisEntity << map << QStringList();
   msg.setArguments(args);
   QDBusConnection::sessionBus().send(msg);
-}
-
-void Mpris2::emitNotification(const QString& name)
-{
-  QVariant value;
-  if (name == "PlaybackStatus")
-    value = PlaybackStatus();
-  else if (name == "LoopStatus")
-    value = LoopStatus();
-  else if (name == "Shuffle")
-    value = Shuffle();
-  else if (name == "Metadata")
-    value = Metadata();
-  else if (name == "Volume")
-    value = Volume();
-  else if (name == "Position")
-    value = Position();
-  else if (name == "CanGoNext")
-    value = CanGoNext();
-  else if (name == "CanGoPrevious")
-    value = CanGoPrevious();
-  else if (name == "CanSeek")
-    value = CanSeek();
-  else if (name == "CanPlay")
-    value = CanPlay();
-  else if (name == "CanPause")
-    value = CanPause();
-
-  if (value.isValid())
-    emitNotification(name, value);
 }
 
 QString Mpris2::Identity() const
@@ -301,11 +269,12 @@ QString Mpris2::makeTrackId(int index) const
 
 void Mpris2::currentTrackChanged()
 {
-  emitNotification("CanPlay");
-  emitNotification("CanPause");
-  emitNotification("CanGoNext", CanGoNext());
-  emitNotification("CanGoPrevious", CanGoPrevious());
-  emitNotification("CanSeek", CanSeek());
+  emitPlayerNotification("CanPlay", CanPlay());
+  emitPlayerNotification("CanPause", CanPause());
+  emitPlayerNotification("CanGoNext", CanGoNext());
+  emitPlayerNotification("CanGoPrevious", CanGoPrevious());
+  emitPlayerNotification("CanSeek", CanSeek());
+  emit Seeked(Position());
 
   m_metadata = QVariantMap();
   addMetadata("mpris:trackid", makeTrackId(m_player->currentIndex()), &m_metadata);
@@ -315,7 +284,7 @@ void Mpris2::currentTrackChanged()
   addMetadata("xesam:album", m_player->currentMetaAlbum(), &m_metadata);
   addMetadataAsList("xesam:artist", m_player->currentMetaArtist(), &m_metadata);
 
-  emitNotification("Metadata", m_metadata);
+  emitPlayerNotification("Metadata", m_metadata);
 }
 
 double Mpris2::Volume() const

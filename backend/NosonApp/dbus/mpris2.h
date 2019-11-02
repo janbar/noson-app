@@ -130,8 +130,7 @@ private slots:
   void currentTrackChanged();
 
 private:
-  void emitNotification(const QString& name);
-  void emitNotification(const QString& name, const QVariant& val);
+  void emitPlayerNotification(const QString& name, const QVariant& val);
   void emitNotification(const QString& name, const QVariant& val, const QString& mprisEntity);
 
   QString makeTrackId(int index) const;
