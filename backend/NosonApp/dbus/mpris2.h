@@ -38,7 +38,7 @@ class Mpris2 : public QObject
 {
   Q_OBJECT
 
- public:
+public:
   Mpris2(Player* app, QObject* parent = nullptr);
   ~Mpris2();
 
@@ -140,14 +140,20 @@ signals:
   // Player
   void Seeked(qlonglong position);
 
- private slots:
+  // TrackList
+  void TrackListReplaced(const TrackIds& Tracks, QDBusObjectPath CurrentTrack);
+  void TrackAdded(const TrackMetadata& Metadata, QDBusObjectPath AfterTrack);
+  void TrackRemoved(const QDBusObjectPath& trackId);
+  void TrackMetadataChanged(const QDBusObjectPath& trackId, const TrackMetadata& metadata);
+
+private slots:
   void connectionStateChanged();
   void playbackStateChanged();
   void volumeChanged();
   void playModeChanged();
   void currentTrackChanged();
 
- private:
+private:
   void emitNotification(const QString& name);
   void emitNotification(const QString& name, const QVariant& val);
   void emitNotification(const QString& name, const QVariant& val, const QString& mprisEntity);
@@ -186,7 +192,7 @@ signals:
     if (metadata.isValid()) (*map)[key] = metadata;
   }
 
- private:
+private:
   Player* m_player;
   bool m_registered;
   QString m_serviceName;
