@@ -15,6 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 #ifndef IMAGESERVICE_H
 #define IMAGESERVICE_H
 

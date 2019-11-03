@@ -15,6 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "pasource.h"
 #include "private/debug.h"
 #include "private/pcmblankkiller.h"

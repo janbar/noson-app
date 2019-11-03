@@ -15,6 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 #ifndef STREAMBUFFER_H
 #define STREAMBUFFER_H
 

@@ -15,6 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 #include "imageservice.h"
 #include "private/debug.h"
 #include "data/datareader.h"
