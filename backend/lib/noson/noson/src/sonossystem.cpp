@@ -79,10 +79,15 @@ System::~System()
 
 bool System::Discover()
 {
-  bool ret = false;
   std::string url;
   if (!FindDeviceDescription(url))
-    return ret;
+    return false;
+  return Discover(url);
+}
+
+bool System::Discover(const std::string& url)
+{
+  bool ret = false;
   URIParser uri(url);
   if (!uri.Scheme() || !uri.Host() || !uri.Port())
     return ret;

@@ -51,6 +51,7 @@ ApplicationWindow {
         property int heightGU: Math.round(mainView.height / units.gridUnit)
         property string accounts: ""
         property string lastfmKey: ""
+        property string deviceUrl: ""
     }
 
     Material.accent: Material.Grey
@@ -149,6 +150,9 @@ ApplicationWindow {
 
     // setting alias to check first run
     property alias firstRun: settings.firstRun
+
+    // setting alias to store deviceUrl as hint for the SSDP discovery
+    property alias deviceUrl: settings.deviceUrl
 
     // setting alias to store last zone connected
     property alias currentZone: settings.zoneName
@@ -292,6 +296,11 @@ ApplicationWindow {
         if ((argno = indexOfArgument("--zone=")) > 0) {
             currentZone = ApplicationArguments[argno].slice(ApplicationArguments[argno].indexOf("=") + 1);
             customdebug(argno + ": zone=" + currentZone);
+        }
+        // Argument --deviceUrl={http://host:port[/xml/device_description.xml]}: Hint for the SSDP discovery
+        if ((argno = indexOfArgument("--deviceUrl=")) > 0) {
+            deviceUrl = ApplicationArguments[argno].slice(ApplicationArguments[argno].indexOf("=") + 1);
+            customdebug(argno + ": deviceUrl=" + deviceUrl);
         }
 
         customdebug("LANG=" + Qt.locale().name);
@@ -483,13 +492,20 @@ ApplicationWindow {
 
     // Try connect to SONOS system
     function connectSonos() {
+        // if the setting deviceUrl is filled then try it, else continue with the SSDP discovery
+        if (mainView.deviceUrl.length > 0) {
+            customdebug("NOTICE: Connecting using the configured URL: " + mainView.deviceUrl);
+            if (Sonos.init(mainView.debugLevel, mainView.deviceUrl))
+                return true;
+            customdebug("ERROR: Connection has failed using the configured URL: " + mainView.deviceUrl);
+        }
         return Sonos.startInit(mainView.debugLevel);
     }
 
     signal zoneChanged
 
     // Try to change zone
-    // On success noZone is set to false 
+    // On success noZone is set to false
     function connectZone(name) {
         var oldZone = currentZone;
         customdebug("Connecting zone '" + name + "'");

@@ -86,7 +86,10 @@ private:
 class InitWorker : public SONOS::OS::CWorker
 {
 public:
-  InitWorker(Sonos& sonos, int debug) : m_sonos(sonos), m_debug(debug) { }
+  InitWorker(Sonos& sonos, int debug)
+  : m_sonos(sonos)
+  , m_debug(debug)
+  { }
 
   virtual void Process()
   {
@@ -199,10 +202,18 @@ bool Sonos::startInit(int debug)
   return m_threadpool.Enqueue(new InitWorker(*this, debug));
 }
 
-bool Sonos::init(int debug)
+bool Sonos::init(int debug /*= 0*/)
 {
   SONOS::DBGLevel(debug > DBG_INFO ? debug : DBG_INFO);
   bool ret = m_system.Discover();
+  SONOS::DBGLevel(debug);
+  return ret;
+}
+
+bool Sonos::init(int debug, const QString& url)
+{
+  SONOS::DBGLevel(debug > DBG_INFO ? debug : DBG_INFO);
+  bool ret = m_system.Discover(url.toStdString().c_str());
   SONOS::DBGLevel(debug);
   return ret;
 }

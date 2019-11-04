@@ -59,6 +59,7 @@ public:
 
   Q_INVOKABLE bool startInit(int debug = 0); // asynchronous
   Q_INVOKABLE bool init(int debug = 0);
+  Q_INVOKABLE bool init(int debug, const QString& url);
 
   Q_INVOKABLE void setLocale(const QString& locale);
 

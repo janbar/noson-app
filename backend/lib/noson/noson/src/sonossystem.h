@@ -52,6 +52,7 @@ namespace NSROOT
     bool IsListening() { return m_eventHandler.IsRunning(); }
 
     bool Discover();
+    bool Discover(const std::string& url);
 
     unsigned char LastEvents();
 

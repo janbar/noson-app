@@ -93,8 +93,22 @@ int main(int argc, char** argv)
   int ret = 0;
   SONOS::DBGLevel(DBG_ERROR);
 
+  if (getCmd(argv, argv + argc, "--help") || getCmd(argv, argv + argc, "-h"))
+  {
+    PRINT("\n  --deviceUrl <URL>\n\n");
+    PRINT("  Bypass the SSDP discovery by connecting to an endpoint. The typical URLs are:\n");
+    PRINT("  http://{IPADDRESS}:1400 or http://{IPADDRESS}:3400\n");
+    PRINT("\n  --debug\n\n");
+    PRINT("  Enable the debug output.\n");
+    PRINT("\n  --help | -h\n\n");
+    PRINT("  Print the command usage.\n\n");
+    return EXIT_SUCCESS;
+  }
+
   if (getCmd(argv, argv + argc, "--debug"))
     SONOS::DBGLevel(DBG_PROTO);
+
+  const char* deviceUrl = getCmdOption(argv, argv + argc, "--deviceUrl");
 
 #ifdef __WINDOWS__
   //Initialize Winsock
@@ -105,14 +119,28 @@ int main(int argc, char** argv)
 
   PRINT1("Noson CLI using libnoson %s, Copyright (C) 2018 Jean-Luc Barriere\n", SONOS::libVersionString());
   gSonos = new SONOS::System(0, handleEventCB);
-  PERROR("Searching... ");
-  if (!gSonos->Discover())
+  if (!deviceUrl)
   {
-    PERROR("No SONOS zone found.\n");
-    return EXIT_FAILURE;
+    PERROR("Searching... ");
+    if (!gSonos->Discover())
+    {
+      PERROR("No SONOS zone found.\n");
+      return EXIT_FAILURE;
+    }
+    else
+      PERROR("Succeeded\n");
   }
   else
-    PERROR("Succeeded\n");
+  {
+    PERROR1("Connecting to %s... ", deviceUrl);
+    if (!gSonos->Discover(deviceUrl))
+    {
+      PERROR("The SONOS device is unreachable.\n");
+      return EXIT_FAILURE;
+    }
+    else
+      PERROR("Succeeded\n");
+  }
 
   /*
    * Register handlers to process remote request
