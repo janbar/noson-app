@@ -94,7 +94,7 @@ public:
   virtual void Process()
   {
     m_sonos.beginJob();
-    emit m_sonos.initDone(m_sonos.init(m_debug));
+    m_sonos.init(m_debug);
     m_sonos.endJob();
   }
 private:
@@ -207,6 +207,7 @@ bool Sonos::init(int debug /*= 0*/)
   SONOS::DBGLevel(debug > DBG_INFO ? debug : DBG_INFO);
   bool ret = m_system.Discover();
   SONOS::DBGLevel(debug);
+  emit initDone(ret);
   return ret;
 }
 
@@ -215,6 +216,7 @@ bool Sonos::init(int debug, const QString& url)
   SONOS::DBGLevel(debug > DBG_INFO ? debug : DBG_INFO);
   bool ret = m_system.Discover(url.toStdString().c_str());
   SONOS::DBGLevel(debug);
+  emit initDone(ret);
   return ret;
 }
 

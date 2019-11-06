@@ -140,10 +140,11 @@ ApplicationWindow {
     }
 
     // Variables
-    property string appName: "Noson"
-    property int debugLevel: 2
-    property bool playOnStart: false
-    property bool startup: true
+    property string appName: "Noson"    // My name
+    property int debugLevel: 2          // My debug level
+    property bool playOnStart: false    // play inputStreamUrl when startup is completed
+    property bool startup: true         // is running the cold startup ?
+    property bool ssdp: true            // point out the connect method
 
     // Property to store the state of an application (active or suspended)
     property bool applicationSuspended: Qt.application.state === Qt.ApplicationSuspended
@@ -232,6 +233,12 @@ ApplicationWindow {
 
         onInitDone: {
             if (succeeded) {
+                // clear the setting deviceUrl when ssdp method succeeded
+                if (ssdp && deviceUrl !== "") {
+                    customdebug("NOTICE: Clearing the configured URL because invalid");
+                    deviceUrl = "";
+                }
+
                 if (noZone)
                     noZone = false;
             } else {
@@ -493,13 +500,15 @@ ApplicationWindow {
     // Try connect to SONOS system
     function connectSonos() {
         // if the setting deviceUrl is filled then try it, else continue with the SSDP discovery
-        if (mainView.deviceUrl.length > 0) {
-            customdebug("NOTICE: Connecting using the configured URL: " + mainView.deviceUrl);
-            if (Sonos.init(mainView.debugLevel, mainView.deviceUrl))
+        if (deviceUrl.length > 0) {
+            customdebug("NOTICE: Connecting using the configured URL: " + deviceUrl);
+            ssdp = false; // point out the ssdp discovery isn't used to connect
+            if (Sonos.init(debugLevel, deviceUrl))
                 return true;
-            customdebug("ERROR: Connection has failed using the configured URL: " + mainView.deviceUrl);
+            customdebug("ERROR: Connection has failed using the configured URL: " + deviceUrl);
         }
-        return Sonos.startInit(mainView.debugLevel);
+        ssdp = true; // point out the ssdp discovery is used to connect
+        return Sonos.startInit(debugLevel);
     }
 
     signal zoneChanged
