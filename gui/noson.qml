@@ -487,9 +487,7 @@ ApplicationWindow {
         var rows = str.split("|");
         for (var r = 0; r < rows.length; ++r) {
             var attrs = rows[r].split(",");
-            if (attrs.length === 3) // <= 2.4.7
-                acls.push({type: attrs[0], sn: attrs[1], key: attrs[2], token: attrs[2], username: ""});
-            else if (attrs.length === 4) // >= 2.4.8
+            if (attrs.length === 4)
                 acls.push({type: attrs[0], sn: attrs[1], key: Qt.atob(attrs[2]), token: Qt.atob(attrs[3]), username: ""});
             else if (attrs.length === 5)
                 acls.push({type: attrs[0], sn: attrs[1], key: Qt.atob(attrs[2]), token: Qt.atob(attrs[3]), username: Qt.atob(attrs[4])});
