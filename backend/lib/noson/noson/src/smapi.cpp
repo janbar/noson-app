@@ -102,11 +102,6 @@ bool SMAPI::Init(const SMServicePtr& smsvc, const std::string& locale)
   {
     m_presentation.clear();
     m_searchCategories.clear();
-    // create a default search for service 'TuneIn'
-    if (m_service->GetName() == "TuneIn")
-    {
-      m_searchCategories.push_back(ElementPtr(new Element("stations", "search:station")));
-    }
   }
   else
   {
@@ -132,6 +127,22 @@ bool SMAPI::Init(const SMServicePtr& smsvc, const std::string& locale)
     if (!parsePresentationMap(data))
       return false;
   }
+
+  // see https://musicpartners.sonos.com/node/530
+  // Enables the ability for users to search content
+  if ((m_capabilities & 0x1) == 0x1)
+  {
+    if (m_searchCategories.empty())
+    {
+      // add default search categories
+      m_searchCategories.push_back(ElementPtr(new Element("tracks", "track")));
+      m_searchCategories.push_back(ElementPtr(new Element("albums", "album")));
+      m_searchCategories.push_back(ElementPtr(new Element("artists", "artist")));
+      m_searchCategories.push_back(ElementPtr(new Element("playlists", "playlist")));
+    }
+  }
+  else
+    m_searchCategories.clear(); // disable search content
 
   // setup end-point from service URI
   if (m_service->GetSecureUri().empty())
