@@ -54,6 +54,15 @@ dbus-devel
     $ export PATH=$(pwd)/cmake-3.14.7-Linux-x86_64/bin:$PATH
     ```
 
+###### For FreeBSD 12.0
+
+```bash
+$ pkg install cmake git bash dbus flac pulseaudio \
+qt5-buildtools qt5-core qt5-dbus qt5-declarative qt5-graphicaleffects \
+qt5-gui qt5-network qt5-qmake qt5-quickcontrols2 qt5-svg qt5-widgets \
+qt5-xml qt5-xmlpatterns
+```
+
 #### Build and install the application
 
 ```bash
@@ -65,12 +74,12 @@ $ sudo make install
 ```
   - To uninstall the application type `sudo make uninstall`
 
-## Others supported platforms (without extra features*)
+### Others supported platforms (without extra features*)
 - MacOSX (XCode >= 9.0)
 - Android (SDK 21.0, Android >= 16 Lollipop)
 - Windows (MSVC 2017)
 
-<small>(\*) PulseAudio is available with freedesktop and by the way you will be able to stream only your local music library.</small>
+<small>(\*) PulseAudio is available with freedesktop and obviously you can only stream your local music library.</small>
 
 ## Enabling debug output
 
@@ -79,3 +88,15 @@ Launch the *Noson* application from command line as follows.
 - `noson-app --debug 2>&1 | tee noson.log`
 
 Also that will write debug output into the file `noson.log`. **Please be carefull to not paste debug log on public area before cleaning it from any credentials**. Debugging registration of music services will log entered credentials.
+
+## SSDP discovery fails
+
+In some circonstances your network couldn't allow broadcast/multicast traffic. To workaround the limitation you can configure the application by specifying the device endpoint (from the release >= 3.16).
+
+Launch the *Noson* application from command line as follows.
+
+- `noson-app --deviceUrl=http://<ipaddress>:1400` for the GUI (the setting will be persistent).
+
+- `noson-app --cli --deviceUrl http://<ipaddress>:1400` for the CLI tool.
+
+Some SONOS devices could listen on port 3400 instead 1400.
