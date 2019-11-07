@@ -87,7 +87,7 @@ void Mpris2::connectionStateChanged()
     }
   }
 
-  m_serviceName = QString(DBUS_MEDIAPLAYER_SVC ".%1_%2")
+  m_serviceName = QString(DBUS_MEDIAPLAYER_SVC ".%1.%2")
           .arg(QGuiApplication::applicationDisplayName(), zoneId);
   if (!QDBusConnection::sessionBus().registerService(m_serviceName))
   {
