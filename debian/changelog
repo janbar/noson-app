@@ -1,4 +1,10 @@
-noson-app (3.15) UNRELEASED; urgency=low
+noson-app (3.16) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 3.16
+  * Supports the MPRIS2 interface for player
+  * Allow to bypass the SSDP discovery by passing the url of a SONOS device
+  * Fix missing search categories for the services without presentation map
 
   [ janbar ]
   * Release 3.15
