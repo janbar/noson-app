@@ -304,10 +304,10 @@ ApplicationWindow {
             currentZone = ApplicationArguments[argno].slice(ApplicationArguments[argno].indexOf("=") + 1);
             customdebug(argno + ": zone=" + currentZone);
         }
-        // Argument --deviceUrl={http://host:port[/xml/device_description.xml]}: Hint for the SSDP discovery
-        if ((argno = indexOfArgument("--deviceUrl=")) > 0) {
+        // Argument --deviceurl={http://host:port[/xml/device_description.xml]}: Hint for the SSDP discovery
+        if ((argno = indexOfArgument("--deviceurl=")) > 0) {
             deviceUrl = ApplicationArguments[argno].slice(ApplicationArguments[argno].indexOf("=") + 1);
-            customdebug(argno + ": deviceUrl=" + deviceUrl);
+            customdebug(argno + ": deviceurl=" + deviceUrl);
         }
 
         customdebug("LANG=" + Qt.locale().name);

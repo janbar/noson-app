@@ -95,8 +95,8 @@ In some circonstances your network couldn't allow broadcast/multicast traffic. T
 
 Launch the *Noson* application from command line as follows.
 
-- `noson-app --deviceUrl=http://<ipaddress>:1400` for the GUI (the setting will be persistent).
+- `noson-app --deviceurl=http://<ipaddress>:1400` for the GUI (the setting will be persistent).
 
-- `noson-app --cli --deviceUrl http://<ipaddress>:1400` for the CLI tool.
+- `noson-app --cli --deviceurl=http://<ipaddress>:1400` for the CLI tool.
 
 Some SONOS devices could listen on port 3400 instead 1400.

@@ -95,7 +95,7 @@ int main(int argc, char** argv)
 
   if (getCmd(argv, argv + argc, "--help") || getCmd(argv, argv + argc, "-h"))
   {
-    PRINT("\n  --deviceUrl <URL>\n\n");
+    PRINT("\n  --deviceurl <URL>\n\n");
     PRINT("  Bypass the SSDP discovery by connecting to an endpoint. The typical URLs are:\n");
     PRINT("  http://{IPADDRESS}:1400 or http://{IPADDRESS}:3400\n");
     PRINT("\n  --debug\n\n");
@@ -108,7 +108,7 @@ int main(int argc, char** argv)
   if (getCmd(argv, argv + argc, "--debug"))
     SONOS::DBGLevel(DBG_PROTO);
 
-  const char* deviceUrl = getCmdOption(argv, argv + argc, "--deviceUrl");
+  const char* deviceUrl = getCmdOption(argv, argv + argc, "--deviceurl");
 
 #ifdef __WINDOWS__
   //Initialize Winsock
@@ -189,10 +189,10 @@ static const char * getCmd(char **begin, char **end, const std::string& option)
 
 static const char * getCmdOption(char **begin, char **end, const std::string& option)
 {
-  char **itr = std::find(begin, end, option);
-  if (itr != end && ++itr != end)
+  for (char** it = begin; it != end; ++it)
   {
-    return *itr;
+    if (strncmp(*it, option.c_str(), option.length()) == 0 && (*it)[option.length()] == '=')
+      return &((*it)[option.length() + 1]);
   }
   return NULL;
 }
