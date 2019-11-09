@@ -108,6 +108,10 @@
                 <h4>--debug</h4>
                 Enable debug output.<br>
               </li>
+              <li>
+                <h4>--deviceurl=http://{IP address of device}:1400</h4>
+                Connect to the given URL bypassing the SSDP discovery. The port can be 1400 or 3400 depending of your device.<br>
+              </li>
             </ul>
           </div>
         </div>
@@ -118,6 +122,12 @@
           <div class="span12">
             <h2 align="center">Release notes</h2>
             <ul>
+              <li>
+                <h4>Release 3.16.0</h4>
+                Supports the MPRIS2 interface.<br>
+                Fix missing search categories for the services without presentation map (Spotify API).<br>
+                Allow to bypass the SSDP discovery by passing the url of a SONOS device (see the command line argument <code>--deviceurl</code>).<br>
+              </li>
               <li>
                 <h4>Release 3.15.2</h4>
                 Enable loudness switch.<br>
