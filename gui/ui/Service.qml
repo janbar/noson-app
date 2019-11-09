@@ -191,7 +191,6 @@ MusicPage {
                     : model.type === 5 ? qsTr("Radio")
                     : ""
             onActionPressed: playItem(model)
-            onClick: clickItem(model)
             actionVisible: model.canPlay
             actionIconSource: "qrc:/images/media-preview-start.svg"
             menuVisible: model.canPlay || model.canQueue
