@@ -586,7 +586,9 @@ bool Player::PlayStream(const std::string& streamURL, const std::string& title, 
   {
     std::string path(_uri.Path());
     std::string file = path.substr(0, path.find('?'));
-    std::string mime = file.substr(file.find_last_of('.'));
+    std::string mime = "";
+    if (file.find('.') != std::string::npos)
+      mime = file.substr(file.find_last_of('.'));
     /*
      * Configure an audio FLAC transfer for any resource with the corresponding extension
      */
