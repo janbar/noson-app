@@ -21,6 +21,7 @@ addons:
       - libflac++-dev
       - zlib1g-dev
       - libssl-dev
+      - libdbus-1-dev
 
 before_install:
   - if [ "$CC" = "clang" ]; then
