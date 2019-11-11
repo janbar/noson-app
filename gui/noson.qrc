@@ -174,5 +174,6 @@
         <file>components/Dialog/DialogApplicationSettings.qml</file>
         <file>images/lastfm.png</file>
         <file>images/deezer.png</file>
+        <file>sfos/harbour-noson.qml</file>
     </qresource>
 </RCC>

@@ -7,7 +7,9 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QSettings>
+#ifndef SAILFISHOS
 #include <QtQuickControls2>
+#endif
 #include <QTranslator>
 #include <QDebug>
 #include <QDir>
@@ -65,6 +67,8 @@ int main(int argc, char *argv[])
     setupApp(app);
 
     QSettings settings;
+
+#ifndef SAILFISHOS
     QString style = QQuickStyle::name();
     if (!style.isEmpty())
         settings.setValue("style", style);
@@ -81,6 +85,7 @@ int main(int argc, char *argv[])
         }
         QQuickStyle::setStyle(settings.value("style").toString());
     }
+#endif
 
     QQmlApplicationEngine engine;
     // 100MB cache for network data
@@ -95,6 +100,8 @@ int main(int argc, char *argv[])
 #else
     engine.rootContext()->setContextProperty("Android", QVariant(false));
 #endif
+    
+#ifndef SAILFISHOS
     // select and bind styles available and known to work
     QStringList availableStyles;
 #if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
@@ -116,10 +123,14 @@ int main(int argc, char *argv[])
     }
 #endif
     engine.rootContext()->setContextProperty("AvailableStyles", availableStyles);
-
+#endif
+    
     // handle signal exit(int) issued by the qml instance
+#ifndef SAILFISHOS
     QObject::connect(&engine, &QQmlApplicationEngine::exit, doExit);
-
+#else
+    QObject::connect(&engine, &QQmlApplicationEngine::quit, &app, QCoreApplication::quit);    
+#endif
 #if defined(Q_OS_IOS)
     importStaticPlugins(&engine);
 #endif

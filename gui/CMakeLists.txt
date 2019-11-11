@@ -6,7 +6,9 @@ find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Qml REQUIRED)
 find_package(Qt5Quick REQUIRED)
+if (NOT BUILD_SAILFISHOS)
 find_package(Qt5QuickControls2 REQUIRED)
+endif()
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Xml REQUIRED)
 find_package(Qt5Svg REQUIRED)
@@ -53,6 +55,10 @@ endif()
 
 add_definitions(-DAPP_VERSION="${APP_VERSION}")
 
+if (BUILD_SAILFISHOS)
+add_definitions(-DSAILFISHOS)
+endif()
+
 qt5_add_resources(noson-gui-resources noson.qrc)
 
 if(ANDROID)
@@ -63,7 +69,11 @@ else()
   add_executable(noson-gui ${noson-gui_SOURCES} ${noson-gui-resources})
 endif()
 
+if (BUILD_SAILFISHOS)
+target_link_libraries(noson-gui Qt5::Gui Qt5::Qml Qt5::Quick Qt5::Widgets Qt5::Xml Qt5::Svg)
+else()
 target_link_libraries(noson-gui Qt5::Gui Qt5::Qml Qt5::Quick Qt5::QuickControls2 Qt5::Widgets Qt5::Xml Qt5::Svg)
+endif()
 
 if(MSVC)
   target_link_libraries(noson-gui ws2_32)
