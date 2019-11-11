@@ -327,7 +327,7 @@ MusicPage {
 
             onFirstSourceChanged: {
                 blurredBackground.art = firstSource
-            }            
+            }
         }
 
         model: DelegateModel {
@@ -357,6 +357,8 @@ MusicPage {
             onTriggered: {
                 if (reorderTrackInPlaylist(containerItem.id, argFrom, argTo, songsModel.containerUpdateID())) {
                     songsModel.asyncLoad();
+                } else {
+                    mainView.jobRunning = false;
                 }
             }
         }
