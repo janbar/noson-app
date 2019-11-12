@@ -34,6 +34,7 @@
 #endif
 
 #include <noson/sonossystem.h>
+#include <noson/sonosplayer.h>
 #include <noson/contentdirectory.h>
 #include <noson/didlparser.h>
 #include <noson/imageservice.h>
@@ -75,6 +76,7 @@ static const char * getCmdOption(char **begin, char **end, const std::string& op
 static void readStream(std::istream*);
 
 SONOS::System * gSonos = 0;
+SONOS::PlayerPtr gPlayer;
 
 void handleEventCB(void* handle)
 {
@@ -168,6 +170,8 @@ int main(int argc, char** argv)
 
   readStream(&std::cin);
 
+  if (gPlayer)
+    gPlayer.reset();
   delete gSonos;
   gSonos = 0;
 
@@ -279,8 +283,8 @@ static bool parseCommand(const std::string& line)
           if (iz->second->GetZoneName() == param)
           {
             found = true;
-            if (gSonos->ConnectZone(iz->second, 0, 0))
-              PERROR1("Connected to zone %s\n", gSonos->GetConnectedZone()->GetZoneName().c_str());
+            if ((gPlayer = gSonos->GetPlayer(iz->second, 0, 0)))
+              PERROR1("Connected to zone %s\n", gPlayer->GetZone()->GetZoneName().c_str());
             else
               PERROR("Failed\n");
             break;
@@ -292,15 +296,15 @@ static bool parseCommand(const std::string& line)
       else
         PERROR("Error: Missing arguments.\n");
     }
-    else if (!gSonos->IsConnected())
+    else if (!gSonos->IsConnected() || !gPlayer)
     {
       PERROR("Error: Not connected.\n");
     }
     else if (token == "STATUS")
     {
-      while (gSonos->GetPlayer()->TransportPropertyEmpty())
+      while (gPlayer->TransportPropertyEmpty())
         sleep(1);
-      SONOS::AVTProperty props = gSonos->GetPlayer()->GetTransportProperty();
+      SONOS::AVTProperty props = gPlayer->GetTransportProperty();
       PRINT1("TransportStatus = %s\n", props.TransportStatus.c_str());
       PRINT1("TransportState = %s\n", props.TransportState.c_str());
       PRINT1("AVTransportURI = [%s]\n", props.AVTransportURI.c_str());
@@ -321,7 +325,7 @@ static bool parseCommand(const std::string& line)
       PRINT1("AlarmState = %s\n", props.r_AlarmState.c_str());
 
       SONOS::ElementList vars;
-      if (gSonos->GetPlayer()->GetRemainingSleepTimerDuration(vars))
+      if (gPlayer->GetRemainingSleepTimerDuration(vars))
       {
         PRINT1("RemainingSleepTimerDuration = %s\n", vars.GetValue("RemainingSleepTimerDuration").c_str());
       }
@@ -333,7 +337,7 @@ static bool parseCommand(const std::string& line)
         std::string param(*it);
         uint16_t value = 0;
         string_to_uint16(param.c_str(), &value);
-        if (gSonos->GetPlayer()->ConfigureSleepTimer((unsigned)value))
+        if (gPlayer->ConfigureSleepTimer((unsigned)value))
           PERROR("Succeeded\n");
         else
           PERROR("Failed\n");
@@ -512,7 +516,7 @@ static bool parseCommand(const std::string& line)
             {
               uint16_t value;
               string_to_uint16(it->c_str(), &value);
-              SONOS::ContentDirectory mycontent(gSonos->GetPlayer()->GetHost(), gSonos->GetPlayer()->GetPort());
+              SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
               SONOS::ContentList bdir(mycontent, "FV:2");
               SONOS::ContentList::iterator ic = bdir.begin();
               uint16_t i = 0;
@@ -545,35 +549,35 @@ static bool parseCommand(const std::string& line)
     }
     else if (token == "PLAY")
     {
-      if (gSonos->GetPlayer()->Play())
+      if (gPlayer->Play())
         PERROR("Succeeded\n");
       else
         PERROR("Failed\n");
     }
     else if (token == "STOP")
     {
-      if (gSonos->GetPlayer()->Stop())
+      if (gPlayer->Stop())
         PERROR("Succeeded\n");
       else
         PERROR("Failed\n");
     }
     else if (token == "PAUSE")
     {
-      if (gSonos->GetPlayer()->Pause())
+      if (gPlayer->Pause())
         PERROR("Succeeded\n");
       else
         PERROR("Failed\n");
     }
     else if (token == "PREVIOUS")
     {
-      if (gSonos->GetPlayer()->Previous())
+      if (gPlayer->Previous())
         PERROR("Succeeded\n");
       else
         PERROR("Failed\n");
     }
     else if (token == "NEXT")
     {
-      if (gSonos->GetPlayer()->Next())
+      if (gPlayer->Next())
         PERROR("Succeeded\n");
       else
         PERROR("Failed\n");
@@ -584,7 +588,7 @@ static bool parseCommand(const std::string& line)
       {
         uint32_t value;
         string_to_uint32(it->c_str(), &value);
-        if (gSonos->GetPlayer()->SeekTrack(value))
+        if (gPlayer->SeekTrack(value))
           PERROR("Succeeded\n");
         else
           PERROR("Failed\n");
@@ -595,7 +599,7 @@ static bool parseCommand(const std::string& line)
 #ifdef HAVE_PULSEAUDIO
     else if (token == "PLAYPULSE")
     {
-      if (gSonos->GetPlayer()->PlayPulse())
+      if (gPlayer->PlayPulse())
         PERROR("Succeeded\n");
       else
         PERROR("Failed\n");
@@ -608,7 +612,7 @@ static bool parseCommand(const std::string& line)
         std::string param(*it);
         while(++it != tokens.end())
           param.append(" ").append(*it);
-        if (gSonos->GetPlayer()->PlayStream(param, ""))
+        if (gPlayer->PlayStream(param, ""))
           PERROR("Succeeded\n");
         else
           PERROR("Failed\n");
@@ -633,14 +637,14 @@ static bool parseCommand(const std::string& line)
         }
         if (all)
           param2.assign(param);
-        SONOS::ZonePtr pl = gSonos->GetConnectedZone();
+        SONOS::ZonePtr pl = gPlayer->GetZone();
         for (SONOS::Zone::iterator ip = pl->begin(); ip != pl->end(); ++ip)
         {
           if (all || param == **ip)
           {
             uint8_t value = 0;
             string_to_uint8(param2.c_str(), &value);
-            if (gSonos->GetPlayer()->SetVolume((*ip)->GetUUID(), value))
+            if (gPlayer->SetVolume((*ip)->GetUUID(), value))
               PERROR3("%s [%s]: volume %u\n", (*ip)->c_str(), (*ip)->GetUUID().c_str(), value);
             else
               PERROR2("%s [%s]: Failed\n", (*ip)->c_str(), (*ip)->GetUUID().c_str());
@@ -652,7 +656,7 @@ static bool parseCommand(const std::string& line)
     }
     else if (token == "SHOWQUEUE")
     {
-      SONOS::ContentDirectory mycontent(gSonos->GetPlayer()->GetHost(), gSonos->GetPlayer()->GetPort());
+      SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
       SONOS::ContentList bdir(mycontent, "Q:0");
       PRINT1("UpdateID  : %u\n", bdir.GetUpdateID());
       PRINT1("Item count: %u\n", bdir.size());
@@ -666,28 +670,28 @@ static bool parseCommand(const std::string& line)
     }
     else if (token == "PLAYQUEUE")
     {
-      if (gSonos->GetPlayer()->PlayQueue(true))
+      if (gPlayer->PlayQueue(true))
         PERROR("Succeeded\n");
       else
         PERROR("Failed\n");
     }
     else if (token == "PLAYLINEIN")
     {
-      if (gSonos->GetPlayer()->PlayLineIN())
+      if (gPlayer->PlayLineIN())
         PERROR("Succeeded\n");
       else
         PERROR("Failed\n");
     }
     else if (token == "PLAYDIGITALIN")
     {
-      if (gSonos->GetPlayer()->PlayDigitalIN())
+      if (gPlayer->PlayDigitalIN())
         PERROR("Succeeded\n");
       else
         PERROR("Failed\n");
     }
     else if (token == "SHOWFV")
     {
-      SONOS::ContentDirectory mycontent(gSonos->GetPlayer()->GetHost(), gSonos->GetPlayer()->GetPort());
+      SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
       SONOS::ContentList bdir(mycontent, "FV:2");
       PRINT1("UpdateID  : %u\n", bdir.GetUpdateID());
       PRINT1("Item count: %u\n", bdir.size());
@@ -703,7 +707,7 @@ static bool parseCommand(const std::string& line)
     {
       if (++it != tokens.end())
       {
-        SONOS::ContentDirectory mycontent(gSonos->GetPlayer()->GetHost(), gSonos->GetPlayer()->GetPort());
+        SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
         SONOS::ContentList bdir(mycontent, "FV:2");
         SONOS::ContentList::iterator ic = bdir.begin();
         while (ic != bdir.end())
@@ -713,16 +717,15 @@ static bool parseCommand(const std::string& line)
             SONOS::DigitalItemPtr item;
             if (SONOS::System::ExtractObjectFromFavorite((*ic), item))
             {
-              SONOS::PlayerPtr player = gSonos->GetPlayer();
               if (SONOS::System::CanQueueItem(item))
               {
                 PRINT2("Playing item [%s] [%s]\n", (*ic)->GetValue("dc:title").c_str(), (*ic)->GetValue("res").c_str());
-                if (player->RemoveAllTracksFromQueue() && player->PlayQueue(false) && player->AddURIToQueue(item, 1) && player->SeekTrack(1) && player->Play())
+                if (gPlayer->RemoveAllTracksFromQueue() && gPlayer->PlayQueue(false) && gPlayer->AddURIToQueue(item, 1) && gPlayer->SeekTrack(1) && gPlayer->Play())
                   PERROR("Succeeded\n");
                 else
                   PERROR("Failed\n");
               }
-              else if (player->SetCurrentURI(item) && player->Play())
+              else if (gPlayer->SetCurrentURI(item) && gPlayer->Play())
                 PERROR("Succeeded\n");
               else
                 PERROR("Failed\n");
@@ -738,7 +741,7 @@ static bool parseCommand(const std::string& line)
     }
     else if (token == "SHOWSQ")
     {
-      SONOS::ContentDirectory mycontent(gSonos->GetPlayer()->GetHost(), gSonos->GetPlayer()->GetPort());
+      SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
       SONOS::ContentList bdir(mycontent, "SQ:");
       PRINT1("UpdateID  : %u\n", bdir.GetUpdateID());
       PRINT1("Item count: %u\n", bdir.size());
@@ -754,16 +757,15 @@ static bool parseCommand(const std::string& line)
     {
       if (++it != tokens.end())
       {
-        SONOS::ContentDirectory mycontent(gSonos->GetPlayer()->GetHost(), gSonos->GetPlayer()->GetPort());
+        SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
         SONOS::ContentList bdir(mycontent, "SQ:");
         SONOS::ContentList::iterator ic = bdir.begin();
         while (ic != bdir.end())
         {
           if ((*ic)->GetValue("res") == (*it))
           {
-            SONOS::PlayerPtr player = gSonos->GetPlayer();
             PRINT2("Playing item [%s] [%s]\n", (*ic)->GetValue("dc:title").c_str(), (*ic)->GetValue("res").c_str());
-            if (player->RemoveAllTracksFromQueue() && player->PlayQueue(false) && player->AddURIToQueue(*ic, 1) && player->SeekTrack(1) && player->Play())
+            if (gPlayer->RemoveAllTracksFromQueue() && gPlayer->PlayQueue(false) && gPlayer->AddURIToQueue(*ic, 1) && gPlayer->SeekTrack(1) && gPlayer->Play())
               PERROR("Succeeded\n");
             else
               PERROR("Failed\n");
@@ -776,7 +778,7 @@ static bool parseCommand(const std::string& line)
     }
     else if (token == "PLAYDIGITALIN")
     {
-      if (gSonos->GetPlayer()->PlayDigitalIN())
+      if (gPlayer->PlayDigitalIN())
         PERROR("Succeeded\n");
       else
         PERROR("Failed\n");
@@ -794,8 +796,8 @@ static void readStream(std::istream *file)
   while (*file)
   {
     std::string sline;
-    if (gSonos->IsConnected())
-      PRINT1("%s >>> ", gSonos->GetConnectedZone()->GetZoneName().c_str());
+    if (gSonos->IsConnected() && gPlayer)
+      PRINT1("%s >>> ", gPlayer->GetZone()->GetZoneName().c_str());
     else
       PRINT(">>> ");
     getline(*file, sline);
