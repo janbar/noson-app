@@ -30,6 +30,9 @@ Item {
     objectName: "controller"
     property alias zonePlayer: playerLoader.item
     property bool connected: false
+    property string zoneId: ""
+    property string zoneName: ""
+    property string zoneShortName: ""
     property string controllerURI: ""
     property string currentMetaAlbum: ""
     property string currentMetaArt: ""
@@ -77,8 +80,8 @@ Item {
         }
     }
 
-    function connect() {
-        if (playerLoader.item.init(Sonos)) {
+    function connectZone(zoneName) {
+        if (playerLoader.item.init(Sonos, zoneName)) {
             if (trackQueue.canLoad) {
                 // When switching zone, updateid cannot drive correctly the queue refreshing
                 // so new force refreshing of queue
@@ -234,10 +237,6 @@ Item {
         return playerLoader.item.reorderTrackInQueue(nrFrom, nrTo, trackQueue.model.containerUpdateID());
     }
 
-    function refreshShareIndex() {
-        return playerLoader.item.refreshShareIndex();
-    }
-
     function saveQueue(title) {
         return playerLoader.item.saveQueue(title);
     }
@@ -256,10 +255,6 @@ Item {
 
     function reorderTrackInSavedQueue(playlistId, index, newIndex, containerUpdateID) {
         return playerLoader.item.reorderTrackInSavedQueue(playlistId, index, newIndex, containerUpdateID);
-    }
-
-    function destroySavedQueue(itemId) {
-        return playerLoader.item.destroySavedQueue(itemId);
     }
 
     function configureSleepTimer(sec) {
@@ -340,14 +335,6 @@ Item {
         return playerLoader.item.isMyStream(metaSource);
     }
 
-    function addItemToFavorites(modelItem, description, artURI) {
-        return playerLoader.item.addItemToFavorites(modelItem.payload, description, artURI);
-    }
-
-    function removeFavorite(itemId) {
-        return playerLoader.item.destroyFavorite(itemId);
-    }
-
     function playFavorite(modelItem) {
         return playerLoader.item.startPlayFavorite(modelItem.payload);
     }
@@ -388,6 +375,9 @@ Item {
                 onJobFailed: popInfo.open(qsTr("Action can't be performed"));
                 onConnectedChanged: {
                     player.connected = connected;
+                    player.zoneId = zoneId;
+                    player.zoneName = zoneName;
+                    player.zoneShortName = zoneShortName;
                     player.controllerURI = controllerURI;
                 }
                 onRenderingGroupChanged: player.refreshRenderingGroup()

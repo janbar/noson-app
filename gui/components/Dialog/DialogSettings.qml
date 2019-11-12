@@ -55,6 +55,7 @@ DialogBase {
             updateMusicIndex();
             dialog.accept()
         }
+        enabled: !shareIndexInProgress
     }
 
 }

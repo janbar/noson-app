@@ -130,7 +130,7 @@ MusicPage {
                 id: delayRemoveFavorite
                 interval: 100
                 onTriggered: {
-                    if (!player.removeFavorite(model.id)) {
+                    if (!Sonos.destroyFavorite(model.id)) {
                         popInfo.open(qsTr("Action can't be performed"));
                     }
                 }

@@ -60,7 +60,6 @@ MusicPage {
                 else
                     zones.push(model.payload)
             }
-            customdebug("coordinator: " + coordinator + " , rooms: " + zones)
             if (coordinator !== null) {
                 Sonos.startJoinZones(zones, coordinator)
                 return true;
@@ -75,7 +74,7 @@ MusicPage {
     }
 
     MultiSelectListView {
-        id: zoneList        
+        id: zoneList
         anchors.fill: parent
 
         state: "selection"
@@ -121,6 +120,14 @@ MusicPage {
 
                 contentHeight: units.gu(8)
 
+/*                ZonePlayer {
+                    id: zonePlayer
+                    Component.onCompleted: {
+                        if (zonePlayer.initZone(Sonos, model.payload))
+                            customdebug("################ IS CONNECTED: " + zonePlayer.zoneId());
+                    }
+                }*/
+
                 column: Column {
                     spacing: units.gu(1)
 
@@ -138,6 +145,10 @@ MusicPage {
                         text: model.name
                         visible: model.isGroup
                     }
+/*
+                    Label {
+                        text: zonePlayer.zoneId();
+                    }*/
                 }
             }
         }

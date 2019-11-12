@@ -238,7 +238,6 @@ ApplicationWindow {
                     customdebug("NOTICE: Clearing the configured URL because invalid");
                     deviceUrl = "";
                 }
-
                 if (noZone)
                     noZone = false;
             } else {
@@ -516,9 +515,9 @@ ApplicationWindow {
     function connectZone(name) {
         var oldZone = currentZone;
         customdebug("Connecting zone '" + name + "'");
-        if ((Sonos.connectZone(name) || Sonos.connectZone("")) && player.connect()) {
-            currentZone = Sonos.getZoneName();
-            currentZoneTag = Sonos.getZoneShortName();
+        if (Sonos.isConnected() && player.connectZone(name)) {
+            currentZone = player.zoneName;
+            currentZoneTag = player.zoneShortName;
             if (currentZone !== oldZone)
                 zoneChanged();
             if (noZone)
@@ -533,7 +532,7 @@ ApplicationWindow {
 
     // Action on request to update music library
     function updateMusicIndex() {
-        if (player.refreshShareIndex()) {
+        if (Sonos.refreshShareIndex()) {
             // enable info on loaded index
             infoLoadedIndex = true;
             popInfo.open(qsTr("Refreshing of index is running"));
@@ -726,14 +725,14 @@ ApplicationWindow {
     }
 
     function removePlaylist(itemId) {
-        if (player.destroySavedQueue(itemId))
+        if (Sonos.destroySavedQueue(itemId))
             return true;
         popInfo.open(qsTr("Action can't be performed"));
         return false;
     }
 
     function addItemToFavorites(modelItem, description, artURI) {
-        if (player.addItemToFavorites(modelItem, description, artURI))
+        if (Sonos.addItemToFavorites(modelItem.payload, description, artURI))
             return true;
         popInfo.open(qsTr("Action can't be performed"));
         return false;
@@ -743,7 +742,7 @@ ApplicationWindow {
         var id = AllFavoritesModel.findFavorite(itemPayload)
         if (id.length === 0) // no favorite
             return true;
-        if (player.removeFavorite(id))
+        if (Sonos.destroyFavorite(id))
             return true;
         popInfo.open(qsTr("Action can't be performed"));
         return false;
@@ -823,7 +822,7 @@ ApplicationWindow {
     }
 
     function isAlarmEnabled() {
-        var rooms = Sonos.getZoneRooms();
+        var rooms = Sonos.getZoneRooms(player.zoneId);
         for (var i = 0; i < alarmsModel.count; ++i) {
             var alarm = alarmsModel.get(i);
             if (alarm.enabled) {
