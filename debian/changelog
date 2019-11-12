@@ -1,4 +1,8 @@
-noson-app (3.16) UNRELEASED; urgency=low
+noson-app (4.0) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 4.0
+  * libnoson 2.0: player pool
 
   [ janbar ]
   * Release 3.16
