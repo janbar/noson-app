@@ -98,7 +98,7 @@ int main(int argc, char** argv)
     if (sonos.Discover())
     {
       PRINT("Discovered !!!\n");
-
+      SONOS::ZonePtr myZone;
       /*
        * Print Zones list and connect to
        */
@@ -106,9 +106,10 @@ int main(int argc, char** argv)
       for (SONOS::ZoneList::const_iterator it = zones.begin(); it != zones.end(); ++it)
       {
         fprintf(stderr, "found zone '%s' with coordinator '%s'\n", it->second->GetZoneName().c_str(), it->second->GetCoordinator()->c_str());
-        if (!sonos.IsConnected())
-          if (tryzone.empty() || it->second->GetZoneName() == tryzone)
-            sonos.ConnectZone(it->second, 0, handleEventCB);
+        if (tryzone.empty())
+          tryzone.assign(it->second->GetZoneName());
+        if (it->second->GetZoneName() == tryzone)
+          myZone = it->second;
       }
 
       /*
@@ -123,7 +124,7 @@ int main(int argc, char** argv)
 
       if (sonos.IsConnected())
       {
-        SONOS::PlayerPtr playerPtr = sonos.GetPlayer();
+        SONOS::PlayerPtr playerPtr = sonos.GetPlayer(myZone, 0, handleEventCB);
 
         SONOS::ElementList vars;
         playerPtr->GetTransportInfo(vars);
@@ -145,7 +146,7 @@ int main(int argc, char** argv)
           if (SONOS::System::ExtractObjectFromFavorite(*it, payload))
             PRINT2("   F %d: %s\n", i, payload->GetObjectID().c_str());
           else
-            PRINT2("   I %d: %s\n", i, playerPtr->GetItemIdFromUriMetadata(*it).c_str());
+            PRINT2("   I %d: %s\n", i, sonos.GetObjectIDFromUriMetadata(*it).c_str());
           ++it;
         }
 

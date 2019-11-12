@@ -122,26 +122,12 @@ int main(int argc, char** argv)
     {
       PRINT("Discovered !!!\n");
 
-      /*
-       * Print Zones list and connect to
-       */
-      SONOS::ZoneList zones = sonos.GetZoneList();
-      for (SONOS::ZoneList::const_iterator it = zones.begin(); it != zones.end(); ++it)
-      {
-        fprintf(stderr, "found zone '%s' with coordinator '%s'\n", it->second->GetZoneName().c_str(), it->second->GetCoordinator()->c_str());
-        if (!sonos.IsConnected())
-          if (tryzone.empty() || it->second->GetZoneName() == tryzone)
-            sonos.ConnectZone(it->second, 0, handleEventCB);
-      }
-
       if (sonos.IsConnected())
       {
-        SONOS::PlayerPtr playerPtr = sonos.GetPlayer();
-
         /*
          * Music services
          */
-        for (auto&& item : playerPtr->GetAvailableServices())
+        for (auto&& item : sonos.GetAvailableServices())
        	{
           PRINT3("MusicService: %s : %s , %s\n", item->GetName().c_str(), item->GetServiceType().c_str(), (item->GetPresentationMap() ? item->GetPresentationMap()->GetAttribut("Uri").c_str() : "No presentation map"));
           PRINT2("Policy      = Auth:%s , Poll:%s\n", item->GetPolicy()->GetAttribut("Auth").c_str(), item->GetPolicy()->GetAttribut("PollInterval").c_str());
@@ -155,7 +141,7 @@ int main(int argc, char** argv)
           {
             SONOS::DBGLevel((g_loglevel < 3 ? 3 : g_loglevel));
             PRINT1("Testing service %s ...\n", item->GetName().c_str());
-            SONOS::SMAPI sm(playerPtr);
+            SONOS::SMAPI sm(sonos);
             sm.Init(item, "fr_FR");
             SONOS::SMAPIMetadata meta;
             PRINT1("\n...search stations for term '%s'\n", "jazz");
@@ -174,7 +160,7 @@ int main(int argc, char** argv)
           {
             SONOS::DBGLevel((g_loglevel < 3 ? 3 : g_loglevel));
             PRINT1("Testing service %s ...\n", item->GetName().c_str());
-            SONOS::SMAPI sm(playerPtr);
+            SONOS::SMAPI sm(sonos);
             sm.Init(item, "fr_FR");
 
             for (auto&& search : sm.AvailableSearchCategories())
