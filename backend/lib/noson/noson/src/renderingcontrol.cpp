@@ -268,70 +268,74 @@ void RenderingControl::HandleEventMessage(EventMessagePtr msg)
   {
     if (m_subscription.GetSID() == msg->subject[0] && msg->subject[2] == "RCS")
     {
-      Locked<RCSProperty>::pointer prop = m_property.Get();
-
-      DBG(DBG_DEBUG, "%s: %s SEQ=%s %s\n", __FUNCTION__, msg->subject[0].c_str(), msg->subject[1].c_str(), msg->subject[2].c_str());
-      std::vector<std::string>::const_iterator it = msg->subject.begin();
-      while (it != msg->subject.end())
       {
-        int32_t num;
-        if (*it == "Volume/Master")
-        {
-          if (string_to_int32((*++it).c_str(), &num) == 0)
-            prop->VolumeMaster = num;
-        }
-        else if (*it == "Volume/LF")
-        {
-          if (string_to_int32((*++it).c_str(), &num) == 0)
-            prop->VolumeLF = num;
-        }
-        else if (*it == "Volume/RF")
-        {
-          if (string_to_int32((*++it).c_str(), &num) == 0)
-            prop->VolumeRF = num;
-        }
-        else if (*it == "Mute/Master")
-        {
-          if (string_to_int32((*++it).c_str(), &num) == 0)
-            prop->MuteMaster = num;
-        }
-        else if (*it == "Mute/LF")
-        {
-          if (string_to_int32((*++it).c_str(), &num) == 0)
-            prop->MuteLF = num;
-        }
-        else if (*it == "Mute/RF")
-        {
-          if (string_to_int32((*++it).c_str(), &num) == 0)
-            prop->MuteRF = num;
-        }
-        else if (*it == "NightMode")
-        {
-          if (string_to_int32((*++it).c_str(), &num) == 0)
-            prop->NightMode = num;
-        }
-        else if (*it == "Bass")
-        {
-          if (string_to_int32((*++it).c_str(), &num) == 0)
-            prop->Bass = num;
-        }
-        else if (*it == "Treble")
-        {
-          if (string_to_int32((*++it).c_str(), &num) == 0)
-            prop->Treble = num;
-        }
-        else if (*it == "OutputFixed")
-        {
-          if (string_to_int32((*++it).c_str(), &num) == 0)
-            prop->OutputFixed = num;
-        }
-        else if (*it == "Loudness/Master")
-        {
-          if (string_to_int32((*++it).c_str(), &num) == 0)
-            prop->LoudnessMaster = num;
-        }
+        // BEGIN CRITICAL SECTION
+        Locked<RCSProperty>::pointer prop = m_property.Get();
 
-        ++it;
+        DBG(DBG_DEBUG, "%s: %s SEQ=%s %s\n", __FUNCTION__, msg->subject[0].c_str(), msg->subject[1].c_str(), msg->subject[2].c_str());
+        std::vector<std::string>::const_iterator it = msg->subject.begin();
+        while (it != msg->subject.end())
+        {
+          int32_t num;
+          if (*it == "Volume/Master")
+          {
+            if (string_to_int32((*++it).c_str(), &num) == 0)
+              prop->VolumeMaster = num;
+          }
+          else if (*it == "Volume/LF")
+          {
+            if (string_to_int32((*++it).c_str(), &num) == 0)
+              prop->VolumeLF = num;
+          }
+          else if (*it == "Volume/RF")
+          {
+            if (string_to_int32((*++it).c_str(), &num) == 0)
+              prop->VolumeRF = num;
+          }
+          else if (*it == "Mute/Master")
+          {
+            if (string_to_int32((*++it).c_str(), &num) == 0)
+              prop->MuteMaster = num;
+          }
+          else if (*it == "Mute/LF")
+          {
+            if (string_to_int32((*++it).c_str(), &num) == 0)
+              prop->MuteLF = num;
+          }
+          else if (*it == "Mute/RF")
+          {
+            if (string_to_int32((*++it).c_str(), &num) == 0)
+              prop->MuteRF = num;
+          }
+          else if (*it == "NightMode")
+          {
+            if (string_to_int32((*++it).c_str(), &num) == 0)
+              prop->NightMode = num;
+          }
+          else if (*it == "Bass")
+          {
+            if (string_to_int32((*++it).c_str(), &num) == 0)
+              prop->Bass = num;
+          }
+          else if (*it == "Treble")
+          {
+            if (string_to_int32((*++it).c_str(), &num) == 0)
+              prop->Treble = num;
+          }
+          else if (*it == "OutputFixed")
+          {
+            if (string_to_int32((*++it).c_str(), &num) == 0)
+              prop->OutputFixed = num;
+          }
+          else if (*it == "Loudness/Master")
+          {
+            if (string_to_int32((*++it).c_str(), &num) == 0)
+              prop->LoudnessMaster = num;
+          }
+
+          ++it;
+        }
+        // END CRITICAL SECTION
       }
       // Signal
       ++m_msgCount;

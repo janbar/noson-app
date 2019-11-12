@@ -124,32 +124,36 @@ void AlarmClock::HandleEventMessage(EventMessagePtr msg)
   {
     if (m_subscription.GetSID() == msg->subject[0] && msg->subject[2] == "PROPERTY")
     {
-      Locked<ACProperty>::pointer prop = m_property.Get();
-
-      DBG(DBG_DEBUG, "%s: %s SEQ=%s %s\n", __FUNCTION__, msg->subject[0].c_str(), msg->subject[1].c_str(), msg->subject[2].c_str());
-      std::vector<std::string>::const_iterator it = msg->subject.begin();
-      while (it != msg->subject.end())
       {
-        uint32_t num;
-        if (*it == "AlarmListVersion")
-          prop->alarmListVersion.assign(*++it);
-        else if (*it == "DailyIndexRefreshTime")
-          prop->dailyIndexRefreshTime.assign(*++it);
-        else if (*it == "DateFormat")
-          prop->dateFormat.assign(*++it);
-        else if (*it == "TimeFormat")
-          prop->timeFormat.assign(*++it);
-        else if (*it == "TimeGeneration")
-        {
-          string_to_uint32((*++it).c_str(), &num);
-          prop->timeGeneration = (unsigned)num;
-        }
-        else if (*it == "TimeServer")
-          prop->timeServer.assign(*++it);
-        else if (*it == "TimeZone")
-          prop->timeZone.assign(*++it);
+        // BEGIN CRITICAL SECTION
+        Locked<ACProperty>::pointer prop = m_property.Get();
 
-        ++it;
+        DBG(DBG_DEBUG, "%s: %s SEQ=%s %s\n", __FUNCTION__, msg->subject[0].c_str(), msg->subject[1].c_str(), msg->subject[2].c_str());
+        std::vector<std::string>::const_iterator it = msg->subject.begin();
+        while (it != msg->subject.end())
+        {
+          uint32_t num;
+          if (*it == "AlarmListVersion")
+            prop->alarmListVersion.assign(*++it);
+          else if (*it == "DailyIndexRefreshTime")
+            prop->dailyIndexRefreshTime.assign(*++it);
+          else if (*it == "DateFormat")
+            prop->dateFormat.assign(*++it);
+          else if (*it == "TimeFormat")
+            prop->timeFormat.assign(*++it);
+          else if (*it == "TimeGeneration")
+          {
+            string_to_uint32((*++it).c_str(), &num);
+            prop->timeGeneration = (unsigned)num;
+          }
+          else if (*it == "TimeServer")
+            prop->timeServer.assign(*++it);
+          else if (*it == "TimeZone")
+            prop->timeZone.assign(*++it);
+
+          ++it;
+        }
+        // END CRITICAL SECTION
       }
       // Signal
       ++m_msgCount;

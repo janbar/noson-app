@@ -119,55 +119,59 @@ void ContentDirectory::HandleEventMessage(EventMessagePtr msg)
   {
     if (m_subscription.GetSID() == msg->subject[0] && msg->subject[2] == "PROPERTY")
     {
-      Locked<ContentProperty>::pointer prop = m_property.Get();
-
-      DBG(DBG_DEBUG, "%s: %s SEQ=%s %s\n", __FUNCTION__, msg->subject[0].c_str(), msg->subject[1].c_str(), msg->subject[2].c_str());
-      std::vector<std::string>::const_iterator it = msg->subject.begin();
-      while (it != msg->subject.end())
       {
-        if (*it == "SystemUpdateID")
-          prop->SystemUpdateID.assign(*++it);
-        else if (*it == "ContainerUpdateIDs")
+        // BEGIN CRITICAL SECTION
+        Locked<ContentProperty>::pointer prop = m_property.Get();
+
+        DBG(DBG_DEBUG, "%s: %s SEQ=%s %s\n", __FUNCTION__, msg->subject[0].c_str(), msg->subject[1].c_str(), msg->subject[2].c_str());
+        std::vector<std::string>::const_iterator it = msg->subject.begin();
+        while (it != msg->subject.end())
         {
-          prop->ContainerUpdateIDs.clear();
-          std::vector<std::string> tokens;
-          tokenize((*++it).c_str(), ",", tokens);
-          std::vector<std::string>::const_iterator itt = tokens.begin();
-          while (itt != tokens.end())
+          if (*it == "SystemUpdateID")
+            prop->SystemUpdateID.assign(*++it);
+          else if (*it == "ContainerUpdateIDs")
           {
-            const std::string& str = *itt;
-            if (++itt != tokens.end())
+            prop->ContainerUpdateIDs.clear();
+            std::vector<std::string> tokens;
+            tokenize((*++it).c_str(), ",", tokens);
+            std::vector<std::string>::const_iterator itt = tokens.begin();
+            while (itt != tokens.end())
             {
-              uint32_t num;
-              if (string_to_uint32(itt->c_str(), &num) == 0)
-                prop->ContainerUpdateIDs.push_back(std::make_pair(str, num));
+              const std::string& str = *itt;
+              if (++itt != tokens.end())
+              {
+                uint32_t num;
+                if (string_to_uint32(itt->c_str(), &num) == 0)
+                  prop->ContainerUpdateIDs.push_back(std::make_pair(str, num));
+              }
             }
           }
-        }
-        else if (*it == "UserRadioUpdateID")
-          prop->UserRadioUpdateID.assign(*++it);
-        else if (*it == "SavedQueuesUpdateID")
-          prop->SavedQueuesUpdateID.assign(*++it);
-        else if (*it == "ShareListUpdateID")
-          prop->ShareListUpdateID.assign(*++it);
-        else if (*it == "RecentlyPlayedUpdateID")
-          prop->RecentlyPlayedUpdateID.assign(*++it);
-        else if (*it == "RadioFavoritesUpdateID")
-          prop->RadioFavoritesUpdateID.assign(*++it);
-        else if (*it == "RadioLocationUpdateID")
-          prop->RadioLocationUpdateID.assign(*++it);
-        else if (*it == "FavoritesUpdateID")
-          prop->FavoritesUpdateID.assign(*++it);
-        else if (*it == "FavoritePresetsUpdateID")
-          prop->FavoritePresetsUpdateID.assign(*++it);
-        else if (*it == "ShareIndexInProgress")
-        {
-          int32_t num;
-          string_to_int32((++it)->c_str(), &num);
-          prop->ShareIndexInProgress = (num != 0);
-        }
+          else if (*it == "UserRadioUpdateID")
+            prop->UserRadioUpdateID.assign(*++it);
+          else if (*it == "SavedQueuesUpdateID")
+            prop->SavedQueuesUpdateID.assign(*++it);
+          else if (*it == "ShareListUpdateID")
+            prop->ShareListUpdateID.assign(*++it);
+          else if (*it == "RecentlyPlayedUpdateID")
+            prop->RecentlyPlayedUpdateID.assign(*++it);
+          else if (*it == "RadioFavoritesUpdateID")
+            prop->RadioFavoritesUpdateID.assign(*++it);
+          else if (*it == "RadioLocationUpdateID")
+            prop->RadioLocationUpdateID.assign(*++it);
+          else if (*it == "FavoritesUpdateID")
+            prop->FavoritesUpdateID.assign(*++it);
+          else if (*it == "FavoritePresetsUpdateID")
+            prop->FavoritePresetsUpdateID.assign(*++it);
+          else if (*it == "ShareIndexInProgress")
+          {
+            int32_t num;
+            string_to_int32((++it)->c_str(), &num);
+            prop->ShareIndexInProgress = (num != 0);
+          }
 
-        ++it;
+          ++it;
+        }
+        // END CRITICAL SECTION
       }
       // Signal
       if (m_eventCB)

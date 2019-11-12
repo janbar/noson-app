@@ -22,7 +22,6 @@
 #include "avtransport.h"
 #include "deviceproperties.h"
 #include "renderingcontrol.h"
-#include "contentdirectory.h"
 #include "private/builtin.h"
 #include "private/cppdef.h"
 #include "private/debug.h"
@@ -32,7 +31,6 @@
 #include "private/socket.h"
 #include "didlparser.h"
 #include "sonossystem.h"
-#include "smapimetadata.h"
 #include "filestreamer.h"
 #include "imageservice.h"
 #ifdef HAVE_PULSEAUDIO
@@ -45,116 +43,54 @@ using namespace NSROOT;
 
 Player::Player(const ZonePtr& zone, EventHandler& eventHandler, void* CBHandle, EventCB eventCB)
 : m_valid(false)
-, m_uuid()
-, m_host()
-, m_port(0)
+, m_zone()
 , m_eventHandler(eventHandler)
+, m_uuid()
+, m_deviceHost()
+, m_devicePort(0)
 , m_CBHandle(CBHandle)
 , m_eventCB(eventCB)
 , m_eventSignaled(false)
 , m_eventMask(0)
-, m_AVTransport(0)
 , m_deviceProperties(0)
-, m_contentDirectory(0)
-, m_musicServices(0)
+, m_AVTransport(0)
 {
   m_controllerLocalUri.assign(ProtocolTable[Protocol_http])
     .append("://").append(m_eventHandler.GetAddress())
     .append(":").append(std::to_string(m_eventHandler.GetPort()));
-
-  if (!zone)
-    DBG(DBG_ERROR, "%s: invalid zone\n", __FUNCTION__);
-  else
-  {
-    ZonePlayerPtr cinfo = zone->GetCoordinator();
-    if (cinfo)
-    {
-      if (cinfo->IsValid())
-      {
-        DBG(DBG_DEBUG, "%s: initialize player '%s' as coordinator (%s:%u)\n", __FUNCTION__, cinfo->c_str(), cinfo->GetHost().c_str(), cinfo->GetPort());
-        m_uuid = cinfo->GetUUID();
-        m_host = cinfo->GetHost();
-        m_port = cinfo->GetPort();
-        Init(*zone);
-      }
-      else
-        DBG(DBG_ERROR, "%s: invalid coordinator for zone '%s' (%s)\n", __FUNCTION__, zone->GetZoneName().c_str(), cinfo->GetLocation().c_str());
-    }
-    else
-      DBG(DBG_ERROR, "%s: zone '%s' hasn't any coordinator\n", __FUNCTION__, zone->GetZoneName().c_str());
-  }
-}
-
-Player::Player(const ZonePlayerPtr& zonePlayer, EventHandler& eventHandler, void* CBHandle, EventCB eventCB)
-: m_valid(false)
-, m_uuid()
-, m_host()
-, m_port(0)
-, m_eventHandler(eventHandler)
-, m_CBHandle(CBHandle)
-, m_eventCB(eventCB)
-, m_eventSignaled(false)
-, m_eventMask(0)
-, m_AVTransport(0)
-, m_deviceProperties(0)
-, m_contentDirectory(0)
-, m_musicServices(0)
-{
-  m_controllerLocalUri.assign(ProtocolTable[Protocol_http])
-    .append("://").append(m_eventHandler.GetAddress())
-    .append(":").append(std::to_string(m_eventHandler.GetPort()));
-
-  if (zonePlayer && zonePlayer->IsValid())
-  {
-    DBG(DBG_DEBUG, "%s: initialize player '%s' (%s:%u)\n", __FUNCTION__, zonePlayer->c_str(), zonePlayer->GetHost().c_str(), zonePlayer->GetPort());
-    m_uuid = zonePlayer->GetUUID();
-    m_host = zonePlayer->GetHost();
-    m_port = zonePlayer->GetPort();
-    Zone fake;
-    fake.push_back(zonePlayer);
-    Init(fake);
-  }
-  else
-    DBG(DBG_ERROR, "%s: invalid zone player\n", __FUNCTION__);
+  m_valid = Init(zone);
 }
 
 Player::Player(const ZonePlayerPtr& zonePlayer)
 : m_valid(false)
-, m_uuid()
-, m_host()
-, m_port(0)
+, m_zone()
 , m_eventHandler()
+, m_uuid()
+, m_deviceHost()
+, m_devicePort(0)
 , m_CBHandle(0)
 , m_eventCB(0)
 , m_eventSignaled(false)
 , m_eventMask(0)
-, m_AVTransport(0)
 , m_deviceProperties(0)
-, m_contentDirectory(0)
-, m_musicServices(0)
+, m_AVTransport(0)
 {
   if (zonePlayer && zonePlayer->IsValid())
   {
     DBG(DBG_DEBUG, "%s: initialize player '%s' (%s:%u)\n", __FUNCTION__, zonePlayer->c_str(), zonePlayer->GetHost().c_str(), zonePlayer->GetPort());
     m_uuid = zonePlayer->GetUUID();
-    m_host = zonePlayer->GetHost();
-    m_port = zonePlayer->GetPort();
+    m_deviceHost = zonePlayer->GetHost();
+    m_devicePort = zonePlayer->GetPort();
 
     SubordinateRC rc;
     rc.uuid = m_uuid;
     rc.name = *zonePlayer;
-    rc.renderingControl = new RenderingControl(m_host, m_port);
+    rc.renderingControl = new RenderingControl(m_deviceHost, m_devicePort);
     m_RCTable.push_back(rc);
 
-    m_AVTransport = new AVTransport(m_host, m_port);
-    m_contentDirectory = new ContentDirectory(m_host, m_port);
-    m_deviceProperties = new DeviceProperties(m_host, m_port);
-    m_musicServices = new MusicServices(m_host, m_port);
+    m_deviceProperties = new DeviceProperties(m_deviceHost, m_devicePort);
+    m_AVTransport = new AVTransport(m_deviceHost, m_devicePort);
 
-    // fill avaialable music services
-    m_smservices = m_musicServices->GetAvailableServices();
-
-    m_queueURI.assign("x-rincon-queue:").append(m_uuid).append("#0");
     m_valid = true;
   }
   else
@@ -164,8 +100,6 @@ Player::Player(const ZonePlayerPtr& zonePlayer)
 Player::~Player()
 {
   m_eventHandler.RevokeAllSubscriptions(this);
-  SAFE_DELETE(m_musicServices);
-  SAFE_DELETE(m_contentDirectory);
   SAFE_DELETE(m_deviceProperties);
   SAFE_DELETE(m_AVTransport);
   for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
@@ -180,10 +114,27 @@ void Player::SubordinateRC::FillSRProperty(SRProperty& srp) const
     srp.property = *(renderingControl->GetRenderingProperty().Get());
 }
 
-void Player::Init(const Zone& zone)
+bool Player::Init(const ZonePtr& zone)
 {
+  if (!zone)
+  {
+    DBG(DBG_ERROR, "%s: invalid zone\n", __FUNCTION__);
+    return false;
+  }
+  ZonePlayerPtr cinfo = zone->GetCoordinator();
+  if (!cinfo || !cinfo->IsValid())
+  {
+    DBG(DBG_ERROR, "%s: invalid coordinator for zone '%s' (%s)\n", __FUNCTION__, zone->GetZoneName().c_str(), cinfo->GetLocation().c_str());
+    return false;
+  }
+  DBG(DBG_DEBUG, "%s: initialize player '%s' as coordinator (%s:%u)\n", __FUNCTION__, cinfo->c_str(), cinfo->GetHost().c_str(), cinfo->GetPort());
+  m_zone = zone;
+  m_uuid = cinfo->GetUUID();
+  m_deviceHost = cinfo->GetHost();
+  m_devicePort = cinfo->GetPort();
+
   TcpSocket sock;
-  sock.Connect(m_host.c_str(), m_port, 0);
+  sock.Connect(m_deviceHost.c_str(), m_devicePort, 0);
   m_controllerName = TcpSocket::GetMyHostName();
   m_controllerHost = sock.GetHostAddrInfo();
   sock.Disconnect();
@@ -194,7 +145,8 @@ void Player::Init(const Zone& zone)
   unsigned subId = m_eventHandler.CreateSubscription(this);
   m_eventHandler.SubscribeForEvent(subId, EVENT_HANDLER_STATUS);
 
-  for (Zone::const_iterator it = zone.begin(); it != zone.end(); ++it)
+  // initialize subordinates
+  for (Zone::const_iterator it = zone->begin(); it != zone->end(); ++it)
   {
     if ((*it)->IsValid())
     {
@@ -209,31 +161,28 @@ void Player::Init(const Zone& zone)
       DBG(DBG_ERROR, "%s: invalid location for player '%s'\n", __FUNCTION__, (*it)->c_str());
   }
 
-  m_AVTSubscription = Subscription(m_host, m_port, AVTransport::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
-  m_CDSubscription = Subscription(m_host, m_port, ContentDirectory::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
+  m_deviceProperties = new DeviceProperties(m_deviceHost, m_devicePort);
 
-  m_AVTransport = new AVTransport(m_host, m_port, m_eventHandler, m_AVTSubscription, this, CB_AVTransport);
-  m_contentDirectory = new ContentDirectory(m_host, m_port, m_eventHandler, m_CDSubscription, this, CB_ContentDirectory);
-  m_deviceProperties = new DeviceProperties(m_host, m_port);
-  m_musicServices = new MusicServices(m_host, m_port);
-
-  // fill available music services
-  m_smservices = m_musicServices->GetAvailableServices();
+  m_AVTSubscription = Subscription(m_deviceHost, m_devicePort, AVTransport::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
+  m_AVTransport = new AVTransport(m_deviceHost, m_devicePort, m_eventHandler, m_AVTSubscription, this, CB_AVTransport);
 
   for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     it->subscription.Start();
   m_AVTSubscription.Start();
-  m_CDSubscription.Start();
 
-  m_queueURI.assign("x-rincon-queue:").append(m_uuid).append("#0");
-  m_valid = true;
+  return true;
 }
 
 void Player::CB_AVTransport(void* handle)
 {
   Player* _handle = static_cast<Player*>(handle);
-  Locked<unsigned char>::pointer _mask = _handle->m_eventMask.Get();
-  *_mask |= SVCEvent_TransportChanged;
+  assert(_handle);
+  {
+    // BEGIN CRITICAL SECTION
+    Locked<unsigned char>::pointer _mask = _handle->m_eventMask.Get();
+    *_mask |= SVCEvent_TransportChanged;
+    // END CRITICAL SECTION
+  }
   if (_handle->m_eventCB && !_handle->m_eventSignaled.Load())
     _handle->m_eventCB(_handle->m_CBHandle);
 }
@@ -241,19 +190,22 @@ void Player::CB_AVTransport(void* handle)
 void Player::CB_RenderingControl(void* handle)
 {
   Player* _handle = static_cast<Player*>(handle);
-  Locked<unsigned char>::pointer _mask = _handle->m_eventMask.Get();
-  *_mask |= SVCEvent_RenderingControlChanged;
+  assert(_handle);
+  {
+    // BEGIN CRITICAL SECTION
+    Locked<unsigned char>::pointer _mask = _handle->m_eventMask.Get();
+    *_mask |= SVCEvent_RenderingControlChanged;
+    // END CRITICAL SECTION
+  }
   if (_handle->m_eventCB && !_handle->m_eventSignaled.Load())
     _handle->m_eventCB(_handle->m_CBHandle);
 }
 
-void Player::CB_ContentDirectory(void* handle)
+void Player::RevokeSubscription()
 {
-  Player* _handle = static_cast<Player*>(handle);
-  Locked<unsigned char>::pointer _mask = _handle->m_eventMask.Get();
-  *_mask |= SVCEvent_ContentDirectoryChanged;
-  if (_handle->m_eventCB && !_handle->m_eventSignaled.Load())
-    _handle->m_eventCB(_handle->m_CBHandle);
+  m_AVTSubscription.Stop();
+  for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+    it->subscription.Stop();
 }
 
 void Player::RenewSubscriptions()
@@ -261,7 +213,6 @@ void Player::RenewSubscriptions()
   for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     it->subscription.AskRenewal();
   m_AVTSubscription.AskRenewal();
-  m_CDSubscription.AskRenewal();
 }
 
 unsigned char Player::LastEvents()
@@ -308,16 +259,6 @@ AVTProperty Player::GetTransportProperty()
   return *(m_AVTransport->GetAVTProperty().Get());
 }
 
-ContentProperty Player::GetContentProperty()
-{
-  return *(m_contentDirectory->GetContentProperty().Get());
-}
-
-bool Player::RefreshShareIndex()
-{
-  return m_contentDirectory->RefreshShareIndex();
-}
-
 bool Player::GetZoneInfo(ElementList& vars)
 {
   return m_deviceProperties->GetZoneInfo(vars);
@@ -331,11 +272,6 @@ bool Player::GetZoneAttributes(ElementList& vars)
 bool Player::GetHouseholdID(ElementList& vars)
 {
   return m_deviceProperties->GetHouseholdID(vars);
-}
-
-bool Player::GetSessionId(const std::string& serviceId, const std::string& username, ElementList& vars)
-{
-  return m_musicServices->GetSessionId(serviceId, username, vars);
 }
 
 bool Player::GetTransportInfo(ElementList& vars)
@@ -514,18 +450,6 @@ bool Player::SetCurrentURI(const DigitalItemPtr& item)
 {
   if (!item)
     return false;
-  // Fix items from 'My radios' haven't required tag desc
-  SMServicePtr svc = GetServiceForMedia(item->GetValue("res"));
-  if (svc && item->GetValue("desc").empty())
-  {
-    DigitalItem _item(DigitalItem::Type_unknown, DigitalItem::SubType_unknown);
-    item->Clone(_item);
-    ElementPtr var(new Element("desc", svc->GetServiceDesc()));
-    var->SetAttribut("id", "cdudn");
-    var->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
-    _item.SetProperty(var);
-    return m_AVTransport->SetCurrentURI(_item.GetValue("res"), _item.DIDL());
-  }
   return m_AVTransport->SetCurrentURI(item->GetValue("res"), item->DIDL());
 }
 
@@ -640,7 +564,9 @@ bool Player::PlayStream(const std::string& streamURL, const std::string& title)
 
 bool Player::PlayQueue(bool start)
 {
-  if (m_AVTransport->SetCurrentURI(m_queueURI, ""))
+  std::string uri;
+  uri.append(ProtocolTable[Protocol_xRinconQueue]).append(":").append(m_uuid).append("#0");
+  if (m_AVTransport->SetCurrentURI(uri, ""))
   {
     if (start)
       return m_AVTransport->Play();
@@ -721,57 +647,6 @@ bool Player::ReorderTracksInSavedQueue(const std::string& SQObjectID, const std:
   return m_AVTransport->ReorderTracksInSavedQueue(SQObjectID, trackList, newPositionList, containerUpdateID);
 }
 
-bool Player::DestroySavedQueue(const std::string& SQObjectID)
-{
-  return m_contentDirectory->DestroyObject(SQObjectID);
-}
-
-bool Player::AddURIToFavorites(const DigitalItemPtr& item, const std::string& description, const std::string& artURI)
-{
-  if (!item)
-    return false;
-  DigitalItemPtr favorite(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_unknown));
-  favorite->SetProperty(DIDL_QNAME_DC "title", item->GetValue(DIDL_QNAME_DC "title"));
-  favorite->SetProperty(DIDL_QNAME_RINC "type", "instantPlay");
-  favorite->SetProperty(item->GetProperty("res"));
-  ElementPtr art = item->GetProperty(DIDL_QNAME_UPNP "albumArtURI");
-  if (!art && !artURI.empty())
-    art.reset(new Element(DIDL_QNAME_UPNP "albumArtURI", artURI));
-  favorite->SetProperty(art);
-  const std::string& album = item->GetValue(DIDL_QNAME_UPNP "album");
-  const std::string& creator = item->GetValue(DIDL_QNAME_DC "creator");
-  favorite->SetProperty(DIDL_QNAME_RINC "description", description.empty() ? album.empty() ? creator : album : description);
-  // make r:resMD
-  DigitalItem obj(DigitalItem::Type_item, DigitalItem::SubType_unknown);
-  obj.SetObjectID(GetItemIdFromUriMetadata(item)); // get a valid item id
-  obj.SetParentID("");
-  obj.SetRestricted(item->GetRestricted());
-  obj.SetProperty(item->GetProperty(DIDL_QNAME_UPNP "class"));
-  obj.SetProperty(item->GetProperty(DIDL_QNAME_DC "title"));
-  if (!item->GetValue("desc").empty())
-    obj.SetProperty(item->GetProperty("desc"));
-  else
-  {
-    ElementPtr desc(new Element("desc"));
-    SMServicePtr svc = GetServiceForMedia(item->GetValue("res"));
-    if (svc)
-      desc->assign(svc->GetServiceDesc());
-    else
-      desc->assign(ServiceDescTable[ServiceDesc_default]);
-    desc->SetAttribut("id", "cdudn");
-    desc->SetAttribut("nameSpace", DIDL_XMLNS_RINC);
-    obj.SetProperty(desc);
-  }
-  favorite->SetProperty(DIDL_QNAME_RINC "resMD", obj.DIDL());
-  ContentSearch search(SearchFavorite, "");
-  return m_contentDirectory->CreateObject(search.Root(), favorite);
-}
-
-bool Player::DestroyFavorite(const std::string& FVObjectID)
-{
-  return m_contentDirectory->DestroyObject(FVObjectID);
-}
-
 bool Player::SetPlayMode(PlayMode_t mode)
 {
   return m_AVTransport->SetPlayMode(mode);
@@ -843,11 +718,6 @@ bool Player::PlayDigitalIN()
   return m_AVTransport->SetCurrentURI(uri, "") && m_AVTransport->Play();
 }
 
-ContentDirectory* Player::ContentDirectoryProvider(void* CBHandle, EventCB eventCB)
-{
-  return new ContentDirectory(GetHost(), GetPort(), m_eventHandler, m_CDSubscription, CBHandle, eventCB);
-}
-
 void Player::HandleEventMessage(EventMessagePtr msg)
 {
   if (!msg)
@@ -857,131 +727,6 @@ void Player::HandleEventMessage(EventMessagePtr msg)
     // @TODO: handle status
     DBG(DBG_DEBUG, "%s: %s\n", __FUNCTION__, msg->subject[0].c_str());
   }
-}
-
-SMServiceList Player::GetEnabledServices()
-{
-  SMServiceList list;
-  for (SMServiceList::iterator it = m_smservices.begin(); it != m_smservices.end(); ++it)
-  {
-    const std::string& auth = (*it)->GetPolicy()->GetAttribut("Auth");
-    if ((*it)->GetContainerType() != "MService")
-      continue;
-    if (auth == "Anonymous" || auth == "UserId" || auth == "DeviceLink" || auth == "AppLink") {
-      // Service is enabled when an account is available for the service type.
-      // Otherwise 'TuneIn' is special case as it is always enabled and no account exists for it.
-      if ((*it)->GetServiceType() == "65031") /* TuneIn */
-      {
-        list.push_back((*it)->Clone("0"));
-      }
-      else
-      {
-        SMAccountList la = SMAccount::CreateAccounts((*it)->GetServiceType());
-        for (SMAccountList::iterator ita = la.begin(); ita != la.end(); ++ita)
-        {
-          SMServicePtr sm = (*it)->Clone((*ita)->GetSerialNum());
-          sm->GetAccount()->SetCredentials((*ita)->GetCredentials());
-          list.push_back(sm);
-        }
-      }
-
-    }
-  }
-  return list;
-}
-
-SMServiceList Player::GetAvailableServices()
-{
-  SMServiceList list;
-  for (SMServiceList::iterator it = m_smservices.begin(); it != m_smservices.end(); ++it)
-  {
-    const std::string& auth = (*it)->GetPolicy()->GetAttribut("Auth");
-    if ((*it)->GetContainerType() != "MService")
-      continue;
-    if (auth == "Anonymous" || auth == "UserId" || auth == "DeviceLink" || auth == "AppLink")
-      list.push_back(*it);
-  }
-  return list;
-}
-
-SMServicePtr Player::GetServiceForMedia(const std::string& mediaUri)
-{
-  SMServicePtr svc;
-  URIParser parser(mediaUri);
-  if (!parser.Scheme() || !parser.Path())
-  {
-    DBG(DBG_ERROR, "%s: invalid uri (%s)\n", __FUNCTION__, mediaUri.c_str());
-    return svc;
-  }
-  const char* p = strchr(parser.Path(), '?');
-  if (p)
-  {
-    std::vector<std::string> args;
-    tokenize(++p, "&", args, true);
-    std::string sid;
-    std::string sn;
-    for (std::vector<std::string>::const_iterator ita = args.begin(); ita != args.end(); ++ita)
-    {
-      std::vector<std::string> tokens;
-      tokenize(*ita, "=", tokens);
-      if (tokens.size() != 2)
-        break;
-      if (tokens[0] == "sid")
-        sid.assign(tokens[1]);
-      else if (tokens[0] == "sn")
-        sn.assign(tokens[1]);
-    }
-    if (!sid.empty())
-    {
-      if (sn.empty())
-        sn.assign("0"); // trying fake account
-
-      // loop in services: no longer check the serial since commit 7a91d3ade3a428d69fe6eb97a98fc6f670f16351
-      for (SMServiceList::iterator its = m_smservices.begin(); its != m_smservices.end(); ++its)
-        if ((*its)->GetId() == sid /*&& (*its)->GetAccount()->GetSerialNum() == sn*/)
-          return *its;
-
-      DBG(DBG_WARN, "%s: not found a valid service for this uri (%s)\n", __FUNCTION__, mediaUri.c_str());
-    }
-  }
-  return svc;
-}
-
-std::string Player::GetItemIdFromUriMetadata(const DigitalItemPtr& uriMetadata)
-{
-  if (!uriMetadata)
-    return "";
-  // the id should be here for many cases
-  const std::string& itemId = uriMetadata->GetObjectID();
-
-  if (itemId.compare(0, 2, "Q:") == 0 || itemId.compare(0, 3, "SQ:") == 0)
-  {
-    const std::string& uri = uriMetadata->GetValue("res");
-    URIParser parser(uri);
-    if (!parser.Scheme() || !parser.Path())
-    {
-      DBG(DBG_ERROR, "%s: invalid uri (%s)\n", __FUNCTION__, itemId.c_str());
-      return "";
-    }
-
-    // check for library item
-    if (strcmp(ProtocolTable[Protocol_xFileCifs], parser.Scheme()) == 0)
-      return std::string("S://").append(parser.Host()).append("/").append(parser.Path());
-
-    // check for service item
-    SMServicePtr service = GetServiceForMedia(uri);
-    if (service)
-    {
-      DigitalItemPtr meta;
-      DigitalItemPtr fake(new DigitalItem(DigitalItem::Type_item, DigitalItem::SubType_audioItem));
-      std::string path(parser.Path());
-      path = path.substr(0, path.find('?')); // remove all from args
-      fake->SetObjectID(path.substr(0, path.find_last_of('.'))); // remove mime extension
-      SMAPIMetadata::MakeUriMetadata(service, SMAPIMetadata::track, fake, meta);
-      return meta->GetObjectID();
-    }
-  }
-  return itemId;
 }
 
 Protocol_t Player::GetURIProtocol(const std::string& uri)

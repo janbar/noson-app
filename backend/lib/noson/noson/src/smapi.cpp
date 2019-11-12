@@ -28,6 +28,7 @@
 #include "private/builtin.h"
 #include "private/cppdef.h"
 #include "private/urlencoder.h"
+#include "sonossystem.h"
 
 #define DEVICE_PROVIDER         "Sonos"
 #define SMAPI_NAMESPACE         "http://www.sonos.com/Services/1.1"
@@ -56,9 +57,8 @@ namespace NSROOT
   }
 }
 
-SMAPI::SMAPI(const PlayerPtr& player)
+SMAPI::SMAPI(const System& system)
 : m_mutex(new OS::CMutex)
-, m_player(player)
 , m_deviceSerialNumber()
 , m_deviceHouseholdID()
 , m_soapHeader()
@@ -71,12 +71,8 @@ SMAPI::SMAPI(const PlayerPtr& player)
 , m_authTokenExpired(false)
 , m_authLinkTimeout(0)
 {
-  ElementList vars;
-  ElementList::const_iterator it;
-  if (player->GetZoneInfo(vars) && (it = vars.FindKey("SerialNumber")) != vars.end())
-    m_deviceSerialNumber = **it;
-  if (player->GetHouseholdID(vars) && (it = vars.FindKey("CurrentHouseholdID")) != vars.end())
-    m_deviceHouseholdID = **it;
+  m_deviceSerialNumber = system.GetSerialNumber();
+  m_deviceHouseholdID = system.GetHouseholdID();
 }
 
 SMAPI::~SMAPI()

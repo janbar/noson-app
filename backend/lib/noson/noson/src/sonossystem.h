@@ -27,8 +27,11 @@
 #include "eventhandler.h"
 #include "subscription.h"
 #include "alarmclock.h"
+#include "contentdirectory.h"
+#include "deviceproperties.h"
 
 #include <string>
+#include <map>
 
 #define SONOS_LISTENER_PORT 1400
 
@@ -53,6 +56,8 @@ namespace NSROOT
 
     bool Discover();
     bool Discover(const std::string& url);
+    const std::string& GetHost() const { return m_deviceHost; }
+    unsigned GetPort() const { return m_devicePort; }
 
     unsigned char LastEvents();
 
@@ -62,18 +67,21 @@ namespace NSROOT
 
     ZonePlayerList GetZonePlayerList() const;
 
-    bool ConnectZone(const ZonePtr& zone, void* CBHandle = 0, EventCB eventCB = 0);
+    PlayerPtr GetPlayer(const ZonePtr& zone, void* CBHandle = 0, EventCB eventCB = 0);
 
-    bool ConnectZone(const ZonePlayerPtr& zonePlayer, void* CBHandle = 0, EventCB eventCB = 0);
+    PlayerPtr GetPlayer(const ZonePlayerPtr& zonePlayer, void* CBHandle = 0, EventCB eventCB = 0);
 
     bool IsConnected() const;
 
-    const ZonePtr& GetConnectedZone() const { return m_connectedZone.zone; }
-
-    const PlayerPtr& GetPlayer() const { return m_connectedZone.player; }
-
     // Implements EventSubscriber
     virtual void HandleEventMessage(EventMessagePtr msg);
+
+    // Device properties
+    const std::string& GetHouseholdID() const { return m_householdID; }
+
+    const std::string& GetSerialNumber() const { return m_serialNumber; }
+
+    const std::string& GetSoftwareVersion() const { return m_softwareVersion; }
 
     // Alarm clock
     AlarmList GetAlarmList() const;
@@ -84,15 +92,31 @@ namespace NSROOT
 
     bool DestroyAlarm(const std::string& id);
 
-    // Customized request broker
-    void RegisterRequestBroker(RequestBrokerPtr rb);
-    void UnregisterRequestBroker(const std::string& name);
-    RequestBrokerPtr GetRequestBroker(const std::string& name);
-    const std::string& GetSystemLocalUri() { return m_systemLocalUri; }
+    // Content directory
+    ContentProperty GetContentProperty();
 
-    // helpers
+    bool RefreshShareIndex();
+
+    std::string GetObjectIDFromUriMetadata(const DigitalItemPtr& uriMetadata);
+
+    bool DestroySavedQueue(const std::string& SQObjectID);
+
+    bool AddURIToFavorites(const DigitalItemPtr& item, const std::string& description, const std::string& artURI);
+
+    bool DestroyFavorite(const std::string& FVObjectID);
+
     static bool ExtractObjectFromFavorite(const DigitalItemPtr& favorite, DigitalItemPtr& item);
     static bool CanQueueItem(const DigitalItemPtr& item);
+
+    // Music services
+    SMServiceList GetEnabledServices();
+
+    SMServiceList GetAvailableServices();
+
+    bool GetSessionId(const std::string& serviceId, const std::string& username, ElementList& vars);
+
+    SMServicePtr GetServiceForMedia(const std::string& mediaUri);
+
     static bool IsItemFromService(const DigitalItemPtr& item);
 
     /**
@@ -124,37 +148,57 @@ namespace NSROOT
      * Check the PulseAudio feature.
      * @return true if the feature is enabled
      */
-#ifdef HAVE_PULSEAUDIO
-    static bool HavePulseAudio() { return true; }
-#else
-    static bool HavePulseAudio() { return false; }
-#endif
+    static bool HavePulseAudio();
+
+    // Customized request broker
+    void RegisterRequestBroker(RequestBrokerPtr rb);
+    void UnregisterRequestBroker(const std::string& name);
+    RequestBrokerPtr GetRequestBroker(const std::string& name);
+    const std::string& GetSystemLocalUri() { return m_systemLocalUri; }
 
   private:
     mutable OS::CMutex* m_mutex;
     OS::CEvent* m_cbzgt;
-    EventHandler m_eventHandler;
-    std::string m_systemLocalUri;
+    bool m_connected;
     unsigned m_subId;
-    Subscription m_ZGTSubscription;
-    ZoneGroupTopology* m_groupTopology;
-    Subscription m_AlarmClockSubscription;
-    AlarmClock* m_alarmClock;
-    void* m_CBHandle;
-    EventCB m_eventCB;
-    Locked<bool> m_eventSignaled;
-    Locked<unsigned char> m_eventMask;
+    EventHandler m_eventHandler;
+    std::string m_deviceHost;
+    unsigned m_devicePort;
+    void* m_CBHandle;                       // callback handle
+    EventCB m_eventCB;                      // callback on event
+    Locked<bool> m_eventSignaled;           // cleared by calling LastEvents()
+    Locked<unsigned char> m_eventMask;      // cleared by calling LastEvents()
+    // Services API
+    ZoneGroupTopology*  m_groupTopology;
+    DeviceProperties*   m_deviceProperties;
+    AlarmClock*         m_alarmClock;
+    ContentDirectory*   m_contentDirectory;
+    MusicServices*      m_musicServices;
 
-    struct
-    {
-      ZonePtr zone;
-      PlayerPtr player;
-    } m_connectedZone;
+    typedef std::map<std::string, PlayerPtr> PlayerMap;
+    Locked<PlayerMap> m_players;
+
+    // About this controler
+    std::string m_systemLocalUri;
+
+    // About the connected device
+    std::string m_householdID;
+    std::string m_serialNumber;
+    std::string m_softwareVersion;
+
+    // Service subscriptions
+    Subscription m_ZGTSubscription;         // ZoneGroupTopology
+    Subscription m_AlarmClockSubscription;  // AlarmClock
+    Subscription m_CDSubscription;          // Contentdirectory
+
+    SMServiceList m_smservices;
 
     static bool FindDeviceDescription(std::string& url);
+    void RevokePlayers();
 
     static void CB_ZGTopology(void* handle);
     static void CB_AlarmClock(void* handle);
+    static void CB_ContentDirectory(void* handle);
 
     static bool LoadMSLogo(ElementList& logos);
   };

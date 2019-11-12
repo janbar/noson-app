@@ -24,7 +24,7 @@
 #include "local_config.h"
 #include "smapimetadata.h"
 #include "musicservices.h"
-#include "sonosplayer.h"
+#include "sonossystem.h"
 #include "element.h"
 
 #include <list>
@@ -43,7 +43,7 @@ namespace NSROOT
   class SMAPI
   {
   public:
-    SMAPI(const PlayerPtr& player);
+    SMAPI(const System& system);
     virtual ~SMAPI();
 
     bool Init(const SMServicePtr& smsvc, const std::string& locale);
@@ -126,7 +126,6 @@ namespace NSROOT
 
   private:
     OS::CMutex* m_mutex;
-    PlayerPtr m_player;
     std::string m_language;
     std::string m_deviceSerialNumber;
     std::string m_deviceHouseholdID;

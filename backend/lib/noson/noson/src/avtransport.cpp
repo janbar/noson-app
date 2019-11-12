@@ -454,108 +454,112 @@ void AVTransport::HandleEventMessage(EventMessagePtr msg)
   {
     if (m_subscription.GetSID() == msg->subject[0] && msg->subject[2] == "AVT")
     {
-      Locked<AVTProperty>::pointer prop = m_property.Get();
-
-      DBG(DBG_DEBUG, "%s: %s SEQ=%s %s\n", __FUNCTION__, msg->subject[0].c_str(), msg->subject[1].c_str(), msg->subject[2].c_str());
-      std::vector<std::string>::const_iterator it = msg->subject.begin();
-      while (it != msg->subject.end())
       {
-        uint32_t num;
-        if (*it == "TransportState")
-          prop->TransportState.assign(*++it);
-        else if (*it == "CurrentPlayMode")
-          prop->CurrentPlayMode.assign(*++it);
-        else if (*it == "CurrentCrossfadeMode")
-          prop->CurrentCrossfadeMode.assign(*++it);
-        else if (*it == "NumberOfTracks")
-        {
-          string_to_uint32((*++it).c_str(), &num);
-          prop->NumberOfTracks = (unsigned)num;
-        }
-        else if (*it == "CurrentTrack")
-        {
-          string_to_uint32((*++it).c_str(), &num);
-          prop->CurrentTrack = (unsigned)num;
-        }
-        else if (*it == "CurrentSection")
-        {
-          string_to_uint32((*++it).c_str(), &num);
-          prop->CurrentSection = (unsigned)num;
-        }
-        else if (*it == "CurrentTrackURI")
-          prop->CurrentTrackURI.assign(*++it);
-        else if (*it == "CurrentTrackDuration")
-          prop->CurrentTrackDuration.assign(*++it);
-        else if (*it == "CurrentTrackMetaData")
-        {
-          DIDLParser didl((*++it).c_str());
-          if (didl.IsValid() && !didl.GetItems().empty())
-            prop->CurrentTrackMetaData = didl.GetItems()[0];
-          else
-            prop->CurrentTrackMetaData.reset(new DigitalItem(DigitalItem::Type_unknown));
-        }
-        else if (*it == "r:NextTrackURI")
-          prop->r_NextTrackURI.assign(*++it);
-        else if (*it == "r:NextTrackMetaData")
-        {
-          DIDLParser didl((*++it).c_str());
-          if (didl.IsValid() && !didl.GetItems().empty())
-            prop->r_NextTrackMetaData = didl.GetItems()[0];
-          else
-            prop->r_NextTrackMetaData.reset(new DigitalItem(DigitalItem::Type_unknown));
-        }
-        else if (*it == "r:EnqueuedTransportURI")
-          prop->r_EnqueuedTransportURI.assign(*++it);
-        else if (*it == "r:EnqueuedTransportURIMetaData")
-        {
-          DIDLParser didl((*++it).c_str());
-          if (didl.IsValid() && !didl.GetItems().empty())
-            prop->r_EnqueuedTransportURIMetaData = didl.GetItems()[0];
-          else
-            prop->r_EnqueuedTransportURIMetaData.reset(new DigitalItem(DigitalItem::Type_unknown));
-        }
-        else if (*it == "PlaybackStorageMedium")
-          prop->PlaybackStorageMedium.assign(*++it);
-        else if (*it == "AVTransportURI")
-          prop->AVTransportURI.assign(*++it);
-        else if (*it == "AVTransportURIMetaData")
-        {
-          DIDLParser didl((*++it).c_str());
-          if (didl.IsValid() && !didl.GetItems().empty())
-            prop->AVTransportURIMetaData = didl.GetItems()[0];
-          else
-            prop->AVTransportURIMetaData.reset(new DigitalItem(DigitalItem::Type_unknown));
-        }
-        else if (*it == "NextAVTransportURI")
-          prop->NextAVTransportURI.assign(*++it);
-        else if (*it == "NextAVTransportURIMetaData")
-          prop->NextAVTransportURIMetaData.assign(*++it);
-        else if (*it == "CurrentTransportActions")
-          prop->CurrentTransportActions.assign(*++it);
-        else if (*it == "r:CurrentValidPlayModes")
-          prop->r_CurrentValidPlayModes.assign(*++it);
-        else if (*it == "r:MuseSessions")
-          prop->r_MuseSessions.assign(*++it);
-        else if (*it == "TransportStatus")
-          prop->TransportStatus.assign(*++it);
-        else if (*it == "r:SleepTimerGeneration")
-          prop->r_SleepTimerGeneration.assign(*++it);
-        else if (*it == "r:AlarmRunning")
-          prop->r_AlarmRunning.assign(*++it);
-        else if (*it == "r:AlarmIDRunning")
-          prop->r_AlarmIDRunning.assign(*++it);
-        else if (*it == "r:AlarmLoggedStartTime")
-          prop->r_AlarmLoggedStartTime.assign(*++it);
-        else if (*it == "r:AlarmState")
-          prop->r_AlarmState.assign(*++it);
-        else if (*it == "r:SnoozeRunning")
-          prop->r_SnoozeRunning.assign(*++it);
-        else if (*it == "r:RestartPending")
-          prop->r_RestartPending.assign(*++it);
-        else if (*it == "PossiblePlaybackStorageMedia")
-          prop->PossiblePlaybackStorageMedia.assign(*++it);
+        // BEGIN CRITICAL SECTION
+        Locked<AVTProperty>::pointer prop = m_property.Get();
 
-        ++it;
+        DBG(DBG_DEBUG, "%s: %s SEQ=%s %s\n", __FUNCTION__, msg->subject[0].c_str(), msg->subject[1].c_str(), msg->subject[2].c_str());
+        std::vector<std::string>::const_iterator it = msg->subject.begin();
+        while (it != msg->subject.end())
+        {
+          uint32_t num;
+          if (*it == "TransportState")
+            prop->TransportState.assign(*++it);
+          else if (*it == "CurrentPlayMode")
+            prop->CurrentPlayMode.assign(*++it);
+          else if (*it == "CurrentCrossfadeMode")
+            prop->CurrentCrossfadeMode.assign(*++it);
+          else if (*it == "NumberOfTracks")
+          {
+            string_to_uint32((*++it).c_str(), &num);
+            prop->NumberOfTracks = (unsigned)num;
+          }
+          else if (*it == "CurrentTrack")
+          {
+            string_to_uint32((*++it).c_str(), &num);
+            prop->CurrentTrack = (unsigned)num;
+          }
+          else if (*it == "CurrentSection")
+          {
+            string_to_uint32((*++it).c_str(), &num);
+            prop->CurrentSection = (unsigned)num;
+          }
+          else if (*it == "CurrentTrackURI")
+            prop->CurrentTrackURI.assign(*++it);
+          else if (*it == "CurrentTrackDuration")
+            prop->CurrentTrackDuration.assign(*++it);
+          else if (*it == "CurrentTrackMetaData")
+          {
+            DIDLParser didl((*++it).c_str());
+            if (didl.IsValid() && !didl.GetItems().empty())
+              prop->CurrentTrackMetaData = didl.GetItems()[0];
+            else
+              prop->CurrentTrackMetaData.reset(new DigitalItem(DigitalItem::Type_unknown));
+          }
+          else if (*it == "r:NextTrackURI")
+            prop->r_NextTrackURI.assign(*++it);
+          else if (*it == "r:NextTrackMetaData")
+          {
+            DIDLParser didl((*++it).c_str());
+            if (didl.IsValid() && !didl.GetItems().empty())
+              prop->r_NextTrackMetaData = didl.GetItems()[0];
+            else
+              prop->r_NextTrackMetaData.reset(new DigitalItem(DigitalItem::Type_unknown));
+          }
+          else if (*it == "r:EnqueuedTransportURI")
+            prop->r_EnqueuedTransportURI.assign(*++it);
+          else if (*it == "r:EnqueuedTransportURIMetaData")
+          {
+            DIDLParser didl((*++it).c_str());
+            if (didl.IsValid() && !didl.GetItems().empty())
+              prop->r_EnqueuedTransportURIMetaData = didl.GetItems()[0];
+            else
+              prop->r_EnqueuedTransportURIMetaData.reset(new DigitalItem(DigitalItem::Type_unknown));
+          }
+          else if (*it == "PlaybackStorageMedium")
+            prop->PlaybackStorageMedium.assign(*++it);
+          else if (*it == "AVTransportURI")
+            prop->AVTransportURI.assign(*++it);
+          else if (*it == "AVTransportURIMetaData")
+          {
+            DIDLParser didl((*++it).c_str());
+            if (didl.IsValid() && !didl.GetItems().empty())
+              prop->AVTransportURIMetaData = didl.GetItems()[0];
+            else
+              prop->AVTransportURIMetaData.reset(new DigitalItem(DigitalItem::Type_unknown));
+          }
+          else if (*it == "NextAVTransportURI")
+            prop->NextAVTransportURI.assign(*++it);
+          else if (*it == "NextAVTransportURIMetaData")
+            prop->NextAVTransportURIMetaData.assign(*++it);
+          else if (*it == "CurrentTransportActions")
+            prop->CurrentTransportActions.assign(*++it);
+          else if (*it == "r:CurrentValidPlayModes")
+            prop->r_CurrentValidPlayModes.assign(*++it);
+          else if (*it == "r:MuseSessions")
+            prop->r_MuseSessions.assign(*++it);
+          else if (*it == "TransportStatus")
+            prop->TransportStatus.assign(*++it);
+          else if (*it == "r:SleepTimerGeneration")
+            prop->r_SleepTimerGeneration.assign(*++it);
+          else if (*it == "r:AlarmRunning")
+            prop->r_AlarmRunning.assign(*++it);
+          else if (*it == "r:AlarmIDRunning")
+            prop->r_AlarmIDRunning.assign(*++it);
+          else if (*it == "r:AlarmLoggedStartTime")
+            prop->r_AlarmLoggedStartTime.assign(*++it);
+          else if (*it == "r:AlarmState")
+            prop->r_AlarmState.assign(*++it);
+          else if (*it == "r:SnoozeRunning")
+            prop->r_SnoozeRunning.assign(*++it);
+          else if (*it == "r:RestartPending")
+            prop->r_RestartPending.assign(*++it);
+          else if (*it == "PossiblePlaybackStorageMedia")
+            prop->PossiblePlaybackStorageMedia.assign(*++it);
+
+          ++it;
+        }
+        // END CRITICAL SECTION
       }
       // Signal
       ++m_msgCount;

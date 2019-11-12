@@ -218,6 +218,12 @@ bool Subscription::Start()
   return false;
 }
 
+void Subscription::Stop()
+{
+  if (m_imp)
+     m_imp->Stop();
+}
+
 void Subscription::AskRenewal()
 {
   if (m_imp)

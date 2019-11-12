@@ -105,7 +105,9 @@ void ZoneGroupTopology::HandleEventMessage(EventMessagePtr msg)
       {
         if (*it == "ZoneGroupState")
         {
+          // BEGIN CRITICAL SECTION
           ParseZoneGroupState(*++it);
+          // END CRITICAL SECTION
           break;
         }
         ++it;

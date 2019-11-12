@@ -64,15 +64,6 @@ namespace NSROOT
     Player(const ZonePtr& zone, EventHandler& eventHandler, void* CBHandle = 0, EventCB eventCB = 0);
 
     /**
-     * Initialize a standalone player.
-     * @param zonePlayer
-     * @param eventHandler
-     * @param CBHandle
-     * @param eventCB
-     */
-    Player(const ZonePlayerPtr& zonePlayer, EventHandler& eventHandler, void* CBHandle = 0, EventCB eventCB = 0);
-
-    /**
      * Initialize a basic player without any substription or callback.
      * WARNING: Properties won't be filled.
      * AV-transport or rendering status have to be manually requested using dedicated actions.
@@ -83,21 +74,21 @@ namespace NSROOT
     virtual ~Player();
 
     bool IsValid() const { return m_valid; }
-    const std::string& GetHost() const { return m_host; }
-    unsigned GetPort() const { return m_port; }
+    const std::string& GetHost() const { return m_deviceHost; }
+    unsigned GetPort() const { return m_devicePort; }
+    const ZonePtr& GetZone() const { return m_zone; }
+
+    void RevokeSubscription();
     void RenewSubscriptions();
     unsigned char LastEvents();
     bool RenderingPropertyEmpty();
     SRPList GetRenderingProperty();
     bool TransportPropertyEmpty();
     AVTProperty GetTransportProperty();
-    ContentProperty GetContentProperty();
 
-    bool RefreshShareIndex();
     bool GetZoneInfo(ElementList& vars);
     bool GetZoneAttributes(ElementList& vars);
     bool GetHouseholdID(ElementList& vars);
-    bool GetSessionId(const std::string& serviceId, const std::string& username, ElementList& vars);
     bool GetTransportInfo(ElementList& vars);
     bool GetPositionInfo(ElementList &vars);
     bool GetMediaInfo(ElementList &vars);
@@ -140,10 +131,6 @@ namespace NSROOT
     bool CreateSavedQueue(const std::string& title);
     unsigned AddURIToSavedQueue(const std::string& SQObjectID, const DigitalItemPtr& item, unsigned containerUpdateID);
     bool ReorderTracksInSavedQueue(const std::string& SQObjectID, const std::string& trackList, const std::string& newPositionList, unsigned containerUpdateID);
-    bool DestroySavedQueue(const std::string& SQObjectID);
-
-    bool AddURIToFavorites(const DigitalItemPtr& item, const std::string& description, const std::string& artURI);
-    bool DestroyFavorite(const std::string& FVObjectID);
 
     bool SetPlayMode(PlayMode_t mode);
     bool Play();
@@ -162,18 +149,10 @@ namespace NSROOT
     bool PlayLineIN();
     bool PlayDigitalIN();
 
-    ContentDirectory* ContentDirectoryProvider(void* CBHandle = 0, EventCB eventCB = 0);
-
     // Implements EventSubscriber
     virtual void HandleEventMessage(EventMessagePtr msg);
 
-    // Music services
-    SMServiceList GetEnabledServices();
-    SMServiceList GetAvailableServices();
-    SMServicePtr GetServiceForMedia(const std::string& mediaUri);
-
     // Helpers
-    std::string GetItemIdFromUriMetadata(const DigitalItemPtr& uriMetadata);
     Protocol_t GetURIProtocol(const std::string& uri);
     const std::string& GetControllerUri() const { return m_controllerUri; }
 
@@ -184,27 +163,27 @@ namespace NSROOT
 
   private:
     bool m_valid;
-    std::string m_uuid;
-    std::string m_host;
-    unsigned m_port;
+    ZonePtr m_zone;
     EventHandler m_eventHandler;
-    void* m_CBHandle;
-    EventCB m_eventCB;
-    Locked<bool> m_eventSignaled;
-    Locked<unsigned char> m_eventMask;
+    std::string m_uuid;
+    std::string m_deviceHost;
+    unsigned m_devicePort;
+    void* m_CBHandle;                       // callback handle
+    EventCB m_eventCB;                      // callback on event
+    Locked<bool> m_eventSignaled;           // cleared by calling LastEvents()
+    Locked<unsigned char> m_eventMask;      // cleared by calling LastEvents()
+    // Services API
+    DeviceProperties*   m_deviceProperties;
+    AVTransport*        m_AVTransport;
 
-    // the name and address of this controller
+    // The name and address of this controller
     std::string m_controllerLocalUri;
     std::string m_controllerName;
     std::string m_controllerHost;
     std::string m_controllerUri;
 
-    // special uri
-    std::string m_queueURI;
-
-    // services
+    // Services subscriptions
     Subscription m_AVTSubscription;
-    Subscription m_CDSubscription;
 
     class SubordinateRC
     {
@@ -219,21 +198,12 @@ namespace NSROOT
     typedef std::vector<SubordinateRC> RCTable;
     RCTable m_RCTable;
 
-    AVTransport*        m_AVTransport;
-    DeviceProperties*   m_deviceProperties;
-    ContentDirectory*   m_contentDirectory;
-    MusicServices*      m_musicServices;
-
     // cold startup
-    void Init(const Zone& zone);
+    bool Init(const ZonePtr& zone);
 
     // event callback
     static void CB_AVTransport(void* handle);
     static void CB_RenderingControl(void* handle);
-    static void CB_ContentDirectory(void* handle);
-
-    // music services
-    SMServiceList m_smservices;
 
     // prevent copy
     Player(const Player&);

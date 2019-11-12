@@ -39,8 +39,10 @@ namespace NSROOT
     ~Subscription();
 
     bool IsValid();
-    
+
     bool Start();
+
+    void Stop();
 
     const std::string GetSID() { return m_imp ? m_imp->m_SID : ""; }
 
