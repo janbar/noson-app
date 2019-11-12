@@ -20,7 +20,6 @@
 
 #include "sonos.h"
 #include "private/debug.h"
-#include <noson/contentdirectory.h>
 #include "listmodel.h"
 #include "alarmsmodel.h"
 #include <noson/requestbroker.h>
@@ -32,23 +31,26 @@
 
 #include <QString>
 
-#define JOB_THREADPOOL_SIZE 16
+#define THREAD_EXPIRY_TIMEOUT  10000
+#define DEFAULT_MAX_THREAD     16
 
 using namespace nosonapp;
 
 namespace nosonapp
 {
 
-class ContentLoader : public SONOS::OS::CWorker
+class ContentLoader : public QRunnable
 {
 public:
   ContentLoader(Sonos& sonos, ListModel* payload)
   : m_sonos(sonos)
   , m_payload(payload) { }
 
-  ContentLoader(Sonos& sonos) : m_sonos(sonos), m_payload(0) { }
+  ContentLoader(Sonos& sonos)
+  : m_sonos(sonos)
+  , m_payload(nullptr) { }
 
-  virtual void Process()
+  virtual void run() override
   {
     m_sonos.beginJob();
     if (m_payload)
@@ -62,7 +64,7 @@ private:
   ListModel* m_payload;
 };
 
-class CustomizedContentLoader : public SONOS::OS::CWorker
+class CustomizedContentLoader : public QRunnable
 {
 public:
   CustomizedContentLoader(Sonos& sonos, ListModel* payload, int id)
@@ -70,7 +72,7 @@ public:
   , m_payload(payload)
   , m_id(id) { }
 
-  virtual void Process()
+  virtual void run() override
   {
     m_sonos.beginJob();
     if (m_payload)
@@ -83,7 +85,7 @@ private:
   int m_id;
 };
 
-class InitWorker : public SONOS::OS::CWorker
+class InitWorker : public QRunnable
 {
 public:
   InitWorker(Sonos& sonos, int debug)
@@ -91,7 +93,7 @@ public:
   , m_debug(debug)
   { }
 
-  virtual void Process()
+  virtual void run() override
   {
     m_sonos.beginJob();
     m_sonos.init(m_debug);
@@ -102,7 +104,7 @@ private:
   int m_debug;
 };
 
-class JoinZonesWorker : public SONOS::OS::CWorker
+class JoinZonesWorker : public QRunnable
 {
 public:
   JoinZonesWorker(Sonos& sonos, const QVariantList& zonePayloads, const QVariant& toZonePayload)
@@ -111,7 +113,7 @@ public:
   , m_toZonePayload(toZonePayload)
   { }
 
-  virtual void Process()
+  virtual void run() override
   {
     m_sonos.beginJob();
     m_sonos.joinZones(m_zonePayloads, m_toZonePayload);
@@ -123,7 +125,7 @@ private:
   QVariant m_toZonePayload;
 };
 
-class UnjoinRoomsWorker : public SONOS::OS::CWorker
+class UnjoinRoomsWorker : public QRunnable
 {
 public:
   UnjoinRoomsWorker(Sonos& sonos, const QVariantList& roomPayloads)
@@ -131,7 +133,7 @@ public:
   , m_roomPayloads(roomPayloads)
   { }
 
-  virtual void Process()
+  virtual void run() override
   {
     m_sonos.beginJob();
     m_sonos.unjoinRooms(m_roomPayloads);
@@ -142,7 +144,7 @@ private:
   QVariantList m_roomPayloads;
 };
 
-class UnjoinZoneWorker : public SONOS::OS::CWorker
+class UnjoinZoneWorker : public QRunnable
 {
 public:
   UnjoinZoneWorker(Sonos& sonos, const QVariant& zonePayload)
@@ -150,7 +152,7 @@ public:
   , m_zonePayload(zonePayload)
   { }
 
-  virtual void Process()
+  virtual void run() override
   {
     m_sonos.beginJob();
     m_sonos.unjoinZone(m_zonePayload);
@@ -169,8 +171,8 @@ Sonos::Sonos(QObject* parent)
 , m_shareUpdateID(0)
 , m_shareIndexInProgess(false)
 , m_system(this, systemEventCB)
-, m_threadpool(JOB_THREADPOOL_SIZE)
-, m_jobCount(SONOS::LockedNumber<int>(0))
+, m_workerPool()
+, m_jobCount(LockedNumber<int>(0))
 , m_locale("en_US")
 {
   SONOS::DBGLevel(2);
@@ -183,23 +185,27 @@ Sonos::Sonos(QObject* parent)
   m_system.RegisterRequestBroker(SONOS::RequestBrokerPtr(new SONOS::PulseStreamer(imageService.get())));
 #endif
   m_system.RegisterRequestBroker(SONOS::RequestBrokerPtr(new SONOS::FileStreamer()));
+
+  m_workerPool.setExpiryTimeout(THREAD_EXPIRY_TIMEOUT);
+  m_workerPool.setMaxThreadCount(DEFAULT_MAX_THREAD);
 }
 
 Sonos::~Sonos()
 {
   {
-    ManagedContents left = m_library.Load();
-    for (ManagedContents::iterator it = left.begin(); it != left.end(); ++it)
+    Locked<ManagedContents>::pointer left = m_library.Get();
+    for (ManagedContents::iterator it = left->begin(); it != left->end(); ++it)
     {
       LockGuard g(it->model->m_lock);
       unregisterModel(it->model);
     }
   }
+  m_workerPool.clear();
 }
 
 bool Sonos::startInit(int debug)
 {
-  return m_threadpool.Enqueue(new InitWorker(*this, debug));
+  return m_workerPool.tryStart(new InitWorker(*this, debug));
 }
 
 bool Sonos::init(int debug /*= 0*/)
@@ -260,63 +266,15 @@ QVariantList Sonos::getZones()
   return list;
 }
 
-bool Sonos::connectZone(const QString& zoneName)
+bool Sonos::isConnected()
 {
-  std::string name;
-  SONOS::ZoneList zones = m_system.GetZoneList();
-  // default the name by current coordinator
-  if (zoneName.isEmpty() && m_system.IsConnected())
-    name.append(*(m_system.GetConnectedZone()->GetCoordinator()));
-  else
-    name.append(zoneName.toUtf8().constData());
-
-  // loop in zones
-  for (SONOS::ZoneList::const_iterator it = zones.begin(); it != zones.end(); ++it)
-  {
-    if (name.empty() || name == it->second->GetZoneName())
-    {
-      return m_system.ConnectZone(it->second, this, playerEventCB);
-    }
-    // loop in group to search the player with the given name
-    if (it->second->size() > 1)
-    {
-      for (std::vector<SONOS::ZonePlayerPtr>::const_iterator itp = it->second->begin(); itp != it->second->end(); ++itp)
-      {
-        if (name == **itp)
-        {
-          return m_system.ConnectZone(it->second, this, playerEventCB);
-        }
-      }
-    }
-  }
-  return false;
+  return m_system.IsConnected();
 }
 
-QString Sonos::getZoneId() const
-{
-  if (m_system.IsConnected())
-    return m_system.GetConnectedZone()->GetGroup().c_str();
-  return "";
-}
-
-QString Sonos::getZoneName() const
-{
-  if (m_system.IsConnected())
-    return m_system.GetConnectedZone()->GetZoneName().c_str();
-  return "";
-}
-
-QString Sonos::getZoneShortName() const
-{
-  if (m_system.IsConnected())
-    return m_system.GetConnectedZone()->GetZoneShortName().c_str();
-  return "";
-}
-
-QVariantList Sonos::getZoneRooms()
+QVariantList Sonos::getZoneRooms(const QString& zoneId)
 {
   RoomsModel model;
-  model.load(this, getZoneId());
+  model.load(this, zoneId);
   QVariantList list;
   for (int r = 0; r < model.rowCount(); ++r)
     list.append(model.get(r));
@@ -377,7 +335,7 @@ bool Sonos::joinZones(const QVariantList& zonePayloads, const QVariant& toZonePa
 
 bool Sonos::startJoinZones(const QVariantList& zonePayloads, const QVariant& toZonePayload)
 {
-  return m_threadpool.Enqueue(new JoinZonesWorker(*this, zonePayloads, toZonePayload));
+  return m_workerPool.tryStart(new JoinZonesWorker(*this, zonePayloads, toZonePayload));
 }
 
 bool Sonos::unjoinRoom(const QVariant& roomPayload)
@@ -408,7 +366,7 @@ bool Sonos::unjoinRooms(const QVariantList& roomPayloads)
 
 bool Sonos::startUnjoinRooms(const QVariantList& roomPayloads)
 {
-  return m_threadpool.Enqueue(new UnjoinRoomsWorker(*this, roomPayloads));
+  return m_workerPool.tryStart(new UnjoinRoomsWorker(*this, roomPayloads));
 }
 
 bool Sonos::unjoinZone(const QVariant& zonePayload)
@@ -429,7 +387,7 @@ bool Sonos::unjoinZone(const QVariant& zonePayload)
 
 bool Sonos::startUnjoinZone(const QVariant& zonePayload)
 {
-  return m_threadpool.Enqueue(new UnjoinZoneWorker(*this, zonePayload));
+  return m_workerPool.tryStart(new UnjoinZoneWorker(*this, zonePayload));
 }
 
 bool Sonos::createAlarm(const QVariant& alarmPayload)
@@ -457,6 +415,32 @@ bool Sonos::destroyAlarm(const QString& id)
   return m_system.DestroyAlarm(id.toUtf8().constData());
 }
 
+bool Sonos::refreshShareIndex()
+{
+  return m_system.RefreshShareIndex();
+}
+
+bool Sonos::destroySavedQueue(const QString& SQid)
+{
+  return m_system.DestroySavedQueue(SQid.toUtf8().constData());
+}
+
+bool Sonos::addItemToFavorites(const QVariant& payload, const QString& description, const QString& artURI)
+{
+  return m_system.AddURIToFavorites(payload.value<SONOS::DigitalItemPtr>(), description.toUtf8().constData(), artURI.toUtf8().constData());
+}
+
+bool Sonos::destroyFavorite(const QString& FVid)
+{
+  return m_system.DestroyFavorite(FVid.toUtf8().constData());
+}
+
+QString Sonos::getObjectIDFromUriMetadata(const QVariant& itemPayload)
+{
+  SONOS::DigitalItemPtr ptr = itemPayload.value<SONOS::DigitalItemPtr>();
+  return QString::fromUtf8(m_system.GetObjectIDFromUriMetadata(ptr).c_str());
+}
+
 bool Sonos::isItemFromService(const QVariant &itemPayload)
 {
   SONOS::DigitalItemPtr ptr = itemPayload.value<SONOS::DigitalItemPtr>();
@@ -472,21 +456,37 @@ SONOS::System &Sonos::getSystem()
   return m_system;
 }
 
-const SONOS::PlayerPtr& Sonos::getPlayer() const
+SONOS::ZonePtr Sonos::findZone(const QString& zoneName)
 {
-  return m_system.GetPlayer();
+  std::string name = zoneName.toUtf8().constData();
+  SONOS::ZoneList zones = m_system.GetZoneList();
+  if (zones.empty())
+    return SONOS::ZonePtr();
+  // loop in zones
+  for (SONOS::ZoneList::const_iterator it = zones.begin(); it != zones.end(); ++it)
+  {
+    if (name.empty() || name == it->second->GetZoneName())
+      return it->second;
+    // loop in group to search the player with the given name
+    for (std::vector<SONOS::ZonePlayerPtr>::const_iterator itp = it->second->begin(); itp != it->second->end(); ++itp)
+    {
+      if (name == **itp)
+        return it->second;
+    }
+  }
+  return zones.begin()->second;
 }
 
 void Sonos::runLoader()
 {
-  m_threadpool.Enqueue(new ContentLoader(*this));
+  m_workerPool.start(new ContentLoader(*this));
 }
 
 void Sonos::loadEmptyModels()
 {
   QList<ListModel*> left;
   {
-    SONOS::Locked<ManagedContents>::pointer mc = m_library.Get();
+    Locked<ManagedContents>::pointer mc = m_library.Get();
     for (ManagedContents::iterator it = mc->begin(); it != mc->end(); ++it)
       if (it->model->m_dataState == ListModel::NoData)
         left.push_back(it->model);
@@ -509,7 +509,7 @@ void Sonos::runModelLoader(ListModel* model)
   if (model && !model->m_pending)
   {
     model->m_pending = true; // decline next request
-    m_threadpool.Enqueue(new ContentLoader(*this, model));
+    m_workerPool.start(new ContentLoader(*this, model));
   }
   else
     SONOS::DBG(DBG_ERROR, "%s: request has been declined (%p)\n", __FUNCTION__, model);
@@ -517,7 +517,7 @@ void Sonos::runModelLoader(ListModel* model)
 
 void Sonos::loadModel(ListModel* model)
 {
-  SONOS::Locked<ManagedContents>::pointer mc = m_library.Get();
+  Locked<ManagedContents>::pointer mc = m_library.Get();
   for (ManagedContents::iterator it = mc->begin(); it != mc->end(); ++it)
     if (it->model == model)
     {
@@ -535,7 +535,7 @@ void Sonos::runCustomizedModelLoader(ListModel* model, int id)
   if (model && !model->m_pending)
   {
     model->m_pending = true; // decline next request
-    m_threadpool.Enqueue(new CustomizedContentLoader(*this, model, id));
+    m_workerPool.start(new CustomizedContentLoader(*this, model, id));
   }
   else
     SONOS::DBG(DBG_ERROR, "%s: request id %d has been declined (%p)\n", __FUNCTION__, id, model);
@@ -552,7 +552,7 @@ void Sonos::registerModel(ListModel* model, const QString& root)
   if (model)
   {
     SONOS::DBG(DBG_DEBUG, "%s: %p (%s)\n", __FUNCTION__, model, root.toUtf8().constData());
-    SONOS::Locked<ManagedContents>::pointer mc = m_library.Get();
+    Locked<ManagedContents>::pointer mc = m_library.Get();
     for (ManagedContents::iterator it = mc->begin(); it != mc->end(); ++it)
     {
       if (it->model == model)
@@ -570,23 +570,23 @@ void Sonos::unregisterModel(ListModel* model)
   if (model)
   {
     QList<ManagedContents::iterator> left;
-    SONOS::Locked<ManagedContents>::pointer mc = m_library.Get();
+    Locked<ManagedContents>::pointer mc = m_library.Get();
     for (ManagedContents::iterator it = mc->begin(); it != mc->end(); ++it)
       if (it->model == model)
         left.push_back(it);
     for (QList<ManagedContents::iterator>::iterator itl = left.begin(); itl != left.end(); ++itl)
     {
       SONOS::DBG(DBG_DEBUG, "%s: %p (%s)\n", __FUNCTION__, model, model->m_root.toUtf8().constData());
-      model->m_provider = 0;
+      model->m_provider = nullptr;
       model->m_root.clear();
       mc->erase(*itl);
     }
   }
 }
 
-bool Sonos::startJob(SONOS::OS::CWorker* worker)
+bool Sonos::startJob(QRunnable* worker)
 {
-  return m_threadpool.Enqueue(worker);
+  return m_workerPool.tryStart(worker);
 }
 
 void Sonos::beginJob()
@@ -601,74 +601,10 @@ void Sonos::endJob()
   emit jobCountChanged();
 }
 
-void Sonos::playerEventCB(void* handle)
-{
-  Sonos* sonos = static_cast<Sonos*>(handle);
-  SONOS::PlayerPtr player = sonos->getPlayer();
-  if (player)
-  {
-    // Read last event flags
-    unsigned char events = player->LastEvents();
-
-    if ((events & SONOS::SVCEvent_TransportChanged))
-      emit sonos->transportChanged();
-    if ((events & SONOS::SVCEvent_RenderingControlChanged))
-      emit sonos->renderingControlChanged();
-    if ((events & SONOS::SVCEvent_ContentDirectoryChanged))
-    {
-      SONOS::Locked<ManagedContents>::pointer cl = sonos->m_library.Get();
-      SONOS::ContentProperty prop = player->GetContentProperty();
-      for (std::vector<std::pair<std::string, unsigned> >::const_iterator uit = prop.ContainerUpdateIDs.begin(); uit != prop.ContainerUpdateIDs.end(); ++uit)
-      {
-        SONOS::DBG(DBG_DEBUG, "%s: container [%s] has being updated to %u\n", __FUNCTION__, uit->first.c_str(), uit->second);
-
-        // Reload musical index on any update of shares
-        bool shareUpdated = false;
-        if (uit->first == "S:" && uit->second != sonos->m_shareUpdateID)
-        {
-          shareUpdated = true;
-          sonos->m_shareUpdateID = uit->second; // Track current updateID
-        }
-
-        for (ManagedContents::iterator it = cl->begin(); it != cl->end(); ++it)
-        {
-          // find the base of the model from its root
-          QString _base;
-          int slash = it->model->m_root.indexOf("/");
-          if (slash < 0)
-            _base.append(it->model->m_root);
-          else
-            _base.append(it->model->m_root.left(slash));
-
-          // need update ?
-          bool _update = false;
-          // same base
-          if (it->model->m_updateID != uit->second && _base == uit->first.c_str())
-            _update = true;
-          // about shares
-          else if (shareUpdated && _base.startsWith(QString::fromUtf8("A:")))
-            _update = true;
-
-          if (_update)
-            it->model->handleDataUpdate();
-        }
-      }
-      // Signal share index events
-      if (prop.ShareIndexInProgress != sonos->m_shareIndexInProgess)
-      {
-        if (prop.ShareIndexInProgress)
-          emit sonos->shareIndexInProgress();
-        else
-          emit sonos->shareIndexFinished();
-        sonos->m_shareIndexInProgess = prop.ShareIndexInProgress;
-      }
-    }
-  }
-}
-
 void Sonos::systemEventCB(void *handle)
 {
   Sonos* sonos = static_cast<Sonos*>(handle);
+  Q_ASSERT(sonos);
   // Read last event flags
   unsigned char events = sonos->getSystem().LastEvents();
 
@@ -676,4 +612,53 @@ void Sonos::systemEventCB(void *handle)
     emit sonos->topologyChanged();
   if ((events & SONOS::SVCEvent_AlarmClockChanged))
     emit sonos->alarmClockChanged();
+  if ((events & SONOS::SVCEvent_ContentDirectoryChanged))
+  {
+    Locked<ManagedContents>::pointer cl = sonos->m_library.Get();
+    SONOS::ContentProperty prop = sonos->getSystem().GetContentProperty();
+    for (std::vector<std::pair<std::string, unsigned> >::const_iterator uit = prop.ContainerUpdateIDs.begin(); uit != prop.ContainerUpdateIDs.end(); ++uit)
+    {
+      SONOS::DBG(DBG_DEBUG, "%s: container [%s] has being updated to %u\n", __FUNCTION__, uit->first.c_str(), uit->second);
+
+      // Reload musical index on any update of shares
+      bool shareUpdated = false;
+      if (uit->first == "S:" && uit->second != sonos->m_shareUpdateID)
+      {
+        shareUpdated = true;
+        sonos->m_shareUpdateID = uit->second; // Track current updateID
+      }
+
+      for (ManagedContents::iterator it = cl->begin(); it != cl->end(); ++it)
+      {
+        // find the base of the model from its root
+        QString _base;
+        int slash = it->model->m_root.indexOf("/");
+        if (slash < 0)
+          _base.append(it->model->m_root);
+        else
+          _base.append(it->model->m_root.left(slash));
+
+        // need update ?
+        bool _update = false;
+        // same base
+        if (it->model->m_updateID != uit->second && _base == uit->first.c_str())
+          _update = true;
+        // about shares
+        else if (shareUpdated && _base.startsWith(QString::fromUtf8("A:")))
+          _update = true;
+
+        if (_update)
+          it->model->handleDataUpdate();
+      }
+    }
+    // Signal share index events
+    if (prop.ShareIndexInProgress != sonos->m_shareIndexInProgess)
+    {
+      if (prop.ShareIndexInProgress)
+        emit sonos->shareIndexInProgress();
+      else
+        emit sonos->shareIndexFinished();
+      sonos->m_shareIndexInProgess = prop.ShareIndexInProgress;
+    }
+  }
 }

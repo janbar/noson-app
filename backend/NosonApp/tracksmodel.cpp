@@ -208,17 +208,12 @@ bool TracksModel::loadData()
     emit loaded(false);
     return false;
   }
-  const SONOS::PlayerPtr player = m_provider->getPlayer();
-  if (!player)
-  {
-    emit loaded(false);
-    return false;
-  }
+  const SONOS::System& system = m_provider->getSystem();
 
   LockGuard g(m_lock);
   SAFE_DELETE(m_contentList);
   SAFE_DELETE(m_contentDirectory);
-  m_contentDirectory = new SONOS::ContentDirectory(player->GetHost(), player->GetPort());
+  m_contentDirectory = new SONOS::ContentDirectory(system.GetHost(), system.GetPort());
   if (m_contentDirectory)
     m_contentList = new SONOS::ContentList(*m_contentDirectory, m_root.isEmpty() ? SONOS::ContentSearch(SONOS::SearchTrack,"").Root() : m_root.toUtf8().constData());
   if (!m_contentList)

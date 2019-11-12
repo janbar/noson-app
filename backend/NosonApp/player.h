@@ -21,7 +21,6 @@
 #ifndef NOSONAPPPLAYER_H
 #define NOSONAPPPLAYER_H
 
-#include "private/os/threads/threadpool.h"
 #include <noson/sonosplayer.h>
 
 #include <QObject>
@@ -43,8 +42,11 @@ class Player : public QObject
   Q_PROPERTY(int bass READ bass NOTIFY renderingGroupChanged)
 
   // Read only
-  Q_PROPERTY(QString controllerURI READ controllerURI NOTIFY connectedChanged)
   Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
+  Q_PROPERTY(QString zoneId READ zoneId NOTIFY connectedChanged)
+  Q_PROPERTY(QString zoneName READ zoneName NOTIFY connectedChanged)
+  Q_PROPERTY(QString zoneShortName READ zoneShortName NOTIFY connectedChanged)
+  Q_PROPERTY(QString controllerURI READ controllerURI NOTIFY connectedChanged)
   Q_PROPERTY(QString currentMetaAlbum READ currentMetaAlbum NOTIFY sourceChanged)
   Q_PROPERTY(QString currentMetaArt READ currentMetaArt NOTIFY sourceChanged)
   Q_PROPERTY(QString currentMetaArtist READ currentMetaArtist NOTIFY sourceChanged)
@@ -60,10 +62,13 @@ class Player : public QObject
   Q_PROPERTY(QString playMode READ playMode NOTIFY playModeChanged)
 
 public:
-  explicit Player(QObject *parent = 0);
+  explicit Player(QObject *parent = nullptr);
   ~Player();
 
-  Q_INVOKABLE bool init(QObject* sonos);
+  Q_INVOKABLE bool init(QObject* sonos, const QString& zoneName);
+  Q_INVOKABLE bool init(QObject* sonos, const QVariant& zone);
+
+  bool init(Sonos* sonos, const SONOS::ZonePtr& zone);
   bool connected() const { return m_connected; }
   QString controllerURI() const { return m_controllerURI; }
   void beginJob();
@@ -75,7 +80,6 @@ public:
   Q_INVOKABLE QString zoneName() const;
   Q_INVOKABLE QString zoneShortName() const;
 
-  Q_INVOKABLE bool refreshShareIndex();
   Q_INVOKABLE bool configureSleepTimer(int seconds);
   Q_INVOKABLE int remainingSleepTimerDuration();
 
@@ -101,7 +105,6 @@ public:
   Q_INVOKABLE bool startPlayStream(const QString& url, const QString& title); // asynchonous
   Q_INVOKABLE bool playStream(const QString& url, const QString& title);
 
-  Q_INVOKABLE bool startPlayPulse(); // asynchonous
   Q_INVOKABLE bool playPulse();
   Q_INVOKABLE bool isPulseStream(const QString& url); // return true if the given url is pulse stream from this player
 
@@ -133,10 +136,7 @@ public:
   Q_INVOKABLE int addItemToSavedQueue(const QString& SQid, const QVariant& payload, int containerUpdateID);
   Q_INVOKABLE bool removeTracksFromSavedQueue(const QString& SQid, const QVariantList& indexes, int containerUpdateID);
   Q_INVOKABLE bool reorderTrackInSavedQueue(const QString& SQid, int index, int newIndex, int containerUpdateID);
-  Q_INVOKABLE bool destroySavedQueue(const QString& SQid);
 
-  Q_INVOKABLE bool addItemToFavorites(const QVariant& payload, const QString& description, const QString& artURI);
-  Q_INVOKABLE bool destroyFavorite(const QString& FVid);
   Q_INVOKABLE bool startPlayFavorite(const QVariant& payload); // asynchronous
   Q_INVOKABLE bool playFavorite(const QVariant& payload);
 
@@ -205,7 +205,7 @@ signals:
 private slots:
     void handleTransportChange();
     void handleRenderingControlChange();
-  
+
 private:
   Sonos* m_sonos;
   SONOS::PlayerPtr m_player;
@@ -227,8 +227,7 @@ private:
   int m_currentTrackDuration;
   int m_currentProtocol;
 
-  void connectSonos(Sonos* sonos);
-  void disconnectSonos(Sonos* sonos);
+  static void playerEventCB(void* handle);
 };
 
 }

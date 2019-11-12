@@ -70,7 +70,7 @@ class Locked
 public:
   Locked(const T& val)
   : m_val(val)
-  , m_lock(new QMutex()) {}
+  , m_lock(new QMutex(QMutex::Recursive)) {}
   
   ~Locked()
   {

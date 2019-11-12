@@ -22,10 +22,9 @@
 #define NOSONAPPSONOS_H
 
 #include <noson/sonossystem.h>
-#include "private/os/threads/threadpool.h"
-#include <noson/locked.h>
 
 #include "tools.h"
+#include "locked.h"
 #include "zonesmodel.h"
 #include "roomsmodel.h"
 #include "albumsmodel.h"
@@ -43,6 +42,8 @@
 #include <QObject>
 #include <QString>
 #include <QQmlEngine>
+#include <QThread>
+#include <QThreadPool>
 
 namespace nosonapp
 {
@@ -74,15 +75,9 @@ public:
 
   Q_INVOKABLE QVariantList getZones();
 
-  Q_INVOKABLE bool connectZone(const QString& zoneName);
+  Q_INVOKABLE bool isConnected();
 
-  Q_INVOKABLE QString getZoneId() const;
-
-  Q_INVOKABLE QString getZoneName() const;
-
-  Q_INVOKABLE QString getZoneShortName() const;
-
-  Q_INVOKABLE QVariantList getZoneRooms();
+  Q_INVOKABLE QVariantList getZoneRooms(const QString& zoneId);
 
   Q_INVOKABLE bool joinRoom(const QVariant& roomPayload, const QVariant& toZonePayload);
 
@@ -101,10 +96,17 @@ public:
   Q_INVOKABLE bool updateAlarm(const QVariant& alarmPayload);
   Q_INVOKABLE bool destroyAlarm(const QString& id);
 
+  Q_INVOKABLE bool refreshShareIndex();
+  Q_INVOKABLE bool destroySavedQueue(const QString& SQid);
+  Q_INVOKABLE bool addItemToFavorites(const QVariant& payload, const QString& description, const QString& artURI);
+  Q_INVOKABLE bool destroyFavorite(const QString& FVid);
+
+  Q_INVOKABLE QString getObjectIDFromUriMetadata(const QVariant& itemPayload);
+
   Q_INVOKABLE bool isItemFromService(const QVariant& itemPayload);
 
   SONOS::System& getSystem();
-  const SONOS::PlayerPtr& getPlayer() const;
+  SONOS::ZonePtr findZone(const QString& zoneName);
 
   Q_INVOKABLE void runLoader();
   void loadEmptyModels();
@@ -118,7 +120,7 @@ public:
   void registerModel(ListModel* model, const QString& root);
   void unregisterModel(ListModel* model);
 
-  bool startJob(SONOS::OS::CWorker* worker);
+  bool startJob(QRunnable* worker);
   int jobCount() { return *(m_jobCount.Get()); }
   void beginJob();
   void endJob();
@@ -230,18 +232,17 @@ private:
     QString root;
   };
   typedef QList<RegisteredContent> ManagedContents;
-  SONOS::Locked<ManagedContents> m_library;
+  Locked<ManagedContents> m_library;
   unsigned m_shareUpdateID; // Current updateID of SONOS shares
   bool m_shareIndexInProgess;
 
   SONOS::System m_system;
-  SONOS::OS::CThreadPool m_threadpool;
-  SONOS::LockedNumber<int> m_jobCount;
+  QThreadPool m_workerPool;
+  LockedNumber<int> m_jobCount;
   QString m_systemLocalURI;
 
-  SONOS::Locked<QString> m_locale; // language_COUNTRY
+  Locked<QString> m_locale; // language_COUNTRY
 
-  static void playerEventCB(void* handle);
   static void systemEventCB(void* handle);
 };
 

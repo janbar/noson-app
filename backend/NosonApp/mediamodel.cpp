@@ -240,11 +240,8 @@ bool MediaModel::init(QObject* sonos, const QVariant& service, bool fill)
   Sonos* _sonos = reinterpret_cast<Sonos*> (sonos);
   if (!_sonos)
     return false;
-  SONOS::PlayerPtr player = _sonos->getPlayer();
-  if (!player)
-    return false;
   SAFE_DELETE(m_smapi);
-  m_smapi = new SONOS::SMAPI(player);
+  m_smapi = new SONOS::SMAPI(_sonos->getSystem());
   SONOS::SMServicePtr msvc = service.value<SONOS::SMServicePtr>();
   if (!m_smapi || !m_smapi->Init(msvc, _sonos->getLocale().toUtf8().constData()))
     return false;

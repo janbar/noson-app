@@ -158,23 +158,18 @@ bool ArtistsModel::loadData()
     emit loaded(false);
     return false;
   }
-  const SONOS::PlayerPtr player = m_provider->getPlayer();
-  if (!player)
-  {
-    emit loaded(false);
-    return false;
-  }
+  const SONOS::System& system = m_provider->getSystem();
 
   LockGuard g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
   m_dataState = ListModel::NoData;
   QString port;
-  port.setNum(player->GetPort());
+  port.setNum(system.GetPort());
   QString url = "http://";
-  url.append(player->GetHost().c_str()).append(":").append(port);
+  url.append(system.GetHost().c_str()).append(":").append(port);
 
-  SONOS::ContentDirectory cd(player->GetHost(), player->GetPort());
+  SONOS::ContentDirectory cd(system.GetHost(), system.GetPort());
   SONOS::ContentList cl(cd, m_root.isEmpty() ? SONOS::ContentSearch(SONOS::SearchArtist,"").Root() : m_root.toUtf8().constData());
   for (SONOS::ContentList::iterator it = cl.begin(); it != cl.end(); ++it)
   {

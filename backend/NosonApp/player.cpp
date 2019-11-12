@@ -24,9 +24,9 @@
 #include "private/debug.h"
 #ifdef HAVE_DBUS
 #include "dbus/mpris2.h"
+#include "sonosplayer.h"
 #endif
 
-#include <cstdio> // for sscanf
 #include <string>
 #include <vector>
 
@@ -35,7 +35,7 @@ using namespace nosonapp;
 namespace nosonapp
 {
 
-class playSourceWorker : public SONOS::OS::CWorker
+class playSourceWorker : public QRunnable
 {
 public:
   playSourceWorker(Player& player, const QVariant& payload)
@@ -43,7 +43,7 @@ public:
   , m_payload(payload)
   { }
 
-  virtual void Process()
+  virtual void run() override
   {
     m_player.beginJob();
     if (!m_player.setSource(m_payload) || !m_player.play())
@@ -55,7 +55,7 @@ private:
   QVariant m_payload;
 };
 
-class playStreamWorker : public SONOS::OS::CWorker
+class playStreamWorker : public QRunnable
 {
 public:
   playStreamWorker(Player& player, const QString& url, const QString& title)
@@ -64,7 +64,7 @@ public:
   , m_title(title)
   { }
 
-  virtual void Process()
+  virtual void run() override
   {
     m_player.beginJob();
     if (!m_player.playStream(m_url, m_title))
@@ -77,25 +77,7 @@ private:
   const QString m_title;
 };
 
-class playPulseWorker : public SONOS::OS::CWorker
-{
-public:
-  playPulseWorker(Player& player)
-  : m_player(player)
-  { }
-
-  virtual void Process()
-  {
-    m_player.beginJob();
-    if (!m_player.playPulse())
-      emit m_player.jobFailed();
-    m_player.endJob();
-  }
-private:
-  Player& m_player;
-};
-
-class playFavoriteWorker : public SONOS::OS::CWorker
+class playFavoriteWorker : public QRunnable
 {
 public:
   playFavoriteWorker(Player& player, const QVariant& payload)
@@ -103,7 +85,7 @@ public:
   , m_payload(payload)
   { }
 
-  virtual void Process()
+  virtual void run() override
   {
     m_player.beginJob();
     if (!m_player.playFavorite(m_payload))
@@ -119,8 +101,8 @@ private:
 
 Player::Player(QObject *parent)
 : QObject(parent)
-, m_sonos(0)
-, m_player(0)
+, m_sonos(nullptr)
+, m_player(nullptr)
 , m_connected(false)
 , m_currentIndex(-1)
 , m_currentTrackDuration(0)
@@ -134,102 +116,120 @@ Player::Player(QObject *parent)
 
 Player::~Player()
 {
-  disconnectSonos(m_sonos);
-  m_sonos = 0;
+  m_player.reset();
+  m_sonos = nullptr;
 }
 
-bool Player::init(QObject* sonos)
+bool Player::init(QObject* sonos, const QString& zoneName)
 {
   Sonos* _sonos = reinterpret_cast<Sonos*>(sonos);
   if (_sonos)
   {
-    disconnectSonos(m_sonos);
-    m_sonos = _sonos;
-    m_player = _sonos->getPlayer();
+    SONOS::ZonePtr zone = _sonos->findZone(zoneName);
+    return init(_sonos, zone);
+  }
+  return false;
+}
+
+bool Player::init(QObject* sonos, const QVariant& zone)
+{
+  Sonos* _sonos = reinterpret_cast<Sonos*>(sonos);
+  SONOS::ZonePtr _zone = zone.value<SONOS::ZonePtr>();
+  return init(_sonos, _zone);
+}
+
+bool Player::init(Sonos* sonos, const SONOS::ZonePtr& zone)
+{
+  // Clear the context
+  m_connected = false;
+  m_player.reset();
+  m_RCTable.clear();
+
+  if (sonos && zone)
+  {
+    m_sonos = sonos;
+    m_player = sonos->getSystem().GetPlayer(zone, this, playerEventCB);
     if (m_player)
     {
-      connectSonos(m_sonos);
-
-      // Clear context from the new player
-      m_RCTable.clear();
-      if (!m_player->RenderingPropertyEmpty())
-        handleRenderingControlChange();
-      if (!m_player->TransportPropertyEmpty())
-        handleTransportChange();
-      m_controllerURI = QString::fromUtf8(m_player->GetControllerUri().c_str());
+      handleRenderingControlChange();
+      handleTransportChange();
       m_connected = true;
       emit connectedChanged();
       return true;
     }
   }
-  m_connected = false;
+
   emit connectedChanged();
   return false;
 }
 
 void Player::beginJob()
 {
-  m_sonos->beginJob();
+  if (m_sonos)
+    m_sonos->beginJob();
 }
 
 void Player::endJob()
 {
-  m_sonos->endJob();
+  if (m_sonos)
+    m_sonos->endJob();
 }
 
 void Player::renewSubscriptions()
 {
-  if (m_player)
-    m_player->RenewSubscriptions();
+  SONOS::PlayerPtr p(m_player);
+  if (p)
+    p->RenewSubscriptions();
 }
 
 bool Player::ping()
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     SONOS::ElementList vars;
-    return m_player->GetMediaInfo(vars);
+    return p->GetMediaInfo(vars);
   }
   return false;
 }
 
 QString Player::zoneId() const
 {
-  if (m_sonos)
-    return m_sonos->getZoneId();
+  SONOS::PlayerPtr p(m_player);
+  if (p)
+    return p->GetZone()->GetGroup().c_str();
   return QString();
 }
 
 QString Player::zoneName() const
 {
-  if (m_sonos)
-    return m_sonos->getZoneName();
+  SONOS::PlayerPtr p(m_player);
+  if (p)
+    return QString::fromUtf8(p->GetZone()->GetZoneName().c_str());
   return QString();
 }
 
 QString Player::zoneShortName() const
 {
-  if (m_sonos)
-    return m_sonos->getZoneShortName();
+  SONOS::PlayerPtr p(m_player);
+  if (p)
+    return QString::fromUtf8(p->GetZone()->GetZoneShortName().c_str());
   return QString();
-}
-
-bool Player::refreshShareIndex()
-{
-  return m_player ? m_player->RefreshShareIndex() : false;
 }
 
 bool Player::configureSleepTimer(int seconds)
 {
-  return m_player ? m_player->ConfigureSleepTimer(seconds) : false;
+  SONOS::PlayerPtr p(m_player);
+  return p ? p->ConfigureSleepTimer(seconds) : false;
 }
 
 int Player::remainingSleepTimerDuration()
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     SONOS::ElementList vars;
-    m_player->GetRemainingSleepTimerDuration(vars);
+    p->GetRemainingSleepTimerDuration(vars);
     unsigned hh, hm, hs;
     if (sscanf(vars.GetValue("RemainingSleepTimerDuration").c_str(), "%u:%u:%u", &hh, &hm, &hs) == 3)
       return (int)(hh * 3600 + hm * 60 + hs);
@@ -239,82 +239,91 @@ int Player::remainingSleepTimerDuration()
 
 bool Player::startPlaySource(const QVariant& payload)
 {
-  return m_sonos->startJob(new playSourceWorker(*this, payload));
+  return m_sonos && m_sonos->startJob(new playSourceWorker(*this, payload));
 }
 
 bool Player::play()
 {
-  return m_player ? m_player->Play() : false;
+  SONOS::PlayerPtr p(m_player);
+  return p ? p->Play() : false;
 }
 
 bool Player::stop()
 {
-  return m_player ? m_player->Stop() : false;
+  SONOS::PlayerPtr p(m_player);
+  return p ? p->Stop() : false;
 }
 
 bool Player::pause()
 {
-  return m_player ? m_player->Pause() : false;
+  SONOS::PlayerPtr p(m_player);
+  return p ? p->Pause() : false;
 }
 
 bool Player::previous()
 {
-  return m_player ? m_player->Previous() : false;
+  SONOS::PlayerPtr p(m_player);
+  return p ? p->Previous() : false;
 }
 
 bool Player::next()
 {
-  return m_player ? m_player->Next() : false;
+  SONOS::PlayerPtr p(m_player);
+  return p ? p->Next() : false;
 }
 
 bool Player::toggleRepeat()
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     if (m_AVTProperty.CurrentPlayMode == "NORMAL")
-      return m_player->SetPlayMode(SONOS::PlayMode_REPEAT_ALL);
+      return p->SetPlayMode(SONOS::PlayMode_REPEAT_ALL);
     else if (m_AVTProperty.CurrentPlayMode == "REPEAT_ALL")
-      return m_player->SetPlayMode(SONOS::PlayMode_NORMAL);
+      return p->SetPlayMode(SONOS::PlayMode_NORMAL);
     else if (m_AVTProperty.CurrentPlayMode == "SHUFFLE")
-      return m_player->SetPlayMode(SONOS::PlayMode_SHUFFLE_NOREPEAT);
+      return p->SetPlayMode(SONOS::PlayMode_SHUFFLE_NOREPEAT);
     else if (m_AVTProperty.CurrentPlayMode == "SHUFFLE_NOREPEAT")
-      return m_player->SetPlayMode(SONOS::PlayMode_SHUFFLE);
+      return p->SetPlayMode(SONOS::PlayMode_SHUFFLE);
   }
   return false;
 }
 
 bool Player::toggleShuffle()
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     if (m_AVTProperty.CurrentPlayMode == "NORMAL")
-      return m_player->SetPlayMode(SONOS::PlayMode_SHUFFLE_NOREPEAT);
+      return p->SetPlayMode(SONOS::PlayMode_SHUFFLE_NOREPEAT);
     else if (m_AVTProperty.CurrentPlayMode == "REPEAT_ALL")
-      return m_player->SetPlayMode(SONOS::PlayMode_SHUFFLE);
+      return p->SetPlayMode(SONOS::PlayMode_SHUFFLE);
     else if (m_AVTProperty.CurrentPlayMode == "SHUFFLE")
-      return m_player->SetPlayMode(SONOS::PlayMode_REPEAT_ALL);
+      return p->SetPlayMode(SONOS::PlayMode_REPEAT_ALL);
     else if (m_AVTProperty.CurrentPlayMode == "SHUFFLE_NOREPEAT")
-      return m_player->SetPlayMode(SONOS::PlayMode_NORMAL);
+      return p->SetPlayMode(SONOS::PlayMode_NORMAL);
   }
   return false;
 }
 
 bool Player::setSource(const QVariant& payload)
 {
-  if (m_player)
-    return m_player->SetCurrentURI(payload.value<SONOS::DigitalItemPtr>());
+  SONOS::PlayerPtr p(m_player);
+  if (p)
+    return p->SetCurrentURI(payload.value<SONOS::DigitalItemPtr>());
   return false;
 }
 
 bool Player::toggleMute()
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     bool ret = true;
     bool mute = !m_RCGroup.mute;
     for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     {
-      if (m_player->SetMute(it->uuid, mute ? 1 : 0))
+      if (p->SetMute(it->uuid, mute ? 1 : 0))
         it->mute = mute;
       else
         ret = false;
@@ -328,14 +337,15 @@ bool Player::toggleMute()
 
 bool Player::toggleMute(const QString& uuid)
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     std::string _uuid = uuid.toUtf8().constData();
     for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     {
       if (it->uuid == _uuid)
       {
-        if (m_player->SetMute(it->uuid, it->mute ? 0 : 1))
+        if (p->SetMute(it->uuid, it->mute ? 0 : 1))
           return true;
         return false;
       }
@@ -346,14 +356,15 @@ bool Player::toggleMute(const QString& uuid)
 
 bool Player::toggleNightmode()
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     bool ret = true;
     bool nightmode = !m_RCGroup.nightmode;
     for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     {
       // it could fail when device doesn't support the setting. Anyway force the flag for the group
-      if (m_player->SetNightmode(it->uuid, nightmode ? 1 : 0))
+      if (p->SetNightmode(it->uuid, nightmode ? 1 : 0))
         m_RCGroup.nightmode = it->nightmode = nightmode;
       else
         ret = false;
@@ -365,14 +376,15 @@ bool Player::toggleNightmode()
 
 bool Player::toggleNightmode(const QString &uuid)
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     std::string _uuid = uuid.toUtf8().constData();
     for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     {
       if (it->uuid == _uuid)
       {
-        if (m_player->SetNightmode(it->uuid, it->nightmode ? 0 : 1))
+        if (p->SetNightmode(it->uuid, it->nightmode ? 0 : 1))
           return true;
         return false;
       }
@@ -383,14 +395,15 @@ bool Player::toggleNightmode(const QString &uuid)
 
 bool Player::toggleLoudness()
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     bool ret = true;
     bool loudness = !m_RCGroup.loudness;
     for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     {
       // it could fail when device doesn't support the setting. Anyway force the flag for the group
-      if (m_player->SetLoudness(it->uuid, loudness ? 1 : 0))
+      if (p->SetLoudness(it->uuid, loudness ? 1 : 0))
         m_RCGroup.loudness = it->loudness = loudness;
       else
         ret = false;
@@ -402,14 +415,15 @@ bool Player::toggleLoudness()
 
 bool Player::toggleLoudness(const QString &uuid)
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     std::string _uuid = uuid.toUtf8().constData();
     for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     {
       if (it->uuid == _uuid)
       {
-        if (m_player->SetLoudness(it->uuid, it->loudness ? 0 : 1))
+        if (p->SetLoudness(it->uuid, it->loudness ? 0 : 1))
           return true;
         return false;
       }
@@ -420,14 +434,15 @@ bool Player::toggleLoudness(const QString &uuid)
 
 bool Player::toggleOutputFixed(const QString &uuid)
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     std::string _uuid = uuid.toUtf8().constData();
     for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     {
       if (it->uuid == _uuid)
       {
-        if (m_player->SetOutputFixed(it->uuid, it->outputFixed ? 0 : 1))
+        if (p->SetOutputFixed(it->uuid, it->outputFixed ? 0 : 1))
           return true;
         return false;
       }
@@ -438,7 +453,8 @@ bool Player::toggleOutputFixed(const QString &uuid)
 
 bool Player::supportsOutputFixed(const QString &uuid)
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     std::string _uuid = uuid.toUtf8().constData();
     for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
@@ -446,7 +462,7 @@ bool Player::supportsOutputFixed(const QString &uuid)
       if (it->uuid == _uuid)
       {
         uint8_t val = 0;
-        if (m_player->GetSupportsOutputFixed(it->uuid, &val))
+        if (p->GetSupportsOutputFixed(it->uuid, &val))
           return (val == 1);
         return false;
       }
@@ -457,47 +473,48 @@ bool Player::supportsOutputFixed(const QString &uuid)
 
 bool Player::startPlayStream(const QString& url, const QString& title)
 {
-  return m_sonos->startJob(new playStreamWorker(*this, url, title));
+  return m_sonos && m_sonos->startJob(new playStreamWorker(*this, url, title));
 }
 
 bool Player::playStream(const QString& url, const QString& title)
 {
-  if (m_player)
-    return m_player->PlayStream(url.toUtf8().constData(), title.toUtf8().constData());
+  SONOS::PlayerPtr p(m_player);
+  if (p)
+    return p->PlayStream(url.toUtf8().constData(), title.toUtf8().constData());
   return false;
-}
-
-bool Player::startPlayPulse()
-{
-  return m_sonos->startJob(new playPulseWorker(*this));
 }
 
 bool Player::playPulse()
 {
-  return (m_player && m_player->PlayPulse());
+  SONOS::PlayerPtr p(m_player);
+  return p && p->PlayPulse();
 }
 
 bool Player::isPulseStream(const QString &url)
 {
-  return (m_player && m_player->IsPulseStream(url.toUtf8().constData()));
+  SONOS::PlayerPtr p(m_player);
+  return p && p->IsPulseStream(url.toUtf8().constData());
 }
 
 bool Player::isMyStream(const QString &url)
 {
-  return (m_player && m_player->IsMyStream(url.toUtf8().constData()));
+  SONOS::PlayerPtr p(m_player);
+  return p && p->IsMyStream(url.toUtf8().constData());
 }
 
 QString Player::makeFilePictureURL(const QString& filePath)
 {
-  if (m_player)
-    return QString::fromUtf8(m_player->MakeFilePictureUrl(filePath.toUtf8().constData()).c_str());
+  SONOS::PlayerPtr p(m_player);
+  if (p)
+    return QString::fromUtf8(p->MakeFilePictureUrl(filePath.toUtf8().constData()).c_str());
   return QString("");
 }
 
 QString Player::makeFilePictureLocalURL(const QString& filePath)
 {
-  if (m_player)
-    return QString::fromUtf8(m_player->MakeFilePictureLocalUrl(filePath.toUtf8().constData()).c_str());
+  SONOS::PlayerPtr p(m_player);
+  if (p)
+    return QString::fromUtf8(p->MakeFilePictureLocalUrl(filePath.toUtf8().constData()).c_str());
   return QString("");
 }
 
@@ -510,9 +527,10 @@ QVariant Player::makeFileStreamItem(const QString& filePath,
                                     bool hasArt)
 {
   QVariant var;
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
-    var.setValue<SONOS::DigitalItemPtr>(m_player->MakeFileStreamItem(filePath.toUtf8().constData(), codec.toUtf8().constData(),
+    var.setValue<SONOS::DigitalItemPtr>(p->MakeFileStreamItem(filePath.toUtf8().constData(), codec.toUtf8().constData(),
             title.toUtf8().constData(), album.toUtf8().constData(), author.toUtf8().constData(), duration.toUtf8().constData(),
             hasArt));
   }
@@ -523,52 +541,60 @@ QVariant Player::makeFileStreamItem(const QString& filePath,
 
 bool Player::playLineIN()
 {
-  return m_player ? m_player->PlayLineIN() : false;
+  SONOS::PlayerPtr p(m_player);
+  return p ? p->PlayLineIN() : false;
 }
 
 bool Player::playDigitalIN()
 {
-  return m_player ? m_player->PlayDigitalIN() : false;
+  SONOS::PlayerPtr p(m_player);
+  return p ? p->PlayDigitalIN() : false;
 }
 
 bool Player::playQueue(bool start)
 {
-  return m_player ? m_player->PlayQueue(start) : false;
+  SONOS::PlayerPtr p(m_player);
+  return p ? p->PlayQueue(start) : false;
 }
 
 bool Player::seekTime(int timesec)
 {
+  SONOS::PlayerPtr p(m_player);
   timesec = timesec < 0 ? 0 : (timesec > 0xffff ? 0xffff : timesec);
-  return m_player ? m_player->SeekTime(timesec) : false;
+  return p ? p->SeekTime(timesec) : false;
 }
 
 bool Player::seekTrack(int position)
 {
-  return m_player ? m_player->SeekTrack(position) : false;
+  SONOS::PlayerPtr p(m_player);
+  return p ? p->SeekTrack(position) : false;
 }
 
 int Player::addItemToQueue(const QVariant& payload, int position)
 {
-  if (m_player)
-    return m_player->AddURIToQueue(payload.value<SONOS::DigitalItemPtr>(), position);
+  SONOS::PlayerPtr p(m_player);
+  if (p)
+    return p->AddURIToQueue(payload.value<SONOS::DigitalItemPtr>(), position);
   return 0;
 }
 
 int Player::addMultipleItemsToQueue(const QVariantList& payloads)
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     std::vector<SONOS::DigitalItemPtr> items;
     for (QVariantList::const_iterator it = payloads.begin(); it != payloads.end(); ++it)
       items.push_back(it->value<SONOS::DigitalItemPtr>());
-    return m_player->AddMultipleURIsToQueue(items);
+    return p->AddMultipleURIsToQueue(items);
   }
   return 0;
 }
 
 bool Player::removeAllTracksFromQueue()
 {
-  if (m_player && m_player->RemoveAllTracksFromQueue()) {
+  SONOS::PlayerPtr p(m_player);
+  if (p && p->RemoveAllTracksFromQueue()) {
     m_currentIndex = -1;
     return true;
   }
@@ -577,32 +603,38 @@ bool Player::removeAllTracksFromQueue()
 
 bool Player::removeTrackFromQueue(const QString& id, int containerUpdateID)
 {
-  return m_player ? m_player->RemoveTrackFromQueue(id.toUtf8().constData(), containerUpdateID) : false;
+  SONOS::PlayerPtr p(m_player);
+  return p ? p->RemoveTrackFromQueue(id.toUtf8().constData(), containerUpdateID) : false;
 }
 
 bool Player::reorderTrackInQueue(int trackNo, int newPosition, int containerUpdateID)
 {
-  return m_player ? m_player->ReorderTracksInQueue(trackNo, 1, newPosition, containerUpdateID) : false;
+  SONOS::PlayerPtr p(m_player);
+  return p ? p->ReorderTracksInQueue(trackNo, 1, newPosition, containerUpdateID) : false;
 }
 
 bool Player::saveQueue(const QString& title)
 {
-  return m_player ? m_player->SaveQueue(title.toUtf8().constData()) : false;
+  SONOS::PlayerPtr p(m_player);
+  return p ? p->SaveQueue(title.toUtf8().constData()) : false;
 }
 
 bool Player::createSavedQueue(const QString& title)
 {
-  return m_player ? m_player->CreateSavedQueue(title.toUtf8().constData()) : false;
+  SONOS::PlayerPtr p(m_player);
+  return p ? p->CreateSavedQueue(title.toUtf8().constData()) : false;
 }
 
 int Player::addItemToSavedQueue(const QString& SQid, const QVariant& payload, int containerUpdateID)
 {
-  return m_player ? m_player->AddURIToSavedQueue(SQid.toUtf8().constData(), payload.value<SONOS::DigitalItemPtr>(), containerUpdateID) : 0;
+  SONOS::PlayerPtr p(m_player);
+  return p ? p->AddURIToSavedQueue(SQid.toUtf8().constData(), payload.value<SONOS::DigitalItemPtr>(), containerUpdateID) : 0;
 }
 
 bool Player::removeTracksFromSavedQueue(const QString& SQid, const QVariantList& indexes, int containerUpdateID)
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     QString trackList;
     for (QVariantList::const_iterator it = indexes.begin(); it != indexes.end(); ++it)
@@ -611,47 +643,33 @@ bool Player::removeTracksFromSavedQueue(const QString& SQid, const QVariantList&
         trackList.append(",");
       trackList.append(QString::number(it->value<int>()));
     }
-    return m_player->ReorderTracksInSavedQueue(SQid.toUtf8().constData(), trackList.toUtf8().constData(), "", containerUpdateID);
+    return p->ReorderTracksInSavedQueue(SQid.toUtf8().constData(), trackList.toUtf8().constData(), "", containerUpdateID);
   }
   return false;
 }
 
 bool Player::reorderTrackInSavedQueue(const QString& SQid, int index, int newIndex, int containerUpdateID)
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     QString trackList = QString::number(index);
     QString newPositionList = QString::number(newIndex);
-    return m_player->ReorderTracksInSavedQueue(SQid.toUtf8().constData(), trackList.toUtf8().constData(), newPositionList.toUtf8().constData(), containerUpdateID);
+    return p->ReorderTracksInSavedQueue(SQid.toUtf8().constData(), trackList.toUtf8().constData(), newPositionList.toUtf8().constData(), containerUpdateID);
   }
   return false;
 }
 
-bool Player::destroySavedQueue(const QString& SQid)
-{
-  return m_player ? m_player->DestroySavedQueue(SQid.toUtf8().constData()) : false;
-}
-
-bool Player::addItemToFavorites(const QVariant& payload, const QString& description, const QString& artURI)
-{
-  return m_player ? m_player->AddURIToFavorites(payload.value<SONOS::DigitalItemPtr>(), description.toUtf8().constData(), artURI.toUtf8().constData()) : false;
-}
-
-bool Player::destroyFavorite(const QString& FVid)
-{
-  return m_player ? m_player->DestroyFavorite(FVid.toUtf8().constData()) : false;
-}
-
 bool Player::startPlayFavorite(const QVariant& payload)
 {
-  return m_sonos->startJob(new playFavoriteWorker(*this, payload));
+  return m_sonos && m_sonos->startJob(new playFavoriteWorker(*this, payload));
 }
 
 bool Player::playFavorite(const QVariant& payload)
 {
   SONOS::DigitalItemPtr favorite(payload.value<SONOS::DigitalItemPtr>());
-  SONOS::PlayerPtr player(m_player);
-  if (favorite && player)
+  SONOS::PlayerPtr p(m_player);
+  if (favorite && p)
   {
     SONOS::DigitalItemPtr item;
     if (SONOS::System::ExtractObjectFromFavorite(favorite, item))
@@ -659,9 +677,9 @@ bool Player::playFavorite(const QVariant& payload)
       if (SONOS::System::CanQueueItem(item))
       {
         int pos = (m_currentIndex < 0 ? 1 : m_currentIndex + 2);
-        return m_player->PlayQueue(false) && m_player->AddURIToQueue(item, pos) && m_player->SeekTrack(pos) && m_player->Play();
+        return p->PlayQueue(false) && p->AddURIToQueue(item, pos) && p->SeekTrack(pos) && p->Play();
       }
-      return m_player->SetCurrentURI(item) && m_player->Play();
+      return p->SetCurrentURI(item) && p->Play();
     }
   }
   return false;
@@ -669,12 +687,13 @@ bool Player::playFavorite(const QVariant& payload)
 
 bool Player::setTreble(double val)
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     bool ret = true;
     for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     {
-      if (m_player->SetTreble(it->uuid, val))
+      if (p->SetTreble(it->uuid, val))
         m_RCGroup.treble = it->treble = val;
       else
         ret = false;
@@ -686,12 +705,13 @@ bool Player::setTreble(double val)
 
 bool Player::setBass(double val)
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     bool ret = true;
     for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     {
-      if (m_player->SetBass(it->uuid, val))
+      if (p->SetBass(it->uuid, val))
         m_RCGroup.bass = it->bass = val;
       else
         ret = false;
@@ -704,7 +724,8 @@ bool Player::setBass(double val)
 
 bool Player::setVolumeGroup(double volume)
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     bool ret = true;
     if (roundDouble(volume) == m_RCGroup.volume)
@@ -719,7 +740,7 @@ bool Player::setVolumeGroup(double volume)
       double fake = it->volumeFake * r;
       int v = roundDouble(fake < 1.0 ? 0.0 : fake < 100.0 ? fake : 100.0);
       SONOS::DBG(DBG_DEBUG, "%s: req=%3.3f ratio=%3.3f fake=%3.3f vol=%d\n", __FUNCTION__, volume, r, fake, v);
-      if (m_player->SetVolume(it->uuid, v))
+      if (p->SetVolume(it->uuid, v))
         it->volumeFake = fake;
       else
         ret = false;
@@ -734,7 +755,8 @@ bool Player::setVolumeGroup(double volume)
 
 bool Player::setVolume(const QString& uuid, double volume)
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     double fake = 0.0;
     std::string _uuid = uuid.toUtf8().constData();
@@ -748,7 +770,7 @@ bool Player::setVolume(const QString& uuid, double volume)
         if (it->uuid == _uuid)
         {
           int v = roundDouble(volume);
-          if (!m_player->SetVolume(it->uuid, v))
+          if (!p->SetVolume(it->uuid, v))
             return false;
           it->volumeFake = (v == 0 ? 100.0 / 101.0 : volume);
           it->volume = v;
@@ -769,10 +791,11 @@ bool Player::setVolume(const QString& uuid, double volume)
 
 int Player::currentTrackPosition()
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     SONOS::ElementList vars;
-    m_player->GetPositionInfo(vars);
+    p->GetPositionInfo(vars);
     unsigned hh, hm, hs;
     if (sscanf(vars.GetValue("RelTime").c_str(), "%u:%u:%u", &hh, &hm, &hs) == 3)
       return (int)(hh * 3600 + hm * 60 + hs);
@@ -793,16 +816,16 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
   m_currentTrackDuration = 0;
   m_currentProtocol = SONOS::Protocol_unknown;
 
-
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
     QString port;
-    port.setNum(m_player->GetPort());
+    port.setNum(p->GetPort());
     QString playerUrl = "http://";
-    playerUrl.append(m_player->GetHost().c_str()).append(":").append(port);
+    playerUrl.append(p->GetHost().c_str()).append(":").append(port);
 
     // Set the protocol
-    m_currentProtocol = m_player->GetURIProtocol(prop.CurrentTrackURI);
+    m_currentProtocol = p->GetURIProtocol(prop.CurrentTrackURI);
 
     // Set the source (URI)
     m_currentMetaSource = QString::fromUtf8(prop.CurrentTrackURI.c_str());
@@ -861,7 +884,8 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
 
 void Player::handleTransportChange()
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
 #define AVTRANSPORT_UNCHANGED           0
 #define AVTRANSPORT_STATE_CHANGED       1
@@ -869,7 +893,7 @@ void Player::handleTransportChange()
 #define AVTRANSPORT_SLEEPTIMER_CHANGED  4
     unsigned signalMask = AVTRANSPORT_UNCHANGED;
 
-    SONOS::AVTProperty prop = m_player->GetTransportProperty();
+    SONOS::AVTProperty prop = p->GetTransportProperty();
 
     setCurrentMeta(prop);
     emit sourceChanged();
@@ -896,14 +920,15 @@ void Player::handleTransportChange()
 
 void Player::handleRenderingControlChange()
 {
-  if (m_player)
+  SONOS::PlayerPtr p(m_player);
+  if (p)
   {
 #define RENDERING_UNCHANGED     0
 #define RENDERING_GROUP_CHANGED 1
 #define RENDERING_CHANGED       2
     unsigned signalMask = RENDERING_UNCHANGED;
 
-    SONOS::SRPList props = m_player->GetRenderingProperty();
+    SONOS::SRPList props = p->GetRenderingProperty();
     size_t count = props.size(); // the count of renderer
     // At initial callback the table of properties for the connected zone is empty
     // So fill it for each subordinate attached to the zone
@@ -1093,20 +1118,19 @@ void Player::handleRenderingControlChange()
   }
 }
 
-void Player::connectSonos(Sonos* sonos)
+void Player::playerEventCB(void* handle)
 {
-  if (sonos)
+  Player* player = static_cast<Player*>(handle);
+  Q_ASSERT(player);
+  SONOS::PlayerPtr p(player->m_player);
+  if (p)
   {
-    QObject::connect(sonos, SIGNAL(transportChanged()), this, SLOT(handleTransportChange()));
-    QObject::connect(sonos, SIGNAL(renderingControlChanged()), this, SLOT(handleRenderingControlChange()));
-  }
-}
+    // Read last event flags
+    unsigned char events = p->LastEvents();
 
-void Player::disconnectSonos(Sonos* sonos)
-{
-  if (sonos)
-  {
-    QObject::disconnect(sonos, SIGNAL(transportChanged()), this, SLOT(handleTransportChange()));
-    QObject::disconnect(sonos, SIGNAL(renderingControlChanged()), this, SLOT(handleRenderingControlChange()));
+    if ((events & SONOS::SVCEvent_TransportChanged))
+      player->handleTransportChange();
+    if ((events & SONOS::SVCEvent_RenderingControlChanged))
+      player->handleRenderingControlChange();
   }
 }

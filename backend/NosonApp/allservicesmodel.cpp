@@ -137,18 +137,12 @@ bool AllServicesModel::loadData()
     emit loaded(false);
     return false;
   }
-  const SONOS::PlayerPtr player = m_provider->getPlayer();
-  if (!player)
-  {
-    emit loaded(false);
-    return false;
-  }
 
   LockGuard g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
   m_dataState = ListModel::NoData;
-  SONOS::SMServiceList list = player->GetAvailableServices();
+  SONOS::SMServiceList list = m_provider->getSystem().GetAvailableServices();
   for (SONOS::SMServiceList::const_iterator it = list.begin(); it != list.end(); ++it)
   {
     ServiceItem* item = new ServiceItem(*it);
