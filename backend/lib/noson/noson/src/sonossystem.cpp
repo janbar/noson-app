@@ -20,9 +20,11 @@
 
 #include "sonossystem.h"
 #include "zonegrouptopology.h"
+#include "deviceproperties.h"
+#include "contentdirectory.h"
+#include "alarmclock.h"
 #include "digitalitem.h"
 #include "didlparser.h"
-#include "musicservices.h"
 #include "smapimetadata.h"
 #include "private/socket.h"
 #include "private/wsresponse.h"

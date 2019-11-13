@@ -22,6 +22,7 @@
 #include "avtransport.h"
 #include "deviceproperties.h"
 #include "renderingcontrol.h"
+#include "contentdirectory.h"
 #include "private/builtin.h"
 #include "private/cppdef.h"
 #include "private/debug.h"
@@ -54,6 +55,7 @@ Player::Player(const ZonePtr& zone, EventHandler& eventHandler, void* CBHandle, 
 , m_eventMask(0)
 , m_deviceProperties(0)
 , m_AVTransport(0)
+, m_contentDirectory(0)
 {
   m_controllerLocalUri.assign(ProtocolTable[Protocol_http])
     .append("://").append(m_eventHandler.GetAddress())
@@ -74,6 +76,7 @@ Player::Player(const ZonePlayerPtr& zonePlayer)
 , m_eventMask(0)
 , m_deviceProperties(0)
 , m_AVTransport(0)
+, m_contentDirectory(0)
 {
   if (zonePlayer && zonePlayer->IsValid())
   {
@@ -90,6 +93,7 @@ Player::Player(const ZonePlayerPtr& zonePlayer)
 
     m_deviceProperties = new DeviceProperties(m_deviceHost, m_devicePort);
     m_AVTransport = new AVTransport(m_deviceHost, m_devicePort);
+    m_contentDirectory= new ContentDirectory(m_deviceHost, m_devicePort);
 
     m_valid = true;
   }
@@ -100,8 +104,9 @@ Player::Player(const ZonePlayerPtr& zonePlayer)
 Player::~Player()
 {
   m_eventHandler.RevokeAllSubscriptions(this);
-  SAFE_DELETE(m_deviceProperties);
+  SAFE_DELETE(m_contentDirectory);
   SAFE_DELETE(m_AVTransport);
+  SAFE_DELETE(m_deviceProperties);
   for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     SAFE_DELETE(it->renderingControl);
 }
@@ -166,10 +171,13 @@ bool Player::Init(const ZonePtr& zone)
   m_AVTSubscription = Subscription(m_deviceHost, m_devicePort, AVTransport::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
   m_AVTransport = new AVTransport(m_deviceHost, m_devicePort, m_eventHandler, m_AVTSubscription, this, CB_AVTransport);
 
+  m_CDSubscription = Subscription(m_deviceHost, m_devicePort, ContentDirectory::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
+  m_contentDirectory = new ContentDirectory(m_deviceHost, m_devicePort, m_eventHandler, m_CDSubscription, this, CB_ContentDirectory);
+
   for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     it->subscription.Start();
   m_AVTSubscription.Start();
-
+  m_CDSubscription.Start();
   return true;
 }
 
@@ -195,6 +203,20 @@ void Player::CB_RenderingControl(void* handle)
     // BEGIN CRITICAL SECTION
     Locked<unsigned char>::pointer _mask = _handle->m_eventMask.Get();
     *_mask |= SVCEvent_RenderingControlChanged;
+    // END CRITICAL SECTION
+  }
+  if (_handle->m_eventCB && !_handle->m_eventSignaled.Load())
+    _handle->m_eventCB(_handle->m_CBHandle);
+}
+
+void Player::CB_ContentDirectory(void* handle)
+{
+  Player* _handle = static_cast<Player*>(handle);
+  assert(_handle);
+  {
+    // BEGIN CRITICAL SECTION
+    Locked<unsigned char>::pointer _mask = _handle->m_eventMask.Get();
+    *_mask |= SVCEvent_ContentDirectoryChanged;
     // END CRITICAL SECTION
   }
   if (_handle->m_eventCB && !_handle->m_eventSignaled.Load())

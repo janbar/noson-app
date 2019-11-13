@@ -26,9 +26,8 @@
 #include "sonosplayer.h"
 #include "eventhandler.h"
 #include "subscription.h"
-#include "alarmclock.h"
-#include "contentdirectory.h"
-#include "deviceproperties.h"
+#include "musicservices.h"
+#include "alarm.h"
 
 #include <string>
 #include <map>
@@ -44,6 +43,8 @@ namespace NSROOT
   }
 
   class ZoneGroupTopology;
+  class DeviceProperties;
+  class ContentDirectory;
   class AlarmClock;
 
   class System : private EventSubscriber
