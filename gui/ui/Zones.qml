@@ -120,14 +120,6 @@ MusicPage {
 
                 contentHeight: units.gu(8)
 
-/*                ZonePlayer {
-                    id: zonePlayer
-                    Component.onCompleted: {
-                        if (zonePlayer.initZone(Sonos, model.payload))
-                            customdebug("################ IS CONNECTED: " + zonePlayer.zoneId());
-                    }
-                }*/
-
                 column: Column {
                     spacing: units.gu(1)
 
@@ -145,10 +137,6 @@ MusicPage {
                         text: model.name
                         visible: model.isGroup
                     }
-/*
-                    Label {
-                        text: zonePlayer.zoneId();
-                    }*/
                 }
             }
         }
