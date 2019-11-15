@@ -138,9 +138,9 @@ bool RenderingModel::loadData()
   return true;
 }
 
-bool RenderingModel::load(QObject* player)
+bool RenderingModel::load(Player* player)
 {
-  m_player = reinterpret_cast<Player*> (player);
+  m_player = player;
   if (!loadData())
     return false;
   resetModel();

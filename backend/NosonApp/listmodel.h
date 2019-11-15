@@ -28,6 +28,7 @@
 #include <noson/alarm.h>
 
 #include <QObject>
+#include <QRunnable>
 
 Q_DECLARE_METATYPE(SONOS::DigitalItemPtr)
 Q_DECLARE_METATYPE(SONOS::ZonePtr)
@@ -40,14 +41,63 @@ Q_DECLARE_METATYPE(SONOS::AlarmPtr)
 namespace nosonapp
 {
 
-class Sonos;
+template<class T> class ListModel;
 
+template<class T>
+class ContentProvider
+{
+public:
+  virtual void beforeLoad() = 0;
+  virtual void afterLoad() = 0;
+  virtual void runContentLoader(ListModel<T>* model) = 0;
+  virtual void loadContent(ListModel<T>* model) = 0;
+  virtual void loadAllContent() = 0;
+  virtual void runContentLoaderForContext(ListModel<T>* model, int id) = 0;
+  virtual void loadContentForContext(ListModel<T>* model, int id) = 0;
+  virtual const char* getHost() const = 0;
+  virtual unsigned getPort() const = 0;
+  virtual QString getBaseUrl() const = 0;
+  virtual void registerContent(ListModel<T>* model, const QString& root) = 0;
+  virtual void unregisterContent(ListModel<T>* model) = 0;
+};
+
+typedef enum {
+  DataBlank     = 0,
+  DataNotFound  = 1,
+  DataLoaded    = 2,
+  DataSynced    = 3
+} DataStatus;
+
+template<class T>
 class ListModel
 {
-  friend class Sonos;
 public:
-  ListModel();
-  virtual ~ListModel();
+  ListModel()
+  : m_provider(nullptr)
+  , m_lock(nullptr)
+  , m_updateID(0)
+  , m_root("")
+  , m_pending(false)
+  , m_dataState(DataBlank)
+  , m_updateSignaled(false)
+  {
+  #ifdef USE_RECURSIVE_MUTEX
+    m_lock = new QMutex(QMutex::Recursive);
+  #else
+    m_lock = new QMutex();
+  #endif
+  }
+
+  virtual ~ListModel()
+  {
+    {
+      LockGuard g(m_lock);
+      ContentProvider<T>* cp = static_cast<ContentProvider<T>*>(m_provider);
+      if (cp)
+        cp->unregisterContent(this);
+    }
+    delete m_lock;
+  }
 
   virtual void clearData() = 0;
 
@@ -55,32 +105,103 @@ public:
 
   virtual void handleDataUpdate() = 0;
 
-  enum dataState {
-    New     = 0,
-    NoData  = 1,
-    Loaded  = 2,
-    Synced  = 3
-  };
+  virtual bool loadDataForContext(int id) { (void)id; return false; }
 
-protected:
+public:
+  T* m_provider;
   QMutex* m_lock;
-  Sonos* m_provider;
   unsigned m_updateID;
   QString m_root;
   bool m_pending;
-  dataState m_dataState;
+  DataStatus m_dataState;
 
-  virtual bool init(QObject* sonos, const QString& root, bool fill = false);
-  virtual bool init(QObject* sonos, bool fill = false) { return init(sonos, QString(""), fill); }
-  virtual bool init(QObject* sonos, const QVariant&, bool fill = false) { return init(sonos, QString(""), fill); }
+protected:
+  virtual bool configure(T* provider, const QString& root, bool fill)
+  {
+    ContentProvider<T>* cp = static_cast<ContentProvider<T>*>(provider);
+    if (cp)
+    {
+      {
+        LockGuard g(m_lock);
+        if (m_provider)
+          cp->unregisterContent(this);
+        cp->registerContent(this, root);
+        m_provider = provider;
+        m_root = root;
+        // Reset container status to allow async reload
+        m_dataState = DataNotFound;
+      }
+      if (fill)
+        return this->loadData();
+    }
+    return false; // not filled
+  }
+
+  virtual bool configure(T* provider, bool fill) { return configure(provider, QString(""), fill); }
 
   bool updateSignaled() { return m_updateSignaled.Load(); }
   void setUpdateSignaled(bool val) { m_updateSignaled.Store(val); }
 
-  virtual bool customizedLoad(int id) { (void)id; return false; }
-
 private:
-  nosonapp::Locked<bool> m_updateSignaled;
+  Locked<bool> m_updateSignaled;
+};
+
+template<class T>
+struct RegisteredContent
+{
+  RegisteredContent(ListModel<T>* model, const QString& root)
+  : model(model)
+  , root(root) { }
+  ListModel<T>* model;
+  QString root;
+};
+
+template<class T>
+class ContentLoader : public QRunnable
+{
+public:
+  ContentLoader(ContentProvider<T>& provider, ListModel<T>* payload)
+  : m_provider(provider)
+  , m_payload(payload) { }
+
+  ContentLoader(ContentProvider<T>& provider)
+  : m_provider(provider)
+  , m_payload(nullptr) { }
+
+  virtual void run() override
+  {
+    m_provider.beforeLoad();
+    if (m_payload)
+      m_provider.loadContent(m_payload);
+    else
+      m_provider.loadAllContent();
+    m_provider.afterLoad();
+  }
+private:
+  ContentProvider<T>& m_provider;
+  ListModel<T>* m_payload;
+};
+
+template<class T>
+class CustomizedContentLoader : public QRunnable
+{
+public:
+  CustomizedContentLoader(ContentProvider<T>& provider, ListModel<T>* payload, int id)
+  : m_provider(provider)
+  , m_payload(payload)
+  , m_id(id) { }
+
+  virtual void run() override
+  {
+    m_provider.beforeLoad();
+    if (m_payload)
+      m_provider.loadContentForContext(m_payload, m_id);
+    m_provider.afterLoad();
+  }
+private:
+  ContentProvider<T>& m_provider;
+  ListModel<T>* m_payload;
+  int m_id;
 };
 
 }

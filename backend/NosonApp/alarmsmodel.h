@@ -29,6 +29,8 @@
 namespace nosonapp
 {
 
+class Sonos;
+
 class AlarmItem
 {
 public:
@@ -79,7 +81,7 @@ private:
   bool m_valid;
 };
 
-class AlarmsModel : public QAbstractListModel, public ListModel
+class AlarmsModel : public QAbstractListModel, public ListModel<Sonos>
 {
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
@@ -122,7 +124,7 @@ public:
 
   Q_INVOKABLE QVariantMap get(int row);
 
-  Q_INVOKABLE bool init(QObject* sonos, bool fill = false) { return ListModel::init(sonos, fill); }
+  Q_INVOKABLE bool init(Sonos* sonos, bool fill = false) { return ListModel<Sonos>::configure(sonos, fill); }
 
   virtual void clearData();
 

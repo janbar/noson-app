@@ -89,9 +89,9 @@ public:
 
   virtual bool loadData();
 
-  Q_INVOKABLE bool load(QObject* sonos);
+  Q_INVOKABLE bool load(Sonos* sonos);
 
-  Q_INVOKABLE bool load(QObject* sonos, const QString& zoneId);
+  Q_INVOKABLE bool load(Sonos* sonos, const QString& zoneId);
 
   virtual void resetModel();
 
@@ -104,7 +104,7 @@ protected:
 private:
   QList<RoomItem*> m_items;
   QList<RoomItem*> m_data;
-  Sonos* m_provider;
+  Sonos* m_sonos;
   QString m_zoneId;
 };
 

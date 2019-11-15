@@ -23,6 +23,8 @@
 
 #include <noson/sonosplayer.h>
 
+#include "queuemodel.h"
+
 #include <QObject>
 
 namespace nosonapp
@@ -30,7 +32,7 @@ namespace nosonapp
 
 class Sonos;
 
-class Player : public QObject
+class Player : public QObject, public ContentProvider<Player>
 {
   Q_OBJECT
   Q_PROPERTY(bool muteMaster READ muteMaster NOTIFY renderingGroupChanged)
@@ -192,6 +194,20 @@ public:
   QString playbackState() const { return QString::fromUtf8(m_AVTProperty.TransportState.c_str()); }
   QString playMode() const { return QString::fromUtf8(m_AVTProperty.CurrentPlayMode.c_str()); }
 
+  // Implements ContentProvider
+  void beforeLoad();
+  void afterLoad();
+  void runContentLoader(ListModel<Player>* model);
+  void loadContent(ListModel<Player>* model);
+  void loadAllContent();
+  void runContentLoaderForContext(ListModel<Player>* model, int id);
+  void loadContentForContext(ListModel<Player>* model, int id);
+  const char* getHost() const;
+  unsigned getPort() const;
+  QString getBaseUrl() const;
+  void registerContent(ListModel<Player>* model, const QString& root);
+  void unregisterContent(ListModel<Player>* model);
+
 signals:
   void jobFailed();
   void connectedChanged();
@@ -226,6 +242,10 @@ private:
   int m_currentIndex;
   int m_currentTrackDuration;
   int m_currentProtocol;
+
+  typedef RegisteredContent<Player> ManagedQueue;
+  Locked<ManagedQueue> m_queue;
+  unsigned m_queueUpdateID;
 
   static void playerEventCB(void* handle);
 };

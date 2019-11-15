@@ -48,7 +48,7 @@
 namespace nosonapp
 {
 
-class Sonos : public QObject
+class Sonos : public QObject, public ContentProvider<Sonos>
 {
   Q_OBJECT
   Q_PROPERTY(int jobCount READ jobCount NOTIFY jobCountChanged)
@@ -109,17 +109,22 @@ public:
   SONOS::ZonePtr findZone(const QString& zoneName);
 
   Q_INVOKABLE void runLoader();
-  void loadEmptyModels();
 
-  void runModelLoader(ListModel* model);
-  void loadModel(ListModel* model);
+  // Implements ContentProvider
+  void beforeLoad();
+  void afterLoad();
+  void runContentLoader(ListModel<Sonos>* model);
+  void loadContent(ListModel<Sonos>* model);
+  void loadAllContent();
+  void runContentLoaderForContext(ListModel<Sonos>* model, int id);
+  void loadContentForContext(ListModel<Sonos>* model, int id);
+  const char* getHost() const;
+  unsigned getPort() const;
+  QString getBaseUrl() const;
+  void registerContent(ListModel<Sonos>* model, const QString& root);
+  void unregisterContent(ListModel<Sonos>* model);
 
-  void runCustomizedModelLoader(ListModel* model, int id);
-  void customizedLoadModel(ListModel* model, int id);
-
-  void registerModel(ListModel* model, const QString& root);
-  void unregisterModel(ListModel* model);
-
+  // About jobs
   bool startJob(QRunnable* worker);
   int jobCount() { return *(m_jobCount.Get()); }
   void beginJob();
@@ -223,15 +228,7 @@ signals:
   void jobCountChanged();
 
 private:
-  struct RegisteredContent
-  {
-    RegisteredContent(ListModel* _model, const QString& _root)
-    : model(_model)
-    , root(_root) { }
-    ListModel* model;
-    QString root;
-  };
-  typedef QList<RegisteredContent> ManagedContents;
+  typedef QList<RegisteredContent<Sonos> > ManagedContents;
   Locked<ManagedContents> m_library;
   unsigned m_shareUpdateID; // Current updateID of SONOS shares
   bool m_shareIndexInProgess;

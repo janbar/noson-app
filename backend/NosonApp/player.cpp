@@ -107,6 +107,8 @@ Player::Player(QObject *parent)
 , m_currentIndex(-1)
 , m_currentTrackDuration(0)
 , m_currentProtocol(-1)
+, m_queue(ManagedQueue(nullptr, ""))
+, m_queueUpdateID(0)
 {
 #ifdef HAVE_DBUS
   // Enable MPRIS interface
@@ -116,6 +118,14 @@ Player::Player(QObject *parent)
 
 Player::~Player()
 {
+  {
+    Locked<ManagedQueue>::pointer queue = m_queue.Get();
+    if (queue->model)
+    {
+      LockGuard g(queue->model->m_lock);
+      unregisterContent(queue->model);
+    }
+  }
   m_player.reset();
   m_sonos = nullptr;
 }
@@ -882,6 +892,121 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
   }
 }
 
+void Player::beforeLoad()
+{
+  if (m_sonos)
+    m_sonos->beginJob();
+}
+
+void Player::afterLoad()
+{
+  if (m_sonos)
+    m_sonos->endJob();
+}
+
+void Player::runContentLoader(ListModel<Player>* model)
+{
+  if (model && !model->m_pending && m_sonos)
+  {
+    model->m_pending = true; // decline next request
+    m_sonos->startJob(new ContentLoader<Player>(*this, model));
+  }
+  else
+    SONOS::DBG(DBG_ERROR, "%s: request has been declined (%p)\n", __FUNCTION__, model);
+}
+
+void Player::loadContent(ListModel<Player>* model)
+{
+  SONOS::DBG(DBG_DEBUG, "%s: %p (%s)\n", __FUNCTION__, model, model->m_root.toUtf8().constData());
+  //emit loadingStarted();
+  model->m_pending = false; // accept add next request in queue
+  model->loadData();
+  //emit loadingFinished();
+}
+
+void Player::loadAllContent()
+{
+  ListModel<Player>* model = m_queue.Get()->model;
+  if (model && model->m_dataState == DataStatus::DataNotFound)
+  {
+    //emit loadingStarted();
+    model->loadData();
+    //emit loadingFinished();
+  }
+}
+
+void Player::runContentLoaderForContext(ListModel<Player>* model, int id)
+{
+  if (model && !model->m_pending && m_sonos)
+  {
+    model->m_pending = true; // decline next request
+    m_sonos->startJob(new CustomizedContentLoader<Player>(*this, model, id));
+  }
+  else
+    SONOS::DBG(DBG_ERROR, "%s: request id %d has been declined (%p)\n", __FUNCTION__, id, model);
+}
+
+void Player::loadContentForContext(ListModel<Player>* model, int id)
+{
+  model->m_pending = false; // accept add next request in queue
+  model->loadDataForContext(id);
+}
+
+const char* Player::getHost() const
+{
+  SONOS::PlayerPtr p(m_player);
+  return p->GetHost().c_str();
+}
+
+unsigned Player::getPort() const
+{
+  SONOS::PlayerPtr p(m_player);
+  return p->GetPort();
+}
+
+QString Player::getBaseUrl() const
+{
+  SONOS::PlayerPtr p(m_player);
+  QString port;
+  port.setNum(p->GetPort());
+  QString url = "http://";
+  url.append(p->GetHost().c_str()).append(":").append(port);
+  return url;
+}
+
+void Player::registerContent(ListModel<Player>* model, const QString& root)
+{
+  if (model)
+  {
+    SONOS::DBG(DBG_DEBUG, "%s: %p (%s)\n", __FUNCTION__, model, model->m_root.toUtf8().constData());
+    Locked<ManagedQueue>::pointer rc = m_queue.Get();
+    if (rc->model == model)
+    {
+      rc->root = root;
+      return;
+    }
+    if (rc->model)
+      rc->model->m_provider = nullptr;
+    rc->model = model;
+    rc->root = root;
+  }
+}
+
+void Player::unregisterContent(ListModel<Player>* model)
+{
+  if (model)
+  {
+    SONOS::DBG(DBG_DEBUG, "%s: %p (%s)\n", __FUNCTION__, model, model->m_root.toUtf8().constData());
+    Locked<ManagedQueue>::pointer rc = m_queue.Get();
+    if (rc->model == model)
+    {
+      rc->model->m_provider = nullptr;
+      rc->model = nullptr;
+      rc->root.clear();
+    }
+  }
+}
+
 void Player::handleTransportChange()
 {
   SONOS::PlayerPtr p(m_player);
@@ -1132,5 +1257,29 @@ void Player::playerEventCB(void* handle)
       player->handleTransportChange();
     if ((events & SONOS::SVCEvent_RenderingControlChanged))
       player->handleRenderingControlChange();
+
+    if ((events & SONOS::SVCEvent_ContentDirectoryChanged))
+    {
+      Locked<ManagedQueue>::pointer cl = player->m_queue.Get();
+      // find the base of the model from its root
+      if (cl->model)
+      {
+        QString _base;
+        int slash = cl->model->m_root.indexOf("/");
+        if (slash < 0)
+          _base.append(cl->model->m_root);
+        else
+          _base.append(cl->model->m_root.left(slash));
+
+        SONOS::ContentProperty prop = p->GetContentProperty();
+        for (std::vector<std::pair<std::string, unsigned> >::const_iterator uit = prop.ContainerUpdateIDs.begin(); uit != prop.ContainerUpdateIDs.end(); ++uit)
+        {
+          SONOS::DBG(DBG_DEBUG, "%s: container [%s] has being updated to %u\n", __FUNCTION__, uit->first.c_str(), uit->second);
+          // same base
+          if (cl->model->m_updateID != uit->second && _base == uit->first.c_str())
+            cl->model->handleDataUpdate();
+        }
+      }
+    }
   }
 }

@@ -39,52 +39,6 @@ using namespace nosonapp;
 namespace nosonapp
 {
 
-class ContentLoader : public QRunnable
-{
-public:
-  ContentLoader(Sonos& sonos, ListModel* payload)
-  : m_sonos(sonos)
-  , m_payload(payload) { }
-
-  ContentLoader(Sonos& sonos)
-  : m_sonos(sonos)
-  , m_payload(nullptr) { }
-
-  virtual void run() override
-  {
-    m_sonos.beginJob();
-    if (m_payload)
-      m_sonos.loadModel(m_payload);
-    else
-      m_sonos.loadEmptyModels();
-    m_sonos.endJob();
-  }
-private:
-  Sonos& m_sonos;
-  ListModel* m_payload;
-};
-
-class CustomizedContentLoader : public QRunnable
-{
-public:
-  CustomizedContentLoader(Sonos& sonos, ListModel* payload, int id)
-  : m_sonos(sonos)
-  , m_payload(payload)
-  , m_id(id) { }
-
-  virtual void run() override
-  {
-    m_sonos.beginJob();
-    if (m_payload)
-      m_sonos.customizedLoadModel(m_payload, m_id);
-    m_sonos.endJob();
-  }
-private:
-  Sonos& m_sonos;
-  ListModel* m_payload;
-  int m_id;
-};
-
 class InitWorker : public QRunnable
 {
 public:
@@ -197,7 +151,7 @@ Sonos::~Sonos()
     for (ManagedContents::iterator it = left->begin(); it != left->end(); ++it)
     {
       LockGuard g(it->model->m_lock);
-      unregisterModel(it->model);
+      unregisterContent(it->model);
     }
   }
   m_workerPool.clear();
@@ -479,43 +433,31 @@ SONOS::ZonePtr Sonos::findZone(const QString& zoneName)
 
 void Sonos::runLoader()
 {
-  m_workerPool.start(new ContentLoader(*this));
+  m_workerPool.start(new ContentLoader<Sonos>(*this));
 }
 
-void Sonos::loadEmptyModels()
+void Sonos::beforeLoad()
 {
-  QList<ListModel*> left;
-  {
-    Locked<ManagedContents>::pointer mc = m_library.Get();
-    for (ManagedContents::iterator it = mc->begin(); it != mc->end(); ++it)
-      if (it->model->m_dataState == ListModel::NoData)
-        left.push_back(it->model);
-  }
-  emit loadingStarted();
-  if (!left.empty())
-  {
-    while (!left.isEmpty())
-    {
-      ListModel* model = left.front();
-      model->loadData();
-      left.pop_front();
-    }
-  }
-  emit loadingFinished();
+  beginJob();
 }
 
-void Sonos::runModelLoader(ListModel* model)
+void Sonos::afterLoad()
+{
+  endJob();
+}
+
+void Sonos::runContentLoader(ListModel<Sonos>* model)
 {
   if (model && !model->m_pending)
   {
     model->m_pending = true; // decline next request
-    m_workerPool.start(new ContentLoader(*this, model));
+    m_workerPool.start(new ContentLoader<Sonos>(*this, model));
   }
   else
     SONOS::DBG(DBG_ERROR, "%s: request has been declined (%p)\n", __FUNCTION__, model);
 }
 
-void Sonos::loadModel(ListModel* model)
+void Sonos::loadContent(ListModel<Sonos>* model)
 {
   Locked<ManagedContents>::pointer mc = m_library.Get();
   for (ManagedContents::iterator it = mc->begin(); it != mc->end(); ++it)
@@ -530,24 +472,65 @@ void Sonos::loadModel(ListModel* model)
     }
 }
 
-void Sonos::runCustomizedModelLoader(ListModel* model, int id)
+void Sonos::loadAllContent()
+{
+  QList<ListModel<Sonos>*> left;
+  {
+    Locked<ManagedContents>::pointer mc = m_library.Get();
+    for (ManagedContents::iterator it = mc->begin(); it != mc->end(); ++it)
+      if (it->model->m_dataState == DataStatus::DataNotFound)
+        left.push_back(it->model);
+  }
+  emit loadingStarted();
+  if (!left.empty())
+  {
+    while (!left.isEmpty())
+    {
+      ListModel<Sonos>* model = left.front();
+      model->loadData();
+      left.pop_front();
+    }
+  }
+  emit loadingFinished();
+}
+
+void Sonos::runContentLoaderForContext(ListModel<Sonos>* model, int id)
 {
   if (model && !model->m_pending)
   {
     model->m_pending = true; // decline next request
-    m_workerPool.start(new CustomizedContentLoader(*this, model, id));
+    m_workerPool.start(new CustomizedContentLoader<Sonos>(*this, model, id));
   }
   else
     SONOS::DBG(DBG_ERROR, "%s: request id %d has been declined (%p)\n", __FUNCTION__, id, model);
 }
 
-void Sonos::customizedLoadModel(ListModel *model, int id)
+void Sonos::loadContentForContext(ListModel<Sonos>* model, int id)
 {
   model->m_pending = false; // accept add next request in queue
-  model->customizedLoad(id);
+  model->loadDataForContext(id);
 }
 
-void Sonos::registerModel(ListModel* model, const QString& root)
+const char* Sonos::getHost() const
+{
+  return m_system.GetHost().c_str();
+}
+
+unsigned Sonos::getPort() const
+{
+  return m_system.GetPort();
+}
+
+QString Sonos::getBaseUrl() const
+{
+  QString port;
+  port.setNum(m_system.GetPort());
+  QString url = "http://";
+  url.append(m_system.GetHost().c_str()).append(":").append(port);
+  return url;
+}
+
+void Sonos::registerContent(ListModel<Sonos>* model, const QString& root)
 {
   if (model)
   {
@@ -561,11 +544,11 @@ void Sonos::registerModel(ListModel* model, const QString& root)
         return;
       }
     }
-    mc->append(RegisteredContent(model, root));
+    mc->append(RegisteredContent<Sonos>(model, root));
   }
 }
 
-void Sonos::unregisterModel(ListModel* model)
+void Sonos::unregisterContent(ListModel<Sonos>* model)
 {
   if (model)
   {
@@ -578,7 +561,6 @@ void Sonos::unregisterModel(ListModel* model)
     {
       SONOS::DBG(DBG_DEBUG, "%s: %p (%s)\n", __FUNCTION__, model, model->m_root.toUtf8().constData());
       model->m_provider = nullptr;
-      model->m_root.clear();
       mc->erase(*itl);
     }
   }

@@ -159,7 +159,7 @@ void AlarmItem::setRecurrence(const QString& value)
 }
 
 AlarmsModel::AlarmsModel(QObject* parent)
-  : QAbstractListModel(parent)
+: QAbstractListModel(parent)
 {
 }
 
@@ -391,7 +391,7 @@ bool AlarmsModel::loadData()
   LockGuard g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
-  m_dataState = ListModel::NoData;
+  m_dataState = DataStatus::DataNotFound;
   SONOS::AlarmList alarms = m_provider->getSystem().GetAlarmList();
   for (SONOS::AlarmList::iterator it = alarms.begin(); it != alarms.end(); ++it)
   {
@@ -401,7 +401,7 @@ bool AlarmsModel::loadData()
     else
       delete item;
   }
-  m_dataState = ListModel::Loaded;
+  m_dataState = DataStatus::DataLoaded;
   emit loaded(true);
   return true;
 }
@@ -410,7 +410,7 @@ bool AlarmsModel::asyncLoad()
 {
   if (m_provider)
   {
-    m_provider->runModelLoader(this);
+    m_provider->runContentLoader(this);
     return true;
   }
   return false;
@@ -420,7 +420,7 @@ void AlarmsModel::resetModel()
 {
   {
     LockGuard g(m_lock);
-    if (m_dataState != ListModel::Loaded)
+    if (m_dataState != DataStatus::DataLoaded)
       return;
     beginResetModel();
     if (m_items.count() > 0)
@@ -438,7 +438,7 @@ void AlarmsModel::resetModel()
       m_data.clear();
       endInsertRows();
     }
-    m_dataState = ListModel::Synced;
+    m_dataState = DataStatus::DataSynced;
     endResetModel();
   }
   emit countChanged();

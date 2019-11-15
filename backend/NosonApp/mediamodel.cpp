@@ -106,7 +106,7 @@ QVariant MediaItem::payload() const
 
 MediaModel::MediaModel(QObject* parent)
 : QAbstractListModel(parent)
-, m_smapi(0)
+, m_smapi(nullptr)
 , m_nextIndex(0)
 , m_totalCount(0)
 , m_searching(false)
@@ -235,15 +235,14 @@ QVariantMap MediaModel::get(int row)
   return model;
 }
 
-bool MediaModel::init(QObject* sonos, const QVariant& service, bool fill)
+bool MediaModel::init(Sonos* provider, const QVariant& service, bool fill)
 {
-  Sonos* _sonos = reinterpret_cast<Sonos*> (sonos);
-  if (!_sonos)
+  if (!provider)
     return false;
   SAFE_DELETE(m_smapi);
-  m_smapi = new SONOS::SMAPI(_sonos->getSystem());
+  m_smapi = new SONOS::SMAPI(provider->getSystem());
   SONOS::SMServicePtr msvc = service.value<SONOS::SMServicePtr>();
-  if (!m_smapi || !m_smapi->Init(msvc, _sonos->getLocale().toUtf8().constData()))
+  if (!m_smapi || !m_smapi->Init(msvc, provider->getLocale().toUtf8().constData()))
     return false;
   // initialize auth for the service account
   SONOS::SMAccount::Credentials oa = msvc->GetAccount()->GetCredentials();
@@ -254,7 +253,7 @@ bool MediaModel::init(QObject* sonos, const QVariant& service, bool fill)
   m_auth.username = oa.username;
   // initialize path to root
   m_path.clear();
-  return ListModel::init(sonos, fill);
+  return ListModel<Sonos>::configure(provider, fill);
 }
 
 void MediaModel::clearData()
@@ -276,7 +275,7 @@ bool MediaModel::loadData()
 
   qDeleteAll(m_data);
   m_data.clear();
-  m_dataState = ListModel::NoData;
+  m_dataState = DataStatus::DataNotFound;
   m_searching = false; // enable browse state
   m_nextIndex = m_totalCount = 0;
   SONOS::SMAPIMetadata meta;
@@ -285,7 +284,7 @@ bool MediaModel::loadData()
     emit totalCountChanged();
     if (m_smapi->AuthTokenExpired())
       emit authStatusChanged();
-    m_dataState = ListModel::Loaded;
+    m_dataState = DataStatus::DataLoaded;
     emit loaded(false);
     return false;
   }
@@ -307,7 +306,7 @@ bool MediaModel::loadData()
     }
   }
   emit totalCountChanged();
-  m_dataState = ListModel::Loaded;
+  m_dataState = DataStatus::DataLoaded;
   emit loaded(true);
   return true;
 }
@@ -445,7 +444,7 @@ bool MediaModel::asyncLoad()
 {
   if (m_provider)
   {
-    m_provider->runModelLoader(this);
+    m_provider->runContentLoader(this);
     return true;
   }
   return false;
@@ -483,7 +482,7 @@ bool MediaModel::loadMoreData()
   }
   m_nextIndex += meta.ItemCount();
 
-  SONOS::SMAPIItemList list= meta.GetItems();
+  SONOS::SMAPIItemList list = meta.GetItems();
   for (SONOS::SMAPIItemList::const_iterator it = list.begin(); it != list.end(); ++it)
   {
     MediaItem* item = new MediaItem(*it);
@@ -499,7 +498,7 @@ bool MediaModel::loadMoreData()
       }
     }
   }
-  m_dataState = ListModel::Loaded;
+  m_dataState = DataStatus::DataLoaded;
   emit loadedMore(true);
   return true;
 }
@@ -508,7 +507,7 @@ bool MediaModel::asyncLoadMore()
 {
   if (!m_provider)
     return false;
-  m_provider->runCustomizedModelLoader(this, 1);
+  m_provider->runContentLoaderForContext(this, 1);
   return true;
 }
 
@@ -569,7 +568,7 @@ bool MediaModel::asyncLoadParent()
 {
   if (!m_provider)
     return false;
-  m_provider->runCustomizedModelLoader(this, 2);
+  m_provider->runContentLoaderForContext(this, 2);
   return true;
 }
 
@@ -600,7 +599,7 @@ bool MediaModel::asyncLoadSearch(const QString &category, const QString &term)
   }
   if (!m_provider)
     return false;
-  m_provider->runCustomizedModelLoader(this, 3);
+  m_provider->runContentLoaderForContext(this, 3);
   return true;
 }
 
@@ -619,14 +618,14 @@ bool MediaModel::search()
     emit totalCountChanged();
     if (m_smapi->AuthTokenExpired())
       emit authStatusChanged();
-    m_dataState = ListModel::Loaded;
+    m_dataState = DataStatus::DataLoaded;
     emit loaded(false);
     return false;
   }
 
   qDeleteAll(m_data);
   m_data.clear();
-  m_dataState = ListModel::NoData;
+  m_dataState = DataStatus::DataNotFound;
   m_totalCount = meta.TotalCount();
   m_nextIndex = meta.ItemCount();
   SONOS::SMAPIItemList list = meta.GetItems();
@@ -644,7 +643,7 @@ bool MediaModel::search()
     }
   }
   emit totalCountChanged();
-  m_dataState = ListModel::Loaded;
+  m_dataState = DataStatus::DataLoaded;
   emit loaded(true);
   return true;
 }
@@ -653,7 +652,7 @@ void MediaModel::resetModel()
 {
   {
     LockGuard g(m_lock);
-    if (m_dataState != ListModel::Loaded)
+    if (m_dataState != DataStatus::DataLoaded)
       return;
     beginResetModel();
     if (m_items.count() > 0)
@@ -671,7 +670,7 @@ void MediaModel::resetModel()
       m_data.clear();
       endInsertRows();
     }
-    m_dataState = ListModel::Synced;
+    m_dataState = DataStatus::DataSynced;
     endResetModel();
   }
   emit countChanged();
@@ -681,20 +680,20 @@ void MediaModel::appendModel()
 {
   {
     LockGuard g(m_lock);
-    if (m_dataState != ListModel::Loaded)
+    if (m_dataState != DataStatus::DataLoaded)
       return;
     int cnt = m_items.count();
     beginInsertRows(QModelIndex(), cnt, cnt + m_data.count()-1);
     foreach (MediaItem* item, m_data)
         m_items << item;
     m_data.clear();
-    m_dataState = ListModel::Synced;
+    m_dataState = DataStatus::DataSynced;
     endInsertRows();
   }
   emit countChanged();
 }
 
-bool MediaModel::customizedLoad(int id)
+bool MediaModel::loadDataForContext(int id)
 {
   switch (id)
   {

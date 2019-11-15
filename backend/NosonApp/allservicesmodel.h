@@ -29,7 +29,7 @@
 namespace nosonapp
 {
 
-class AllServicesModel : public QAbstractListModel, public ListModel
+class AllServicesModel : public QAbstractListModel, public ListModel<Sonos>
 {
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
@@ -57,9 +57,9 @@ public:
 
   Q_INVOKABLE QVariantMap get(int row);
 
-  Q_INVOKABLE bool isNew() { return m_dataState == ListModel::New; }
+  Q_INVOKABLE bool isNew() { return m_dataState == DataStatus::DataBlank; }
 
-  Q_INVOKABLE bool init(QObject* sonos, bool fill = false) { return ListModel::init(sonos, fill); }
+  Q_INVOKABLE bool init(Sonos* provider, bool fill = false) { return ListModel::configure(provider, fill); }
 
   virtual void clearData();
 

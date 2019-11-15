@@ -52,7 +52,6 @@ set(
     plugin.cpp
     sonos.cpp
     player.cpp
-    listmodel.cpp
     albumsmodel.cpp
     artistsmodel.cpp
     genresmodel.cpp

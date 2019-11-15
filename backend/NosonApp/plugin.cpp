@@ -63,11 +63,13 @@ void NosonAppPlugin::registerTypes(const char *uri)
   qmlRegisterType<QueueModel>(uri, 1, 0, "QueueModel");
   qmlRegisterType<RenderingModel>(uri, 1, 0, "RenderingModel");
   qmlRegisterType<FavoritesModel>(uri, 1, 0, "FavoritesModel");
-  //qmlRegisterUncreatableType<FavoriteType>(uri, 1, 0, "FavoriteType", "enums");
   qmlRegisterType<ServicesModel>(uri, 1, 0, "ServicesModel");
   qmlRegisterType<MediaModel>(uri, 1, 0, "MediaModel");
   qmlRegisterType<MediaAuth>(uri, 1, 0, "MediaAuth");
   qmlRegisterType<AlarmsModel>(uri, 1, 0, "AlarmsModel");
+
+  qRegisterMetaType<Sonos*>("Sonos*");
+  qRegisterMetaType<Player*>("Player*");
 }
 
 void NosonAppPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

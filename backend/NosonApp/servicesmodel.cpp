@@ -171,7 +171,7 @@ bool ServicesModel::loadData()
   LockGuard g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
-  m_dataState = ListModel::NoData;
+  m_dataState = DataStatus::DataNotFound;
   SONOS::SMServiceList list = m_provider->getSystem().GetEnabledServices();
   for (SONOS::SMServiceList::const_iterator it = list.begin(); it != list.end(); ++it)
   {
@@ -181,7 +181,7 @@ bool ServicesModel::loadData()
     else
       delete item;
   }
-  m_dataState = ListModel::Loaded;
+  m_dataState = DataStatus::DataLoaded;
   emit loaded(true);
   return true;
 }
@@ -190,7 +190,7 @@ bool ServicesModel::asyncLoad()
 {
   if (m_provider)
   {
-    m_provider->runModelLoader(this);
+    m_provider->runContentLoader(this);
     return true;
   }
   return false;
@@ -200,7 +200,7 @@ void ServicesModel::resetModel()
 {
   {
     LockGuard g(m_lock);
-    if (m_dataState != ListModel::Loaded)
+    if (m_dataState != DataStatus::DataLoaded)
       return;
     beginResetModel();
     if (m_items.count() > 0)
@@ -218,7 +218,7 @@ void ServicesModel::resetModel()
       m_data.clear();
       endInsertRows();
     }
-    m_dataState = ListModel::Synced;
+    m_dataState = DataStatus::DataSynced;
     endResetModel();
   }
   emit countChanged();

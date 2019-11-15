@@ -132,14 +132,14 @@ QVariantMap ComposersModel::get(int row)
   return model;
 }
 
-bool ComposersModel::init(QObject* sonos, const QString& root, bool fill)
+bool ComposersModel::init(Sonos* provider, const QString& root, bool fill)
 {
   QString _root;
   if (root.isEmpty())
     _root = QString::fromUtf8(SONOS::ContentSearch(SONOS::SearchComposer,"").Root().c_str());
   else
     _root = root;
-  return ListModel::init(sonos, _root, fill);
+  return ListModel<Sonos>::configure(provider, _root, fill);
 }
 
 void ComposersModel::clearData()
@@ -158,18 +158,13 @@ bool ComposersModel::loadData()
     emit loaded(false);
     return false;
   }
-  const SONOS::System& system = m_provider->getSystem();
 
   LockGuard g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
-  m_dataState = ListModel::NoData;
-  QString port;
-  port.setNum(system.GetPort());
-  QString url = "http://";
-  url.append(system.GetHost().c_str()).append(":").append(port);
-
-  SONOS::ContentDirectory cd(system.GetHost(), system.GetPort());
+  m_dataState = DataStatus::DataNotFound;
+  QString url = m_provider->getBaseUrl();
+  SONOS::ContentDirectory cd(m_provider->getHost(), m_provider->getPort());
   SONOS::ContentList cl(cd, m_root.isEmpty() ? SONOS::ContentSearch(SONOS::SearchComposer,"").Root() : m_root.toUtf8().constData());
   for (SONOS::ContentList::iterator it = cl.begin(); it != cl.end(); ++it)
   {
@@ -185,7 +180,7 @@ bool ComposersModel::loadData()
     return false;
   }
   m_updateID = cl.GetUpdateID(); // sync new baseline
-  m_dataState = ListModel::Loaded;
+  m_dataState = DataStatus::DataLoaded;
   emit loaded(true);
   return true;
 }
@@ -194,7 +189,7 @@ bool ComposersModel::asyncLoad()
 {
   if (m_provider)
   {
-    m_provider->runModelLoader(this);
+    m_provider->runContentLoader(this);
     return true;
   }
   return false;
@@ -204,7 +199,7 @@ void ComposersModel::resetModel()
 {
   {
     LockGuard g(m_lock);
-    if (m_dataState != ListModel::Loaded)
+    if (m_dataState != DataStatus::DataLoaded)
       return;
     beginResetModel();
     if (m_items.count() > 0)
@@ -222,7 +217,7 @@ void ComposersModel::resetModel()
       m_data.clear();
       endInsertRows();
     }
-    m_dataState = ListModel::Synced;
+    m_dataState = DataStatus::DataSynced;
     endResetModel();
   }
   emit countChanged();
@@ -231,11 +226,11 @@ void ComposersModel::resetModel()
 void ComposersModel::clearModel()
 {
   LockGuard g(m_lock);
-  if (m_dataState != ListModel::New)
+  if (m_dataState != DataStatus::DataBlank)
   {
     qDeleteAll(m_data);
     m_data.clear();
-    m_dataState = ListModel::Loaded;
+    m_dataState = DataStatus::DataLoaded;
     emit loaded(true);
   }
 }

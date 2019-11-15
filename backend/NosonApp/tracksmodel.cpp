@@ -182,14 +182,14 @@ QVariantMap TracksModel::get(int row)
   return model;
 }
 
-bool TracksModel::init(QObject* sonos, const QString& root, bool fill)
+bool TracksModel::init(Sonos* provider, const QString& root, bool fill)
 {
   QString _root;
   if (root.isEmpty())
     _root = QString::fromUtf8(SONOS::ContentSearch(SONOS::SearchTrack,"").Root().c_str());
   else
     _root = root;
-  return ListModel::init(sonos, _root, fill);
+  return ListModel<Sonos>::configure(provider, _root, fill);
 }
 
 void TracksModel::clearData()
@@ -208,12 +208,11 @@ bool TracksModel::loadData()
     emit loaded(false);
     return false;
   }
-  const SONOS::System& system = m_provider->getSystem();
 
   LockGuard g(m_lock);
   SAFE_DELETE(m_contentList);
   SAFE_DELETE(m_contentDirectory);
-  m_contentDirectory = new SONOS::ContentDirectory(system.GetHost(), system.GetPort());
+  m_contentDirectory = new SONOS::ContentDirectory(m_provider->getHost(), m_provider->getPort());
   if (m_contentDirectory)
     m_contentList = new SONOS::ContentList(*m_contentDirectory, m_root.isEmpty() ? SONOS::ContentSearch(SONOS::SearchTrack,"").Root() : m_root.toUtf8().constData());
   if (!m_contentList)
@@ -224,14 +223,11 @@ bool TracksModel::loadData()
   m_totalCount = m_contentList->size();
   m_iterator = m_contentList->begin();
 
-  QString port;
-  port.setNum(m_contentDirectory->GetPort());
-  QString url = "http://";
-  url.append(m_contentDirectory->GetHost().c_str()).append(":").append(port);
+  QString url = m_provider->getBaseUrl();
 
   qDeleteAll(m_data);
   m_data.clear();
-  m_dataState = ListModel::NoData;
+  m_dataState = DataStatus::DataNotFound;
   unsigned cnt = 0;
   while (cnt < LOAD_BULKSIZE && m_iterator != m_contentList->end())
   {
@@ -257,7 +253,7 @@ bool TracksModel::loadData()
   }
   m_updateID = m_contentList->GetUpdateID(); // sync new baseline
   emit totalCountChanged();
-  m_dataState = ListModel::Loaded;
+  m_dataState = DataStatus::DataLoaded;
   emit loaded(true);
   return true;
 }
@@ -266,7 +262,7 @@ bool TracksModel::asyncLoad()
 {
   if (m_provider)
   {
-    m_provider->runModelLoader(this);
+    m_provider->runContentLoader(this);
     return true;
   }
   return false;
@@ -287,10 +283,7 @@ bool TracksModel::loadMoreData()
     return false;
   }
 
-  QString port;
-  port.setNum(m_contentDirectory->GetPort());
-  QString url = "http://";
-  url.append(m_contentDirectory->GetHost().c_str()).append(":").append(port);
+  QString url = m_provider->getBaseUrl();
 
   unsigned cnt = 0;
   while (cnt < LOAD_BULKSIZE && m_iterator != m_contentList->end())
@@ -317,7 +310,7 @@ bool TracksModel::loadMoreData()
     emit loadedMore(false);
     return false;
   }
-  m_dataState = ListModel::Loaded;
+  m_dataState = DataStatus::DataLoaded;
   emit loadedMore(true);
   return true;
 }
@@ -326,7 +319,7 @@ bool TracksModel::asyncLoadMore()
 {
   if (!m_provider)
     return false;
-  m_provider->runCustomizedModelLoader(this, 1);
+  m_provider->runContentLoaderForContext(this, 1);
   return true;
 }
 
@@ -334,7 +327,7 @@ void TracksModel::resetModel()
 {
   {
     LockGuard g(m_lock);
-    if (m_dataState != ListModel::Loaded)
+    if (m_dataState != DataStatus::DataLoaded)
       return;
     beginResetModel();
     if (m_items.count() > 0)
@@ -352,7 +345,7 @@ void TracksModel::resetModel()
       m_data.clear();
       endInsertRows();
     }
-    m_dataState = ListModel::Synced;
+    m_dataState = DataStatus::DataSynced;
     endResetModel();
   }
   emit countChanged();
@@ -362,20 +355,20 @@ void TracksModel::appendModel()
 {
   {
     LockGuard g(m_lock);
-    if (m_dataState != ListModel::Loaded)
+    if (m_dataState != DataStatus::DataLoaded)
       return;
     int cnt = m_items.count();
     beginInsertRows(QModelIndex(), cnt, cnt + m_data.count()-1);
     foreach (TrackItem* item, m_data)
         m_items << item;
     m_data.clear();
-    m_dataState = ListModel::Synced;
+    m_dataState = DataStatus::DataSynced;
     endInsertRows();
   }
   emit countChanged();
 }
 
-bool TracksModel::customizedLoad(int id)
+bool TracksModel::loadDataForContext(int id)
 {
   switch (id)
   {
@@ -396,4 +389,3 @@ void TracksModel::handleDataUpdate()
     dataUpdated();
   }
 }
-

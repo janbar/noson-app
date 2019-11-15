@@ -89,7 +89,7 @@ public:
 
   virtual bool loadData();
 
-  Q_INVOKABLE bool load(QObject* player);
+  Q_INVOKABLE bool load(Player* player);
 
   virtual void resetModel();
 

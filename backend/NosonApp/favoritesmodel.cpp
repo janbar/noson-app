@@ -234,14 +234,14 @@ QVariantMap FavoritesModel::get(int row)
   return model;
 }
 
-bool FavoritesModel::init(QObject* sonos, const QString& root, bool fill)
+bool FavoritesModel::init(Sonos* provider, const QString& root, bool fill)
 {
   QString _root;
   if (root.isEmpty())
     _root = QString::fromUtf8("FV:2");
   else
     _root = root;
-  return ListModel::init(sonos, _root, fill);
+  return ListModel<Sonos>::configure(provider, _root, fill);
 }
 
 void FavoritesModel::clearData()
@@ -260,18 +260,13 @@ bool FavoritesModel::loadData()
     emit loaded(false);
     return false;
   }
-  const SONOS::System& system = m_provider->getSystem();
 
   LockGuard g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
-  m_dataState = ListModel::NoData;
-  QString port;
-  port.setNum(system.GetPort());
-  QString url = "http://";
-  url.append(system.GetHost().c_str()).append(":").append(port);
-
-  SONOS::ContentDirectory cd(system.GetHost(), system.GetPort());
+  m_dataState = DataStatus::DataNotFound;
+  QString url = m_provider->getBaseUrl();
+  SONOS::ContentDirectory cd(m_provider->getHost(), m_provider->getPort());
   SONOS::ContentList cl(cd, m_root.isEmpty() ? "FV:2" : m_root.toUtf8().constData());
   for (SONOS::ContentList::iterator it = cl.begin(); it != cl.end(); ++it)
   {
@@ -287,7 +282,7 @@ bool FavoritesModel::loadData()
     return false;
   }
   m_updateID = cl.GetUpdateID(); // sync new baseline
-  m_dataState = ListModel::Loaded;
+  m_dataState = DataStatus::DataLoaded;
   emit loaded(true);
   return true;
 }
@@ -296,7 +291,7 @@ bool FavoritesModel::asyncLoad()
 {
   if (m_provider)
   {
-    m_provider->runModelLoader(this);
+    m_provider->runContentLoader(this);
     return true;
   }
   return false;
@@ -306,7 +301,7 @@ void FavoritesModel::resetModel()
 {
   {
     LockGuard g(m_lock);
-    if (m_dataState != ListModel::Loaded)
+    if (m_dataState != DataStatus::DataLoaded)
       return;
     beginResetModel();
     if (m_items.count() > 0)
@@ -327,7 +322,7 @@ void FavoritesModel::resetModel()
       m_data.clear();
       endInsertRows();
     }
-    m_dataState = ListModel::Synced;
+    m_dataState = DataStatus::DataSynced;
     endResetModel();
   }
   emit countChanged();

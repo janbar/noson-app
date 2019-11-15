@@ -29,6 +29,8 @@
 namespace nosonapp
 {
 
+class Sonos;
+
 class TrackItem
 {
 public:
@@ -68,7 +70,7 @@ private:
   bool m_isService;
 };
 
-class TracksModel : public QAbstractListModel, public ListModel
+class TracksModel : public QAbstractListModel, public ListModel<Sonos>
 {
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
@@ -100,9 +102,9 @@ public:
 
   Q_INVOKABLE QVariantMap get(int row);
 
-  Q_INVOKABLE bool isNew() { return m_dataState == ListModel::New; }
+  Q_INVOKABLE bool isNew() { return m_dataState == DataStatus::DataBlank; }
 
-  Q_INVOKABLE bool init(QObject* sonos, const QString& root, bool fill = false);
+  Q_INVOKABLE bool init(Sonos* provider, const QString& root, bool fill = false);
 
   virtual void clearData();
 
@@ -120,7 +122,7 @@ public:
 
   Q_INVOKABLE void appendModel();
 
-  virtual bool customizedLoad(int id);
+  virtual bool loadDataForContext(int id);
 
   virtual void handleDataUpdate();
 

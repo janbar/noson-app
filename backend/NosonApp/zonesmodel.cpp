@@ -158,7 +158,7 @@ bool ZonesModel::loadData()
   LockGuard g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
-  m_dataState = ListModel::NoData;
+  m_dataState = DataStatus::DataNotFound;
   SONOS::ZoneList zones = m_provider->getSystem().GetZoneList();
   for (SONOS::ZoneList::iterator it = zones.begin(); it != zones.end(); ++it)
   {
@@ -168,7 +168,7 @@ bool ZonesModel::loadData()
     else
       delete item;
   }
-  m_dataState = ListModel::Loaded;
+  m_dataState = DataStatus::DataLoaded;
   emit loaded(true);
   return true;
 }
@@ -177,7 +177,7 @@ bool ZonesModel::asyncLoad()
 {
   if (m_provider)
   {
-    m_provider->runModelLoader(this);
+    m_provider->runContentLoader(this);
     return true;
   }
   return false;
@@ -187,7 +187,7 @@ void ZonesModel::resetModel()
 {
   {
     LockGuard g(m_lock);
-    if (m_dataState != ListModel::Loaded)
+    if (m_dataState != DataStatus::DataLoaded)
       return;
     beginResetModel();
     if (m_items.count() > 0)
@@ -205,7 +205,7 @@ void ZonesModel::resetModel()
       m_data.clear();
       endInsertRows();
     }
-    m_dataState = ListModel::Synced;
+    m_dataState = DataStatus::DataSynced;
     endResetModel();
   }
   emit countChanged();

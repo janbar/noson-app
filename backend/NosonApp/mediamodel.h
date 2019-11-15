@@ -31,6 +31,8 @@
 namespace nosonapp
 {
 
+class Sonos;
+
 class MediaType : public QObject
 {
   Q_OBJECT
@@ -135,7 +137,7 @@ private:
   SONOS::SMOAKeyring::Data m_auth;
 };
 
-class MediaModel : public QAbstractListModel, public ListModel
+class MediaModel : public QAbstractListModel, public ListModel<Sonos>
 {
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
@@ -178,9 +180,9 @@ public:
 
   Q_INVOKABLE QVariantMap get(int row);
 
-  Q_INVOKABLE bool isNew() { return m_dataState == ListModel::New; }
+  Q_INVOKABLE bool isNew() { return m_dataState == DataStatus::DataBlank; }
 
-  Q_INVOKABLE bool init(QObject* sonos, const QVariant& service, bool fill = false);
+  Q_INVOKABLE bool init(Sonos* provider, const QVariant& service, bool fill = false);
 
   Q_INVOKABLE void clearData();
 
@@ -240,7 +242,7 @@ public:
 
   Q_INVOKABLE void appendModel();
 
-  virtual bool customizedLoad(int id);
+  virtual bool loadDataForContext(int id);
 
   virtual void handleDataUpdate();
 

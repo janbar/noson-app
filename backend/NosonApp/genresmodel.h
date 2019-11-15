@@ -28,6 +28,8 @@
 namespace nosonapp
 {
 
+class Sonos;
+
 class GenreItem
 {
 public:
@@ -53,7 +55,7 @@ private:
   QString m_normalized;
 };
 
-class GenresModel : public QAbstractListModel, public ListModel
+class GenresModel : public QAbstractListModel, public ListModel<Sonos>
 {
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
@@ -78,9 +80,9 @@ public:
 
   Q_INVOKABLE QVariantMap get(int row);
 
-  Q_INVOKABLE bool isNew() { return m_dataState == ListModel::New; }
+  Q_INVOKABLE bool isNew() { return m_dataState == DataStatus::DataBlank; }
 
-  Q_INVOKABLE bool init(QObject* sonos, const QString& root, bool fill = false);
+  Q_INVOKABLE bool init(Sonos* provider, const QString& root, bool fill = false);
 
   virtual void clearData();
 

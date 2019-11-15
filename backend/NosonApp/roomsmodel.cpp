@@ -119,7 +119,7 @@ void RoomsModel::clearData()
 
 bool RoomsModel::loadData()
 {
-  if (!m_provider)
+  if (!m_sonos)
     return false;
 
   qDeleteAll(m_data);
@@ -127,7 +127,7 @@ bool RoomsModel::loadData()
 
   if (m_zoneId.isNull())
   {
-    SONOS::ZonePlayerList zonePlayers = m_provider->getSystem().GetZonePlayerList();
+    SONOS::ZonePlayerList zonePlayers = m_sonos->getSystem().GetZonePlayerList();
     for (SONOS::ZonePlayerList::iterator it = zonePlayers.begin(); it != zonePlayers.end(); ++it)
     {
       RoomItem* item = new RoomItem(it->second);
@@ -139,7 +139,7 @@ bool RoomsModel::loadData()
   }
   else
   {
-    SONOS::ZoneList zones = m_provider->getSystem().GetZoneList();
+    SONOS::ZoneList zones = m_sonos->getSystem().GetZoneList();
     SONOS::ZoneList::const_iterator itz = zones.find(m_zoneId.toUtf8().constData());
     if (itz != zones.end())
     {
@@ -156,9 +156,9 @@ bool RoomsModel::loadData()
   return true;
 }
 
-bool RoomsModel::load(QObject* sonos)
+bool RoomsModel::load(Sonos* sonos)
 {
-  m_provider = reinterpret_cast<Sonos*> (sonos);
+  m_sonos = sonos;
   m_zoneId = QString();
   if (!loadData())
     return false;
@@ -166,9 +166,9 @@ bool RoomsModel::load(QObject* sonos)
   return true;
 }
 
-bool RoomsModel::load(QObject* sonos, const QString& zoneId)
+bool RoomsModel::load(Sonos* sonos, const QString& zoneId)
 {
-  m_provider = reinterpret_cast<Sonos*> (sonos);
+  m_sonos = sonos;
   m_zoneId = zoneId;
   if (!loadData())
     return false;
