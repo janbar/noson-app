@@ -860,3 +860,8 @@ DigitalItemPtr Player::MakeFileStreamItem(const std::string& filePath, const std
   DBG(DBG_DEBUG, "%s: %s\n%s\n", __FUNCTION__, item->GetValue("res").c_str(), item->DIDL().c_str());
   return item;
 }
+
+ContentProperty Player::GetContentProperty()
+{
+  return *(m_contentDirectory->GetContentProperty().Get());
+}

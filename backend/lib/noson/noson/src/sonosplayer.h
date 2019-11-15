@@ -158,6 +158,9 @@ namespace NSROOT
     DigitalItemPtr MakeFileStreamItem(const std::string& filePath, const std::string& codec, const std::string& title, const std::string& album,
                                       const std::string& author, const std::string& duration, bool hasArt);
 
+    // Content directory
+    ContentProperty GetContentProperty();
+
   private:
     bool m_valid;
     ZonePtr m_zone;
