@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016
+ * Copyright (C) 2016-2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,38 +20,40 @@ import NosonApp 1.0
 
 Item {
     property bool canLoad: false
-    property bool completed: false
+    property int trackCount: 0
+    property alias model: queue
 
-    property var model: QueueModel {
-        Component.onCompleted: init(Sonos, "", false)
+    QueueModel {
+        id: queue
     }
 
-    // Force refreshing of queue
+    // Initialize the queue for given zone player
+    function initQueue(zonePlayer) {
+        if (zonePlayer)
+            canLoad = queue.init(zonePlayer, "", false);
+    }
+
     function loadQueue() {
         if (canLoad)
-            model.asyncLoad()
+            queue.asyncLoad()
     }
 
     onCanLoadChanged: {
-        if (canLoad)
-            model.asyncLoad()
+        loadQueue();
     }
 
     Connections {
-        target: model
+        target: queue
         onDataUpdated: {
-            if (canLoad)
-                model.asyncLoad()
+            loadQueue();
         }
         onLoaded: {
             if (succeeded) {
-                model.resetModel()
-                player.currentCount = model.count
-                completed = true
+                queue.resetModel()
+                trackCount = queue.count
             } else {
-                model.resetModel()
-                player.currentCount = 0
-                completed = false
+                queue.resetModel()
+                trackCount = 0
             }
         }
     }

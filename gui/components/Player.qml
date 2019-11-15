@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016
+ * Copyright (C) 2016-2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -29,6 +29,7 @@ Item {
     id: player
     objectName: "controller"
     property alias zonePlayer: playerLoader.item
+    property alias trackQueue: trackQueueLoader.item
     property bool connected: false
     property string zoneId: ""
     property string zoneName: ""
@@ -77,6 +78,8 @@ Item {
     onConnectedChanged: {
         if (!connected) {
             trackQueue.canLoad = false;
+        } else {
+            trackQueue.initQueue(zonePlayer);
         }
     }
 
@@ -390,13 +393,22 @@ Item {
         }
     }
 
-    property alias trackQueue: trackQueueLoader.item
-
     Loader {
         id: trackQueueLoader
-        asynchronous: false
+        asynchronous: true
         sourceComponent: Component {
             TrackQueue {
+                Component.onCompleted: {
+                    if (player.connected)
+                        initQueue(zonePlayer);
+                }
+                Connections {
+                    target: player
+                    onConnectedChanged: {
+                        initQueue(zonePlayer);
+                    }
+                }
+                onTrackCountChanged: player.currentCount = trackCount
             }
         }
     }
