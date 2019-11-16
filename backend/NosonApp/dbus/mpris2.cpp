@@ -39,6 +39,7 @@ Mpris2::Mpris2(Player* app, QObject* parent)
 : QObject(parent)
 , m_player(app)
 , m_registered(false)
+, m_identity()
 , m_serviceName()
 , m_servicePath()
 , m_metadata()
@@ -48,11 +49,12 @@ Mpris2::Mpris2(Player* app, QObject* parent)
 
   if (m_player)
   {
-    QObject::connect(m_player, SIGNAL(connectedChanged()), SLOT(connectionStateChanged()));
-    QObject::connect(m_player, SIGNAL(playbackStateChanged()), SLOT(playbackStateChanged()));
-    QObject::connect(m_player, SIGNAL(renderingGroupChanged()), SLOT(volumeChanged()));
-    QObject::connect(m_player, SIGNAL(playModeChanged()), SLOT(playModeChanged()));
-    QObject::connect(m_player, SIGNAL(sourceChanged()), SLOT(currentTrackChanged()));
+    QObject::connect(m_player, SIGNAL(connectedChanged(int)), SLOT(connectionStateChanged(int)));
+    QObject::connect(m_player, SIGNAL(playbackStateChanged(int)), SLOT(playbackStateChanged(int)));
+    QObject::connect(m_player, SIGNAL(renderingGroupChanged(int)), SLOT(volumeChanged(int)));
+    QObject::connect(m_player, SIGNAL(playModeChanged(int)), SLOT(playModeChanged(int)));
+    QObject::connect(m_player, SIGNAL(sourceChanged(int)), SLOT(currentTrackChanged(int)));
+    initDBusService(m_player->pid());
   }
 }
 
@@ -62,11 +64,41 @@ Mpris2::~Mpris2()
     QDBusConnection::sessionBus().unregisterService(m_serviceName);
 }
 
-void Mpris2::connectionStateChanged()
+void Mpris2::connectionStateChanged(int pid)
+{
+  initDBusService(pid);
+}
+
+void Mpris2::playbackStateChanged(int pid)
+{
+  emitPlayerNotification("CanPlay", CanPlay());
+  emitPlayerNotification("CanPause", CanPause());
+  emitPlayerNotification("PlaybackStatus", PlaybackStatus());
+  if (m_player->playbackState() == "PLAYING")
+    emitPlayerNotification("CanSeek", CanSeek());
+}
+
+void Mpris2::volumeChanged(int pid)
+{
+  emitPlayerNotification("Volume", Volume());
+}
+
+void Mpris2::playModeChanged(int pid)
+{
+  emitPlayerNotification("Shuffle", Shuffle());
+  emitPlayerNotification("LoopStatus", LoopStatus());
+  emitPlayerNotification("CanGoNext", CanGoNext());
+  emitPlayerNotification("CanGoPrevious", CanGoPrevious());
+}
+
+void Mpris2::initDBusService(int pid)
 {
   if (m_registered)
     QDBusConnection::sessionBus().unregisterService(m_serviceName);
   m_registered = false;
+
+  if (!m_player->connected())
+    return;
 
   // Try to make a friendly name for the player according to the Dbus specs.
   // A valid name must only contain the ASCII characters "[A-Z][a-z][0-9]_" and
@@ -87,53 +119,36 @@ void Mpris2::connectionStateChanged()
     }
   }
 
+
+  m_identity = QString("%1.%2").arg(QGuiApplication::applicationDisplayName(), zoneId);
+
+  m_servicePath = QString("/%1/%2")
+          .arg(QString(QGuiApplication::applicationName()).replace('.', '/'), zoneId);
+
   m_serviceName = QString(DBUS_MEDIAPLAYER_SVC ".%1.%2")
           .arg(QGuiApplication::applicationDisplayName(), zoneId);
+
   if (!QDBusConnection::sessionBus().registerService(m_serviceName))
   {
     qWarning() << "Failed to register" << m_serviceName << "on the session bus";
     return;
   }
   m_registered = true;
-
-  m_servicePath = QString("/%1/%2")
-          .arg(QString(QGuiApplication::applicationName()).replace('.', '/'), zoneId);
-
   QDBusConnection::sessionBus().registerObject(MPRIS_OBJECT_PATH, this);
 
   m_metadata = QVariantMap();
-  emitPlayerNotification("Metadata", Metadata());
+  currentTrackChanged(pid);
+  playbackStateChanged(pid);
+  playModeChanged(pid);
   emitPlayerNotification("Volume", Volume());
-  playbackStateChanged();
-  playModeChanged();
   emit Seeked(Position());
-}
 
-void Mpris2::playbackStateChanged()
-{
-  emitPlayerNotification("CanPlay", CanPlay());
-  emitPlayerNotification("CanPause", CanPause());
-  emitPlayerNotification("PlaybackStatus", PlaybackStatus());
-  if (m_player->playbackState() == "PLAYING")
-    emitPlayerNotification("CanSeek", CanSeek());
-}
-
-void Mpris2::volumeChanged()
-{
-  emitPlayerNotification("Volume", Volume());
-}
-
-void Mpris2::playModeChanged()
-{
-  emitPlayerNotification("Shuffle", Shuffle());
-  emitPlayerNotification("LoopStatus", LoopStatus());
-  emitPlayerNotification("CanGoNext", CanGoNext());
-  emitPlayerNotification("CanGoPrevious", CanGoPrevious());
+  qDebug() << "Succeeded to register" << m_serviceName << "on the session bus";
 }
 
 void Mpris2::emitPlayerNotification(const QString& name, const QVariant& val)
 {
-  emitNotification(name, val, "org.mpris.MediaPlayer2.Player");
+  emitNotification(name, val, DBUS_MEDIAPLAYER_SVC ".Player");
 }
 
 void Mpris2::emitNotification(const QString& name, const QVariant& val, const QString& mprisEntity)
@@ -148,7 +163,7 @@ void Mpris2::emitNotification(const QString& name, const QVariant& val, const QS
 
 QString Mpris2::Identity() const
 {
-  return QCoreApplication::applicationName();
+  return m_identity;
 }
 
 QString Mpris2::desktopEntryAbsolutePath() const
@@ -267,7 +282,7 @@ QString Mpris2::makeTrackId(int index) const
   return QString("%1/track/%2").arg(m_servicePath).arg(QString::number(index));
 }
 
-void Mpris2::currentTrackChanged()
+void Mpris2::currentTrackChanged(int pid)
 {
   emitPlayerNotification("CanPlay", CanPlay());
   emitPlayerNotification("CanPause", CanPause());

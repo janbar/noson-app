@@ -210,7 +210,7 @@ Flickable {
             font.pointSize: units.fs("small")
             height: parent.height
             horizontalAlignment: Text.AlignLeft
-            text: durationToString(player.position)
+            text: durationToString(player.trackPosition)
             verticalAlignment: Text.AlignVCenter
             width: units.gu(3)
         }
@@ -222,9 +222,9 @@ Flickable {
                 right: parent.right
                 top: parent.top
             }
-            to: player.duration  // load value at startup
+            to: player.trackDuration  // load value at startup
             objectName: "progressSliderShape"
-            value: player.position  // load value at startup
+            value: player.trackPosition  // load value at startup
             wheelEnabled: false
             stepSize: 5000.0
 
@@ -248,7 +248,7 @@ Flickable {
 
             onSeekingChanged: {
                 if (seeking === false) {
-                    fullviewPositionLabel.text = durationToString(player.position)
+                    fullviewPositionLabel.text = durationToString(player.trackPosition)
                 }
             }
 
@@ -273,14 +273,14 @@ Flickable {
 
             Connections {
                 target: player
-                onPositionChanged: {
+                onCurrentPositionChanged: {
                     // seeked is a workaround for bug 1310706 as the first position after a seek is sometimes invalid (0)
                     if (progressSliderMusic.seeking === false && !progressSliderMusic.seeked) {
-                        fullviewPositionLabel.text = durationToString(player.position)
-                        fullviewDurationLabel.text = durationToString(player.duration)
+                        fullviewPositionLabel.text = durationToString(position)
+                        fullviewDurationLabel.text = durationToString(duration)
 
-                        progressSliderMusic.value = player.position
-                        progressSliderMusic.to = player.duration
+                        progressSliderMusic.value = position
+                        progressSliderMusic.to = duration
                     }
 
                     progressSliderMusic.seeked = false;
@@ -305,7 +305,7 @@ Flickable {
             font.pointSize: units.fs("small")
             height: parent.height
             horizontalAlignment: Text.AlignRight
-            text: durationToString(player.duration)
+            text: durationToString(player.trackDuration)
             verticalAlignment: Text.AlignVCenter
             width: units.gu(3)
         }

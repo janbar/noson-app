@@ -31,6 +31,7 @@ namespace nosonapp
 {
 
 class Sonos;
+class Mpris2;
 
 class Player : public QObject, public ContentProvider<Player>
 {
@@ -44,6 +45,7 @@ class Player : public QObject, public ContentProvider<Player>
   Q_PROPERTY(int bass READ bass NOTIFY renderingGroupChanged)
 
   // Read only
+  Q_PROPERTY(int pid READ pid NOTIFY connectedChanged)
   Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
   Q_PROPERTY(QString zoneId READ zoneId NOTIFY connectedChanged)
   Q_PROPERTY(QString zoneName READ zoneName NOTIFY connectedChanged)
@@ -67,8 +69,8 @@ public:
   explicit Player(QObject *parent = nullptr);
   ~Player();
 
-  Q_INVOKABLE bool init(QObject* sonos, const QString& zoneName);
-  Q_INVOKABLE bool init(QObject* sonos, const QVariant& zone);
+  Q_INVOKABLE bool init(Sonos* sonos, const QString& zoneName);
+  Q_INVOKABLE bool init(Sonos* sonos, const QVariant& zone);
 
   bool init(Sonos* sonos, const SONOS::ZonePtr& zone);
   bool connected() const { return m_connected; }
@@ -76,11 +78,19 @@ public:
   void beginJob();
   void endJob();
 
+  SONOS::ZonePtr zone() const;
+  int pid() const { return m_pid; }
+  void setPid(int pid) { m_pid = pid; }
+
+  Q_INVOKABLE void enableMPRIS2();
+  Q_INVOKABLE void disableMPRIS2();
+
   Q_INVOKABLE void renewSubscriptions();
   Q_INVOKABLE bool ping();
   Q_INVOKABLE QString zoneId() const;
   Q_INVOKABLE QString zoneName() const;
   Q_INVOKABLE QString zoneShortName() const;
+  Q_INVOKABLE QString coordinatorName() const;
 
   Q_INVOKABLE bool configureSleepTimer(int seconds);
   Q_INVOKABLE int remainingSleepTimerDuration();
@@ -209,20 +219,21 @@ public:
   void unregisterContent(ListModel<Player>* model);
 
 signals:
-  void jobFailed();
-  void connectedChanged();
-  void renderingChanged();
-  void renderingGroupChanged();
-  void sourceChanged();
-  void playbackStateChanged();
-  void playModeChanged();
-  void sleepTimerChanged();
+  void jobFailed(int pid);
+  void connectedChanged(int pid);
+  void renderingChanged(int pid);
+  void renderingGroupChanged(int pid);
+  void sourceChanged(int pid);
+  void playbackStateChanged(int pid);
+  void playModeChanged(int pid);
+  void sleepTimerChanged(int pid);
 
 private slots:
     void handleTransportChange();
     void handleRenderingControlChange();
 
 private:
+  int m_pid;
   Sonos* m_sonos;
   SONOS::PlayerPtr m_player;
   SONOS::AVTProperty m_AVTProperty;
@@ -248,6 +259,8 @@ private:
   unsigned m_queueUpdateID;
 
   static void playerEventCB(void* handle);
+
+  Mpris2* m_mpris2;
 };
 
 }

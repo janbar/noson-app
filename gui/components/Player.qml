@@ -28,8 +28,8 @@ import NosonApp 1.0
 Item {
     id: player
     objectName: "controller"
-    property alias zonePlayer: playerLoader.item
     property alias trackQueue: trackQueueLoader.item
+    property alias renderingModel: renderingModelLoader.item
     property bool connected: false
     property string zoneId: ""
     property string zoneName: ""
@@ -44,10 +44,10 @@ Item {
     property int currentProtocol: -1
     property int currentIndex: -1
     property int currentCount: 0
-    property int duration: 1
-    readonly property bool isPlaying: player.playbackState === "PLAYING"
-    readonly property var playbackState: playerLoader.status == Loader.Ready ? playerLoader.item.playbackState : ""
-    property int position: 0
+    property bool isPlaying: false
+    property string playbackState: ""
+    property int trackPosition: 0
+    property int trackDuration: 1
     property int volumeMaster: 0
     property int bass: 0
     property int treble: 0
@@ -63,38 +63,36 @@ Item {
 
     property string queueInfo: queueOverviewString()
 
+    signal jobFailed()
     signal stopped()
     signal sourceChanged()
+    signal currentPositionChanged(int position, int duration)
 
     onCurrentCountChanged: queueInfo = queueOverviewString()
     onCurrentIndexChanged: queueInfo = queueOverviewString()
 
-    onIsPlayingChanged: {
-        if (playingTimerLoader.status == Loader.Ready) {
-              playingTimerLoader.item.running = isPlaying && duration > 1 ? true : false;
-        }
+    function connectZonePlayer(zonePlayer) {
+        connected = false; // force signal
+        var zp = zone.handle;
+        zp.disableMPRIS2();
+        zone.handle = zonePlayer;
+        zone.handle.enableMPRIS2();
+        zone.pid = zonePlayer.pid;
+
+        // execute all handlers to signal the changes
+        player.handleZPConnectedChanged();
+        player.handleZPSourceChanged();
+        player.handleZPRenderingGroupChanged();
+        player.handleZPRenderingChanged();
+        player.handleZPPlayModeChanged();
+        player.handleZPPlaybackStateChanged();
+
+        // release the old zone player
+        AllZonesModel.releasePlayer(zp);
     }
 
-    onConnectedChanged: {
-        if (!connected) {
-            trackQueue.canLoad = false;
-        } else {
-            trackQueue.initQueue(zonePlayer);
-        }
-    }
-
-    function connectZone(zoneName) {
-        if (playerLoader.item.init(Sonos, zoneName)) {
-            if (trackQueue.canLoad) {
-                // When switching zone, updateid cannot drive correctly the queue refreshing
-                // so new force refreshing of queue
-                trackQueue.loadQueue();
-                return true;
-            }
-            return trackQueue.canLoad = true;
-        }
-        // dont try to refresh queue
-        return trackQueue.canLoad = false;
+    function coordinatorName() {
+        return zone.handle.coordinatorName();
     }
 
     function queueOverviewString() {
@@ -109,23 +107,23 @@ Item {
     }
 
     function wakeUp() {
-        if (playerLoader.item.ping()) {
-            playerLoader.item.renewSubscriptions();
+        if (zone.handle.ping()) {
+            zone.handle.renewSubscriptions();
             return true;
         }
         return false;
     }
 
     function stop() {
-        return playerLoader.item.stop();
+        return zone.handle.stop();
     }
 
     function play() {
-        return playerLoader.item.play();
+        return zone.handle.play();
     }
 
     function pause() {
-        return playerLoader.item.pause();
+        return zone.handle.pause();
     }
 
     function toggle() {
@@ -136,7 +134,7 @@ Item {
     }
 
     function playSource(modelItem) {
-        return playerLoader.item.startPlaySource(modelItem.payload);
+        return zone.handle.startPlaySource(modelItem.payload);
     }
 
     function playSong(modelItem) {
@@ -144,206 +142,160 @@ Item {
     }
 
     function previousSong(startPlaying) {
-        return playerLoader.item.previous()
+        return zone.handle.previous()
     }
 
     function nextSong(startPlaying, fromControls) {
-        return playerLoader.item.next();
+        return zone.handle.next();
     }
 
     function toggleRepeat() {
-        return playerLoader.item.toggleRepeat()
+        return zone.handle.toggleRepeat()
     }
 
     function toggleShuffle() {
-        return playerLoader.item.toggleShuffle()
+        return zone.handle.toggleShuffle()
     }
 
     function seek(position) {
         if (player.canSeekInStream())
-            return playerLoader.item.seekTime(Math.floor(position / 1000));
+            return zone.handle.seekTime(Math.floor(position / 1000));
         return false;
     }
 
     function setSource(modelItem) {
-        return playerLoader.item.setSource(modelItem.payload);
+        return zone.handle.setSource(modelItem.payload);
     }
 
     function setVolumeGroup(volume) {
-        return playerLoader.item.setVolumeGroup(volume);
+        return zone.handle.setVolumeGroup(volume);
     }
 
     function setVolume(uuid, volume) {
-        return playerLoader.item.setVolume(uuid, volume);
+        return zone.handle.setVolume(uuid, volume);
     }
 
     function setBass(value) {
-        return playerLoader.item.setBass(value)
+        return zone.handle.setBass(value)
     }
 
     function setTreble(value) {
-        return playerLoader.item.setTreble(value)
+        return zone.handle.setTreble(value)
     }
 
     function toggleMuteGroup() {
-        return playerLoader.item.toggleMute();
+        return zone.handle.toggleMute();
     }
 
     function toggleMute(uuid) {
-        return playerLoader.item.toggleMute(uuid);
+        return zone.handle.toggleMute(uuid);
     }
 
     function toggleNightmode() {
-        return playerLoader.item.toggleNightmode();
+        return zone.handle.toggleNightmode();
     }
 
     function toggleLoudness() {
-        return playerLoader.item.toggleLoudness();
+        return zone.handle.toggleLoudness();
     }
 
     function playQueue(start) {
-        return playerLoader.item.playQueue(start);
+        return zone.handle.playQueue(start);
     }
 
     function seekTrack(nr) {
-        return playerLoader.item.seekTrack(nr);
+        return zone.handle.seekTrack(nr);
     }
 
     function addItemToQueue(modelItem, nr) {
-        return playerLoader.item.addItemToQueue(modelItem.payload, nr);
+        return zone.handle.addItemToQueue(modelItem.payload, nr);
     }
 
     function makeFilePictureLocalURL(filePath) {
-        return playerLoader.item.makeFilePictureLocalURL(filePath);
+        return zone.handle.makeFilePictureLocalURL(filePath);
     }
 
     function makeFileStreamItem(filePath, codec, title, album, author, duration, hasArt) {
-        return playerLoader.item.makeFileStreamItem(filePath, codec, title, album, author, duration, hasArt);
+        return zone.handle.makeFileStreamItem(filePath, codec, title, album, author, duration, hasArt);
     }
 
     function addMultipleItemsToQueue(modelItemList) {
         var payloads = [];
         for (var i = 0; i < modelItemList.length; ++i)
             payloads.push(modelItemList[i].payload);
-        return playerLoader.item.addMultipleItemsToQueue(payloads);
+        return zone.handle.addMultipleItemsToQueue(payloads);
     }
 
     function removeAllTracksFromQueue() {
-        return playerLoader.item.removeAllTracksFromQueue();
+        return zone.handle.removeAllTracksFromQueue();
     }
 
     function removeTrackFromQueue(modelItem) {
-        return playerLoader.item.removeTrackFromQueue(modelItem.id, trackQueue.model.containerUpdateID());
+        return zone.handle.removeTrackFromQueue(modelItem.id, trackQueue.model.containerUpdateID());
     }
 
     function reorderTrackInQueue(nrFrom, nrTo) {
-        return playerLoader.item.reorderTrackInQueue(nrFrom, nrTo, trackQueue.model.containerUpdateID());
+        return zone.handle.reorderTrackInQueue(nrFrom, nrTo, trackQueue.model.containerUpdateID());
     }
 
     function saveQueue(title) {
-        return playerLoader.item.saveQueue(title);
+        return zone.handle.saveQueue(title);
     }
 
     function createSavedQueue(title) {
-        return playerLoader.item.createSavedQueue(title);
+        return zone.handle.createSavedQueue(title);
     }
 
     function addItemToSavedQueue(playlistId, modelItem, containerUpdateID) {
-        return playerLoader.item.addItemToSavedQueue(playlistId, modelItem.payload, containerUpdateID);
+        return zone.handle.addItemToSavedQueue(playlistId, modelItem.payload, containerUpdateID);
     }
 
     function removeTracksFromSavedQueue(playlistId, selectedIndices, containerUpdateID) {
-        return playerLoader.item.removeTracksFromSavedQueue(playlistId, selectedIndices, containerUpdateID);
+        return zone.handle.removeTracksFromSavedQueue(playlistId, selectedIndices, containerUpdateID);
     }
 
     function reorderTrackInSavedQueue(playlistId, index, newIndex, containerUpdateID) {
-        return playerLoader.item.reorderTrackInSavedQueue(playlistId, index, newIndex, containerUpdateID);
+        return zone.handle.reorderTrackInSavedQueue(playlistId, index, newIndex, containerUpdateID);
     }
 
     function configureSleepTimer(sec) {
-        return playerLoader.item.configureSleepTimer(sec);
-    }
-
-    function refreshSource() {
-        // protect against undefined properties
-        player.currentMetaAlbum = playerLoader.item.currentMetaAlbum || "";
-        player.currentMetaArt = playerLoader.item.currentMetaArt || "";
-        player.currentMetaArtist = playerLoader.item.currentMetaArtist || "";
-        player.currentMetaSource = playerLoader.item.currentMetaSource || "";
-        player.currentMetaTitle = playerLoader.item.currentMetaTitle || "";
-        player.currentMetaURITitle = playerLoader.item.currentMetaURITitle || "";
-        player.currentIndex = playerLoader.item.currentIndex;
-        player.currentProtocol = playerLoader.item.currentProtocol;
-        player.duration = 1000 * playerLoader.item.currentTrackDuration;
-        // reset position
-        var npos = 1000 * playerLoader.item.currentTrackPosition();
-        player.position = npos > player.duration ? 0 : npos;
-
-        if (player.currentProtocol == 1) {
-            player.covers = [{art: "qrc:/images/linein.png"}];
-        } else if (player.currentProtocol == 5) {
-            player.covers = [{art: "qrc:/images/tv.png"}];
-        } else {
-            player.covers = makeCoverSource(player.currentMetaArt, player.currentMetaArtist, player.currentMetaAlbum);
-        }
-
-        player.sourceChanged();
-    }
-
-    function refreshPlayMode() {
-        player.repeat = playerLoader.item.playMode === "REPEAT_ALL" || playerLoader.item.playMode === "SHUFFLE" ? true : false;
-        player.shuffle = playerLoader.item.playMode === "SHUFFLE" || playerLoader.item.playMode === "SHUFFLE_NOREPEAT" ? true : false;
-    }
-
-    function refreshRenderingGroup() {
-        player.volumeMaster = playerLoader.item.volumeMaster;
-        player.treble = playerLoader.item.treble;
-        player.bass = playerLoader.item.bass;
-        player.mute = playerLoader.item.muteMaster;
-        player.nightmodeEnabled = playerLoader.item.nightmode;
-        player.loudnessEnabled = playerLoader.item.loudness;
-        player.outputFixed = playerLoader.item.outputFixed;
-    }
-
-    function refreshRendering() {
-        renderingModelLoader.item.load(playerLoader.item);
-        renderingControlCount = renderingModelLoader.item.count;
+        return zone.handle.configureSleepTimer(sec);
     }
 
     function remainingSleepTimerDuration() {
-        return playerLoader.item.remainingSleepTimerDuration();
+        return zone.handle.remainingSleepTimerDuration();
     }
 
     function playStream(url, title) {
-        return playerLoader.item.startPlayStream(url, (title === "" ? qsTr("Untitled") : title))
+        return zone.handle.startPlayStream(url, (title === "" ? qsTr("Untitled") : title))
     }
 
     function playLineIN() {
-        return playerLoader.item.playLineIN()
+        return zone.handle.playLineIN()
     }
 
     function playDigitalIN() {
-        return playerLoader.item.playDigitalIN()
+        return zone.handle.playDigitalIN()
     }
 
     function playPulse() {
-        return playerLoader.item.playPulse()
+        return zone.handle.playPulse()
     }
 
     function isPulseStream() {
-        return playerLoader.item.isPulseStream(currentMetaSource);
+        return zone.handle.isPulseStream(currentMetaSource);
     }
 
     function isMyStream(metaSource) {
-        return playerLoader.item.isMyStream(metaSource);
+        return zone.handle.isMyStream(metaSource);
     }
 
     function playFavorite(modelItem) {
-        return playerLoader.item.startPlayFavorite(modelItem.payload);
+        return zone.handle.startPlayFavorite(modelItem.payload);
     }
 
     function isPlayingQueued() {
-        return player.duration > 0;
+        return player.trackDuration > 0;
     }
 
     function canSeekInStream() {
@@ -359,7 +311,101 @@ Item {
         }
     }
 
-    property alias renderingModel: renderingModelLoader.item
+    // reload the rendering model
+    function refreshRendering() {
+        handleZPRenderingChanged();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+    // handlers connected to the ZP events
+    // they apply changes on the player properties and forward signals as needed
+    //
+    function handleZPConnectedChanged() {
+        player.connected = zone.handle.connected;
+        player.zoneId = zone.handle.zoneId;
+        player.zoneName = zone.handle.zoneName;
+        player.zoneShortName = zone.handle.zoneShortName;
+        player.controllerURI = zone.handle.controllerURI;
+        trackQueue.initQueue(zone.handle);
+    }
+
+    function handleZPSourceChanged() {
+        // protect against undefined properties
+        player.currentMetaAlbum = zone.handle.currentMetaAlbum || "";
+        player.currentMetaArt = zone.handle.currentMetaArt || "";
+        player.currentMetaArtist = zone.handle.currentMetaArtist || "";
+        player.currentMetaSource = zone.handle.currentMetaSource || "";
+        player.currentMetaTitle = zone.handle.currentMetaTitle || "";
+        player.currentMetaURITitle = zone.handle.currentMetaURITitle || "";
+        player.currentIndex = zone.handle.currentIndex;
+        player.currentProtocol = zone.handle.currentProtocol;
+        player.trackDuration = 1000 * zone.handle.currentTrackDuration;
+        // reset position
+        var npos = 1000 * zone.handle.currentTrackPosition();
+        player.trackPosition = npos > player.trackDuration ? 0 : npos;
+
+        if (player.currentProtocol == 1) {
+            player.covers = [{art: "qrc:/images/linein.png"}];
+        } else if (player.currentProtocol == 5) {
+            player.covers = [{art: "qrc:/images/tv.png"}];
+        } else {
+            player.covers = makeCoverSource(player.currentMetaArt, player.currentMetaArtist, player.currentMetaAlbum);
+        }
+        player.sourceChanged();
+        player.currentPositionChanged(player.trackPosition, player.trackDuration);
+    }
+
+    function handleZPPlayModeChanged() {
+        player.repeat = zone.handle.playMode === "REPEAT_ALL" || zone.handle.playMode === "SHUFFLE" ? true : false;
+        player.shuffle = zone.handle.playMode === "SHUFFLE" || zone.handle.playMode === "SHUFFLE_NOREPEAT" ? true : false;
+    }
+
+    function handleZPRenderingGroupChanged() {
+        player.volumeMaster = zone.handle.volumeMaster;
+        player.treble = zone.handle.treble;
+        player.bass = zone.handle.bass;
+        player.mute = zone.handle.muteMaster;
+        player.nightmodeEnabled = zone.handle.nightmode;
+        player.loudnessEnabled = zone.handle.loudness;
+        player.outputFixed = zone.handle.outputFixed;
+    }
+
+    function handleZPRenderingChanged() {
+        renderingModelLoader.item.load(zone.handle);
+        renderingControlCount = renderingModelLoader.item.count;
+    }
+
+    function handleZPPlaybackStateChanged() {
+        player.playbackState = zone.handle.playbackState;
+        player.isPlaying = (player.playbackState === "PLAYING");
+    }
+
+    Connections {
+        target: AllZonesModel
+        onZpJobFailed: {
+            if (pid === zone.pid) {
+                popInfo.open(qsTr("Action can't be performed"));
+                player.jobFailed();
+            }
+        }
+        onZpConnectedChanged: { if (pid === zone.pid) handleZPConnectedChanged(); }
+        onZpSourceChanged: { if (pid === zone.pid) handleZPSourceChanged(); }
+        onZpRenderingGroupChanged: { if (pid === zone.pid) handleZPRenderingGroupChanged(); }
+        onZpRenderingChanged: { if (pid === zone.pid) handleZPRenderingChanged(); }
+        onZpPlayModeChanged: { if (pid === zone.pid) handleZPPlayModeChanged(); }
+        onZpPlaybackStateChanged: { if (pid === zone.pid) handleZPPlaybackStateChanged(); }
+        onZpSleepTimerChanged: {
+            if (pid === zone.pid)
+              player.sleepTimerEnabled = player.remainingSleepTimerDuration() > 0 ? true : false;
+        }
+    }
+
+    QtObject {
+        id: zone
+        objectName: "playerZone"
+        property int pid: 0
+        property ZonePlayer handle: ZonePlayer { }
+    }
 
     Loader {
         id: renderingModelLoader
@@ -370,62 +416,37 @@ Item {
         }
     }
 
-    Loader {
-        id: playerLoader
-        asynchronous: false
-        sourceComponent: Component {
-            ZonePlayer {
-                onJobFailed: popInfo.open(qsTr("Action can't be performed"));
-                onConnectedChanged: {
-                    player.connected = connected;
-                    player.zoneId = zoneId;
-                    player.zoneName = zoneName;
-                    player.zoneShortName = zoneShortName;
-                    player.controllerURI = controllerURI;
-                }
-                onRenderingGroupChanged: player.refreshRenderingGroup()
-                onRenderingChanged: player.refreshRendering()
-                onSourceChanged: player.refreshSource()
-                onPlayModeChanged: player.refreshPlayMode()
-                //onPlaybackStateChanged: {}
-                onSleepTimerChanged: player.sleepTimerEnabled = player.remainingSleepTimerDuration() > 0 ? true : false
-            }
-        }
-    }
-
+    // the track queue related to the player
+    // it must be plugged to the current instance of the zone player
+    // also it must be reloaded after any connection event
     Loader {
         id: trackQueueLoader
         asynchronous: true
         sourceComponent: Component {
             TrackQueue {
-                Component.onCompleted: {
-                    if (player.connected)
-                        initQueue(zonePlayer);
-                }
-                Connections {
-                    target: player
-                    onConnectedChanged: {
-                        initQueue(zonePlayer);
-                    }
-                }
+                // init is done by handleZPConnectedChanged
                 onTrackCountChanged: player.currentCount = trackCount
             }
         }
     }
 
-    Loader {
-        id: playingTimerLoader
-        asynchronous: true
-        sourceComponent: Component {
-            Timer {
-                interval: 1000;
-                running: false;
-                repeat: true;
-                onTriggered: {
-                    var npos = player.position + interval;
-                    player.position = npos > player.duration ? 0 : npos;
-                }
-            }
+    Timer {
+        id: playingTimer
+        interval: 1000;
+        running: false;
+        repeat: true;
+        onTriggered: {
+            var npos = player.trackPosition + interval;
+            player.trackPosition = npos > player.trackDuration ? 0 : npos;
+            player.currentPositionChanged(player.trackPosition, player.trackDuration);
+        }
+    }
+
+    Connections {
+        target: player
+        onIsPlayingChanged: {
+            // start or stop the playing timer regarding the status
+            playingTimer.running = (player.isPlaying && player.trackDuration > 1 ? true : false);
         }
     }
 }

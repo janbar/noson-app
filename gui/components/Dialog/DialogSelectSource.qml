@@ -63,7 +63,7 @@ DialogBase {
     }
 
     Connections {
-        target: player.zonePlayer
+        target: player
         onJobFailed: {
             sourceOutput.text = qsTr("Playing failed.")
             sourceOutput.visible = true

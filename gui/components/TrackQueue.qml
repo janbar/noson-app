@@ -19,7 +19,6 @@ import QtQuick 2.9
 import NosonApp 1.0
 
 Item {
-    property bool canLoad: false
     property int trackCount: 0
     property alias model: queue
 
@@ -29,23 +28,20 @@ Item {
 
     // Initialize the queue for given zone player
     function initQueue(zonePlayer) {
-        if (zonePlayer)
-            canLoad = queue.init(zonePlayer, "", false);
+        if (zonePlayer) {
+            queue.init(zonePlayer, "", false);
+            queue.asyncLoad();
+        }
     }
 
     function loadQueue() {
-        if (canLoad)
-            queue.asyncLoad()
-    }
-
-    onCanLoadChanged: {
-        loadQueue();
+        queue.asyncLoad()
     }
 
     Connections {
         target: queue
         onDataUpdated: {
-            loadQueue();
+            queue.asyncLoad();
         }
         onLoaded: {
             if (succeeded) {

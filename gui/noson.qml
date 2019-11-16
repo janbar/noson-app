@@ -191,9 +191,10 @@ ApplicationWindow {
     minimumHeight: units.gu(minSizeGU)
     minimumWidth: units.gu(minSizeGU)
 
-    // Cache built-in genre artworks
+    // built-in cache for genre artworks
     property var genreArtworks: []
 
+    // about alarms
     AlarmsModel {
         id: alarmsModel
         property bool updatePending: false
@@ -254,34 +255,31 @@ ApplicationWindow {
         }
 
         onTopologyChanged: {
-            AllZonesModel.asyncLoad()
-            delayReloadZone.start()
+            jobRunning = true;
+            delayReloadZone.start();
         }
     }
 
     Timer {
         id: delayReloadZone
-        interval: 250
+        interval: 100
         onTriggered: {
-            if (jobRunning) {
-                restart();
-            } else {
-                // Reload the zone and start the content loader thread
-                customdebug("Reloading the zone ...");
-                if (connectZone(currentZone)) {
-                    Sonos.runLoader();
-                    // Completing startup
-                    if (startup) {
-                        startup = false;
-                        if (playOnStart) {
-                            if (player.playStream(inputStreamUrl, "")) {
-                                tabs.pushNowPlaying();
-                            }
+            customdebug("Reloading the zone ...");
+            AllZonesModel.loadData();
+            if (connectZone(currentZone)) {
+                // launch the content loader thread
+                Sonos.runLoader();
+                // execute the requested actions at startup
+                if (startup) {
+                    startup = false;
+                    if (playOnStart) {
+                        if (player.playStream(inputStreamUrl, "")) {
+                            tabs.pushNowPlaying();
                         }
-                        // check for enabled alarm
-                        alarmEnabled = isAlarmEnabled();
                     }
                 }
+            } else {
+                jobRunning = false;
             }
         }
     }
@@ -440,10 +438,8 @@ ApplicationWindow {
     }
 
     onZoneChanged: {
-        // Some tasks are already launched during startup
-        if (!startup) {
-          alarmEnabled = isAlarmEnabled();
-        }
+        // check for enabled alarm
+        alarmEnabled = isAlarmEnabled();
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -513,21 +509,44 @@ ApplicationWindow {
     // Try to change zone
     // On success noZone is set to false
     function connectZone(name) {
-        var oldZone = currentZone;
         customdebug("Connecting zone '" + name + "'");
-        if (Sonos.isConnected() && player.connectZone(name)) {
-            currentZone = player.zoneName;
-            currentZoneTag = player.zoneShortName;
-            if (currentZone !== oldZone)
-                zoneChanged();
-            if (noZone)
-                noZone = false;
-            return true;
-        } else {
+        if (AllZonesModel.count === 0) {
             if (!noZone)
                 noZone = true;
+            return false;
         }
-        return false;
+        var found = false;
+        var model = null;
+        // search for the zone name
+        for (var p = 0; p < AllZonesModel.count; ++p) {
+            model = AllZonesModel.get(p);
+            if (model.name === name) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            // search for the coordinator name
+            for (p = 0; p < AllZonesModel.count; ++p) {
+                model = AllZonesModel.get(p);
+                if (model.coordinatorName === name) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if (!found) {
+            p = 0; // get the first
+            model = AllZonesModel.get(0);
+        }
+        player.connectZonePlayer(AllZonesModel.holdPlayer(p));
+        currentZone = model.name;
+        currentZoneTag = model.shortName;
+        zoneChanged();
+
+        if (noZone)
+            noZone = false;
+        return true;
     }
 
     // Action on request to update music library
@@ -684,6 +703,7 @@ ApplicationWindow {
         return false;
     }
 
+    // Action on save queue
     function saveQueue(title) {
         if (player.saveQueue(title))
             return true;
@@ -691,6 +711,7 @@ ApplicationWindow {
         return false;
     }
 
+    // Action on create playlist
     function createPlaylist(title) {
         if (player.createSavedQueue(title))
             return true;
@@ -698,6 +719,7 @@ ApplicationWindow {
         return false;
     }
 
+    // Action on append item to a playlist
     function addPlaylist(playlistId, modelItem, containerUpdateID) {
         if (player.addItemToSavedQueue(playlistId, modelItem, containerUpdateID)) {
             popInfo.open(qsTr("song added"));
@@ -707,6 +729,7 @@ ApplicationWindow {
         return false;
     }
 
+    // Action on remove item from a playlist
     function removeTracksFromPlaylist(playlistId, selectedIndices, containerUpdateID) {
         if (player.removeTracksFromSavedQueue(playlistId, selectedIndices, containerUpdateID)) {
             popInfo.open(qsTr("%n song(s) removed", "", selectedIndices.length));
@@ -724,6 +747,7 @@ ApplicationWindow {
         return false;
     }
 
+    // Action on remove a playlist
     function removePlaylist(itemId) {
         if (Sonos.destroySavedQueue(itemId))
             return true;
@@ -731,6 +755,7 @@ ApplicationWindow {
         return false;
     }
 
+    // Action on check item as favorite
     function addItemToFavorites(modelItem, description, artURI) {
         if (Sonos.addItemToFavorites(modelItem.payload, description, artURI))
             return true;
@@ -738,6 +763,7 @@ ApplicationWindow {
         return false;
     }
 
+    // Action on uncheck item from favorites
     function removeFromFavorites(itemPayload) {
         var id = AllFavoritesModel.findFavorite(itemPayload)
         if (id.length === 0) // no favorite
@@ -861,16 +887,16 @@ ApplicationWindow {
     Shortcut {
         sequence: "Alt+Right"           // Alt+Right   Seek forward +10secs
         onActivated: {
-            var position = player.position + 10000 < player.duration
-                ? player.position + 10000 : player.duration;
+            var position = player.trackPosition + 10000 < player.trackDuration
+                ? player.trackPosition + 10000 : player.trackDuration;
             player.seek(position);
         }
     }
     Shortcut {
         sequence: "Alt+Left"            // Alt+Left    Seek backwards -10secs
         onActivated: {
-            var position = player.position - 10000 > 0
-                    ? player.position - 10000 : 0;
+            var position = player.trackPosition - 10000 > 0
+                    ? player.trackPosition - 10000 : 0;
             player.seek(position);
         }
     }

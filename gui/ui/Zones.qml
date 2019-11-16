@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016, 2017
+ * Copyright (C) 2016-2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -95,6 +95,14 @@ MusicPage {
                 onClicked: {
                     connectZone(model.name)
                 }
+                onAction3Pressed: {
+                    if (zonePlayer.playbackState === "PLAYING")
+                        zonePlayer.pause();
+                    else
+                        zonePlayer.play();
+                }
+                action3Visible: false
+                action3IconSource: ""
                 onAction2Pressed: {
                     stackView.push("qrc:/ui/Group.qml", {"zoneId": model.id})
                 }
@@ -119,6 +127,51 @@ MusicPage {
                 ]
 
                 contentHeight: units.gu(8)
+                coverSize: units.gu(5)
+                noCover: "qrc:/images/no_cover.png"
+
+                property ZonePlayer zonePlayer: null
+                property int pid: 0
+
+                function handleZPSourceChanged() {
+                    if (zonePlayer.currentProtocol == 1) {
+                        imageSources = [{art: "qrc:/images/linein.png"}];
+                    } else if (zonePlayer.currentProtocol == 5) {
+                        imageSources = [{art: "qrc:/images/tv.png"}];
+                    } else {
+                        imageSources = makeCoverSource(zonePlayer.currentMetaArt, zonePlayer.currentMetaArtist, zonePlayer.currentMetaAlbum);
+                    }
+                }
+
+                function handleZPPlaybackStateChanged() {
+                    if (zonePlayer.currentMetaSource === "") {
+                        action3Visible = false;
+                        action3IconSource = "";
+                    } else {
+                        action3Visible = true;
+                        action3IconSource = (zonePlayer.playbackState === "PLAYING" ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg");
+                    }
+                }
+
+                Component.onCompleted: {
+                    zonePlayer = AllZonesModel.holdPlayer(model.index);
+                    if (zonePlayer) {
+                        pid = zonePlayer.pid;
+                        handleZPSourceChanged();
+                        handleZPPlaybackStateChanged();
+                    }
+                }
+
+                Connections {
+                    target: AllZonesModel
+                    onZpJobFailed: {
+                        if (pid === listItem.pid) {
+                            popInfo.open(qsTr("Action can't be performed"));
+                        }
+                    }
+                    onZpSourceChanged: { if (pid === listItem.pid) handleZPSourceChanged(); }
+                    onZpPlaybackStateChanged: { if (pid === listItem.pid) handleZPPlaybackStateChanged(); }
+                }
 
                 column: Column {
                     spacing: units.gu(1)

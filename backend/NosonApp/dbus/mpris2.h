@@ -123,13 +123,14 @@ signals:
   void Seeked(qlonglong position);
 
 private slots:
-  void connectionStateChanged();
-  void playbackStateChanged();
-  void volumeChanged();
-  void playModeChanged();
-  void currentTrackChanged();
+  void connectionStateChanged(int pid);
+  void playbackStateChanged(int pid);
+  void volumeChanged(int pid);
+  void playModeChanged(int pid);
+  void currentTrackChanged(int pid);
 
 private:
+  void initDBusService(int pid);
   void emitPlayerNotification(const QString& name, const QVariant& val);
   void emitNotification(const QString& name, const QVariant& val, const QString& mprisEntity);
 
@@ -170,6 +171,7 @@ private:
 private:
   Player* m_player;
   bool m_registered;
+  QString m_identity;
   QString m_serviceName;
   QString m_servicePath;
   QVariantMap m_metadata;

@@ -30,11 +30,13 @@ namespace nosonapp
 {
 
 class Sonos;
+class Player;
+class ZPRef;
 
 class ZoneItem
 {
 public:
-  ZoneItem(const SONOS::ZonePtr& ptr);
+  ZoneItem(ZPRef* ptr);
 
   virtual ~ZoneItem() { }
 
@@ -52,14 +54,19 @@ public:
 
   const QString& shortName() const { return m_shortName; }
 
+  const QString& coordinatorName() const { return m_coordinatorName; }
+
+  ZPRef* ref() const { return m_ptr; }
+
 private:
-  SONOS::ZonePtr m_ptr;
+  ZPRef* m_ptr;
   bool m_valid;
   QString m_id;
   QString m_name;
   QString m_icon;
   bool m_isGroup;
   QString m_shortName;
+  QString m_coordinatorName;
 };
 
 class ZonesModel : public QAbstractListModel, public ListModel<Sonos>
@@ -76,6 +83,7 @@ public:
     IconRole,
     IsGroupRole,
     ShortNameRole,
+    CoordinatorNameRole,
   };
 
   ZonesModel(QObject* parent = 0);
@@ -89,13 +97,17 @@ public:
 
   Q_INVOKABLE QVariantMap get(int row);
 
+  Q_INVOKABLE Player* holdPlayer(int row);
+
+  Q_INVOKABLE void releasePlayer(Player* player);
+
   Q_INVOKABLE bool isNew() { return m_dataState == DataStatus::DataBlank; }
 
   Q_INVOKABLE bool init(Sonos* provider, bool fill = false) { return ListModel<Sonos>::configure(provider, fill); }
 
   virtual void clearData();
 
-  virtual bool loadData();
+  Q_INVOKABLE bool loadData();
 
   Q_INVOKABLE bool asyncLoad();
 
@@ -110,12 +122,27 @@ signals:
   void countChanged();
   void loaded(bool succeeded);
 
+  void zpJobFailed(int pid);
+  void zpConnectedChanged(int pid);
+  void zpRenderingChanged(int pid);
+  void zpRenderingGroupChanged(int pid);
+  void zpSourceChanged(int pid);
+  void zpPlaybackStateChanged(int pid);
+  void zpPlayModeChanged(int pid);
+  void zpSleepTimerChanged(int pid);
+
 protected:
   QHash<int, QByteArray> roleNames() const;
 
 private:
   QList<ZoneItem*> m_items;
   QList<ZoneItem*> m_data;
+
+  int m_nextPid;
+
+  typedef QMap<QString, ZPRef*> PlayerMap; // { key:zoneName , value:ref }
+  PlayerMap m_players;
+  PlayerMap m_recycleBin;
 };
 
 }

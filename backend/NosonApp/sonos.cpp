@@ -214,6 +214,7 @@ QVariantList Sonos::getZones()
 {
   ZonesModel model;
   model.init(this, true);
+  model.resetModel();
   QVariantList list;
   for (int r = 0; r < model.rowCount(); ++r)
     list.append(model.get(r));

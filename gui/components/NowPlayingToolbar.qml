@@ -319,16 +319,19 @@ Item {
             }
             color: styleMusic.playerControls.progressForegroundColor
             height: parent.height
-            width: player.duration > 0 ? (player.position / player.duration) * playerControlsProgressBar.width : 0
+            width: hint(player.trackPosition, player.trackDuration)
+
+            function hint(position, duration) {
+                var val = 0;
+                if (position && duration)
+                    val = (duration > 0 ? (position / duration) * playerControlsProgressBar.width : 0);
+                playerControlsProgressBarHint.width = val;
+            }
 
             Connections {
                 target: player
-                onPositionChanged: {
-                    playerControlsProgressBarHint.width = player.duration > 0 ? (player.position / player.duration) * playerControlsProgressBar.width : 0
-                }
-                onStopped: {
-                    playerControlsProgressBarHint.width = 0;
-                }
+                onCurrentPositionChanged: playerControlsProgressBarHint.hint(position, duration)
+                onStopped: playerControlsProgressBarHint.hint(0, player.trackDuration)
             }
         }
     }

@@ -47,7 +47,7 @@ public:
   {
     m_player.beginJob();
     if (!m_player.setSource(m_payload) || !m_player.play())
-      emit m_player.jobFailed();
+      emit m_player.jobFailed(m_player.pid());
     m_player.endJob();
   }
 private:
@@ -68,7 +68,7 @@ public:
   {
     m_player.beginJob();
     if (!m_player.playStream(m_url, m_title))
-      emit m_player.jobFailed();
+      emit m_player.jobFailed(m_player.pid());
     m_player.endJob();
   }
 private:
@@ -89,7 +89,7 @@ public:
   {
     m_player.beginJob();
     if (!m_player.playFavorite(m_payload))
-      emit m_player.jobFailed();
+      emit m_player.jobFailed(m_player.pid());
     m_player.endJob();
   }
 private:
@@ -101,6 +101,7 @@ private:
 
 Player::Player(QObject *parent)
 : QObject(parent)
+, m_pid(0)
 , m_sonos(nullptr)
 , m_player(nullptr)
 , m_connected(false)
@@ -109,11 +110,8 @@ Player::Player(QObject *parent)
 , m_currentProtocol(-1)
 , m_queue(ManagedQueue(nullptr, ""))
 , m_queueUpdateID(0)
+, m_mpris2(nullptr)
 {
-#ifdef HAVE_DBUS
-  // Enable MPRIS interface
-  new Mpris2(this, this);
-#endif
 }
 
 Player::~Player()
@@ -126,26 +124,25 @@ Player::~Player()
       unregisterContent(queue->model);
     }
   }
+  disableMPRIS2();
   m_player.reset();
   m_sonos = nullptr;
 }
 
-bool Player::init(QObject* sonos, const QString& zoneName)
+bool Player::init(Sonos* sonos, const QString& zoneName)
 {
-  Sonos* _sonos = reinterpret_cast<Sonos*>(sonos);
-  if (_sonos)
+  if (sonos)
   {
-    SONOS::ZonePtr zone = _sonos->findZone(zoneName);
-    return init(_sonos, zone);
+    SONOS::ZonePtr zone = sonos->findZone(zoneName);
+    return init(sonos, zone);
   }
   return false;
 }
 
-bool Player::init(QObject* sonos, const QVariant& zone)
+bool Player::init(Sonos* sonos, const QVariant& zone)
 {
-  Sonos* _sonos = reinterpret_cast<Sonos*>(sonos);
   SONOS::ZonePtr _zone = zone.value<SONOS::ZonePtr>();
-  return init(_sonos, _zone);
+  return init(sonos, _zone);
 }
 
 bool Player::init(Sonos* sonos, const SONOS::ZonePtr& zone)
@@ -164,12 +161,12 @@ bool Player::init(Sonos* sonos, const SONOS::ZonePtr& zone)
       handleRenderingControlChange();
       handleTransportChange();
       m_connected = true;
-      emit connectedChanged();
+      emit connectedChanged(m_pid);
       return true;
     }
   }
 
-  emit connectedChanged();
+  emit connectedChanged(m_pid);
   return false;
 }
 
@@ -183,6 +180,30 @@ void Player::endJob()
 {
   if (m_sonos)
     m_sonos->endJob();
+}
+
+SONOS::ZonePtr Player::zone() const
+{
+  SONOS::PlayerPtr p(m_player);
+  if (p)
+    return p->GetZone();
+  return SONOS::ZonePtr();
+
+}
+
+void Player::enableMPRIS2()
+{
+  if (!m_mpris2)
+    m_mpris2 = new Mpris2(this);
+}
+
+void Player::disableMPRIS2()
+{
+  if (m_mpris2)
+  {
+    delete m_mpris2;
+    m_mpris2 = nullptr;
+  }
 }
 
 void Player::renewSubscriptions()
@@ -224,6 +245,14 @@ QString Player::zoneShortName() const
   SONOS::PlayerPtr p(m_player);
   if (p)
     return QString::fromUtf8(p->GetZone()->GetZoneShortName().c_str());
+  return QString();
+}
+
+QString Player::coordinatorName() const
+{
+  SONOS::PlayerPtr p(m_player);
+  if (p)
+    return QString::fromUtf8((p->GetZone()->GetCoordinator()->c_str()));
   return QString();
 }
 
@@ -757,7 +786,7 @@ bool Player::setVolumeGroup(double volume)
     }
     if (ret)
       m_RCGroup.volume = roundDouble(m_RCGroup.volumeFake = volume);
-    emit renderingChanged();
+    emit renderingChanged(m_pid);
     return ret;
   }
   return false;
@@ -793,7 +822,7 @@ bool Player::setVolume(const QString& uuid, double volume)
     else
       fake /= count;
     m_RCGroup.volume = roundDouble(m_RCGroup.volumeFake = fake);
-    emit renderingGroupChanged();
+    emit renderingGroupChanged(m_pid);
     return true;
   }
   return false;
@@ -1021,7 +1050,7 @@ void Player::handleTransportChange()
     SONOS::AVTProperty prop = p->GetTransportProperty();
 
     setCurrentMeta(prop);
-    emit sourceChanged();
+    emit sourceChanged(m_pid);
 
     if (prop.TransportState != m_AVTProperty.TransportState)
       signalMask |= AVTRANSPORT_STATE_CHANGED;
@@ -1035,11 +1064,11 @@ void Player::handleTransportChange()
     // Set property before emit
     m_AVTProperty = prop;
     if (signalMask & AVTRANSPORT_STATE_CHANGED)
-      emit playbackStateChanged();
+      emit playbackStateChanged(m_pid);
     if (signalMask & AVTRANSPORT_PLAYMODE_CHANGED)
-      emit playModeChanged();
+      emit playModeChanged(m_pid);
     if (signalMask & AVTRANSPORT_SLEEPTIMER_CHANGED)
-      emit sleepTimerChanged();
+      emit sleepTimerChanged(m_pid);
   }
 }
 
@@ -1237,9 +1266,9 @@ void Player::handleRenderingControlChange()
 
     // emit signal about changes
     if (signalMask & RENDERING_GROUP_CHANGED)
-      emit renderingGroupChanged();
+      emit renderingGroupChanged(m_pid);
     if (signalMask & RENDERING_CHANGED)
-      emit renderingChanged();
+      emit renderingChanged(m_pid);
   }
 }
 
