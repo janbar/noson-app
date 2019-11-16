@@ -940,7 +940,7 @@ void Player::runContentLoaderForContext(ListModel<Player>* model, int id)
   if (model && !model->m_pending && m_sonos)
   {
     model->m_pending = true; // decline next request
-    m_sonos->startJob(new CustomizedContentLoader<Player>(*this, model, id));
+    m_sonos->startJob(new ContentForContextLoader<Player>(*this, model, id));
   }
   else
     SONOS::DBG(DBG_ERROR, "%s: request id %d has been declined (%p)\n", __FUNCTION__, id, model);

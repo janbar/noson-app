@@ -183,10 +183,10 @@ private:
 };
 
 template<class T>
-class CustomizedContentLoader : public QRunnable
+class ContentForContextLoader : public QRunnable
 {
 public:
-  CustomizedContentLoader(ContentProvider<T>& provider, ListModel<T>* payload, int id)
+  ContentForContextLoader(ContentProvider<T>& provider, ListModel<T>* payload, int id)
   : m_provider(provider)
   , m_payload(payload)
   , m_id(id) { }
