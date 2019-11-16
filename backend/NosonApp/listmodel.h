@@ -92,7 +92,7 @@ public:
   {
     {
       LockGuard g(m_lock);
-      ContentProvider<T>* cp = (ContentProvider<T>*)(m_provider);
+      ContentProvider<T>* cp = (ContentProvider<T>*) m_provider;
       if (cp)
         cp->unregisterContent(this);
     }
@@ -118,13 +118,13 @@ public:
 protected:
   virtual bool configure(T* provider, const QString& root, bool fill)
   {
-    ContentProvider<T>* cp = (ContentProvider<T>*)(provider);
+    ContentProvider<T>* cp = (ContentProvider<T>*) provider;
     if (cp)
     {
       {
         LockGuard g(m_lock);
         if (m_provider)
-          cp->unregisterContent(this);
+          ((ContentProvider<T>*) m_provider)->unregisterContent(this);
         cp->registerContent(this, root);
         m_provider = provider;
         m_root = root;
