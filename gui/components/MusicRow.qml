@@ -26,7 +26,7 @@ Row {
 
     property real contentHeight: units.gu(6)
     property alias column: columnComponent.sourceComponent
-    property real coverSize: styleMusic.view.albumSize
+    property real coverSize: contentHeight
     property string noCover: "qrc:/images/no_cover.png"
     property var imageSources: []
     property string imageSource: ""
@@ -48,7 +48,7 @@ Row {
 
     signal imageError(var index)
 
-    spacing: units.gu(2)
+    spacing: units.gu(1)
 
     state: "default"
     states: [
@@ -66,43 +66,44 @@ Row {
         }
     ]
 
-    Image {
-        id: image
-        property int index: 0
+    Rectangle {
+        height: contentHeight
+        width: coverSize
+        color: "transparent"
         anchors {
             verticalCenter: parent.verticalCenter
             topMargin: units.gu(1)
             bottomMargin: units.gu(1)
         }
-        asynchronous: true
-        fillMode: Image.PreserveAspectCrop
-        height: contentHeight
-        width: height
-        source: imageSources !== undefined && imageSources.length ? imageSources[index].art : noCover
-        sourceSize.height: 512
-        sourceSize.width: 512
 
-
-        onStatusChanged: {
-            if (status === Image.Error) {
-                row.imageError(index)
-                if (imageSources.length > (index + 1)) {
-                    source = imageSources[++index].art
-                } else {
-                    source = noCover
-                }
-            } else if (status === Image.Ready) {
-                imageSource = source;
+        Image {
+            id: image
+            anchors {
+                verticalCenter: parent.verticalCenter
             }
-        }
-        visible: imageSources.length > 0
-    }
+            property int index: 0
+            asynchronous: true
+            fillMode: Image.PreserveAspectCrop
+            height: coverSize
+            width: height
+            source: imageSources !== undefined && imageSources.length ? imageSources[index].art : noCover
+            sourceSize.height: 512
+            sourceSize.width: 512
 
-    Rectangle {
-        height: contentHeight
-        width: units.dp(1)
-        color: "transparent"
-        visible: !image.visible
+            onStatusChanged: {
+                if (status === Image.Error) {
+                    row.imageError(index)
+                    if (imageSources.length > (index + 1)) {
+                        source = imageSources[++index].art
+                    } else {
+                        source = noCover
+                    }
+                } else if (status === Image.Ready) {
+                    imageSource = source;
+                }
+            }
+            visible: imageSources.length > 0
+        }
     }
 
     Loader {

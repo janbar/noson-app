@@ -74,6 +74,7 @@ MouseArea {
     }
 
     property alias contentHeight: row.contentHeight
+    property alias coverSize: row.coverSize
     property alias column: row.column
     property alias description: row.description
     property alias isFavorite: row.isFavorite
