@@ -49,16 +49,6 @@ MusicPage {
         }
     }
 
-    /*SortFilterModel {
-            // Sorting disabled as it is incorrect on first run (due to workers?)
-            // and SQL sorts the data correctly
-            id: addToPlaylistModelFilter
-            model: AllPlaylistsModel
-            filter.property: "title"
-            filter.pattern: new RegExp(searchHeader.query, "i")
-            filterCaseSensitivity: Qt.CaseInsensitive
-        }*/
-
     MusicGridView {
         id: addtoPlaylistView
         itemWidth: units.gu(12)
