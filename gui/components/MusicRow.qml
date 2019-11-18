@@ -41,8 +41,12 @@ Row {
     property alias actionIconSource: action.iconSource
     property alias action2Visible: action2.visible
     property alias action2IconSource: action2.iconSource
+    property alias action3Visible: action3.visible
+    property alias action3IconSource: action3.iconSource
+
     signal actionPressed
     signal action2Pressed
+    signal action3Pressed
     signal selected
     signal deselected
 
@@ -68,7 +72,7 @@ Row {
 
     Rectangle {
         height: contentHeight
-        width: coverSize
+        width: image.visible ? coverSize : units.dp(1)
         color: "transparent"
         anchors {
             verticalCenter: parent.verticalCenter
@@ -146,6 +150,30 @@ Row {
                 height: width
                 anchors.centerIn: parent
                 source: "qrc:/images/starred.svg"
+            }
+        }
+    }
+
+    Item {
+        id: action3
+        visible: false
+        anchors.right: action2.left
+        anchors.rightMargin: units.gu(1)
+        width: visible ? units.gu(5) : 0
+        property alias iconSource: icon3.source
+
+        Rectangle {
+            color: "transparent"
+            width: parent.width
+            height: row.height
+
+            Icon {
+                id: icon3
+                source: ""
+                width: parent.width
+                height: width
+                anchors.centerIn: parent
+                onClicked: action3Pressed()
             }
         }
     }

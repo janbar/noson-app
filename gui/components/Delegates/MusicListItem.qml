@@ -31,12 +31,16 @@ MouseArea {
     signal swipe
     signal click
     signal actionPressed
+    signal action2Pressed
+    signal action3Pressed
 
     signal imageError
 
     Connections {
         target: row
         onActionPressed: actionPressed()
+        onAction2Pressed: action2Pressed()
+        onAction3Pressed: action3Pressed()
     }
 
     property alias contentHeight: row.contentHeight
@@ -51,6 +55,8 @@ MouseArea {
     property alias actionIconSource: row.actionIconSource
     property alias action2Visible: row.action2Visible
     property alias action2IconSource: row.action2IconSource
+    property alias action3Visible: row.action3Visible
+    property alias action3IconSource: row.action3IconSource
     property alias menuVisible: row.menuVisible
     property alias menuItems: row.menuItems
 
