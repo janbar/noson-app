@@ -24,7 +24,6 @@
 #include "private/debug.h"
 #ifdef HAVE_DBUS
 #include "dbus/mpris2.h"
-#include "sonosplayer.h"
 #endif
 
 #include <string>
@@ -193,17 +192,21 @@ SONOS::ZonePtr Player::zone() const
 
 void Player::enableMPRIS2()
 {
+#ifdef HAVE_DBUS
   if (!m_mpris2)
     m_mpris2 = new Mpris2(this);
+#endif
 }
 
 void Player::disableMPRIS2()
 {
+#ifdef HAVE_DBUS
   if (m_mpris2)
   {
     delete m_mpris2;
     m_mpris2 = nullptr;
   }
+#endif
 }
 
 void Player::renewSubscriptions()
