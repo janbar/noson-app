@@ -73,7 +73,7 @@ namespace NSROOT
     bool IsValid() const { return m_valid; }
     const std::string& GetHost() const { return m_deviceHost; }
     unsigned GetPort() const { return m_devicePort; }
-    const ZonePtr& GetZone() const { return m_zone; }
+    ZonePtr GetZone() const { return m_zone; }
 
     void RevokeSubscription();
     void RenewSubscriptions();
