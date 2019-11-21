@@ -255,32 +255,7 @@ ApplicationWindow {
         }
 
         onTopologyChanged: {
-            jobRunning = true;
-            delayReloadZone.start();
-        }
-    }
-
-    Timer {
-        id: delayReloadZone
-        interval: 100
-        onTriggered: {
-            customdebug("Reloading the zone ...");
-            AllZonesModel.loadData();
-            if (connectZone(currentZone)) {
-                // launch the content loader thread
-                Sonos.runLoader();
-                // execute the requested actions at startup
-                if (startup) {
-                    startup = false;
-                    if (playOnStart) {
-                        if (player.playStream(inputStreamUrl, "")) {
-                            tabs.pushNowPlaying();
-                        }
-                    }
-                }
-            } else {
-                jobRunning = false;
-            }
+            AllZonesModel.asyncLoad();
         }
     }
 
@@ -364,7 +339,10 @@ ApplicationWindow {
     Connections {
         target: AllZonesModel
         onDataUpdated: AllZonesModel.asyncLoad()
-        onLoaded: AllZonesModel.resetModel()
+        onLoaded: {
+            AllZonesModel.resetModel();
+            reloadZone();
+        }
     }
 
     Connections {
@@ -502,6 +480,23 @@ ApplicationWindow {
         }
         ssdp = true; // point out the ssdp discovery is used to connect
         return Sonos.startInit(debugLevel);
+    }
+
+    function reloadZone() {
+        customdebug("Reloading the zone ...");
+        if (connectZone(currentZone)) {
+            // launch the content loader thread
+            Sonos.runLoader();
+            // execute the requested actions at startup
+            if (startup) {
+                startup = false;
+                if (playOnStart) {
+                    if (player.playStream(inputStreamUrl, "")) {
+                        tabs.pushNowPlaying();
+                    }
+                }
+            }
+        }
     }
 
     signal zoneChanged
