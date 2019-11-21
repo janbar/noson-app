@@ -162,7 +162,17 @@ Item {
                  }
                  size: parent.height
                  overlay: false
-                 covers: player.covers
+
+                 /* @FIXME: QML binding for covers fails randomly. So bind manually the covers */
+                 Component.onCompleted: {
+                     covers = player.covers.slice();
+                 }
+                 Connections {
+                     target: player
+                     onSourceChanged: {
+                         playerControlsImage.covers = player.covers.slice();
+                     }
+                 }
             }
 
             /* Column of meta labels */
