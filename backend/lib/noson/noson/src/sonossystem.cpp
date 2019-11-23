@@ -221,7 +221,7 @@ PlayerPtr System::GetPlayer(const ZonePtr& zone, void* CBHandle, EventCB eventCB
   if (!zone)
     return PlayerPtr();
   DBG(DBG_DEBUG, "%s: connect zone [%u] '%s'\n", __FUNCTION__, players->size(), zone->GetZoneName().c_str());
-  PlayerPtr player(new Player(zone, m_eventHandler, CBHandle, eventCB));
+  PlayerPtr player(new Player(zone, this, CBHandle, eventCB));
   if (player->IsValid())
   {
     players->insert(std::make_pair(zone->GetGroup(), player));

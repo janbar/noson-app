@@ -49,6 +49,7 @@ namespace NSROOT
 
   class System : private EventSubscriber
   {
+    friend class Player;
   public:
     System(void* CBHandle, EventCB eventCB);
     ~System();

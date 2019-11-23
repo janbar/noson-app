@@ -47,16 +47,19 @@ namespace NSROOT
   class SubscriptionThreadImpl : public Subscription::SubscriptionThread, private OS::CThread
   {
   public:
-    SubscriptionThreadImpl(const std::string& host, unsigned port, const std::string& url, unsigned bindingPort, unsigned timeout)
+    SubscriptionThreadImpl(const std::string& host, unsigned port, const std::string& url, unsigned bindingPort, unsigned ttl)
     : CThread()
+    , m_SID()
     , m_host(host)
     , m_port(port)
     , m_url(url)
     , m_bindingPort(bindingPort)
-    , m_timeout(timeout)
+    , m_ttl(SUBSCRIPTION_TIMEOUT_MAX)
     , m_configured(false)
     , m_renewable(false)
     {
+      m_ttl = (ttl < SUBSCRIPTION_TIMEOUT_MIN ? SUBSCRIPTION_TIMEOUT_MIN :
+              (ttl > SUBSCRIPTION_TIMEOUT_MAX ? SUBSCRIPTION_TIMEOUT_MAX : ttl));
       // Try to configure
       Configure();
     }
@@ -89,20 +92,27 @@ namespace NSROOT
     {
       if (IsRunning())
       {
-        UnSubscribeForEvent();
         m_event.Signal();
       }
     }
 
+    virtual const std::string& GetSID() { return m_SID; }
+
+    virtual const std::string& GetHost() { return m_host; }
+
+    virtual unsigned GetPort() { return m_port; }
+
   private:
+    std::string m_SID;
     std::string m_host;
     unsigned m_port;
     std::string m_url;
     unsigned m_bindingPort;
-    unsigned m_timeout;
+    unsigned m_ttl;
     bool m_configured;
     bool m_renewable;
     std::string m_myIP;
+    OS::CTimeout m_timeout;
     OS::CEvent m_event;
 
     virtual void* Process();
@@ -119,7 +129,7 @@ void* SubscriptionThreadImpl::Process()
   {
     // Reconfigure: IP may be leased for a time
     if (Configure() && (success = SubscribeForEvent(success)))
-      m_event.Wait(m_timeout * 900);
+      m_event.Wait(m_timeout.TimeLeft() * 90 / 100);
     else
     {
       // wait before retry
@@ -155,7 +165,7 @@ bool SubscriptionThreadImpl::SubscribeForEvent(bool renew)
   WSRequest request(m_host, m_port);
   request.RequestService(m_url, HRM_SUBSCRIBE);
   // is renewable ?
-  if (renew && m_renewable && !m_SID.empty())
+  if (renew && m_renewable && m_timeout.TimeLeft() > 0)
   {
     DBG(DBG_DEBUG, "%s: renew subscription (%s)\n", __FUNCTION__, m_SID.c_str());
     request.SetHeader("SID", m_SID);
@@ -168,11 +178,15 @@ bool SubscriptionThreadImpl::SubscribeForEvent(bool renew)
     request.SetHeader("NT", "upnp:event");
   }
   std::string tmo;
-  tmo.assign("Second-").append(std::to_string((uint32_t)m_timeout));
+  tmo.assign("Second-").append(std::to_string((uint32_t)m_ttl));
   request.SetHeader("TIMEOUT", tmo);
   WSResponse response(request);
   if (response.IsSuccessful() && response.GetHeaderValue("SID", m_SID))
+  {
+    m_timeout.Set(m_ttl * 1000);
     return true;
+  }
+  m_timeout.Clear();
   return false;
 }
 
@@ -187,6 +201,7 @@ bool SubscriptionThreadImpl::UnSubscribeForEvent()
     if (!response.IsSuccessful())
       return false;
     m_SID.clear();
+    m_timeout.Clear();
   }
   return true;
 }
@@ -196,10 +211,10 @@ Subscription::Subscription()
 {
 }
 
-Subscription::Subscription(const std::string& host, unsigned port, const std::string& url, unsigned bindingPort, unsigned timeout)
+Subscription::Subscription(const std::string& host, unsigned port, const std::string& url, unsigned bindingPort, unsigned ttl)
 : m_imp()
 {
-  m_imp = SubscriptionThreadPtr(new SubscriptionThreadImpl(host, port, url, bindingPort, timeout));
+  m_imp = SubscriptionThreadPtr(new SubscriptionThreadImpl(host, port, url, bindingPort, ttl));
 }
 
 Subscription::~Subscription()
@@ -228,4 +243,21 @@ void Subscription::AskRenewal()
 {
   if (m_imp)
     m_imp->AskRenewal();
+}
+
+const std::string& Subscription::GetSID()
+{
+  static std::string nil;
+  return m_imp ? m_imp->GetSID() : nil;
+}
+
+const std::string& Subscription::GetHost()
+{
+  static std::string nil;
+  return m_imp ? m_imp->GetHost() : nil;
+}
+
+unsigned Subscription::GetPort()
+{
+  return m_imp ? m_imp->GetPort() : 0;
 }

@@ -26,7 +26,9 @@
 
 #include <string>
 
-#define SUBSCRIPTION_TIMEOUT 3600
+#define SUBSCRIPTION_TIMEOUT_MIN  60
+#define SUBSCRIPTION_TIMEOUT_MAX  3600
+#define SUBSCRIPTION_TIMEOUT      SUBSCRIPTION_TIMEOUT_MAX
 
 namespace NSROOT
 {
@@ -35,7 +37,7 @@ namespace NSROOT
   {
   public:
     Subscription();
-    Subscription(const std::string& host, unsigned port, const std::string& url, unsigned bindingPort, unsigned timeout);
+    Subscription(const std::string& host, unsigned port, const std::string& url, unsigned bindingPort, unsigned ttl);
     ~Subscription();
 
     bool IsValid();
@@ -44,13 +46,16 @@ namespace NSROOT
 
     void Stop();
 
-    const std::string GetSID() { return m_imp ? m_imp->m_SID : ""; }
+    const std::string& GetSID();
+
+    const std::string& GetHost();
+
+    unsigned GetPort();
 
     void AskRenewal();
 
     class SubscriptionThread
     {
-      friend class Subscription;
     public:
       SubscriptionThread();
       virtual ~SubscriptionThread();
@@ -59,9 +64,9 @@ namespace NSROOT
       virtual void Stop() = 0;
       virtual bool IsRunning() = 0;
       virtual void AskRenewal() = 0;
-
-    protected:
-      std::string m_SID;
+      virtual const std::string& GetSID() = 0;
+      virtual const std::string& GetHost() = 0;
+      virtual unsigned GetPort() = 0;
     };
 
     typedef SHARED_PTR<SubscriptionThread> SubscriptionThreadPtr;

@@ -40,7 +40,8 @@ namespace NSROOT
   class DeviceProperties;
   class RenderingControl;
   class ContentDirectory;
-
+  class System;
+  
   class Player;
 
   typedef SHARED_PTR<Player> PlayerPtr;
@@ -54,11 +55,11 @@ namespace NSROOT
      * Initialize a zone player.
      * It will implement all needs to control the zone.
      * @param zone
-     * @param eventHandler
+     * @param System
      * @param CBHandle
      * @param eventCB
      */
-    Player(const ZonePtr& zone, EventHandler& eventHandler, void* CBHandle = 0, EventCB eventCB = 0);
+    Player(const ZonePtr& zone, System* system, void* CBHandle = 0, EventCB eventCB = 0);
 
     /**
      * Initialize a basic player without any substription or callback.
@@ -201,7 +202,7 @@ namespace NSROOT
     RCTable m_RCTable;
 
     // cold startup
-    bool Init(const ZonePtr& zone);
+    bool Init(System* system);
 
     // event callback
     static void CB_AVTransport(void* handle);

@@ -42,10 +42,10 @@
 
 using namespace NSROOT;
 
-Player::Player(const ZonePtr& zone, EventHandler& eventHandler, void* CBHandle, EventCB eventCB)
+Player::Player(const ZonePtr& zone, System* system, void* CBHandle, EventCB eventCB)
 : m_valid(false)
-, m_zone()
-, m_eventHandler(eventHandler)
+, m_zone(zone)
+, m_eventHandler()
 , m_uuid()
 , m_deviceHost()
 , m_devicePort(0)
@@ -56,11 +56,13 @@ Player::Player(const ZonePtr& zone, EventHandler& eventHandler, void* CBHandle, 
 , m_deviceProperties(0)
 , m_AVTransport(0)
 , m_contentDirectory(0)
+, m_AVTSubscription()
+, m_CDSubscription()
 {
   m_controllerLocalUri.assign(ProtocolTable[Protocol_http])
     .append("://").append(m_eventHandler.GetAddress())
     .append(":").append(std::to_string(m_eventHandler.GetPort()));
-  m_valid = Init(zone);
+  m_valid = Init(system);
 }
 
 Player::Player(const ZonePlayerPtr& zonePlayer)
@@ -77,6 +79,8 @@ Player::Player(const ZonePlayerPtr& zonePlayer)
 , m_deviceProperties(0)
 , m_AVTransport(0)
 , m_contentDirectory(0)
+, m_AVTSubscription()
+, m_CDSubscription()
 {
   if (zonePlayer && zonePlayer->IsValid())
   {
@@ -119,24 +123,26 @@ void Player::SubordinateRC::FillSRProperty(SRProperty& srp) const
     srp.property = *(renderingControl->GetRenderingProperty().Get());
 }
 
-bool Player::Init(const ZonePtr& zone)
+bool Player::Init(System* system)
 {
-  if (!zone)
+  assert(system);
+  if (!m_zone)
   {
     DBG(DBG_ERROR, "%s: invalid zone\n", __FUNCTION__);
     return false;
   }
-  ZonePlayerPtr cinfo = zone->GetCoordinator();
+  ZonePlayerPtr cinfo = m_zone->GetCoordinator();
   if (!cinfo || !cinfo->IsValid())
   {
-    DBG(DBG_ERROR, "%s: invalid coordinator for zone '%s' (%s)\n", __FUNCTION__, zone->GetZoneName().c_str(), cinfo->GetLocation().c_str());
+    DBG(DBG_ERROR, "%s: invalid coordinator for zone '%s' (%s)\n", __FUNCTION__, m_zone->GetZoneName().c_str(), cinfo->GetLocation().c_str());
     return false;
   }
   DBG(DBG_DEBUG, "%s: initialize player '%s' as coordinator (%s:%u)\n", __FUNCTION__, cinfo->c_str(), cinfo->GetHost().c_str(), cinfo->GetPort());
-  m_zone = zone;
   m_uuid = cinfo->GetUUID();
   m_deviceHost = cinfo->GetHost();
   m_devicePort = cinfo->GetPort();
+
+  m_eventHandler = system->m_eventHandler;
 
   TcpSocket sock;
   sock.Connect(m_deviceHost.c_str(), m_devicePort, 0);
@@ -151,7 +157,7 @@ bool Player::Init(const ZonePtr& zone)
   m_eventHandler.SubscribeForEvent(subId, EVENT_HANDLER_STATUS);
 
   // initialize subordinates
-  for (Zone::const_iterator it = zone->begin(); it != zone->end(); ++it)
+  for (Zone::const_iterator it = m_zone->begin(); it != m_zone->end(); ++it)
   {
     if ((*it)->IsValid())
     {
@@ -171,7 +177,11 @@ bool Player::Init(const ZonePtr& zone)
   m_AVTSubscription = Subscription(m_deviceHost, m_devicePort, AVTransport::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
   m_AVTransport = new AVTransport(m_deviceHost, m_devicePort, m_eventHandler, m_AVTSubscription, this, CB_AVTransport);
 
-  m_CDSubscription = Subscription(m_deviceHost, m_devicePort, ContentDirectory::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
+  // for a device we must share the subscription for the CD events because only one is allowed
+  if (m_deviceHost == system->m_CDSubscription.GetHost())
+    m_CDSubscription = system->m_CDSubscription;
+  else
+    m_CDSubscription = Subscription(m_deviceHost, m_devicePort, ContentDirectory::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
   m_contentDirectory = new ContentDirectory(m_deviceHost, m_devicePort, m_eventHandler, m_CDSubscription, this, CB_ContentDirectory);
 
   for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
@@ -225,6 +235,7 @@ void Player::CB_ContentDirectory(void* handle)
 
 void Player::RevokeSubscription()
 {
+  m_CDSubscription.Stop();
   m_AVTSubscription.Stop();
   for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     it->subscription.Stop();
@@ -235,6 +246,7 @@ void Player::RenewSubscriptions()
   for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
     it->subscription.AskRenewal();
   m_AVTSubscription.AskRenewal();
+  m_CDSubscription.AskRenewal();
 }
 
 unsigned char Player::LastEvents()
