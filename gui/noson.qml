@@ -120,8 +120,8 @@ ApplicationWindow {
 
     onApplicationSuspendedChanged: {
         if (!noZone && !applicationSuspended && player.connected) {
-            mainView.jobRunning = true
-            delayPlayerWakeUp.start()
+            mainView.jobRunning = true;
+            delayPlayerWakeUp.start();
         }
     }
 
@@ -130,12 +130,12 @@ ApplicationWindow {
         interval: 100
         onTriggered: {
             if (!player.wakeUp())
-                noZone = true
+                noZone = true;
             else {
-                Sonos.renewSubscriptions()
-                noZone = false
+                Sonos.renewSubscriptions();
+                noZone = false;
             }
-            mainView.jobRunning = false
+            mainView.jobRunning = false;
         }
     }
 
