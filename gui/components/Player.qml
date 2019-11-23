@@ -421,7 +421,7 @@ Item {
     // also it must be reloaded after any connection event
     Loader {
         id: trackQueueLoader
-        asynchronous: true
+        asynchronous: false
         sourceComponent: Component {
             TrackQueue {
                 // init is done by handleZPConnectedChanged
