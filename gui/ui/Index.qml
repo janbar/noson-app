@@ -106,7 +106,8 @@ MusicPage {
     Component.onCompleted: {
         if (AllGenresModel.isNew()) {
             AllGenresModel.init(Sonos, "", false);
-            AllGenresModel.asyncLoad();
+            if (Sonos.isConnected())
+                AllGenresModel.asyncLoad();
         } else {
             resetIndexModel();
         }
