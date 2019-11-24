@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2018 Jean-Luc Barriere
+ *      Copyright (C) 2014-2019 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -60,21 +60,24 @@ System::System(void* CBHandle, EventCB eventCB)
 , m_eventCB(eventCB)
 , m_eventSignaled(false)
 , m_eventMask(0)
-, m_groupTopology(0)
-, m_deviceProperties(0)
-, m_alarmClock(0)
-, m_contentDirectory(0)
-, m_musicServices(0)
+, m_groupTopology(nullptr)
+, m_deviceProperties(nullptr)
+, m_alarmClock(nullptr)
+, m_contentDirectory(nullptr)
+, m_musicServices(nullptr)
 , m_players(PlayerMap())
+, m_subscriptionPool()
 {
   m_subId = m_eventHandler.CreateSubscription(this);
   m_eventHandler.SubscribeForEvent(m_subId, EVENT_HANDLER_STATUS);
   if (!m_eventHandler.Start())
     DBG(DBG_ERROR, "%s: starting event handler failed\n", __FUNCTION__);
   else
+  {
     m_systemLocalUri.assign(ProtocolTable[Protocol_http])
         .append("://").append(m_eventHandler.GetAddress())
         .append(":").append(std::to_string(m_eventHandler.GetPort()));
+  }
 }
 
 System::~System()
@@ -85,6 +88,13 @@ System::~System()
   SAFE_DELETE(m_alarmClock);
   SAFE_DELETE(m_deviceProperties);
   SAFE_DELETE(m_groupTopology);
+  if (m_subscriptionPool)
+  {
+    m_subscriptionPool->UnsubscribeEvent(m_AlarmClockSubscription);
+    m_subscriptionPool->UnsubscribeEvent(m_CDSubscription);
+    m_subscriptionPool->UnsubscribeEvent(m_ZGTSubscription);
+    m_subscriptionPool.reset();
+  }
   SAFE_DELETE(m_cbzgt);
   SAFE_DELETE(m_mutex);
 }
@@ -116,8 +126,16 @@ bool System::Discover(const std::string& url)
   SAFE_DELETE(m_deviceProperties);
   SAFE_DELETE(m_groupTopology);
 
+  if (m_subscriptionPool)
+  {
+    m_subscriptionPool->UnsubscribeEvent(m_AlarmClockSubscription);
+    m_subscriptionPool->UnsubscribeEvent(m_CDSubscription);
+    m_subscriptionPool->UnsubscribeEvent(m_ZGTSubscription);
+  }
+  m_subscriptionPool = SubscriptionPoolPtr(new SubscriptionPool());
+
   // subscribe to ZoneGroupTopology events
-  m_ZGTSubscription = Subscription(uri.Host(), uri.Port(), ZoneGroupTopology::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
+  m_ZGTSubscription = m_subscriptionPool->SubscribeEvent(uri.Host(), uri.Port(), ZoneGroupTopology::EventURL, m_eventHandler.GetPort());
   m_groupTopology = new ZoneGroupTopology(uri.Host(), uri.Port(), m_eventHandler, m_ZGTSubscription, this, CB_ZGTopology);
   m_ZGTSubscription.Start();
 
@@ -149,12 +167,12 @@ bool System::Discover(const std::string& url)
   m_smservices = m_musicServices->GetAvailableServices();
 
   // subscribe to AlarmClock events
-  m_AlarmClockSubscription = Subscription(uri.Host(), uri.Port(), AlarmClock::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
+  m_AlarmClockSubscription = m_subscriptionPool->SubscribeEvent(uri.Host(), uri.Port(), AlarmClock::EventURL, m_eventHandler.GetPort());
   m_alarmClock = new AlarmClock(uri.Host(), uri.Port(), m_eventHandler, m_AlarmClockSubscription, this, CB_AlarmClock);
   m_AlarmClockSubscription.Start();
 
   // subscribe to ContentDirectory events
-  m_CDSubscription = Subscription(uri.Host(), uri.Port(), ContentDirectory::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
+  m_CDSubscription = m_subscriptionPool->SubscribeEvent(uri.Host(), uri.Port(), ContentDirectory::EventURL, m_eventHandler.GetPort());
   m_contentDirectory = new ContentDirectory(uri.Host(), uri.Port(), m_eventHandler, m_CDSubscription, this, CB_ContentDirectory);
   m_CDSubscription.Start();
 
@@ -177,12 +195,7 @@ unsigned char System::LastEvents()
 
 void System::RenewSubscriptions()
 {
-  m_ZGTSubscription.AskRenewal();
-  m_AlarmClockSubscription.AskRenewal();
-  m_CDSubscription.AskRenewal();
-  Locked<PlayerMap>::pointer pm = m_players.Get();
-  for (PlayerMap::iterator it = pm->begin(); it != pm->end(); ++it)
-    it->second->RenewSubscriptions();
+  m_subscriptionPool->RenewSubscriptions();
 }
 
 ZoneList System::GetZoneList() const

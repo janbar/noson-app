@@ -52,6 +52,10 @@ namespace NSROOT
 
     unsigned GetPort();
 
+    const std::string& GetUrl();
+
+    unsigned GetBindingPort();
+
     void AskRenewal();
 
     class SubscriptionThread
@@ -67,6 +71,8 @@ namespace NSROOT
       virtual const std::string& GetSID() = 0;
       virtual const std::string& GetHost() = 0;
       virtual unsigned GetPort() = 0;
+      virtual const std::string& GetUrl() = 0;
+      virtual unsigned GetBindingPort() = 0;
     };
 
     typedef SHARED_PTR<SubscriptionThread> SubscriptionThreadPtr;

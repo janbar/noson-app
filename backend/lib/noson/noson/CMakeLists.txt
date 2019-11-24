@@ -185,6 +185,8 @@ file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/alarm.h
           DESTINATION ${noson_PUBLIC_DIR})
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/requestbroker.h
           DESTINATION ${noson_PUBLIC_DIR})
+file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/subscriptionpool.h
+          DESTINATION ${noson_PUBLIC_DIR})
 
 # Copy headers for streams
 file (COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/audioencoder.h
@@ -264,6 +266,7 @@ list (APPEND SRC_FILES
   src/sonoszone.cpp
   src/streambuffer.cpp
   src/subscription.cpp
+  src/subscriptionpool.cpp
   src/zonegrouptopology.cpp
 )
 
@@ -303,6 +306,7 @@ list (APPEND HDR_FILES
   src/streambuffer.h
   src/streamreader.h
   src/subscription.h
+  src/subscriptionpool.h
   src/zonegrouptopology.h
 )
 

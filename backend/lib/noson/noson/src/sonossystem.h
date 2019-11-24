@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2014-2018 Jean-Luc Barriere
+ *      Copyright (C) 2014-2019 Jean-Luc Barriere
  *
  *  This file is part of Noson
  *
@@ -25,7 +25,7 @@
 #include "sonoszone.h"
 #include "sonosplayer.h"
 #include "eventhandler.h"
-#include "subscription.h"
+#include "subscriptionpool.h"
 #include "musicservices.h"
 #include "alarm.h"
 
@@ -180,6 +180,8 @@ namespace NSROOT
     typedef std::map<std::string, PlayerPtr> PlayerMap;
     Locked<PlayerMap> m_players;
 
+    SubscriptionPoolPtr m_subscriptionPool;
+    
     // About this controler
     std::string m_systemLocalUri;
 

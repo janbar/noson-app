@@ -102,6 +102,10 @@ namespace NSROOT
 
     virtual unsigned GetPort() { return m_port; }
 
+    virtual const std::string& GetUrl() { return m_url; }
+
+    virtual unsigned GetBindingPort() { return m_bindingPort; }
+
   private:
     std::string m_SID;
     std::string m_host;
@@ -260,4 +264,15 @@ const std::string& Subscription::GetHost()
 unsigned Subscription::GetPort()
 {
   return m_imp ? m_imp->GetPort() : 0;
+}
+
+const std::string& Subscription::GetUrl()
+{
+  static std::string nil;
+  return m_imp ? m_imp->GetUrl() : nil;
+}
+
+unsigned Subscription::GetBindingPort()
+{
+  return m_imp ? m_imp->GetBindingPort() : 0;
 }

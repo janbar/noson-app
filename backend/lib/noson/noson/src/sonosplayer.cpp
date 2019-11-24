@@ -53,9 +53,10 @@ Player::Player(const ZonePtr& zone, System* system, void* CBHandle, EventCB even
 , m_eventCB(eventCB)
 , m_eventSignaled(false)
 , m_eventMask(0)
-, m_deviceProperties(0)
-, m_AVTransport(0)
-, m_contentDirectory(0)
+, m_deviceProperties(nullptr)
+, m_AVTransport(nullptr)
+, m_contentDirectory(nullptr)
+, m_subscriptionPool()
 , m_AVTSubscription()
 , m_CDSubscription()
 {
@@ -72,13 +73,14 @@ Player::Player(const ZonePlayerPtr& zonePlayer)
 , m_uuid()
 , m_deviceHost()
 , m_devicePort(0)
-, m_CBHandle(0)
-, m_eventCB(0)
+, m_CBHandle(nullptr)
+, m_eventCB(nullptr)
 , m_eventSignaled(false)
 , m_eventMask(0)
-, m_deviceProperties(0)
-, m_AVTransport(0)
-, m_contentDirectory(0)
+, m_deviceProperties(nullptr)
+, m_AVTransport(nullptr)
+, m_contentDirectory(nullptr)
+, m_subscriptionPool()
 , m_AVTSubscription()
 , m_CDSubscription()
 {
@@ -111,8 +113,18 @@ Player::~Player()
   SAFE_DELETE(m_contentDirectory);
   SAFE_DELETE(m_AVTransport);
   SAFE_DELETE(m_deviceProperties);
+  // WARNING: all subscriptions from the pool MUST be released
+  if (m_subscriptionPool)
+  {
+    m_subscriptionPool->UnsubscribeEvent(m_CDSubscription);
+    m_subscriptionPool->UnsubscribeEvent(m_AVTSubscription);
+  }
   for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+  {
+    if (m_subscriptionPool)
+      m_subscriptionPool->UnsubscribeEvent(it->subscription);
     SAFE_DELETE(it->renderingControl);
+  }
 }
 
 void Player::SubordinateRC::FillSRProperty(SRProperty& srp) const
@@ -143,6 +155,7 @@ bool Player::Init(System* system)
   m_devicePort = cinfo->GetPort();
 
   m_eventHandler = system->m_eventHandler;
+  m_subscriptionPool = system->m_subscriptionPool;
 
   TcpSocket sock;
   sock.Connect(m_deviceHost.c_str(), m_devicePort, 0);
@@ -164,7 +177,7 @@ bool Player::Init(System* system)
       SubordinateRC rc;
       rc.uuid = (*it)->GetUUID();
       rc.name = **it;
-      rc.subscription = Subscription((*it)->GetHost(), (*it)->GetPort(), RenderingControl::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
+      rc.subscription = m_subscriptionPool->SubscribeEvent((*it)->GetHost(), (*it)->GetPort(), RenderingControl::EventURL, m_eventHandler.GetPort());
       rc.renderingControl = new RenderingControl((*it)->GetHost(), (*it)->GetPort(), m_eventHandler, rc.subscription, this, CB_RenderingControl);
       m_RCTable.push_back(rc);
     }
@@ -174,14 +187,10 @@ bool Player::Init(System* system)
 
   m_deviceProperties = new DeviceProperties(m_deviceHost, m_devicePort);
 
-  m_AVTSubscription = Subscription(m_deviceHost, m_devicePort, AVTransport::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
+  m_AVTSubscription = m_subscriptionPool->SubscribeEvent(m_deviceHost, m_devicePort, AVTransport::EventURL, m_eventHandler.GetPort());
   m_AVTransport = new AVTransport(m_deviceHost, m_devicePort, m_eventHandler, m_AVTSubscription, this, CB_AVTransport);
 
-  // for a device we must share the subscription for the CD events because only one is allowed
-  if (m_deviceHost == system->m_CDSubscription.GetHost())
-    m_CDSubscription = system->m_CDSubscription;
-  else
-    m_CDSubscription = Subscription(m_deviceHost, m_devicePort, ContentDirectory::EventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
+  m_CDSubscription = m_subscriptionPool->SubscribeEvent(m_deviceHost, m_devicePort, ContentDirectory::EventURL, m_eventHandler.GetPort());
   m_contentDirectory = new ContentDirectory(m_deviceHost, m_devicePort, m_eventHandler, m_CDSubscription, this, CB_ContentDirectory);
 
   for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)

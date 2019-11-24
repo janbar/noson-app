@@ -26,7 +26,7 @@
 #include "sonostypes.h"
 #include "sonoszone.h"
 #include "eventhandler.h"
-#include "subscription.h"
+#include "subscriptionpool.h"
 #include "element.h"
 #include "locked.h"
 
@@ -184,6 +184,7 @@ namespace NSROOT
     std::string m_controllerUri;
 
     // Services subscriptions
+    SubscriptionPoolPtr m_subscriptionPool;
     Subscription m_AVTSubscription;
     Subscription m_CDSubscription;
 
