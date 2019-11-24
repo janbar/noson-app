@@ -162,6 +162,11 @@ MusicPage {
                     }
                 }
 
+                Component.onDestruction: {
+                    if (zonePlayer)
+                        AllZonesModel.releasePlayer(zonePlayer);
+                }
+
                 Connections {
                     target: AllZonesModel
                     onZpJobFailed: {
