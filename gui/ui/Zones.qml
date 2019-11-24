@@ -149,7 +149,7 @@ MusicPage {
                         action3IconSource = "";
                     } else {
                         action3Visible = true;
-                        action3IconSource = (zonePlayer.playbackState === "PLAYING" ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg");
+                        action3IconSource = (zonePlayer.playbackState === "PLAYING" ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-preview-start.svg");
                     }
                 }
 
