@@ -72,6 +72,7 @@ public:
   Q_INVOKABLE void deleteServiceOAuth(const QString& type, const QString& sn);
 
   Q_INVOKABLE void renewSubscriptions();
+  Q_INVOKABLE void startRenewSubscriptions();
 
   Q_INVOKABLE QVariantList getZones();
 

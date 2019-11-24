@@ -117,6 +117,23 @@ private:
   QVariant m_zonePayload;
 };
 
+class RenewSubscriptionsWorker : public QRunnable
+{
+public:
+  RenewSubscriptionsWorker(Sonos& sonos)
+  : m_sonos(sonos)
+  { }
+
+  virtual void run() override
+  {
+    m_sonos.beginJob();
+    m_sonos.renewSubscriptions();
+    m_sonos.endJob();
+  }
+private:
+  Sonos& m_sonos;
+};
+
 }
 
 Sonos::Sonos(QObject* parent)
@@ -208,6 +225,11 @@ void Sonos::deleteServiceOAuth(const QString& type, const QString& sn)
 void Sonos::renewSubscriptions()
 {
   m_system.RenewSubscriptions();
+}
+
+void Sonos::startRenewSubscriptions()
+{
+  m_workerPool.tryStart(new RenewSubscriptionsWorker(*this));
 }
 
 QVariantList Sonos::getZones()

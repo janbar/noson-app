@@ -106,12 +106,8 @@ Item {
         return str;
     }
 
-    function wakeUp() {
-        if (zone.handle.ping()) {
-            zone.handle.renewSubscriptions();
-            return true;
-        }
-        return false;
+    function ping() {
+        return connected && zone.handle.ping();
     }
 
     function stop() {

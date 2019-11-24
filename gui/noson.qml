@@ -118,27 +118,6 @@ ApplicationWindow {
         id: player
     }
 
-    onApplicationSuspendedChanged: {
-        if (!noZone && !applicationSuspended && player.connected) {
-            mainView.jobRunning = true;
-            delayPlayerWakeUp.start();
-        }
-    }
-
-    Timer {
-        id: delayPlayerWakeUp
-        interval: 100
-        onTriggered: {
-            if (!player.wakeUp())
-                noZone = true;
-            else {
-                Sonos.renewSubscriptions();
-                noZone = false;
-            }
-            mainView.jobRunning = false;
-        }
-    }
-
     // Variables
     property string appName: "Noson"    // My name
     property int debugLevel: 2          // My debug level
@@ -147,7 +126,7 @@ ApplicationWindow {
     property bool ssdp: true            // point out the connect method
 
     // Property to store the state of an application (active or suspended)
-    property bool applicationSuspended: Qt.application.state === Qt.ApplicationSuspended
+    property bool applicationSuspended: false
 
     // setting alias to check first run
     property alias firstRun: settings.firstRun
@@ -226,6 +205,35 @@ ApplicationWindow {
     ////
     //// Events
     ////
+
+    Connections {
+        target: Qt.application
+        onStateChanged: {
+            if (Qt.application.state === Qt.ApplicationSuspended)
+                applicationSuspended = true;
+            else if (applicationSuspended === true) {
+                applicationSuspended = false;
+                if (!noZone) {
+                    jobRunning = true;
+                    delayWakeUp.start();
+                }
+            }
+        }
+    }
+
+    Timer {
+        id: delayWakeUp
+        interval: 100
+        onTriggered: {
+            if (!player.ping()) {
+                noZone = true;
+                jobRunning = false;
+            } else {
+                customdebug("Renew all subscriptions");
+                Sonos.startRenewSubscriptions();
+            }
+        }
+    }
 
     Connections {
         target: Sonos
