@@ -126,12 +126,16 @@ MusicPage {
                     }
                 ]
 
-                contentHeight: units.gu(8)
+                contentHeight: units.gu(10)
                 coverSize: units.gu(5)
                 noCover: "qrc:/images/no_cover.png"
 
                 property ZonePlayer zonePlayer: null
                 property int pid: 0
+
+                property string playbackState: ""
+                property string currentMetaTitle: ""
+                property string currentDuration: ""
 
                 function handleZPSourceChanged() {
                     if (zonePlayer.currentProtocol == 1) {
@@ -141,6 +145,11 @@ MusicPage {
                     } else {
                         imageSources = makeCoverSource(zonePlayer.currentMetaArt, zonePlayer.currentMetaArtist, zonePlayer.currentMetaAlbum);
                     }
+                    currentMetaTitle = zonePlayer.currentMetaTitle;
+                    if (zonePlayer.currentTrackDuration > 0)
+                        currentDuration = mainView.durationToString(1000 * zonePlayer.currentTrackDuration);
+                    else
+                        currentDuration = "";
                 }
 
                 function handleZPPlaybackStateChanged() {
@@ -151,6 +160,7 @@ MusicPage {
                         action3Visible = true;
                         action3IconSource = (zonePlayer.playbackState === "PLAYING" ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-preview-start.svg");
                     }
+                    playbackState = zonePlayer.playbackState.replace('_', ' ');
                 }
 
                 Component.onCompleted: {
@@ -192,8 +202,38 @@ MusicPage {
                         id: fullName
                         color: styleMusic.view.secondaryColor
                         font.pointSize: units.fs("small")
-                        text: model.name
-                        visible: model.isGroup
+                        font.weight: Font.DemiBold
+                        text: model.isGroup ? model.name : playbackState
+                        visible: text !== ""
+                    }
+
+                    Row {
+                        spacing: units.gu(0.5)
+                        width: parent.width
+
+                        Label {
+                            id: sourceTitle
+                            color: styleMusic.view.primaryColor
+                            font.pointSize: units.fs("small")
+                            text: currentMetaTitle
+                            visible: currentMetaTitle !== ""
+                        }
+
+                        Label {
+                            id: separatorDuration
+                            color: styleMusic.view.primaryColor
+                            font.pointSize: units.fs("small")
+                            text: " | "
+                            visible: currentDuration !== ""
+                        }
+
+                        Label {
+                            id: sourceDuration
+                            color: styleMusic.view.primaryColor
+                            font.pointSize: units.fs("small")
+                            text: currentDuration
+                            visible: currentDuration !== ""
+                        }
                     }
                 }
             }
