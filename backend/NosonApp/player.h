@@ -85,7 +85,6 @@ public:
   Q_INVOKABLE void enableMPRIS2();
   Q_INVOKABLE void disableMPRIS2();
 
-  Q_INVOKABLE void renewSubscriptions();
   Q_INVOKABLE bool ping();
   Q_INVOKABLE QString zoneId() const;
   Q_INVOKABLE QString zoneName() const;

@@ -209,13 +209,6 @@ void Player::disableMPRIS2()
 #endif
 }
 
-void Player::renewSubscriptions()
-{
-  SONOS::PlayerPtr p(m_player);
-  if (p)
-    p->RenewSubscriptions();
-}
-
 bool Player::ping()
 {
   SONOS::PlayerPtr p(m_player);
