@@ -21,13 +21,13 @@
 #include "player.h"
 #include "sonos.h"
 #include "tools.h"
-#include "private/debug.h"
 #ifdef HAVE_DBUS
 #include "dbus/mpris2.h"
 #endif
 
 #include <string>
 #include <vector>
+#include <QDebug>
 
 using namespace nosonapp;
 
@@ -774,7 +774,7 @@ bool Player::setVolumeGroup(double volume)
         continue; // output is fixed
       double fake = it->volumeFake * r;
       int v = roundDouble(fake < 1.0 ? 0.0 : fake < 100.0 ? fake : 100.0);
-      SONOS::DBG(DBG_DEBUG, "%s: req=%3.3f ratio=%3.3f fake=%3.3f vol=%d\n", __FUNCTION__, volume, r, fake, v);
+      qDebug("%s: req=%3.3f ratio=%3.3f fake=%3.3f vol=%d", __FUNCTION__, volume, r, fake, v);
       if (p->SetVolume(it->uuid, v))
         it->volumeFake = fake;
       else
@@ -937,12 +937,12 @@ void Player::runContentLoader(ListModel<Player>* model)
     m_sonos->startJob(new ContentLoader<Player>(*this, model));
   }
   else
-    SONOS::DBG(DBG_ERROR, "%s: request has been declined (%p)\n", __FUNCTION__, model);
+    qWarning("%s: request has been declined (%p)", __FUNCTION__, model);
 }
 
 void Player::loadContent(ListModel<Player>* model)
 {
-  SONOS::DBG(DBG_DEBUG, "%s: %p (%s)\n", __FUNCTION__, model, model->m_root.toUtf8().constData());
+  qDebug("%s: %p (%s)", __FUNCTION__, model, model->m_root.toUtf8().constData());
   //emit loadingStarted();
   model->m_pending = false; // accept add next request in queue
   model->loadData();
@@ -968,7 +968,7 @@ void Player::runContentLoaderForContext(ListModel<Player>* model, int id)
     m_sonos->startJob(new ContentForContextLoader<Player>(*this, model, id));
   }
   else
-    SONOS::DBG(DBG_ERROR, "%s: request id %d has been declined (%p)\n", __FUNCTION__, id, model);
+    qWarning("%s: request id %d has been declined (%p)", __FUNCTION__, id, model);
 }
 
 void Player::loadContentForContext(ListModel<Player>* model, int id)
@@ -1003,7 +1003,7 @@ void Player::registerContent(ListModel<Player>* model, const QString& root)
 {
   if (model)
   {
-    SONOS::DBG(DBG_DEBUG, "%s: %p (%s)\n", __FUNCTION__, model, model->m_root.toUtf8().constData());
+    qDebug("%s: %p (%s)", __FUNCTION__, model, model->m_root.toUtf8().constData());
     Locked<ManagedQueue>::pointer rc = m_queue.Get();
     if (rc->model == model)
     {
@@ -1021,7 +1021,7 @@ void Player::unregisterContent(ListModel<Player>* model)
 {
   if (model)
   {
-    SONOS::DBG(DBG_DEBUG, "%s: %p (%s)\n", __FUNCTION__, model, model->m_root.toUtf8().constData());
+    qDebug("%s: %p (%s)", __FUNCTION__, model, model->m_root.toUtf8().constData());
     Locked<ManagedQueue>::pointer rc = m_queue.Get();
     if (rc->model == model)
     {
@@ -1227,7 +1227,7 @@ void Player::handleRenderingControlChange()
             signalMask |= RENDERING_CHANGED;
           }
         }
-        SONOS::DBG(DBG_DEBUG, "%s: [%s] sig=%d volume: %3.3f [%d]\n", __FUNCTION__, it->uuid.c_str(), signalMask, itz->volumeFake, itz->volume);
+        qDebug("%s: [%s] sig=%d volume: %3.3f [%d]", __FUNCTION__, it->uuid.c_str(), signalMask, itz->volumeFake, itz->volume);
         if (!itz->mute)
           mute = false; // exists active audio in group
         if (!itz->outputFixed)
@@ -1258,7 +1258,7 @@ void Player::handleRenderingControlChange()
       signalMask |= RENDERING_GROUP_CHANGED; // handles group update
     }
 
-    SONOS::DBG(DBG_DEBUG, "%s: sig=%d volume: %3.3f [%d]\n", __FUNCTION__, signalMask, m_RCGroup.volumeFake, m_RCGroup.volume);
+    qDebug("%s: sig=%d volume: %3.3f [%d]", __FUNCTION__, signalMask, m_RCGroup.volumeFake, m_RCGroup.volume);
 
     // emit signal about changes
     if (signalMask & RENDERING_GROUP_CHANGED)
@@ -1299,7 +1299,7 @@ void Player::playerEventCB(void* handle)
         SONOS::ContentProperty prop = p->GetContentProperty();
         for (std::vector<std::pair<std::string, unsigned> >::const_iterator uit = prop.ContainerUpdateIDs.begin(); uit != prop.ContainerUpdateIDs.end(); ++uit)
         {
-          SONOS::DBG(DBG_DEBUG, "%s: container [%s] has being updated to %u\n", __FUNCTION__, uit->first.c_str(), uit->second);
+          qDebug("%s: container [%s] has being updated to %u", __FUNCTION__, uit->first.c_str(), uit->second);
           // same base
           if (cl->model->m_updateID != uit->second && _base == uit->first.c_str())
             cl->model->handleDataUpdate();

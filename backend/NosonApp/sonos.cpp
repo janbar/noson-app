@@ -19,7 +19,6 @@
  */
 
 #include "sonos.h"
-#include "private/debug.h"
 #include "listmodel.h"
 #include "alarmsmodel.h"
 #include <noson/requestbroker.h>
@@ -30,6 +29,7 @@
 #endif
 
 #include <QString>
+#include <QDebug>
 
 #define THREAD_EXPIRY_TIMEOUT  10000
 #define DEFAULT_MAX_THREAD     16
@@ -146,7 +146,7 @@ Sonos::Sonos(QObject* parent)
 , m_jobCount(LockedNumber<int>(0))
 , m_locale("en_US")
 {
-  SONOS::DBGLevel(2);
+  SONOS::System::Debug(2);
   // Set the local URI of my http listener
   m_systemLocalURI = QString::fromUtf8(m_system.GetSystemLocalUri().c_str());
   // Register handlers to process remote request
@@ -181,18 +181,18 @@ bool Sonos::startInit(int debug)
 
 bool Sonos::init(int debug /*= 0*/)
 {
-  SONOS::DBGLevel(debug > DBG_INFO ? debug : DBG_INFO);
+  SONOS::System::Debug(2);
   bool ret = m_system.Discover();
-  SONOS::DBGLevel(debug);
+  SONOS::System::Debug(debug);
   emit initDone(ret);
   return ret;
 }
 
 bool Sonos::init(int debug, const QString& url)
 {
-  SONOS::DBGLevel(debug > DBG_INFO ? debug : DBG_INFO);
+  SONOS::System::Debug(2);
   bool ret = m_system.Discover(url.toStdString().c_str());
-  SONOS::DBGLevel(debug);
+  SONOS::System::Debug(debug);
   emit initDone(ret);
   return ret;
 }
@@ -477,7 +477,7 @@ void Sonos::runContentLoader(ListModel<Sonos>* model)
     m_workerPool.start(new ContentLoader<Sonos>(*this, model));
   }
   else
-    SONOS::DBG(DBG_ERROR, "%s: request has been declined (%p)\n", __FUNCTION__, model);
+    qWarning("%s: request has been declined (%p)", __FUNCTION__, model);
 }
 
 void Sonos::loadContent(ListModel<Sonos>* model)
@@ -486,7 +486,7 @@ void Sonos::loadContent(ListModel<Sonos>* model)
   for (ManagedContents::iterator it = mc->begin(); it != mc->end(); ++it)
     if (it->model == model)
     {
-      SONOS::DBG(DBG_DEBUG, "%s: %p (%s)\n", __FUNCTION__, model, model->m_root.toUtf8().constData());
+      qDebug("%s: %p (%s)", __FUNCTION__, model, model->m_root.toUtf8().constData());
       emit loadingStarted();
       model->m_pending = false; // accept add next request in queue
       model->loadData();
@@ -525,7 +525,7 @@ void Sonos::runContentLoaderForContext(ListModel<Sonos>* model, int id)
     m_workerPool.start(new ContentForContextLoader<Sonos>(*this, model, id));
   }
   else
-    SONOS::DBG(DBG_ERROR, "%s: request id %d has been declined (%p)\n", __FUNCTION__, id, model);
+    qWarning("%s: request id %d has been declined (%p)", __FUNCTION__, id, model);
 }
 
 void Sonos::loadContentForContext(ListModel<Sonos>* model, int id)
@@ -557,7 +557,7 @@ void Sonos::registerContent(ListModel<Sonos>* model, const QString& root)
 {
   if (model)
   {
-    SONOS::DBG(DBG_DEBUG, "%s: %p (%s)\n", __FUNCTION__, model, root.toUtf8().constData());
+    qDebug("%s: %p (%s)", __FUNCTION__, model, root.toUtf8().constData());
     Locked<ManagedContents>::pointer mc = m_library.Get();
     for (ManagedContents::iterator it = mc->begin(); it != mc->end(); ++it)
     {
@@ -582,7 +582,7 @@ void Sonos::unregisterContent(ListModel<Sonos>* model)
         left.push_back(it);
     for (QList<ManagedContents::iterator>::iterator itl = left.begin(); itl != left.end(); ++itl)
     {
-      SONOS::DBG(DBG_DEBUG, "%s: %p (%s)\n", __FUNCTION__, model, model->m_root.toUtf8().constData());
+      qDebug("%s: %p (%s)", __FUNCTION__, model, model->m_root.toUtf8().constData());
       model->m_provider = nullptr;
       mc->erase(*itl);
     }
@@ -623,7 +623,7 @@ void Sonos::systemEventCB(void *handle)
     SONOS::ContentProperty prop = sonos->getSystem().GetContentProperty();
     for (std::vector<std::pair<std::string, unsigned> >::const_iterator uit = prop.ContainerUpdateIDs.begin(); uit != prop.ContainerUpdateIDs.end(); ++uit)
     {
-      SONOS::DBG(DBG_DEBUG, "%s: container [%s] has being updated to %u\n", __FUNCTION__, uit->first.c_str(), uit->second);
+      qDebug("%s: container [%s] has being updated to %u", __FUNCTION__, uit->first.c_str(), uit->second);
 
       // Reload musical index on any update of shares
       bool shareUpdated = false;
