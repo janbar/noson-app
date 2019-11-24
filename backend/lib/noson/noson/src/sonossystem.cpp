@@ -745,7 +745,6 @@ void System::RevokePlayers()
   for (std::list<PlayerMap::iterator>::iterator it = revoked.begin(); it != revoked.end(); ++it)
   {
     DBG(DBG_INFO, "%s: %s\n", __FUNCTION__, (*it)->first.c_str());
-    (*it)->second->RevokeSubscription();
     players->erase(*it);
   }
 }

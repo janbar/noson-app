@@ -233,14 +233,6 @@ void Player::CB_ContentDirectory(void* handle)
     _handle->m_eventCB(_handle->m_CBHandle);
 }
 
-void Player::RevokeSubscription()
-{
-  m_CDSubscription.Stop();
-  m_AVTSubscription.Stop();
-  for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
-    it->subscription.Stop();
-}
-
 void Player::RenewSubscriptions()
 {
   for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)

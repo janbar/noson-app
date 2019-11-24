@@ -76,7 +76,6 @@ namespace NSROOT
     unsigned GetPort() const { return m_devicePort; }
     ZonePtr GetZone() const { return m_zone; }
 
-    void RevokeSubscription();
     void RenewSubscriptions();
     unsigned char LastEvents();
     bool RenderingPropertyEmpty();
