@@ -13,7 +13,6 @@
 #include <sys/time.h>
 #endif
 
-#include "private/debug.h"
 #include <noson/sonossystem.h>
 #include <noson/contentdirectory.h>
 #include <noson/avtransport.h>
@@ -90,7 +89,7 @@ int main(int argc, char** argv)
     }
   }
   fprintf(stderr, "\n");
-  SONOS::DBGLevel(g_loglevel);
+  SONOS::System::Debug(g_loglevel);
 
   {
 

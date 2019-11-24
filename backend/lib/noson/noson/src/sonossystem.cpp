@@ -99,6 +99,11 @@ System::~System()
   SAFE_DELETE(m_mutex);
 }
 
+void System::Debug(int level)
+{
+  SONOS::DBGLevel(level);
+}
+
 bool System::Discover()
 {
   std::string url;

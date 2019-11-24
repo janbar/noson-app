@@ -54,6 +54,8 @@ namespace NSROOT
     System(void* CBHandle, EventCB eventCB);
     ~System();
 
+    static void Debug(int level);
+
     bool IsListening() { return m_eventHandler.IsRunning(); }
 
     bool Discover();

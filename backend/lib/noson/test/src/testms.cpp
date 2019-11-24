@@ -13,7 +13,6 @@
 #include <sys/time.h>
 #endif
 
-#include "private/debug.h"
 #include <noson/sonossystem.h>
 #include <noson/contentdirectory.h>
 #include <noson/avtransport.h>
@@ -113,7 +112,7 @@ int main(int argc, char** argv)
     }
   }
   fprintf(stderr, "\n");
-  SONOS::DBGLevel(g_loglevel);
+  SONOS::System::Debug(g_loglevel);
 
   {
 
@@ -139,7 +138,7 @@ int main(int argc, char** argv)
 
           if (tstServiceName.empty() && item->GetName() == "TuneIn")
           {
-            SONOS::DBGLevel((g_loglevel < 3 ? 3 : g_loglevel));
+            SONOS::System::Debug((g_loglevel < 3 ? 3 : g_loglevel));
             PRINT1("Testing service %s ...\n", item->GetName().c_str());
             SONOS::SMAPI sm(sonos);
             sm.Init(item, "fr_FR");
@@ -154,11 +153,11 @@ int main(int argc, char** argv)
               else
                 PRINT1("%s\n\n", data.item->DIDL().c_str());
             }
-            SONOS::DBGLevel(g_loglevel);
+            SONOS::System::Debug(g_loglevel);
           }
           if (item->GetName() == tstServiceName)
           {
-            SONOS::DBGLevel((g_loglevel < 3 ? 3 : g_loglevel));
+            SONOS::System::Debug((g_loglevel < 3 ? 3 : g_loglevel));
             PRINT1("Testing service %s ...\n", item->GetName().c_str());
             SONOS::SMAPI sm(sonos);
             sm.Init(item, "fr_FR");
@@ -252,7 +251,7 @@ int main(int argc, char** argv)
               else
                 PRINT1("%s\n\n", data.item->DIDL().c_str());
             }
-            SONOS::DBGLevel(g_loglevel);
+            SONOS::System::Debug(g_loglevel);
           }
         }
       }
