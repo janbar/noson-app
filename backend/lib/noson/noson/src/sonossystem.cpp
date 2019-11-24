@@ -180,6 +180,9 @@ void System::RenewSubscriptions()
   m_ZGTSubscription.AskRenewal();
   m_AlarmClockSubscription.AskRenewal();
   m_CDSubscription.AskRenewal();
+  Locked<PlayerMap>::pointer pm = m_players.Get();
+  for (PlayerMap::iterator it = pm->begin(); it != pm->end(); ++it)
+    it->second->RenewSubscriptions();
 }
 
 ZoneList System::GetZoneList() const
