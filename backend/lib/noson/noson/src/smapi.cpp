@@ -105,21 +105,38 @@ bool SMAPI::Init(const SMServicePtr& smsvc, const std::string& locale)
     URIParser uri(m_service->GetPresentationMap()->GetAttribut("Uri"));
     WSRequest request(uri);
     request.SetUserAgent(m_service->GetAgent());
-    WSResponse response(request);
-    if (!response.IsSuccessful())
+    WSResponse* response = new WSResponse(request);
+    switch (response->GetStatusCode())
+    {
+    // allow the redirection
+    case 301:
+    case 302:
+      {
+        WSRequest redir(response->Redirection());
+        delete response;
+        response = new WSResponse(redir);
+      }
+      break;
+    default:
+      break;
+    }
+    if (!response->IsSuccessful())
     {
       DBG(DBG_ERROR, "%s: invalid response\n", __FUNCTION__);
+      delete response;
       return false;
     }
     // receive content data
     size_t len = 0, l = 0;
     std::string data;
     char buffer[4096];
-    while ((l = response.ReadContent(buffer, sizeof(buffer))))
+    while ((l = response->ReadContent(buffer, sizeof(buffer))))
     {
       data.append(buffer, l);
       len += l;
     }
+    delete response;
+    response = nullptr;
     if (!parsePresentationMap(data))
       return false;
   }
