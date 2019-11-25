@@ -170,6 +170,7 @@ static int __connectAddr(struct addrinfo *addr, net_socket_t *s, int rcvbuf)
     err = LASTERROR;
     DBG(DBG_ERROR, "%s: failed to connect (%d)\n", __FUNCTION__, err);
     closesocket(*s);
+    *s = INVALID_SOCKET_VALUE;
 #ifndef __WINDOWS__
     signal(SIGALRM, old_sighandler);
     alarm(old_alarm);
