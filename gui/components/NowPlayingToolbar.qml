@@ -72,9 +72,8 @@ Item {
             objectName: "muteShape"
             opacity: 1.0
             onClicked: {
-                player.toggleMuteGroup()
-                player.refreshRenderingGroup()
-                player.refreshRendering()
+                player.toggleMuteGroup();
+                player.refreshRendering();
             }
         }
 
