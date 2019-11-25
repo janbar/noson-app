@@ -46,7 +46,7 @@ namespace NSROOT
     dict.DefineNS("", SMAPI_NAMESPACE);
     return dict;
   }
-  XMLDict SMAPIDict = __initSMAPIDict();
+  static XMLDict SMAPIDict = __initSMAPIDict();
 
   void __traceSMAPIError(tinyxml2::XMLDocument& doc)
   {
