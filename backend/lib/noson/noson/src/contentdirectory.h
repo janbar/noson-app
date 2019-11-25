@@ -25,7 +25,7 @@
 #include "service.h"
 #include "digitalitem.h"
 #include "eventhandler.h"
-#include "subscription.h"
+#include "subscriptionpool.h"
 #include "locked.h"
 
 #include <list>
@@ -42,7 +42,7 @@ namespace NSROOT
   {
   public:
     ContentDirectory(const std::string& serviceHost, unsigned servicePort);
-    ContentDirectory(const std::string& serviceHost, unsigned servicePort, EventHandler& eventHandler, Subscription& subscription, void* CBHandle = 0, EventCB eventCB = 0);
+    ContentDirectory(const std::string& serviceHost, unsigned servicePort, SubscriptionPoolPtr& subscriptionPool, void* CBHandle = 0, EventCB eventCB = 0);
     ~ContentDirectory();
 
     static const std::string Name;
@@ -72,7 +72,7 @@ namespace NSROOT
     Locked<ContentProperty>& GetContentProperty() { return m_property; }
 
   private:
-    EventHandler m_eventHandler;
+    SubscriptionPoolPtr m_subscriptionPool;
     Subscription m_subscription;
     void* m_CBHandle;
     EventCB m_eventCB;

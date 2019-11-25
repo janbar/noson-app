@@ -24,7 +24,7 @@
 #include "local_config.h"
 #include "service.h"
 #include "eventhandler.h"
-#include "subscription.h"
+#include "subscriptionpool.h"
 #include "sonoszone.h"
 #include "locked.h"
 
@@ -35,7 +35,7 @@ namespace NSROOT
   {
   public:
     ZoneGroupTopology(const std::string& serviceHost, unsigned servicePort);
-    ZoneGroupTopology(const std::string& serviceHost, unsigned servicePort, EventHandler& eventHandler, Subscription& subscription, void* CBHandle = 0, EventCB eventCB = 0);
+    ZoneGroupTopology(const std::string& serviceHost, unsigned servicePort, SubscriptionPoolPtr& subscriptionPool, void* CBHandle = 0, EventCB eventCB = 0);
     ~ZoneGroupTopology();
 
     static const std::string Name;
@@ -63,7 +63,7 @@ namespace NSROOT
     virtual void HandleEventMessage(EventMessagePtr msg);
 
   private:
-    EventHandler m_eventHandler;
+    SubscriptionPoolPtr m_subscriptionPool;
     Subscription m_subscription;
     void* m_CBHandle;
     EventCB m_eventCB;

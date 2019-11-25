@@ -182,6 +182,7 @@ namespace NSROOT
     typedef std::map<std::string, PlayerPtr> PlayerMap;
     Locked<PlayerMap> m_players;
 
+    // Service subscriptions
     SubscriptionPoolPtr m_subscriptionPool;
     
     // About this controler
@@ -191,11 +192,6 @@ namespace NSROOT
     std::string m_householdID;
     std::string m_serialNumber;
     std::string m_softwareVersion;
-
-    // Service subscriptions
-    Subscription m_ZGTSubscription;         // ZoneGroupTopology
-    Subscription m_AlarmClockSubscription;  // AlarmClock
-    Subscription m_CDSubscription;          // Contentdirectory
 
     SMServiceList m_smservices;
 

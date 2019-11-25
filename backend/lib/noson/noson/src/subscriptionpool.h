@@ -38,15 +38,19 @@ namespace NSROOT
   class SubscriptionPool
   {
   public :
-    SubscriptionPool();
+    SubscriptionPool(EventHandler& eventHandler);
     ~SubscriptionPool();
 
-    Subscription SubscribeEvent(const std::string& host, unsigned port, const std::string& eventURL, unsigned bindingPort);
+    EventHandler& GetEventHandler() { return m_eventHandler; }
+
+    Subscription SubscribeEvent(const std::string& host, unsigned port, const std::string& eventURL);
     void UnsubscribeEvent(Subscription& subscription);
 
     void RenewSubscriptions();
 
   private:
+    EventHandler m_eventHandler;
+
     struct Lease { Subscription subscription; int count; };
 
     typedef std::map<std::string, Lease*> SubscriptionMap;

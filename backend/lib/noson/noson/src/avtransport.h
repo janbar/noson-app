@@ -24,7 +24,7 @@
 #include "local_config.h"
 #include "service.h"
 #include "eventhandler.h"
-#include "subscription.h"
+#include "subscriptionpool.h"
 #include "locked.h"
 
 #include <stdint.h>
@@ -38,7 +38,7 @@ namespace NSROOT
   {
   public:
     AVTransport(const std::string& serviceHost, unsigned servicePort);
-    AVTransport(const std::string& serviceHost, unsigned servicePort, EventHandler& eventHandler, Subscription& subscription, void* CBHandle = 0, EventCB eventCB = 0);
+    AVTransport(const std::string& serviceHost, unsigned servicePort, SubscriptionPoolPtr& subscriptionPool, void* CBHandle = 0, EventCB eventCB = 0);
     ~AVTransport();
 
     static const std::string Name;
@@ -120,7 +120,7 @@ namespace NSROOT
     Locked<AVTProperty>& GetAVTProperty() { return m_property; }
 
   private:
-    EventHandler m_eventHandler;
+    SubscriptionPoolPtr m_subscriptionPool;
     Subscription m_subscription;
     void* m_CBHandle;
     EventCB m_eventCB;

@@ -88,14 +88,8 @@ System::~System()
   SAFE_DELETE(m_alarmClock);
   SAFE_DELETE(m_deviceProperties);
   SAFE_DELETE(m_groupTopology);
-  if (m_subscriptionPool)
-  {
-    m_subscriptionPool->UnsubscribeEvent(m_AlarmClockSubscription);
-    m_subscriptionPool->UnsubscribeEvent(m_CDSubscription);
-    m_subscriptionPool->UnsubscribeEvent(m_ZGTSubscription);
-    m_subscriptionPool.reset();
-  }
   SAFE_DELETE(m_cbzgt);
+  m_eventHandler.RevokeAllSubscriptions(this);
   SAFE_DELETE(m_mutex);
 }
 
@@ -131,18 +125,10 @@ bool System::Discover(const std::string& url)
   SAFE_DELETE(m_deviceProperties);
   SAFE_DELETE(m_groupTopology);
 
-  if (m_subscriptionPool)
-  {
-    m_subscriptionPool->UnsubscribeEvent(m_AlarmClockSubscription);
-    m_subscriptionPool->UnsubscribeEvent(m_CDSubscription);
-    m_subscriptionPool->UnsubscribeEvent(m_ZGTSubscription);
-  }
-  m_subscriptionPool = SubscriptionPoolPtr(new SubscriptionPool());
+  m_subscriptionPool = SubscriptionPoolPtr(new SubscriptionPool(m_eventHandler));
 
   // subscribe to ZoneGroupTopology events
-  m_ZGTSubscription = m_subscriptionPool->SubscribeEvent(uri.Host(), uri.Port(), ZoneGroupTopology::EventURL, m_eventHandler.GetPort());
-  m_groupTopology = new ZoneGroupTopology(uri.Host(), uri.Port(), m_eventHandler, m_ZGTSubscription, this, CB_ZGTopology);
-  m_ZGTSubscription.Start();
+  m_groupTopology = new ZoneGroupTopology(uri.Host(), uri.Port(), m_subscriptionPool, this, CB_ZGTopology);
 
   // Wait event notification
   lock.Unlock();
@@ -172,14 +158,10 @@ bool System::Discover(const std::string& url)
   m_smservices = m_musicServices->GetAvailableServices();
 
   // subscribe to AlarmClock events
-  m_AlarmClockSubscription = m_subscriptionPool->SubscribeEvent(uri.Host(), uri.Port(), AlarmClock::EventURL, m_eventHandler.GetPort());
-  m_alarmClock = new AlarmClock(uri.Host(), uri.Port(), m_eventHandler, m_AlarmClockSubscription, this, CB_AlarmClock);
-  m_AlarmClockSubscription.Start();
+  m_alarmClock = new AlarmClock(uri.Host(), uri.Port(), m_subscriptionPool, this, CB_AlarmClock);
 
   // subscribe to ContentDirectory events
-  m_CDSubscription = m_subscriptionPool->SubscribeEvent(uri.Host(), uri.Port(), ContentDirectory::EventURL, m_eventHandler.GetPort());
-  m_contentDirectory = new ContentDirectory(uri.Host(), uri.Port(), m_eventHandler, m_CDSubscription, this, CB_ContentDirectory);
-  m_CDSubscription.Start();
+  m_contentDirectory = new ContentDirectory(uri.Host(), uri.Port(), m_subscriptionPool, this, CB_ContentDirectory);
 
   m_connected = ret;
   return ret;
@@ -276,7 +258,13 @@ bool System::IsConnected() const
 
 void System::HandleEventMessage(EventMessagePtr msg)
 {
-  (void)msg;
+  if (!msg)
+    return;
+  if (msg->event == EVENT_HANDLER_STATUS)
+  {
+    // @TODO: handle status
+    DBG(DBG_DEBUG, "%s: %s\n", __FUNCTION__, msg->subject[0].c_str());
+  }
 }
 
 AlarmList System::GetAlarmList() const

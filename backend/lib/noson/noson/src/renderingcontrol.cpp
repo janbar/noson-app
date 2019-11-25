@@ -34,31 +34,37 @@ const char* RenderingControl::CH_MASTER = "Master";
 
 RenderingControl::RenderingControl(const std::string& serviceHost, unsigned servicePort)
 : Service(serviceHost, servicePort)
-, m_eventHandler()
+, m_subscriptionPool()
 , m_subscription()
-, m_CBHandle(0)
-, m_eventCB(0)
+, m_CBHandle(nullptr)
+, m_eventCB(nullptr)
 , m_msgCount(0)
 , m_property(RCSProperty())
 {
 }
 
-RenderingControl::RenderingControl(const std::string& serviceHost, unsigned servicePort, EventHandler& eventHandler, Subscription& subscription, void* CBHandle, EventCB eventCB)
+RenderingControl::RenderingControl(const std::string& serviceHost, unsigned servicePort, SubscriptionPoolPtr& subscriptionPool, void* CBHandle, EventCB eventCB)
 : Service(serviceHost, servicePort)
-, m_eventHandler(eventHandler)
-, m_subscription(subscription)
+, m_subscriptionPool(subscriptionPool)
+, m_subscription()
 , m_CBHandle(CBHandle)
 , m_eventCB(eventCB)
 , m_msgCount(0)
 , m_property(RCSProperty())
 {
-  unsigned subId = m_eventHandler.CreateSubscription(this);
-  m_eventHandler.SubscribeForEvent(subId, EVENT_UPNP_PROPCHANGE);
+  unsigned subId = m_subscriptionPool->GetEventHandler().CreateSubscription(this);
+  m_subscriptionPool->GetEventHandler().SubscribeForEvent(subId, EVENT_UPNP_PROPCHANGE);
+  m_subscription = m_subscriptionPool->SubscribeEvent(serviceHost, servicePort, EventURL);
+  m_subscription.Start();
 }
 
 RenderingControl::~RenderingControl()
 {
-  m_eventHandler.RevokeAllSubscriptions(this);
+  if (m_subscriptionPool)
+  {
+    m_subscriptionPool->UnsubscribeEvent(m_subscription);
+    m_subscriptionPool->GetEventHandler().RevokeAllSubscriptions(this);
+  }
 }
 
 bool RenderingControl::GetVolume(uint8_t* value, const char* channel)

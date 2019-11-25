@@ -57,8 +57,6 @@ Player::Player(const ZonePtr& zone, System* system, void* CBHandle, EventCB even
 , m_AVTransport(nullptr)
 , m_contentDirectory(nullptr)
 , m_subscriptionPool()
-, m_AVTSubscription()
-, m_CDSubscription()
 {
   m_controllerLocalUri.assign(ProtocolTable[Protocol_http])
     .append("://").append(m_eventHandler.GetAddress())
@@ -81,8 +79,6 @@ Player::Player(const ZonePlayerPtr& zonePlayer)
 , m_AVTransport(nullptr)
 , m_contentDirectory(nullptr)
 , m_subscriptionPool()
-, m_AVTSubscription()
-, m_CDSubscription()
 {
   if (zonePlayer && zonePlayer->IsValid())
   {
@@ -109,22 +105,11 @@ Player::Player(const ZonePlayerPtr& zonePlayer)
 
 Player::~Player()
 {
-  m_eventHandler.RevokeAllSubscriptions(this);
   SAFE_DELETE(m_contentDirectory);
   SAFE_DELETE(m_AVTransport);
   SAFE_DELETE(m_deviceProperties);
-  // WARNING: all subscriptions from the pool MUST be released
-  if (m_subscriptionPool)
-  {
-    m_subscriptionPool->UnsubscribeEvent(m_CDSubscription);
-    m_subscriptionPool->UnsubscribeEvent(m_AVTSubscription);
-  }
   for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
-  {
-    if (m_subscriptionPool)
-      m_subscriptionPool->UnsubscribeEvent(it->subscription);
     SAFE_DELETE(it->renderingControl);
-  }
 }
 
 void Player::SubordinateRC::FillSRProperty(SRProperty& srp) const
@@ -166,9 +151,6 @@ bool Player::Init(System* system)
       .append("://").append(m_controllerHost)
       .append(":").append(std::to_string(m_eventHandler.GetPort()));
 
-  unsigned subId = m_eventHandler.CreateSubscription(this);
-  m_eventHandler.SubscribeForEvent(subId, EVENT_HANDLER_STATUS);
-
   // initialize subordinates
   for (Zone::const_iterator it = m_zone->begin(); it != m_zone->end(); ++it)
   {
@@ -177,8 +159,7 @@ bool Player::Init(System* system)
       SubordinateRC rc;
       rc.uuid = (*it)->GetUUID();
       rc.name = **it;
-      rc.subscription = m_subscriptionPool->SubscribeEvent((*it)->GetHost(), (*it)->GetPort(), RenderingControl::EventURL, m_eventHandler.GetPort());
-      rc.renderingControl = new RenderingControl((*it)->GetHost(), (*it)->GetPort(), m_eventHandler, rc.subscription, this, CB_RenderingControl);
+      rc.renderingControl = new RenderingControl((*it)->GetHost(), (*it)->GetPort(), m_subscriptionPool, this, CB_RenderingControl);
       m_RCTable.push_back(rc);
     }
     else
@@ -186,17 +167,9 @@ bool Player::Init(System* system)
   }
 
   m_deviceProperties = new DeviceProperties(m_deviceHost, m_devicePort);
+  m_AVTransport = new AVTransport(m_deviceHost, m_devicePort, m_subscriptionPool, this, CB_AVTransport);
+  m_contentDirectory = new ContentDirectory(m_deviceHost, m_devicePort, m_subscriptionPool, this, CB_ContentDirectory);
 
-  m_AVTSubscription = m_subscriptionPool->SubscribeEvent(m_deviceHost, m_devicePort, AVTransport::EventURL, m_eventHandler.GetPort());
-  m_AVTransport = new AVTransport(m_deviceHost, m_devicePort, m_eventHandler, m_AVTSubscription, this, CB_AVTransport);
-
-  m_CDSubscription = m_subscriptionPool->SubscribeEvent(m_deviceHost, m_devicePort, ContentDirectory::EventURL, m_eventHandler.GetPort());
-  m_contentDirectory = new ContentDirectory(m_deviceHost, m_devicePort, m_eventHandler, m_CDSubscription, this, CB_ContentDirectory);
-
-  for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
-    it->subscription.Start();
-  m_AVTSubscription.Start();
-  m_CDSubscription.Start();
   return true;
 }
 
@@ -240,14 +213,6 @@ void Player::CB_ContentDirectory(void* handle)
   }
   if (_handle->m_eventCB && !_handle->m_eventSignaled.Load())
     _handle->m_eventCB(_handle->m_CBHandle);
-}
-
-void Player::RenewSubscriptions()
-{
-  for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
-    it->subscription.AskRenewal();
-  m_AVTSubscription.AskRenewal();
-  m_CDSubscription.AskRenewal();
 }
 
 unsigned char Player::LastEvents()
@@ -751,17 +716,6 @@ bool Player::PlayDigitalIN()
   std::string uri(ProtocolTable[Protocol_xSonosHtaStream]);
   uri.append(":").append(m_uuid).append(":spdif");
   return m_AVTransport->SetCurrentURI(uri, "") && m_AVTransport->Play();
-}
-
-void Player::HandleEventMessage(EventMessagePtr msg)
-{
-  if (!msg)
-    return;
-  if (msg->event == EVENT_HANDLER_STATUS)
-  {
-    // @TODO: handle status
-    DBG(DBG_DEBUG, "%s: %s\n", __FUNCTION__, msg->subject[0].c_str());
-  }
 }
 
 Protocol_t Player::GetURIProtocol(const std::string& uri)

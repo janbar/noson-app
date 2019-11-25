@@ -47,7 +47,7 @@ namespace NSROOT
   typedef SHARED_PTR<Player> PlayerPtr;
   typedef std::vector<SRProperty> SRPList;
 
-  class Player : public EventSubscriber
+  class Player
   {
   public:
 
@@ -76,7 +76,6 @@ namespace NSROOT
     unsigned GetPort() const { return m_devicePort; }
     ZonePtr GetZone() const { return m_zone; }
 
-    void RenewSubscriptions();
     unsigned char LastEvents();
     bool RenderingPropertyEmpty();
     SRPList GetRenderingProperty();
@@ -146,9 +145,6 @@ namespace NSROOT
     bool PlayLineIN();
     bool PlayDigitalIN();
 
-    // Implements EventSubscriber
-    virtual void HandleEventMessage(EventMessagePtr msg);
-
     // Helpers
     Protocol_t GetURIProtocol(const std::string& uri);
     const std::string& GetControllerUri() const { return m_controllerUri; }
@@ -185,15 +181,12 @@ namespace NSROOT
 
     // Services subscriptions
     SubscriptionPoolPtr m_subscriptionPool;
-    Subscription m_AVTSubscription;
-    Subscription m_CDSubscription;
 
     class SubordinateRC
     {
     public:
       std::string uuid;
       std::string name;
-      Subscription subscription;
       RenderingControl* renderingControl;
       void FillSRProperty(SRProperty& srp) const;
     };

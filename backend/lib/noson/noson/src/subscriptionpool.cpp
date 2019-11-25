@@ -23,10 +23,11 @@
 
 using namespace NSROOT;
 
-SubscriptionPool::SubscriptionPool()
-: m_subscriptions(SubscriptionMap())
+SubscriptionPool::SubscriptionPool(EventHandler& eventHandler)
+: m_eventHandler(eventHandler)
+, m_subscriptions(SubscriptionMap())
 {
-  DBG(DBG_DEBUG, "%s: (%p)\n", __FUNCTION__, this);
+  DBG(DBG_DEBUG, "%s: (%p)(%u)\n", __FUNCTION__, this, m_eventHandler.GetPort());
 }
 
 SubscriptionPool::~SubscriptionPool()
@@ -41,22 +42,25 @@ SubscriptionPool::~SubscriptionPool()
   sm->clear();
 }
 
-Subscription SubscriptionPool::SubscribeEvent(const std::string& host, unsigned port, const std::string& eventURL, unsigned bindingPort)
+Subscription SubscriptionPool::SubscribeEvent(const std::string& host, unsigned port, const std::string& eventURL)
 {
   std::string url;
-  MakeSubscriptionUrl(url, host, port, eventURL, bindingPort);
+  MakeSubscriptionUrl(url, host, port, eventURL, m_eventHandler.GetPort());
   Locked<SubscriptionMap>::pointer sm = m_subscriptions.Get();
   SubscriptionMap::iterator it = sm->find(url);
   if (it != sm->end())
   {
     it->second->count++;
     DBG(DBG_DEBUG, "%s: (%s)(%d)\n", __FUNCTION__, url.c_str(), it->second->count);
+    // the subscription must be stopped until the caller becomes ready
+    // obviously the caller is responsive for restarting it.
+    it->second->subscription.Stop();
     return it->second->subscription;
   }
   DBG(DBG_DEBUG, "%s: (%s)\n", __FUNCTION__, url.c_str());
   Lease * lease = new Lease();
   lease->count = 1;
-  lease->subscription = Subscription(host, port, eventURL, bindingPort, SUBSCRIPTION_TIMEOUT);
+  lease->subscription = Subscription(host, port, eventURL, m_eventHandler.GetPort(), SUBSCRIPTION_TIMEOUT);
   sm->insert(std::make_pair(url, lease));
   return lease->subscription;
 }
