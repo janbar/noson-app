@@ -46,6 +46,7 @@ ApplicationWindow {
         property real fontScaleFactor: 1.0
         property bool firstRun: true
         property string zoneName: ""
+        property string coordinatorName: ""
         property int tabIndex: -1
         property int widthGU: Math.round(mainView.width / units.gridUnit)
         property int heightGU: Math.round(mainView.height / units.gridUnit)
@@ -136,6 +137,7 @@ ApplicationWindow {
 
     // setting alias to store last zone connected
     property alias currentZone: settings.zoneName
+    property alias currentCoordinator: settings.coordinatorName
     property string currentZoneTag: ""
 
     // track latest stream link
@@ -532,7 +534,7 @@ ApplicationWindow {
             // search for the coordinator name
             for (p = 0; p < AllZonesModel.count; ++p) {
                 model = AllZonesModel.get(p);
-                if (model.coordinatorName === name) {
+                if (model.coordinatorName === currentCoordinator) {
                     found = true;
                     break;
                 }
@@ -544,6 +546,7 @@ ApplicationWindow {
         }
         player.connectZonePlayer(AllZonesModel.holdPlayer(p));
         currentZone = model.name;
+        currentCoordinator = model.coordinatorName;
         currentZoneTag = model.shortName;
         zoneChanged();
 
