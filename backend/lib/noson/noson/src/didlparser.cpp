@@ -37,7 +37,7 @@ namespace NSROOT
     dict.DefineNS(DIDL_QNAME_UPNP, DIDL_XMLNS_UPNP);
     return dict;
   }
-  XMLDict DIDLDict = __initDIDLDict();
+  static XMLDict DIDLDict = __initDIDLDict();
 }
 
 DIDLParser::DIDLParser(const char* document, unsigned reserve)
