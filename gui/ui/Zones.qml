@@ -202,7 +202,6 @@ MusicPage {
                         id: fullName
                         color: styleMusic.view.secondaryColor
                         font.pointSize: units.fs("small")
-                        font.weight: Font.DemiBold
                         text: model.isGroup ? model.name : playbackState
                         visible: text !== ""
                     }

@@ -217,6 +217,8 @@ MusicPage {
                 }
             ]
 
+            coverSize: units.gu(5)
+
             column: Column {
                 Label {
                     id: trackTitle
@@ -228,7 +230,7 @@ MusicPage {
                 Label {
                     id: trackArtist
                     color: styleMusic.view.secondaryColor
-                    font.pointSize: units.fs("small")
+                    font.pointSize: units.fs("x-small")
                     text: model.author
                 }
             }

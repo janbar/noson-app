@@ -93,19 +93,20 @@ Item {
                 }
             ]
 
+            coverSize: units.gu(5)
+
             column: Column {
                 Label {
                     id: trackTitle
                     color: styleMusic.view.primaryColor
                     font.pointSize: units.fs("medium")
-                    font.bold: true
                     text: model.title
                 }
 
                 Label {
                     id: trackArtist
                     color: styleMusic.view.secondaryColor
-                    font.pointSize: units.fs("small")
+                    font.pointSize: units.fs("x-small")
                     text: model.author
                 }
 

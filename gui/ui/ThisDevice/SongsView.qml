@@ -164,6 +164,8 @@ MusicPage {
                 }
             ]
 
+            coverSize: units.gu(5)
+
             column: Column {
                 Label {
                     id: trackTitle

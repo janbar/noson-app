@@ -72,7 +72,7 @@ MusicPage {
         target: mediaModel
         onDataUpdated: mediaModel.asyncLoad()
         onLoaded: {
-            if (succeeded) {                
+            if (succeeded) {
                 mediaModel.resetModel()
                 servicePage.displayType = servicePage.parentDisplayType // apply displayType
                 servicePage.taintedView = false // reset
@@ -218,6 +218,8 @@ MusicPage {
                 }
             ]
 
+            coverSize: units.gu(5)
+
             column: Column {
                 Label {
                     id: mediaTitle
@@ -232,6 +234,7 @@ MusicPage {
                     color: styleMusic.view.secondaryColor
                     font.pointSize: units.fs("x-small")
                     text: listItem.description
+                    visible: text !== ""
                 }
             }
 
