@@ -141,7 +141,6 @@ void Mpris2::initDBusService(int pid)
   playbackStateChanged(pid);
   playModeChanged(pid);
   emitPlayerNotification("Volume", Volume());
-  emit Seeked(Position());
 
   qDebug() << "Succeeded to register" << m_serviceName << "on the session bus";
 }
@@ -289,7 +288,6 @@ void Mpris2::currentTrackChanged(int pid)
   emitPlayerNotification("CanGoNext", CanGoNext());
   emitPlayerNotification("CanGoPrevious", CanGoPrevious());
   emitPlayerNotification("CanSeek", CanSeek());
-  emit Seeked(Position());
 
   m_metadata = QVariantMap();
   addMetadata("mpris:trackid", makeTrackId(m_player->currentIndex()), &m_metadata);
