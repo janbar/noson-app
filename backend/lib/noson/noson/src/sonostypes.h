@@ -56,7 +56,7 @@ namespace NSROOT
   } PlayMode_t;
 
   extern const char* PlayModeTable[PlayMode_unknown + 1];
-  
+
   typedef enum
   {
     TransportState_STOPPED          = 0,

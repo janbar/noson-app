@@ -22,6 +22,7 @@
 #include "private/builtin.h"
 #include "private/cppdef.h"
 #include "private/debug.h"
+#include "private/os/threads/timeout.h"
 #include "didlparser.h"
 
 using namespace NSROOT;
@@ -31,6 +32,18 @@ const std::string AVTransport::ControlURL("/MediaRenderer/AVTransport/Control");
 const std::string AVTransport::EventURL("/MediaRenderer/AVTransport/Event");
 const std::string AVTransport::SCPDURL("/xml/AVTransport1.xml");
 
+namespace NSROOT
+{
+
+  struct AVTransportLastInfo
+  {
+    AVTransportLastInfo() : expiry(), vars() { }
+    OS::CTimeout expiry;
+    ElementList vars;
+  };
+  
+}
+
 AVTransport::AVTransport(const std::string& serviceHost, unsigned servicePort)
 : Service(serviceHost, servicePort)
 , m_subscriptionPool()
@@ -39,6 +52,7 @@ AVTransport::AVTransport(const std::string& serviceHost, unsigned servicePort)
 , m_eventCB(nullptr)
 , m_msgCount(0)
 , m_property(AVTProperty())
+, m_lastPositionInfo(new AVTransportLastInfo())
 {
 }
 
@@ -50,6 +64,7 @@ AVTransport::AVTransport(const std::string& serviceHost, unsigned servicePort, S
 , m_eventCB(eventCB)
 , m_msgCount(0)
 , m_property(AVTProperty())
+, m_lastPositionInfo(new AVTransportLastInfo())
 {
   unsigned subId = m_subscriptionPool->GetEventHandler().CreateSubscription(this);
   m_subscriptionPool->GetEventHandler().SubscribeForEvent(subId, EVENT_UPNP_PROPCHANGE);
@@ -64,6 +79,7 @@ AVTransport::~AVTransport()
     m_subscriptionPool->UnsubscribeEvent(m_subscription);
     m_subscriptionPool->GetEventHandler().RevokeAllSubscriptions(this);
   }
+  delete m_lastPositionInfo.Load();
 }
 
 bool AVTransport::GetTransportInfo(ElementList& vars)
@@ -78,11 +94,21 @@ bool AVTransport::GetTransportInfo(ElementList& vars)
 
 bool AVTransport::GetPositionInfo(ElementList& vars)
 {
+  Locked<AVTransportLastInfo*>::pointer p = m_lastPositionInfo.Get();
+  if ((*p)->expiry.TimeLeft() > 0)
+  {
+    vars = (*p)->vars;
+    return true;
+  }
   ElementList args;
   args.push_back(ElementPtr(new Element("InstanceID", "0")));
   vars = Request("GetPositionInfo", args);
   if (!vars.empty() && vars[0]->compare("GetPositionInfoResponse") == 0)
+  {
+    (*p)->vars = vars;
+    (*p)->expiry.Set(1000); // expire in 1 second
     return true;
+  }
   return false;
 }
 

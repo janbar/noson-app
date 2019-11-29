@@ -33,6 +33,7 @@
 namespace NSROOT
 {
   class Subscription;
+  struct AVTransportLastInfo;
 
   class AVTransport : public Service, public EventSubscriber
   {
@@ -96,7 +97,7 @@ namespace NSROOT
     bool RemoveAllTracksFromQueue();
 
     bool SaveQueue(const std::string& title);
-    
+
     bool CreateSavedQueue(const std::string& title);
 
     unsigned AddURIToSavedQueue(const std::string& SQObjectID, const std::string& uri, const std::string& metadata, unsigned containerUpdateID);
@@ -125,8 +126,10 @@ namespace NSROOT
     void* m_CBHandle;
     EventCB m_eventCB;
     unsigned m_msgCount;
-    
+
     Locked<AVTProperty> m_property;
+
+    Locked<AVTransportLastInfo*> m_lastPositionInfo;
   };
 }
 
