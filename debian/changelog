@@ -1,6 +1,12 @@
 noson-app (4.0) UNRELEASED; urgency=low
 
   [ janbar ]
+  * Release 4.0.1
+  * libnoson 2.1
+  * Performance fixes
+  * Review the music row design
+
+  [ janbar ]
   * Release 4.0
   * libnoson 2.0: player pool
 
