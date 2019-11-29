@@ -29,7 +29,8 @@
 #include "private/debug.h"
 #include "sonossystem.h" // for definitions
 
-#define TIMEOUT_RETRY  1 // seconds
+#define TIMEOUT_FIRST_RETRY  1000 // millisec
+#define TIMEOUT_AGAIN_RETRY  5000 // millisec
 
 using namespace NSROOT;
 
@@ -129,15 +130,20 @@ namespace NSROOT
 void* SubscriptionThreadImpl::Process()
 {
   bool success = false;
+  unsigned retry = TIMEOUT_FIRST_RETRY;
   while (!IsStopped())
   {
     // Reconfigure: IP may be leased for a time
     if (Configure() && (success = SubscribeForEvent(success)))
-      m_event.Wait(m_timeout.TimeLeft() * 90 / 100);
+    {
+      m_event.Wait(m_timeout.TimeLeft() * SUBSCRIPTION_RENEW_PCT / 100);
+      retry = TIMEOUT_FIRST_RETRY;
+    }
     else
     {
       // wait before retry
-      m_event.Wait(TIMEOUT_RETRY * 1000);
+      m_event.Wait(retry);
+      retry = TIMEOUT_AGAIN_RETRY;
     }
   }
   if (success)
@@ -190,6 +196,7 @@ bool SubscriptionThreadImpl::SubscribeForEvent(bool renew)
     m_timeout.Set(m_ttl * 1000);
     return true;
   }
+  m_SID.clear();
   m_timeout.Clear();
   return false;
 }
