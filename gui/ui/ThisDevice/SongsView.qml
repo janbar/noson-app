@@ -72,7 +72,7 @@ MusicPage {
         var art = "";
         if (modelItem.hasArt)
             art = player.makeFilePictureLocalURL(modelItem.filePath);
-        return makeCoverSource(art, modelItem.artist, modelItem.album);
+        return makeCoverSource(art, modelItem.author, modelItem.album);
     }
 
     function makeItemPayload(modelItem) {
