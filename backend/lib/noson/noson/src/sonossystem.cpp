@@ -78,6 +78,7 @@ System::System(void* CBHandle, EventCB eventCB)
         .append("://").append(m_eventHandler.GetAddress())
         .append(":").append(std::to_string(m_eventHandler.GetPort()));
   }
+  m_subscriptionPool = SubscriptionPoolPtr(new SubscriptionPool(m_eventHandler));
 }
 
 System::~System()
@@ -124,8 +125,6 @@ bool System::Discover(const std::string& url)
   SAFE_DELETE(m_alarmClock);
   SAFE_DELETE(m_deviceProperties);
   SAFE_DELETE(m_groupTopology);
-
-  m_subscriptionPool = SubscriptionPoolPtr(new SubscriptionPool(m_eventHandler));
 
   // subscribe to ZoneGroupTopology events
   m_groupTopology = new ZoneGroupTopology(uri.Host(), uri.Port(), m_subscriptionPool, this, CB_ZGTopology);
