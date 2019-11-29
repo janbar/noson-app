@@ -352,7 +352,7 @@ Item {
     }
 
     function handleZPPlayModeChanged() {
-        player.repeat = zone.handle.playMode === "REPEAT_ALL" || zone.handle.playMode === "SHUFFLE" ? true : false;
+        player.repeat = zone.handle.playMode === "REPEAT_ALL" || zone.handle.playMode === "REPEAT_ONE" || zone.handle.playMode === "SHUFFLE" ? true : false;
         player.shuffle = zone.handle.playMode === "SHUFFLE" || zone.handle.playMode === "SHUFFLE_NOREPEAT" ? true : false;
     }
 

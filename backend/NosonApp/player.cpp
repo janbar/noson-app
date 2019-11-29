@@ -314,7 +314,7 @@ bool Player::toggleRepeat()
   {
     if (m_AVTProperty.CurrentPlayMode == "NORMAL")
       return p->SetPlayMode(SONOS::PlayMode_REPEAT_ALL);
-    else if (m_AVTProperty.CurrentPlayMode == "REPEAT_ALL")
+    else if (m_AVTProperty.CurrentPlayMode == "REPEAT_ALL" || m_AVTProperty.CurrentPlayMode == "REPEAT_ONE")
       return p->SetPlayMode(SONOS::PlayMode_NORMAL);
     else if (m_AVTProperty.CurrentPlayMode == "SHUFFLE")
       return p->SetPlayMode(SONOS::PlayMode_SHUFFLE_NOREPEAT);
@@ -331,7 +331,7 @@ bool Player::toggleShuffle()
   {
     if (m_AVTProperty.CurrentPlayMode == "NORMAL")
       return p->SetPlayMode(SONOS::PlayMode_SHUFFLE_NOREPEAT);
-    else if (m_AVTProperty.CurrentPlayMode == "REPEAT_ALL")
+    else if (m_AVTProperty.CurrentPlayMode == "REPEAT_ALL" || m_AVTProperty.CurrentPlayMode == "REPEAT_ONE")
       return p->SetPlayMode(SONOS::PlayMode_SHUFFLE);
     else if (m_AVTProperty.CurrentPlayMode == "SHUFFLE")
       return p->SetPlayMode(SONOS::PlayMode_REPEAT_ALL);
