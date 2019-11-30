@@ -58,9 +58,6 @@ Player::Player(const ZonePtr& zone, System* system, void* CBHandle, EventCB even
 , m_contentDirectory(nullptr)
 , m_subscriptionPool()
 {
-  m_controllerLocalUri.assign(ProtocolTable[Protocol_http])
-    .append("://").append(m_eventHandler.GetAddress())
-    .append(":").append(std::to_string(m_eventHandler.GetPort()));
   m_valid = Init(system);
 }
 
@@ -140,6 +137,9 @@ bool Player::Init(System* system)
   m_devicePort = cinfo->GetPort();
 
   m_eventHandler = system->m_eventHandler;
+  m_controllerLocalUri.assign(ProtocolTable[Protocol_http])
+    .append("://").append(m_eventHandler.GetAddress())
+    .append(":").append(std::to_string(m_eventHandler.GetPort()));
   m_subscriptionPool = system->m_subscriptionPool;
 
   TcpSocket sock;
