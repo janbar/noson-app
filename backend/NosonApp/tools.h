@@ -37,12 +37,19 @@ namespace nosonapp
     QString ret;
     QString tmp = str.normalized(QString::NormalizationForm_D);
     ret.reserve(tmp.size());
+    int pcat = QChar::Separator_Space;
     for (QString::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
     {
       int cat = it->category();
       if (cat != QChar::Mark_NonSpacing && cat != QChar::Mark_SpacingCombining)
-        ret.append(*it);
+      {
+        if (cat != QChar::Separator_Space || pcat != QChar::Separator_Space)
+          ret.append(*it);
+        pcat = cat;
+      }
     }
+    if (!ret.isEmpty() && pcat == QChar::Separator_Space)
+      ret.truncate(ret.length() - 1);
     return ret;
   }
 
