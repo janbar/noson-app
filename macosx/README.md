@@ -3,11 +3,11 @@
 Install Xcode and CMake tool.
 
 Install required dependencies as follows.
-- Install a copy of Qt frameworks >= 5.10.0 in `/Users/Shared/Qt`
+- Install a copy of Qt frameworks >= 5.12.4 in `/Users/Shared/Qt`
 
 Setup environment to build as follows.
 - `export PATH=/Applications/CMake.app/Contents/bin:$PATH`
-- `export QT_DIR=/Users/Shared/Qt/5.10.0/clang_64`
+- `export QT_DIR=/Users/Shared/Qt/5.12.4/clang_64`
 - `export SOURCE_DIR=$(pwd)/noson-app`
 - `export BUILD_DIR=$(pwd)/noson-app/build`
 
