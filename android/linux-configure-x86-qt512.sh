@@ -2,18 +2,20 @@ rm -rf build-x86/*
 mkdir -p build-x86
 cd build-x86
 
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home/
-export ANDROID_SDK=/Users/Shared/Android/Sdk
+export JAVA_HOME=/home/jlb/bin/jdk1.8.0
+export ANDROID_SDK=/home/shared/Android/Sdk
 export ANDROID_NDK=$ANDROID_SDK/ndk-bundle
-export QT_DIR=/Users/Shared/Qt/5.11.3/android_x86
+export QT_DIR=/home/shared/Qt/5.12.6/android_x86
 
 cmake ../.. -DCMAKE_SYSTEM_NAME=Android \
 -DCMAKE_PREFIX_PATH=$QT_DIR \
 -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake \
--DCMAKE_MAKE_PROGRAM=$ANDROID_NDK/prebuilt/darwin-x86_64/bin/make \
+-DCMAKE_MAKE_PROGRAM=$ANDROID_NDK/prebuilt/linux-x86_64/bin/make \
 -DCMAKE_BUILD_TYPE=Release \
 -DANDROID_ABI="x86" \
 -DANDROID_PLATFORM_LEVEL="android-16" \
+-DANDROID_STL_PREFIX="llvm-libc++" \
+-DANDROID_STL_SHARED_LIBRARIES="c++_shared" \
 -DQT_ANDROID_TOOLCHAIN_TOOL_PREFIX="i686-linux-android" \
 -DQT_ANDROID_SDK_ROOT=$ANDROID_SDK \
 -DQT_ANDROID_NDK_ROOT=$ANDROID_NDK \

@@ -1,20 +1,22 @@
-rm -rf build-x86/*
-mkdir -p build-x86
-cd build-x86
+rm -rf build-armv7/*
+mkdir -p build-armv7
+cd build-armv7
 
 export JAVA_HOME=/home/jlb/bin/jdk1.8.0
 export ANDROID_SDK=/home/shared/Android/Sdk
 export ANDROID_NDK=$ANDROID_SDK/ndk-bundle
-export QT_DIR=/home/shared/Qt/5.11.3/android_x86
+export QT_DIR=/home/shared/Qt/5.12.6/android_armv7
 
 cmake ../.. -DCMAKE_SYSTEM_NAME=Android \
 -DCMAKE_PREFIX_PATH=$QT_DIR \
 -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake \
 -DCMAKE_MAKE_PROGRAM=$ANDROID_NDK/prebuilt/linux-x86_64/bin/make \
 -DCMAKE_BUILD_TYPE=Release \
--DANDROID_ABI="x86" \
+-DANDROID_ABI="armeabi-v7a" \
 -DANDROID_PLATFORM_LEVEL="android-16" \
--DQT_ANDROID_TOOLCHAIN_TOOL_PREFIX="i686-linux-android" \
+-DANDROID_STL_PREFIX="llvm-libc++" \
+-DANDROID_STL_SHARED_LIBRARIES="c++_shared" \
+-DQT_ANDROID_TOOLCHAIN_TOOL_PREFIX="arm-linux-androideabi" \
 -DQT_ANDROID_SDK_ROOT=$ANDROID_SDK \
 -DQT_ANDROID_NDK_ROOT=$ANDROID_NDK \
 -DQT_ANDROID_QT_ROOT=$QT_DIR \
