@@ -23,6 +23,7 @@ if(NOT ZLIB_FOUND)
     set(ZLIB_INCLUDE_DIRS "${zlib_SOURCE_DIR}" "${zlib_BINARY_DIR}")
     set(ZLIB_FOUND ON)
     message(STATUS "Build ZLIB: ${zlib_BINARY_DIR}")
+    list(APPEND noson_DEPENDENCIES zlib)
 endif()
 
 # Provides dependency openssl
@@ -40,6 +41,7 @@ if(NOT OPENSSL_FOUND)
     set(OPENSSL_INCLUDE_DIR "${openssl_BINARY_DIR}/include" "${openssl_BINARY_DIR}")
     set(OPENSSL_FOUND ON)
     message(STATUS "Build OpenSSL: ${openssl_BINARY_DIR}")
+    list(APPEND noson_DEPENDENCIES crypto ssl)
 endif()
 
 # Provides dependency FLAC
@@ -60,6 +62,7 @@ if(NOT FLAC_FOUND OR NOT FLACXX_FOUND)
     set(FLACXX_INCLUDE_DIR "${FLAC_SOURCE_DIR}/include")
     set(FLACXX_FOUND ON)
     message(STATUS "Build FLAC FLAC++: ${FLAC_BINARY_DIR}")
+    list(APPEND noson_DEPENDENCIES FLAC FLACXX)
 endif()
 
 # Provides dependency noson
@@ -72,3 +75,7 @@ set(noson_INCLUDE_DIRS "${noson_BINARY_DIR}/public/noson"
     "${noson_BINARY_DIR}/public"                        PARENT_SCOPE)
 set(noson_FOUND ON                                      PARENT_SCOPE)
 message(STATUS "Build noson: ${noson_BINARY_DIR}")
+
+if(noson_DEPENDENCIES)
+    add_dependencies(noson ${noson_DEPENDENCIES})
+endif()
