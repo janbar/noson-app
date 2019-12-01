@@ -14,6 +14,7 @@ if(NOT BUILD_DEPENDENCIES)
     find_package(ZLIB QUIET)
 endif()
 if(NOT ZLIB_FOUND)
+    set(BUILD_SHARED_LIBS OFF)
     add_subdirectory(
         ${CMAKE_CURRENT_SOURCE_DIR}/zlib
         ${CMAKE_CURRENT_BINARY_DIR}/zlib
@@ -31,6 +32,14 @@ if(NOT BUILD_DEPENDENCIES)
     find_package(OpenSSL QUIET)
 endif()
 if(NOT OPENSSL_FOUND)
+    execute_process (COMMAND git submodule update --init --depth 1 -- openssl
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+    if(ANDROID OR MSVC)
+        set(BUILD_SHARED_LIBS ON)
+    else()
+        set(BUILD_SHARED_LIBS OFF)
+    endif()
     add_subdirectory(
         ${CMAKE_CURRENT_SOURCE_DIR}/openssl
         ${CMAKE_CURRENT_BINARY_DIR}/openssl
@@ -50,6 +59,14 @@ if(NOT BUILD_DEPENDENCIES)
     find_package(FLACXX)
 endif()
 if(NOT FLAC_FOUND OR NOT FLACXX_FOUND)
+    execute_process (COMMAND git submodule update --init --depth 1 -- flac
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+    if(ANDROID OR MSVC)
+        set(BUILD_SHARED_LIBS ON)
+    else()
+        set(BUILD_SHARED_LIBS OFF)
+    endif()
     add_subdirectory(
         ${CMAKE_CURRENT_SOURCE_DIR}/flac
         ${CMAKE_CURRENT_BINARY_DIR}/flac
@@ -66,6 +83,10 @@ if(NOT FLAC_FOUND OR NOT FLACXX_FOUND)
 endif()
 
 # Provides dependency noson
+execute_process (COMMAND git submodule update --init --depth 1 -- noson
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+set(BUILD_SHARED_LIBS OFF)
 add_subdirectory(
     ${CMAKE_CURRENT_SOURCE_DIR}/noson/noson
     EXCLUDE_FROM_ALL
