@@ -1,0 +1,9 @@
+[submodule "backend/lib/openssl"]
+	path = backend/lib/openssl
+	url = https://github.com/janbar/openssl-cmake.git
+[submodule "backend/lib/flac"]
+	path = backend/lib/flac
+	url = https://github.com/janbar/flac-cmake.git
+[submodule "backend/lib/noson"]
+	path = backend/lib/noson
+	url = https://github.com/janbar/noson.git
