@@ -123,6 +123,14 @@ Section "Noson" Noson
     File Files\NosonThumbnailer\qmldir
   ;END Noson Files
 
+  ;BEGIN Libs Files
+  SetOutPath "$INSTDIR"
+    File Files\libFLAC.dll
+    File Files\libFLAC++.dll
+    File Files\libcrypto-1_1-x64.dll
+    File Files\libssl-1_1-x64.dll
+  ;END Noson Files
+
   ;BEGIN Qt Files
   SetOutPath "$INSTDIR"
     File Files\Qt5Core.dll

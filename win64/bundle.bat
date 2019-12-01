@@ -1,6 +1,6 @@
 rem Batch file to copy the necessary files for the Windows Installer
 
-set QT_DIR="C:\Qt\Qt5.9.8\5.9.8\msvc2017_64"
+set QT_DIR="C:\Qt\5.12.6\msvc2017_64"
 rem get the VC redistributable installer from https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
 set VCREDIST_DIR="C:\Qt"
 rem the path to the source directory
@@ -65,6 +65,14 @@ copy %QT_DIR%\translations\qtbase_en.qm %FILES%\translations
 
 rem Copy MSVC Redist Files
 copy %VCREDIST_DIR%\vc_redist.x64.exe %FILES%
+
+rem Copy OpenSSL depends
+copy %BUILD_DIR%\backend\lib\openssl\crypto\"libcrypto-1_1-x64.dll" %FILES%
+copy %BUILD_DIR%\backend\lib\openssl\ssl\"libssl-1_1-x64.dll" %FILES%
+
+rem Copy FLAC depends
+copy %BUILD_DIR%\backend\lib\flac\"libFLAC.dll" %FILES%
+copy %BUILD_DIR%\backend\lib\flac\"libFLAC++.dll" %FILES%
 
 rem Copy application Files
 copy %BUILD_DIR%\gui\noson-gui.exe %FILES%
