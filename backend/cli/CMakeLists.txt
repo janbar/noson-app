@@ -24,6 +24,11 @@ set(
   noson.cpp
 )
 
+set(
+  noson-cli_HEADERS
+  tokenizer.h
+)
+
 add_executable (noson-cli ${noson-cli_SOURCES})
 
 if(NOT noson_FOUND)

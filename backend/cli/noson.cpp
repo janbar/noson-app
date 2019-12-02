@@ -49,8 +49,7 @@
 #include <string>
 #include <algorithm> // std::find
 
-#include "private/debug.h"
-#include "private/tokenizer.h"
+#include "tokenizer.h"
 #include "private/builtin.h"
 
 #ifdef __WINDOWS__
@@ -77,14 +76,18 @@ static void readStream(std::istream*);
 
 SONOS::System * gSonos = 0;
 SONOS::PlayerPtr gPlayer;
+int gDebug = 0;
 
 void handleEventCB(void* handle)
 {
-  unsigned char mask = gSonos->LastEvents();
-  if ((mask & SONOS::SVCEvent_AlarmClockChanged))
-    SONOS::DBG(DBG_DEBUG, "AlarmClockChanged event triggered\n");
-  if ((mask & SONOS::SVCEvent_ZGTopologyChanged))
-    SONOS::DBG(DBG_DEBUG, "ZGTopologyChanged event triggered\n");
+  if (gDebug > 2)
+  {
+    unsigned char mask = gSonos->LastEvents();
+    if ((mask & SONOS::SVCEvent_AlarmClockChanged))
+      fprintf(stderr, "AlarmClockChanged event triggered\n");
+    if ((mask & SONOS::SVCEvent_ZGTopologyChanged))
+      fprintf(stderr, "ZGTopologyChanged event triggered\n");
+  }
 }
 
 /*
@@ -93,7 +96,7 @@ void handleEventCB(void* handle)
 int main(int argc, char** argv)
 {
   int ret = 0;
-  SONOS::DBGLevel(DBG_ERROR);
+  SONOS::System::Debug(0);
 
   if (getCmd(argv, argv + argc, "--help") || getCmd(argv, argv + argc, "-h"))
   {
@@ -108,7 +111,8 @@ int main(int argc, char** argv)
   }
 
   if (getCmd(argv, argv + argc, "--debug"))
-    SONOS::DBGLevel(DBG_PROTO);
+    gDebug = 4;
+  SONOS::System::Debug(gDebug);
 
   const char* deviceUrl = getCmdOption(argv, argv + argc, "--deviceurl");
 
