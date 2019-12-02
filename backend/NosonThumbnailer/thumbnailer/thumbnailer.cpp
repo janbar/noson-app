@@ -125,9 +125,9 @@ namespace thumbnailer
     DiskCacheManager* cache_;
     NetManager* nam_;
     AbstractAPI* api_;
-    bool valid_;
+    volatile bool valid_;
 
-    bool netFailed_;
+    volatile bool netFailed_;
     std::atomic<int> nwerr_;
     std::atomic<int> fatal_;
     std::atomic<int> quota_;
