@@ -21,7 +21,7 @@
 #include "mediamodel.h"
 #include "sonos.h"
 #include "tools.h"
-#include "private/cppdef.h"
+#include "cppdef.h"
 
 #include <cstdio> // for strncpy
 #include <cctype> // for isdigit

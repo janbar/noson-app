@@ -20,7 +20,7 @@
 
 #include "tracksmodel.h"
 #include "sonos.h"
-#include "private/cppdef.h"
+#include "cppdef.h"
 
 #define LOAD_BULKSIZE 100
 

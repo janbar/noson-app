@@ -77,6 +77,7 @@ set(
     plugin.h
     tools.h
     locked.h
+    cppdef.h
     sonos.h
     player.h
     listmodel.h

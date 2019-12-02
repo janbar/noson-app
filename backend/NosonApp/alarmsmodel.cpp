@@ -20,7 +20,6 @@
 
 #include "alarmsmodel.h"
 #include "sonos.h"
-#include "private/tokenizer.h"
 
 using namespace nosonapp;
 
