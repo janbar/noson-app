@@ -50,7 +50,7 @@
 #include <algorithm> // std::find
 
 #include "tokenizer.h"
-#include "private/builtin.h"
+#include "builtin.h"
 
 #ifdef __WINDOWS__
 #define PRINT(a) fprintf(stderr, a)
@@ -354,18 +354,18 @@ static bool parseCommand(const std::string& line)
       SONOS::AlarmList alarms = gSonos->GetAlarmList();
       for (SONOS::AlarmList::const_iterator il = alarms.begin(); il != alarms.end(); ++il)
       {
-	PRINT("\n");
-	PRINT2("%s: Enabled = %s\n", (*il)->GetId().c_str(), (*il)->GetEnabled() ? "true" : "false");
-	PRINT2("%s: StartTime = %s\n", (*il)->GetId().c_str(), (*il)->GetStartLocalTime().c_str());
-	PRINT2("%s: Recurrence = %s\n", (*il)->GetId().c_str(), (*il)->GetRecurrence().c_str());
-	PRINT2("%s: RoomUUID = %s\n", (*il)->GetId().c_str(), (*il)->GetRoomUUID().c_str());
-	PRINT2("%s: IncludeLinkedZones = %s\n", (*il)->GetId().c_str(), (*il)->GetIncludeLinkedZones() ? "true" : "false");
-	PRINT2("%s: ProgramURI = %s\n", (*il)->GetId().c_str(), (*il)->GetProgramURI().c_str());
-	const SONOS::DigitalItemPtr didl = (*il)->GetProgramMetadata();
-	PRINT2("%s: ProgramTitle = %s\n", (*il)->GetId().c_str(), didl ? didl->GetValue("dc:title").c_str() : "");
-	PRINT2("%s: PlayMode = %s\n", (*il)->GetId().c_str(), (*il)->GetPlayMode().c_str());
-	PRINT2("%s: Volume = %d\n", (*il)->GetId().c_str(), (*il)->GetVolume());
-	PRINT2("%s: Duration = %s\n", (*il)->GetId().c_str(), (*il)->GetDuration().c_str());
+        PRINT("\n");
+        PRINT2("%s: Enabled = %s\n", (*il)->GetId().c_str(), (*il)->GetEnabled() ? "true" : "false");
+        PRINT2("%s: StartTime = %s\n", (*il)->GetId().c_str(), (*il)->GetStartLocalTime().c_str());
+        PRINT2("%s: Recurrence = %s\n", (*il)->GetId().c_str(), (*il)->GetRecurrence().c_str());
+        PRINT2("%s: RoomUUID = %s\n", (*il)->GetId().c_str(), (*il)->GetRoomUUID().c_str());
+        PRINT2("%s: IncludeLinkedZones = %s\n", (*il)->GetId().c_str(), (*il)->GetIncludeLinkedZones() ? "true" : "false");
+        PRINT2("%s: ProgramURI = %s\n", (*il)->GetId().c_str(), (*il)->GetProgramURI().c_str());
+        const SONOS::DigitalItemPtr didl = (*il)->GetProgramMetadata();
+        PRINT2("%s: ProgramTitle = %s\n", (*il)->GetId().c_str(), didl ? didl->GetValue("dc:title").c_str() : "");
+        PRINT2("%s: PlayMode = %s\n", (*il)->GetId().c_str(), (*il)->GetPlayMode().c_str());
+        PRINT2("%s: Volume = %d\n", (*il)->GetId().c_str(), (*il)->GetVolume());
+        PRINT2("%s: Duration = %s\n", (*il)->GetId().c_str(), (*il)->GetDuration().c_str());
       }
     }
     else if (token == "CREATEAC")
@@ -505,7 +505,7 @@ static bool parseCommand(const std::string& line)
             ptr->SetDuration(*it);
           else if (type == "VOLUME")
           {
-            uint8_t value;
+            uint8_t value = 0;
             string_to_uint8(it->c_str(), &value);
             ptr->SetVolume(value);
           }
@@ -518,7 +518,7 @@ static bool parseCommand(const std::string& line)
             }
             else
             {
-              uint16_t value;
+              uint16_t value = 0;
               string_to_uint16(it->c_str(), &value);
               SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
               SONOS::ContentList bdir(mycontent, "FV:2");
@@ -590,7 +590,7 @@ static bool parseCommand(const std::string& line)
     {
       if (++it != tokens.end())
       {
-        uint32_t value;
+        uint32_t value = 0;
         string_to_uint32(it->c_str(), &value);
         if (gPlayer->SeekTrack(value))
           PERROR("Succeeded\n");
@@ -779,13 +779,6 @@ static bool parseCommand(const std::string& line)
       }
       else
         PERROR("Error: Missing arguments.\n");
-    }
-    else if (token == "PLAYDIGITALIN")
-    {
-      if (gPlayer->PlayDigitalIN())
-        PERROR("Succeeded\n");
-      else
-        PERROR("Failed\n");
     }
     else
     {

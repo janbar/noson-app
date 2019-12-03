@@ -27,6 +27,7 @@ set(
 set(
   noson-cli_HEADERS
   tokenizer.h
+  builtin.h
 )
 
 add_executable (noson-cli ${noson-cli_SOURCES})
