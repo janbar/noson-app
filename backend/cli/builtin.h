@@ -24,58 +24,59 @@
 
 #include <cstdlib>
 #include <cstdint>
-#include <limits>
+#include <climits>
+#include <cerrno>
 
 static inline int string_to_int8(const char *str, int8_t *num)
 {
-  int v = std::atoi(str);
-  if (v > std::numeric_limits<int8_t>::max() || v < std::numeric_limits<int8_t>::min())
-    return 1;
+  int v = atoi(str);
+  if (v > INT8_MAX || v < INT8_MIN)
+    return -(ERANGE);
   *num = (int8_t) v;
   return 0;
 }
 
 static inline int string_to_uint8(const char *str, uint8_t *num)
 {
-  int v = std::atoi(str);
-  if (v > std::numeric_limits<uint8_t>::max() || v < 0)
-    return 1;
+  int v = atoi(str);
+  if (v > UINT8_MAX || v < 0)
+    return -(ERANGE);
   *num = (uint8_t) v;
   return 0;
 }
 
 static inline int string_to_int16(const char *str, int16_t *num)
 {
-  int v = std::atoi(str);
-  if (v > std::numeric_limits<int16_t>::max() || v < std::numeric_limits<int16_t>::min())
-    return 1;
+  int v = atoi(str);
+  if (v > INT16_MAX || v < INT16_MIN)
+    return -(ERANGE);
   *num = (int16_t) v;
   return 0;
 }
 
 static inline int string_to_uint16(const char *str, uint16_t *num)
 {
-  int v = std::atoi(str);
-  if (v > std::numeric_limits<uint16_t>::max() || v < 0)
-    return 1;
+  int v = atoi(str);
+  if (v > UINT16_MAX || v < 0)
+    return -(ERANGE);
   *num = (uint16_t) v;
   return 0;
 }
 
 static inline int string_to_int32(const char *str, int32_t *num)
 {
-  long long v = std::atoll(str);
-  if (v > std::numeric_limits<int32_t>::max() || v < std::numeric_limits<int32_t>::min())
-    return 1;
+  long long v = atoll(str);
+  if (v > INT32_MAX || v < INT32_MIN)
+    return -(ERANGE);
   *num = (int32_t) v;
   return 0;
 }
 
 static inline int string_to_uint32(const char *str, uint32_t *num)
 {
-  long long v = std::atoll(str);
-  if (v > std::numeric_limits<uint32_t>::max() || v < 0)
-    return 1;
+  long long v = atoll(str);
+  if (v > UINT32_MAX || v < 0)
+    return -(ERANGE);
   *num = (uint32_t) v;
   return 0;
 }

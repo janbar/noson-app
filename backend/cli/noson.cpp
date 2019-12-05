@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2018 Jean-Luc Barriere
+ *      Copyright (C) 2019 Jean-Luc Barriere
  *
  *  This file is part of Noson-App
  *
@@ -23,7 +23,7 @@
 #endif
 
 #ifdef __WINDOWS__
-#include <winsock2.h>
+#include <WinSock2.h>
 #include <Windows.h>
 #include <time.h>
 #define usleep(t) Sleep((DWORD)(t)/1000)
