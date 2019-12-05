@@ -6,6 +6,10 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 set (CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+if(MSVC)
+  set(MSVC_DYNAMIC_RUNTIME ON)
+endif()
+
 # Disable install rules
 set(SKIP_INSTALL_ALL ON)
 
