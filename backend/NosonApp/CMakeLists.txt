@@ -26,11 +26,8 @@ set(CMAKE_CXX_STANDARD 11)
 
 ###############################################################################
 # configure
-include_directories(
-    ${noson_INCLUDE_DIRS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/../lib/noson/noson/src
-    ${CMAKE_CURRENT_BINARY_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}
+include_directories(${noson_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 if(QT_STATICPLUGIN)

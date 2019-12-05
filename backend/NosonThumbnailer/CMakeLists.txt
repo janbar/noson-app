@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 ###############################################################################
 # configure
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(QT_STATICPLUGIN)
     set(CMAKE_AUTOMOC_MOC_OPTIONS -Muri=NosonThumbnailer)
