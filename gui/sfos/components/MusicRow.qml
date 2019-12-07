@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
+import QtQuick 2.2
+import Sailfish.Silica 1.0
 import "ListItemActions"
 
 Row {
@@ -32,15 +32,14 @@ Row {
     property string imageSource: ""
     property string description: ""
     property bool isFavorite: false
-    property alias checked: select.checked
-    property alias checkable: select.checkable
+    property alias checked: control.checked
 
     property bool menuVisible: false
-    property alias menuItems: optionsMenu.contentData
+    property alias menuItems: optionsMenu._contentColumn
     property alias actionVisible: action.visible
-    property alias actionIconSource: action.iconSource
+    property string actionIconSource: ""
     property alias action2Visible: action2.visible
-    property alias action2IconSource: action2.iconSource
+    property string action2IconSource: ""
     signal actionPressed
     signal action2Pressed
     signal selected
@@ -70,7 +69,7 @@ Row {
         id: image
         property int index: 0
         anchors {
-            verticalCenter: parent.verticalCenter
+            //verticalCenter: parent.verticalCenter
             topMargin: units.gu(1)
             bottomMargin: units.gu(1)
         }
@@ -155,16 +154,15 @@ Row {
         anchors.right: action.left
         anchors.rightMargin: units.gu(1)
         width: visible ? units.gu(5) : 0
-        property alias iconSource: icon2.source
 
         Rectangle {
             color: "transparent"
             width: parent.width
             height: row.height
 
-            Icon {
+            IconButton {
                 id: icon2
-                source: ""
+                icon.source: row.action2IconSource
                 width: parent.width
                 height: width
                 anchors.centerIn: parent
@@ -179,16 +177,15 @@ Row {
         anchors.right: menu.left
         anchors.rightMargin: units.gu(1)
         width: units.gu(5)
-        property alias iconSource: icon.source
 
         Rectangle {
             color: "transparent"
             width: parent.width
             height: row.height
 
-            Icon {
-                id: icon
-                source: ""
+            IconButton {
+                id: icn
+                icon.source: row.actionIconSource
                 width: parent.width
                 height: width
                 anchors.centerIn: parent
@@ -208,19 +205,18 @@ Row {
             width: parent.width
             height: row.height
 
-            Icon {
+            IconButton {
                 width: menu.visible ? units.gu(5) : 0
                 height: width
                 anchors.centerIn: parent
-                source: "qrc:/images/contextual-menu.svg"
+                icon.source: "qrc:/images/contextual-menu.svg"
 
                 onClicked: optionsMenu.open()
 
-                Menu {
+                ContextMenu {
                     id: optionsMenu
-                    width: implicitWidth * units.scaleFactor
-                    x: parent.width - width
-                    transformOrigin: Menu.TopRight
+//                    width: implicitWidth * units.scaleFactor
+                    //transformOrigin: TopRight
                 }
             }
         }
@@ -236,7 +232,6 @@ Row {
         width: units.gu(6)
         visible: true
         property alias checked: control.checked
-        property alias checkable: control.checkable
 
         Rectangle {
             color: "transparent"

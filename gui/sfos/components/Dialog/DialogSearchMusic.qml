@@ -15,45 +15,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Layouts 1.3
+import QtQuick 2.2
 import Sailfish.Silica 1.0
-import QtQml.Models 2.3
+import QtQml.Models 2.2
 
 DialogBase {
     id: dialog
 
     property var searchableModel
 
-    footer: Row {
-        leftPadding: units.gu(1)
-        rightPadding: units.gu(1)
-        bottomPadding: units.gu(1)
-        spacing: units.gu(1)
-        layoutDirection: Qt.RightToLeft
+    acceptText: qsTr("Search")
+    cancelText: qsTr("Cancel")
 
-        Button {
-            flat: true
-            text: qsTr("Cancel")
-            onClicked: dialog.reject()
-        }
-        Button {
-            flat: true
-            text: qsTr("Search")
-            onClicked: dialog.accept()
+    ComboBox {
+        id: selector
+        currentIndex: -1
+        
+        menu: ContextMenu {
+            id: contextMenu
         }
     }
 
-    Label {
-        //: this is a title of a dialog to setup search
-        text: qsTr("Search music")
-        color: styleMusic.dialog.labelColor
-        font.pointSize: units.fs("large")
-        font.bold: true
+    TextField {
+        id: searchField
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
+        placeholderText: qsTr("Type search")
+        font.pointSize: units.fs("medium")
     }
-
+    
     ListModel {
         id: selectorModel
+    }
+
+    Component {
+        id: menuItemComp
+        MenuItem {}
     }
 
     onOpened: {
@@ -82,35 +81,11 @@ DialogBase {
                     else
                         tr = id;
                     selectorModel.insert(i, {'id': id, 'text': tr});
+                    var newMenuItem = menuItemComp.createObject(contextMenu._contentColumn, {"id": id, "text" : tr})
                 }
                 selector.currentIndex = 0;
             }
         }
-    }
-
-    ComboBox {
-        id: selector
-        textRole: "text"
-        model: selectorModel
-        Layout.fillWidth: true
-        font.pointSize: units.fs("medium")
-        currentIndex: -1
-        Component.onCompleted: {
-            popup.font.pointSize = font.pointSize;
-        }
-    }
-
-    TextField {
-        id: searchField
-        anchors {
-            left: parent.left
-            right: parent.right
-        }
-        focus: true
-        inputMethodHints: Qt.ImhNoPredictiveText
-        placeholderText: qsTr("Type search")
-        font.pointSize: units.fs("medium")
-        EnterKey.type: Qt.EnterKeyDone
     }
 
     onAccepted: {

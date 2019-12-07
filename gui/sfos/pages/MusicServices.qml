@@ -57,6 +57,17 @@ MusicPage {
         id: serviceList
         anchors.fill: parent
         model: servicesModel
+        
+        PullDownMenu {
+            id: topMenu1
+
+            MenuItem { text: qsTr("My Index"); onClicked: pageStack.push("pages/Index.qml") }
+            MenuItem { text: qsTr("Favorites"); onClicked: pageStack.push("pages/Favorites.qml") }
+            MenuItem { text: qsTr("Playlists"); onClicked: pageStack.push("pages/Playlists.qml") }
+            MenuItem { text: qsTr("Alarm clock"); onClicked: pageStack.push("pages/Alarms.qml")}
+            MenuItem { text: qsTr("This Device"); onClicked: pageStack.push("pages/ThisDevice.qml") }
+        }
+        
         delegate: MusicListItem {
             id: serviceItem
 
@@ -71,7 +82,7 @@ MusicPage {
             description: qsTr("Service")
 
             onClicked: {
-                stackView.push("qrc:/ui/Service.qml",
+                pageStack.push("qrc:/sfos/pages/Service.qml",
                                    {
                                        "serviceItem": model,
                                        "pageTitle": model.title
@@ -81,13 +92,13 @@ MusicPage {
             actionVisible: false
             menuVisible: (model.id === "SA_RINCON65031_0" ? false : true)
 
-            menuItems: [
-                Remove {
-                    onTriggered: {
-                        removeService(model.type, model.serialNum)
-                    }
-                }
-            ]
+ //           menuItems: [
+ //               Remove {
+ //                   onTriggered: {
+ //                       removeService(model.type, model.serialNum)
+ //                   }
+ //               }
+ //           ]
 
             column: Column {
                 Label {
@@ -120,6 +131,16 @@ MusicPage {
 
         model: servicesModel
 
+        PullDownMenu {
+            id: topMenu2
+
+            MenuItem { text: qsTr("My Index"); onClicked: pageStack.push("Index.qml") }
+            MenuItem { text: qsTr("Favorites"); onClicked: pageStack.push("Favorites.qml") }
+            MenuItem { text: qsTr("Playlists"); onClicked: pageStack.push("Playlists.qml") }
+            MenuItem { text: qsTr("Alarm clock"); onClicked: pageStack.push("Alarms.qml")}
+            MenuItem { text: qsTr("This Device"); onClicked: pageStack.push("ThisDevice.qml") }
+        }
+        
         delegate: Card {
             id: serviceCard
             primaryText: model.title
@@ -131,7 +152,8 @@ MusicPage {
             coverSources: [{art: model.type === "65031" ? "qrc:/images/tunein.png" : model.icon}]
 
             onClicked: {
-                stackView.push("qrc:/ui/Service.qml",
+                console.log("Clicked card")
+                pageStack.push("Service.qml",
                                    {
                                        "serviceItem": model,
                                        "pageTitle": model.title
@@ -147,7 +169,7 @@ MusicPage {
     }
 
     onAddClicked: {
-        stackView.push("qrc:/ui/AddService.qml")
+        pageStack.push("AddService.qml")
     }
 
 }

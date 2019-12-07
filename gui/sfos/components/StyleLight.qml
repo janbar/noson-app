@@ -15,18 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
+import QtQuick 2.2
+import Sailfish.Silica 1.0
 
 QtObject {
     property QtObject view: QtObject {
-        property color foregroundColor: palette.text
-        property color backgroundColor: palette.base
-        property color highlightedColor: palette.highlight
-        property color labelColor: palette.text
-        property color primaryColor: palette.text
-        property color secondaryColor: palette.text
-        property color linkColor: palette.link
+        property color foregroundColor: Theme.primaryColor
+        property color backgroundColor: Theme.backgroundColor
+        property color highlightedColor: Theme.highlightColor
+        property color labelColor: Theme.primaryColor
+        property color primaryColor: Theme.primaryColor
+        property color secondaryColor: Theme.primaryColor
+        property color linkColor: Theme.secondaryColor
         property color footerColor: backgroundColor
         property color headerColor: backgroundColor
 
@@ -35,42 +35,42 @@ QtObject {
     }
 
     property QtObject dialog: QtObject {
-        property color backgroundColor: palette.base
-        property color foregroundColor: palette.text
-        property color labelColor: palette.text
+        property color backgroundColor: Theme.backgroundColor
+        property color foregroundColor: Theme.primaryColor
+        property color labelColor: Theme.primaryColor
         property color confirmButtonColor: "green"
         property color confirmRemoveButtonColor: "red"
-        property color cancelButtonColor: palette.button
+        property color cancelButtonColor: Theme.secondaryColor
     }
 
     property QtObject card: QtObject {
         property color backgroundColor: "grey"
-        property color foregroundColor: palette.text
+        property color foregroundColor: Theme.primaryColor
         property color borderColor: backgroundColor
     }
 
     property QtObject nowPlaying: QtObject {
         property color backgroundColor: "transparent"
-        property color foregroundColor: palette.text
-        property color primaryColor: palette.text
-        property color secondaryColor: palette.text
+        property color foregroundColor: Theme.primaryColor
+        property color primaryColor: Theme.primaryColor
+        property color secondaryColor: Theme.primaryColor
     }
 
     property QtObject playerControls: QtObject {
-        property color backgroundColor: palette.base
-        property color foregroundColor: palette.text
-        property color labelColor: palette.text
+        property color backgroundColor: Theme.backgroundColor
+        property color foregroundColor: Theme.primaryColor
+        property color labelColor: Theme.primaryColor
         property color progressBackgroundColor: "grey"
         property color progressForegroundColor: "#19b1e9"
-        property color progressHandleColor: palette.text
+        property color progressHandleColor: Theme.primaryColor
         property color volumeBackgroundColor: "grey"
         property color volumeForegroundColor: "#e95420"
-        property color volumeHandleColor: palette.text
+        property color volumeHandleColor: Theme.primaryColor
     }
 
     property QtObject popover: QtObject {
-        property color backgroundColor: palette.toolTipBase
-        property color foregroundColor: palette.toolTipText
-        property color labelColor: palette.toolTipText
+        property color backgroundColor: Theme.overlayBackgroundColor
+        property color foregroundColor: Theme.primaryColor
+        property color labelColor: Theme.primaryColor
     }
 }

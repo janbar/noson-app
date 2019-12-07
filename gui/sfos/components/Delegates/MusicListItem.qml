@@ -15,9 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
-import QtQml.Models 2.3
+import QtQuick 2.2
+import Sailfish.Silica 1.0
 import "../"
 
 MouseArea {
@@ -51,7 +50,7 @@ MouseArea {
     property alias action2Visible: row.action2Visible
     property alias action2IconSource: row.action2IconSource
     property alias menuVisible: row.menuVisible
-    property alias menuItems: row.menuItems
+    //property alias menuItems: row.menuItems
 
     anchors { left: parent.left; right: parent.right }
     height: content.height

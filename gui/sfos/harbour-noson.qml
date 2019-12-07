@@ -2,8 +2,14 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 import "pages"
 import "components/Dialog"
+import NosonApp 1.0
+import NosonThumbnailer 1.0
+import "components"
+import "components/Dialog"
 
 ApplicationWindow {
+    id: mainView
+
     initialPage: Component {
         MusicServices {
         }
@@ -11,17 +17,342 @@ ApplicationWindow {
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
     allowedOrientations: defaultAllowedOrientations
 
+    Item {
+        id: settings
+        
+        property real scaleFactor: 1.0
+        property real fontScaleFactor: 1.0
+        property bool firstRun: true
+        property string zoneName: ""
+        property int tabIndex: -1
+        property string accounts: ""
+        property string lastfmKey: ""
+        property string deviceUrl: ""
+    }
+    
+    StyleLight {
+        id: styleMusic
+    }
+    
+    Units {
+        id: units
+        scaleFactor: 4.0
+        fontScaleFactor: 1.0
+    }
+    
+    // The player handles all actions to control the music
+    Player {
+        id: player
+    }
+    
+    PopInfo {
+        id: popInfo
+        backgroundColor: styleMusic.popover.backgroundColor
+        labelColor: styleMusic.popover.labelColor
+    }
+    
+    // Variables
+    property string appName: "Noson"    // My name
+    property int debugLevel: 2          // My debug level
+    property bool playOnStart: false    // play inputStreamUrl when startup is completed
+    property bool startup: true         // is running the cold startup ?
+    property bool ssdp: true            // point out the connect method
+
+    // Property to store the state of an application (active or suspended)
+    property bool applicationSuspended: Qt.application.state === Qt.ApplicationSuspended
+
+    // setting alias to check first run
+    //property alias firstRun: settings.firstRun
+
+    // setting alias to store deviceUrl as hint for the SSDP discovery
+    property alias deviceUrl: settings.deviceUrl
+
+    // setting alias to store last zone connected
+    property alias currentZone: settings.zoneName
+    property string currentZoneTag: ""
+
+    // track latest stream link
+    property string inputStreamUrl: ""
+
+    // No source configured: First user has to select a source
+    property bool noMusic: player.currentMetaSource === "" && loadedUI
+
+    // No zone connected: UI push page "NoZoneState" on top to invit user to retry discovery of Sonos devices
+    property bool noZone: false // doesn't pop page on startup
+    property Page noZonePage
+
+    // current page now playing
+    property Page nowPlayingPage
+
+    // property to detect if the UI has finished
+    property bool loadedUI: false
+    //property real wideSongView: units.gu(70)
+    //property bool wideAspect: width >= units.gu(100) && loadedUI
+
+    // property to enable pop info on index loaded
+    property bool infoLoadedIndex: true // enabled at startup
+
+    // property to detect thumbnailer is available
+    property bool thumbValid: false
+
+    // Constants
+    readonly property int queueBatchSize: 100
+    readonly property real minSizeGU: 42
+    readonly property string tr_undefined: qsTr("<Undefined>")
+
+    // Cache built-in genre artworks
+    property var genreArtworks: []
+    
+    property bool alarmEnabled: false
+    property bool shareIndexInProgress: false
+    
+        AlarmsModel {
+        id: alarmsModel
+        property bool updatePending: false
+        property bool dataSynced: false
+
+        onDataUpdated: asyncLoad()
+
+        onLoaded: {
+            if (updatePending) {
+                // delay model reset while a dialog still opened
+                dataSynced = false;
+            } else {
+                resetModel();
+                dataSynced = true;
+            }
+        }
+
+        onUpdatePendingChanged: {
+            if (!updatePending && !dataSynced) {
+                resetModel();
+                dataSynced = true;
+            }
+        }
+
+        onCountChanged: alarmEnabled = isAlarmEnabled()
+    }
+    
+    
+    
+    
+    ////////////////////////////////////////////////////////////////////////////
+    ////
+    //// Events
+    ////
+
+    Connections {
+        target: Sonos
+
+        onJobCountChanged: jobRunning = Sonos.jobCount > 0 ? true : false
+
+        onInitDone: {
+            if (succeeded) {
+                // clear the setting deviceUrl when ssdp method succeeded
+                if (ssdp && deviceUrl !== "") {
+                    customdebug("NOTICE: Clearing the configured URL because invalid");
+                    deviceUrl = "";
+                }
+
+                if (noZone)
+                    noZone = false;
+            } else {
+                if (!noZone)
+                    noZone = true;
+            }
+        }
+
+        onLoadingFinished: {
+            if (infoLoadedIndex) {
+                infoLoadedIndex = false;
+                popInfo.open(qsTr("Index loaded"));
+            }
+        }
+
+        onTopologyChanged: {
+            AllZonesModel.asyncLoad()
+            delayReloadZone.start()
+        }
+    }
+
+    Timer {
+        id: delayReloadZone
+        interval: 250
+        onTriggered: {
+            if (jobRunning) {
+                restart();
+            } else {
+                // Reload the zone and start the content loader thread
+                customdebug("Reloading the zone ...");
+                if (connectZone(currentZone)) {
+                    Sonos.runLoader();
+                    // Completing startup
+                    if (startup) {
+                        startup = false;
+                        if (playOnStart) {
+                            if (player.playStream(inputStreamUrl, "")) {
+                                tabs.pushNowPlaying();
+                            }
+                        }
+                        // check for enabled alarm
+                        alarmEnabled = isAlarmEnabled();
+                    }
+                }
+            }
+        }
+    }
+
+    // Run on startup
+    Component.onCompleted: {
+        var argno = 0;
+
+        customdebug("LANG=" + Qt.locale().name);
+        Sonos.setLocale(Qt.locale().name);
+
+        // configure the thumbnailer
+        if (settings.lastfmKey && settings.lastfmKey.length > 1) {
+            if (Thumbnailer.configure("LASTFM", settings.lastfmKey))
+                thumbValid = true;
+        } else {
+            if (Thumbnailer.configure("DEEZER", "n/a"))
+                thumbValid = true;
+        }
+
+        // init SMAPI third party accounts
+        var acls = deserializeACLS(settings.accounts);
+        for (var i = 0; i < acls.length; ++i) {
+            customdebug("register account: type=" + acls[i].type + " sn=" + acls[i].sn + " token=" + acls[i].token.substr(0, 1) + "...");
+            Sonos.addServiceOAuth(acls[i].type, acls[i].sn, acls[i].key, acls[i].token, acls[i].username);
+        }
+
+        // initialize all data models
+        AllZonesModel.init(Sonos, "",       false);
+        AllFavoritesModel.init(Sonos, "",   false);
+        AllServicesModel.init(Sonos,        false);
+        AllPlaylistsModel.init(Sonos, "",   false);
+        MyServicesModel.init(Sonos,         false);
+        alarmsModel.init(Sonos,             false);
+        // launch connection
+        connectSonos();
+
+        // signal UI has finished
+        loadedUI = true;
+
+    }
+
+    // Show/hide page NoZoneState
+    onNoZoneChanged: {
+        if (noZone) {
+            noZonePage = stackView.push("qrc:/ui/NoZoneState.qml")
+        } else {
+            if (stackView.currentItem === noZonePage) {
+                stackView.pop()
+            }
+        }
+    }
+
+    // About backend signals
+    // Triggers asynchronous loading on dataUpdated from global models
+    // For these singletons, data loading is processed by backend threads.
+    // Invoking asyncLoad() will schedule the reloading of data.
+    Connections {
+        target: AllZonesModel
+        onDataUpdated: AllZonesModel.asyncLoad()
+        onLoaded: AllZonesModel.resetModel()
+    }
+
+    Connections {
+        target: AllServicesModel
+        onDataUpdated: AllServicesModel.asyncLoad()
+        onLoaded: AllServicesModel.resetModel()
+    }
+
+    Connections {
+        target: MyServicesModel
+        onDataUpdated: MyServicesModel.asyncLoad()
+        onLoaded: MyServicesModel.resetModel()
+    }
+
+    Connections {
+        target: AllFavoritesModel
+        onDataUpdated: AllFavoritesModel.asyncLoad()
+        onLoaded: AllFavoritesModel.resetModel()
+        onCountChanged: { tabs.setProperty(2, "visible", (AllFavoritesModel.count > 0)) }
+    }
+
+    Connections {
+        target: AllArtistsModel
+        onDataUpdated: AllArtistsModel.asyncLoad()
+        onLoaded: AllArtistsModel.resetModel()
+    }
+
+    Connections {
+        target: AllAlbumsModel
+        onDataUpdated: AllAlbumsModel.asyncLoad()
+        onLoaded: AllAlbumsModel.resetModel()
+    }
+
+    Connections {
+        target: AllGenresModel
+        onDataUpdated: AllGenresModel.asyncLoad()
+        onLoaded: AllGenresModel.resetModel()
+    }
+
+    Connections {
+        target: AllComposersModel
+        onDataUpdated: AllComposersModel.asyncLoad()
+        onLoaded: AllComposersModel.resetModel()
+    }
+
+    Connections {
+        target: AllPlaylistsModel
+        onDataUpdated: AllPlaylistsModel.asyncLoad()
+        onLoaded: AllPlaylistsModel.resetModel()
+    }
+
+    Connections {
+        target: Sonos
+        onAlarmClockChanged: alarmsModel.asyncLoad()
+        onShareIndexInProgress: {
+            shareIndexInProgress = true;
+            AllAlbumsModel.clearModel();
+            AllArtistsModel.clearModel();
+            AllComposersModel.clearModel();
+            AllGenresModel.clearModel();
+        }
+        onShareIndexFinished: {
+            shareIndexInProgress = false;
+            // Queue item metadata could be outdated: force reloading of the queue
+            player.trackQueue.loadQueue();
+            // Force reload genres to be sure the items count is uptodate
+            if (!AllGenresModel.isNew()) {
+                AllGenresModel.asyncLoad();
+            }
+        }
+    }
+
+    onZoneChanged: {
+        // Some tasks are already launched during startup
+        if (!startup) {
+          alarmEnabled = isAlarmEnabled();
+        }
+    }
+
+    
+    
+    
     ////
     //// Global actions & helpers
     ////
 
     // Find index of a command line argument else -1
+    // Find index of a command line argument else -1
     function indexOfArgument(argv) {
-        for (; i < ApplicationArguments.length; ++i) {
+        for (var i = 0; i < ApplicationArguments.length; ++i) {
             if (ApplicationArguments[i].indexOf(argv) === 0)
-                return i
+                return i;
         }
-        return -1
+        return -1;
     }
 
     // Custom debug funtion that's easier to shut off
@@ -37,7 +368,7 @@ ApplicationWindow {
     // ACLS is array as [{type, sn, key, token}]
     function serializeACLS(acls) {
         var str = ""
-        for (; i < acls.length; ++i) {
+        for (var i = 0; i < acls.length; ++i) {
             if (i > 0)
                 str += "|"
             str += acls[i].type + "," + acls[i].sn + "," + Qt.btoa(
@@ -51,7 +382,7 @@ ApplicationWindow {
     function deserializeACLS(str) {
         var acls = []
         var rows = str.split("|")
-        for (; r < rows.length; ++r) {
+        for (var r = 0; r < rows.length; ++r) {
             var attrs = rows[r].split(",")
             if (attrs.length === 4)
                 acls.push({
@@ -239,69 +570,66 @@ ApplicationWindow {
         return false
     }
 
+
     // Action on move queue item
-    function reorderTrackInQueue(fromto) {
+    function reorderTrackInQueue(from, to) {
         if (from < to)
-            ++to
+            ++to;
         if (player.reorderTrackInQueue(from + 1, to + 1))
-            return true
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+            return true;
+        popInfo.open(qsTr("Action can't be performed"));
+        return false;
     }
 
     // Action on radio item clicked
     function radioClicked(modelItem) {
         if (player.playSource(modelItem)) {
-            tabs.pushNowPlaying()
-            return true
+            tabs.pushNowPlaying();
+            return true;
         }
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+        popInfo.open(qsTr("Action can't be performed"));
+        return false;
     }
 
     function saveQueue(title) {
         if (player.saveQueue(title))
-            return true
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+            return true;
+        popInfo.open(qsTr("Action can't be performed"));
+        return false;
     }
 
     function createPlaylist(title) {
         if (player.createSavedQueue(title))
-            return true
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+            return true;
+        popInfo.open(qsTr("Action can't be performed"));
+        return false;
     }
 
-    function addPlaylist(playlistIdmodelItemcontainerUpdateID) {
-        if (player.addItemToSavedQueue(playlistId, modelItem,
-                                       containerUpdateID)) {
-            popInfo.open(qsTr("song added"))
-            return true
+    function addPlaylist(playlistId, modelItem, containerUpdateID) {
+        if (player.addItemToSavedQueue(playlistId, modelItem, containerUpdateID)) {
+            popInfo.open(qsTr("song added"));
+            return true;
         }
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+        popInfo.open(qsTr("Action can't be performed"));
+        return false;
     }
 
-    function removeTracksFromPlaylist(playlistIdselectedIndicescontainerUpdateID) {
-        if (player.removeTracksFromSavedQueue(playlistId, selectedIndices,
-                                              containerUpdateID)) {
-            popInfo.open(qsTr("%n song(s) removed", "", selectedIndices.length))
-            return true
+    function removeTracksFromPlaylist(playlistId, selectedIndices, containerUpdateID) {
+        if (player.removeTracksFromSavedQueue(playlistId, selectedIndices, containerUpdateID)) {
+            popInfo.open(qsTr("%n song(s) removed", "", selectedIndices.length));
+            return true;
         }
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+        popInfo.open(qsTr("Action can't be performed"));
+        return false;
     }
 
     // Action on move playlist item
-    function reorderTrackInPlaylist(playlistIdfromtocontainerUpdateID) {
-        if (player.reorderTrackInSavedQueue(playlistId, from, to,
-                                            containerUpdateID))
-            return true
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+    function reorderTrackInPlaylist(playlistId, from, to, containerUpdateID) {
+        if (player.reorderTrackInSavedQueue(playlistId, from, to, containerUpdateID))
+            return true;
+        popInfo.open(qsTr("Action can't be performed"));
+        return false;
     }
-
     function removePlaylist(itemId) {
         if (player.destroySavedQueue(itemId))
             return true
@@ -309,11 +637,11 @@ ApplicationWindow {
         return false
     }
 
-    function addItemToFavorites(modelItemdescriptionartURI) {
+    function addItemToFavorites(modelItem, description, artURI) {
         if (player.addItemToFavorites(modelItem, description, artURI))
-            return true
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+            return true;
+        popInfo.open(qsTr("Action can't be performed"));
+        return false;
     }
 
     function removeFromFavorites(itemPayload) {
@@ -341,7 +669,7 @@ ApplicationWindow {
         return minutes + ":" + (seconds < 10 ? "0" + seconds : seconds)
     }
 
-    function hashValue(strmodulo) {
+    function hashValue(str, modulo) {
         var hash = 0, i, chr, len
         if (str.length === 0)
             return hash
@@ -366,63 +694,47 @@ ApplicationWindow {
         }
     }
 
-    function makeArt(artartistalbum) {
+    function makeArt(art, artist, album) {
         if (art !== undefined && art !== "")
-            return art
+            return art;
         if (album !== undefined && album !== "") {
             if (thumbValid)
-                return "image://albumart/artist=" + encodeURIComponent(
-                            artist) + "&album=" + encodeURIComponent(album)
+                return "image://albumart/artist=" + encodeURIComponent(artist) + "&album=" + encodeURIComponent(album);
             else
-                return "qrc:/images/no_cover.png"
+                return "qrc:/images/no_cover.png";
         } else if (artist !== undefined && artist !== "") {
             if (thumbValid)
-                return "image://artistart/artist=" + encodeURIComponent(artist)
+                return "image://artistart/artist=" + encodeURIComponent(artist);
             else
-                return "qrc:/images/none.png"
+                return "qrc:/images/none.png";
         }
-        return "qrc:/images/no_cover.png"
+        return "qrc:/images/no_cover.png";
     }
 
-    function makeCoverSource(artartistalbum) {
-        var array = []
+    function makeCoverSource(art, artist, album) {
+        var array = [];
         if (art !== undefined && art !== "")
-            array.push({
-                           "art": art
-                       })
+            array.push( {art: art} );
         if (album !== undefined && album !== "") {
             if (thumbValid)
-                array.push({
-                               "art": "image://albumart/artist=" + encodeURIComponent(
-                                          artist) + "&album=" + encodeURIComponent(
-                                          album)
-                           })
-            array.push({
-                           "art": "qrc:/images/no_cover.png"
-                       })
+                array.push( {art: "image://albumart/artist=" + encodeURIComponent(artist) + "&album=" + encodeURIComponent(album)} );
+            array.push( {art: "qrc:/images/no_cover.png"} );
         } else if (artist !== undefined && artist !== "") {
             if (thumbValid)
-                array.push({
-                               "art": "image://artistart/artist=" + encodeURIComponent(
-                                          artist)
-                           })
-            array.push({
-                           "art": "qrc:/images/none.png"
-                       })
+                array.push( {art: "image://artistart/artist=" + encodeURIComponent(artist)} );
+            array.push( {art: "qrc:/images/none.png"} );
         } else {
-            array.push({
-                           "art": "qrc:/images/no_cover.png"
-                       })
+            array.push( {art: "qrc:/images/no_cover.png"} );
         }
-        return array
+        return array;
     }
 
     function isAlarmEnabled() {
         var rooms = Sonos.getZoneRooms()
-        for (; i < alarmsModel.count; ++i) {
+        for (var i = 0; i < alarmsModel.count; ++i) {
             var alarm = alarmsModel.get(i)
             if (alarm.enabled) {
-                for (; r < rooms.length; ++r) {
+                for (var r = 0; r < rooms.length; ++r) {
                     if (rooms[r]['id'] === alarm.roomId) {
                         if (alarm.includeLinkedZones || rooms.length === 1)
                             return true
@@ -453,12 +765,10 @@ ApplicationWindow {
 
         function pushNowPlaying()
         {
-            if (!wideAspect) {
-                if (nowPlayingPage === null)
-                    nowPlayingPage = stackView.push("qrc:/ui/NowPlaying.qml", false, true);
-                if (nowPlayingPage.isListView) {
-                    nowPlayingPage.isListView = false; // ensure full view
-                }
+            if (nowPlayingPage === null)
+                nowPlayingPage = stackView.push("qrc:/sfos/pages/NowPlaying.qml", false, true);
+            if (nowPlayingPage.isListView) {
+                nowPlayingPage.isListView = false; // ensure full view
             }
         }
     }
@@ -466,15 +776,17 @@ ApplicationWindow {
     //==============================================================
     // Dialogues
 
-/* TODO
+/*
     DialogApplicationSettings {
         id: dialogApplicationSettings
     }
+*/
 
     DialogAbout {
         id: dialogAbout
     }
 
+/*
     DialogManageQueue {
         id: dialogManageQueue
     }
@@ -486,7 +798,7 @@ ApplicationWindow {
     DialogSleepTimer {
         id: dialogSleepTimer
     }
-*/
+
     DialogSongInfo {
         id: dialogSongInfo
     }
@@ -494,8 +806,7 @@ ApplicationWindow {
     DialogSoundSettings {
         id: dialogSoundSettings
     }
-
-
+*/
     //==============================================================
     // Spinner
 

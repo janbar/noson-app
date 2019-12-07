@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
+import QtQuick 2.2
 import Sailfish.Silica 1.0
-import QtQuick.Layouts 1.3
+import QtQuick.Layouts 1.1
 import NosonApp 1.0
 
 
@@ -28,19 +28,7 @@ DialogBase {
 
     property bool showSelector: false
 
-    footer: Row {
-        leftPadding: units.gu(1)
-        rightPadding: units.gu(1)
-        bottomPadding: units.gu(1)
-        spacing: units.gu(1)
-        layoutDirection: Qt.RightToLeft
-
-        Button {
-            flat: true
-            text: qsTr("Close")
-            onClicked: dialog.reject()
-        }
-    }
+    acceptText: qsTr("Close")
 
     Label {
         id: sourceOutput

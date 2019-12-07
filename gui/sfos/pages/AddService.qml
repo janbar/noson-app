@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
+import QtQuick 2.2
+import Sailfish.Silica 1.0
 import NosonApp 1.0
 import "../components"
 import "../components/Delegates"
@@ -41,7 +41,7 @@ MusicPage {
             sort.order: Qt.AscendingOrder
             sortCaseSensitivity: Qt.CaseInsensitive
             filter.property: "normalized"
-            filter.pattern: new RegExp(normalizedInput(mainView.query), "i")
+            //TODO? filter.pattern: new RegExp(normalizedInput(mainView.query), "i")
             filterCaseSensitivity: Qt.CaseInsensitive
         }
 
@@ -68,7 +68,7 @@ MusicPage {
                     acls.push({type: model.type, sn: serialNum, key: "", token: "", username: ""});
                     settings.accounts = serializeACLS(acls);                    
                }
-               stackView.pop();
+               pageStack.pop();
             }
         }
     }

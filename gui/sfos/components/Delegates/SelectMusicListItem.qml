@@ -15,9 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
-import QtQml.Models 2.3
+import QtQuick 2.2
+import Sailfish.Silica 1.0
 import "../"
 
 MouseArea {
@@ -28,7 +27,7 @@ MouseArea {
     property var currentColor: highlighted ? highlightedColor : color
     property bool highlighted: false
     property bool reorderable: true
-    property alias selectable: row.checkable
+    //property alias selectable: row.checkable
     property alias checked: row.checked
 
     signal swipe

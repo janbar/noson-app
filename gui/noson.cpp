@@ -7,7 +7,10 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QSettings>
-#ifndef SAILFISHOS
+#ifdef SAILFISHOS
+#include <sailfishapp/sailfishapp.h>
+#include <QQuickView>
+#else
 #include <QtQuickControls2>
 #endif
 #include <QTranslator>
@@ -135,11 +138,17 @@ int main(int argc, char *argv[])
     importStaticPlugins(&engine);
 #endif
 
+#ifndef SAILFISHOS
     engine.load(QUrl("qrc:/noson.qml"));
     if (engine.rootObjects().isEmpty()) {
         qWarning() << "Failed to load QML";
         return -1;
     }
+#else
+    QScopedPointer<QQuickView> view(SailfishApp::createView());
+    view->setSource(QUrl("qrc:/sfos/harbour-noson.qml"));
+    view->showFullScreen();
+#endif
 
     ret = app.exec();
 #ifdef Q_OS_WIN

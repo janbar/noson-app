@@ -17,10 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
+import QtQuick 2.2
+import Sailfish.Silica 1.0
 
-ListView {
+SilicaListView {
+    id: listView
     Component.onCompleted: {
         // Return values depending on the grid unit definition
         // for Flickable.maximumFlickVelocity and Flickable.flickDeceleration
@@ -29,5 +30,5 @@ ListView {
         flickDeceleration = flickDeceleration * scaleFactor;
     }
 
-    ScrollBar.vertical: ScrollBar {}
+    VerticalScrollDecorator { flickable: listView }
 }

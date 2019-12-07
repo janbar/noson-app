@@ -15,28 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
+import QtQuick 2.2
+import Sailfish.Silica 1.0
 
 Item {
     property string message: ""
-    property alias backgroundColor: containerLayoutBackground.color
+    property alias backgroundColor: popover.color
     property alias labelColor: label.color
 
     y: units.gu(2)
     x: (parent.width - popover.width) / 2
 
-    Popup {
+    Rectangle {
         id: popover
         width: label.paintedWidth + units.gu(6)
-
-        background: Rectangle {
-                id: containerLayoutBackground
-                anchors.fill: parent
-                color: styleMusic.popover.backgroundColor
-                radius: units.gu(1)
-                opacity: 0.7
-            }
+        color: styleMusic.popover.backgroundColor
+        radius: units.gu(1)
+        opacity: 0.7
+                
 
         Label {
             id: label
@@ -48,21 +44,20 @@ Item {
             font.pointSize: units.fs("small")
             font.weight: Font.Normal
         }
-
-        onOpened: timer.start()
     }
 
     Timer {
         id: timer
-        interval: 3000
+        interval: 5000
         onTriggered: {
-            popover.close();
+            popover.visible = false;
         }
     }
 
     function open(msgtxt) {
         message = msgtxt;
-        popover.open();
+        popover.visible = true;
+        timer.start()
     }
 
 }

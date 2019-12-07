@@ -15,18 +15,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
+import QtQuick 2.2
+import Sailfish.Silica 1.0
 
-CheckBox {
+TextSwitch {
     id: control
     property color color: styleMusic.view.foregroundColor
     property color controlDownColor: styleMusic.view.highlightedColor
     property real zoom: 1.0
-    property alias textAlignment: label.horizontalAlignment
+    //property alias textAlignment: label.horizontalAlignment
 
-    opacity: checkable ? 1.0 : 0.1
+    //opacity: checkable ? 1.0 : 0.1
 
+/*
     contentItem: Text {
         id: label
         rightPadding: control.indicator.width + control.spacing
@@ -39,6 +40,7 @@ CheckBox {
         horizontalAlignment: Text.AlignLeft
         verticalAlignment: Text.AlignVCenter
     }
+
 
     indicator: Rectangle {
         implicitWidth: units.gu(2.5 * zoom)
@@ -59,5 +61,5 @@ CheckBox {
             color: control.down ? control.controlDownColor : control.color
             visible: control.checked
         }
-    }
+    }*/
 }

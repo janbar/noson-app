@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Layouts 1.3
+import QtQuick 2.2
+import QtQuick.Layouts 1.1
 import Sailfish.Silica 1.0
 import QtQml.Models 2.3
 
@@ -24,19 +24,7 @@ DialogBase {
     id: dialog
     title: qsTr("Sonos settings")
 
-    footer: Row {
-        leftPadding: units.gu(1)
-        rightPadding: units.gu(1)
-        bottomPadding: units.gu(1)
-        spacing: units.gu(1)
-        layoutDirection: Qt.RightToLeft
-
-        Button {
-            flat: true
-            text: qsTr("Close")
-            onClicked: dialog.reject()
-        }
-    }
+    acceptText: qsTr("Close")
 
     Text {
         anchors.left: parent.left

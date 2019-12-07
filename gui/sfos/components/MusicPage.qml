@@ -18,22 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Layouts 1.3
+import QtQuick 2.2
 import Sailfish.Silica 1.0
 
 // generic page for music, could be useful for bottomedge implementation
 Page {
     id: thisPage
-    anchors {
-        bottomMargin: musicToolbar.visible ? musicToolbar.height : 0
-    }
+    //anchors {
+    //    bottomMargin: musicToolbar.visible ? musicToolbar.height : 0
+    //}
 
     property string pageTitle: ""
     property Flickable pageFlickable: null
     property int searchResultsCount
     property bool isListView: false
-    property ListView listview: null
+    property SilicaListView listview: null
     property bool isRoot: true // by default this page is root
     property bool showToolbar: true // by default enable the music tool bar
 
@@ -42,7 +41,7 @@ Page {
     property alias selectable: selection.visible
     property alias addVisible: add.visible
     property alias optionsMenuVisible: optionsMenu.visible
-    property alias optionsMenuContentItems: optionsMenuPopup.contentData
+    property alias optionsMenuContentItems: optionsMenuPopup._contentColumn
     property alias selectAllVisible: selectAll.visible
     property alias selectNoneVisible: selectNone.visible
     property alias addToQueueVisible: addToQueue.visible
@@ -86,10 +85,18 @@ Page {
     signal groupRoomClicked
     signal groupNoneRoomClicked
 
-    footer: Item {
+    PageHeader { 
+        title:  pageTitle 
+        clip: true
+    }
+        
+    //Bottom toolbar
+    Item {
         height: units.gu(7.25)
         width: parent.width
-
+        anchors.bottom: parent.bottom
+        z: 10
+        
         Rectangle {
             id: defaultToolBar
             anchors.fill: parent
@@ -107,66 +114,67 @@ Page {
                 height: units.gu(5)
                 color: "transparent"
 
-                Row {
+                 Row {
                     spacing: units.gu(1)
+                    anchors.fill: parent
 
-                    Icon {
+                    NosonIcon {
                         source: "qrc:/images/media-playlist.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         label.text: player.queueInfo
                         label.font.pointSize: units.fs("x-small")
 
-                        onClicked: {
-                            var page = mainView.stackView.currentItem;
-                            if (page.pageTitle === qsTr("Queue"))
-                                stackView.pop();
+                            onClicked: {
+                            var page = mainView.pageStack.currentPage;
+                            if (page.objectName === "queuePage")
+                                pageStack.pop();
                             else if (page.pageTitle === qsTr("Now playing"))
                                 page.isListView = !page.isListView;
                             else if (!mainView.wideAspect)
-                                stackView.push("qrc:/ui/QueueView.qml");
-                        }
+                                pageStack.push("qrc:/sfos/pages/QueueView.qml");
+                            }
                     }
 
-                    Icon {
+                    NosonIcon {
                         source: "qrc:/images/location.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         label.text: currentZoneTag
                         label.font.pointSize: units.fs("x-small")
 
-                        onClicked: stackView.push("qrc:/ui/Zones.qml")
+                        onClicked: pageStack.push("qrc:/sfos/pages/Zones.qml")
                     }
 
-                    Icon {
+                    NosonIcon {
                         id: viewType
                         visible: false
                         source: isListView ? "qrc:/images/view-grid-symbolic.svg" : "qrc:/images/view-list-symbolic.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         onClicked: {
                             isListView = !isListView
                         }
                     }
 
-                    Icon {
+                    NosonIcon {
                         id: find
                         visible: false
                         source: "qrc:/images/find.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         onClicked: searchClicked()
                     }
 
-                    Icon {
+                    NosonIcon {
                         id: selection
                         visible: false
                         source: "qrc:/images/select.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         onClicked: thisPage.state = "selection"
                     }
 
-                    Icon {
+                    NosonIcon {
                         id: add
                         visible: false
                         source: "qrc:/images/add.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         label.text: qsTr("Add")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: addClicked()
@@ -181,8 +189,8 @@ Page {
                     height: parent.height
                     visible: false
 
-                    Icon {
-                        width: units.gu(5)
+                    NosonIcon {
+                        width: Theme.iconSizeMedium
                         height: width
                         anchors.centerIn: parent
                         source: "qrc:/images/contextual-menu.svg"
@@ -190,10 +198,8 @@ Page {
                         onClicked: optionsMenuPopup.open()
                         enabled: parent.visible
 
-                        Menu {
+                        ContextMenu {
                             id: optionsMenuPopup
-                            x: parent.width - width
-                            transformOrigin: Menu.TopRight
                         }
                     }
                 }
@@ -224,11 +230,11 @@ Page {
                 Row {
                     spacing: units.gu(0.5)
 
-                    Icon {
+                    NosonIcon {
                         id: closeSelection
                         visible: true
                         source: "qrc:/images/close.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         label.text: qsTr("Close")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: {
@@ -237,49 +243,49 @@ Page {
                         }
                     }
 
-                    Icon {
+                    NosonIcon {
                         id: selectAll
                         visible: true
                         source: "qrc:/images/select.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         label.text: qsTr("All")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: selectAllClicked()
                     }
 
-                    Icon {
+                    NosonIcon {
                         id: selectNone
                         visible: true
                         source: "qrc:/images/select-undefined.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         label.text: qsTr("Clear")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: selectNoneClicked()
                     }
 
-                    Icon {
+                    NosonIcon {
                         id: addToQueue
                         visible: true
                         source: "qrc:/images/add.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         onClicked: addToQueueClicked()
                     }
 
-                    Icon {
+                    NosonIcon {
                         id: addToPlaylist
                         visible: true
                         source: "qrc:/images/add-to-playlist.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         onClicked: addToPlaylistClicked()
                     }
                 }
 
-                Icon {
+                NosonIcon {
                     id: removeSelected
                     anchors.right: parent.right
                     visible: true
                     source: "qrc:/images/delete.svg"
-                    height: units.gu(5)
+                    height: units.gu(3)
                     onClicked: removeSelectedClicked()
                 }
             }
@@ -309,43 +315,43 @@ Page {
                 Row {
                     spacing: units.gu(1)
 
-                    Icon {
+                    NosonIcon {
                         source: "qrc:/images/media-playlist.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         label.text: player.queueInfo
                         label.font.pointSize: units.fs("x-small")
 
                         onClicked: {
-                            stackView.pop();
-                            var page = mainView.stackView.currentItem;
-                            if (!mainView.wideAspect && page.pageTitle !== qsTr("Queue"))
-                                stackView.push("qrc:/ui/QueueView.qml");
+                            pageStack.pop();
+                            var page = mainView.pageStack.currentPage;
+                            if (!mainView.wideAspect && page.objectName !== "queuePage")
+                                pageStack.push("qrc:/sfos/pages/QueueView.qml");
                         }
                     }
 
-                    Icon {
+                    NosonIcon {
                         id: reload
                         visible: true
                         source: "qrc:/images/reload.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         onClicked: reloadClicked()
                     }
 
-                    Icon {
+                    NosonIcon {
                         id: groupAll
                         visible: true
                         source: "qrc:/images/select.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         label.text: qsTr("All")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: groupAllZoneClicked()
                     }
 
-                    Icon {
+                    NosonIcon {
                         id: group
                         visible: true
                         source: "qrc:/images/group.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         label.text: qsTr("Done")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: groupZoneClicked()
@@ -378,28 +384,28 @@ Page {
                 Row {
                     spacing: units.gu(1)
 
-                    Icon {
+                    NosonIcon {
                         source: "qrc:/images/location.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         label.text: currentZoneTag
                         label.font.pointSize: units.fs("x-small")
                     }
 
-                    Icon {
+                    NosonIcon {
                         id: groupAllRoom
                         visible: true
                         source: "qrc:/images/select-undefined.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         label.text: qsTr("None")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: groupNoneRoomClicked()
                     }
 
-                    Icon {
+                    NosonIcon {
                         id: groupRoom
                         visible: true
                         source: "qrc:/images/group.svg"
-                        height: units.gu(5)
+                        height: units.gu(3)
                         label.text: qsTr("Done")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: groupRoomClicked()
