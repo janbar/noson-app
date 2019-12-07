@@ -18,9 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
-import QtQml.Models 2.3
+import QtQuick 2.2
+import Sailfish.Silica 1.0
+import QtQml.Models 2.2
 import "Delegates"
 import "Flickables"
 import "ListItemActions"
@@ -72,26 +72,27 @@ Item {
             actionIconSource: (player.isPlaying && player.currentIndex === index ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-preview-start.svg")
             menuVisible: true
 
-            menuItems: [
-                AddToFavorites {
-                    enabled: !model.isService
-                    visible: enabled
-                    description: listItem.description
-                    art: model.art
-                },
-                //@FIXME add to playlist service item doesn't work
-                AddToPlaylist {
-                    enabled: !model.isService
-                    visible: enabled
-                },
-                Remove {
-                    onTriggered: {
-                        listview.focusIndex = index > 0 ? index - 1 : 0;
-                        removeTrackFromQueue(model);
-                        color = "red";
-                    }
-                }
-            ]
+            Component.onCompleted: {
+                console.debug("Populating menu")
+                
+                var component = Qt.createComponent("AddToFavorites.qml");
+                var newMenuItem = component.createObject(menuItems, {"enabled" : !model.isService, "visible": enabled, "description": listItem.description, "art": model.art })
+
+                component = Qt.createComponent("AddToPlaylist.qml");
+                newMenuItem = component.createObject(menuItems, {"enabled" : !model.isService, "visible": enabled })
+                
+                
+            }
+
+
+//                Remove {
+ //                   onTriggered: {
+ //                       listview.focusIndex = index > 0 ? index - 1 : 0;
+ ///                       removeTrackFromQueue(model);
+ //                       color = "red";
+ //                   }
+ //               }
+            
 
             column: Column {
                 Label {

@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
+import QtQuick 2.2
+import Sailfish.Silica 1.0
 import NosonApp 1.0
 import "../components"
 import "../components/Dialog"
@@ -24,7 +24,8 @@ import "../components/Dialog"
 
 MusicPage {
     id: queuePage
-    pageTitle: qsTr("Queue")
+    objectName: "queuePage"
+    PageHeader { title: qsTr("Queue") }
     isListView: true
     listview: queue.listview
 
@@ -35,6 +36,8 @@ MusicPage {
 
     // Page actions
     optionsMenuVisible: true
+    //!TODO
+    /*
     optionsMenuContentItems: [
         MenuItem {
             visible: (queue.listview.count > 0)
@@ -49,12 +52,5 @@ MusicPage {
             onTriggered: dialogSelectSource.open()
         }
     ]
-
-    Connections {
-        target: mainView
-        onWideAspectChanged: {
-            if (wideAspect)
-                stackView.pop()
-        }
-    }
+   */
 }

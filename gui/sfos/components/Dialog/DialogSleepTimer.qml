@@ -17,7 +17,7 @@
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
-import QtQuick.Layouts 1.3
+import QtQuick.Layouts 1.1
 
 DialogBase {
     id: dialog
@@ -26,19 +26,7 @@ DialogBase {
 
     property int remainingTime: player.remainingSleepTimerDuration() // Load at startup
 
-    footer: Row {
-        leftPadding: units.gu(1)
-        rightPadding: units.gu(1)
-        bottomPadding: units.gu(1)
-        spacing: units.gu(1)
-        layoutDirection: Qt.RightToLeft
-
-        Button {
-            flat: true
-            text: qsTr("Close")
-            onClicked: dialog.reject()
-        }
-    }
+    acceptText: qsTr("Close")
 
     onOpened: {
         remainingTime = player.remainingSleepTimerDuration();

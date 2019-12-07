@@ -15,32 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Layouts 1.3
+import QtQuick 2.2
+import QtQuick.Layouts 1.1
 import Sailfish.Silica 1.0
 import QtQml.Models 2.3
 
 DialogBase {
     id: dialog
 
-    footer: Row {
-        leftPadding: units.gu(1)
-        rightPadding: units.gu(1)
-        bottomPadding: units.gu(1)
-        spacing: units.gu(1)
-        layoutDirection: Qt.RightToLeft
-
-        Button {
-            flat: true
-            text: qsTr("Cancel")
-            onClicked: dialog.reject()
-        }
-        Button {
-            flat: true
-            text: qsTr("Ok")
-            onClicked: dialog.accept()
-        }
-    }
+    acceptText: qsTr("Ok")
+    cancelText: qsTr("Cancel")
 
     Label {
         anchors.left: parent.left

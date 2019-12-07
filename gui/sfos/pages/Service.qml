@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
+import QtQuick 2.2
+import Sailfish.Silica 1.0
 import NosonApp 1.0
 import "../components"
 import "../components/Delegates"
@@ -139,7 +139,7 @@ MusicPage {
         anchors.fill: parent
         active: false
         asynchronous: true
-        source: "qrc:/components/ServiceEmptyState.qml"
+        source: "qrc:/sfos/components/ServiceEmptyState.qml"
         visible: active
 
         property string message: ""
@@ -196,6 +196,7 @@ MusicPage {
             actionIconSource: "qrc:/images/media-preview-start.svg"
             menuVisible: model.canPlay || model.canQueue
 
+            /*!TODO
             menuItems: [
                 AddToFavorites {
                     isFavorite: listItem.isFavorite
@@ -218,6 +219,7 @@ MusicPage {
                     visible: enabled
                 }
             ]
+            */
 
             column: Column {
                 Label {
@@ -371,14 +373,14 @@ MusicPage {
     Loader {
         id: registeringService
         anchors.fill: parent
-        source: "qrc:/components/ServiceRegistration.qml"
+        source: "qrc:/sfos/components/ServiceRegistration.qml"
         active: false
     }
 
     Loader {
         id: loginService
         anchors.fill: parent
-        source: "qrc:/components/ServiceLogin.qml"
+        source: "qrc:/sfos/components/ServiceLogin.qml"
         active: false
     }
 

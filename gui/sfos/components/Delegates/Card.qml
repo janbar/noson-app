@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
+import QtQuick 2.2
+import Sailfish.Silica 1.0
 import "../"
 
 
@@ -126,7 +126,7 @@ Item {
     }
 
     /* Show play */
-    Icon {
+    NosonIcon {
         id: playMouseArea
         anchors {
             bottom: bg.bottom
@@ -137,13 +137,13 @@ Item {
         enabled: canPlay
         opacity: 0.5
         onClicked: card.playClicked(mouse)
-        onPressAndHold: card.pressAndHold(mouse)
+        //onPressAndHold: card.pressAndHold(mouse)
         source: "qrc:/images/media-preview-start.svg"
-        color: styleMusic.card.foregroundColor
+        //color: styleMusic.card.foregroundColor
     }
 
     /* Show starred */
-    Icon {
+    NosonIcon {
         id: starMouseArea
         anchors {
             bottom: playMouseArea.top
@@ -153,7 +153,7 @@ Item {
         width: height
         enabled: isFavorite
         source: "qrc:/images/starred.svg"
-        color: styleMusic.card.foregroundColor
+        //color: styleMusic.card.foregroundColor
     }
 
     /* Overlay for when card is pressed */
@@ -180,6 +180,7 @@ Item {
             bottomMargin: parent.height * 0.25 // do not override action icons
         }
         onClicked: card.clicked(mouse)
-        onPressAndHold: card.pressAndHold(mouse)
+        //onPressAndHold: card.pressAndHold(mouse)
     }
 }
+

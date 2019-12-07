@@ -18,13 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
-import QtQuick.Controls 2.2
+import QtQuick 2.2
+import Sailfish.Silica 1.0
 
 MenuItem {
     text: qsTr("Add to queue")
     font.pointSize: units.fs("medium")
     height: visible ? implicitHeight : 0
 
-    onTriggered: addQueue({id: model.Id, payload: model.payload})
+    onClicked: addQueue({id: model.Id, payload: model.payload})
 }
