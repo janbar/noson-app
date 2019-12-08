@@ -100,7 +100,7 @@ SilicaFlickable {
                 color: "black"
                 elide: Text.ElideRight
                 font.pointSize: units.fs("large")
-                font.weight: Font.DemiBold
+                font.weight: Font.Bold
                 maximumLineCount: 2
                 objectName: "playercontroltitle"
                 text: player.currentMetaTitle
@@ -119,7 +119,7 @@ SilicaFlickable {
                 color: "black"
                 elide: Text.ElideRight
                 font.pointSize: units.fs("small")
-                font.weight: Font.DemiBold
+                font.weight: Font.Bold
                 text: player.currentMetaArtist
             }
         }
