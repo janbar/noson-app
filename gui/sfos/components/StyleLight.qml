@@ -21,7 +21,7 @@ import Sailfish.Silica 1.0
 QtObject {
     property QtObject view: QtObject {
         property color foregroundColor: Theme.primaryColor
-        property color backgroundColor: Theme.backgroundColor
+        property color backgroundColor: Theme.overlayBackgroundColor
         property color highlightedColor: Theme.highlightColor
         property color labelColor: Theme.primaryColor
         property color primaryColor: Theme.primaryColor
@@ -35,7 +35,7 @@ QtObject {
     }
 
     property QtObject dialog: QtObject {
-        property color backgroundColor: Theme.backgroundColor
+        property color backgroundColor: Theme.overlayBackgroundColor
         property color foregroundColor: Theme.primaryColor
         property color labelColor: Theme.primaryColor
         property color confirmButtonColor: "green"
@@ -57,7 +57,7 @@ QtObject {
     }
 
     property QtObject playerControls: QtObject {
-        property color backgroundColor: Theme.backgroundColor
+        property color backgroundColor: Theme.overlayBackgroundColor
         property color foregroundColor: Theme.primaryColor
         property color labelColor: Theme.primaryColor
         property color progressBackgroundColor: "grey"
