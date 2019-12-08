@@ -139,6 +139,7 @@ MusicPage {
             MenuItem { text: qsTr("Playlists"); onClicked: pageStack.push("Playlists.qml") }
             MenuItem { text: qsTr("Alarm clock"); onClicked: pageStack.push("Alarms.qml")}
             MenuItem { text: qsTr("This Device"); onClicked: pageStack.push("ThisDevice.qml") }
+            MenuItem { text: qsTr("About"); onClicked: dialogAbout.open() }
         }
         
         delegate: Card {

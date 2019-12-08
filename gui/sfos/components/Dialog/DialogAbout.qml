@@ -66,7 +66,7 @@ DialogBase {
         font.pointSize: units.fs("x-small")
     }
     Text {
-        id: donate
+        id: donate2
         color: styleMusic.dialog.foregroundColor
         width: dialog.width
         font.pointSize: units.fs("x-small")
