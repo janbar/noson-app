@@ -34,109 +34,71 @@ Item {
 
         acceptText: qsTr("Close")
 
-        Column {
-            spacing: 0
-            Row {
-                width: parent.width
-                spacing: units.gu(1)
+        Slider {
+            id: trebleSlider
+            anchors {
+                left: parent.left
+                right: parent.right
+            }
+            
+            minimumValue: -10
+            maximumValue: 10
+            label: qsTr("Treble")
+            stepSize: 1.0
 
-                Slider {
-                    id: trebleSlider
-                    minimumValue: -10
-                    maximumValue: 10
-                    label: qsTr("Treble")
-                    stepSize: 1.0
+            value: player.treble // load value at startup
 
-                    value: player.treble // load value at startup
-
-                    Connections {
-                        target: player
-                        onTrebleChanged:{
-                            if (trebleSlider.down) {
-                                return
-                            }
-
-                            trebleSlider.value = player.treble
-                        }
+            Connections {
+                target: player
+                onTrebleChanged:{
+                    if (trebleSlider.down) {
+                        return
                     }
 
-                    onValueChanged: {
-                        var treble = Math.round(value)
-                        if (treble === player.treble) {
-                            return
-                        }
-                        player.setTreble(treble)
-                    }
+                    trebleSlider.value = player.treble
                 }
             }
 
-            Row {
-                id: tickmarks
-                width: parent.width
-                spacing: 0
-                Item {
-                    id: c0
-                    width: units.gu(11)
-                    height: units.gu(1)
+            onValueChanged: {
+                var treble = Math.round(value)
+                if (treble === player.treble) {
+                    return
                 }
-                Label {
-                    width: (parent.width - c0.width - zero.width - units.gu(1)) / 2
-                    text: "-10"
-                    font.pointSize: units.fs("x-small")
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignLeft
-                    color: styleMusic.playerControls.volumeForegroundColor
-                }
-                Label {
-                    id: zero
-                    text: "0"
-                    font.pointSize: units.fs("x-small")
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignHCenter
-                    color: styleMusic.playerControls.volumeForegroundColor
-                }
-                Label {
-                    width: (parent.width - c0.width - zero.width - units.gu(1)) / 2
-                    text: "+10"
-                    font.pointSize: units.fs("x-small")
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignRight
-                    color: styleMusic.playerControls.volumeForegroundColor
+                player.setTreble(treble)
+            }
+        }
+         
+        Slider {
+            id: bassSlider
+            anchors {
+                left: parent.left
+                right: parent.right
+            }
+            
+            minimumValue: -10
+            maximumValue: 10
+            label: qsTr("Bass")
+            stepSize: 1.0
+
+            value: player.bass // load value at startup
+
+            Connections {
+                target: player
+                onBassChanged:{
+                    if (bassSlider.pressed) {
+                        return
+                    }
+
+                    bassSlider.value = player.bass
                 }
             }
 
-            Row {
-                width: parent.width
-                spacing: units.gu(1)
-
-                Slider {
-                    id: bassSlider
-                    minimumValue: -10
-                    maximumValue: 10
-                    label: qsTr("Bass")
-                    stepSize: 1.0
-
-                    value: player.bass // load value at startup
-
-                    Connections {
-                        target: player
-                        onBassChanged:{
-                            if (bassSlider.pressed) {
-                                return
-                            }
-
-                            bassSlider.value = player.bass
-                        }
-                    }
-
-                    onValueChanged: {
-                        var bass = Math.round(value)
-                        if (bass === player.bass) {
-                            return
-                        }
-                        player.setBass(bass)
-                    }
+            onValueChanged: {
+                var bass = Math.round(value)
+                if (bass === player.bass) {
+                    return
                 }
+                player.setBass(bass)
             }
         }
 
