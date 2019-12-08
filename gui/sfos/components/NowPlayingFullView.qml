@@ -71,7 +71,7 @@ SilicaFlickable {
             anchors.bottom: albumImageContainer.bottom
             height: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(10) : units.gu(13)
             width: parent.width
-            opacity: 0.5
+            opacity: 0.75
             color: "white"
         }
 
