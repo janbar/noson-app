@@ -95,6 +95,7 @@ Page {
         height: units.gu(7.25)
         width: parent.width
         anchors.bottom: parent.bottom
+        anchors.bottomMargin: mainView.musicToolbar.height
         z: 10
         
         Rectangle {
