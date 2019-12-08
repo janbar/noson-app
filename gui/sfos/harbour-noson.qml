@@ -766,7 +766,7 @@ ApplicationWindow {
         function pushNowPlaying()
         {
             if (nowPlayingPage === null)
-                nowPlayingPage = stackView.push("qrc:/sfos/pages/NowPlaying.qml", false, true);
+                nowPlayingPage = pageStack.push("qrc:/sfos/pages/NowPlaying.qml", false, true);
             if (nowPlayingPage.isListView) {
                 nowPlayingPage.isListView = false; // ensure full view
             }
@@ -807,6 +807,24 @@ ApplicationWindow {
         id: dialogSoundSettings
     }
 */
+
+    property alias musicToolbar: musicToolbar
+
+    Loader {
+        id: musicToolbar
+        active: true
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.bottom
+            topMargin: visible && status === Loader.Ready ? -height : 0
+        }
+        asynchronous: true
+        source: "qrc:/sfos/components/MusicToolbar.qml"
+        //visible: !noZone && (!wideAspect || player.currentMetaSource === "") && status === Loader.Ready &&
+        //         (stackView.currentItem && (stackView.currentItem.showToolbar || stackView.currentItem.showToolbar === undefined))
+        visible: true
+    }
     //==============================================================
     // Spinner
 
@@ -814,6 +832,9 @@ ApplicationWindow {
 
     BusyIndicator {
         id: spinner
+        anchors.centerIn: parent
+        z: 100
         visible: jobRunning
+        running: visible
     }
 }

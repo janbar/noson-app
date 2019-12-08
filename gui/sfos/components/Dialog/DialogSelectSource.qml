@@ -46,8 +46,6 @@ DialogBase {
         text: inputStreamUrl
         font.pointSize: units.fs("medium")
         placeholderText: qsTr("Enter stream URL")
-        inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhUrlCharactersOnly
-        EnterKey.type: Qt.EnterKeyDone
     }
 
     Connections {
@@ -104,6 +102,7 @@ DialogBase {
         }
     }
 
+    /* !TODO
     ComboBox {
         id: selector
         visible: showSelector
@@ -145,6 +144,7 @@ DialogBase {
                     break;
             }
         }
+        */
     }
 
     onOpened: {
