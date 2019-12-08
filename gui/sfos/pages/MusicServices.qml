@@ -62,10 +62,10 @@ MusicPage {
             id: topMenu1
 
             MenuItem { text: qsTr("My Index"); onClicked: pageStack.push("pages/Index.qml") }
-            MenuItem { text: qsTr("Favorites"); onClicked: pageStack.push("pages/Favorites.qml") }
-            MenuItem { text: qsTr("Playlists"); onClicked: pageStack.push("pages/Playlists.qml") }
-            MenuItem { text: qsTr("Alarm clock"); onClicked: pageStack.push("pages/Alarms.qml")}
-            MenuItem { text: qsTr("This Device"); onClicked: pageStack.push("pages/ThisDevice.qml") }
+            //MenuItem { text: qsTr("Favorites"); onClicked: pageStack.push("pages/Favorites.qml") }
+            //MenuItem { text: qsTr("Playlists"); onClicked: pageStack.push("pages/Playlists.qml") }
+            //MenuItem { text: qsTr("Alarm clock"); onClicked: pageStack.push("pages/Alarms.qml")}
+            //MenuItem { text: qsTr("This Device"); onClicked: pageStack.push("pages/ThisDevice.qml") }
         }
         
         delegate: MusicListItem {
