@@ -87,7 +87,6 @@ ApplicationWindow {
     // property to detect if the UI has finished
     property bool loadedUI: false
     //property real wideSongView: units.gu(70)
-    //property bool wideAspect: width >= units.gu(100) && loadedUI
 
     // property to enable pop info on index loaded
     property bool infoLoadedIndex: true // enabled at startup
@@ -243,10 +242,10 @@ ApplicationWindow {
     // Show/hide page NoZoneState
     onNoZoneChanged: {
         if (noZone) {
-            noZonePage = stackView.push("qrc:/ui/NoZoneState.qml")
+            noZonePage = pageStack.push("pages/NoZoneState.qml")
         } else {
-            if (stackView.currentItem === noZonePage) {
-                stackView.pop()
+            if (pageStack.currentItem === noZonePage) {
+                pageStack.pop()
             }
         }
     }
@@ -454,7 +453,7 @@ ApplicationWindow {
     }
 
     // Action on track clicked
-    function trackClicked(modelItemplay) {
+    function trackClicked(modelItem, play) {
         play = play === undefined ? true : play // default play to true
         var nr = player.trackQueue.model.count + 1
         // push back
@@ -821,9 +820,8 @@ ApplicationWindow {
         }
         asynchronous: true
         source: "qrc:/sfos/components/MusicToolbar.qml"
-        //visible: !noZone && (!wideAspect || player.currentMetaSource === "") && status === Loader.Ready &&
-        //         (stackView.currentItem && (stackView.currentItem.showToolbar || stackView.currentItem.showToolbar === undefined))
-        visible: true
+        visible: !noZone && (player.currentMetaSource === "") && status === Loader.Ready &&
+                 (pageStack.currentItem && (pageStack.currentItem.showToolbar || pageStack.currentItem.showToolbar === undefined))
     }
     //==============================================================
     // Spinner

@@ -88,7 +88,6 @@ int main(int argc, char *argv[])
         }
         QQuickStyle::setStyle(settings.value("style").toString());
     }
-#endif
 
     QQmlApplicationEngine engine;
     // 100MB cache for network data
@@ -127,12 +126,11 @@ int main(int argc, char *argv[])
 #endif
     engine.rootContext()->setContextProperty("AvailableStyles", availableStyles);
 #endif
+#endif
     
     // handle signal exit(int) issued by the qml instance
 #ifndef SAILFISHOS
     QObject::connect(&engine, &QQmlApplicationEngine::exit, doExit);
-#else
-    QObject::connect(&engine, &QQmlApplicationEngine::quit, &app, QCoreApplication::quit);    
 #endif
 #if defined(Q_OS_IOS)
     importStaticPlugins(&engine);
@@ -147,6 +145,8 @@ int main(int argc, char *argv[])
 #else
     QScopedPointer<QQuickView> view(SailfishApp::createView());
     view->setSource(QUrl("qrc:/sfos/harbour-noson.qml"));
+    QObject::connect(view->engine(), &QQmlApplicationEngine::quit, &app, QCoreApplication::quit);    
+    view->engine()->rootContext()->setContextProperty("VersionString", QString(APP_VERSION));
     view->showFullScreen();
 #endif
 

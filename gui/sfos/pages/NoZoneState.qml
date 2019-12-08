@@ -162,13 +162,13 @@ Page {
                 wrapMode: Text.WordWrap
             }
 
-            Label {
+            Text {
                 color: styleMusic.view.foregroundColor
                 elide: Text.ElideRight
                 font.pointSize: 16.0
                 horizontalAlignment: Text.AlignHCenter
                 maximumLineCount: 6
-                text: qsTr("Make sure that your device is connected to the correct wireless network and one or more Sonos products are receiving power.")
+                text: qsTr("Make sure that your device is connected to the correct wireless network\nand one or more Sonos products are receiving power.")
                 width: parent.width
                 wrapMode: Text.WordWrap
             }

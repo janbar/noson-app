@@ -47,6 +47,7 @@ Page {
     property alias addToQueueVisible: addToQueue.visible
     property alias addToPlaylistVisible: addToPlaylist.visible
     property alias removeSelectedVisible: removeSelected.visible
+    property alias footer: footerToolbar
 
     state: "default"
     states: [
@@ -92,6 +93,7 @@ Page {
         
     //Bottom toolbar
     Item {
+        id: footerToolbar
         height: units.gu(7.25)
         width: parent.width
         anchors.bottom: parent.bottom
