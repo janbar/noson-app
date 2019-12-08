@@ -822,7 +822,7 @@ ApplicationWindow {
         source: "qrc:/sfos/components/MusicToolbar.qml"
         //visible: !noZone && (player.currentMetaSource === "") && status === Loader.Ready &&
         //         (pageStack.currentItem && (pageStack.currentItem.showToolbar || pageStack.currentItem.showToolbar === undefined))
-        visible: !noZone && (pageStack.currentItem && (pageStack.currentItem.showToolbar || pageStack.currentItem.showToolbar === undefined))
+        visible: !noZone && (pageStack.currentPage && (pageStack.currentPage.showToolbar || pageStack.currentPage.showToolbar === undefined))
 
     }
     //==============================================================
