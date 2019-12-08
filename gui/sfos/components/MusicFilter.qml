@@ -37,7 +37,7 @@ Rectangle {
             width: units.gu(6)
             height: width
 
-            Icon {
+            NosonIcon {
                 width: units.gu(5)
                 height: width
                 anchors.centerIn: parent
@@ -53,9 +53,7 @@ Rectangle {
             id: field
             Layout.fillWidth: true
             font.pointSize: units.fs("large")
-            inputMethodHints: Qt.ImhNoPredictiveText
             placeholderText: qsTr("Search music")
-            EnterKey.type: Qt.EnterKeySearch
         }
     }
 

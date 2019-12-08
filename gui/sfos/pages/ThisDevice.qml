@@ -48,17 +48,17 @@ MusicPage {
           indexModel.append({
               title: qsTr("Artists"),
               art: "qrc:/images/folder_artist.png",
-              source: "qrc:/ui/ThisDevice/Artists.qml"
+              source: "qrc:/sfos/pages/ThisDevice/Artists.qml"
           });
           indexModel.append({
               title: qsTr("Albums"),
               art: "qrc:/images/folder_album.png",
-              source: "qrc:/ui/ThisDevice/Albums.qml"
+              source: "qrc:/sfos/pages/ThisDevice/Albums.qml"
           });
           indexModel.append({
               title: qsTr("Genres"),
               art: "qrc:/images/folder_genre.png",
-              source: "qrc:/ui/ThisDevice/Genres.qml"
+              source: "qrc:/sfos/pages/ThisDevice/Genres.qml"
           });
       }
     }
@@ -127,11 +127,11 @@ MusicPage {
         anchors.fill: parent
         active: MediaScanner.emptyState
         asynchronous: true
-        source: "qrc:/components/IndexEmptyState.qml"
+        source: "qrc:/sfos/components/IndexEmptyState.qml"
         visible: active
     }
 
     function clickItem(model) {
-        stackView.push(model.source, { "pageTitle": pageTitle });
+        pageStack.push(model.source, { "pageTitle": pageTitle });
     }
 }
