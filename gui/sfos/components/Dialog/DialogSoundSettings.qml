@@ -40,30 +40,11 @@ Item {
                 width: parent.width
                 spacing: units.gu(1)
 
-                Label {
-                    id: trebleLabel
-                    text: qsTr("Treble")
-                    color: styleMusic.dialog.labelColor
-                    font.pointSize: units.fs("medium")
-                    verticalAlignment: Text.AlignVCenter
-                    height: trebleSlider.height
-                    width: units.gu(10)
-
-                }
-                StyledSlider {
+                Slider {
                     id: trebleSlider
-                    live: true
-                    from: -10
-                    to: 10
-                    wheelEnabled: true
-                    orientation: Qt.Horizontal
-                    handleSize: units.gu(2)
-                    handleColor: styleMusic.playerControls.volumeHandleColor
-                    handleColorPressed: styleMusic.playerControls.backgroundColor
-                    handleBorderColor: handleColor
-                    backgroundColor: styleMusic.playerControls.volumeBackgroundColor
-                    foregroundColor: styleMusic.playerControls.volumeForegroundColor
-                    size: parent.width - trebleLabel.width - parent.spacing - units.gu(1)
+                    minimumValue: -10
+                    maximumValue: 10
+                    label: qsTr("Treble")
                     stepSize: 1.0
 
                     value: player.treble // load value at startup
@@ -71,7 +52,7 @@ Item {
                     Connections {
                         target: player
                         onTrebleChanged:{
-                            if (trebleSlider.pressed) {
+                            if (trebleSlider.down) {
                                 return
                             }
 
@@ -79,7 +60,7 @@ Item {
                         }
                     }
 
-                    onMoved: {
+                    onValueChanged: {
                         var treble = Math.round(value)
                         if (treble === player.treble) {
                             return
@@ -128,29 +109,11 @@ Item {
                 width: parent.width
                 spacing: units.gu(1)
 
-                Label {
-                    id: bassLabel
-                    text: qsTr("Bass")
-                    color: styleMusic.dialog.labelColor
-                    font.pointSize: units.fs("medium")
-                    verticalAlignment: Text.AlignVCenter
-                    height: bassSlider.height
-                    width: units.gu(10)
-                }
-                StyledSlider {
+                Slider {
                     id: bassSlider
-                    live: true
-                    from: -10
-                    to: 10
-                    wheelEnabled: true
-                    orientation: Qt.Horizontal
-                    handleSize: units.gu(2)
-                    handleColor: styleMusic.playerControls.volumeHandleColor
-                    handleColorPressed: styleMusic.playerControls.backgroundColor
-                    handleBorderColor: handleColor
-                    backgroundColor: styleMusic.playerControls.volumeBackgroundColor
-                    foregroundColor: styleMusic.playerControls.volumeForegroundColor
-                    size: parent.width - trebleLabel.width - parent.spacing - units.gu(1)
+                    minimumValue: -10
+                    maximumValue: 10
+                    label: qsTr("Bass")
                     stepSize: 1.0
 
                     value: player.bass // load value at startup
@@ -166,7 +129,7 @@ Item {
                         }
                     }
 
-                    onMoved: {
+                    onValueChanged: {
                         var bass = Math.round(value)
                         if (bass === player.bass) {
                             return
@@ -192,10 +155,8 @@ Item {
                     anchors.left: parent.left
                     anchors.leftMargin: units.gu(1)
                     text: qsTr("Night mode")
-                    textAlignment: Text.AlignHCenter
-                    font.pointSize: units.fs("small")
                     checked: player.nightmodeEnabled
-                    onClicked: {
+                    onCheckedChanged: {
                         if (!player.toggleNightmode())
                             checked = player.nightmodeEnabled;
                     }
@@ -211,10 +172,8 @@ Item {
                     anchors.left: parent.left
                     anchors.leftMargin: units.gu(1)
                     text: qsTr("Loudness")
-                    textAlignment: Text.AlignHCenter
-                    font.pointSize: units.fs("small")
                     checked: player.loudnessEnabled
-                    onClicked: {
+                    onCheckedChanged: {
                         if (!player.toggleLoudness())
                             checked = player.loudnessEnabled;
                     }
@@ -236,10 +195,8 @@ Item {
                     anchors.left: parent.left
                     anchors.leftMargin: units.gu(1)
                     text: qsTr("Line IN")
-                    textAlignment: Text.AlignHCenter
-                    font.pointSize: units.fs("small")
                     checked: (player.currentProtocol === 1)
-                    onClicked: {
+                    onCheckedChanged: {
                         if (checked) {
                             if (!player.playLineIN()) {
                                 checked = false;
@@ -264,10 +221,8 @@ Item {
                     anchors.left: parent.left
                     anchors.leftMargin: units.gu(1)
                     text: qsTr("TV")
-                    font.pointSize: units.fs("small")
-                    textAlignment: Text.AlignHCenter
                     checked: (player.currentProtocol === 5)
-                    onClicked: {
+                    onCheckedChanged: {
                         if (checked) {
                             if (!player.playDigitalIN()) {
                                 checked = false;
@@ -293,10 +248,8 @@ Item {
                     anchors.left: parent.left
                     anchors.leftMargin: units.gu(1)
                     text: "PulseAudio" // not translated
-                    textAlignment: Text.AlignHCenter
-                    font.pointSize: units.fs("small")
                     checked: (player.isPulseStream())
-                    onClicked: {
+                    onCheckedChanged: {
                         if (checked) {
                             if (!player.playPulse()) {
                                 checked = false;

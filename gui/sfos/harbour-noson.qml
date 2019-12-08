@@ -797,7 +797,7 @@ ApplicationWindow {
     DialogSleepTimer {
         id: dialogSleepTimer
     }
-
+*/
     DialogSongInfo {
         id: dialogSongInfo
     }
@@ -805,7 +805,7 @@ ApplicationWindow {
     DialogSoundSettings {
         id: dialogSoundSettings
     }
-*/
+
 
     property alias musicToolbar: musicToolbar
 

@@ -33,6 +33,9 @@ Item {
     DialogBase {
         id: dialog
 
+        acceptText: qsTr("Play")
+        cancelText: qsTr("Close")
+        /*
         footer: Row {
             leftPadding: units.gu(1)
             rightPadding: units.gu(1)
@@ -69,6 +72,7 @@ Item {
                 }
             }
         }
+        */
 
         width: mainView.minimumWidth - units.gu(2)
 
@@ -89,18 +93,18 @@ Item {
             }
 
             if (actionPlay) {
-                buttonPlay.visible = true;
+                canAccept = true;
             } else {
-                buttonPlay.visible = false;
+                canAccept = false;
             }
             // do not stack more than one page for artist view
             // do not show the artist view for an item of service
             if (actionMore &&
-                    !stackView.find(function(item) { return item.objectName === "artistViewPage"; }) &&
+                    !pageStack.find(function(item) { return item.objectName === "artistViewPage"; }) &&
                     !Sonos.isItemFromService(songInfo.model.payload)) {
-                buttonMore.visible = true;
+                //buttonMore.visible = true;
             } else {
-                buttonMore.visible = false;
+                //buttonMore.visible = false;
             }
         }
 
@@ -108,20 +112,21 @@ Item {
             trackClicked(songInfo.model); // play track
         }
 
-        onClosed: {
+        onRejected: {
             timer.stop()
             card.coverSources = [];
             card.primaryText = "";
             card.secondaryText = "";
             card.tertiaryLabelVisible = "";
             card.tertiaryText = "";
-            buttonMore.visible = false;
-            buttonPlay.visible = false;
+            //buttonMore.visible = false;
+            //buttonPlay.visible = false;
         }
 
         Item {
             id: card
             height: coverGrid.height
+            width: parent.width
 
             property alias coverSources: coverGrid.covers
             property alias primaryText: primaryLabel.text

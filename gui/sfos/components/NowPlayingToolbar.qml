@@ -59,7 +59,7 @@ Item {
             id: nowPlayingMuteButton
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
-            height: units.gu(6)
+            height: units.gu(4)
             width: height
             source: player.mute ? "qrc:/images/audio-volume-muted.svg" : "qrc:/images/audio-volume.svg"
             objectName: "muteShape"
@@ -135,7 +135,7 @@ Item {
             id: nightmodeButton
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            height: units.gu(5) // smaller
+            height: units.gu(3) // smaller
             source: "qrc:/images/settings.svg"
             opacity: 1.0
             onClicked: {
