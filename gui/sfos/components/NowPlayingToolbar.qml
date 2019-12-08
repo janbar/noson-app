@@ -160,14 +160,14 @@ Item {
             anchors.right: nowPlayingPreviousButton.left
             anchors.rightMargin: units.gu(1)
             anchors.verticalCenter: nowPlayingPlayButton.verticalCenter
-            height: units.gu(6)
+            height: units.gu(4)
             width: height
             color: "transparent"
             visible: player.isPlayingQueued()
 
             NosonIcon {
                 id: repeatIcon
-                height: units.gu(5)
+                height: units.gu(3)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: "qrc:/images/media-playlist-repeat.svg"
@@ -187,14 +187,14 @@ Item {
             anchors.right: nowPlayingPlayButton.left
             anchors.rightMargin: units.gu(1)
             anchors.verticalCenter: nowPlayingPlayButton.verticalCenter
-            height: units.gu(6)
+            height: units.gu(4)
             width: height
             color: "transparent"
             visible: player.isPlayingQueued()
 
             NosonIcon {
                 id: nowPlayingPreviousIndicator
-                height: units.gu(5)
+                height: units.gu(3)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: "qrc:/images/media-skip-backward.svg"
@@ -207,13 +207,13 @@ Item {
         Rectangle {
             id: nowPlayingPlayButton
             anchors.centerIn: parent
-            height: units.gu(8)
+            height: units.gu(4)
             width: height
             color: "transparent"
 
             NosonIcon {
                 id: nowPlayingPlayIndicator
-                height: units.gu(8)
+                height: units.gu(3)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: player.isPlaying ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
@@ -227,14 +227,14 @@ Item {
             anchors.left: nowPlayingPlayButton.right
             anchors.leftMargin: units.gu(1)
             anchors.verticalCenter: nowPlayingPlayButton.verticalCenter
-            height: units.gu(6)
+            height: units.gu(4)
             width: height
             color: "transparent"
             visible: player.isPlayingQueued()
 
             NosonIcon {
                 id: nowPlayingNextIndicator
-                height: units.gu(5)
+                height: units.gu(3)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: "qrc:/images/media-skip-forward.svg"
@@ -250,14 +250,14 @@ Item {
             anchors.left: nowPlayingNextButton.right
             anchors.leftMargin: units.gu(1)
             anchors.verticalCenter: nowPlayingPlayButton.verticalCenter
-            height: units.gu(6)
+            height: units.gu(4)
             width: height
             color: "transparent"
             visible: player.isPlayingQueued()
 
             NosonIcon {
                 id: shuffleIcon
-                height: units.gu(5)
+                height: units.gu(3)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: "qrc:/images/media-playlist-shuffle.svg"
