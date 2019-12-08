@@ -54,14 +54,8 @@ Item {
         height: units.gu(6)
         width: parent.width
 
-        RenderingBubble {
-            id: renderingBubble
-            backgroundColor: "black"
-            labelColor: "white"
-        }
-
         /* Mute button */
-        Icon {
+        NosonIcon {
             id: nowPlayingMuteButton
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
@@ -77,28 +71,19 @@ Item {
             }
         }
 
-        StyledSlider {
+        Slider {
             id: volumeGroupSlider
             anchors.left: nowPlayingMuteButton.right
             anchors.leftMargin: units.gu(2)
             anchors.rightMargin: units.gu(2)
             anchors.right: nightmodeButton.left
             anchors.verticalCenter: parent.verticalCenter
-            wheelEnabled: true
             stepSize: 2.5
-            live: true
-            from: 0
-            to: 100
+            minimumValue: 0
+            maximumValue: 100
             objectName: "volumeGroupSliderShape"
             enabled: !player.outputFixed
             opacity: (player.outputFixed ? 0.2 : 1.0)
-
-            handleSize: (player.outputFixed ? 0 : units.gu(2))
-            handleColor: styleMusic.playerControls.volumeHandleColor
-            handleColorPressed: styleMusic.playerControls.backgroundColor
-            handleBorderColor: handleColor
-            backgroundColor: styleMusic.playerControls.volumeBackgroundColor
-            foregroundColor: styleMusic.playerControls.volumeForegroundColor
 
             property double inValue
 
@@ -113,11 +98,11 @@ Item {
                 }
             }
 
-            onPressedChanged: {
+            /*!TODO?onPressedChanged: {
                 // open the bubble
                 if (pressed && player.renderingControlCount > 1)
                     renderingBubble.open(musicToolbarFullVolumeContainer)
-            }
+            }*/
 
             Timer {
                 id: setVolume
@@ -146,12 +131,11 @@ Item {
         }
 
         /* equalizer button */
-        Icon {
+        NosonIcon {
             id: nightmodeButton
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
             height: units.gu(5) // smaller
-            width: height
             source: "qrc:/images/settings.svg"
             opacity: 1.0
             onClicked: {
@@ -181,13 +165,11 @@ Item {
             color: "transparent"
             visible: player.isPlayingQueued()
 
-            Icon {
+            NosonIcon {
                 id: repeatIcon
                 height: units.gu(5)
-                width: height
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                color: styleMusic.playerControls.labelColor
                 source: "qrc:/images/media-playlist-repeat.svg"
                 objectName: "repeatShape"
                 opacity: player.repeat ? 1 : .3
@@ -210,13 +192,11 @@ Item {
             color: "transparent"
             visible: player.isPlayingQueued()
 
-            Icon {
+            NosonIcon {
                 id: nowPlayingPreviousIndicator
                 height: units.gu(5)
-                width: height
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                color: styleMusic.playerControls.labelColor
                 source: "qrc:/images/media-skip-backward.svg"
                 opacity: player.trackQueue.model.count > 0 && player.currentIndex > 0  ? 1 : .3
                 onClicked: player.previousSong()
@@ -231,13 +211,11 @@ Item {
             width: height
             color: "transparent"
 
-            Icon {
+            NosonIcon {
                 id: nowPlayingPlayIndicator
                 height: units.gu(8)
-                width: height
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                color: styleMusic.playerControls.labelColor
                 source: player.isPlaying ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
                 onClicked: player.toggle()
             }
@@ -254,13 +232,11 @@ Item {
             color: "transparent"
             visible: player.isPlayingQueued()
 
-            Icon {
+            NosonIcon {
                 id: nowPlayingNextIndicator
                 height: units.gu(5)
-                width: height
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                color: styleMusic.playerControls.labelColor
                 source: "qrc:/images/media-skip-forward.svg"
                 objectName: "forwardShape"
                 opacity: player.trackQueue.model.count > 0 && (player.currentIndex + 1) < player.trackQueue.model.count ? 1 : .3
@@ -279,13 +255,11 @@ Item {
             color: "transparent"
             visible: player.isPlayingQueued()
 
-            Icon {
+            NosonIcon {
                 id: shuffleIcon
                 height: units.gu(5)
-                width: height
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                color: styleMusic.playerControls.labelColor
                 source: "qrc:/images/media-playlist-shuffle.svg"
                 objectName: "shuffleShape"
                 opacity: player.shuffle ? 1 : .3

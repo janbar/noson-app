@@ -49,32 +49,6 @@ MusicPage {
         }
     }
 
-    Connections {
-        target: mainView
-        onWideAspectChanged: {
-            if (wideAspect)
-                stackView.pop()
-        }
-    }
-
-    // FIXME: workaround for when entering wideAspect coming back from a stacked page (AddToPlaylist) and the page being deleted breaks the stacked page
-    onVisibleChanged: {
-        if (wideAspect) {
-           popWaitTimer.start()
-        }
-    }
-
-    Timer {
-        id: popWaitTimer
-        interval: 250
-        onTriggered: {
-            if (stackView.currentItem === nowPlaying) {
-                stackView.pop();
-                mainView.nowPlayingPage = null;
-            }
-        }
-    }
-
     // Ensure that the listview has loaded before attempting to positionAt
     function ensureListViewLoaded() {
         if (queueLoader.item.listview.count === player.trackQueue.model.count) {
@@ -94,17 +68,14 @@ MusicPage {
         queueLoader.item.listview.positionViewAtIndex(index > 0 ? index - 1 : 0, ListView.Beginning);
     }
 
-    BlurredBackground {
-        id: nowPlayingBackground
-        anchors.fill: parent
-    }
-
     Loader {
         id: fullViewLoader
         anchors {
-            bottomMargin: nowPlayingToolbarLoader.height + units.gu(0)
-            fill: parent
             topMargin: units.gu(1)
+            top: parent.top
+            left: parent.left
+            right: parent.right
+            bottom: nowPlayingToolbarLoader.top
         }
         visible: opacity != 0.0
         opacity: !isListView ? 1.0 : 0.0
@@ -118,7 +89,7 @@ MusicPage {
         id: nowPlayingToolbarLoader
         anchors {
             bottom: parent.bottom
-            bottomMargin: isListView ? nowPlaying.height - nowPlaying.footer.height - height : 0
+            bottomMargin: isListView ? nowPlaying.height - height : footer.height
         }
         height: units.gu(14)
         width: parent.width
@@ -148,7 +119,7 @@ MusicPage {
     }
 
     // Page actions
-    optionsMenuVisible: true
+/*!TODO    optionsMenuVisible: true
     optionsMenuContentItems: [
         MenuItem {
             visible: (queueLoader.status === Loader.Ready && queueLoader.item.listview.count > 0)
@@ -163,10 +134,11 @@ MusicPage {
             onTriggered: dialogSelectSource.open()
         }
     ]
+*/
 
     Component.onCompleted: {
-        fullViewLoader.setSource("qrc:/components/NowPlayingFullView.qml", { "backgroundColor": "transparent" })
-        nowPlayingToolbarLoader.setSource("qrc:/components/NowPlayingToolbar.qml", { "backgroundColor": "transparent" })
-        queueLoader.setSource("qrc:/components/Queue.qml", { "backgroundColor": "transparent" })
+        fullViewLoader.setSource("qrc:/sfos/components/NowPlayingFullView.qml", { "backgroundColor": "transparent" })
+        nowPlayingToolbarLoader.setSource("qrc:/sfos/components/NowPlayingToolbar.qml", { "backgroundColor": "transparent" })
+        queueLoader.setSource("qrc:/sfos/components/Queue.qml", { "backgroundColor": "transparent" })
     }
 }

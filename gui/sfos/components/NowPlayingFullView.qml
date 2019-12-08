@@ -20,12 +20,11 @@
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
-import QtGraphicalEffects 1.0
 
 //import "../components/Themes/Ambiance"
 
 
-Flickable {
+SilicaFlickable {
     id: fullview
     anchors {
         fill: parent
@@ -67,32 +66,14 @@ Flickable {
             }
         }
 
-        Item {
+        Rectangle {
             id: nowPlayingWideAspectLabelsBackground
             anchors.bottom: albumImageContainer.bottom
             height: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(10) : units.gu(13)
             width: parent.width
-
-            clip: true
-
-            FastBlur {
-                id: blurred
-                source: albumImageContainer
-                radius: 10
-                width: albumImageContainer.width
-                height: albumImageContainer.height
-                visible: false
-            }
-            BrightnessContrast {
-                anchors.bottom: parent.bottom
-                source: blurred
-                brightness: 0.5-styleMusic.nowPlaying.primaryColor.hslLightness
-                width: albumImageContainer.width
-                height: albumImageContainer.height
-            }
+            opacity: 0.5
+            color: "white"
         }
-
-
 
         /* Column for labels */
         Column {
@@ -116,7 +97,7 @@ Flickable {
                     right: parent.right
                     rightMargin: units.gu(1)
                 }
-                color: styleMusic.nowPlaying.primaryColor
+                color: "black"
                 elide: Text.ElideRight
                 font.pointSize: units.fs("large")
                 font.weight: Font.DemiBold
@@ -135,7 +116,7 @@ Flickable {
                     right: parent.right
                     rightMargin: units.gu(1)
                 }
-                color: styleMusic.nowPlaying.primaryColor
+                color: "black"
                 elide: Text.ElideRight
                 font.pointSize: units.fs("small")
                 font.weight: Font.DemiBold
@@ -191,7 +172,7 @@ Flickable {
             left: fullviewProgressBackground.left
             right: fullviewProgressBackground.right
             top: fullviewProgressBackground.top
-            topMargin: -units.gu(2)
+            //topMargin: -units.gu(2)
         }
         height: units.gu(2)
         width: parent.width
@@ -215,25 +196,17 @@ Flickable {
             width: units.gu(3)
         }
 
-        StyledSlider {
+        Slider {
             id: progressSliderMusic
             anchors {
                 left: parent.left
                 right: parent.right
                 top: parent.top
             }
-            to: player.duration  // load value at startup
+            maximumValue: player.duration  // load value at startup
             objectName: "progressSliderShape"
             value: player.position  // load value at startup
-            wheelEnabled: false
             stepSize: 5000.0
-
-            foregroundColor: styleMusic.playerControls.progressForegroundColor
-            backgroundColor: styleMusic.playerControls.progressBackgroundColor
-            handleColor: styleMusic.playerControls.progressHandleColor
-            handleColorPressed: styleMusic.playerControls.backgroundColor
-            handleBorderColor: handleColor
-            handleSize: units.gu(1.5)
 
             function formatValue(v) {
                 if (seeking) {  // update position label while dragging
@@ -280,7 +253,7 @@ Flickable {
                         fullviewDurationLabel.text = durationToString(player.duration)
 
                         progressSliderMusic.value = player.position
-                        progressSliderMusic.to = player.duration
+                        progressSliderMusic.maximumValue = player.duration
                     }
 
                     progressSliderMusic.seeked = false;

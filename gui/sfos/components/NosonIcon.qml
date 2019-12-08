@@ -6,9 +6,9 @@ IconButton {
     
     property string source: "qrc:/images/delete.svg"
     property alias label: label
-
+    property int preferredWidth: (label.width > height ? label.width : height)
     height: units.gu(3)
-    width: childrenRect.width
+    width: preferredWidth
     icon.source: source
     icon.width: height
     icon.height: height

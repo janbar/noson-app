@@ -144,8 +144,8 @@ DialogBase {
                     break;
             }
         }
-        */
-    }
+        
+    }*/
 
     onOpened: {
         if (player.currentMetaSource === "") {
