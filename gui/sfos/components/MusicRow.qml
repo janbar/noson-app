@@ -1,29 +1,27 @@
 /*
- * Copyright (C) 2013, 2014, 2015, 2016, 2017
- *      Jean-Luc Barriere <jlbarriere68@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; version 3.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+* Copyright (C) 2013, 2014, 2015, 2016, 2017
+*      Jean-Luc Barriere <jlbarriere68@gmail.com>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; version 3.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
 import "ListItemActions"
 
-Row {
+ListItem {
     id: row
-    anchors.leftMargin: units.gu(1)
-    anchors.rightMargin: units.gu(2)
-
+    
     property real contentHeight: units.gu(6)
     property alias column: columnComponent.sourceComponent
     property real coverSize: styleMusic.view.albumSize
@@ -35,7 +33,6 @@ Row {
     property alias checked: control.checked
 
     property bool menuVisible: false
-    property alias menuItems: optionsMenu._contentColumn
     property alias actionVisible: action.visible
     property string actionIconSource: ""
     property alias action2Visible: action2.visible
@@ -46,21 +43,22 @@ Row {
     signal deselected
 
     signal imageError(var index)
+            
+    anchors.leftMargin: units.gu(1)
+    anchors.rightMargin: units.gu(2)
 
-    spacing: units.gu(2)
+    height: contentHeight
 
     state: "default"
     states: [
         State {
             name: "default"
             PropertyChanges { target: select; anchors.rightMargin: -select.width; opacity: anchors.rightMargin > -select.width ? 1 : 0; }
-            PropertyChanges { target: menu; anchors.rightMargin: 0; opacity: 1 }
             //PropertyChanges { target: action; visible: actionIconSource !== "" }
         },
         State {
             name: "selection"
             PropertyChanges { target: select; anchors.rightMargin: 0 }
-            PropertyChanges { target: menu; anchors.rightMargin: -select.width; opacity: anchors.rightMargin > -select.width ? 1 : 0; }
             //PropertyChanges { target: action; visible: false }
         }
     ]
@@ -77,7 +75,7 @@ Row {
         fillMode: Image.PreserveAspectCrop
         height: contentHeight
         width: height
-        source: imageSources !== undefined && imageSources.length ? imageSources[index].art : noCover
+        source: imageSources !== undefined && imageSources.length ? imageSources[index].art : litem.noCover
         sourceSize.height: 512
         sourceSize.width: 512
 
@@ -108,10 +106,12 @@ Row {
         id: columnComponent
         anchors {
             verticalCenter: parent.verticalCenter
+            left: image.right
+            leftMargin: units.gu(2)
         }
 
-        width: imageSources === undefined ? parent.width - parent.spacing - action.width - menu.width
-                                         : parent.width - image.width - parent.spacing - action.width - menu.width
+        width: imageSources === undefined ? parent.width - parent.spacing - action.width
+                                        : parent.width - image.width - parent.spacing - action.width
 
         onSourceComponentChanged: {
             for (var i=0; i < item.children.length; i++) {
@@ -160,9 +160,9 @@ Row {
             width: parent.width
             height: row.height
 
-            IconButton {
+            NosonIcon {
                 id: icon2
-                icon.source: row.action2IconSource
+                source: row.action2IconSource
                 width: parent.width
                 height: width
                 anchors.centerIn: parent
@@ -174,7 +174,7 @@ Row {
     Item {
         id: action
         visible: false
-        anchors.right: menu.left
+        anchors.right: select.left
         anchors.rightMargin: units.gu(1)
         width: units.gu(5)
 
@@ -183,46 +183,14 @@ Row {
             width: parent.width
             height: row.height
 
-            IconButton {
+            NosonIcon {
                 id: icn
-                icon.source: row.actionIconSource
+                source: row.actionIconSource
                 width: parent.width
                 height: width
                 anchors.centerIn: parent
                 onClicked: actionPressed()
             }
-        }
-    }
-
-    Item {
-        id: menu
-        anchors.right: select.left
-        width: visible ? units.gu(5) : 0
-        visible: menuVisible
-
-        Rectangle {
-            color: "transparent"
-            width: parent.width
-            height: row.height
-
-            IconButton {
-                width: menu.visible ? units.gu(5) : 0
-                height: width
-                anchors.centerIn: parent
-                icon.source: "qrc:/images/contextual-menu.svg"
-
-                onClicked: optionsMenu.open()
-
-                ContextMenu {
-                    id: optionsMenu
-//                    width: implicitWidth * units.scaleFactor
-                    //transformOrigin: TopRight
-                }
-            }
-        }
-
-        Behavior on anchors.rightMargin {
-            NumberAnimation { duration: 50 }
         }
     }
 
@@ -258,3 +226,4 @@ Row {
     }
 
 }
+
