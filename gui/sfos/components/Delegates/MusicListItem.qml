@@ -50,7 +50,7 @@ MouseArea {
     property alias action2Visible: row.action2Visible
     property alias action2IconSource: row.action2IconSource
     property alias menuVisible: row.menuVisible
-    //property alias menuItems: row.menuItems
+    property alias menu: row.menu
 
     anchors { left: parent.left; right: parent.right }
     height: content.height

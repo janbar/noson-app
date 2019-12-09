@@ -36,9 +36,10 @@ MusicPage {
 
     onSearchClicked: filter.visible = true
 
-    header: MusicFilter {
+    MusicFilter {
         id: filter
         visible: false
+        anchors.top: parent.top
     }
 
     SortFilterModel {
@@ -93,23 +94,23 @@ MusicPage {
             actionIconSource: "qrc:/images/media-preview-start.svg"
             menuVisible: true
 
-            menuItems: [
+            menu: ContextMenu {
                 AddToQueue {
                     enabled: model.canQueue
                     visible: enabled
-                },
+                }
                 AddToPlaylist {
                     enabled: model.canQueue
                     visible: enabled
-                },
+                }
                 Remove {
-                    onTriggered: {
+                    onClicked: {
                         favoriteList.focusIndex = model.index > 0 ? model.index - 1 : 0;
                         delayRemoveFavorite.start();
                         color: "red";
                     }
                 }
-            ]
+            }
 
             column: Column {
                 Label {
