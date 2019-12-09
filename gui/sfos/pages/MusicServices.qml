@@ -61,11 +61,18 @@ MusicPage {
         PullDownMenu {
             id: topMenu1
 
-            MenuItem { text: qsTr("My Index"); onClicked: pageStack.push("pages/Index.qml") }
-            //MenuItem { text: qsTr("Favorites"); onClicked: pageStack.push("pages/Favorites.qml") }
-            //MenuItem { text: qsTr("Playlists"); onClicked: pageStack.push("pages/Playlists.qml") }
-            //MenuItem { text: qsTr("Alarm clock"); onClicked: pageStack.push("pages/Alarms.qml")}
-            //MenuItem { text: qsTr("This Device"); onClicked: pageStack.push("pages/ThisDevice.qml") }
+            MenuItem { text: qsTr("About"); onClicked: dialogAbout.open() }
+            Repeater {
+                model: tabs
+
+                MenuItem {
+                    text: model.title
+                    onClicked: {
+                        pageStack.push(model.source)
+                    }
+                }
+            }
+
         }
         
         delegate: MusicListItem {
@@ -134,12 +141,17 @@ MusicPage {
         PullDownMenu {
             id: topMenu2
 
-            MenuItem { text: qsTr("My Index"); onClicked: pageStack.push("Index.qml") }
-            MenuItem { text: qsTr("Favorites"); onClicked: pageStack.push("Favorites.qml") }
-            MenuItem { text: qsTr("Playlists"); onClicked: pageStack.push("Playlists.qml") }
-            MenuItem { text: qsTr("Alarm clock"); onClicked: pageStack.push("Alarms.qml")}
-            MenuItem { text: qsTr("This Device"); onClicked: pageStack.push("ThisDevice.qml") }
-            MenuItem { text: qsTr("About"); onClicked: dialogAbout.open() }
+            MenuItem { text: qsTr("About"); onClicked: dialogAbout.open() }            
+            Repeater {
+                model: tabs
+
+                MenuItem {
+                    text: model.title
+                    onClicked: {
+                        pageStack.push(model.source)
+                    }
+                }
+            }
         }
         
         delegate: Card {
@@ -168,10 +180,11 @@ MusicPage {
             NumberAnimation { duration: 250 }
         }
     }
-
+    
     onAddClicked: {
         pageStack.push("AddService.qml")
     }
-
+    
+    
 }
 
