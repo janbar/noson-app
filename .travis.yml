@@ -5,6 +5,10 @@ dist: xenial
 os:
   - linux
 
+env:
+  - QTENV="qt511"
+  - QTENV="qt512"
+
 compiler:
   - clang
 #  - gcc
@@ -32,16 +36,20 @@ before_install:
       export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01';
     fi;
   - if [ "$TRAVIS_OS_NAME" = "linux" ]; then
-      sudo add-apt-repository ppa:beineri/opt-qt-5.11.3-xenial -y;
+      if [ "$QTENV" = "qt511" ]; then
+        sudo add-apt-repository ppa:beineri/opt-qt-5.11.3-xenial -y;
+      else
+        sudo add-apt-repository ppa:beineri/opt-qt-5.12.6-xenial -y;
+      fi;
       sudo apt-get update;
-      sudo apt-get install qt511base qt511tools qt511declarative qt511quickcontrols2 qt511svg -y --allow-unauthenticated;
+      sudo apt-get install ${QTENV}base ${QTENV}tools ${QTENV}declarative ${QTENV}quickcontrols2 ${QTENV}svg -y --allow-unauthenticated;
     fi;
 
 before_script:
-  - source /opt/qt511/bin/qt511-env.sh
+  - source /opt/${QTENV}/bin/${QTENV}-env.sh
   - cmake --version
   - mkdir build && cd build
-  - cmake .. -Wdev -DCMAKE_CXX_COMPILER=$(which $CXX) -DCMAKE_C_COMPILER=$(which $CC) -DCMAKE_INSTALL_PREFIX=$HOME
+  - cmake .. -Wdev -DCMAKE_CXX_COMPILER=$(which $CXX) -DCMAKE_C_COMPILER=$(which $CC) -DCMAKE_INSTALL_PREFIX=$HOME -DBUILD_DEPENDENCIES=ON
 
 script:
   - cmake --build . --target install
