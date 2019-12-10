@@ -10,6 +10,8 @@ if(MSVC)
   set(MSVC_DYNAMIC_RUNTIME ON)
 endif()
 
+include(DownloadProject)
+
 # Disable install rules
 set(SKIP_INSTALL_ALL ON)
 
@@ -36,17 +38,30 @@ if(NOT BUILD_DEPENDENCIES)
     find_package(OpenSSL QUIET)
 endif()
 if(NOT OPENSSL_FOUND)
-    execute_process (COMMAND git submodule update --init --depth 1 -- openssl
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    )
+    if(OPENSSL_DL_ABI STREQUAL "1.0")
+        download_project(PROJ "openssl-${OPENSSL_DL_ABI}"
+            GIT_REPOSITORY https://github.com/janbar/openssl-cmake.git
+            GIT_TAG 1.0.2
+            GIT_SHALLOW 1
+            PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+            UPDATE_DISCONNECTED 1)
+    else()
+        set(OPENSSL_DL_ABI "1.1")
+        download_project(PROJ "openssl-${OPENSSL_DL_ABI}"
+            GIT_REPOSITORY https://github.com/janbar/openssl-cmake.git
+            GIT_TAG 1.1.1d-20191209
+            GIT_SHALLOW 1
+            PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+            UPDATE_DISCONNECTED 1)
+    endif()
     if(ANDROID OR MSVC)
         set(BUILD_SHARED_LIBS ON)
     else()
         set(BUILD_SHARED_LIBS OFF)
     endif()
     add_subdirectory(
-        ${CMAKE_CURRENT_SOURCE_DIR}/openssl
-        ${CMAKE_CURRENT_BINARY_DIR}/openssl
+        ${CMAKE_CURRENT_BINARY_DIR}/openssl-${OPENSSL_DL_ABI}-src
+        ${CMAKE_CURRENT_BINARY_DIR}/openssl-${OPENSSL_DL_ABI}-build
         EXCLUDE_FROM_ALL
     )
     set(OPENSSL_SSL_LIBRARY ssl)
@@ -63,17 +78,20 @@ if(NOT BUILD_DEPENDENCIES)
     find_package(FLACXX)
 endif()
 if(NOT FLAC_FOUND OR NOT FLACXX_FOUND)
-    execute_process (COMMAND git submodule update --init --depth 1 -- flac
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    )
+    download_project(PROJ flac
+        GIT_REPOSITORY https://github.com/janbar/flac-cmake.git
+        GIT_TAG 81e362cba8fd36a8b4a1af4cf32c07fffc682f0e
+        GIT_SHALLOW 1
+        PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+        UPDATE_DISCONNECTED 1)
     if(ANDROID OR MSVC)
         set(BUILD_SHARED_LIBS ON)
     else()
         set(BUILD_SHARED_LIBS OFF)
     endif()
     add_subdirectory(
-        ${CMAKE_CURRENT_SOURCE_DIR}/flac
-        ${CMAKE_CURRENT_BINARY_DIR}/flac
+        ${CMAKE_CURRENT_BINARY_DIR}/flac-src
+        ${CMAKE_CURRENT_BINARY_DIR}/flac-build
         EXCLUDE_FROM_ALL
     )
     set(FLAC_LIBRARIES FLAC)
@@ -87,12 +105,16 @@ if(NOT FLAC_FOUND OR NOT FLACXX_FOUND)
 endif()
 
 # Provides dependency noson
-execute_process (COMMAND git submodule update --init --depth 1 -- noson
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-)
+download_project(PROJ noson
+    GIT_REPOSITORY https://github.com/janbar/noson.git
+    GIT_TAG 3207f7fdbbece2e43c095edcda2c468e3c97f53c
+    GIT_SHALLOW 1
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+    UPDATE_DISCONNECTED 1)
 set(BUILD_SHARED_LIBS OFF)
 add_subdirectory(
-    ${CMAKE_CURRENT_SOURCE_DIR}/noson/noson
+    ${CMAKE_CURRENT_BINARY_DIR}/noson-src/noson
+    ${CMAKE_CURRENT_BINARY_DIR}/noson-build
     EXCLUDE_FROM_ALL
 )
 set(noson_LIBRARIES noson                               PARENT_SCOPE)
