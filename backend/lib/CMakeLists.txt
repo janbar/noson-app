@@ -41,10 +41,10 @@ if(NOT OPENSSL_FOUND)
     if(OPENSSL_DL_ABI STREQUAL "1.0")
         download_project(PROJ "openssl-${OPENSSL_DL_ABI}"
             GIT_REPOSITORY https://github.com/janbar/openssl-cmake.git
-            GIT_TAG 1.0.2
+            GIT_TAG 1.0.2p-20191208
             GIT_SHALLOW 1
             PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-            UPDATE_DISCONNECTED 1)
+            UPDATE_DISCONNECTED OFF)
     else()
         set(OPENSSL_DL_ABI "1.1")
         download_project(PROJ "openssl-${OPENSSL_DL_ABI}"
@@ -52,7 +52,7 @@ if(NOT OPENSSL_FOUND)
             GIT_TAG 1.1.1d-20191209
             GIT_SHALLOW 1
             PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-            UPDATE_DISCONNECTED 1)
+            UPDATE_DISCONNECTED OFF)
     endif()
     if(ANDROID OR MSVC)
         set(BUILD_SHARED_LIBS ON)
@@ -80,10 +80,10 @@ endif()
 if(NOT FLAC_FOUND OR NOT FLACXX_FOUND)
     download_project(PROJ flac
         GIT_REPOSITORY https://github.com/janbar/flac-cmake.git
-        GIT_TAG 81e362cba8fd36a8b4a1af4cf32c07fffc682f0e
+        GIT_TAG 1.3.2-20191201
         GIT_SHALLOW 1
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-        UPDATE_DISCONNECTED 1)
+        UPDATE_DISCONNECTED OFF)
     if(ANDROID OR MSVC)
         set(BUILD_SHARED_LIBS ON)
     else()
@@ -110,7 +110,7 @@ download_project(PROJ noson
     GIT_TAG 3207f7fdbbece2e43c095edcda2c468e3c97f53c
     GIT_SHALLOW 1
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-    UPDATE_DISCONNECTED 1)
+    UPDATE_DISCONNECTED OFF)
 set(BUILD_SHARED_LIBS OFF)
 add_subdirectory(
     ${CMAKE_CURRENT_BINARY_DIR}/noson-src/noson
