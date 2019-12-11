@@ -126,7 +126,7 @@ ApplicationWindow {
     property bool startup: true         // is running the cold startup ?
     property bool ssdp: true            // point out the connect method
 
-    // Property to store the state of an application (active or suspended)
+    // Property to store the state of the application (active or suspended)
     property bool applicationSuspended: false
 
     // setting alias to check first run
@@ -1271,34 +1271,41 @@ ApplicationWindow {
     Loader {
         id: musicToolbar
         active: true
+        height: units.gu(7.25)
         anchors {
             left: parent.left
             right: parent.right
             top: parent.bottom
-            topMargin: visible && status === Loader.Ready ? -height : 0
+            topMargin: status === Loader.Ready && shown ? -height : 0
         }
         asynchronous: true
         source: "qrc:/components/MusicToolbar.qml"
-        visible: !noZone && (!wideAspect || player.currentMetaSource === "") && status === Loader.Ready &&
-                 (stackView.currentItem && (stackView.currentItem.showToolbar || stackView.currentItem.showToolbar === undefined))
+
+        property bool shown: !noZone && (!wideAspect || player.currentMetaSource === "") &&
+            (stackView.currentItem && (stackView.currentItem.showToolbar === undefined || stackView.currentItem.showToolbar))
+
+        Behavior on anchors.topMargin {
+            NumberAnimation {
+            }
+        }
     }
 
     Loader {
         id: nowPlayingSidebarLoader
-        active: shown
+        active: shownheightheightheightheight
+        width: units.gu(minSizeGU)
         anchors {  // start offscreen
             bottom: parent.bottom
-            right: parent.right
+            left: parent.right
             top: parent.top
         }
-        asynchronous: false
+        asynchronous: true
         source: "qrc:/components/NowPlayingSidebar.qml"
-        width: shown && status === Loader.Ready ? units.gu(minSizeGU) : 0
-        visible: width > 0
+        anchors.leftMargin: status === Loader.Ready && shown ? - width : 0
 
-        property bool shown: loadedUI && wideAspect && player.currentMetaSource !== ""
+        property bool shown: !noZone && loadedUI && wideAspect && player.currentMetaSource !== ""
 
-        Behavior on width {
+        Behavior on anchors.leftMargin {
             NumberAnimation {
             }
         }

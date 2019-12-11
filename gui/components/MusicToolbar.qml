@@ -20,9 +20,9 @@ import QtQuick.Controls 2.2
 
 Item {
     id: toolBar
-    property alias color: bg.color
-    height: units.gu(7.25)
     objectName: "musicToolbarObject"
+
+    property alias color: bg.color
 
     Rectangle {
         id: bg
