@@ -243,7 +243,11 @@ MusicPage {
             }
         }
 
-        visible: isListView ? true : false
+        opacity: isListView ? 1.0 : 0.0
+        visible: opacity > 0.0
+        Behavior on opacity {
+            NumberAnimation { duration: 250 }
+        }
 
         onAtYEndChanged: {
             if (mediaList.atYEnd && mediaModel.totalCount > mediaModel.count) {
@@ -307,7 +311,11 @@ MusicPage {
             onPlayClicked: playItem(model)
         }
 
-        visible: isListView ? false : true
+        opacity: isListView ? 0.0 : 1.0
+        visible: opacity > 0.0
+        Behavior on opacity {
+            NumberAnimation { duration: 250 }
+        }
 
         onAtYEndChanged: {
             if (mediaGrid.atYEnd && mediaModel.totalCount > mediaModel.count) {
