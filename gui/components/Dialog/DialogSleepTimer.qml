@@ -92,7 +92,7 @@ DialogBase {
         text: remainingTimeToString(remainingTime)
         color: styleMusic.dialog.labelColor
         elide: Text.ElideRight
-        font.pointSize: 2 * units.fs("large")
+        font.pointSize: 2 * units.fs("medium")
         horizontalAlignment: Text.AlignHCenter
         opacity: 1.0
     }
@@ -102,7 +102,7 @@ DialogBase {
         textRole: "text"
         model: selectorModel
         Layout.fillWidth: true
-        font.pointSize: units.fs("large")
+        font.pointSize: units.fs("medium")
         currentIndex: 0
         Component.onCompleted: {
             popup.font.pointSize = font.pointSize;
