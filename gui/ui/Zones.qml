@@ -160,7 +160,15 @@ MusicPage {
                         action3Visible = true;
                         action3IconSource = (zonePlayer.playbackState === "PLAYING" ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-preview-start.svg");
                     }
-                    playbackState = zonePlayer.playbackState.replace('_', ' ');
+                    // translate the state
+                    switch (zonePlayer.playbackState)
+                    {
+                    case "STOPPED": playbackState = qsTr("Stopped"); break;
+                    case "PLAYING": playbackState = qsTr("Playing"); break;
+                    case "PAUSED_PLAYBACK": playbackState = qsTr("Paused playback"); break;
+                    case "TRANSITIONING": playbackState = qsTr("Transitioning"); break;
+                    default: playbackState = zonePlayer.playbackState.replace('_', ' ');
+                    }
                 }
 
                 Component.onCompleted: {
