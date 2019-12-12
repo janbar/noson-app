@@ -31,13 +31,11 @@ Flickable {
         fill: parent
     }
     property alias backgroundColor: fullviewBackground.color
-    property alias backgroundOpacity: fullviewBackground.opacity
 
     Rectangle {
         id: fullviewBackground
         anchors.fill: parent
         color: "transparent"
-        opacity: 1.0
 
         Item {
             id: albumImageContainer
@@ -181,7 +179,6 @@ Flickable {
         height: units.gu(3)
         width: parent.width
         color: fullviewBackground.color
-        opacity: fullviewBackground.opacity
     }
 
     /* Progress bar component */

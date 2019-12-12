@@ -31,14 +31,12 @@ Item {
     property alias header: queueList.header
     property alias headerItem: queueList.headerItem
     property alias backgroundColor: bg.color
-    property alias backgroundOpacity: bg.opacity
     clip: true
 
     Rectangle {
         id: bg
         anchors.fill: parent
         color: "transparent"
-        opacity: 1.0
     }
 
     Component {

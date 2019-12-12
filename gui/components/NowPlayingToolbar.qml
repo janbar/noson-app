@@ -31,7 +31,6 @@ Item {
 
     property bool mirror: false
     property alias backgroundColor: bg.color
-    property alias backgroundOpacity: bg.opacity
     property alias bottomProgressHint: playerControlsProgressBar.visible
     readonly property real toolbarHeight: musicToolbarFullVolumeContainer.height + musicToolbarFullButtonContainer.height
 
@@ -39,7 +38,6 @@ Item {
         id: bg
         anchors.fill: parent
         color: "transparent"
-        opacity: 1.0
     }
 
     /* volume slider component */
