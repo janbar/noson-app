@@ -163,7 +163,6 @@ Item {
                  size: parent.height
                  overlay: false
 
-                 /* @FIXME: QML binding for covers fails randomly. So bind manually the covers */
                  Component.onCompleted: {
                      covers = player.covers.slice();
                  }

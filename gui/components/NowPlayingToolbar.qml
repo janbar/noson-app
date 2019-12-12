@@ -25,9 +25,6 @@ import QtQuick.Controls 2.2
 /* Full toolbar */
 Item {
     id: musicToolbarFullContainer
-    anchors {
-        fill: parent
-    }
 
     property bool mirror: false
     property alias backgroundColor: bg.color

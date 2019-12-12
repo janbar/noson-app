@@ -27,9 +27,7 @@ import QtGraphicalEffects 1.0
 
 Flickable {
     id: fullview
-    anchors {
-        fill: parent
-    }
+
     property alias backgroundColor: fullviewBackground.color
 
     Rectangle {
@@ -52,7 +50,6 @@ Flickable {
                 size: parent.height
                 overlay: false
 
-                /* @FIXME: QML binding for covers fails randomly. So bind manually the covers */
                 Component.onCompleted: {
                     covers = player.covers.slice();
                 }

@@ -25,7 +25,7 @@ MusicPage {
     objectName: "nowPlayingPage"
 
     pageTitle: qsTr("Now playing")
-    pageFlickable: fullViewLoader.item
+    pageFlickable: nowPlayingView.flickable
     isListView: false
     showToolbar: false
 
@@ -96,14 +96,21 @@ MusicPage {
     BlurredBackground {
         id: nowPlayingBackground
         anchors.fill: parent
+        visible: isListView
     }
 
-    Loader {
-        id: fullViewLoader
+    Item {
+        id: nowPlayingView
+        property alias flickable: view
         anchors {
-            bottomMargin: nowPlayingToolbarLoader.height + units.gu(0)
             fill: parent
+            bottomMargin: nowPlayingToolbar.height
             topMargin: units.gu(1)
+        }
+        NowPlayingFullView {
+            id: view
+            anchors.fill: parent
+            backgroundColor: "transparent"
         }
         visible: opacity != 0.0
         opacity: !isListView ? 1.0 : 0.0
@@ -113,14 +120,15 @@ MusicPage {
         }
     }
 
-    Loader {
-        id: nowPlayingToolbarLoader
+    NowPlayingToolbar {
+        id: nowPlayingToolbar
         anchors {
             bottom: parent.bottom
             bottomMargin: isListView ? nowPlaying.height - nowPlaying.footer.height - height : 0
         }
         height: units.gu(14)
         width: parent.width
+        backgroundColor: "transparent"
 
         Behavior on anchors.bottomMargin {
             NumberAnimation { duration: 100 }
@@ -130,7 +138,7 @@ MusicPage {
     Loader {
         id: queueLoader
         anchors {
-            top: nowPlayingToolbarLoader.bottom
+            top: nowPlayingToolbar.bottom
             bottom: parent.bottom
             left: parent.left
             right: parent.right
@@ -164,8 +172,6 @@ MusicPage {
     ]
 
     Component.onCompleted: {
-        fullViewLoader.setSource("qrc:/components/NowPlayingFullView.qml", { "backgroundColor": "transparent" })
-        nowPlayingToolbarLoader.setSource("qrc:/components/NowPlayingToolbar.qml", { "backgroundColor": "transparent" })
         queueLoader.setSource("qrc:/components/Queue.qml", { "backgroundColor": "transparent" })
     }
 }
