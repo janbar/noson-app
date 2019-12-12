@@ -1284,16 +1284,16 @@ ApplicationWindow {
         property bool shown: status === Loader.Ready && !noZone && (!wideAspect || player.currentMetaSource === "") &&
                              (stackView.currentItem && (stackView.currentItem.showToolbar === undefined || stackView.currentItem.showToolbar))
 
-        /*Behavior on anchors.topMargin {
+        Behavior on anchors.topMargin {
             NumberAnimation {
             }
-        }*/
+        }
     }
 
     Loader {
         id: nowPlayingSidebarLoader
         active: true
-        width: units.gu(minSizeGU)
+        width: units.gu(48)
         anchors {  // start offscreen
             bottom: parent.bottom
             left: parent.right
