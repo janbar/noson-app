@@ -93,11 +93,10 @@ MusicPage {
         queueLoader.item.listview.positionViewAtIndex(index > 0 ? index - 1 : 0, ListView.Beginning);
     }
 
-    /* Fix slow animation: No more blurred background
     BlurredBackground {
         id: nowPlayingBackground
         anchors.fill: parent
-    }*/
+    }
 
     Item {
         id: nowPlayingView

@@ -1284,10 +1284,6 @@ ApplicationWindow {
         property bool shown: status === Loader.Ready && !noZone && (!wideAspect || player.currentMetaSource === "") &&
                              (stackView.currentItem && (stackView.currentItem.showToolbar === undefined || stackView.currentItem.showToolbar))
 
-        Behavior on anchors.topMargin {
-            NumberAnimation {
-            }
-        }
     }
 
     Loader {

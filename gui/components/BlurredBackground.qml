@@ -53,14 +53,14 @@ Item {
         id: backgroundBlur
         anchors.fill: backgroundImage
         source: backgroundImage
-        radius: units.dp(42)
+        radius: units.dp(64)
         opacity: 0.2
+        cached: false
+        transparentBorder: true
     }
+
     onArtChanged: {
-        // a way of getting the blur to repaint
-        backgroundBlur.cached = false
         backgroundImage.source = art
-        backgroundBlur.cached = true
     }
 }
 

@@ -25,10 +25,9 @@ Page {
 
     property bool isListView: true
 
-    Rectangle {
+    BlurredBackground {
         id: bg
         anchors.fill: parent
-        color: styleMusic.nowPlaying.backgroundColor
     }
 
     Column {
