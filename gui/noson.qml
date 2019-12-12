@@ -1276,18 +1276,23 @@ ApplicationWindow {
             left: parent.left
             right: parent.right
             top: parent.bottom
-            topMargin: status === Loader.Ready && shown ? -height : 0
+            topMargin: shown ? -height : 0
         }
         asynchronous: true
         source: "qrc:/components/MusicToolbar.qml"
 
-        property bool shown: !noZone && (!wideAspect || player.currentMetaSource === "") &&
+        property bool shown: status === Loader.Ready && !noZone && (!wideAspect || player.currentMetaSource === "") &&
                              (stackView.currentItem && (stackView.currentItem.showToolbar === undefined || stackView.currentItem.showToolbar))
+
+        /*Behavior on anchors.topMargin {
+            NumberAnimation {
+            }
+        }*/
     }
 
     Loader {
         id: nowPlayingSidebarLoader
-        active: shown
+        active: true
         width: units.gu(minSizeGU)
         anchors {  // start offscreen
             bottom: parent.bottom
@@ -1296,9 +1301,15 @@ ApplicationWindow {
         }
         asynchronous: true
         source: "qrc:/components/NowPlayingSidebar.qml"
-        anchors.leftMargin: status === Loader.Ready && shown ? - width : 0
+        anchors.leftMargin: shown ? -width : 0
 
-        property bool shown: !noZone && loadedUI && wideAspect && player.currentMetaSource !== ""
+        property bool shown: status === Loader.Ready && !noZone && loadedUI && wideAspect && player.currentMetaSource !== ""
+
+        onShownChanged: {
+            // move to current position in queue
+            if (shown)
+                item.ensureListViewLoaded();
+        }
 
         Behavior on anchors.leftMargin {
             NumberAnimation {
