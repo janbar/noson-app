@@ -1293,7 +1293,7 @@ ApplicationWindow {
     Loader {
         id: nowPlayingSidebarLoader
         active: true
-        width: units.gu(48)
+        width: units.gu(44)
         anchors {  // start offscreen
             bottom: parent.bottom
             left: parent.right
