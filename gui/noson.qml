@@ -1272,7 +1272,7 @@ ApplicationWindow {
         id: musicToolbar
         active: true
         height: units.gu(7.25)
-        anchors {
+        anchors { // start offscreen
             left: parent.left
             right: parent.right
             top: parent.bottom
@@ -1282,12 +1282,7 @@ ApplicationWindow {
         source: "qrc:/components/MusicToolbar.qml"
 
         property bool shown: !noZone && (!wideAspect || player.currentMetaSource === "") &&
-            (stackView.currentItem && (stackView.currentItem.showToolbar === undefined || stackView.currentItem.showToolbar))
-
-        Behavior on anchors.topMargin {
-            NumberAnimation {
-            }
-        }
+                             (stackView.currentItem && (stackView.currentItem.showToolbar === undefined || stackView.currentItem.showToolbar))
     }
 
     Loader {
