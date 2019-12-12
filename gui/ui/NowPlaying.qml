@@ -109,7 +109,7 @@ MusicPage {
         opacity: !isListView ? 1.0 : 0.0
 
         Behavior on opacity {
-            NumberAnimation { duration: 250 }
+            NumberAnimation { duration: 100 }
         }
     }
 
