@@ -40,8 +40,6 @@ DialogBase {
         id: playlistName
         font.pointSize: units.fs("large")
         placeholderText: qsTr("Enter playlist name")
-        inputMethodHints: Qt.ImhNone
-        EnterKey.type: Qt.EnterKeyDone
     }
 
     Button {
@@ -60,5 +58,5 @@ DialogBase {
         }
     }
 
-    Component.onCompleted: playlistName.forceActiveFocus()
+    //Component.onCompleted: playlistName.forceActiveFocus()
 }

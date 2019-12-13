@@ -38,11 +38,6 @@ MusicPage {
 
     onSearchClicked: filter.visible = true
 
-    header: MusicFilter {
-        id: filter
-        visible: false
-    }
-
     SortFilterModel {
         id: playlistsModelFilter
         model: AllPlaylistsModel
@@ -52,6 +47,12 @@ MusicPage {
         filter.property: "normalized"
         filter.pattern: new RegExp(normalizedInput(filter.text), "i")
         filterCaseSensitivity: Qt.CaseInsensitive
+    }
+
+    //Header
+    MusicFilter {
+        id: filter
+        visible: false
     }
 
     MusicGridView {
@@ -88,7 +89,7 @@ MusicPage {
             coverFlow: 4
 
             onClicked: {
-                stackView.push("qrc:/ui/SongsView.qml",
+                pageStack.push("qrc:/sfos/pages/SongsView.qml",
                                    {
                                        "containerItem": makeContainerItem(model),
                                        "songSearch": model.id,
