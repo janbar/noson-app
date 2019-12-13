@@ -150,7 +150,7 @@ MusicPage {
             id: listItem
             listview: songList
             reorderable: isPlaylist
-            selectable: true
+            //selectable: true
 
             onSwipe: {
                 if (isPlaylist) {
@@ -195,20 +195,20 @@ MusicPage {
             actionIconSource: "qrc:/images/media-preview-start.svg"
             menuVisible: true
 
-            menuItems: [
+            menu: ContextMenu {
                 AddToFavorites {
                     isFavorite: listItem.isFavorite
                     description: listItem.description
                     art: model.art
-                },
+                }
                 AddToPlaylist {
-                },
+                }
                 AddToQueue {
-                },
+                }
                 Remove {
                     enabled: isPlaylist
                     visible: enabled
-                    onTriggered: {
+                    onClicked: {
                         listview.focusIndex = index > 0 ? index - 1 : 0;
                         mainView.jobRunning = true
                         delayRemoveSelectedFromPlaylist.selectedIndices = [index]
@@ -216,7 +216,7 @@ MusicPage {
                         color = "red";
                     }
                 }
-            ]
+            }
 
             column: Column {
                 Label {
@@ -449,6 +449,7 @@ MusicPage {
         }
     }
 
+    /*!TODO
     // Page actions
     optionsMenuVisible: true
     optionsMenuContentItems: [
@@ -456,7 +457,7 @@ MusicPage {
             enabled: containerItem ? true : false
             text: songStackPage.isFavorite ?  qsTr("Remove from favorites") : qsTr("Add to favorites")
             font.pointSize: units.fs("medium")
-            onTriggered: {
+            onClicked: {
                 if (!songStackPage.isFavorite) {
                     if (addItemToFavorites(containerItem, pageTitle, songList.headerItem.firstSource))
                         songStackPage.isFavorite = true
@@ -477,7 +478,8 @@ MusicPage {
             }
         }
     ]
-
+*/
+    
     // check favorite on data loaded
     Connections {
         target: AllFavoritesModel
