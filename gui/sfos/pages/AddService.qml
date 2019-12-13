@@ -66,7 +66,7 @@ MusicPage {
                     Sonos.addServiceOAuth(model.type, serialNum, "", "", "");
                     MyServicesModel.asyncLoad();
                     acls.push({type: model.type, sn: serialNum, key: "", token: "", username: ""});
-                    settings.accounts = serializeACLS(acls);                    
+                    settings.accounts = serializeACLS(acls);
                }
                pageStack.pop();
             }

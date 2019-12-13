@@ -6,6 +6,7 @@ import NosonApp 1.0
 import NosonThumbnailer 1.0
 import "components"
 import "components/Dialog"
+import Nemo.Configuration 1.0
 
 ApplicationWindow {
     id: mainView
@@ -17,17 +18,19 @@ ApplicationWindow {
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
     allowedOrientations: defaultAllowedOrientations
 
-    Item {
+    ConfigurationGroup {
         id: settings
+        path: "/uk/co/piggz/noson"
+        synchronous: true
         
         property real scaleFactor: 1.0
         property real fontScaleFactor: 1.0
         property bool firstRun: true
-        property string zoneName: ""
+        property string zoneName
         property int tabIndex: -1
-        property string accounts: ""
-        property string lastfmKey: ""
-        property string deviceUrl: ""
+        property string accounts
+        property string lastfmKey
+        property string deviceUrl
     }
     
     StyleLight {
@@ -811,6 +814,10 @@ ApplicationWindow {
 
     DialogSelectSource {
         id: dialogSelectSource
+    }
+    
+    DialogSearchMusic {
+        id: dialogSearch
     }
 
     property alias musicToolbar: musicToolbar
