@@ -789,14 +789,6 @@ ApplicationWindow {
     }
 
 /*
-    DialogManageQueue {
-        id: dialogManageQueue
-    }
-
-    DialogSelectSource {
-        id: dialogSelectSource
-    }
-
     DialogSleepTimer {
         id: dialogSleepTimer
     }
@@ -813,6 +805,13 @@ ApplicationWindow {
         id: dialogNewPlaylist
     }
 
+    DialogManageQueue {
+        id: dialogManageQueue
+    }
+
+    DialogSelectSource {
+        id: dialogSelectSource
+    }
 
     property alias musicToolbar: musicToolbar
 

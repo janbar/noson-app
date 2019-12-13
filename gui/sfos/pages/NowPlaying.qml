@@ -110,14 +110,6 @@ MusicPage {
         asynchronous: true
     }
 
-    DialogManageQueue {
-        id: dialogManageQueue
-    }
-
-    DialogSelectSource {
-        id: dialogSelectSource
-    }
-
     // Page actions
 /*!TODO    optionsMenuVisible: true
     optionsMenuContentItems: [
