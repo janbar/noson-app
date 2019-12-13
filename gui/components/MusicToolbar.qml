@@ -295,15 +295,15 @@ Item {
 
                 function hint(position, duration) {
                     var val = 0;
-                    if (position && duration)
-                        val = (duration > 0 ? (position / duration) * playerControlsProgressBar.width : 0);
+                    if (duration > 0)
+                        val = playerControlsProgressBar.width * position / duration;
                     playerControlsProgressBarHint.width = val;
                 }
 
                 Connections {
                     target: player
                     onCurrentPositionChanged: playerControlsProgressBarHint.hint(position, duration)
-                    onStopped: playerControlsProgressBarHint.hint(0, player.trackDuration)
+                    onStopped: playerControlsProgressBarHint.hint(0, 0)
                 }
             }
         }

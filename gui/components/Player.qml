@@ -44,8 +44,8 @@ Item {
     property int currentProtocol: -1
     property int currentIndex: -1
     property int currentCount: 0
-    property bool isPlaying: false
     property string playbackState: ""
+    readonly property bool isPlaying: (playbackState === "PLAYING")
     property int trackPosition: 0
     property int trackDuration: 1
     property int volumeMaster: 0
@@ -373,7 +373,32 @@ Item {
 
     function handleZPPlaybackStateChanged() {
         player.playbackState = zone.handle.playbackState;
-        player.isPlaying = (player.playbackState === "PLAYING");
+        if (zone.handle.playbackState === "PLAYING" && player.currentIndex >= 0) {
+            // Starting playback of queued track the position can be resetted without any event
+            // from the SONOS device. This hack query to retrieve the real position after a short
+            // time (2sec) and for 3 times.
+            syncPosition.start();
+        } else if (zone.handle.playbackState === "STOPPED") {
+            stopped();
+        }
+    }
+
+    Timer {
+        id: syncPosition
+        interval: 2000
+        property int loops: 0
+        onTriggered: {
+            if (isPlaying) {
+                var npos = 1000 * zone.handle.currentTrackPosition();
+                player.trackPosition = npos > player.trackDuration ? 0 : npos;
+                customdebug("reset position to " + player.trackPosition);
+                loops = (loops > 0 ? loops - 1 : 2); // try 3 times
+                if (loops > 0)
+                    restart();
+            } else {
+                loops = 0; // reset loops for the next startup
+            }
+        }
     }
 
     Connections {
@@ -429,20 +454,12 @@ Item {
     Timer {
         id: playingTimer
         interval: 1000;
-        running: false;
+        running: (player.isPlaying && player.trackDuration > 1)
         repeat: true;
         onTriggered: {
             var npos = player.trackPosition + interval;
             player.trackPosition = npos > player.trackDuration ? 0 : npos;
             player.currentPositionChanged(player.trackPosition, player.trackDuration);
-        }
-    }
-
-    Connections {
-        target: player
-        onIsPlayingChanged: {
-            // start or stop the playing timer regarding the status
-            playingTimer.running = (player.isPlaying && player.trackDuration > 1 ? true : false);
         }
     }
 }

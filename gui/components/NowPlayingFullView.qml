@@ -279,10 +279,7 @@ Flickable {
 
                     progressSliderMusic.seeked = false;
                 }
-                onStopped: {
-                    fullviewPositionLabel.text = durationToString(0);
-                    fullviewDurationLabel.text = durationToString(0);
-                }
+                onStopped: fullviewPositionLabel.text = durationToString(0);
             }
         }
 
