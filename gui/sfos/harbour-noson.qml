@@ -749,11 +749,11 @@ ApplicationWindow {
 
     ListModel {
         id: tabs
-        ListElement { title: qsTr("My Index"); source: "Index.qml"; visible: true }
-        ListElement { title: qsTr("Favorites"); source: "Favorites.qml"; visible: false }
-        ListElement { title: qsTr("Playlists"); source: "Playlists.qml"; visible: true }
-        ListElement { title: qsTr("Alarm clock"); source: "Alarms.qml"; visible: true }
-        ListElement { title: qsTr("This Device"); source: "ThisDevice.qml"; visible: true }
+        ListElement { title: qsTr("My Index"); source: "pages/Index.qml"; visible: true }
+        ListElement { title: qsTr("Favorites"); source: "pages/Favorites.qml"; visible: false }
+        ListElement { title: qsTr("Playlists"); source: "pages/Playlists.qml"; visible: true }
+        ListElement { title: qsTr("Alarm clock"); source: "pages/Alarms.qml"; visible: true }
+        ListElement { title: qsTr("This Device"); source: "pages/ThisDevice.qml"; visible: true }
 
         function initialIndex() {
             return (settings.tabIndex === -1 ? 0
@@ -768,6 +768,10 @@ ApplicationWindow {
             if (nowPlayingPage.isListView) {
                 nowPlayingPage.isListView = false; // ensure full view
             }
+        }
+        
+        function pushPage(source) {
+                pageStack.push(source);
         }
     }
 
