@@ -113,7 +113,7 @@ MusicPage {
                     }
                 }
 
-                contentHeight: units.gu(8)
+                //contentHeight: units.gu(8)
 
                 column: Column {
                     spacing: units.gu(1)

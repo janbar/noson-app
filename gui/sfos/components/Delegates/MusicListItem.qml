@@ -79,7 +79,8 @@ ListItem {
             horizontalCenter: parent.horizontalCenter
             verticalCenter: parent.verticalCenter
         }
-        width: area.width; height: row.contentHeight + units.dp(4)
+        width: area.width; 
+        height: row.contentHeight + units.dp(4)
 
         color: area.color
         Behavior on color { ColorAnimation { duration: 100 } }
