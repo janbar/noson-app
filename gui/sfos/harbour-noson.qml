@@ -808,6 +808,10 @@ ApplicationWindow {
     DialogSoundSettings {
         id: dialogSoundSettings
     }
+    
+    DialogNewPlaylist {
+        id: dialogNewPlaylist
+    }
 
 
     property alias musicToolbar: musicToolbar
