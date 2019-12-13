@@ -19,7 +19,7 @@ import QtQuick 2.2
 import Sailfish.Silica 1.0
 import "../"
 
-MouseArea {
+ListItem {
     id: area
 
     property color color: styleMusic.view.backgroundColor
@@ -38,7 +38,6 @@ MouseArea {
         onActionPressed: actionPressed()
     }
 
-    property alias contentHeight: row.contentHeight
     property alias column: row.column
     property alias description: row.description
     property alias isFavorite: row.isFavorite
@@ -50,14 +49,14 @@ MouseArea {
     property alias action2Visible: row.action2Visible
     property alias action2IconSource: row.action2IconSource
     property alias menuVisible: row.menuVisible
-    property alias menu: row.menu
 
     anchors { left: parent.left; right: parent.right }
-    height: content.height
+    contentHeight: content.height
+    width: ListView.view.width
 
     /* Detect row swipe */
     property string direction: "None"
-    property real lastX: -1
+    property real lastX: -1    
     property real lastY: -1
 
     onPressed: {
@@ -70,7 +69,7 @@ MouseArea {
         if (Math.abs(diffX) > units.gu(15)) {
             swipe();
         } else {
-            click();
+            //click();
         }
     }
 
@@ -80,7 +79,7 @@ MouseArea {
             horizontalCenter: parent.horizontalCenter
             verticalCenter: parent.verticalCenter
         }
-        width: area.width; height: row.implicitHeight + units.dp(4)
+        width: area.width; height: row.contentHeight + units.dp(4)
 
         color: area.color
         Behavior on color { ColorAnimation { duration: 100 } }

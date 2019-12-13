@@ -19,7 +19,7 @@ import QtQuick 2.2
 import Sailfish.Silica 1.0
 import "ListItemActions"
 
-ListItem {
+Item {
     id: row
     
     property real contentHeight: units.gu(6)

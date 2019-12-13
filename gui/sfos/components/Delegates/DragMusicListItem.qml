@@ -19,7 +19,7 @@ import QtQuick 2.2
 import Sailfish.Silica 1.0
 import "../"
 
-MouseArea {
+ListItem {
     id: dragArea
     property ListView listview: null
     property color color: styleMusic.view.backgroundColor
@@ -40,7 +40,6 @@ MouseArea {
         onActionPressed: actionPressed()
     }
 
-    property alias contentHeight: row.contentHeight
     property alias column: row.column
     property alias description: row.description
     property alias isFavorite: row.isFavorite
@@ -52,12 +51,12 @@ MouseArea {
     property alias action2Visible: row.action2Visible
     property alias action2IconSource: row.action2IconSource
     property alias menuVisible: row.menuVisible
-    property alias menu: row.menu
+    ///property alias menu: row.menu
 
     property bool held: false
 
     anchors { left: parent.left; right: parent.right }
-    height: content.height
+    contentHeight: content.height
 
     drag.target: held ? content : undefined
     drag.axis: Drag.YAxis
@@ -95,7 +94,7 @@ MouseArea {
             horizontalCenter: parent.horizontalCenter
             verticalCenter: parent.verticalCenter
         }
-        width: dragArea.width; height: row.implicitHeight + units.dp(4)
+        width: dragArea.width; height: row.contentHeight + units.dp(4)
 
         color: held ? dragArea.highlightedColor : dragArea.color
         Behavior on color { ColorAnimation { duration: 100 } }

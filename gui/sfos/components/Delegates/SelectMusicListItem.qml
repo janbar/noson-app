@@ -19,7 +19,7 @@ import QtQuick 2.2
 import Sailfish.Silica 1.0
 import "../"
 
-MouseArea {
+ListItem {
     id: dragArea
     property ListView listview: null
     property color color: styleMusic.view.backgroundColor
@@ -84,8 +84,7 @@ MouseArea {
     property alias action2Visible: row.action2Visible
     property alias action2IconSource: row.action2IconSource
     property alias menuVisible: row.menuVisible
-    property alias menuItems: row.menuItems
-
+    
     property bool held: false
 
     anchors { left: parent.left; right: parent.right }
@@ -119,7 +118,7 @@ MouseArea {
                 if (Math.abs(diffX) > units.gu(10)) {
                     swipe();
                 } else {
-                    click();
+                    //click();
                 }
             }
         }

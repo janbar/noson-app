@@ -102,8 +102,8 @@ MusicPage {
                 actionVisible: model.isGroup
                 actionIconSource: model.isGroup ? "qrc:/images/edit-clear.svg" : ""
                 menuVisible: model.isGroup
-/*!TODO
-                menuItems: [
+
+                menu: [
                     MenuItem {
                         text: qsTr("Group")
                         font.pointSize: units.fs("medium")
@@ -113,7 +113,7 @@ MusicPage {
                         }
                     }
                 ]
-*/
+
                 contentHeight: units.gu(8)
 
                 column: Column {
