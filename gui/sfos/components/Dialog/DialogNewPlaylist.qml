@@ -23,7 +23,8 @@ DialogBase {
     //: this is a title of a dialog with a prompt to add a new playlist
     title: qsTr("New playlist")
 
-    acceptText: qsTr("Close")
+    acceptText: ""
+    cancelText: qsTr("Close")
 
     Label {
         id: newplaylistoutput
@@ -32,14 +33,13 @@ DialogBase {
         anchors.left: parent.left
         anchors.right: parent.right
         wrapMode: Text.WordWrap
-        font.pointSize: units.fs("x-small")
         font.weight: Font.Normal
     }
 
     TextField {
         id: playlistName
-        font.pointSize: units.fs("large")
         placeholderText: qsTr("Enter playlist name")
+        width: dialog.width
     }
 
     Button {
