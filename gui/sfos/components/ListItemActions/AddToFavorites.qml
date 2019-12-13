@@ -26,8 +26,6 @@ MenuItem {
     property string iconSource: isFavorite ? "qrc:/images/starred.svg" : "qrc/images/non-starred.svg"
 
     text: isFavorite ? qsTr("Remove from favorites") : qsTr("Add to favorites")
-    font.pointSize: units.fs("medium")
-    height: visible ? implicitHeight : 0
 
     Component.onCompleted: {
         isFavorite = enabled && (AllFavoritesModel.findFavorite(model.payload) !== "")

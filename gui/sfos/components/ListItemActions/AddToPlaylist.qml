@@ -23,9 +23,6 @@ import Sailfish.Silica 1.0
 
 MenuItem {
     text: qsTr("Add to playlist")
-    font.pointSize: units.fs("medium")
-    height: visible ? implicitHeight : 0
-
     onClicked: {
         // WARNING: Get the payload of model now to increment the reference count
         stackView.push("qrc:/ui/AddToPlaylist.qml",

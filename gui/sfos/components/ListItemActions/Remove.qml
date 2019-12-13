@@ -22,6 +22,4 @@ import Sailfish.Silica 1.0
 
 MenuItem {
     text: qsTr("Remove")
-    font.pointSize: units.fs("medium")
-    height: visible ? implicitHeight : 0
 }

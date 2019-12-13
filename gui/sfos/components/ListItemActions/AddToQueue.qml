@@ -23,8 +23,5 @@ import Sailfish.Silica 1.0
 
 MenuItem {
     text: qsTr("Add to queue")
-    font.pointSize: units.fs("medium")
-    height: visible ? implicitHeight : 0
-
     onClicked: addQueue({id: model.Id, payload: model.payload})
 }
