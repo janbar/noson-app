@@ -123,6 +123,7 @@ MusicPage {
 
     DialogNewPlaylist {
         id: dialogNewPlaylist
+        visible: false
     }
 
     onAddClicked: dialogNewPlaylist.open()
