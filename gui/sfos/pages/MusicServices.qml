@@ -53,15 +53,8 @@ MusicPage {
         sortCaseSensitivity: Qt.CaseInsensitive
     }
 
-    MusicListView {
-        id: serviceList
-        anchors.fill: parent
-        model: servicesModel
-        
-        PullDownMenu {
-            id: topMenu1
-
-            MenuItem { text: qsTr("About"); onClicked: dialogAbout.open() }
+    /*pageMenuItems: [
+            MenuItem { text: qsTr("About"); onClicked: dialogAbout.open() },   
             Repeater {
                 model: tabs
 
@@ -72,8 +65,12 @@ MusicPage {
                     }
                 }
             }
-
-        }
+    ]*/
+        
+    MusicListView {
+        id: serviceList
+        anchors.fill: parent
+        model: servicesModel
         
         delegate: MusicListItem {
             id: serviceItem
@@ -99,13 +96,13 @@ MusicPage {
             actionVisible: false
             menuVisible: (model.id === "SA_RINCON65031_0" ? false : true)
 
- //           menuItems: [
- //               Remove {
- //                   onTriggered: {
- //                       removeService(model.type, model.serialNum)
- //                   }
- //               }
- //           ]
+            menu: ContextMenu {
+                Remove {
+                    onClicked: {
+                        removeService(model.type, model.serialNum)
+                    }
+                }
+            }
 
             column: Column {
                 Label {
@@ -138,22 +135,6 @@ MusicPage {
 
         model: servicesModel
 
-        PullDownMenu {
-            id: topMenu2
-
-            MenuItem { text: qsTr("About"); onClicked: dialogAbout.open() }            
-            Repeater {
-                model: tabs
-
-                MenuItem {
-                    text: model.title
-                    onClicked: {
-                        pageStack.push(model.source)
-                    }
-                }
-            }
-        }
-        
         delegate: Card {
             id: serviceCard
             primaryText: model.title
@@ -184,6 +165,26 @@ MusicPage {
     onAddClicked: {
         pageStack.push("AddService.qml")
     }
+    
+    Component {
+        id: menuItemComp
+        MenuItem {
+            property string source: ""
+            onClicked: {
+                tabs.pushPage(source)
+            }
+        }
+    }
+
+    Component.onCompleted: {
+        console.debug("Populating menu")
+        for (var i=0; i< tabs.rowCount() ; i++){
+            var newMenuItem = menuItemComp.createObject(pageMenu, {"text" : tabs.get(i).title, "source" : tabs.get(i).source})
+            newMenuItem.onClicked.connect(tabs.pushPage)
+        }
+    }
+
+    
     
     
 }

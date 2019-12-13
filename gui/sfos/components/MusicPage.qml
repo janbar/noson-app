@@ -48,7 +48,10 @@ Page {
     property alias addToPlaylistVisible: addToPlaylist.visible
     property alias removeSelectedVisible: removeSelected.visible
     property alias footer: footerToolbar
-
+    property alias pageMenu: pageMenu._contentColumn
+    
+    default property alias _content: _contentItem.data
+    
     state: "default"
     states: [
         State {
@@ -86,11 +89,31 @@ Page {
     signal groupRoomClicked
     signal groupNoneRoomClicked
 
-    PageHeader { 
-        title:  pageTitle 
-        clip: true
-    }
+    SilicaFlickable {
+        anchors.fill: parent
+        contentHeight: column.height
+
+        PullDownMenu {
+            id: pageMenu
+        }
         
+        Column {
+            id: column
+            width: thisPage.width
+
+            PageHeader {
+                id: pageHeader
+                title: pageTitle
+            }
+            Item {
+                id: _contentItem
+                width: parent.width
+                height: thisPage.height - pageHeader.height
+            }
+            
+        }
+    }
+    
     //Bottom toolbar
     Item {
         id: footerToolbar
