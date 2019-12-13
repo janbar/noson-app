@@ -56,7 +56,7 @@ ApplicationWindow {
     }
 
     Material.accent: Material.Grey
-    Universal.accent: Universal.Steel
+    Universal.accent: "grey"
 
     //@FIXME: declare the property 'palette' that is missing in QtQuick.controls 2.2 (Qt-5.9)
     Item {
