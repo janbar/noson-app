@@ -319,6 +319,7 @@ MusicPage {
     Component.onCompleted: {
         mediaModel.init(Sonos, serviceItem.payload, false)
         mediaModel.asyncLoad()
+        dialogSearch.searchableModel = mediaModel
     }
 
     onGoUpClicked: {
@@ -356,11 +357,6 @@ MusicPage {
                 radioClicked(model);
             }
         }
-    }
-
-    DialogSearchMusic {
-        id: dialogSearch
-        searchableModel: mediaModel
     }
 
     onSearchClicked: dialogSearch.open();
