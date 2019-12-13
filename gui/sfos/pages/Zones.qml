@@ -103,16 +103,15 @@ MusicPage {
                 actionIconSource: model.isGroup ? "qrc:/images/edit-clear.svg" : ""
                 menuVisible: model.isGroup
 
-                menu: [
+                menu: ContextMenu {
                     MenuItem {
                         text: qsTr("Group")
-                        font.pointSize: units.fs("medium")
                         enabled: model.isGroup
-                        onTriggered: {
-                            stackView.push("qrc:/ui/Group.qml", {"zoneId": model.id})
+                        onClicked: {
+                            pageStack.push("qrc:/ui/Group.qml", {"zoneId": model.id})
                         }
                     }
-                ]
+                }
 
                 contentHeight: units.gu(8)
 
