@@ -75,7 +75,7 @@ Item {
         fillMode: Image.PreserveAspectCrop
         height: contentHeight
         width: height
-        source: imageSources !== undefined && imageSources.length ? imageSources[index].art : litem.noCover
+        source: imageSources !== undefined && imageSources.length ? imageSources[index].art : row.noCover
         sourceSize.height: 512
         sourceSize.width: 512
 

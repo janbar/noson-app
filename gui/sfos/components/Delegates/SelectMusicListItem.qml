@@ -72,7 +72,6 @@ ListItem {
         onDeselected: listview.deselectIndex(index)
     }
 
-    property alias contentHeight: row.contentHeight
     property alias column: row.column
     property alias description: row.description
     property alias isFavorite: row.isFavorite
@@ -88,7 +87,8 @@ ListItem {
     property bool held: false
 
     anchors { left: parent.left; right: parent.right }
-    height: content.height
+    contentHeight: content.height
+    width: ListView.view.width
 
     drag.target: held ? content : undefined
     drag.axis: Drag.YAxis
@@ -130,7 +130,8 @@ ListItem {
             horizontalCenter: parent.horizontalCenter
             verticalCenter: parent.verticalCenter
         }
-        width: dragArea.width; height: row.implicitHeight + units.dp(4)
+        width: dragArea.width; 
+        height: row.contentHeight + units.dp(4)
 
         color: held ? dragArea.highlightedColor : dragArea.color
         Behavior on color { ColorAnimation { duration: 100 } }
