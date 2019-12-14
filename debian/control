@@ -3,6 +3,7 @@ Section: misc
 Priority: extra
 Maintainer: janbar <jlbarriere68@gmail.com>
 Build-Depends: cmake,
+               git,
                debhelper (>= 9.0.0),
                qtbase5-dev (>= 5.9.1),
                qttools5-dev,
