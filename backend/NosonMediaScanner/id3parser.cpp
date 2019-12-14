@@ -112,7 +112,7 @@ bool ID3Parser::parse(MediaFile * file, MediaInfo * info, bool debug)
   id3info.artist_priority = 0;
   id3info.has_art = false;
 
-  int r;
+  int r = 0;
   long id3v2_offset;
   off_t sync_offset = 0;
 
@@ -177,11 +177,11 @@ bool ID3Parser::parse(MediaFile * file, MediaInfo * info, bool debug)
   info->trackNo = id3info.track_no > 0 ? id3info.track_no : 0;
   info->hasArt = id3info.has_art;
 
-  _parse_mpeg_header(fp, sync_offset, info, file->size);
+  r = _parse_mpeg_header(fp, sync_offset, info, file->size);
 
 done:
   fclose(fp);
-  return true;
+  return (r == 0);
 }
 
 static QByteArray _cs_conv_latin1(const char * data, unsigned size)
@@ -423,7 +423,7 @@ static int _get_id3v2_artist(unsigned int index, const char * frame_data, unsign
   const unsigned int index_max = sizeof(artist_priorities) / sizeof(*artist_priorities);
 
   if (index >= index_max)
-    return 1;
+    return -1;
 
   if (artist_priorities[index] > info->artist_priority)
   {
