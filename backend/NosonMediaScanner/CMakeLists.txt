@@ -7,6 +7,10 @@ set(CMAKE_AUTOMOC ON)
 
 option(QT_STATICPLUGIN "Build a static plugin" OFF)
 
+option(DISABLE_ID3PARSER "Disable ID3 parser" OFF)
+option(DISABLE_MP4PARSER "Disable MP4 parser" OFF)
+option(DISABLE_OGGPARSER "Disable OGG parser" OFF)
+
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Qml REQUIRED)
@@ -17,8 +21,14 @@ set(CMAKE_CXX_STANDARD 11)
 
 ###############################################################################
 # configure
+if(DISABLE_ID3PARSER)
+  add_definitions("-DDISABLE_ID3PARSER")
+endif()
 if(DISABLE_MP4PARSER)
   add_definitions("-DDISABLE_MP4PARSER")
+endif()
+if(DISABLE_OGGPARSER)
+  add_definitions("-DDISABLE_OGGPARSER")
 endif()
 
 if(QT_STATICPLUGIN)

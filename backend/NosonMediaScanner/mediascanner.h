@@ -25,10 +25,17 @@
 #include <QList>
 
 /*
- * Enable scanning for non-streamable MP4 medias
+ * By default all supported media are processed
+ * FLAC-Vorbis parser cannot be disabled
  */
-#ifndef DISABLE_MP4PARSER
+#ifndef DISABLE_ID3PARSER /* MP3 & AAC */
+#define ENABLE_ID3PARSER
+#endif
+#ifndef DISABLE_MP4PARSER /* M4A */
 #define ENABLE_MP4PARSER
+#endif
+#ifndef DISABLE_OGGPARSER /* OGG-Vorbis */
+#define ENABLE_OGGPARSER
 #endif
 
 #define MEDIASCANNER_MAX_THREAD 2

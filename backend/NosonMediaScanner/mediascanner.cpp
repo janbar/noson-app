@@ -38,8 +38,12 @@ MediaScanner::MediaScanner(QObject *parent)
 , m_debug(false)
 {
   m_engine->addParser(new FLACParser);
+#ifdef ENABLE_ID3PARSER
   m_engine->addParser(new ID3Parser);
+#endif
+#ifdef ENABLE_OGGPARSER
   m_engine->addParser(new OGGParser);
+#endif
 #ifdef ENABLE_MP4PARSER
   m_engine->addParser(new M4AParser);
 #endif
