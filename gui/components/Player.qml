@@ -300,9 +300,9 @@ Item {
         case 2:  // x-rincon-mp3radio
         case 5:  // x-sonos-htastream
         case 14: // http-get
-        case 17: // http
             return false;
         default:
+            // the noson streamer uses the protocol http(17)
             return isPlayingQueued();
         }
     }
@@ -376,7 +376,7 @@ Item {
         if (zone.handle.playbackState === "PLAYING" && player.currentIndex >= 0) {
             // Starting playback of queued track the position can be resetted without any event
             // from the SONOS device. This hack query to retrieve the real position after a short
-            // time (2sec) and for 3 times.
+            // time (3sec).
             syncPosition.start();
         } else if (zone.handle.playbackState === "STOPPED") {
             stopped();
@@ -385,18 +385,12 @@ Item {
 
     Timer {
         id: syncPosition
-        interval: 2000
-        property int loops: 0
+        interval: 3000
         onTriggered: {
             if (isPlaying) {
                 var npos = 1000 * zone.handle.currentTrackPosition();
                 player.trackPosition = npos > player.trackDuration ? 0 : npos;
-                customdebug("reset position to " + player.trackPosition);
-                loops = (loops > 0 ? loops - 1 : 2); // try 3 times
-                if (loops > 0)
-                    restart();
-            } else {
-                loops = 0; // reset loops for the next startup
+                customdebug("sync position to " + player.trackPosition);
             }
         }
     }
