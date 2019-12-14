@@ -77,23 +77,23 @@ bool M4AParser::parse(MediaFile * file, MediaInfo * info, bool debug)
       else if (memcmp(buf, "M4B ", 4) == 0)
         info->codec = "mp4b";
       else
-        isValid = false;
+      {
+        qWarning("%s: ERROR: bad magic header in file %s", __FUNCTION__, path.c_str());
+        fclose(fp);
+        return false;
+      }
     }
     else if (chunk == 0x6d6f6f76) // moov
     {
       if (debug)
         qDebug("%s: processing chunk moov", __FUNCTION__);
-      parse_moov(&size, fp, info);
+      if (parse_moov(&size, fp, info) < 0)
+        break; // the parse failed
       isLast = true;
       // do sanity check before exit
       if (!info->duration)
         isValid = false;
     }
-    //else if (chunk == 0x6d646174) // mdat
-    //{
-    //  if (debug)
-    //    qDebug("%s: processing chunk mdat", __FUNCTION__);
-    //}
 
     // first chunk MUST be ftyp, else return an error
     if (!isValid || (size && fseek(fp, size, SEEK_CUR) != 0))
@@ -103,12 +103,9 @@ bool M4AParser::parse(MediaFile * file, MediaInfo * info, bool debug)
   }
   fclose(fp);
   if (debug)
-      qDebug("%s: info:%s complete:%s", __FUNCTION__, isValid ? "true" : "false", isLast ? "true" : "false");
+    qDebug("%s: info:%s complete:%s", __FUNCTION__, isValid ? "true" : "false", isLast ? "true" : "false");
   // parsing is completed if all blocks have been parsed and info is valid
-  if (isValid && isLast)
-    return true;
-  qWarning("%s: file %s failed", __FUNCTION__, path.c_str());
-  return false;
+  return (isValid && isLast);
 }
 
 int M4AParser::nextChild(unsigned char * buf, uint64_t * remaining, FILE * fp, unsigned * child, uint64_t * childSize)
@@ -306,5 +303,6 @@ int M4AParser::parse_moov(uint64_t * remaining, FILE * fp, MediaInfo * info)
       return -1;
     *remaining -= size;
   }
-  return 1;
+  // check the end of chunk else the parse failed
+  return (*remaining == 0 ? 1 : -1);
 }
