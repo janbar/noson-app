@@ -7,7 +7,7 @@ message(STATUS "Found Qt5 version ${Qt5Core_VERSION}")
 
 if(NOT BUILD_DEPENDENCIES)
     if(NOT BUILD_LIBNOSON)
-        find_package(noson 2.1 REQUIRED)
+        find_package(noson 2.2 REQUIRED)
     endif()
 endif()
 if(NOT noson_FOUND)
@@ -22,8 +22,6 @@ set(QML_IMPORT_PATH ${QML_IMPORT_DIRECTORY} CACHE STRING "QML Import path" FORCE
 
 add_subdirectory(NosonApp)
 add_subdirectory(NosonThumbnailer)
-# Disable non-streamable medias
-set(DISABLE_MP4PARSER ON)
 add_subdirectory(NosonMediaScanner)
 
 # build the cli tool for desktop only
