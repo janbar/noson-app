@@ -49,7 +49,7 @@ before_script:
   - source /opt/${QTENV}/bin/${QTENV}-env.sh
   - cmake --version
   - mkdir build && cd build
-  - cmake .. -Wdev -DCMAKE_CXX_COMPILER=$(which $CXX) -DCMAKE_C_COMPILER=$(which $CC) -DCMAKE_INSTALL_PREFIX=$HOME -DBUILD_DEPENDENCIES=ON
+  - cmake .. -Wdev -DCMAKE_CXX_COMPILER=$(which $CXX) -DCMAKE_C_COMPILER=$(which $CC) -DCMAKE_INSTALL_PREFIX=$HOME
 
 script:
   - cmake --build . --target install
