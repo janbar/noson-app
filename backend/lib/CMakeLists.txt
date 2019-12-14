@@ -1,10 +1,11 @@
 cmake_minimum_required(VERSION 3.1.0)
 
-option(BUILD_DEPENDENCIES "Build dependencies from sources" off)
+option(BUILD_DEPENDENCIES "Build dependencies from sources" OFF)
+option(LIBNOSON_GIT_MASTER "Build the development branch of libnoson" OFF)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-set (CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if(MSVC)
   set(MSVC_DYNAMIC_RUNTIME ON)
@@ -20,10 +21,15 @@ if(NOT BUILD_DEPENDENCIES)
     find_package(ZLIB QUIET)
 endif()
 if(NOT ZLIB_FOUND)
+    download_project(PROJ zlib
+        URL "${CMAKE_CURRENT_SOURCE_DIR}/zlib-1.2.11.tar.gz"
+        URL_HASH MD5=9360ea14677db33dfdc2cfde1914918e
+        PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+        UPDATE_DISCONNECTED ON)
     set(BUILD_SHARED_LIBS OFF)
     add_subdirectory(
-        ${CMAKE_CURRENT_SOURCE_DIR}/zlib
-        ${CMAKE_CURRENT_BINARY_DIR}/zlib
+        ${CMAKE_CURRENT_BINARY_DIR}/zlib-src
+        ${CMAKE_CURRENT_BINARY_DIR}/zlib-build
         EXCLUDE_FROM_ALL
     )
     set(ZLIB_LIBRARIES zlib)
@@ -44,7 +50,7 @@ if(NOT OPENSSL_FOUND)
             GIT_TAG 1.0.2p-20191208
             GIT_SHALLOW 1
             PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-            UPDATE_DISCONNECTED OFF)
+            UPDATE_DISCONNECTED ON)
     else()
         set(OPENSSL_DL_ABI "1.1")
         download_project(PROJ "openssl-${OPENSSL_DL_ABI}"
@@ -52,7 +58,7 @@ if(NOT OPENSSL_FOUND)
             GIT_TAG 1.1.1d-20191209
             GIT_SHALLOW 1
             PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-            UPDATE_DISCONNECTED OFF)
+            UPDATE_DISCONNECTED ON)
     endif()
     if(ANDROID OR MSVC)
         set(BUILD_SHARED_LIBS ON)
@@ -83,7 +89,7 @@ if(NOT FLAC_FOUND OR NOT FLACXX_FOUND)
         GIT_TAG 1.3.2-20191201
         GIT_SHALLOW 1
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-        UPDATE_DISCONNECTED OFF)
+        UPDATE_DISCONNECTED ON)
     if(ANDROID OR MSVC)
         set(BUILD_SHARED_LIBS ON)
     else()
@@ -105,12 +111,20 @@ if(NOT FLAC_FOUND OR NOT FLACXX_FOUND)
 endif()
 
 # Provides dependency noson
-download_project(PROJ noson
-    GIT_REPOSITORY https://github.com/janbar/noson.git
-    GIT_TAG 2.2.0
-    GIT_SHALLOW 1
-    PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-    UPDATE_DISCONNECTED OFF)
+if(NOT LIBNOSON_GIT_MASTER)
+    download_project(PROJ noson
+        URL "${CMAKE_CURRENT_SOURCE_DIR}/noson-2.2.0.tar.gz"
+        URL_HASH MD5=a1eceb0a2953b246dd18d8ad628f42d4
+        PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+        UPDATE_DISCONNECTED ON)
+else()
+    download_project(PROJ noson
+        GIT_REPOSITORY https://github.com/janbar/noson.git
+        GIT_TAG master
+        GIT_SHALLOW 1
+        PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+        UPDATE_DISCONNECTED OFF)
+endif()
 set(BUILD_SHARED_LIBS OFF)
 add_subdirectory(
     ${CMAKE_CURRENT_BINARY_DIR}/noson-src/noson
