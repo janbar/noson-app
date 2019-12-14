@@ -76,10 +76,6 @@ bool M4AParser::parse(MediaFile * file, MediaInfo * info, bool debug)
         info->codec = "mp4a";
       else if (memcmp(buf, "M4B ", 4) == 0)
         info->codec = "mp4b";
-      else if (memcmp(buf, "mp41", 4) == 0)
-        info->codec = "mp41";
-      else if (memcmp(buf, "mp42", 4) == 0)
-        info->codec = "mp42";
       else
         isValid = false;
     }
@@ -290,12 +286,11 @@ int M4AParser::parse_mvhd(uint64_t * remaining, FILE * fp, MediaInfo * info)
 
 int M4AParser::parse_moov(uint64_t * remaining, FILE * fp, MediaInfo * info)
 {
-  bool exit = false;
   unsigned char buf[M4A_HEADER_SIZE];
   unsigned child;
   uint64_t size = 0;
   int r;
-  while (!exit && (r = nextChild(buf, remaining, fp, &child, &size)) > 0)
+  while ((r = nextChild(buf, remaining, fp, &child, &size)) > 0)
   {
     uint64_t rest = size;
     if (child == 0x6d766864) // mvhd
