@@ -1,4 +1,10 @@
-noson-app (4.0) UNRELEASED; urgency=low
+noson-app (4.1) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 4.1.0
+  * libnoson 2.2
+  * Allow to stream local media M4A
+  * GUI Performance fixes
 
   [ janbar ]
   * Release 4.0.1
