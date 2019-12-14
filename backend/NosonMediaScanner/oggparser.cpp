@@ -79,7 +79,7 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
     uint32_t segment_table = 0;
     if (fread(lacing, 1, number_page_segments, fp) != number_page_segments)
     {
-      qWarning("%s: file read error %s", __FUNCTION__, path.c_str());
+      qDebug("%s: file read error %s", __FUNCTION__, path.c_str());
       break;
     }
 
@@ -94,7 +94,7 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
       resize_packet(&packet, packet.datalen + segment_table);
       if (!fill_packet(&packet,segment_table, fp))
       {
-        qWarning("%s: file read error %s", __FUNCTION__, path.c_str());
+        qDebug("%s: file read error %s", __FUNCTION__, path.c_str());
         break;
       }
     }
@@ -113,7 +113,7 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
       resize_packet(&packet, OGG_PACKET_RSVSIZE);
       if (!fill_packet(&packet, segment_table, fp))
       {
-        qWarning("%s: file read error %s", __FUNCTION__, path.c_str());
+        qDebug("%s: file read error %s", __FUNCTION__, path.c_str());
         break;
       }
       continue;
@@ -125,7 +125,7 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
       resize_packet(&packet, packet.datalen + segment_table);
       if (!fill_packet(&packet,segment_table, fp))
       {
-        qWarning("%s: file read error %s", __FUNCTION__, path.c_str());
+        qDebug("%s: file read error %s", __FUNCTION__, path.c_str());
         break;
       }
       continue;
@@ -137,7 +137,7 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
 
     if (packet.datalen == 0)
     {
-      qWarning("%s: ERROR: missing BOS packet in file %s", __FUNCTION__, path.c_str());
+      qDebug("%s: ERROR: missing BOS packet in file %s", __FUNCTION__, path.c_str());
       break;
     }
 
@@ -182,7 +182,7 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
     packet.datalen = 0;
     if (!fill_packet(&packet, segment_table, fp))
     {
-      qWarning("%s: ERROR: reading file %s", __FUNCTION__, path.c_str());
+      qDebug("%s: ERROR: reading file %s", __FUNCTION__, path.c_str());
       break;
     }
   }
@@ -193,10 +193,7 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
   if (debug)
       qDebug("%s: info:%s complete:%s", __FUNCTION__, isInfoValid ? "true" : "false", isLast ? "true" : "false");
   // parsing is completed if all blocks have been parsed and info is valid
-  if (isInfoValid && isLast)
-    return true;
-  qWarning("%s: file %s failed", __FUNCTION__, path.c_str());
-  return false;
+  return (isInfoValid && isLast);
 }
 
 bool OGGParser::resize_packet(packet_t * packet, uint32_t size)
