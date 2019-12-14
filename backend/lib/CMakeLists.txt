@@ -107,7 +107,7 @@ endif()
 # Provides dependency noson
 download_project(PROJ noson
     GIT_REPOSITORY https://github.com/janbar/noson.git
-    GIT_TAG 3207f7fdbbece2e43c095edcda2c468e3c97f53c
+    GIT_TAG 2.2.0
     GIT_SHALLOW 1
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}
     UPDATE_DISCONNECTED OFF)
