@@ -48,5 +48,4 @@ MusicPage {
         newMenuItem = menuItemComp.createObject(pageMenu, {"text" : qsTr("Select Source") })
         newMenuItem.onClicked.connect(dialogSelectSource.open)
     }
-
 }
