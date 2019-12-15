@@ -79,7 +79,8 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
     uint32_t segment_table = 0;
     if (fread(lacing, 1, number_page_segments, fp) != number_page_segments)
     {
-      qDebug("%s: file read error %s", __FUNCTION__, path.c_str());
+      if (debug)
+        qDebug("%s: file read error %s", __FUNCTION__, path.c_str());
       break;
     }
 
@@ -94,7 +95,8 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
       resize_packet(&packet, packet.datalen + segment_table);
       if (!fill_packet(&packet,segment_table, fp))
       {
-        qDebug("%s: file read error %s", __FUNCTION__, path.c_str());
+        if (debug)
+          qDebug("%s: file read error %s", __FUNCTION__, path.c_str());
         break;
       }
     }
@@ -113,7 +115,8 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
       resize_packet(&packet, OGG_PACKET_RSVSIZE);
       if (!fill_packet(&packet, segment_table, fp))
       {
-        qDebug("%s: file read error %s", __FUNCTION__, path.c_str());
+        if (debug)
+          qDebug("%s: file read error %s", __FUNCTION__, path.c_str());
         break;
       }
       continue;
@@ -125,7 +128,8 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
       resize_packet(&packet, packet.datalen + segment_table);
       if (!fill_packet(&packet,segment_table, fp))
       {
-        qDebug("%s: file read error %s", __FUNCTION__, path.c_str());
+        if (debug)
+          qDebug("%s: file read error %s", __FUNCTION__, path.c_str());
         break;
       }
       continue;
@@ -137,7 +141,8 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
 
     if (packet.datalen == 0)
     {
-      qDebug("%s: ERROR: missing BOS packet in file %s", __FUNCTION__, path.c_str());
+      if (debug)
+        qDebug("%s: ERROR: missing BOS packet in file %s", __FUNCTION__, path.c_str());
       break;
     }
 
@@ -182,7 +187,8 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
     packet.datalen = 0;
     if (!fill_packet(&packet, segment_table, fp))
     {
-      qDebug("%s: ERROR: reading file %s", __FUNCTION__, path.c_str());
+      if (debug)
+        qDebug("%s: ERROR: reading file %s", __FUNCTION__, path.c_str());
       break;
     }
   }

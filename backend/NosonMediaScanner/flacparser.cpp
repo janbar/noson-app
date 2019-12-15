@@ -177,8 +177,5 @@ bool FLACParser::parse(MediaFile * file, MediaInfo * info, bool debug)
   if (debug)
       qDebug("%s: info:%s complete:%s", __FUNCTION__, isInfoValid ? "true" : "false", isLast ? "true" : "false");
   // parsing is completed if all blocks have been parsed and info is valid
-  if (isInfoValid && isLast)
-    return true;
-  qWarning("%s: file %s failed", __FUNCTION__, path.c_str());
-  return false;
+  return (isInfoValid && isLast);
 }
