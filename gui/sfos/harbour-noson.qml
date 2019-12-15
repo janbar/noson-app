@@ -781,21 +781,20 @@ ApplicationWindow {
     //==============================================================
     // Dialogues
 
-/*
+
     DialogApplicationSettings {
         id: dialogApplicationSettings
     }
-*/
+
 
     DialogAbout {
         id: dialogAbout
     }
 
-/*
     DialogSleepTimer {
         id: dialogSleepTimer
     }
-*/
+
     DialogSongInfo {
         id: dialogSongInfo
     }
