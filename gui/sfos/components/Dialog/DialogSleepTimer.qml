@@ -104,8 +104,8 @@ DialogBase {
         currentIndex: 0
 
         onClicked: {
-            if (index >= 0) {
-                var sec = model.get(index).duration;
+            if (currentIndex >= 0) {
+                var sec = model.get(currentIndex).duration;
                 if (player.configureSleepTimer(sec))
                     remainingTime = sec;
                 else
