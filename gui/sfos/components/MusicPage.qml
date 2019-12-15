@@ -112,6 +112,35 @@ Page {
             }
             
         }
+        
+        //Noson options menu
+        PushUpMenu {
+            id: optionsMenu
+            MenuItem {
+                    text: qsTr("Standby Timer")
+                    onClicked: {
+                        dialogSleepTimer.open();
+                    }
+            }
+            MenuItem {
+                    text: qsTr("Sonos Settings")
+                    onClicked: {
+                        dialogSoundSettings.open();
+                    }
+            }
+            MenuItem {
+                    text: qsTr("General Settings")
+                    onClicked: {
+                        dialogApplicationSettings.open();
+                    }
+            }
+            MenuItem {
+                    text: qsTr("About")
+                    onClicked: {
+                        dialogAbout.open();
+                    }
+            }
+        }
     }
     
     //Bottom toolbar
@@ -204,29 +233,6 @@ Page {
                         label.text: qsTr("Add")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: addClicked()
-                    }
-                }
-
-                Item {
-                    id: optionsMenu
-                    anchors.right: parent.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    width: units.gu(4)
-                    height: parent.height
-                    visible: false
-
-                    NosonIcon {
-                        width: Theme.iconSizeMedium
-                        height: width
-                        anchors.centerIn: parent
-                        source: "qrc:/images/contextual-menu.svg"
-
-                        onClicked: optionsMenuPopup.open()
-                        enabled: parent.visible
-
-                        ContextMenu {
-                            id: optionsMenuPopup
-                        }
                     }
                 }
             }
