@@ -30,7 +30,7 @@
 
 using namespace mediascanner;
 
-static const char * _exts[] = { "M4A", "M4B", "MP4" };
+static const char * _exts[] = { "M4A", "M4B" };
 static int _exts_len = sizeof(_exts) / sizeof(const char*);
 
 bool M4AParser::match(const QFileInfo& fileInfo)
