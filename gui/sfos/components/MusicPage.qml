@@ -101,6 +101,7 @@ Page {
         Column {
             id: column
             width: thisPage.width
+            height: thisPage.height
 
             PageHeader {
                 id: pageHeader
@@ -109,11 +110,319 @@ Page {
             Item {
                 id: _contentItem
                 width: parent.width
-                height: thisPage.height - pageHeader.height
+                height: parent.height - pageHeader.height - footerToolbar.height - (musicToolbar.visible ? musicToolbar.height : 0)
             }
             
+            //Bottom toolbar
+            Item {
+                id: footerToolbar
+                height: units.gu(7.25)
+                width: parent.width
+                
+                Rectangle {
+                    id: defaultToolBar
+                    anchors.fill: parent
+                    color: styleMusic.playerControls.backgroundColor
+                    opacity: thisPage.state === "default" ? 1.0 : 0.0
+                    enabled: opacity > 0
+
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.topMargin: units.gu(1)
+                        anchors.leftMargin: units.gu(1)
+                        anchors.rightMargin: units.gu(1)
+                        height: units.gu(5)
+                        color: "transparent"
+
+                        Row {
+                            spacing: units.gu(1)
+                            anchors.fill: parent
+
+                            NosonIcon {
+                                source: "qrc:/images/media-playlist.svg"
+                                height: units.gu(3)
+                                label.text: player.queueInfo
+                                label.font.pointSize: units.fs("x-small")
+
+                                    onClicked: {
+                                    var page = mainView.pageStack.currentPage;
+                                    if (page.objectName === "queuePage")
+                                        pageStack.pop();
+                                    else if (page.pageTitle === qsTr("Now playing"))
+                                        page.isListView = !page.isListView;
+                                    else if (!mainView.wideAspect)
+                                        pageStack.push("qrc:/sfos/pages/QueueView.qml");
+                                    }
+                            }
+
+                            NosonIcon {
+                                source: "qrc:/images/location.svg"
+                                height: units.gu(3)
+                                label.text: currentZoneTag
+                                label.font.pointSize: units.fs("x-small")
+
+                                onClicked: pageStack.push("qrc:/sfos/pages/Zones.qml")
+                            }
+
+                            NosonIcon {
+                                id: viewType
+                                visible: false
+                                source: isListView ? "qrc:/images/view-grid-symbolic.svg" : "qrc:/images/view-list-symbolic.svg"
+                                height: units.gu(3)
+                                onClicked: {
+                                    isListView = !isListView
+                                }
+                            }
+
+                            NosonIcon {
+                                id: find
+                                visible: false
+                                source: "qrc:/images/find.svg"
+                                height: units.gu(3)
+                                onClicked: searchClicked()
+                            }
+
+                            NosonIcon {
+                                id: selection
+                                visible: false
+                                source: "qrc:/images/select.svg"
+                                height: units.gu(3)
+                                onClicked: thisPage.state = "selection"
+                            }
+
+                            NosonIcon {
+                                id: add
+                                visible: false
+                                source: "qrc:/images/add.svg"
+                                height: units.gu(3)
+                                label.text: qsTr("Add")
+                                label.font.pointSize: units.fs("x-small")
+                                onClicked: addClicked()
+                            }
+                        }
+                    }
+                }
+
+                Rectangle {
+                    id: selectionToolBar
+                    anchors.fill: parent
+                    color: styleMusic.playerControls.backgroundColor
+
+                    opacity: thisPage.state === "selection" ? 1.0 : 0.0
+                    enabled: opacity > 0
+                    Behavior on opacity {
+                        NumberAnimation { duration: 100 }
+                    }
+
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.topMargin: units.gu(1)
+                        anchors.leftMargin: units.gu(1)
+                        anchors.rightMargin: units.gu(1)
+                        height: units.gu(5)
+                        color: "transparent"
+
+                        Row {
+                            spacing: units.gu(0.5)
+
+                            NosonIcon {
+                                id: closeSelection
+                                visible: true
+                                source: "qrc:/images/close.svg"
+                                height: units.gu(3)
+                                label.text: qsTr("Close")
+                                label.font.pointSize: units.fs("x-small")
+                                onClicked: {
+                                    thisPage.state = "default"
+                                    closeSelectionClicked()
+                                }
+                            }
+
+                            NosonIcon {
+                                id: selectAll
+                                visible: true
+                                source: "qrc:/images/select.svg"
+                                height: units.gu(3)
+                                label.text: qsTr("All")
+                                label.font.pointSize: units.fs("x-small")
+                                onClicked: selectAllClicked()
+                            }
+
+                            NosonIcon {
+                                id: selectNone
+                                visible: true
+                                source: "qrc:/images/select-undefined.svg"
+                                height: units.gu(3)
+                                label.text: qsTr("Clear")
+                                label.font.pointSize: units.fs("x-small")
+                                onClicked: selectNoneClicked()
+                            }
+
+                            NosonIcon {
+                                id: addToQueue
+                                visible: true
+                                source: "qrc:/images/add.svg"
+                                height: units.gu(3)
+                                onClicked: addToQueueClicked()
+                            }
+
+                            NosonIcon {
+                                id: addToPlaylist
+                                visible: true
+                                source: "qrc:/images/add-to-playlist.svg"
+                                height: units.gu(3)
+                                onClicked: addToPlaylistClicked()
+                            }
+                        }
+
+                        NosonIcon {
+                            id: removeSelected
+                            anchors.right: parent.right
+                            visible: true
+                            source: "qrc:/images/delete.svg"
+                            height: units.gu(3)
+                            onClicked: removeSelectedClicked()
+                        }
+                    }
+                }
+
+                Rectangle {
+                    id: zoneToolBar
+                    anchors.fill: parent
+                    color: styleMusic.playerControls.backgroundColor
+
+                    opacity: thisPage.state === "zone" ? 1.0 : 0.0
+                    enabled: opacity > 0
+                    Behavior on opacity {
+                        NumberAnimation { duration: 100 }
+                    }
+
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.topMargin: units.gu(1)
+                        anchors.leftMargin: units.gu(1)
+                        anchors.rightMargin: units.gu(1)
+                        height: units.gu(3)
+                        color: "transparent"
+
+                        Row {
+                            spacing: units.gu(1)
+
+                            NosonIcon {
+                                source: "qrc:/images/media-playlist.svg"
+                                height: units.gu(3)
+                                label.text: player.queueInfo
+                                label.font.pointSize: units.fs("x-small")
+
+                                onClicked: {
+                                    pageStack.pop();
+                                    var page = mainView.pageStack.currentPage;
+                                    if (!mainView.wideAspect && page.objectName !== "queuePage")
+                                        pageStack.push("qrc:/sfos/pages/QueueView.qml");
+                                }
+                            }
+
+                            NosonIcon {
+                                id: reload
+                                visible: true
+                                source: "qrc:/images/reload.svg"
+                                height: units.gu(3)
+                                onClicked: reloadClicked()
+                            }
+
+                            NosonIcon {
+                                id: groupAll
+                                visible: true
+                                source: "qrc:/images/select.svg"
+                                height: units.gu(3)
+                                label.text: qsTr("All")
+                                label.font.pointSize: units.fs("x-small")
+                                onClicked: groupAllZoneClicked()
+                            }
+
+                            NosonIcon {
+                                id: group
+                                visible: true
+                                source: "qrc:/images/group.svg"
+                                height: units.gu(3)
+                                label.text: qsTr("Done")
+                                label.font.pointSize: units.fs("x-small")
+                                onClicked: groupZoneClicked()
+                            }
+                        }
+                    }
+                }
+
+                Rectangle {
+                    id: groupToolBar
+                    anchors.fill: parent
+                    color: styleMusic.playerControls.backgroundColor
+
+                    opacity: thisPage.state === "group" ? 1.0 : 0.0
+                    enabled: opacity > 0
+                    Behavior on opacity {
+                        NumberAnimation { duration: 100 }
+                    }
+
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.topMargin: units.gu(1)
+                        anchors.leftMargin: units.gu(1)
+                        anchors.rightMargin: units.gu(1)
+                        height: units.gu(3)
+                        color: "transparent"
+
+                        Row {
+                            spacing: units.gu(1)
+
+                            NosonIcon {
+                                source: "qrc:/images/location.svg"
+                                height: units.gu(3)
+                                label.text: currentZoneTag
+                                label.font.pointSize: units.fs("x-small")
+                            }
+
+                            NosonIcon {
+                                id: groupAllRoom
+                                visible: true
+                                source: "qrc:/images/select-undefined.svg"
+                                height: units.gu(3)
+                                label.text: qsTr("None")
+                                label.font.pointSize: units.fs("x-small")
+                                onClicked: groupNoneRoomClicked()
+                            }
+
+                            NosonIcon {
+                                id: groupRoom
+                                visible: true
+                                source: "qrc:/images/group.svg"
+                                height: units.gu(3)
+                                label.text: qsTr("Done")
+                                label.font.pointSize: units.fs("x-small")
+                                onClicked: groupRoomClicked()
+                            }
+                        }
+                    }
+                }
+            }
+            
+            MusicToolbar {
+                id: musicToolbar
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
+                visible: !noZone && (pageStack.currentPage && (pageStack.currentPage.showToolbar || pageStack.currentPage.showToolbar === undefined))
+            }  
         }
-        
         //Noson options menu
         PushUpMenu {
             id: optionsMenu
@@ -143,321 +452,7 @@ Page {
             }
         }
     
-    
-    //Bottom toolbar
-    Item {
-        id: footerToolbar
-        height: units.gu(7.25)
-        width: parent.width
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: (musicToolbar.visible ? musicToolbar.height : 0)
-        z: 10
-        
-        Rectangle {
-            id: defaultToolBar
-            anchors.fill: parent
-            color: styleMusic.playerControls.backgroundColor
-            opacity: thisPage.state === "default" ? 1.0 : 0.0
-            enabled: opacity > 0
 
-            Rectangle {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.topMargin: units.gu(1)
-                anchors.leftMargin: units.gu(1)
-                anchors.rightMargin: units.gu(1)
-                height: units.gu(5)
-                color: "transparent"
-
-                 Row {
-                    spacing: units.gu(1)
-                    anchors.fill: parent
-
-                    NosonIcon {
-                        source: "qrc:/images/media-playlist.svg"
-                        height: units.gu(3)
-                        label.text: player.queueInfo
-                        label.font.pointSize: units.fs("x-small")
-
-                            onClicked: {
-                            var page = mainView.pageStack.currentPage;
-                            if (page.objectName === "queuePage")
-                                pageStack.pop();
-                            else if (page.pageTitle === qsTr("Now playing"))
-                                page.isListView = !page.isListView;
-                            else if (!mainView.wideAspect)
-                                pageStack.push("qrc:/sfos/pages/QueueView.qml");
-                            }
-                    }
-
-                    NosonIcon {
-                        source: "qrc:/images/location.svg"
-                        height: units.gu(3)
-                        label.text: currentZoneTag
-                        label.font.pointSize: units.fs("x-small")
-
-                        onClicked: pageStack.push("qrc:/sfos/pages/Zones.qml")
-                    }
-
-                    NosonIcon {
-                        id: viewType
-                        visible: false
-                        source: isListView ? "qrc:/images/view-grid-symbolic.svg" : "qrc:/images/view-list-symbolic.svg"
-                        height: units.gu(3)
-                        onClicked: {
-                            isListView = !isListView
-                        }
-                    }
-
-                    NosonIcon {
-                        id: find
-                        visible: false
-                        source: "qrc:/images/find.svg"
-                        height: units.gu(3)
-                        onClicked: searchClicked()
-                    }
-
-                    NosonIcon {
-                        id: selection
-                        visible: false
-                        source: "qrc:/images/select.svg"
-                        height: units.gu(3)
-                        onClicked: thisPage.state = "selection"
-                    }
-
-                    NosonIcon {
-                        id: add
-                        visible: false
-                        source: "qrc:/images/add.svg"
-                        height: units.gu(3)
-                        label.text: qsTr("Add")
-                        label.font.pointSize: units.fs("x-small")
-                        onClicked: addClicked()
-                    }
-                }
-            }
-        }
-
-        Rectangle {
-            id: selectionToolBar
-            anchors.fill: parent
-            color: styleMusic.playerControls.backgroundColor
-
-            opacity: thisPage.state === "selection" ? 1.0 : 0.0
-            enabled: opacity > 0
-            Behavior on opacity {
-                NumberAnimation { duration: 100 }
-            }
-
-            Rectangle {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.topMargin: units.gu(1)
-                anchors.leftMargin: units.gu(1)
-                anchors.rightMargin: units.gu(1)
-                height: units.gu(5)
-                color: "transparent"
-
-                Row {
-                    spacing: units.gu(0.5)
-
-                    NosonIcon {
-                        id: closeSelection
-                        visible: true
-                        source: "qrc:/images/close.svg"
-                        height: units.gu(3)
-                        label.text: qsTr("Close")
-                        label.font.pointSize: units.fs("x-small")
-                        onClicked: {
-                            thisPage.state = "default"
-                            closeSelectionClicked()
-                        }
-                    }
-
-                    NosonIcon {
-                        id: selectAll
-                        visible: true
-                        source: "qrc:/images/select.svg"
-                        height: units.gu(3)
-                        label.text: qsTr("All")
-                        label.font.pointSize: units.fs("x-small")
-                        onClicked: selectAllClicked()
-                    }
-
-                    NosonIcon {
-                        id: selectNone
-                        visible: true
-                        source: "qrc:/images/select-undefined.svg"
-                        height: units.gu(3)
-                        label.text: qsTr("Clear")
-                        label.font.pointSize: units.fs("x-small")
-                        onClicked: selectNoneClicked()
-                    }
-
-                    NosonIcon {
-                        id: addToQueue
-                        visible: true
-                        source: "qrc:/images/add.svg"
-                        height: units.gu(3)
-                        onClicked: addToQueueClicked()
-                    }
-
-                    NosonIcon {
-                        id: addToPlaylist
-                        visible: true
-                        source: "qrc:/images/add-to-playlist.svg"
-                        height: units.gu(3)
-                        onClicked: addToPlaylistClicked()
-                    }
-                }
-
-                NosonIcon {
-                    id: removeSelected
-                    anchors.right: parent.right
-                    visible: true
-                    source: "qrc:/images/delete.svg"
-                    height: units.gu(3)
-                    onClicked: removeSelectedClicked()
-                }
-            }
-        }
-
-        Rectangle {
-            id: zoneToolBar
-            anchors.fill: parent
-            color: styleMusic.playerControls.backgroundColor
-
-            opacity: thisPage.state === "zone" ? 1.0 : 0.0
-            enabled: opacity > 0
-            Behavior on opacity {
-                NumberAnimation { duration: 100 }
-            }
-
-            Rectangle {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.topMargin: units.gu(1)
-                anchors.leftMargin: units.gu(1)
-                anchors.rightMargin: units.gu(1)
-                height: units.gu(3)
-                color: "transparent"
-
-                Row {
-                    spacing: units.gu(1)
-
-                    NosonIcon {
-                        source: "qrc:/images/media-playlist.svg"
-                        height: units.gu(3)
-                        label.text: player.queueInfo
-                        label.font.pointSize: units.fs("x-small")
-
-                        onClicked: {
-                            pageStack.pop();
-                            var page = mainView.pageStack.currentPage;
-                            if (!mainView.wideAspect && page.objectName !== "queuePage")
-                                pageStack.push("qrc:/sfos/pages/QueueView.qml");
-                        }
-                    }
-
-                    NosonIcon {
-                        id: reload
-                        visible: true
-                        source: "qrc:/images/reload.svg"
-                        height: units.gu(3)
-                        onClicked: reloadClicked()
-                    }
-
-                    NosonIcon {
-                        id: groupAll
-                        visible: true
-                        source: "qrc:/images/select.svg"
-                        height: units.gu(3)
-                        label.text: qsTr("All")
-                        label.font.pointSize: units.fs("x-small")
-                        onClicked: groupAllZoneClicked()
-                    }
-
-                    NosonIcon {
-                        id: group
-                        visible: true
-                        source: "qrc:/images/group.svg"
-                        height: units.gu(3)
-                        label.text: qsTr("Done")
-                        label.font.pointSize: units.fs("x-small")
-                        onClicked: groupZoneClicked()
-                    }
-                }
-            }
-        }
-
-        Rectangle {
-            id: groupToolBar
-            anchors.fill: parent
-            color: styleMusic.playerControls.backgroundColor
-
-            opacity: thisPage.state === "group" ? 1.0 : 0.0
-            enabled: opacity > 0
-            Behavior on opacity {
-                NumberAnimation { duration: 100 }
-            }
-
-            Rectangle {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.topMargin: units.gu(1)
-                anchors.leftMargin: units.gu(1)
-                anchors.rightMargin: units.gu(1)
-                height: units.gu(3)
-                color: "transparent"
-
-                Row {
-                    spacing: units.gu(1)
-
-                    NosonIcon {
-                        source: "qrc:/images/location.svg"
-                        height: units.gu(3)
-                        label.text: currentZoneTag
-                        label.font.pointSize: units.fs("x-small")
-                    }
-
-                    NosonIcon {
-                        id: groupAllRoom
-                        visible: true
-                        source: "qrc:/images/select-undefined.svg"
-                        height: units.gu(3)
-                        label.text: qsTr("None")
-                        label.font.pointSize: units.fs("x-small")
-                        onClicked: groupNoneRoomClicked()
-                    }
-
-                    NosonIcon {
-                        id: groupRoom
-                        visible: true
-                        source: "qrc:/images/group.svg"
-                        height: units.gu(3)
-                        label.text: qsTr("Done")
-                        label.font.pointSize: units.fs("x-small")
-                        onClicked: groupRoomClicked()
-                    }
-                }
-            }
-        }
-    }
-    
-    MusicToolbar {
-        id: musicToolbar
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: parent.bottom
-            topMargin: visible ? -height : 0
-        }
-        visible: !noZone && (pageStack.currentPage && (pageStack.currentPage.showToolbar || pageStack.currentPage.showToolbar === undefined))
-    }
     }
 
 }
