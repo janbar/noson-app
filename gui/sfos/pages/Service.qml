@@ -195,8 +195,7 @@ MusicPage {
             actionIconSource: "qrc:/images/media-preview-start.svg"
             menuVisible: model.canPlay || model.canQueue
 
-            /*!TODO
-            menuItems: [
+            menu: ContextMenu {
                 AddToFavorites {
                     isFavorite: listItem.isFavorite
                     enabled: model.canPlay
@@ -204,21 +203,19 @@ MusicPage {
                     description: listItem.description
                     art: model.art
 
-                    onTriggered: {
+                    onDelayedClick: {
                         servicePage.taintedView = true;
                     }
-                },
-                //@FIXME add to playlist service item doesn't work
+                }
                 AddToPlaylist {
                     enabled: model.canQueue
                     visible: enabled
-                },
+                }
                 AddToQueue {
                     enabled: model.canQueue
                     visible: enabled
                 }
-            ]
-            */
+            }
 
             coverSize: units.gu(5)
 
@@ -329,7 +326,6 @@ MusicPage {
     Component.onCompleted: {
         mediaModel.init(Sonos, serviceItem.payload, false)
         mediaModel.asyncLoad()
-        dialogSearch.searchableModel = mediaModel
     }
 
     onGoUpClicked: {
