@@ -90,12 +90,11 @@ DialogBase {
         textRole: "text"
         model: selectorModel
         Layout.fillWidth: true
-        font.pointSize: units.fs("large")
         currentIndex: 0
         Component.onCompleted: {
             popup.font.pointSize = font.pointSize;
         }
-        onActivated: {
+        onClicked: {
             if (index >= 0) {
                 var sec = model.get(index).duration;
                 if (player.configureSleepTimer(sec))
