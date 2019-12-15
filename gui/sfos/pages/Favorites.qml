@@ -118,14 +118,14 @@ MusicPage {
                 Label {
                     id: favoriteTitle
                     color: styleMusic.view.primaryColor
-                    font.pointSize: units.fs("medium")
+                    font.pixelSize: units.fx("medium")
                     text: model.title
                 }
 
                 Label {
                     id: favoriteDescription
                     color: styleMusic.view.secondaryColor
-                    font.pointSize: units.fs("x-small")
+                    font.pixelSize: units.fx("x-small")
                     text: listItem.description
                 }
             }

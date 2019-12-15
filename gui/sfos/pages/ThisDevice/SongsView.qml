@@ -171,14 +171,14 @@ MusicPage {
                 Label {
                     id: trackTitle
                     color: styleMusic.view.primaryColor
-                    font.pointSize: units.fs("medium")
+                    font.pixelSize: units.fx("medium")
                     text: model.title
                 }
 
                 Label {
                     id: trackArtist
                     color: styleMusic.view.secondaryColor
-                    font.pointSize: units.fs("x-small")
+                    font.pixelSize: units.fx("x-small")
                     text: model.author
                     visible: !isAlbum
                 }
@@ -186,7 +186,7 @@ MusicPage {
                 Label {
                     id: trackInfo
                     color: styleMusic.view.secondaryColor
-                    font.pointSize: units.fs(isAlbum ? "small" : "x-small")
+                    font.pixelSize: units.fx(isAlbum ? "small" : "x-small")
                     text: model.codec + " " + (model.bitRate > 999999 ? model.sampleRate : model.bitRate > 0 ? Math.round(model.bitRate/1000) + "k" : "")
                 }
             }
@@ -234,7 +234,7 @@ MusicPage {
                     }
                     color: styleMusic.view.foregroundColor
                     elide: Text.ElideRight
-                    font.pointSize: units.fs("x-large")
+                    font.pixelSize: units.fx("x-large")
                     maximumLineCount: 1
                     text: line2
                     wrapMode: Text.NoWrap
@@ -248,7 +248,7 @@ MusicPage {
                     }
                     color: styleMusic.view.secondaryColor
                     elide: Text.ElideRight
-                    font.pointSize: units.fs("small")
+                    font.pixelSize: units.fx("small")
                     maximumLineCount: 1
                     text: line1
                     visible: line1 !== ""
@@ -263,7 +263,7 @@ MusicPage {
                     }
                     color: styleMusic.view.secondaryColor
                     elide: Text.ElideRight
-                    font.pointSize: units.fs("small")
+                    font.pixelSize: units.fx("small")
                     maximumLineCount: 1
                     text: isAlbum
                           ? (year !== "" ? year + " | " : "") + qsTr("%n song(s)", "", songsModel.count)

@@ -69,7 +69,7 @@ Item {
                 textRole: "name"
                 model: []
                 width: parent.width - roomLabel.width - parent.spacing - units.gu(0.5)
-                font.pointSize: units.fs("medium")
+                font.pixelSize: units.fx("medium")
                 currentIndex: -1
                 Component.onCompleted: {
                     popup.font.pointSize = font.pointSize;
@@ -86,7 +86,7 @@ Item {
                     text: qsTr("Start time")
                     color: styleMusic.dialog.labelColor
                     elide: Text.ElideRight
-                    font.pointSize: units.fs("medium")
+                    font.pixelSize: units.fx("medium")
                     horizontalAlignment: Text.AlignHCenter
                     opacity: 1.0
                 }
@@ -101,7 +101,7 @@ Item {
                     Label {
                         text: ":"
                         color: styleMusic.dialog.labelColor
-                        font.pointSize: units.fs("medium")
+                        font.pixelSize: units.fx("medium")
                         height: startHour.height
                         verticalAlignment: Text.AlignVCenter
                     }
@@ -120,7 +120,7 @@ Item {
                     text: qsTr("Duration")
                     color: styleMusic.dialog.labelColor
                     elide: Text.ElideRight
-                    font.pointSize: units.fs("medium")
+                    font.pixelSize: units.fx("medium")
                     horizontalAlignment: Text.AlignHCenter
                     opacity: 1.0
                 }
@@ -135,7 +135,7 @@ Item {
                     Label {
                         text: ":"
                         color: styleMusic.dialog.labelColor
-                        font.pointSize: units.fs("medium")
+                        font.pixelSize: units.fx("medium")
                         height: durationHours.height
                         verticalAlignment: Text.AlignVCenter
                     }
@@ -183,7 +183,7 @@ Item {
                 Label {
                     text: "  " + qsTr("Mon")
                     color: styleMusic.dialog.labelColor
-                    font.pointSize: units.fs("small")
+                    font.pixelSize: units.fx("small")
                     width: parent.width
                     horizontalAlignment: Text.AlignHCenter
                 }
@@ -197,7 +197,7 @@ Item {
                 Label {
                     text: "  " + qsTr("Tue")
                     color: styleMusic.dialog.labelColor
-                    font.pointSize: units.fs("small")
+                    font.pixelSize: units.fx("small")
                     width: parent.width
                     horizontalAlignment: Text.AlignHCenter
                 }
@@ -211,7 +211,7 @@ Item {
                 Label {
                     text: "  " + qsTr("Wed")
                     color: styleMusic.dialog.labelColor
-                    font.pointSize: units.fs("small")
+                    font.pixelSize: units.fx("small")
                     width: parent.width
                     horizontalAlignment: Text.AlignHCenter
                 }
@@ -225,7 +225,7 @@ Item {
                 Label {
                     text: "  " + qsTr("Thu")
                     color: styleMusic.dialog.labelColor
-                    font.pointSize: units.fs("small")
+                    font.pixelSize: units.fx("small")
                     width: parent.width
                     horizontalAlignment: Text.AlignHCenter
                 }
@@ -239,7 +239,7 @@ Item {
                 Label {
                     text: "  " + qsTr("Fri")
                     color: styleMusic.dialog.labelColor
-                    font.pointSize: units.fs("small")
+                    font.pixelSize: units.fx("small")
                     width: parent.width
                     horizontalAlignment: Text.AlignHCenter
                 }
@@ -253,7 +253,7 @@ Item {
                 Label {
                     text: "  " + qsTr("Sat")
                     color: styleMusic.dialog.labelColor
-                    font.pointSize: units.fs("small")
+                    font.pixelSize: units.fx("small")
                     width: parent.width
                     horizontalAlignment: Text.AlignHCenter
                 }
@@ -267,7 +267,7 @@ Item {
                 Label {
                     text: "  " + qsTr("Sun")
                     color: styleMusic.dialog.labelColor
-                    font.pointSize: units.fs("small")
+                    font.pixelSize: units.fx("small")
                     width: parent.width
                     horizontalAlignment: Text.AlignHCenter
                 }
@@ -312,7 +312,7 @@ Item {
                 textRole: "title"
                 model: programs
                 width: parent.width - programLabel.width - parent.spacing - units.gu(0.5)
-                font.pointSize: units.fs("medium")
+                font.pixelSize: units.fx("medium")
                 currentIndex: 0
                 Component.onCompleted: {
                     popup.font.pointSize = font.pointSize;

@@ -98,14 +98,14 @@ Item {
                 Label {
                     id: trackTitle
                     color: styleMusic.view.primaryColor
-                    font.pointSize: units.fs("medium")
+                    font.pixelSize: units.fx("medium")
                     text: model.title
                 }
 
                 Label {
                     id: trackArtist
                     color: styleMusic.view.secondaryColor
-                    font.pointSize: units.fs("x-small")
+                    font.pixelSize: units.fx("x-small")
                     text: model.author
                 }
 

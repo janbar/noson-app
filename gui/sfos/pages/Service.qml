@@ -226,7 +226,7 @@ MusicPage {
                 Label {
                     id: mediaTitle
                     color: styleMusic.view.primaryColor
-                    font.pointSize: units.fs("medium")
+                    font.pixelSize: units.fx("medium")
                     objectName: "itemtitle"
                     text: model.title
                 }
@@ -234,7 +234,7 @@ MusicPage {
                 Label {
                     id: mediaDescription
                     color: styleMusic.view.secondaryColor
-                    font.pointSize: units.fs("x-small")
+                    font.pixelSize: units.fx("x-small")
                     text: listItem.description
                     visible: text !== ""
                 }

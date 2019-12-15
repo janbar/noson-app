@@ -224,14 +224,14 @@ MusicPage {
                 Label {
                     id: trackTitle
                     color: styleMusic.view.primaryColor
-                    font.pointSize: units.fs("medium")
+                    font.pixelSize: units.fx("medium")
                     text: model.title
                 }
 
                 Label {
                     id: trackArtist
                     color: styleMusic.view.secondaryColor
-                    font.pointSize: units.fs("x-small")
+                    font.pixelSize: units.fx("x-small")
                     text: model.author
                 }
             }
@@ -284,7 +284,7 @@ MusicPage {
                     }
                     color: styleMusic.view.foregroundColor
                     elide: Text.ElideRight
-                    font.pointSize: units.fs("x-large")
+                    font.pixelSize: units.fx("x-large")
                     maximumLineCount: 1
                     text: line2
                     wrapMode: Text.NoWrap
@@ -298,7 +298,7 @@ MusicPage {
                     }
                     color: styleMusic.view.secondaryColor
                     elide: Text.ElideRight
-                    font.pointSize: units.fs("small")
+                    font.pixelSize: units.fx("small")
                     maximumLineCount: 1
                     text: line1
                     visible: line1 !== ""
@@ -313,7 +313,7 @@ MusicPage {
                     }
                     color: styleMusic.view.secondaryColor
                     elide: Text.ElideRight
-                    font.pointSize: units.fs("small")
+                    font.pixelSize: units.fx("small")
                     maximumLineCount: 1
                     text: isAlbum
                           ? (year !== "" ? year + " | " : "") + qsTr("%n song(s)", "", songsModel.totalCount)
@@ -460,7 +460,7 @@ MusicPage {
         MenuItem {
             enabled: containerItem ? true : false
             text: songStackPage.isFavorite ?  qsTr("Remove from favorites") : qsTr("Add to favorites")
-            font.pointSize: units.fs("medium")
+            font.pixelSize: units.fx("medium")
             onClicked: {
                 if (!songStackPage.isFavorite) {
                     if (addItemToFavorites(containerItem, pageTitle, songList.headerItem.firstSource))
@@ -475,7 +475,7 @@ MusicPage {
             visible: songStackPage.isPlaylist
             height: (visible ? implicitHeight : 0)
             text: qsTr("Delete")
-            font.pointSize: units.fs("medium")
+            font.pixelSize: units.fx("medium")
             onTriggered: {
                 if (isPlaylist)
                     dialogRemovePlaylist.open()

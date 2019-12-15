@@ -32,7 +32,7 @@ DialogBase {
         text: qsTr("Whenever you make changes to your music library, such as adding and removing tracks, or adjusting album artwork, you will need to update the music index on Sonos before these changes will show up in the Sonos controller.")
         wrapMode: Text.WordWrap
         color: styleMusic.dialog.foregroundColor
-        font.pointSize: units.fs("medium")
+        font.pixelSize: units.fx("medium")
         font.weight: Font.Normal
     }
 

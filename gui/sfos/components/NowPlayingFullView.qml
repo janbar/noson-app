@@ -113,7 +113,7 @@ SilicaFlickable {
                 }
                 color: styleMusic.nowPlaying.primaryColor
                 elide: Text.ElideRight
-                font.pointSize: units.fs("large")
+                font.pixelSize: units.fx("large")
                 font.weight: Font.Bold
                 maximumLineCount: 2
                 objectName: "playercontroltitle"
@@ -132,7 +132,7 @@ SilicaFlickable {
                 }
                 color: styleMusic.nowPlaying.primaryColor
                 elide: Text.ElideRight
-                font.pointSize: units.fs("small")
+                font.pixelSize: units.fx("small")
                 font.weight: Font.Bold
                 text: player.currentMetaArtist
             }
@@ -201,7 +201,7 @@ SilicaFlickable {
                 leftMargin: units.gu(1)
             }
             color: styleMusic.nowPlaying.secondaryColor
-            font.pointSize: units.fs("small")
+            font.pixelSize: units.fx("small")
             height: parent.height
             horizontalAlignment: Text.AlignLeft
             text: durationToString(player.trackPosition)
@@ -287,7 +287,7 @@ SilicaFlickable {
                 rightMargin: units.gu(1)
             }
             color: styleMusic.nowPlaying.secondaryColor
-            font.pointSize: units.fs("small")
+            font.pixelSize: units.fx("small")
             height: parent.height
             horizontalAlignment: Text.AlignRight
             text: durationToString(player.trackDuration)

@@ -43,12 +43,12 @@ MusicPage {
             visible: (queue.listview.count > 0)
             height: (visible ? implicitHeight : 0)
             text: qsTr("Manage queue")
-            font.pointSize: units.fs("medium")
+            font.pixelSize: units.fx("medium")
             onTriggered: dialogManageQueue.open()
         },
         MenuItem {
             text: qsTr("Select source")
-            font.pointSize: units.fs("medium")
+            font.pixelSize: units.fx("medium")
             onTriggered: dialogSelectSource.open()
         }
     ]

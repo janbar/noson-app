@@ -45,6 +45,7 @@ Item {
         anchors {
             fill: parent
         }
+
         state: player.currentMetaSource === "" ? "disabled" : "enabled"
         states: [
             State {
@@ -92,13 +93,13 @@ Item {
                 }
                 color: styleMusic.playerControls.labelColor
                 text: player.currentCount === 0 ? qsTr("No music in queue") : qsTr("Tap to play music")
-                font.pointSize: units.fs("large")
+                font.pixelSize: units.fx("large")
                 wrapMode: Text.WordWrap
                 maximumLineCount: 2
             }
 
             /* Play/Pause button */
-            Icon {
+            NosonIcon {
                 id: disabledPlayerControlsPlayButton
                 anchors {
                     right: parent.right
@@ -113,7 +114,7 @@ Item {
             }
 
             /* Select input */
-            Icon {
+            NosonIcon {
                 id: disabledPlayerControlsSelectButton
                 anchors {
                     right: parent.right
@@ -194,7 +195,7 @@ Item {
                     }
                     color: styleMusic.view.primaryColor
                     elide: Text.ElideRight
-                    font.pointSize: units.fs("medium")
+                    font.pixelSize: units.fx("medium")
                     font.weight: Font.DemiBold
                     text: player.currentMetaTitle
                 }
@@ -208,13 +209,13 @@ Item {
                     }
                     color: styleMusic.view.secondaryColor
                     elide: Text.ElideRight
-                    font.pointSize: units.fs("small")
+                    font.pixelSize: units.fx("small")
                     text: player.currentMetaArtist
                 }
             }
 
             /* Play/Pause button */
-            Icon {
+            NosonIcon {
                 id: playerControlsPlayButton
                 anchors {
                     right: parent.right
@@ -237,9 +238,11 @@ Item {
                 enabled: true
                 onClicked: {
                     if (mainView.nowPlayingPage !== null) {
+/*!TODO
                         while (stackView.depth > 1 && stackView.currentItem !== mainView.nowPlayingPage) {
                             stackView.pop();
                         }
+*/
                     } else {
                         tabs.pushNowPlaying();
                     }

@@ -36,7 +36,7 @@ DialogBase {
         anchors.right: parent.right
         wrapMode: Text.WordWrap
         color: "red"
-        font.pointSize: units.fs("x-small")
+        font.pixelSize: units.fx("x-small")
         font.weight: Font.Normal
         visible: false // should only be visible when an error is made.
     }
@@ -44,7 +44,7 @@ DialogBase {
     TextField {
         id: url
         text: inputStreamUrl
-        font.pointSize: units.fs("medium")
+        font.pixelSize: units.fx("medium")
         placeholderText: qsTr("Enter stream URL")
     }
 
@@ -85,7 +85,7 @@ DialogBase {
         text: qsTr("Select the audio input.")
         wrapMode: Text.WordWrap
         color: styleMusic.dialog.labelColor
-        font.pointSize: units.fs("small")
+        font.pixelSize: units.fx("small")
         font.weight: Font.Normal
     }
 
@@ -109,7 +109,7 @@ DialogBase {
         textRole: "text"
         model: selectorModel
         Layout.fillWidth: true
-        font.pointSize: units.fs("medium")
+        font.pixelSize: units.fx("medium")
         currentIndex: 0
         Component.onCompleted: {
             popup.font.pointSize = font.pointSize;

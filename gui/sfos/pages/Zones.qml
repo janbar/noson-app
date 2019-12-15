@@ -188,14 +188,14 @@ MusicPage {
                     Label {
                         id: zoneName
                         color: styleMusic.view.primaryColor
-                        font.pointSize: units.fs("large")
+                        font.pixelSize: units.fx("large")
                         text: model.isGroup ? model.shortName : model.name
                     }
 
                     Label {
                         id: fullName
                         color: styleMusic.view.secondaryColor
-                        font.pointSize: units.fs("small")
+                        font.pixelSize: units.fx("small")
                         text: model.isGroup ? model.name : playbackState
                         visible: text !== ""
                     }
@@ -207,7 +207,7 @@ MusicPage {
                         Label {
                             id: sourceTitle
                             color: styleMusic.view.primaryColor
-                            font.pointSize: units.fs("small")
+                            font.pixelSize: units.fx("small")
                             text: currentMetaTitle
                             visible: currentMetaTitle !== ""
                         }
@@ -215,7 +215,7 @@ MusicPage {
                         Label {
                             id: separatorDuration
                             color: styleMusic.view.primaryColor
-                            font.pointSize: units.fs("small")
+                            font.pixelSize: units.fx("small")
                             text: " | "
                             visible: currentDuration !== ""
                         }
@@ -223,7 +223,7 @@ MusicPage {
                         Label {
                             id: sourceDuration
                             color: styleMusic.view.primaryColor
-                            font.pointSize: units.fs("small")
+                            font.pixelSize: units.fx("small")
                             text: currentDuration
                             visible: currentDuration !== ""
                         }

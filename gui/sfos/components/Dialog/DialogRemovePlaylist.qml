@@ -33,7 +33,7 @@ DialogBase {
         text: qsTr("Permanently delete playlist ?")
         wrapMode: Label.WordWrap
         color: styleMusic.dialog.labelColor
-        font.pointSize: units.fs("large")
+        font.pixelSize: units.fx("large")
         font.bold: true
     }
 
@@ -43,7 +43,7 @@ DialogBase {
         text: qsTr("This cannot be undone.")
         wrapMode: Text.WordWrap
         color: styleMusic.dialog.foregroundColor
-        font.pointSize: units.fs("medium")
+        font.pixelSize: units.fx("medium")
         font.weight: Font.Normal
     }
 }

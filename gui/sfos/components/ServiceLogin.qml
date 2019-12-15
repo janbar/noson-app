@@ -34,7 +34,7 @@ Rectangle {
         Label {
             color: styleMusic.view.labelColor
             elide: Text.ElideRight
-            font.pointSize: units.fs("large")
+            font.pixelSize: units.fx("large")
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 2
             text: qsTr("Registering the service")
@@ -51,7 +51,7 @@ Rectangle {
             text: qsTr("This will require to authenticate against the music service again, as credentials cannot be retrieved from Sonos device.")
             width: parent.width
             wrapMode: Text.WordWrap
-            font.pointSize: units.fs("medium")
+            font.pixelSize: units.fx("medium")
         }
 
         Label {
@@ -63,7 +63,7 @@ Rectangle {
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 1
             font.weight: Font.Normal
-            font.pointSize: units.fs("medium")
+            font.pixelSize: units.fx("medium")
         }
 
         TextField {
@@ -75,7 +75,7 @@ Rectangle {
             focus: true
             inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhEmailCharactersOnly
             placeholderText: qsTr("User name")
-            font.pointSize: units.fs("medium")
+            font.pixelSize: units.fx("medium")
             EnterKey.type: Qt.EnterKeyDone
         }
 
@@ -89,7 +89,7 @@ Rectangle {
             inputMethodHints: Qt.ImhHiddenText
             placeholderText: qsTr("Password")
             echoMode: TextInput.Password
-            font.pointSize: units.fs("medium")
+            font.pixelSize: units.fx("medium")
             EnterKey.type: Qt.EnterKeyDone
         }
 

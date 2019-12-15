@@ -90,7 +90,7 @@ DialogBase {
         textRole: "text"
         model: selectorModel
         Layout.fillWidth: true
-        font.pointSize: units.fs("medium")
+        font.pixelSize: units.fx("medium")
         currentIndex: 0
         Component.onCompleted: {
             popup.font.pointSize = font.pointSize;

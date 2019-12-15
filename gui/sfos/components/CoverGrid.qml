@@ -81,7 +81,7 @@ Item {
     //    id: showProgress
     //    anchors.centerIn: parent
     //    width: parent.width
-    //    font.pointSize: units.fs("x-large")
+    //    font.pixelSize: units.fx("x-large")
     //    horizontalAlignment: Text.AlignHCenter
     //    text: "" + Math.round(100 * progress) + "%"
     //    color: "black"

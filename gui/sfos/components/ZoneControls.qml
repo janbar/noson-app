@@ -40,7 +40,7 @@ Item {
             Label {
                 color: styleMusic.view.labelColor
                 elide: Text.ElideRight
-                font.pointSize: units.fs("x-large")
+                font.pixelSize: units.fx("x-large")
                 horizontalAlignment: Text.AlignHCenter
                 maximumLineCount: 2
                 text: qsTr("Under construction")
@@ -51,7 +51,7 @@ Item {
             Label {
                 color: styleMusic.view.foregroundColor
                 elide: Text.ElideRight
-                font.pointSize: units.fs("large")
+                font.pixelSize: units.fx("large")
                 horizontalAlignment: Text.AlignLeft
                 maximumLineCount: 8
                 text: qsTr("This feature will be added in a next version. Please rate the App.")

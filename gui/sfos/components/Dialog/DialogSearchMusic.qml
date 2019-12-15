@@ -43,7 +43,7 @@ DialogBase {
             right: parent.right
         }
         placeholderText: qsTr("Type search")
-        font.pointSize: units.fs("medium")
+        font.pixelSize: units.fx("medium")
     }
     
     ListModel {

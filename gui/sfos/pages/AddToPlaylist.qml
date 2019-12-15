@@ -108,7 +108,7 @@ MusicPage {
                         source: "qrc:/images/add.svg"
                         height: units.gu(5)
                         label.text: qsTr("Add")
-                        label.font.pointSize: units.fs("x-small")
+                        label.font.pixelSize: units.fx("x-small")
                         onClicked: addClicked()
                     }
                 }

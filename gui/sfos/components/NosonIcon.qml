@@ -5,8 +5,10 @@ IconButton {
     id: icn
     
     property string source: "qrc:/images/delete.svg"
+    property alias color: label.color
     property alias label: label
     property int preferredWidth: (label.width > height ? label.width : height)
+
     height: units.gu(3)
     width: preferredWidth
     icon.source: source
@@ -21,5 +23,6 @@ IconButton {
             top: parent.bottom
             horizontalCenter: parent.horizontalCenter
         }
+        font.pixelSize: units.fx("x-small")
     }
 }
