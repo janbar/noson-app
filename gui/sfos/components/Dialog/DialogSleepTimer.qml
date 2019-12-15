@@ -87,10 +87,20 @@ DialogBase {
 
     ComboBox {
         id: selector
-        textRole: "text"
-        model: selectorModel
+        menu: ContextMenu {
+            MenuItem {text: qsTr("Disabled")}
+            MenuItem {text: qsTr("15 minutes")}
+            MenuItem {text: qsTr("30 minutes")}
+            MenuItem {text: qsTr("45 minutes")}
+            MenuItem {text: qsTr("1 hour")}
+            MenuItem {text: qsTr("2 hours")}
+            MenuItem {text: qsTr("3 hours")}
+            MenuItem {text: qsTr("4 hours")}
+            MenuItem {text: qsTr("5 hours")}
+            MenuItem {text: qsTr("6 hours")}
+        }
+
         Layout.fillWidth: true
-        font.pixelSize: units.fx("medium")
         currentIndex: 0
         Component.onCompleted: {
             popup.font.pointSize = font.pointSize;
