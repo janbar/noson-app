@@ -31,14 +31,12 @@ Item {
     property alias header: queueList.header
     property alias headerItem: queueList.headerItem
     property alias backgroundColor: bg.color
-    property alias backgroundOpacity: bg.opacity
     clip: true
 
     Rectangle {
         id: bg
         anchors.fill: parent
         color: "transparent"
-        opacity: 1.0
     }
 
     Component {
@@ -94,19 +92,20 @@ Item {
  //               }
             
 
+            coverSize: units.gu(5)
+
             column: Column {
                 Label {
                     id: trackTitle
                     color: styleMusic.view.primaryColor
                     font.pointSize: units.fs("medium")
-                    font.bold: true
                     text: model.title
                 }
 
                 Label {
                     id: trackArtist
                     color: styleMusic.view.secondaryColor
-                    font.pointSize: units.fs("small")
+                    font.pointSize: units.fs("x-small")
                     text: model.author
                 }
 

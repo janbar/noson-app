@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016, 2017
+ * Copyright (C) 2016-2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -60,7 +60,6 @@ MusicPage {
                 else
                     zones.push(model.payload)
             }
-            customdebug("coordinator: " + coordinator + " , rooms: " + zones)
             if (coordinator !== null) {
                 Sonos.startJoinZones(zones, coordinator)
                 return true;
@@ -70,7 +69,7 @@ MusicPage {
     }
 
     MultiSelectListView {
-        id: zoneList        
+        id: zoneList
         anchors.fill: parent
 
         state: "selection"
@@ -113,7 +112,75 @@ MusicPage {
                     }
                 }
 
-                //contentHeight: units.gu(8)
+                contentHeight: units.gu(10)
+                coverSize: units.gu(5)
+                noCover: "qrc:/images/no_cover.png"
+
+                property ZonePlayer zonePlayer: null
+                property int pid: 0
+
+                property string playbackState: ""
+                property string currentMetaTitle: ""
+                property string currentDuration: ""
+
+                function handleZPSourceChanged() {
+                    if (zonePlayer.currentProtocol == 1) {
+                        imageSources = [{art: "qrc:/images/linein.png"}];
+                    } else if (zonePlayer.currentProtocol == 5) {
+                        imageSources = [{art: "qrc:/images/tv.png"}];
+                    } else {
+                        imageSources = makeCoverSource(zonePlayer.currentMetaArt, zonePlayer.currentMetaArtist, zonePlayer.currentMetaAlbum);
+                    }
+                    currentMetaTitle = zonePlayer.currentMetaTitle;
+                    if (zonePlayer.currentTrackDuration > 0)
+                        currentDuration = mainView.durationToString(1000 * zonePlayer.currentTrackDuration);
+                    else
+                        currentDuration = "";
+                }
+
+                function handleZPPlaybackStateChanged() {
+                    if (zonePlayer.currentMetaSource === "") {
+                        action3Visible = false;
+                        action3IconSource = "";
+                    } else {
+                        action3Visible = true;
+                        action3IconSource = (zonePlayer.playbackState === "PLAYING" ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-preview-start.svg");
+                    }
+                    // translate the state
+                    switch (zonePlayer.playbackState)
+                    {
+                    case "STOPPED": playbackState = qsTr("Stopped"); break;
+                    case "PLAYING": playbackState = qsTr("Playing"); break;
+                    case "PAUSED_PLAYBACK": playbackState = qsTr("Paused playback"); break;
+                    case "TRANSITIONING": playbackState = qsTr("Transitioning"); break;
+                    default: playbackState = zonePlayer.playbackState.replace('_', ' ');
+                    }
+                }
+
+                Component.onCompleted: {
+                    zonePlayer = AllZonesModel.holdPlayer(model.index);
+                    if (zonePlayer) {
+                        pid = zonePlayer.pid;
+                        handleZPSourceChanged();
+                        handleZPPlaybackStateChanged();
+                    }
+                }
+
+                Component.onDestruction: {
+                    if (zonePlayer)
+                        AllZonesModel.releasePlayer(zonePlayer);
+                }
+
+                Connections {
+                    target: AllZonesModel
+                    onZpJobFailed: {
+                        if (pid === listItem.pid) {
+                            popInfo.open(qsTr("Action can't be performed"));
+                        }
+                    }
+                    onZpSourceChanged: { if (pid === listItem.pid) handleZPSourceChanged(); }
+                    onZpPlaybackStateChanged: { if (pid === listItem.pid) handleZPPlaybackStateChanged(); }
+                }
 
                 column: Column {
                     spacing: units.gu(1)
@@ -129,8 +196,37 @@ MusicPage {
                         id: fullName
                         color: styleMusic.view.secondaryColor
                         font.pointSize: units.fs("small")
-                        text: model.name
-                        visible: model.isGroup
+                        text: model.isGroup ? model.name : playbackState
+                        visible: text !== ""
+                    }
+
+                    Row {
+                        spacing: units.gu(0.5)
+                        width: parent.width
+
+                        Label {
+                            id: sourceTitle
+                            color: styleMusic.view.primaryColor
+                            font.pointSize: units.fs("small")
+                            text: currentMetaTitle
+                            visible: currentMetaTitle !== ""
+                        }
+
+                        Label {
+                            id: separatorDuration
+                            color: styleMusic.view.primaryColor
+                            font.pointSize: units.fs("small")
+                            text: " | "
+                            visible: currentDuration !== ""
+                        }
+
+                        Label {
+                            id: sourceDuration
+                            color: styleMusic.view.primaryColor
+                            font.pointSize: units.fs("small")
+                            text: currentDuration
+                            visible: currentDuration !== ""
+                        }
                     }
                 }
             }

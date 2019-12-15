@@ -26,7 +26,7 @@ Rectangle {
     height: visible ? units.gu(6) : 0
     color: styleMusic.playerControls.backgroundColor
 
-    property alias text: field.text
+    property alias displayText: field.text
 
     RowLayout {
         spacing: 0
@@ -43,7 +43,7 @@ Rectangle {
                 anchors.centerIn: parent
                 source: "qrc:/images/edit-clear.svg"
                 onClicked: {
-                    filter.text = "";
+                    field.text = "";
                     filter.visible = false;
                 }
             }

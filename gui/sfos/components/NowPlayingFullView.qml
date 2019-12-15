@@ -26,17 +26,13 @@ import Sailfish.Silica 1.0
 
 SilicaFlickable {
     id: fullview
-    anchors {
-        fill: parent
-    }
+
     property alias backgroundColor: fullviewBackground.color
-    property alias backgroundOpacity: fullviewBackground.opacity
 
     Rectangle {
         id: fullviewBackground
         anchors.fill: parent
         color: "transparent"
-        opacity: 1.0
 
         Item {
             id: albumImageContainer
@@ -53,7 +49,6 @@ SilicaFlickable {
                 size: parent.height
                 overlay: false
 
-                /* @FIXME: QML binding for covers fails randomly. So bind manually the covers */
                 Component.onCompleted: {
                     covers = player.covers.slice();
                 }
@@ -162,7 +157,6 @@ SilicaFlickable {
         height: units.gu(3)
         width: parent.width
         color: fullviewBackground.color
-        opacity: fullviewBackground.opacity
     }
 
     /* Progress bar component */
@@ -191,7 +185,7 @@ SilicaFlickable {
             font.pointSize: units.fs("small")
             height: parent.height
             horizontalAlignment: Text.AlignLeft
-            text: durationToString(player.position)
+            text: durationToString(player.trackPosition)
             verticalAlignment: Text.AlignVCenter
             width: units.gu(3)
         }
@@ -203,9 +197,9 @@ SilicaFlickable {
                 right: parent.right
                 top: parent.top
             }
-            maximumValue: player.duration  // load value at startup
+            maximumValue: player.trackDuration  // load value at startup
             objectName: "progressSliderShape"
-            value: player.position  // load value at startup
+            value: player.trackPosition  // load value at startup
             stepSize: 5000.0
 
             function formatValue(v) {
@@ -221,7 +215,7 @@ SilicaFlickable {
 
             onSeekingChanged: {
                 if (seeking === false) {
-                    fullviewPositionLabel.text = durationToString(player.position)
+                    fullviewPositionLabel.text = durationToString(player.trackPosition)
                 }
             }
 
@@ -246,22 +240,19 @@ SilicaFlickable {
 
             Connections {
                 target: player
-                onPositionChanged: {
+                onCurrentPositionChanged: {
                     // seeked is a workaround for bug 1310706 as the first position after a seek is sometimes invalid (0)
                     if (progressSliderMusic.seeking === false && !progressSliderMusic.seeked) {
-                        fullviewPositionLabel.text = durationToString(player.position)
-                        fullviewDurationLabel.text = durationToString(player.duration)
+                        fullviewPositionLabel.text = durationToString(position)
+                        fullviewDurationLabel.text = durationToString(duration)
 
-                        progressSliderMusic.value = player.position
-                        progressSliderMusic.maximumValue = player.duration
+                        progressSliderMusic.value = position
+                        progressSliderMusic.maximumValue = duration
                     }
 
                     progressSliderMusic.seeked = false;
                 }
-                onStopped: {
-                    fullviewPositionLabel.text = durationToString(0);
-                    fullviewDurationLabel.text = durationToString(0);
-                }
+                onStopped: fullviewPositionLabel.text = durationToString(0);
             }
         }
 
@@ -278,7 +269,7 @@ SilicaFlickable {
             font.pointSize: units.fs("small")
             height: parent.height
             horizontalAlignment: Text.AlignRight
-            text: durationToString(player.duration)
+            text: durationToString(player.trackDuration)
             verticalAlignment: Text.AlignVCenter
             width: units.gu(3)
         }

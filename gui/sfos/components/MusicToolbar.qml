@@ -20,9 +20,9 @@ import Sailfish.Silica 1.0
 
 Item {
     id: toolBar
-    property alias color: bg.color
-    height: units.gu(7.25)
     objectName: "musicToolbarObject"
+
+    property alias color: bg.color
 
     Rectangle {
         id: bg
@@ -163,7 +163,6 @@ Item {
                  size: parent.height
                  overlay: false
 
-                 /* @FIXME: QML binding for covers fails randomly. So bind manually the covers */
                  Component.onCompleted: {
                      covers = player.covers.slice();
                  }
@@ -292,16 +291,19 @@ Item {
                 }
                 color: styleMusic.playerControls.progressForegroundColor
                 height: parent.height
-                width: player.duration > 0 ? (player.position / player.duration) * playerControlsProgressBar.width : 0
+                width: hint(player.trackPosition, player.trackDuration)
+
+                function hint(position, duration) {
+                   var val = 0;
+                   if (duration > 0)
+                       val = playerControlsProgressBar.width * position / duration;
+                   playerControlsProgressBarHint.width = val;
+                }
 
                 Connections {
                     target: player
-                    onPositionChanged: {
-                        playerControlsProgressBarHint.width = player.duration > 0 ? (player.position / player.duration) * playerControlsProgressBar.width : 0
-                    }
-                    onStopped: {
-                        playerControlsProgressBarHint.width = 0;
-                    }
+                     onCurrentPositionChanged: playerControlsProgressBarHint.hint(position, duration)
+                     onStopped: playerControlsProgressBarHint.hint(0, 0)
                 }
             }
         }

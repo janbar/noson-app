@@ -30,6 +30,8 @@ ListItem {
     signal swipe
     signal click
     signal actionPressed
+    signal action2Pressed
+    signal action3Pressed
 
     signal imageError
 
@@ -38,6 +40,7 @@ ListItem {
         onActionPressed: actionPressed()
     }
 
+    property alias coverSize: row.coverSize
     property alias column: row.column
     property alias description: row.description
     property alias isFavorite: row.isFavorite
@@ -48,6 +51,8 @@ ListItem {
     property alias actionIconSource: row.actionIconSource
     property alias action2Visible: row.action2Visible
     property alias action2IconSource: row.action2IconSource
+    property alias action3Visible: row.action3Visible
+    property alias action3IconSource: row.action3IconSource
     property alias menuVisible: row.menuVisible
 
     anchors { left: parent.left; right: parent.right }

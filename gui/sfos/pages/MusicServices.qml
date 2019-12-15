@@ -104,6 +104,8 @@ MusicPage {
                 }
             }
 
+            coverSize: units.gu(5)
+
             column: Column {
                 Label {
                     id: serviceTitle
@@ -117,6 +119,7 @@ MusicPage {
                     color: styleMusic.view.secondaryColor
                     font.pointSize: units.fs("x-small")
                     text: model.nickName
+                    visible: text !== ""
                 }
             }
         }

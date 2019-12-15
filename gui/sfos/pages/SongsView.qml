@@ -218,6 +218,8 @@ MusicPage {
                 }
             }
 
+            coverSize: units.gu(5)
+
             column: Column {
                 Label {
                     id: trackTitle
@@ -229,7 +231,7 @@ MusicPage {
                 Label {
                     id: trackArtist
                     color: styleMusic.view.secondaryColor
-                    font.pointSize: units.fs("small")
+                    font.pointSize: units.fs("x-small")
                     text: model.author
                 }
             }
@@ -328,7 +330,7 @@ MusicPage {
 
             onFirstSourceChanged: {
                 blurredBackground.art = firstSource
-            }            
+            }
         }
 
         model: DelegateModel {
@@ -358,6 +360,8 @@ MusicPage {
             onTriggered: {
                 if (reorderTrackInPlaylist(containerItem.id, argFrom, argTo, songsModel.containerUpdateID())) {
                     songsModel.asyncLoad();
+                } else {
+                    mainView.jobRunning = false;
                 }
             }
         }

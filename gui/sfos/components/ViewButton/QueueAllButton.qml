@@ -28,6 +28,7 @@ NosonIcon {
         text: qsTr("Queue all")
         font.pointSize: units.fs("medium")
         width: parent.width - units.gu(6)
+        elide: Text.ElideRight
     }
 
     property var containerItem

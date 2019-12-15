@@ -49,7 +49,7 @@ MusicPage {
         sort.order: Qt.AscendingOrder
         sortCaseSensitivity: Qt.CaseInsensitive
         filter.property: "normalized"
-        filter.pattern: new RegExp(normalizedInput(filter.text), "i")
+        filter.pattern: new RegExp(normalizedInput(filter.displayText), "i")
         filterCaseSensitivity: Qt.CaseInsensitive
     }
 
@@ -112,6 +112,8 @@ MusicPage {
                 }
             }
 
+            coverSize: units.gu(5)
+
             column: Column {
                 Label {
                     id: favoriteTitle
@@ -132,7 +134,7 @@ MusicPage {
                 id: delayRemoveFavorite
                 interval: 100
                 onTriggered: {
-                    if (!player.removeFavorite(model.id)) {
+                    if (!Sonos.destroyFavorite(model.id)) {
                         popInfo.open(qsTr("Action can't be performed"));
                     }
                 }
