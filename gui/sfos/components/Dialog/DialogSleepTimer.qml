@@ -80,15 +80,25 @@ DialogBase {
         text: remainingTimeToString(remainingTime)
         color: styleMusic.dialog.labelColor
         elide: Text.ElideRight
-        font.pointSize: 2 * units.fs("large")
         horizontalAlignment: Text.AlignHCenter
         opacity: 1.0
     }
 
     ComboBox {
         id: selector
-        textRole: "text"
-        model: selectorModel
+        menu: ContextMenu {
+            MenuItem {text: qsTr("Disabled")}
+            MenuItem {text: qsTr("15 minutes")}
+            MenuItem {text: qsTr("30 minutes")}
+            MenuItem {text: qsTr("45 minutes")}
+            MenuItem {text: qsTr("1 hour")}
+            MenuItem {text: qsTr("2 hours")}
+            MenuItem {text: qsTr("3 hours")}
+            MenuItem {text: qsTr("4 hours")}
+            MenuItem {text: qsTr("5 hours")}
+            MenuItem {text: qsTr("6 hours")}
+        }
+        
         Layout.fillWidth: true
         currentIndex: 0
         Component.onCompleted: {
