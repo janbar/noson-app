@@ -111,26 +111,20 @@ MusicPage {
     }
 
     // Page actions
-/*!TODO    optionsMenuVisible: true
-    optionsMenuContentItems: [
+    Component {
+        id: menuItemComp
         MenuItem {
-            visible: (queueLoader.status === Loader.Ready && queueLoader.item.listview.count > 0)
-            height: (visible ? implicitHeight : 0)
-            text: qsTr("Manage queue")
-            font.pointSize: units.fs("medium")
-            onTriggered: dialogManageQueue.open()
-        },
-        MenuItem {
-            text: qsTr("Select source")
-            font.pointSize: units.fs("medium")
-            onTriggered: dialogSelectSource.open()
         }
-    ]
-*/
+    }
 
     Component.onCompleted: {
         fullViewLoader.setSource("qrc:/sfos/components/NowPlayingFullView.qml", { "backgroundColor": "transparent" })
         nowPlayingToolbarLoader.setSource("qrc:/sfos/components/NowPlayingToolbar.qml", { "backgroundColor": "transparent" })
         queueLoader.setSource("qrc:/sfos/components/Queue.qml", { "backgroundColor": "transparent" })
+        
+        var newMenuItem = menuItemComp.createObject(pageMenu, {"text" : qsTr("Manage Queue") })
+        newMenuItem.onClicked.connect(dialogManageQueue.open)
+        newMenuItem = menuItemComp.createObject(pageMenu, {"text" : qsTr("Select Source") })
+        newMenuItem.onClicked.connect(dialogSelectSource.open)        
     }
 }
