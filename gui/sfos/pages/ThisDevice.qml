@@ -83,7 +83,7 @@ MusicPage {
                 Label {
                     id: mediaTitle
                     color: styleMusic.view.primaryColor
-                    font.pointSize: units.fs("medium")
+                    font.pixelSize: units.fx("medium")
                     objectName: "itemtitle"
                     text: model.title
                 }

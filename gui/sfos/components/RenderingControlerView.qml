@@ -47,7 +47,7 @@ MusicListView {
 
             Label {
                 id: nameLabel
-                font.pointSize: units.fs("medium")
+                font.pixelSize: units.fx("medium")
                 font.weight: Font.Normal
                 text: model.name
                 color: renderingControlList.labelColor

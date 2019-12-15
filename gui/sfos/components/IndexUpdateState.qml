@@ -35,7 +35,7 @@ Rectangle {
         Label {
             color: styleMusic.view.labelColor
             elide: Text.ElideRight
-            font.pointSize: units.fs("x-large")
+            font.pixelSize: units.fx("x-large")
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 2
             text: qsTr("Update in progress")

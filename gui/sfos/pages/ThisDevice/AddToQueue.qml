@@ -21,7 +21,7 @@ import Sailfish.Silica 1.0
 
 MenuItem {
     text: qsTr("Add to queue")
-    font.pointSize: units.fs("medium")
+    font.pixelSize: units.fx("medium")
     height: visible ? implicitHeight : 0
 
     property var modelItem

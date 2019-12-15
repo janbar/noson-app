@@ -55,7 +55,7 @@ MusicPage {
             sort.order: Qt.AscendingOrder
             sortCaseSensitivity: Qt.CaseInsensitive
             filter.property: "normalized"
-            filter.pattern: new RegExp(normalizedInput(filter.text), "i")
+            filter.pattern: new RegExp(normalizedInput(filter.displayText), "i")
             filterCaseSensitivity: Qt.CaseInsensitive
         }
 

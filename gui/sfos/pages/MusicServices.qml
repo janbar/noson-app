@@ -104,19 +104,22 @@ MusicPage {
                 }
             }
 
+            coverSize: units.gu(5)
+
             column: Column {
                 Label {
                     id: serviceTitle
                     color: styleMusic.view.primaryColor
-                    font.pointSize: units.fs("medium")
+                    font.pixelSize: units.fx("medium")
                     text: model.title
                 }
 
                 Label {
                     id: serviceNickName
                     color: styleMusic.view.secondaryColor
-                    font.pointSize: units.fs("x-small")
+                    font.pixelSize: units.fx("x-small")
                     text: model.nickName
+                    visible: text !== ""
                 }
             }
         }

@@ -103,7 +103,7 @@ Item {
             }
             color: styleMusic.view.primaryColor
             elide: Text.ElideRight
-            font.pointSize: units.fs("small")
+            font.pixelSize: units.fx("small")
             maximumLineCount: 2
             wrapMode: Text.WrapAtWordBoundaryOrAnywhere
         }
@@ -118,7 +118,7 @@ Item {
             }
             color: styleMusic.view.secondaryColor
             elide: Text.ElideRight
-            font.pointSize: units.fs("small")
+            font.pixelSize: units.fx("small")
             // Allow wrapping of 2 lines unless primary has been wrapped
             maximumLineCount: primaryLabel.lineCount > 1 ? 1 : 2
             wrapMode: Text.WrapAtWordBoundaryOrAnywhere

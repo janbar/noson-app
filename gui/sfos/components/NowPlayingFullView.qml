@@ -20,23 +20,20 @@
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
+import QtGraphicalEffects 1.0
 
 //import "../components/Themes/Ambiance"
 
 
 SilicaFlickable {
     id: fullview
-    anchors {
-        fill: parent
-    }
+
     property alias backgroundColor: fullviewBackground.color
-    property alias backgroundOpacity: fullviewBackground.opacity
 
     Rectangle {
         id: fullviewBackground
         anchors.fill: parent
         color: "transparent"
-        opacity: 1.0
 
         Item {
             id: albumImageContainer
@@ -53,7 +50,6 @@ SilicaFlickable {
                 size: parent.height
                 overlay: false
 
-                /* @FIXME: QML binding for covers fails randomly. So bind manually the covers */
                 Component.onCompleted: {
                     covers = player.covers.slice();
                 }
@@ -66,14 +62,32 @@ SilicaFlickable {
             }
         }
 
-        Rectangle {
+        Item {
             id: nowPlayingWideAspectLabelsBackground
             anchors.bottom: albumImageContainer.bottom
             height: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(10) : units.gu(13)
             width: parent.width
-            opacity: 0.75
-            color: "white"
+
+            clip: true
+
+            FastBlur {
+                id: blurred
+                source: albumImageContainer
+                radius: 20
+                width: albumImageContainer.width
+                height: albumImageContainer.height
+                visible: false
+            }
+            BrightnessContrast {
+                anchors.bottom: parent.bottom
+                source: blurred
+                brightness: -0.5
+                width: albumImageContainer.width
+                height: albumImageContainer.height
+            }
         }
+
+
 
         /* Column for labels */
         Column {
@@ -97,9 +111,9 @@ SilicaFlickable {
                     right: parent.right
                     rightMargin: units.gu(1)
                 }
-                color: "black"
+                color: styleMusic.nowPlaying.primaryColor
                 elide: Text.ElideRight
-                font.pointSize: units.fs("large")
+                font.pixelSize: units.fx("large")
                 font.weight: Font.Bold
                 maximumLineCount: 2
                 objectName: "playercontroltitle"
@@ -116,9 +130,9 @@ SilicaFlickable {
                     right: parent.right
                     rightMargin: units.gu(1)
                 }
-                color: "black"
+                color: styleMusic.nowPlaying.primaryColor
                 elide: Text.ElideRight
-                font.pointSize: units.fs("small")
+                font.pixelSize: units.fx("small")
                 font.weight: Font.Bold
                 text: player.currentMetaArtist
             }
@@ -162,7 +176,6 @@ SilicaFlickable {
         height: units.gu(3)
         width: parent.width
         color: fullviewBackground.color
-        opacity: fullviewBackground.opacity
     }
 
     /* Progress bar component */
@@ -172,7 +185,7 @@ SilicaFlickable {
             left: fullviewProgressBackground.left
             right: fullviewProgressBackground.right
             top: fullviewProgressBackground.top
-            //topMargin: -units.gu(2)
+            topMargin: -units.gu(2)
         }
         height: units.gu(2)
         width: parent.width
@@ -188,10 +201,10 @@ SilicaFlickable {
                 leftMargin: units.gu(1)
             }
             color: styleMusic.nowPlaying.secondaryColor
-            font.pointSize: units.fs("small")
+            font.pixelSize: units.fx("small")
             height: parent.height
             horizontalAlignment: Text.AlignLeft
-            text: durationToString(player.position)
+            text: durationToString(player.trackPosition)
             verticalAlignment: Text.AlignVCenter
             width: units.gu(3)
         }
@@ -202,10 +215,12 @@ SilicaFlickable {
                 left: parent.left
                 right: parent.right
                 top: parent.top
+                leftMargin: -units.gu(5)
+                rightMargin: -units.gu(5)
             }
-            maximumValue: player.duration  // load value at startup
+            maximumValue: player.trackDuration  // load value at startup
             objectName: "progressSliderShape"
-            value: player.position  // load value at startup
+            value: player.trackPosition  // load value at startup
             stepSize: 5000.0
 
             function formatValue(v) {
@@ -221,7 +236,7 @@ SilicaFlickable {
 
             onSeekingChanged: {
                 if (seeking === false) {
-                    fullviewPositionLabel.text = durationToString(player.position)
+                    fullviewPositionLabel.text = durationToString(player.trackPosition)
                 }
             }
 
@@ -246,22 +261,19 @@ SilicaFlickable {
 
             Connections {
                 target: player
-                onPositionChanged: {
+                onCurrentPositionChanged: {
                     // seeked is a workaround for bug 1310706 as the first position after a seek is sometimes invalid (0)
                     if (progressSliderMusic.seeking === false && !progressSliderMusic.seeked) {
-                        fullviewPositionLabel.text = durationToString(player.position)
-                        fullviewDurationLabel.text = durationToString(player.duration)
+                        fullviewPositionLabel.text = durationToString(position)
+                        fullviewDurationLabel.text = durationToString(duration)
 
-                        progressSliderMusic.value = player.position
-                        progressSliderMusic.maximumValue = player.duration
+                        progressSliderMusic.value = position
+                        progressSliderMusic.maximumValue = duration
                     }
 
                     progressSliderMusic.seeked = false;
                 }
-                onStopped: {
-                    fullviewPositionLabel.text = durationToString(0);
-                    fullviewDurationLabel.text = durationToString(0);
-                }
+                onStopped: fullviewPositionLabel.text = durationToString(0);
             }
         }
 
@@ -275,10 +287,10 @@ SilicaFlickable {
                 rightMargin: units.gu(1)
             }
             color: styleMusic.nowPlaying.secondaryColor
-            font.pointSize: units.fs("small")
+            font.pixelSize: units.fx("small")
             height: parent.height
             horizontalAlignment: Text.AlignRight
-            text: durationToString(player.duration)
+            text: durationToString(player.trackDuration)
             verticalAlignment: Text.AlignVCenter
             width: units.gu(3)
         }

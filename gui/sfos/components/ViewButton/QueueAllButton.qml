@@ -26,8 +26,9 @@ NosonIcon {
     label {
         //: this appears in a button with limited space (around 14 characters)
         text: qsTr("Queue all")
-        font.pointSize: units.fs("medium")
+        font.pixelSize: units.fx("medium")
         width: parent.width - units.gu(6)
+        elide: Text.ElideRight
     }
 
     property var containerItem

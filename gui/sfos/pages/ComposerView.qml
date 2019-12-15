@@ -81,7 +81,7 @@ MusicPage {
                     }
                     color: styleMusic.view.primaryColor
                     elide: Text.ElideRight
-                    font.pointSize: units.fs("x-large")
+                    font.pixelSize: units.fx("x-large")
                     maximumLineCount: 1
                     text: composer != "" ? composer : qsTr("Unknown Composer")
                     wrapMode: Text.NoWrap
@@ -97,7 +97,7 @@ MusicPage {
                         id: albumCount
                         color: styleMusic.view.secondaryColor
                         elide: Text.ElideRight
-                        font.pointSize: units.fs("small")
+                        font.pixelSize: units.fx("small")
                         maximumLineCount: 1
                         text: qsTr("%n album(s)", "", albumsModel.count)
                     }
@@ -106,7 +106,7 @@ MusicPage {
                         id: separator
                         color: styleMusic.view.secondaryColor
                         elide: Text.ElideRight
-                        font.pointSize: units.fs("small")
+                        font.pixelSize: units.fx("small")
                         maximumLineCount: 1
                         text: " , "
                         visible: songComposerModel.count > 0
@@ -116,7 +116,7 @@ MusicPage {
                         id: songCount
                         color: styleMusic.view.secondaryColor
                         elide: Text.ElideRight
-                        font.pointSize: units.fs("small")
+                        font.pixelSize: units.fx("small")
                         maximumLineCount: 1
                         text: qsTr("%n song(s)", "", songComposerModel.totalCount)
                         visible: songComposerModel.count > 0
@@ -187,7 +187,7 @@ MusicPage {
     optionsMenuContentItems: [
         MenuItem {
             text: composerViewPage.isFavorite ?  qsTr("Remove from favorites") : qsTr("Add to favorites")
-            font.pointSize: units.fs("medium")
+            font.pixelSize: units.fx("medium")
             onTriggered: {
                 if (!composerViewPage.isFavorite) {
                     if (addItemToFavorites(containerItem, pageTitle, "" /*composerAlbumView.headerItem.firstSource*/))

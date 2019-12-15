@@ -27,6 +27,7 @@ ApplicationWindow {
         property real fontScaleFactor: 1.0
         property bool firstRun: true
         property string zoneName
+        property string coordinatorName: ""
         property int tabIndex: -1
         property string accounts
         property string lastfmKey
@@ -39,7 +40,7 @@ ApplicationWindow {
     
     Units {
         id: units
-        scaleFactor: 4.0
+        scaleFactor: 1.0
         fontScaleFactor: 1.0
     }
     
@@ -61,8 +62,8 @@ ApplicationWindow {
     property bool startup: true         // is running the cold startup ?
     property bool ssdp: true            // point out the connect method
 
-    // Property to store the state of an application (active or suspended)
-    property bool applicationSuspended: Qt.application.state === Qt.ApplicationSuspended
+    // Property to store the state of the application (active or suspended)
+    property bool applicationSuspended: false
 
     // setting alias to check first run
     //property alias firstRun: settings.firstRun
@@ -72,6 +73,7 @@ ApplicationWindow {
 
     // setting alias to store last zone connected
     property alias currentZone: settings.zoneName
+    property alias currentCoordinator: settings.coordinatorName
     property string currentZoneTag: ""
 
     // track latest stream link
@@ -89,7 +91,6 @@ ApplicationWindow {
 
     // property to detect if the UI has finished
     property bool loadedUI: false
-    //property real wideSongView: units.gu(70)
 
     // property to enable pop info on index loaded
     property bool infoLoadedIndex: true // enabled at startup
@@ -102,13 +103,14 @@ ApplicationWindow {
     readonly property real minSizeGU: 42
     readonly property string tr_undefined: qsTr("<Undefined>")
 
-    // Cache built-in genre artworks
+    // built-in cache for genre artworks
     property var genreArtworks: []
     
     property bool alarmEnabled: false
     property bool shareIndexInProgress: false
     
-        AlarmsModel {
+    // about alarms
+    AlarmsModel {
         id: alarmsModel
         property bool updatePending: false
         property bool dataSynced: false
@@ -144,6 +146,35 @@ ApplicationWindow {
     ////
 
     Connections {
+        target: Qt.application
+        onStateChanged: {
+            if (Qt.application.state === Qt.ApplicationSuspended)
+                applicationSuspended = true;
+            else if (applicationSuspended === true) {
+                applicationSuspended = false;
+                if (!noZone) {
+                    jobRunning = true;
+                    delayWakeUp.start();
+                }
+            }
+        }
+    }
+
+   Timer {
+      id: delayWakeUp
+      interval: 100
+      onTriggered: {
+          if (!player.ping()) {
+              noZone = true;
+              jobRunning = false;
+          } else {
+             customdebug("Renew all subscriptions");
+             Sonos.startRenewSubscriptions();
+          }
+       }
+    }
+
+    Connections {
         target: Sonos
 
         onJobCountChanged: jobRunning = Sonos.jobCount > 0 ? true : false
@@ -155,7 +186,6 @@ ApplicationWindow {
                     customdebug("NOTICE: Clearing the configured URL because invalid");
                     deviceUrl = "";
                 }
-
                 if (noZone)
                     noZone = false;
             } else {
@@ -172,42 +202,12 @@ ApplicationWindow {
         }
 
         onTopologyChanged: {
-            AllZonesModel.asyncLoad()
-            delayReloadZone.start()
-        }
-    }
-
-    Timer {
-        id: delayReloadZone
-        interval: 250
-        onTriggered: {
-            if (jobRunning) {
-                restart();
-            } else {
-                // Reload the zone and start the content loader thread
-                customdebug("Reloading the zone ...");
-                if (connectZone(currentZone)) {
-                    Sonos.runLoader();
-                    // Completing startup
-                    if (startup) {
-                        startup = false;
-                        if (playOnStart) {
-                            if (player.playStream(inputStreamUrl, "")) {
-                                tabs.pushNowPlaying();
-                            }
-                        }
-                        // check for enabled alarm
-                        alarmEnabled = isAlarmEnabled();
-                    }
-                }
-            }
+            AllZonesModel.asyncLoad();
         }
     }
 
     // Run on startup
     Component.onCompleted: {
-        var argno = 0;
-
         customdebug("LANG=" + Qt.locale().name);
         Sonos.setLocale(Qt.locale().name);
 
@@ -260,7 +260,10 @@ ApplicationWindow {
     Connections {
         target: AllZonesModel
         onDataUpdated: AllZonesModel.asyncLoad()
-        onLoaded: AllZonesModel.resetModel()
+        onLoaded: {
+            AllZonesModel.resetModel();
+            reloadZone();
+        }
     }
 
     Connections {
@@ -334,10 +337,8 @@ ApplicationWindow {
     }
 
     onZoneChanged: {
-        // Some tasks are already launched during startup
-        if (!startup) {
-          alarmEnabled = isAlarmEnabled();
-        }
+        // check for enabled alarm
+        alarmEnabled = isAlarmEnabled();
     }
 
     
@@ -420,32 +421,72 @@ ApplicationWindow {
         return Sonos.startInit(debugLevel)
     }
 
+    function reloadZone() {
+        customdebug("Reloading the zone ...");
+        if (connectZone(currentZone)) {
+            // launch the content loader thread
+            Sonos.runLoader();
+            // execute the requested actions at startup
+            if (startup) {
+                startup = false;
+                if (playOnStart) {
+                    if (player.playStream(inputStreamUrl, "")) {
+                        tabs.pushNowPlaying();
+                    }
+                }
+            }
+        }
+    }
+
     signal zoneChanged
 
     // Try to change zone
     // On success noZone is set to false
     function connectZone(name) {
-        var oldZone = currentZone
         customdebug("Connecting zone '" + name + "'")
-        if ((Sonos.connectZone(name) || Sonos.connectZone(""))
-                && player.connect()) {
-            currentZone = Sonos.getZoneName()
-            currentZoneTag = Sonos.getZoneShortName()
-            if (currentZone !== oldZone)
-                zoneChanged()
-            if (noZone)
-                noZone = false
-            return true
-        } else {
+        if (AllZonesModel.count === 0) {
             if (!noZone)
-                noZone = true
+                noZone = true;
+            return true;
         }
-        return false
+        var found = false;
+        var model = null;
+        // search for the zone name
+        for (var p = 0; p < AllZonesModel.count; ++p) {
+            model = AllZonesModel.get(p);
+            if (model.name === name) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            // search for the coordinator name
+            for (p = 0; p < AllZonesModel.count; ++p) {
+                model = AllZonesModel.get(p);
+                if (model.coordinatorName === currentCoordinator) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if (!found) {
+            p = 0; // get the first
+            model = AllZonesModel.get(0);
+        }
+        player.connectZonePlayer(AllZonesModel.holdPlayer(p));
+        currentZone = model.name;
+        currentCoordinator = model.coordinatorName;
+        currentZoneTag = model.shortName;
+        zoneChanged();
+
+        if (noZone)
+            noZone = false;
+        return true;
     }
 
     // Action on request to update music library
     function updateMusicIndex() {
-        if (player.refreshShareIndex()) {
+        if (Sonos.refreshShareIndex()) {
             // enable info on loaded index
             infoLoadedIndex = true
             popInfo.open(qsTr("Refreshing of index is running"))
@@ -593,6 +634,7 @@ ApplicationWindow {
         return false;
     }
 
+    // Action on save queue
     function saveQueue(title) {
         if (player.saveQueue(title))
             return true;
@@ -600,6 +642,7 @@ ApplicationWindow {
         return false;
     }
 
+    // Action on create playlist
     function createPlaylist(title) {
         if (player.createSavedQueue(title))
             return true;
@@ -607,6 +650,7 @@ ApplicationWindow {
         return false;
     }
 
+    // Action on append item to a playlist
     function addPlaylist(playlistId, modelItem, containerUpdateID) {
         if (player.addItemToSavedQueue(playlistId, modelItem, containerUpdateID)) {
             popInfo.open(qsTr("song added"));
@@ -616,6 +660,7 @@ ApplicationWindow {
         return false;
     }
 
+    // Action on remove item from a playlist
     function removeTracksFromPlaylist(playlistId, selectedIndices, containerUpdateID) {
         if (player.removeTracksFromSavedQueue(playlistId, selectedIndices, containerUpdateID)) {
             popInfo.open(qsTr("%n song(s) removed", "", selectedIndices.length));
@@ -632,13 +677,16 @@ ApplicationWindow {
         popInfo.open(qsTr("Action can't be performed"));
         return false;
     }
+
+    // Action on remove a playlist
     function removePlaylist(itemId) {
-        if (player.destroySavedQueue(itemId))
+        if (Sonos.destroySavedQueue(itemId))
             return true
         popInfo.open(qsTr("Action can't be performed"))
         return false
     }
 
+    // Action on check item as favorite
     function addItemToFavorites(modelItem, description, artURI) {
         if (player.addItemToFavorites(modelItem, description, artURI))
             return true;
@@ -646,12 +694,12 @@ ApplicationWindow {
         return false;
     }
 
+    // Action on uncheck item from favorites
     function removeFromFavorites(itemPayload) {
         var id = AllFavoritesModel.findFavorite(itemPayload)
-        if (id.length === 0)
-            // no favorite
+        if (id.length === 0) // no favorite
             return true
-        if (player.removeFavorite(id))
+        if (Sonos.destroyFavorite(id))
             return true
         popInfo.open(qsTr("Action can't be performed"))
         return false
@@ -732,7 +780,7 @@ ApplicationWindow {
     }
 
     function isAlarmEnabled() {
-        var rooms = Sonos.getZoneRooms()
+        var rooms = Sonos.getZoneRooms(player.zoneId);
         for (var i = 0; i < alarmsModel.count; ++i) {
             var alarm = alarmsModel.get(i)
             if (alarm.enabled) {
@@ -825,19 +873,18 @@ ApplicationWindow {
     Loader {
         id: musicToolbar
         active: true
-        anchors {
+        height: units.gu(7.25)
+        anchors { // start offscreen
             left: parent.left
             right: parent.right
-            top: parent.bottom
-            topMargin: visible && status === Loader.Ready ? -height : 0
+            bottom: parent.bottom
         }
         asynchronous: true
         source: "qrc:/sfos/components/MusicToolbar.qml"
-        //visible: !noZone && (player.currentMetaSource === "") && status === Loader.Ready &&
-        //         (pageStack.currentItem && (pageStack.currentItem.showToolbar || pageStack.currentItem.showToolbar === undefined))
-        visible: !noZone && (pageStack.currentPage && (pageStack.currentPage.showToolbar || pageStack.currentPage.showToolbar === undefined))
-
+        visible: status === Loader.Ready && !noZone &&
+                             (pageStack.currentPage && (pageStack.currentPage.showToolbar || pageStack.currentPage.showToolbar === undefined))
     }
+
     //==============================================================
     // Spinner
 

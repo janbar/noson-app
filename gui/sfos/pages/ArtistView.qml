@@ -82,7 +82,7 @@ MusicPage {
                     }
                     color: styleMusic.view.primaryColor
                     elide: Text.ElideRight
-                    font.pointSize: units.fs("x-large")
+                    font.pixelSize: units.fx("x-large")
                     maximumLineCount: 1
                     text: artist != "" ? artist : qsTr("Unknown Artist")
                     wrapMode: Text.NoWrap
@@ -98,7 +98,7 @@ MusicPage {
                         id: albumCount
                         color: styleMusic.view.secondaryColor
                         elide: Text.ElideRight
-                        font.pointSize: units.fs("small")
+                        font.pixelSize: units.fx("small")
                         maximumLineCount: 1
                         text: qsTr("%n album(s)", "", albumsModel.count)
                     }
@@ -107,7 +107,7 @@ MusicPage {
                         id: separator
                         color: styleMusic.view.secondaryColor
                         elide: Text.ElideRight
-                        font.pointSize: units.fs("small")
+                        font.pixelSize: units.fx("small")
                         maximumLineCount: 1
                         text: " , "
                         visible: songArtistModel.count > 0
@@ -117,7 +117,7 @@ MusicPage {
                         id: songCount
                         color: styleMusic.view.secondaryColor
                         elide: Text.ElideRight
-                        font.pointSize: units.fs("small")
+                        font.pixelSize: units.fx("small")
                         maximumLineCount: 1
                         text: qsTr("%n song(s)", "", songArtistModel.totalCount)
                         visible: songArtistModel.count > 0
@@ -189,7 +189,7 @@ MusicPage {
         MenuItem {
             enabled: containerItem ? true : false
             text: artistViewPage.isFavorite ?  qsTr("Remove from favorites") : qsTr("Add to favorites")
-            font.pointSize: units.fs("medium")
+            font.pixelSize: units.fx("medium")
             onTriggered: {
                 if (!artistViewPage.isFavorite) {
                     if (addItemToFavorites(containerItem, pageTitle, "" /*artistAlbumView.headerItem.firstSource*/))

@@ -104,7 +104,7 @@ DialogBase {
                 value: settings.fontScaleFactor * 100
                 to: 200
                 stepSize: 10
-                font.pointSize: units.fs("medium");
+                font.pixelSize: units.fx("medium");
                 Layout.fillWidth: true
 
                 property int decimals: 2
@@ -145,7 +145,7 @@ DialogBase {
                 value: settings.scaleFactor * 100
                 to: 400
                 stepSize: 10
-                font.pointSize: units.fs("medium");
+                font.pixelSize: units.fx("medium");
                 Layout.fillWidth: true
 
                 property int decimals: 2
@@ -178,7 +178,7 @@ DialogBase {
             Layout.fillWidth: true
             Label {
                 text: qsTr("Style")
-                font.pointSize: units.fs("medium");
+                font.pixelSize: units.fx("medium");
             }
             ComboBox {
                 id: styleBox
@@ -196,9 +196,9 @@ DialogBase {
                     }
                 }
                 Layout.fillWidth: true
-                font.pointSize: units.fs("medium");
+                font.pixelSize: units.fx("medium");
                 popup {
-                    font.pointSize: units.fs("medium");
+                    font.pixelSize: units.fx("medium");
                 }
             }
         }
@@ -209,7 +209,7 @@ DialogBase {
             Layout.fillWidth: true
             Label {
                 text: qsTr("Theme")
-                font.pointSize: units.fs("medium");
+                font.pixelSize: units.fx("medium");
             }
             ComboBox {
                 id: themeBox
@@ -226,7 +226,7 @@ DialogBase {
                 }
 
                 Layout.fillWidth: true
-                font.pointSize: units.fs("medium");
+                font.pixelSize: units.fx("medium");
                 Component.onCompleted: {
                     popup.font.pointSize = units.fs("medium");
                 }
@@ -235,7 +235,7 @@ DialogBase {
 
         Label {
             text: qsTr("Restart is required")
-            font.pointSize: units.fs("medium")
+            font.pixelSize: units.fx("medium")
             color: "red"
             opacity: styleBox.currentIndex !== styleBox.styleIndex ||
                      scaleBox.realValue !== scaleBox.acceptedValue ? 1.0 : 0.0
@@ -262,7 +262,7 @@ DialogBase {
                 }
                 Text {
                     id: link
-                    font.pointSize: units.fs("x-small")
+                    font.pixelSize: units.fx("x-small")
                     text: "<a href='https://www.last.fm/api/account/create'>" + qsTr("Get an API account") + "</a>"
                     onLinkHovered: {
                         if (hoveredLink)
@@ -276,7 +276,7 @@ DialogBase {
             }
             TextField {
                 id: apiKey
-                font.pointSize: units.fs("medium")
+                font.pixelSize: units.fx("medium")
                 placeholderText: qsTr("Enter a valid API key");
                 inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhUrlCharactersOnly
                 EnterKey.type: Qt.EnterKeyDone

@@ -173,7 +173,7 @@ Item {
                         }
                         color: styleMusic.dialog.labelColor
                         elide: Text.ElideRight
-                        font.pointSize: units.fs("large")
+                        font.pixelSize: units.fx("large")
                         font.bold: true
                         opacity: 1.0
                         wrapMode: Text.WordWrap
@@ -187,7 +187,7 @@ Item {
                         }
                         color: styleMusic.dialog.labelColor
                         elide: Text.ElideRight
-                        font.pointSize: units.fs("medium")
+                        font.pixelSize: units.fx("medium")
                         opacity: 0.9
                         wrapMode: Text.WordWrap
                     }
@@ -200,7 +200,7 @@ Item {
                         }
                         color: styleMusic.dialog.labelColor
                         elide: Text.ElideRight
-                        font.pointSize: units.fs("medium")
+                        font.pixelSize: units.fx("medium")
                         opacity: 0.9
                         wrapMode: Text.WordWrap
                         font.italic: true

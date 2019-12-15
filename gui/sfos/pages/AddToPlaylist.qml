@@ -50,16 +50,6 @@ MusicPage {
         }
     }
 
-    /*SortFilterModel {
-            // Sorting disabled as it is incorrect on first run (due to workers?)
-            // and SQL sorts the data correctly
-            id: addToPlaylistModelFilter
-            model: AllPlaylistsModel
-            filter.property: "title"
-            filter.pattern: new RegExp(searchHeader.query, "i")
-            filterCaseSensitivity: Qt.CaseInsensitive
-        }*/
-
     MusicGridView {
         id: addtoPlaylistView
         itemWidth: units.gu(12)
@@ -118,7 +108,7 @@ MusicPage {
                         source: "qrc:/images/add.svg"
                         height: units.gu(5)
                         label.text: qsTr("Add")
-                        label.font.pointSize: units.fs("x-small")
+                        label.font.pixelSize: units.fx("x-small")
                         onClicked: addClicked()
                     }
                 }
