@@ -141,7 +141,7 @@ Page {
                     }
             }
         }
-    }
+    
     
     //Bottom toolbar
     Item {
@@ -445,6 +445,7 @@ Page {
                 }
             }
         }
+    }
     }
 
 }
