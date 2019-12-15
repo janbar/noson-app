@@ -46,9 +46,6 @@ DialogBase {
         }
     }
     onRejected: {
-        styleBox.currentIndex = styleBox.styleIndex
-        mainView.width = Math.round(scaleBox.acceptedValue * mainView.width / settings.scaleFactor);
-        mainView.height = Math.round(scaleBox.acceptedValue * mainView.height / settings.scaleFactor);
         apiKey.text = settings.lastfmKey;
     }
 
