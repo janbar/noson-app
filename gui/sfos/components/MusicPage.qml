@@ -49,6 +49,7 @@ Page {
     property alias footer: footerToolbar
     property alias pageMenu: pageMenu._contentColumn
     property alias optionsMenu: optionsMenu._contentColumn
+    property alias musicToolbar: musicToolbar
     
     default property alias _content: _contentItem.data
     
@@ -149,7 +150,7 @@ Page {
             height: units.gu(7.25)
             width: parent.width
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: (mainView.musicToolbar.visible ? mainView.musicToolbar.height : 0)
+            anchors.bottomMargin: (musicToolbar.visible ? musicToolbar.height : 0)
             z: 10
 
             Rectangle {
@@ -446,6 +447,20 @@ Page {
                 }
             }
         }
-    }
 
+
+        Loader {
+            id: musicToolbar
+            active: true
+            height: visible ? units.gu(7.25) : 0
+            anchors { // start offscreen
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
+            asynchronous: true
+            source: "qrc:/sfos/components/MusicToolbar.qml"
+            visible: status === Loader.Ready && !noZone && (showToolbar === undefined || showToolbar)
+        }
+    }
 }

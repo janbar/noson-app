@@ -866,22 +866,6 @@ ApplicationWindow {
         id: dialogSearch
     }
 
-    property alias musicToolbar: musicToolbar
-
-    Loader {
-        id: musicToolbar
-        active: true
-        height: units.gu(7.25)
-        anchors { // start offscreen
-            left: parent.left
-            right: parent.right
-            bottom: parent.bottom
-        }
-        asynchronous: true
-        source: "qrc:/sfos/components/MusicToolbar.qml"
-        visible: status === Loader.Ready && !noZone &&
-                             (pageStack.currentPage && (pageStack.currentPage.showToolbar || pageStack.currentPage.showToolbar === undefined))
-    }
 
     //==============================================================
     // Spinner
