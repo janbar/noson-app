@@ -44,7 +44,7 @@ DialogBase {
     TextField {
         id: url
         text: inputStreamUrl
-        font.pixelSize: units.fx("medium")
+        width: parent.width
         placeholderText: qsTr("Enter stream URL")
     }
 
@@ -85,7 +85,6 @@ DialogBase {
         text: qsTr("Select the audio input.")
         wrapMode: Text.WordWrap
         color: styleMusic.dialog.labelColor
-        font.pixelSize: units.fx("small")
         font.weight: Font.Normal
     }
 
@@ -94,58 +93,55 @@ DialogBase {
         ListElement { text: qsTr("Queue") }
         ListElement { text: qsTr("Play line IN") }
         ListElement { text: qsTr("Play TV") }
-
-        Component.onCompleted: {
-            if (Sonos.havePulseAudio()) {
-                selectorModel.append( {'text': qsTr("Play PulseAudio") } );
-            }
-        }
+        ListElement { text: qsTr("Play PulseAudio") }
     }
 
-    /* !TODO
     ComboBox {
         id: selector
         visible: showSelector
-        textRole: "text"
-        model: selectorModel
-        Layout.fillWidth: true
-        font.pixelSize: units.fx("medium")
-        currentIndex: 0
-        Component.onCompleted: {
-            popup.font.pointSize = font.pointSize;
-        }
-        onActivated: {
-            switch(index) {
-                case 0:
-                    if (!player.playQueue(false))
-                        popInfo.open(qsTr("Action can't be performed"))
-                    else
-                        dialog.accept()
-                    break;
-                case 1:
-                    if (!player.playLineIN())
-                        popInfo.open(qsTr("Action can't be performed"))
-                    else
-                        dialog.accept()
-                    break;
-                case 2:
-                    if (!player.playDigitalIN())
-                        popInfo.open(qsTr("Action can't be performed"))
-                    else
-                        dialog.accept()
-                    break;
-                case 3:
-                    if (!player.playPulse())
-                        popInfo.open(qsTr("Action can't be performed"))
-                    else
-                        dialog.accept()
-                    break;
-                default:
-                    break;
-            }
+        menu: ContextMenu {
+                MenuItem {
+                    text: qsTr("Queue")
+                    onClicked: {
+                        if (!player.playQueue(false))
+                            popInfo.open(qsTr("Action can't be performed"))
+                        else
+                            dialog.accept()
+                    }
+                }
+                MenuItem {
+                    text: qsTr("Play line IN")
+                    onClicked: {
+                        if (!player.playLineIN())
+                            popInfo.open(qsTr("Action can't be performed"))
+                        else
+                            dialog.accept()
+                    }
+                }
+                MenuItem {
+                    text: qsTr("Play TV")
+                    onClicked: {
+                        if (!player.playDigitalIN())
+                            popInfo.open(qsTr("Action can't be performed"))
+                        else
+                            dialog.accept()
+                    }
+                }
+                MenuItem {
+                    text: qsTr("Play PulseAudio")
+                    visible: Sonos.havePulseAudio()
+                    onClicked: {
+                        if (!player.playPulse())
+                            popInfo.open(qsTr("Action can't be performed"))
+                        else
+                            dialog.accept()
+                    }
+                }
         }
         
-    }*/
+        Layout.fillWidth: true
+        currentIndex: 0
+    }
 
     onOpened: {
         if (player.currentMetaSource === "") {

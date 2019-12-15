@@ -154,6 +154,7 @@ MusicPage {
         id: mediaList
         anchors.fill: parent
         model: mediaModel
+        clip: true
         delegate: MusicListItem {
             id: listItem
 
@@ -195,8 +196,7 @@ MusicPage {
             actionIconSource: "qrc:/images/media-preview-start.svg"
             menuVisible: model.canPlay || model.canQueue
 
-            /*!TODO
-            menuItems: [
+            menu: ContextMenu {
                 AddToFavorites {
                     isFavorite: listItem.isFavorite
                     enabled: model.canPlay
@@ -204,21 +204,19 @@ MusicPage {
                     description: listItem.description
                     art: model.art
 
-                    onTriggered: {
+                    onDelayedClick: {
                         servicePage.taintedView = true;
                     }
-                },
-                //@FIXME add to playlist service item doesn't work
+                }
                 AddToPlaylist {
                     enabled: model.canQueue
                     visible: enabled
-                },
+                }
                 AddToQueue {
                     enabled: model.canQueue
                     visible: enabled
                 }
-            ]
-            */
+            }
 
             coverSize: units.gu(5)
 
@@ -262,7 +260,7 @@ MusicPage {
         id: mediaGrid
         itemWidth: displayType == 3 /*Editorial*/ ? units.gu(12) : units.gu(15)
         heightOffset: units.gu(9)
-
+        clip: true
         model: mediaModel
 
         delegate: Card {
@@ -329,7 +327,6 @@ MusicPage {
     Component.onCompleted: {
         mediaModel.init(Sonos, serviceItem.payload, false)
         mediaModel.asyncLoad()
-        dialogSearch.searchableModel = mediaModel
     }
 
     onGoUpClicked: {
