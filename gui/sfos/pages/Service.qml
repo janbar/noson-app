@@ -196,30 +196,28 @@ MusicPage {
             actionIconSource: "qrc:/images/media-preview-start.svg"
             menuVisible: model.canPlay || model.canQueue
 
-            /*!TODO
-            menuItems: [
+            menu: ContextMenu {
                 AddToFavorites {
                     isFavorite: listItem.isFavorite
-                    enabled: model.canPlay
-                    visible: enabled
                     description: listItem.description
                     art: model.art
-
-                    onTriggered: {
-                        servicePage.taintedView = true;
-                    }
-                },
-                //@FIXME add to playlist service item doesn't work
-                AddToPlaylist {
-                    enabled: model.canQueue
-                    visible: enabled
-                },
-                AddToQueue {
-                    enabled: model.canQueue
-                    visible: enabled
                 }
-            ]
-            */
+                AddToPlaylist {
+                }
+                AddToQueue {
+                }
+                Remove {
+                    enabled: isPlaylist
+                    visible: enabled
+                    onClicked: {
+                        listview.focusIndex = index > 0 ? index - 1 : 0;
+                        mainView.jobRunning = true
+                        delayRemoveSelectedFromPlaylist.selectedIndices = [index]
+                        delayRemoveSelectedFromPlaylist.start()
+                        color = "red";
+                    }
+                }
+            }
 
             column: Column {
                 Label {
