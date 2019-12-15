@@ -37,7 +37,7 @@ Rectangle {
             id: label
             color: styleMusic.view.labelColor
             elide: Text.ElideRight
-            font.pointSize: units.fs("x-large")
+            font.pixelSize: units.fx("x-large")
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 6
             text: ""

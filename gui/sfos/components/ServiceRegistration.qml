@@ -38,7 +38,7 @@ Rectangle {
         Label {
             color: styleMusic.view.labelColor
             elide: Text.ElideRight
-            font.pointSize: units.fs("large")
+            font.pixelSize: units.fx("large")
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 2
             text: qsTr("Registering the service")
@@ -51,7 +51,7 @@ Rectangle {
             visible: text.length > 0
             color: styleMusic.view.foregroundColor
             elide: Text.ElideRight
-            font.pointSize: units.fs("large")
+            font.pixelSize: units.fx("large")
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 2
             text: ""
@@ -68,7 +68,7 @@ Rectangle {
             text: qsTr("This will require to authenticate against the music service again, as credentials cannot be retrieved from Sonos device.")
             width: parent.width
             wrapMode: Text.WordWrap
-            font.pointSize: units.fs("medium")
+            font.pixelSize: units.fx("medium")
         }
 
         Label {
@@ -76,7 +76,7 @@ Rectangle {
             visible: text.length > 0
             color: styleMusic.view.foregroundColor
             elide: Text.ElideRight
-            font.pointSize: units.fs("large")
+            font.pixelSize: units.fx("large")
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 6
             text: ""

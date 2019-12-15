@@ -72,7 +72,7 @@ MusicPage {
         target: mediaModel
         onDataUpdated: mediaModel.asyncLoad()
         onLoaded: {
-            if (succeeded) {                
+            if (succeeded) {
                 mediaModel.resetModel()
                 servicePage.displayType = servicePage.parentDisplayType // apply displayType
                 servicePage.taintedView = false // reset
@@ -191,7 +191,6 @@ MusicPage {
                     : model.type === 5 ? qsTr("Radio")
                     : ""
             onActionPressed: playItem(model)
-            onClick: clickItem(model)
             actionVisible: model.canPlay
             actionIconSource: "qrc:/images/media-preview-start.svg"
             menuVisible: model.canPlay || model.canQueue
@@ -221,11 +220,13 @@ MusicPage {
             ]
             */
 
+            coverSize: units.gu(5)
+
             column: Column {
                 Label {
                     id: mediaTitle
                     color: styleMusic.view.primaryColor
-                    font.pointSize: units.fs("medium")
+                    font.pixelSize: units.fx("medium")
                     objectName: "itemtitle"
                     text: model.title
                 }
@@ -233,8 +234,9 @@ MusicPage {
                 Label {
                     id: mediaDescription
                     color: styleMusic.view.secondaryColor
-                    font.pointSize: units.fs("x-small")
+                    font.pixelSize: units.fx("x-small")
                     text: listItem.description
+                    visible: text !== ""
                 }
             }
 
@@ -243,7 +245,11 @@ MusicPage {
             }
         }
 
-        visible: isListView ? true : false
+        opacity: isListView ? 1.0 : 0.0
+        visible: opacity > 0.0
+        Behavior on opacity {
+            NumberAnimation { duration: 250 }
+        }
 
         onAtYEndChanged: {
             if (mediaList.atYEnd && mediaModel.totalCount > mediaModel.count) {
@@ -307,7 +313,11 @@ MusicPage {
             onPlayClicked: playItem(model)
         }
 
-        visible: isListView ? false : true
+        opacity: isListView ? 0.0 : 1.0
+        visible: opacity > 0.0
+        Behavior on opacity {
+            NumberAnimation { duration: 250 }
+        }
 
         onAtYEndChanged: {
             if (mediaGrid.atYEnd && mediaModel.totalCount > mediaModel.count) {

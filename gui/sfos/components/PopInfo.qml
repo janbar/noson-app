@@ -41,7 +41,7 @@ Item {
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
             color: styleMusic.popover.labelColor
-            font.pointSize: units.fs("small")
+            font.pixelSize: units.fx("small")
             font.weight: Font.Normal
         }
     }

@@ -129,7 +129,7 @@ MusicPage {
                 menuItems: [
                     MenuItem {
                         text: qsTr("Edit")
-                        font.pointSize: units.fs("medium")
+                        font.pixelSize: units.fx("medium")
                         enabled: model.id.length > 0
                         onTriggered: {
                             alarmList.focusIndex = index;
@@ -160,21 +160,21 @@ MusicPage {
                     Label {
                         id: roomName
                         color: styleMusic.view.primaryColor
-                        font.pointSize: units.fs("large")
+                        font.pixelSize: units.fx("large")
                         text: getRoomById(model.roomId).name
                     }
 
                     Label {
                         id: recurrence
                         color: styleMusic.view.secondaryColor
-                        font.pointSize: units.fs("small")
+                        font.pixelSize: units.fx("small")
                         text: translateRecurrence(model.recurrence)
                     }
 
                     Label {
                         id: startTime
                         color: styleMusic.view.secondaryColor
-                        font.pointSize: units.fs("large")
+                        font.pixelSize: units.fx("large")
                         text: model.startLocalTime
                     }
 

@@ -24,7 +24,7 @@ Item {
     
     property real contentHeight: units.gu(6)
     property alias column: columnComponent.sourceComponent
-    property real coverSize: styleMusic.view.albumSize
+    property real coverSize: contentHeight
     property string noCover: "qrc:/images/no_cover.png"
     property var imageSources: []
     property string imageSource: ""
@@ -37,15 +37,19 @@ Item {
     property string actionIconSource: ""
     property alias action2Visible: action2.visible
     property string action2IconSource: ""
+    property alias action3Visible: action3.visible
+    property string action3IconSource: ""
+
     signal actionPressed
     signal action2Pressed
+    signal action3Pressed
     signal selected
     signal deselected
 
     signal imageError(var index)
             
     anchors.leftMargin: units.gu(1)
-    anchors.rightMargin: units.gu(2)
+    anchors.rightMargin: units.gu(1)
 
     height: contentHeight
 
@@ -63,43 +67,45 @@ Item {
         }
     ]
 
-    Image {
+    Rectangle {
         id: image
-        property int index: 0
+        height: contentHeight
+        width: cover.visible ? coverSize : units.dp(1)
+        color: "transparent"
         anchors {
             //verticalCenter: parent.verticalCenter
             topMargin: units.gu(1)
             bottomMargin: units.gu(1)
         }
-        asynchronous: true
-        fillMode: Image.PreserveAspectCrop
-        height: contentHeight
-        width: height
-        source: imageSources !== undefined && imageSources.length ? imageSources[index].art : row.noCover
-        sourceSize.height: 512
-        sourceSize.width: 512
 
-
-        onStatusChanged: {
-            if (status === Image.Error) {
-                row.imageError(index)
-                if (imageSources.length > (index + 1)) {
-                    source = imageSources[++index].art
-                } else {
-                    source = noCover
-                }
-            } else if (status === Image.Ready) {
-                imageSource = source;
+        Image {
+            id: cover
+            anchors {
+                verticalCenter: parent.verticalCenter
             }
-        }
-        visible: imageSources.length > 0
-    }
+            property int index: 0
+            asynchronous: true
+            fillMode: Image.PreserveAspectCrop
+            height: coverSize
+            width: height
+            source: imageSources !== undefined && imageSources.length ? imageSources[index].art : noCover
+            sourceSize.height: 512
+            sourceSize.width: 512
 
-    Rectangle {
-        height: contentHeight
-        width: units.dp(1)
-        color: "transparent"
-        visible: !image.visible
+            onStatusChanged: {
+                if (status === Image.Error) {
+                    row.imageError(index)
+                    if (imageSources.length > (index + 1)) {
+                        source = imageSources[++index].art
+                    } else {
+                        source = noCover
+                    }
+                } else if (status === Image.Ready) {
+                    imageSource = source;
+                }
+            }
+            visible: imageSources.length > 0
+        }
     }
 
     Loader {
@@ -144,6 +150,30 @@ Item {
                 height: width
                 anchors.centerIn: parent
                 source: "qrc:/images/starred.svg"
+            }
+        }
+    }
+
+    Item {
+        id: action3
+        visible: false
+        anchors.right: action2.left
+        anchors.rightMargin: units.gu(1)
+        width: visible ? units.gu(5) : 0
+        property alias iconSource: icon3.source
+
+        Rectangle {
+            color: "transparent"
+            width: parent.width
+            height: row.height
+
+            NosonIcon {
+                id: icon3
+                source: row.action3IconSource
+                width: parent.width
+                height: width
+                anchors.centerIn: parent
+                onClicked: action3Pressed()
             }
         }
     }

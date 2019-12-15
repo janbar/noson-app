@@ -68,7 +68,7 @@ MusicPage {
                 Label {
                     id: mediaTitle
                     color: styleMusic.view.primaryColor
-                    font.pointSize: units.fs("medium")
+                    font.pixelSize: units.fx("medium")
                     objectName: "itemtitle"
                     text: model.title
                 }
@@ -107,7 +107,8 @@ MusicPage {
     Component.onCompleted: {
         if (AllGenresModel.isNew()) {
             AllGenresModel.init(Sonos, "", false);
-            AllGenresModel.asyncLoad();
+            if (Sonos.isConnected())
+                AllGenresModel.asyncLoad();
         } else {
             resetIndexModel();
         }

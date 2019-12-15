@@ -26,7 +26,7 @@ MusicPage {
     objectName: "nowPlayingPage"
 
     pageTitle: qsTr("Now playing")
-    pageFlickable: fullViewLoader.item
+    pageFlickable: nowPlayingView.flickable
     isListView: false
     showToolbar: false
 
@@ -68,31 +68,36 @@ MusicPage {
         queueLoader.item.listview.positionViewAtIndex(index > 0 ? index - 1 : 0, ListView.Beginning);
     }
 
-    Loader {
-        id: fullViewLoader
+    Item {
+        id: nowPlayingView
+        property alias flickable: view
         anchors {
+            fill: parent
+            bottomMargin: nowPlayingToolbar.height
             topMargin: units.gu(1)
-            top: parent.top
-            left: parent.left
-            right: parent.right
-            bottom: nowPlayingToolbarLoader.top
+        }
+        NowPlayingFullView {
+            id: view
+            anchors.fill: parent
+            backgroundColor: "transparent"
         }
         visible: opacity != 0.0
         opacity: !isListView ? 1.0 : 0.0
 
         Behavior on opacity {
-            NumberAnimation { duration: 250 }
+            NumberAnimation { duration: 100 }
         }
     }
 
-    Loader {
-        id: nowPlayingToolbarLoader
+    NowPlayingToolbar {
+        id: nowPlayingToolbar
         anchors {
             bottom: parent.bottom
             bottomMargin: isListView ? nowPlaying.height - height : footer.height
         }
         height: units.gu(14)
         width: parent.width
+        backgroundColor: "transparent"
 
         Behavior on anchors.bottomMargin {
             NumberAnimation { duration: 100 }
@@ -102,7 +107,7 @@ MusicPage {
     Loader {
         id: queueLoader
         anchors {
-            top: nowPlayingToolbarLoader.bottom
+            top: nowPlayingToolbar.bottom
             bottom: parent.bottom
             left: parent.left
             right: parent.right
@@ -117,20 +122,18 @@ MusicPage {
             visible: (queueLoader.status === Loader.Ready && queueLoader.item.listview.count > 0)
             height: (visible ? implicitHeight : 0)
             text: qsTr("Manage queue")
-            font.pointSize: units.fs("medium")
+            font.pixelSize: units.fx("medium")
             onTriggered: dialogManageQueue.open()
         },
         MenuItem {
             text: qsTr("Select source")
-            font.pointSize: units.fs("medium")
+            font.pixelSize: units.fx("medium")
             onTriggered: dialogSelectSource.open()
         }
     ]
 */
 
     Component.onCompleted: {
-        fullViewLoader.setSource("qrc:/sfos/components/NowPlayingFullView.qml", { "backgroundColor": "transparent" })
-        nowPlayingToolbarLoader.setSource("qrc:/sfos/components/NowPlayingToolbar.qml", { "backgroundColor": "transparent" })
         queueLoader.setSource("qrc:/sfos/components/Queue.qml", { "backgroundColor": "transparent" })
     }
 }

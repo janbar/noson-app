@@ -78,7 +78,7 @@ MusicPage {
                         id: artistLabel
                         color: styleMusic.view.primaryColor
                         elide: Text.ElideRight
-                        font.pointSize: units.fs("x-large")
+                        font.pixelSize: units.fx("x-large")
                         maximumLineCount: 1
                         text: (artist !== "<Undefined>" ? artist : tr_undefined)
                         wrapMode: Text.NoWrap
@@ -98,7 +98,7 @@ MusicPage {
                         id: albumCount
                         color: styleMusic.view.secondaryColor
                         elide: Text.ElideRight
-                        font.pointSize: units.fs("small")
+                        font.pixelSize: units.fx("small")
                         maximumLineCount: 1
                         text: qsTr("%n album(s)", "", albums.count)
                     }
@@ -107,7 +107,7 @@ MusicPage {
                         id: separator
                         color: styleMusic.view.secondaryColor
                         elide: Text.ElideRight
-                        font.pointSize: units.fs("small")
+                        font.pixelSize: units.fx("small")
                         maximumLineCount: 1
                         text: " , "
                         visible: songArtistModel.count > 0
@@ -117,7 +117,7 @@ MusicPage {
                         id: songCount
                         color: styleMusic.view.secondaryColor
                         elide: Text.ElideRight
-                        font.pointSize: units.fs("small")
+                        font.pixelSize: units.fx("small")
                         maximumLineCount: 1
                         text: qsTr("%n song(s)", "", songArtistModel.count)
                         visible: songArtistModel.count > 0

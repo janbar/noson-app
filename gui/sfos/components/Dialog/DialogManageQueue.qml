@@ -31,14 +31,14 @@ DialogBase {
         anchors.right: parent.right
         wrapMode: Text.WordWrap
         color: "red"
-        font.pointSize: units.fs("small")
+        font.pixelSize: units.fx("small")
         font.weight: Font.Normal
         visible: false // should only be visible when an error is made.
     }
 
     TextField {
         id: playlistName
-        font.pointSize: units.fs("medium")
+        font.pixelSize: units.fx("medium")
         placeholderText: qsTr("Enter playlist name")
     }
 
@@ -67,7 +67,7 @@ DialogBase {
         text: qsTr("Clearing the queue cannot be undone.")
         wrapMode: Text.WordWrap
         color: styleMusic.dialog.labelColor
-        font.pointSize: units.fs("small")
+        font.pixelSize: units.fx("small")
         font.weight: Font.Normal
     }
 

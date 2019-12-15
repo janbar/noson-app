@@ -148,7 +148,7 @@ Page {
                         source: "qrc:/images/media-playlist.svg"
                         height: units.gu(3)
                         label.text: player.queueInfo
-                        label.font.pointSize: units.fs("x-small")
+                        label.font.pixelSize: units.fx("x-small")
 
                             onClicked: {
                             var page = mainView.pageStack.currentPage;
@@ -165,7 +165,7 @@ Page {
                         source: "qrc:/images/location.svg"
                         height: units.gu(3)
                         label.text: currentZoneTag
-                        label.font.pointSize: units.fs("x-small")
+                        label.font.pixelSize: units.fx("x-small")
 
                         onClicked: pageStack.push("qrc:/sfos/pages/Zones.qml")
                     }
@@ -202,7 +202,7 @@ Page {
                         source: "qrc:/images/add.svg"
                         height: units.gu(3)
                         label.text: qsTr("Add")
-                        label.font.pointSize: units.fs("x-small")
+                        label.font.pixelSize: units.fx("x-small")
                         onClicked: addClicked()
                     }
                 }
@@ -262,7 +262,7 @@ Page {
                         source: "qrc:/images/close.svg"
                         height: units.gu(3)
                         label.text: qsTr("Close")
-                        label.font.pointSize: units.fs("x-small")
+                        label.font.pixelSize: units.fx("x-small")
                         onClicked: {
                             thisPage.state = "default"
                             closeSelectionClicked()
@@ -275,7 +275,7 @@ Page {
                         source: "qrc:/images/select.svg"
                         height: units.gu(3)
                         label.text: qsTr("All")
-                        label.font.pointSize: units.fs("x-small")
+                        label.font.pixelSize: units.fx("x-small")
                         onClicked: selectAllClicked()
                     }
 
@@ -285,7 +285,7 @@ Page {
                         source: "qrc:/images/select-undefined.svg"
                         height: units.gu(3)
                         label.text: qsTr("Clear")
-                        label.font.pointSize: units.fs("x-small")
+                        label.font.pixelSize: units.fx("x-small")
                         onClicked: selectNoneClicked()
                     }
 
@@ -345,7 +345,7 @@ Page {
                         source: "qrc:/images/media-playlist.svg"
                         height: units.gu(3)
                         label.text: player.queueInfo
-                        label.font.pointSize: units.fs("x-small")
+                        label.font.pixelSize: units.fx("x-small")
 
                         onClicked: {
                             pageStack.pop();
@@ -369,7 +369,7 @@ Page {
                         source: "qrc:/images/select.svg"
                         height: units.gu(3)
                         label.text: qsTr("All")
-                        label.font.pointSize: units.fs("x-small")
+                        label.font.pixelSize: units.fx("x-small")
                         onClicked: groupAllZoneClicked()
                     }
 
@@ -379,7 +379,7 @@ Page {
                         source: "qrc:/images/group.svg"
                         height: units.gu(3)
                         label.text: qsTr("Done")
-                        label.font.pointSize: units.fs("x-small")
+                        label.font.pixelSize: units.fx("x-small")
                         onClicked: groupZoneClicked()
                     }
                 }
@@ -414,7 +414,7 @@ Page {
                         source: "qrc:/images/location.svg"
                         height: units.gu(3)
                         label.text: currentZoneTag
-                        label.font.pointSize: units.fs("x-small")
+                        label.font.pixelSize: units.fx("x-small")
                     }
 
                     NosonIcon {
@@ -423,7 +423,7 @@ Page {
                         source: "qrc:/images/select-undefined.svg"
                         height: units.gu(3)
                         label.text: qsTr("None")
-                        label.font.pointSize: units.fs("x-small")
+                        label.font.pixelSize: units.fx("x-small")
                         onClicked: groupNoneRoomClicked()
                     }
 
@@ -433,12 +433,11 @@ Page {
                         source: "qrc:/images/group.svg"
                         height: units.gu(3)
                         label.text: qsTr("Done")
-                        label.font.pointSize: units.fs("x-small")
+                        label.font.pixelSize: units.fx("x-small")
                         onClicked: groupRoomClicked()
                     }
                 }
             }
         }
     }
-
 }

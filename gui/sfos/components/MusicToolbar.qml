@@ -20,9 +20,9 @@ import Sailfish.Silica 1.0
 
 Item {
     id: toolBar
-    property alias color: bg.color
-    height: units.gu(7.25)
     objectName: "musicToolbarObject"
+
+    property alias color: bg.color
 
     Rectangle {
         id: bg
@@ -45,6 +45,7 @@ Item {
         anchors {
             fill: parent
         }
+
         state: player.currentMetaSource === "" ? "disabled" : "enabled"
         states: [
             State {
@@ -92,13 +93,13 @@ Item {
                 }
                 color: styleMusic.playerControls.labelColor
                 text: player.currentCount === 0 ? qsTr("No music in queue") : qsTr("Tap to play music")
-                font.pointSize: units.fs("large")
+                font.pixelSize: units.fx("large")
                 wrapMode: Text.WordWrap
                 maximumLineCount: 2
             }
 
             /* Play/Pause button */
-            Icon {
+            NosonIcon {
                 id: disabledPlayerControlsPlayButton
                 anchors {
                     right: parent.right
@@ -113,7 +114,7 @@ Item {
             }
 
             /* Select input */
-            Icon {
+            NosonIcon {
                 id: disabledPlayerControlsSelectButton
                 anchors {
                     right: parent.right
@@ -163,7 +164,6 @@ Item {
                  size: parent.height
                  overlay: false
 
-                 /* @FIXME: QML binding for covers fails randomly. So bind manually the covers */
                  Component.onCompleted: {
                      covers = player.covers.slice();
                  }
@@ -195,7 +195,7 @@ Item {
                     }
                     color: styleMusic.view.primaryColor
                     elide: Text.ElideRight
-                    font.pointSize: units.fs("medium")
+                    font.pixelSize: units.fx("medium")
                     font.weight: Font.DemiBold
                     text: player.currentMetaTitle
                 }
@@ -209,13 +209,13 @@ Item {
                     }
                     color: styleMusic.view.secondaryColor
                     elide: Text.ElideRight
-                    font.pointSize: units.fs("small")
+                    font.pixelSize: units.fx("small")
                     text: player.currentMetaArtist
                 }
             }
 
             /* Play/Pause button */
-            Icon {
+            NosonIcon {
                 id: playerControlsPlayButton
                 anchors {
                     right: parent.right
@@ -238,9 +238,11 @@ Item {
                 enabled: true
                 onClicked: {
                     if (mainView.nowPlayingPage !== null) {
+/*!TODO
                         while (stackView.depth > 1 && stackView.currentItem !== mainView.nowPlayingPage) {
                             stackView.pop();
                         }
+*/
                     } else {
                         tabs.pushNowPlaying();
                     }
@@ -292,16 +294,19 @@ Item {
                 }
                 color: styleMusic.playerControls.progressForegroundColor
                 height: parent.height
-                width: player.duration > 0 ? (player.position / player.duration) * playerControlsProgressBar.width : 0
+                width: hint(player.trackPosition, player.trackDuration)
+
+                function hint(position, duration) {
+                   var val = 0;
+                   if (duration > 0)
+                       val = playerControlsProgressBar.width * position / duration;
+                   playerControlsProgressBarHint.width = val;
+                }
 
                 Connections {
                     target: player
-                    onPositionChanged: {
-                        playerControlsProgressBarHint.width = player.duration > 0 ? (player.position / player.duration) * playerControlsProgressBar.width : 0
-                    }
-                    onStopped: {
-                        playerControlsProgressBarHint.width = 0;
-                    }
+                     onCurrentPositionChanged: playerControlsProgressBarHint.hint(position, duration)
+                     onStopped: playerControlsProgressBarHint.hint(0, 0)
                 }
             }
         }

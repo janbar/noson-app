@@ -35,25 +35,25 @@ DialogBase {
                    + " You can browse your music library and play track or radio on any zones."
                    + " You can manage grouping zones, queue, and playlists, and fully control the playback.")
         wrapMode: Label.Wrap
-        font.pointSize: units.fs("x-small")
+        font.pixelSize: units.fx("x-small")
     }
     Text {
         color: styleMusic.dialog.foregroundColor
         width: dialog.width
         text: qsTr("Author: %1").arg("Jean-Luc Barriere")
-        font.pointSize: units.fs("x-small")
+        font.pixelSize: units.fx("x-small")
     }
     Text {
         color: styleMusic.dialog.foregroundColor
         width: dialog.width
         text: qsTr("Version: %1").arg(VersionString) + " (libnoson " + Sonos.getLibVersion() + ")"
-        font.pointSize: units.fs("x-small")
+        font.pixelSize: units.fx("x-small")
     }
     Text {
         id: donate
         color: styleMusic.dialog.foregroundColor
         width: dialog.width
-        font.pointSize: units.fs("x-small")
+        font.pixelSize: units.fx("x-small")
         text: "<a href='https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=jlbarriere68%40gmail%2ecom&lc=US&item_name=noson%2dapp&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted'>Donate with Paypal</a>"
         onLinkActivated: Qt.openUrlExternally(link)
         linkColor: styleMusic.view.linkColor
@@ -63,13 +63,13 @@ DialogBase {
         color: styleMusic.dialog.foregroundColor
         width: dialog.width
         text: qsTr("Sailfish port by: %1").arg("Adam Pigg")
-        font.pointSize: units.fs("x-small")
+        font.pixelSize: units.fx("x-small")
     }
     Text {
         id: donate2
         color: styleMusic.dialog.foregroundColor
         width: dialog.width
-        font.pointSize: units.fs("x-small")
+        font.pixelSize: units.fx("x-small")
         text: "<a href='https://www.paypal.me/piggz'>Donate with Paypal</a>"
         onLinkActivated: Qt.openUrlExternally(link)
         linkColor: styleMusic.view.linkColor
@@ -84,7 +84,7 @@ DialogBase {
         color: styleMusic.dialog.foregroundColor
         width: dialog.width
         text: qsTr("Thumbnails powered by:")
-        font.pointSize: units.fs("x-small")
+        font.pixelSize: units.fx("x-small")
     }
     GridLayout {
         Layout.fillWidth: true

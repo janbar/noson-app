@@ -24,13 +24,9 @@ import Sailfish.Silica 1.0
 /* Full toolbar */
 Item {
     id: musicToolbarFullContainer
-    anchors {
-        fill: parent
-    }
 
     property bool mirror: false
     property alias backgroundColor: bg.color
-    property alias backgroundOpacity: bg.opacity
     property alias bottomProgressHint: playerControlsProgressBar.visible
     readonly property real toolbarHeight: musicToolbarFullVolumeContainer.height + musicToolbarFullButtonContainer.height
 
@@ -38,7 +34,6 @@ Item {
         id: bg
         anchors.fill: parent
         color: "transparent"
-        opacity: 1.0
     }
 
     /* volume slider component */
@@ -65,17 +60,16 @@ Item {
             objectName: "muteShape"
             opacity: 1.0
             onClicked: {
-                player.toggleMuteGroup()
-                player.refreshRenderingGroup()
-                player.refreshRendering()
+                player.toggleMuteGroup();
+                player.refreshRendering();
             }
         }
 
         Slider {
             id: volumeGroupSlider
             anchors.left: nowPlayingMuteButton.right
-            anchors.leftMargin: units.gu(1)
-            anchors.rightMargin: units.gu(1)
+            anchors.leftMargin: -units.gu(2)
+            anchors.rightMargin: -units.gu(2)
             anchors.right: nightmodeButton.left
             anchors.verticalCenter: parent.verticalCenter
             stepSize: 2.5
@@ -160,7 +154,7 @@ Item {
             anchors.right: nowPlayingPreviousButton.left
             anchors.rightMargin: units.gu(1)
             anchors.verticalCenter: nowPlayingPlayButton.verticalCenter
-            height: units.gu(4)
+            height: units.gu(6)
             width: height
             color: "transparent"
             visible: player.isPlayingQueued()
@@ -187,7 +181,7 @@ Item {
             anchors.right: nowPlayingPlayButton.left
             anchors.rightMargin: units.gu(1)
             anchors.verticalCenter: nowPlayingPlayButton.verticalCenter
-            height: units.gu(4)
+            height: units.gu(6)
             width: height
             color: "transparent"
             visible: player.isPlayingQueued()
@@ -207,13 +201,13 @@ Item {
         Rectangle {
             id: nowPlayingPlayButton
             anchors.centerIn: parent
-            height: units.gu(4)
+            height: units.gu(8)
             width: height
             color: "transparent"
 
             NosonIcon {
                 id: nowPlayingPlayIndicator
-                height: units.gu(3)
+                height: units.gu(6)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: player.isPlaying ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
@@ -227,7 +221,7 @@ Item {
             anchors.left: nowPlayingPlayButton.right
             anchors.leftMargin: units.gu(1)
             anchors.verticalCenter: nowPlayingPlayButton.verticalCenter
-            height: units.gu(4)
+            height: units.gu(6)
             width: height
             color: "transparent"
             visible: player.isPlayingQueued()
@@ -250,7 +244,7 @@ Item {
             anchors.left: nowPlayingNextButton.right
             anchors.leftMargin: units.gu(1)
             anchors.verticalCenter: nowPlayingPlayButton.verticalCenter
-            height: units.gu(4)
+            height: units.gu(6)
             width: height
             color: "transparent"
             visible: player.isPlayingQueued()
@@ -292,16 +286,19 @@ Item {
             }
             color: styleMusic.playerControls.progressForegroundColor
             height: parent.height
-            width: player.duration > 0 ? (player.position / player.duration) * playerControlsProgressBar.width : 0
+            width: hint(player.trackPosition, player.trackDuration)
+
+            function hint(position, duration) {
+                var val = 0;
+                if (position && duration)
+                    val = (duration > 0 ? (position / duration) * playerControlsProgressBar.width : 0);
+                playerControlsProgressBarHint.width = val;
+            }
 
             Connections {
                 target: player
-                onPositionChanged: {
-                    playerControlsProgressBarHint.width = player.duration > 0 ? (player.position / player.duration) * playerControlsProgressBar.width : 0
-                }
-                onStopped: {
-                    playerControlsProgressBarHint.width = 0;
-                }
+                onCurrentPositionChanged: playerControlsProgressBarHint.hint(position, duration)
+                onStopped: playerControlsProgressBarHint.hint(0, player.trackDuration)
             }
         }
     }

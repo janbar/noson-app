@@ -35,7 +35,7 @@ Rectangle {
         Label {
             color: styleMusic.view.labelColor
             elide: Text.ElideRight
-            font.pointSize: units.fs("x-large")
+            font.pixelSize: units.fx("x-large")
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 2
             text: qsTr("No alarms found")
@@ -46,7 +46,7 @@ Rectangle {
         Label {
             color: styleMusic.view.labelColor
             elide: Text.ElideRight
-            font.pointSize: units.fs("large")
+            font.pixelSize: units.fx("large")
             horizontalAlignment: Text.AlignHCenter
             maximumLineCount: 6
             text: qsTr("Tapping the %1 icon to add alarms.").arg('"+"')
