@@ -101,9 +101,7 @@ DialogBase {
         
         Layout.fillWidth: true
         currentIndex: 0
-        Component.onCompleted: {
-            popup.font.pointSize = font.pointSize;
-        }
+
         onClicked: {
             if (index >= 0) {
                 var sec = model.get(index).duration;
