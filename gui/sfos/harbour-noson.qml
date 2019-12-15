@@ -786,7 +786,6 @@ ApplicationWindow {
         id: dialogApplicationSettings
     }
 
-
     DialogAbout {
         id: dialogAbout
     }
