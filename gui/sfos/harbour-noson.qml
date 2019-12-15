@@ -818,6 +818,7 @@ ApplicationWindow {
         id: dialogSearch
     }
 
+    /*
     property alias musicToolbar: musicToolbar
 
     Loader {
@@ -836,6 +837,8 @@ ApplicationWindow {
         visible: !noZone && (pageStack.currentPage && (pageStack.currentPage.showToolbar || pageStack.currentPage.showToolbar === undefined))
 
     }
+    */
+    
     //==============================================================
     // Spinner
 
