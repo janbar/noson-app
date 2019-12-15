@@ -95,7 +95,7 @@ DialogBase {
         Component.onCompleted: {
             popup.font.pointSize = font.pointSize;
         }
-        onActivated: {
+        onClicked: {
             if (index >= 0) {
                 var sec = model.get(index).duration;
                 if (player.configureSleepTimer(sec))
