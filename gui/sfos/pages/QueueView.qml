@@ -36,21 +36,18 @@ MusicPage {
 
     // Page actions
     optionsMenuVisible: true
-    //!TODO
-    /*
-    optionsMenuContentItems: [
+
+    Component {
+        id: menuItemComp
         MenuItem {
-            visible: (queue.listview.count > 0)
-            height: (visible ? implicitHeight : 0)
-            text: qsTr("Manage queue")
-            font.pointSize: units.fs("medium")
-            onTriggered: dialogManageQueue.open()
-        },
-        MenuItem {
-            text: qsTr("Select source")
-            font.pointSize: units.fs("medium")
-            onTriggered: dialogSelectSource.open()
         }
-    ]
-   */
+    }
+    Component.onCompleted: {
+        
+            var newMenuItem = menuItemComp.createObject(pageMenu, {"text" : qsTr("Manage Queue") })
+            newMenuItem.onClicked.connect(dialogManageQueue.open)
+            newMenuItem = menuItemComp.createObject(pageMenu, {"text" : qsTr("Select Source") })
+            newMenuItem.onClicked.connect(dialogSelectSource.open)
+        }
+    
 }
