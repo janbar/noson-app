@@ -52,20 +52,6 @@ MusicPage {
         sort.order: Qt.AscendingOrder
         sortCaseSensitivity: Qt.CaseInsensitive
     }
-
-    /*pageMenuItems: [
-            MenuItem { text: qsTr("About"); onClicked: dialogAbout.open() },   
-            Repeater {
-                model: tabs
-
-                MenuItem {
-                    text: model.title
-                    onClicked: {
-                        pageStack.push(model.source)
-                    }
-                }
-            }
-    ]*/
         
     MusicListView {
         id: serviceList
