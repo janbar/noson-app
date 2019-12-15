@@ -41,7 +41,6 @@ Page {
     property alias selectable: selection.visible
     property alias addVisible: add.visible
     property alias optionsMenuVisible: optionsMenu.visible
-    property alias optionsMenuContentItems: optionsMenuPopup._contentColumn
     property alias selectAllVisible: selectAll.visible
     property alias selectNoneVisible: selectNone.visible
     property alias addToQueueVisible: addToQueue.visible
@@ -49,6 +48,7 @@ Page {
     property alias removeSelectedVisible: removeSelected.visible
     property alias footer: footerToolbar
     property alias pageMenu: pageMenu._contentColumn
+    property alias optionsMenu: optionsMenu._contentColumn
     
     default property alias _content: _contentItem.data
     
