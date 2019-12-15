@@ -154,6 +154,7 @@ MusicPage {
         id: mediaList
         anchors.fill: parent
         model: mediaModel
+        clip: true
         delegate: MusicListItem {
             id: listItem
 
@@ -254,7 +255,7 @@ MusicPage {
         id: mediaGrid
         itemWidth: displayType == 3 /*Editorial*/ ? units.gu(12) : units.gu(15)
         heightOffset: units.gu(9)
-
+        clip: true
         model: mediaModel
 
         delegate: Card {
