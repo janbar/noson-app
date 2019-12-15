@@ -36,7 +36,6 @@ DialogBase {
         anchors.right: parent.right
         wrapMode: Text.WordWrap
         color: "red"
-        font.pointSize: units.fs("x-small")
         font.weight: Font.Normal
         visible: false // should only be visible when an error is made.
     }
@@ -44,7 +43,7 @@ DialogBase {
     TextField {
         id: url
         text: inputStreamUrl
-        font.pointSize: units.fs("medium")
+        width: parent.width
         placeholderText: qsTr("Enter stream URL")
     }
 
@@ -85,7 +84,6 @@ DialogBase {
         text: qsTr("Select the audio input.")
         wrapMode: Text.WordWrap
         color: styleMusic.dialog.labelColor
-        font.pointSize: units.fs("small")
         font.weight: Font.Normal
     }
 
@@ -94,28 +92,33 @@ DialogBase {
         ListElement { text: qsTr("Queue") }
         ListElement { text: qsTr("Play line IN") }
         ListElement { text: qsTr("Play TV") }
-
-        Component.onCompleted: {
-            if (Sonos.havePulseAudio()) {
-                selectorModel.append( {'text': qsTr("Play PulseAudio") } );
-            }
-        }
+        ListElement { text: qsTr("Play PulseAudio") }
     }
 
-    /* !TODO
     ComboBox {
         id: selector
         visible: showSelector
-        textRole: "text"
-        model: selectorModel
-        Layout.fillWidth: true
-        font.pointSize: units.fs("medium")
-        currentIndex: 0
-        Component.onCompleted: {
-            popup.font.pointSize = font.pointSize;
+        menu: ContextMenu {
+                MenuItem {
+                    text: qsTr("Queue")
+                }
+                MenuItem {
+                    text: qsTr("Play line IN")
+                }
+                MenuItem {
+                    text: qsTr("Play TV")
+                }
+                MenuItem {
+                    text: qsTr("Play PulseAudio")
+                    visible: Sonos.havePulseAudio()
+                }
         }
-        onActivated: {
-            switch(index) {
+        
+        Layout.fillWidth: true
+        currentIndex: 0
+
+        onClicked: {
+            switch(currentIndex) {
                 case 0:
                     if (!player.playQueue(false))
                         popInfo.open(qsTr("Action can't be performed"))
@@ -145,7 +148,7 @@ DialogBase {
             }
         }
         
-    }*/
+    }
 
     onOpened: {
         if (player.currentMetaSource === "") {
