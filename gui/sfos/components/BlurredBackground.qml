@@ -55,7 +55,7 @@ Item {
         anchors.fill: backgroundImage
         source: backgroundImage
         radius: units.dp(64)
-        opacity: 0.2
+        opacity: 0.3
         cached: false
         transparentBorder: true
     }

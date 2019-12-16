@@ -109,6 +109,7 @@ Rectangle {
                     regMessage.text = qsTr("Click the link below to authorize this application to use the service.")
                     regUrl.text = "<a href='" + mediaModel.regURL + "'>" + mediaModel.regURL + "</a>";
                     requestAuthForTime.start();
+                    customdebug("Service registration URL: " + mediaModel.regURL);
                 }
                 mainView.jobRunning = false
             }

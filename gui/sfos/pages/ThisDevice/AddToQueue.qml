@@ -21,12 +21,6 @@ import Sailfish.Silica 1.0
 
 MenuItem {
     text: qsTr("Add to queue")
-    font.pixelSize: units.fx("medium")
-    height: visible ? implicitHeight : 0
-
     property var modelItem
-
-    onTriggered: {
-        addQueue({id: modelItem.Id, payload: makeItemPayload(modelItem)});
-    }
+    onClicked: addQueue({id: modelItem.Id, payload: makeItemPayload(modelItem)})
 }

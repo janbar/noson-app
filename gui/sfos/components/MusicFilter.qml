@@ -35,12 +35,14 @@ Rectangle {
 
         Item {
             width: units.gu(6)
-            height: width
+            height: units.gu(6)
+            anchors.verticalCenter: parent.center
 
             NosonIcon {
-                width: units.gu(5)
+                width: units.gu(4)
                 height: width
-                anchors.centerIn: parent
+                anchors.verticalCenter: parent.center
+                anchors.right: parent.right
                 source: "qrc:/images/edit-clear.svg"
                 onClicked: {
                     field.text = "";
@@ -52,7 +54,7 @@ Rectangle {
         TextField {
             id: field
             Layout.fillWidth: true
-            font.pointSize: units.fs("large")
+            font.pixelSize: units.fx("large")
             placeholderText: qsTr("Search music")
         }
     }

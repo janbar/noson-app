@@ -18,6 +18,12 @@ ApplicationWindow {
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
     allowedOrientations: defaultAllowedOrientations
 
+    BlurredBackground {
+        id: blurredBackground
+        anchors.fill: parent
+        z: -1
+    }
+
     ConfigurationGroup {
         id: settings
         path: "/uk/co/piggz/noson"
@@ -348,7 +354,6 @@ ApplicationWindow {
     //// Global actions & helpers
     ////
 
-    // Find index of a command line argument else -1
     // Find index of a command line argument else -1
     function indexOfArgument(argv) {
         for (var i = 0; i < ApplicationArguments.length; ++i) {
@@ -688,7 +693,7 @@ ApplicationWindow {
 
     // Action on check item as favorite
     function addItemToFavorites(modelItem, description, artURI) {
-        if (player.addItemToFavorites(modelItem, description, artURI))
+        if (Sonos.addItemToFavorites(modelItem.payload, description, artURI))
             return true;
         popInfo.open(qsTr("Action can't be performed"));
         return false;

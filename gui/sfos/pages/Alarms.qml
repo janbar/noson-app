@@ -35,11 +35,6 @@ MusicPage {
     listview: alarmList
     addVisible: true
 
-    BlurredBackground {
-        id: blurredBackground
-        height: parent.height
-    }
-
     RoomsModel {
         id: roomModel
         Component.onCompleted: {

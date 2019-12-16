@@ -74,11 +74,6 @@ MusicPage {
         id: roomsModel
     }
 
-    BlurredBackground {
-        id: blurredBackground
-        height: parent.height
-    }
-
     MultiSelectListView {
         id: groupList
         anchors.fill: parent

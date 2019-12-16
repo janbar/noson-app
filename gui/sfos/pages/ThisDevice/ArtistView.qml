@@ -36,11 +36,6 @@ MusicPage {
 
     property bool isFavorite: false
 
-    BlurredBackground {
-        id: blurredBackground
-        height: parent.height
-    }
-
     AlbumList {
         id: albums
         artist: artistViewPage.artist
@@ -124,10 +119,6 @@ MusicPage {
                     }
                 }
             }
-
-            onFirstSourceChanged: {
-                blurredBackground.art = firstSource
-            }
         }
 
         model: SortFilterModel {
@@ -145,7 +136,7 @@ MusicPage {
 
             onImageError: model.art = "" // reset invalid url from model
             onClicked: {
-                stackView.push("qrc:/ui/ThisDevice/SongsView.qml",
+                pageStack.push("qrc:/sfos/pages/ThisDevice/SongsView.qml",
                                    {
                                        "album": model.album,
                                        "artist": model.artist,
