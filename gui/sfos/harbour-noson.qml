@@ -18,6 +18,12 @@ ApplicationWindow {
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
     allowedOrientations: defaultAllowedOrientations
 
+    BlurredBackground {
+        id: blurredBackground
+        anchors.fill: parent
+        z: -1
+    }
+
     ConfigurationGroup {
         id: settings
         path: "/uk/co/piggz/noson"
