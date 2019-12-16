@@ -91,7 +91,7 @@ MusicPage {
                     connectZone(model.name)
                 }
                 onAction2Pressed: {
-                    stackView.push("qrc:/ui/Group.qml", {"zoneId": model.id})
+                    pageStack.push("qrc:/sfos/pages/Group.qml", {"zoneId": model.id})
                 }
                 action2Visible: model.isGroup
                 action2IconSource: model.isGroup ? "qrc:/images/edit-cut.svg" : ""
@@ -107,7 +107,7 @@ MusicPage {
                         text: qsTr("Group")
                         enabled: model.isGroup
                         onClicked: {
-                            pageStack.push("qrc:/ui/Group.qml", {"zoneId": model.id})
+                            pageStack.push("qrc:/sfos/pages/Group.qml", {"zoneId": model.id})
                         }
                     }
                 }

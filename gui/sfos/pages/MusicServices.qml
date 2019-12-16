@@ -121,7 +121,7 @@ MusicPage {
         id: serviceGrid
         itemWidth: units.gu(15)
         heightOffset: units.gu(9)
-
+        clip: true
         model: servicesModel
 
         delegate: Card {

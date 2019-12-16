@@ -24,8 +24,9 @@ import "../components/Dialog"
 
 MusicPage {
     id: queuePage
-    objectName: "queuePage"
-    PageHeader { title: qsTr("Queue") }
+    objectName: "queuePage"   
+    pageTitle: qsTr("Queue")
+    pageFlickable: queue
     isListView: true
     listview: queue.listview
 

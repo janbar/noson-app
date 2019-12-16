@@ -51,6 +51,7 @@ MusicPage {
     MusicListView {
         id: indexList
         anchors.fill: parent
+        clip: true
         model: indexModel
         delegate: MusicListItem {
             id: listItem
@@ -85,7 +86,7 @@ MusicPage {
         id: indexGrid
         itemWidth: units.gu(15)
         heightOffset: units.gu(7)
-
+        clip: true
         model: indexModel
 
         delegate: Card {

@@ -31,6 +31,7 @@ Item {
     property string description: ""
     property bool isFavorite: false
     property alias checked: control.checked
+    property alias checkable: control.checkable
 
     property bool menuVisible: false
     property alias actionVisible: action.visible
@@ -138,7 +139,7 @@ Item {
         visible: isFavorite
         anchors.right: action2.left
         anchors.rightMargin: units.gu(1)
-        width: visible ? units.gu(5) : 0
+        width: visible ? units.gu(3) : 0
 
         Rectangle {
             color: "transparent"
@@ -159,7 +160,7 @@ Item {
         visible: false
         anchors.right: action2.left
         anchors.rightMargin: units.gu(1)
-        width: visible ? units.gu(5) : 0
+        width: visible ? units.gu(3) : 0
         property alias iconSource: icon3.source
 
         Rectangle {
@@ -183,7 +184,7 @@ Item {
         visible: false
         anchors.right: action.left
         anchors.rightMargin: units.gu(1)
-        width: visible ? units.gu(5) : 0
+        width: visible ? units.gu(3) : 0
 
         Rectangle {
             color: "transparent"
@@ -206,7 +207,7 @@ Item {
         visible: false
         anchors.right: select.left
         anchors.rightMargin: units.gu(1)
-        width: units.gu(5)
+        width: units.gu(3)
 
         Rectangle {
             color: "transparent"
@@ -230,6 +231,7 @@ Item {
         width: units.gu(6)
         visible: true
         property alias checked: control.checked
+        property alias checkable: control.checkable
 
         Rectangle {
             color: "transparent"

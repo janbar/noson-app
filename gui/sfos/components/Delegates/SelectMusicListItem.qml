@@ -27,7 +27,7 @@ ListItem {
     property var currentColor: highlighted ? highlightedColor : color
     property bool highlighted: false
     property bool reorderable: true
-    //property alias selectable: row.checkable
+    property alias selectable: row.checkable
     property alias checked: row.checked
 
     signal swipe

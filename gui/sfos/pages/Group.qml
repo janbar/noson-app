@@ -42,7 +42,7 @@ MusicPage {
 
     onGroupRoomClicked: {
         if (handleUnjoinRooms())
-            stackView.pop();
+            pageStack.pop();
     }
 
     function handleUnjoinRooms() {
@@ -82,7 +82,7 @@ MusicPage {
     MultiSelectListView {
         id: groupList
         anchors.fill: parent
-
+        clip: true
         state: "selection"
 
         model: DelegateModel {
