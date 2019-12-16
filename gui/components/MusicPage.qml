@@ -25,9 +25,6 @@ import QtQuick.Layouts 1.3
 // generic page for music, could be useful for bottomedge implementation
 Page {
     id: thisPage
-    anchors {
-        bottomMargin: musicToolbar.visible ? musicToolbar.height : 0
-    }
 
     property string pageTitle: ""
     property Flickable pageFlickable: null
