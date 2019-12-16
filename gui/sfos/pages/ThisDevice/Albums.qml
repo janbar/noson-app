@@ -46,13 +46,16 @@ MusicPage {
 
     onSearchClicked: filter.visible = true
 
-    header: MusicFilter {
+    //Header
+    MusicFilter {
         id: filter
         visible: false
+        onVisibleChanged: showToolbar = !visible
     }
 
     MusicGridView {
         id: albumGridView
+        anchors.topMargin: filter.visible ? filter.height : 0
         itemWidth: units.gu(15)
         heightOffset: units.gu(9)
         clip: true
@@ -76,7 +79,7 @@ MusicPage {
             onImageError: model.art = "" // reset invalid url from model
 
             onClicked: {
-                stackView.push("qrc:/ui/ThisDevice/SongsView.qml",
+                pageStack.push("qrc:/sfos/pages/ThisDevice/SongsView.qml",
                                    {
                                        "album": model.album,
                                        "artist": model.artist,

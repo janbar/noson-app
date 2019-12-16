@@ -259,6 +259,14 @@
         <file>sfos/components/TrackQueue.qml</file>
         <file>sfos/components/Units.qml</file>
         <file>sfos/components/ZoneControls.qml</file>
+        <file>sfos/pages/ThisDevice/AddToQueue.qml</file>
+        <file>sfos/pages/ThisDevice/Albums.qml</file>
+        <file>sfos/pages/ThisDevice/Artists.qml</file>
+        <file>sfos/pages/ThisDevice/ArtistView.qml</file>
+        <file>sfos/pages/ThisDevice/Genres.qml</file>
+        <file>sfos/pages/ThisDevice/PlayAllButton.qml</file>
+        <file>sfos/pages/ThisDevice/QueueAllButton.qml</file>
+        <file>sfos/pages/ThisDevice/ShuffleButton.qml</file>
+        <file>sfos/pages/ThisDevice/SongsView.qml</file>
     </qresource>
-    
 </RCC>

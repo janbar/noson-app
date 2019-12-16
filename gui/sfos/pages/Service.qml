@@ -47,12 +47,6 @@ MusicPage {
     pageTitle: serviceItem.title
     pageFlickable: mediaGrid.visible ? mediaGrid : mediaList
 
-    BlurredBackground {
-            id: blurredBackground
-            height: parent.height
-            art: serviceItem.id === "SA_RINCON65031_0" ? "qrc:/images/tunein.png" : serviceItem.icon
-    }
-
     MediaModel {
       id: mediaModel
     }
@@ -324,9 +318,21 @@ MusicPage {
         }
     }
 
+    Component {
+        id: menuItemComp
+        MenuItem {
+        }
+    }
+
+    property MenuItem menuItemGoBack: null
+    onIsRootChanged: menuItemGoBack.visible = !isRoot // enable the menu when the content isn't root
+
     Component.onCompleted: {
         mediaModel.init(Sonos, serviceItem.payload, false)
         mediaModel.asyncLoad()
+        // create the menu item to navigate back. Starting from root it isn't visible
+        menuItemGoBack = menuItemComp.createObject(pageMenu, {"text" : qsTr("Go back"), "visible" : false})
+        menuItemGoBack.onClicked.connect(goUpClicked)
     }
 
     onGoUpClicked: {
@@ -367,6 +373,7 @@ MusicPage {
     }
 
     onSearchClicked: dialogSearch.open();
+
 
     ////////////////////////////////////////////////////////////////////////////
     ////

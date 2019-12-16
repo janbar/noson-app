@@ -41,13 +41,16 @@ MusicPage {
 
     onSearchClicked: filter.visible = true
 
-    header: MusicFilter {
+    //Header
+    MusicFilter {
         id: filter
         visible: false
+        onVisibleChanged: showToolbar = !visible
     }
 
     MusicGridView {
         id: genreGridView
+        anchors.topMargin: filter.visible ? filter.height : 0
         itemWidth: units.gu(12)
         heightOffset: units.gu(7)
         clip: true
@@ -160,7 +163,7 @@ MusicPage {
             onImageError: mainView.genreArtworks[model.genre].splice(index, 1)
 
             onClicked: {
-                stackView.push("qrc:/ui/SongsView.qml",
+                pageStack.push("qrc:/sfos/pages/SongsView.qml",
                                    {
                                        "containerItem": makeContainerItem(model),
                                        "songSearch": model.id + "//",

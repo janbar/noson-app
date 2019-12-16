@@ -38,11 +38,6 @@ MusicPage {
 
     property bool isFavorite: false
 
-    BlurredBackground {
-        id: blurredBackground
-        height: parent.height
-    }
-
     MusicGridView {
         id: artistAlbumView
         itemWidth: units.gu(15)
@@ -131,10 +126,6 @@ MusicPage {
                     height: units.gu(1)
                 }
             }
-
-            onFirstSourceChanged: {
-                blurredBackground.art = firstSource
-            }
         }
 
         model: AlbumsModel {
@@ -154,7 +145,7 @@ MusicPage {
 
             onImageError: model.art = "" // reset invalid url from model
             onClicked: {
-                stackView.push("qrc:/ui/SongsView.qml",
+                pageStack.push("qrc:/sfos/pages/SongsView.qml",
                                    {
                                        "containerItem": makeContainerItem(model),
                                        "songSearch": model.id,

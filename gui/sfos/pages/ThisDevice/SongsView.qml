@@ -117,11 +117,6 @@ MusicPage {
         }
     }
 
-    BlurredBackground {
-        id: blurredBackground
-        height: parent.height
-    }
-
     Component {
         id: dragDelegate
 
@@ -159,11 +154,11 @@ MusicPage {
             actionIconSource: "qrc:/images/media-preview-start.svg"
             menuVisible: true
 
-            menuItems: [
+            menu: ContextMenu {
                 AddToQueue {
                     modelItem: model
                 }
-            ]
+            }
 
             coverSize: units.gu(5)
 
@@ -277,10 +272,6 @@ MusicPage {
                     width: parent.width
                     height: units.gu(1)
                 }
-            }
-
-            onFirstSourceChanged: {
-                blurredBackground.art = firstSource
             }
         }
 

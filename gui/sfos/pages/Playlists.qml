@@ -53,10 +53,12 @@ MusicPage {
     MusicFilter {
         id: filter
         visible: false
+        onVisibleChanged: showToolbar = !visible
     }
 
     MusicGridView {
         id: playlistsGrid
+        anchors.topMargin: filter.visible ? filter.height : 0
         itemWidth: units.gu(15)
         heightOffset: units.gu(7)
         clip: true

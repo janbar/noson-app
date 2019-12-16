@@ -93,7 +93,7 @@ MusicPage {
         id: nowPlayingToolbar
         anchors {
             bottom: parent.bottom
-            bottomMargin: isListView ? nowPlaying.height - height : footer.height
+            bottomMargin: isListView ? nowPlaying.height - height - header.height - footer.height : 0
         }
         height: units.gu(14)
         width: parent.width
