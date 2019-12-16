@@ -35,7 +35,6 @@ MusicPage {
     pageTitle: qsTr("Select playlist")
     pageFlickable: addtoPlaylistView
     searchable: true
-    searchResultsCount: AllPlaylistsModel.count
 
     state: "selector"
 
@@ -49,11 +48,27 @@ MusicPage {
         }
     }
 
+    onSearchClicked: filter.visible = true
+
+    header: MusicFilter {
+        id: filter
+        visible: false
+    }
+
     MusicGridView {
         id: addtoPlaylistView
         itemWidth: units.gu(12)
         heightOffset: units.gu(7)
-        model: AllPlaylistsModel
+        model: SortFilterModel {
+            model: AllPlaylistsModel
+            sort.property: "title"
+            sort.order: Qt.AscendingOrder
+            sortCaseSensitivity: Qt.CaseInsensitive
+            filter.property: "normalized"
+            filter.pattern: new RegExp(normalizedInput(filter.displayText), "i")
+            filterCaseSensitivity: Qt.CaseInsensitive
+        }
+
         delegate: Card {
             id: playlist
             coverSources: [{art: model.art}]
@@ -70,7 +85,7 @@ MusicPage {
     }
 
     footer: Item {
-        height: units.gu(6)
+        height: units.gu(7.25)
         width: parent.width
 
         Rectangle {
@@ -84,10 +99,10 @@ MusicPage {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.top: parent.top
-                anchors.topMargin: units.gu(1.5)
-                anchors.rightMargin: units.gu(1)
+                anchors.topMargin: units.gu(1)
                 anchors.leftMargin: units.gu(1)
-                height: units.gu(3)
+                anchors.rightMargin: units.gu(1)
+                height: units.gu(5)
                 color: "transparent"
 
                 Row {
@@ -117,6 +132,9 @@ MusicPage {
 
     DialogNewPlaylist {
         id: dialogNewPlaylist
+        onAccepted: {
+            filter.visible = false; // clear current search
+        }
     }
 
     onAddClicked: dialogNewPlaylist.open()
