@@ -71,8 +71,9 @@ Row {
     ]
 
     Rectangle {
+        id: image
         height: contentHeight
-        width: image.visible ? coverSize : units.dp(1)
+        width: cover.visible ? coverSize : units.dp(1)
         color: "transparent"
         anchors {
             verticalCenter: parent.verticalCenter
@@ -81,7 +82,7 @@ Row {
         }
 
         Image {
-            id: image
+            id: cover
             anchors {
                 verticalCenter: parent.verticalCenter
             }
