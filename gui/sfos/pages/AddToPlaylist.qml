@@ -55,6 +55,7 @@ MusicPage {
         itemWidth: units.gu(12)
         heightOffset: units.gu(7)
         model: AllPlaylistsModel
+        clip: true
         delegate: Card {
             id: playlist
             coverSources: [{art: model.art}]

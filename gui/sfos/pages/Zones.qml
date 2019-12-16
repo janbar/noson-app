@@ -71,7 +71,7 @@ MusicPage {
     MultiSelectListView {
         id: zoneList
         anchors.fill: parent
-
+        clip: true
         state: "selection"
 
         model: DelegateModel {

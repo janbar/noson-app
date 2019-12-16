@@ -56,6 +56,7 @@ MusicPage {
     MusicListView {
         id: favoriteList
         anchors.fill: parent
+        clip: true
         model: favoritesModelFilter
         delegate: MusicListItem {
             id: listItem
@@ -164,7 +165,7 @@ MusicPage {
         id: favoriteGrid
         itemWidth: units.gu(15)
         heightOffset: units.gu(9)
-
+        clip: true
         model: favoritesModelFilter
 
         delegate: Card {

@@ -248,6 +248,7 @@ MusicPage {
     MultiSelectListView {
         id: songList
         anchors.fill: parent
+        clip: true
 
         header: MusicHeader {
             id: blurredHeader

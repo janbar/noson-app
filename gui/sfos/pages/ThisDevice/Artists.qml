@@ -48,7 +48,7 @@ MusicPage {
         id: artistGridView
         itemWidth: units.gu(12)
         heightOffset: units.gu(7)
-
+        clip: true
         model: SortFilterModel {
             model: artists
             sort.property: "artist"

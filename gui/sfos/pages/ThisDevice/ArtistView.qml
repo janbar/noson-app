@@ -58,7 +58,7 @@ MusicPage {
         id: artistAlbumView
         itemWidth: units.gu(15)
         heightOffset: units.gu(7)
-
+        clip: true
         header: MusicHeader {
             id: blurredHeader
             height: contentHeight
