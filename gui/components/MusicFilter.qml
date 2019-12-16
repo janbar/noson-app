@@ -43,7 +43,6 @@ Rectangle {
                 anchors.centerIn: parent
                 source: "qrc:/images/edit-clear.svg"
                 onClicked: {
-                    field.text = "";
                     filter.visible = false;
                 }
             }
@@ -64,6 +63,7 @@ Rectangle {
             field.enabled = true;
             field.forceActiveFocus();
         } else {
+            field.clear();
             field.enabled = false;
         }
     }
