@@ -23,9 +23,18 @@ TextSwitch {
     property color color: styleMusic.view.foregroundColor
     property color controlDownColor: styleMusic.view.highlightedColor
     property real zoom: 1.0
+
+    property bool checkable: !busy
+
     //property alias textAlignment: label.horizontalAlignment
 
-    //opacity: checkable ? 1.0 : 0.1
+    opacity: busy ? 0.1: 1.0
+
+    automaticCheck: false
+    onClicked: {
+        if (!busy)
+            checked = !checked;
+    }
 
 /*
     contentItem: Text {

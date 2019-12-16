@@ -42,7 +42,7 @@ MusicPage {
 
     onGroupRoomClicked: {
         if (handleUnjoinRooms())
-            stackView.pop();
+            pageStack.pop();
     }
 
     function handleUnjoinRooms() {

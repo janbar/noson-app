@@ -31,6 +31,7 @@ Item {
     property string description: ""
     property bool isFavorite: false
     property alias checked: control.checked
+    property alias checkable: control.checkable
 
     property bool menuVisible: false
     property alias actionVisible: action.visible
@@ -230,6 +231,7 @@ Item {
         width: units.gu(6)
         visible: true
         property alias checked: control.checked
+        property alias checkable: control.checkable
 
         Rectangle {
             color: "transparent"
