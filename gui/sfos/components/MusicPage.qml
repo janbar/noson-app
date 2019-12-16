@@ -47,6 +47,7 @@ Page {
     property alias addToPlaylistVisible: addToPlaylist.visible
     property alias removeSelectedVisible: removeSelected.visible
     property alias footer: footerToolbar
+    property alias header: pageHeader
     property alias pageMenu: pageMenu._contentColumn
     property alias optionsMenu: optionsMenu._contentColumn
     property alias musicToolbar: musicToolbar
