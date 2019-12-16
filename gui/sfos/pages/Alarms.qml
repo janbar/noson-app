@@ -76,7 +76,7 @@ MusicPage {
     MultiSelectListView {
         id: alarmList
         anchors.fill: parent
-
+        clip: true
         state: "default"
 
         model: DelegateModel {

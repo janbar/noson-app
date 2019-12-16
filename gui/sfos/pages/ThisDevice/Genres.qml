@@ -48,7 +48,7 @@ MusicPage {
         id: genreGridView
         itemWidth: units.gu(12)
         heightOffset: units.gu(7)
-
+        clip: true
         model: SortFilterModel {
             model: genres
             sort.property: "genre"

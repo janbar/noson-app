@@ -50,7 +50,7 @@ MusicPage {
         id: composerGridView
         itemWidth: units.gu(12)
         heightOffset: units.gu(7)
-
+        clip: true
         model: SortFilterModel {
             model: AllComposersModel
             sort.property: "composer"
