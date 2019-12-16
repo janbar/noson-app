@@ -68,8 +68,8 @@ Item {
         Slider {
             id: volumeGroupSlider
             anchors.left: nowPlayingMuteButton.right
-            anchors.leftMargin: units.gu(1)
-            anchors.rightMargin: units.gu(1)
+            anchors.leftMargin: -units.gu(2)
+            anchors.rightMargin: -units.gu(2)
             anchors.right: nightmodeButton.left
             anchors.verticalCenter: parent.verticalCenter
             stepSize: 2.5

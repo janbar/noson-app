@@ -20,6 +20,7 @@
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
+import QtGraphicalEffects 1.0
 
 //import "../components/Themes/Ambiance"
 
@@ -61,14 +62,32 @@ SilicaFlickable {
             }
         }
 
-        Rectangle {
+        Item {
             id: nowPlayingWideAspectLabelsBackground
             anchors.bottom: albumImageContainer.bottom
             height: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(10) : units.gu(13)
             width: parent.width
-            opacity: 0.75
-            color: "white"
+
+            clip: true
+
+            FastBlur {
+                id: blurred
+                source: albumImageContainer
+                radius: 20
+                width: albumImageContainer.width
+                height: albumImageContainer.height
+                visible: false
+            }
+            BrightnessContrast {
+                anchors.bottom: parent.bottom
+                source: blurred
+                brightness: -0.5
+                width: albumImageContainer.width
+                height: albumImageContainer.height
+            }
         }
+
+
 
         /* Column for labels */
         Column {
@@ -92,7 +111,7 @@ SilicaFlickable {
                     right: parent.right
                     rightMargin: units.gu(1)
                 }
-                color: "black"
+                color: styleMusic.nowPlaying.primaryColor
                 elide: Text.ElideRight
                 font.pointSize: units.fs("large")
                 font.weight: Font.Bold
@@ -111,7 +130,7 @@ SilicaFlickable {
                     right: parent.right
                     rightMargin: units.gu(1)
                 }
-                color: "black"
+                color: styleMusic.nowPlaying.primaryColor
                 elide: Text.ElideRight
                 font.pointSize: units.fs("small")
                 font.weight: Font.Bold
@@ -166,7 +185,7 @@ SilicaFlickable {
             left: fullviewProgressBackground.left
             right: fullviewProgressBackground.right
             top: fullviewProgressBackground.top
-            //topMargin: -units.gu(2)
+            topMargin: -units.gu(2)
         }
         height: units.gu(2)
         width: parent.width
@@ -196,6 +215,8 @@ SilicaFlickable {
                 left: parent.left
                 right: parent.right
                 top: parent.top
+                leftMargin: -units.gu(5)
+                rightMargin: -units.gu(5)
             }
             maximumValue: player.trackDuration  // load value at startup
             objectName: "progressSliderShape"
