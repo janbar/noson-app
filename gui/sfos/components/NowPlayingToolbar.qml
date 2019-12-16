@@ -154,7 +154,7 @@ Item {
             anchors.right: nowPlayingPreviousButton.left
             anchors.rightMargin: units.gu(1)
             anchors.verticalCenter: nowPlayingPlayButton.verticalCenter
-            height: units.gu(4)
+            height: units.gu(6)
             width: height
             color: "transparent"
             visible: player.isPlayingQueued()
@@ -181,7 +181,7 @@ Item {
             anchors.right: nowPlayingPlayButton.left
             anchors.rightMargin: units.gu(1)
             anchors.verticalCenter: nowPlayingPlayButton.verticalCenter
-            height: units.gu(4)
+            height: units.gu(6)
             width: height
             color: "transparent"
             visible: player.isPlayingQueued()
@@ -201,13 +201,13 @@ Item {
         Rectangle {
             id: nowPlayingPlayButton
             anchors.centerIn: parent
-            height: units.gu(4)
+            height: units.gu(8)
             width: height
             color: "transparent"
 
             NosonIcon {
                 id: nowPlayingPlayIndicator
-                height: units.gu(3)
+                height: units.gu(6)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: player.isPlaying ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
@@ -221,7 +221,7 @@ Item {
             anchors.left: nowPlayingPlayButton.right
             anchors.leftMargin: units.gu(1)
             anchors.verticalCenter: nowPlayingPlayButton.verticalCenter
-            height: units.gu(4)
+            height: units.gu(6)
             width: height
             color: "transparent"
             visible: player.isPlayingQueued()
@@ -244,7 +244,7 @@ Item {
             anchors.left: nowPlayingNextButton.right
             anchors.leftMargin: units.gu(1)
             anchors.verticalCenter: nowPlayingPlayButton.verticalCenter
-            height: units.gu(4)
+            height: units.gu(6)
             width: height
             color: "transparent"
             visible: player.isPlayingQueued()
