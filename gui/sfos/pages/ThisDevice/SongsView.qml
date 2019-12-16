@@ -117,11 +117,6 @@ MusicPage {
         }
     }
 
-    BlurredBackground {
-        id: blurredBackground
-        height: parent.height
-    }
-
     Component {
         id: dragDelegate
 

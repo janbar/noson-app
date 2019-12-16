@@ -36,11 +36,6 @@ MusicPage {
 
     property bool isFavorite: false
 
-    BlurredBackground {
-        id: blurredBackground
-        height: parent.height
-    }
-
     AlbumList {
         id: albums
         artist: artistViewPage.artist

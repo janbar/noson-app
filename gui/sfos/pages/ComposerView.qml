@@ -39,11 +39,6 @@ MusicPage {
 
     property bool isFavorite: false
 
-    BlurredBackground {
-        id: blurredBackground
-        height: parent.height
-    }
-
     MusicGridView {
         id: composerAlbumView
         itemWidth: units.gu(15)

@@ -138,11 +138,6 @@ MusicPage {
         }
     }
 
-    BlurredBackground {
-        id: blurredBackground
-        height: parent.height
-    }
-
     Component {
         id: dragDelegate
 
@@ -449,7 +444,7 @@ MusicPage {
                 // removing playlist
                 removeFromFavorites(songStackPage.containerItem.payload)
                 removePlaylist(songStackPage.containerItem.id)
-                stackView.pop()
+                pageStack.pop()
             }
         }
     }

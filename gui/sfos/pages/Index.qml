@@ -36,12 +36,6 @@ MusicPage {
     pageTitle: qsTr("My Index")
     pageFlickable: indexGrid.visible ? indexGrid : indexList
 
-    BlurredBackground {
-            id: blurredBackground
-            height: parent.height
-            art: "qrc:/images/no_cover.png"
-    }
-
     ListModel {
       id: indexModel
     }

@@ -47,12 +47,6 @@ MusicPage {
     pageTitle: serviceItem.title
     pageFlickable: mediaGrid.visible ? mediaGrid : mediaList
 
-    BlurredBackground {
-            id: blurredBackground
-            height: parent.height
-            art: serviceItem.id === "SA_RINCON65031_0" ? "qrc:/images/tunein.png" : serviceItem.icon
-    }
-
     MediaModel {
       id: mediaModel
     }
