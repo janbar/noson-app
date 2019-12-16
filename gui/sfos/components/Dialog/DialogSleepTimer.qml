@@ -80,7 +80,7 @@ DialogBase {
         text: remainingTimeToString(remainingTime)
         color: styleMusic.dialog.labelColor
         elide: Text.ElideRight
-        font.pointSize: 2 * units.fs("medium")
+        font.pixelSize: 2 * units.fx("medium")
         horizontalAlignment: Text.AlignHCenter
         opacity: 1.0
     }
@@ -98,20 +98,20 @@ DialogBase {
             MenuItem {text: qsTr("4 hours")}
             MenuItem {text: qsTr("5 hours")}
             MenuItem {text: qsTr("6 hours")}
+
+            onActivated: {
+                if (index >= 0) {
+                    var sec = selectorModel.get(index).duration;
+                    if (player.configureSleepTimer(sec))
+                        remainingTime = sec;
+                    else
+                        selector.currentIndex = -1; // Reset selection
+                }
+            }
         }
 
         Layout.fillWidth: true
         currentIndex: 0
-
-        onClicked: {
-            if (currentIndex >= 0) {
-                var sec = model.get(currentIndex).duration;
-                if (player.configureSleepTimer(sec))
-                    remainingTime = sec;
-                else
-                    currentIndex = -1; // Reset selection
-            }
-        }
     }
 
     function remainingTimeToString(remaining) {
