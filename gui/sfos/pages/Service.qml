@@ -372,8 +372,10 @@ MusicPage {
         }
     }
 
-    onSearchClicked: dialogSearch.open();
-
+    onSearchClicked: {
+        dialogSearch.searchableModel = searchableModel
+        dialogSearch.open();
+    }
 
     ////////////////////////////////////////////////////////////////////////////
     ////
