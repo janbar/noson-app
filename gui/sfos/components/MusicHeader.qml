@@ -33,8 +33,8 @@ Item {
     property bool isFavorite: false
     readonly property bool wideView: width > mainView.wideSongView
     readonly property real contentHeight: {
-        titleColumnLoader.item.height + rightColumnLoader.item.height +
-             coversImage.anchors.topMargin + coversImage.anchors.bottomMargin
+        (titleColumnLoader.item.height >  coversImage.height ? titleColumnLoader.item.height : coversImage.height) + 
+        rightColumnLoader.item.height + coversImage.anchors.topMargin + coversImage.anchors.bottomMargin
     }
 
     CoverGrid {
