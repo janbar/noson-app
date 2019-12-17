@@ -355,7 +355,6 @@ ApplicationWindow {
     ////
 
     // Find index of a command line argument else -1
-    // Find index of a command line argument else -1
     function indexOfArgument(argv) {
         for (var i = 0; i < ApplicationArguments.length; ++i) {
             if (ApplicationArguments[i].indexOf(argv) === 0)
@@ -694,7 +693,7 @@ ApplicationWindow {
 
     // Action on check item as favorite
     function addItemToFavorites(modelItem, description, artURI) {
-        if (player.addItemToFavorites(modelItem, description, artURI))
+        if (Sonos.addItemToFavorites(modelItem.payload, description, artURI))
             return true;
         popInfo.open(qsTr("Action can't be performed"));
         return false;
