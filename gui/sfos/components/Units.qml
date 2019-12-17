@@ -1,4 +1,5 @@
 import QtQuick 2.2
+import Sailfish.Silica 1.0
 
 Item {
     property real scaleFactor: 1.0
@@ -30,15 +31,15 @@ Item {
 
     function fx(s) {
         if (s === "x-small")
-            return 24.0 * scaleFactor * fontScaleFactor;
+            return Theme.fontSizeExtraSmall * scaleFactor * fontScaleFactor;
         if (s === "small")
-            return 28.0 * scaleFactor * fontScaleFactor;
+            return Theme.fontSizeSmall * scaleFactor * fontScaleFactor;
         if (s === "medium")
-            return 32.0 * scaleFactor * fontScaleFactor;
+            return Theme.fontSizeMedium * scaleFactor * fontScaleFactor;
         if (s === "large")
-            return 36.0 * scaleFactor * fontScaleFactor;
+            return Theme.fontSizeLarge * scaleFactor * fontScaleFactor;
         if (s === "x-large")
-            return 40.0 * scaleFactor * fontScaleFactor;
+            return Theme.fontSizeHuge * scaleFactor * fontScaleFactor;
 
         return 0.0;
     }
