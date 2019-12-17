@@ -40,7 +40,7 @@ MusicPage {
     MusicFilter {
         id: filter
         visible: false
-        anchors.top: parent.top
+        onVisibleChanged: showToolbar = !visible
     }
 
     SortFilterModel {

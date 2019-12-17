@@ -53,6 +53,7 @@ MusicPage {
     MusicFilter {
         id: filter
         visible: false
+        onVisibleChanged: showToolbar = !visible
     }
 
     MusicGridView {
