@@ -74,7 +74,7 @@ MusicPage {
             secondaryTextVisible: false
 
             onClicked: {
-                stackView.push("qrc:/ui/ThisDevice/SongsView.qml",
+                pageStack.push("qrc:/sfos/pages/ThisDevice/SongsView.qml",
                                    {
                                        "covers": coverSources,
                                        "album": undefined,

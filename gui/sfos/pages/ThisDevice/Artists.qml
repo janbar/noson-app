@@ -71,7 +71,7 @@ MusicPage {
             secondaryTextVisible: false
 
             onClicked: {
-                stackView.push("qrc:/ui/ThisDevice/ArtistView.qml",
+                pageStack.push("qrc:/sfos/pages/ThisDevice/ArtistView.qml",
                                    {
                                        "artist": model.artist,
                                        "covers": [{art: artistCard.imageSource}],

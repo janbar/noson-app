@@ -154,11 +154,11 @@ MusicPage {
             actionIconSource: "qrc:/images/media-preview-start.svg"
             menuVisible: true
 
-            menuItems: [
+            menu: ContextMenu {
                 AddToQueue {
                     modelItem: model
                 }
-            ]
+            }
 
             coverSize: units.gu(5)
 
