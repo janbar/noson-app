@@ -318,9 +318,21 @@ MusicPage {
         }
     }
 
+    Component {
+        id: menuItemComp
+        MenuItem {
+        }
+    }
+
+    property MenuItem menuItemGoBack: null
+    onIsRootChanged: menuItemGoBack.visible = !isRoot // enable the menu when the content isn't root
+
     Component.onCompleted: {
         mediaModel.init(Sonos, serviceItem.payload, false)
         mediaModel.asyncLoad()
+        // create the menu item to navigate back. Starting from root it isn't visible
+        menuItemGoBack = menuItemComp.createObject(pageMenu, {"text" : qsTr("Go back"), "visible" : false})
+        menuItemGoBack.onClicked.connect(goUpClicked)
     }
 
     onGoUpClicked: {
@@ -361,6 +373,7 @@ MusicPage {
     }
 
     onSearchClicked: dialogSearch.open();
+
 
     ////////////////////////////////////////////////////////////////////////////
     ////
