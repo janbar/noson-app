@@ -23,7 +23,10 @@ Item {
     objectName: "musicToolbarObject"
 
     property alias color: bg.color
-
+    property alias preferredHeight: enabledPlayerControlsGroup.childrenRect.height
+    
+    height: preferredHeight
+    
     Rectangle {
         id: bg
         anchors.fill: parent
