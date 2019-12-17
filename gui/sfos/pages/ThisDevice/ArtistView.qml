@@ -119,10 +119,6 @@ MusicPage {
                     }
                 }
             }
-
-            onFirstSourceChanged: {
-                blurredBackground.art = firstSource
-            }
         }
 
         model: SortFilterModel {

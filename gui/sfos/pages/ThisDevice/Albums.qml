@@ -46,13 +46,15 @@ MusicPage {
 
     onSearchClicked: filter.visible = true
 
-    header: MusicFilter {
+    //Header
+    MusicFilter {
         id: filter
         visible: false
     }
 
     MusicGridView {
         id: albumGridView
+        anchors.topMargin: filter.visible ? filter.height : 0
         itemWidth: units.gu(15)
         heightOffset: units.gu(9)
         clip: true

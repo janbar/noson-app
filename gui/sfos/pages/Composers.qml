@@ -41,13 +41,15 @@ MusicPage {
 
     onSearchClicked: filter.visible = true
 
-    header: MusicFilter {
+    //Header
+    MusicFilter {
         id: filter
         visible: false
     }
 
     MusicGridView {
         id: composerGridView
+        anchors.topMargin: filter.visible ? filter.height : 0
         itemWidth: units.gu(12)
         heightOffset: units.gu(7)
         clip: true
@@ -79,7 +81,7 @@ MusicPage {
             }
 
             onClicked: {
-                stackView.push("qrc:/ui/ComposerView.qml",
+                pageStack.push("qrc:/sfos/pages/ComposerView.qml",
                                    {
                                        "containerItem": makeContainerItem(model),
                                        "composerSearch": model.id,

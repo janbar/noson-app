@@ -273,10 +273,6 @@ MusicPage {
                     height: units.gu(1)
                 }
             }
-
-            onFirstSourceChanged: {
-                blurredBackground.art = firstSource
-            }
         }
 
         model: DelegateModel {

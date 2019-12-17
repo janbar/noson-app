@@ -57,7 +57,7 @@ MusicPage {
         id: serviceList
         anchors.fill: parent
         model: servicesModel
-        
+        clip: true
         delegate: MusicListItem {
             id: serviceItem
 

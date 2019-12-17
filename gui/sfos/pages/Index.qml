@@ -116,22 +116,22 @@ MusicPage {
             indexModel.append({
                 title: qsTr("Artists"),
                 art: "qrc:/images/folder_artist.png",
-                source: "qrc:/ui/Artists.qml"
+                source: "qrc:/sfos/pages/Artists.qml"
             });
             indexModel.append({
                 title: qsTr("Albums"),
                 art: "qrc:/images/folder_album.png",
-                source: "qrc:/ui/Albums.qml"
+                source: "qrc:/sfos/pages/Albums.qml"
             });
             indexModel.append({
                 title: qsTr("Genres"),
                 art: "qrc:/images/folder_genre.png",
-                source: "qrc:/ui/Genres.qml"
+                source: "qrc:/sfos/pages/Genres.qml"
             });
             indexModel.append({
                 title: qsTr("Composers"),
                 art: "qrc:/images/folder_composer.png",
-                source: "qrc:/ui/Composers.qml"
+                source: "qrc:/sfos/pages/Composers.qml"
             });
         } else {
             noIndex = true;
@@ -148,7 +148,7 @@ MusicPage {
         anchors.fill: parent
         active: noIndex && !infoLoadedIndex
         asynchronous: true
-        source: "qrc:/components/IndexEmptyState.qml"
+        source: "qrc:/sfos/components/IndexEmptyState.qml"
         visible: active
     }
 
@@ -157,12 +157,12 @@ MusicPage {
         anchors.fill: parent
         active: shareIndexInProgress
         asynchronous: true
-        source: "qrc:/components/IndexUpdateState.qml"
+        source: "qrc:/sfos/components/IndexUpdateState.qml"
         visible: active
     }
 
     function clickItem(model) {
-        stackView.push(model.source);
+        pageStack.push(model.source);
     }
 
 }

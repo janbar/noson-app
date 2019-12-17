@@ -36,6 +36,7 @@ MusicPage {
 
     onSearchClicked: filter.visible = true
 
+    //Header
     MusicFilter {
         id: filter
         visible: false
@@ -56,6 +57,7 @@ MusicPage {
     MusicListView {
         id: favoriteList
         anchors.fill: parent
+        anchors.topMargin: filter.visible ? filter.height : 0
         clip: true
         model: favoritesModelFilter
         delegate: MusicListItem {
@@ -163,6 +165,7 @@ MusicPage {
 
     MusicGridView {
         id: favoriteGrid
+        anchors.topMargin: filter.visible ? filter.height : 0
         itemWidth: units.gu(15)
         heightOffset: units.gu(9)
         clip: true
