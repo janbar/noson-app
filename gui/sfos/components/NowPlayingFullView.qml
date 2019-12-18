@@ -65,7 +65,7 @@ SilicaFlickable {
         Item {
             id: nowPlayingWideAspectLabelsBackground
             anchors.bottom: albumImageContainer.bottom
-            height: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(13) : units.gu(16)
+            height: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(10) : units.gu(13)
             width: parent.width
 
             clip: true
