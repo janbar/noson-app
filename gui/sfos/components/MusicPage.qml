@@ -418,6 +418,7 @@ Page {
             Loader {
                 id: musicToolbar
                 active: true
+                height: visible ? units.gu(7.25) : 0
                 anchors { // start offscreen
                     left: parent.left
                     right: parent.right
