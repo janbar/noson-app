@@ -434,6 +434,12 @@ Page {
         PushUpMenu {
             id: optionsMenu
             MenuItem {
+                    text: qsTr("Sound Settings")
+                    onClicked: {
+                        dialogSettings.open();
+                    }
+            }
+            MenuItem {
                     text: qsTr("Standby Timer")
                     onClicked: {
                         dialogSleepTimer.open();
@@ -442,7 +448,7 @@ Page {
             MenuItem {
                     text: qsTr("Sonos Settings")
                     onClicked: {
-                        dialogSoundSettings.open();
+                        dialogSettings.open();
                     }
             }
             MenuItem {

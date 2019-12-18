@@ -847,6 +847,10 @@ ApplicationWindow {
         id: dialogAbout
     }
 
+    DialogSettings {
+        id: dialogSettings
+    }
+
     DialogSleepTimer {
         id: dialogSleepTimer
     }
