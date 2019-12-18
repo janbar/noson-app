@@ -19,7 +19,7 @@ import QtQuick 2.2
 import Sailfish.Silica 1.0
 import "../"
 
-ListItem {
+MouseArea {
     id: dragArea
     property ListView listview: null
     property color color: styleMusic.view.backgroundColor
@@ -63,7 +63,8 @@ ListItem {
     property bool held: false
 
     anchors { left: parent.left; right: parent.right }
-    contentHeight: content.height
+    //contentHeight: content.height
+    height: content.height
 
     drag.target: held ? content : undefined
     drag.axis: Drag.YAxis

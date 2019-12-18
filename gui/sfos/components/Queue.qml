@@ -25,7 +25,7 @@ import "Delegates"
 import "Flickables"
 import "ListItemActions"
 
-Item {
+SilicaFlickable {
     id: queue
     property alias listview: queueList
     property alias header: queueList.header
