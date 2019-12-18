@@ -46,7 +46,7 @@ Item {
             rightMargin: units.gu(2)
             top: mirror ? parent.top : musicToolbarFullButtonContainer.bottom
         }
-        height: units.gu(6)
+        height: units.gu(5)
         width: parent.width
 
         /* Mute button */
@@ -68,8 +68,6 @@ Item {
         Slider {
             id: volumeGroupSlider
             anchors.left: nowPlayingMuteButton.right
-            anchors.leftMargin: -units.gu(2)
-            anchors.rightMargin: -units.gu(2)
             anchors.right: nightmodeButton.left
             anchors.verticalCenter: parent.verticalCenter
             stepSize: 2.5
@@ -145,7 +143,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        height: units.gu(8)
+        height: units.gu(9)
         width: parent.width
 
         /* Repeat button */

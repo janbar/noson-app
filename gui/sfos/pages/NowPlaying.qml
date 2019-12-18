@@ -73,7 +73,7 @@ MusicPage {
         property alias flickable: view
         anchors {
             fill: parent
-            bottomMargin: nowPlayingToolbar.height
+            bottomMargin: nowPlayingToolbar.height + units.gu(1)
             topMargin: units.gu(1)
         }
         NowPlayingFullView {
@@ -95,7 +95,7 @@ MusicPage {
             bottom: parent.bottom
             bottomMargin: isListView ? nowPlaying.height - height - header.height - footer.height : 0
         }
-        height: units.gu(14)
+        height: units.gu(16)
         width: parent.width
         backgroundColor: "transparent"
 

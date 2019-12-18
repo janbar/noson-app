@@ -108,7 +108,7 @@ Item {
                 }
                 visible: player.currentCount > 0
                 color: styleMusic.playerControls.foregroundColor
-                height: units.gu(6)
+                height: units.gu(5)
                 source: player.isPlaying ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
                 width: height
             }
@@ -123,7 +123,7 @@ Item {
                 }
                 visible: player.currentCount === 0
                 color: styleMusic.playerControls.foregroundColor
-                height: units.gu(6)
+                height: units.gu(5)
                 source: "qrc:/images/input.svg"
                 width: height
             }
