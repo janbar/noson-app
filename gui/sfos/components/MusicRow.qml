@@ -206,7 +206,7 @@ Item {
         id: action
         visible: false
         anchors.right: select.left
-        anchors.rightMargin: units.gu(1)
+        anchors.rightMargin: units.gu(2)
         width: units.gu(5)
 
         Rectangle {
