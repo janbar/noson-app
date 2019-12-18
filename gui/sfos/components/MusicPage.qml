@@ -425,7 +425,8 @@ Page {
                 }
                 asynchronous: true
                 source: "qrc:/sfos/components/MusicToolbar.qml"
-                visible: status === Loader.Ready && !noZone && (showToolbar === undefined || showToolbar)
+                visible: status === Loader.Ready && !noZone && (!wideAspect || player.currentMetaSource === "") &&
+                         (showToolbar === undefined || showToolbar)
             }
         }
 

@@ -97,6 +97,8 @@ ApplicationWindow {
 
     // property to detect if the UI has finished
     property bool loadedUI: false
+    property real wideSongView: units.gu(70)
+    property bool wideAspect: width >= units.gu(100) && loadedUI
 
     // property to enable pop info on index loaded
     property bool infoLoadedIndex: true // enabled at startup
@@ -819,10 +821,12 @@ ApplicationWindow {
 
         function pushNowPlaying()
         {
-            if (nowPlayingPage === null)
-                nowPlayingPage = pageStack.push("qrc:/sfos/pages/NowPlaying.qml", false, true);
-            if (nowPlayingPage.isListView) {
-                nowPlayingPage.isListView = false; // ensure full view
+            if (!wideAspect) {
+                if (nowPlayingPage === null)
+                    nowPlayingPage = pageStack.push("qrc:/sfos/pages/NowPlaying.qml", false, true);
+                if (nowPlayingPage.isListView) {
+                    nowPlayingPage.isListView = false; // ensure full view
+                }
             }
         }
         

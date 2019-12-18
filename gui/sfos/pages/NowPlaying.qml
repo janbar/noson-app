@@ -49,6 +49,32 @@ MusicPage {
         }
     }
 
+    Connections {
+        target: mainView
+        onWideAspectChanged: {
+            if (wideAspect)
+                pageStack.pop()
+        }
+    }
+
+    // FIXME: workaround for when entering wideAspect coming back from a stacked page (AddToPlaylist) and the page being deleted breaks the stacked page
+    onVisibleChanged: {
+        if (wideAspect) {
+           popWaitTimer.start()
+        }
+    }
+
+    Timer {
+        id: popWaitTimer
+        interval: 250
+        onTriggered: {
+            if (pageStack.currentPage === nowPlaying) {
+                pageStack.pop();
+                mainView.nowPlayingPage = null;
+            }
+        }
+    }
+
     // Ensure that the listview has loaded before attempting to positionAt
     function ensureListViewLoaded() {
         if (queueLoader.item.listview.count === player.trackQueue.model.count) {
