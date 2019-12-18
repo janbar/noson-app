@@ -148,7 +148,7 @@ MouseArea {
                 dragArea.sourceIndex = drag.source.DelegateModel.itemsIndex;
             dragArea.targetIndex = dragArea.DelegateModel.itemsIndex;
 
-            visualModel.items.move(
+            listview.model.items.move(
                     drag.source.DelegateModel.itemsIndex,
                     dragArea.DelegateModel.itemsIndex);
         }
