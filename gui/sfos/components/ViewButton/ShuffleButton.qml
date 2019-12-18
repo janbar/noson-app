@@ -19,7 +19,7 @@ import QtQuick 2.2
 import Sailfish.Silica 1.0
 import "../"
 
-NosonIcon {
+MusicIcon {
     height: units.gu(5)
     width: units.gu(20)
     source: "qrc:/images/media-playlist-shuffle.svg"
