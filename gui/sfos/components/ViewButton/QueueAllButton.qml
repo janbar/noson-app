@@ -17,14 +17,25 @@
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
-import QtGraphicalEffects 1.0
+import "../"
 
-MouseArea {
+NosonIcon {
+    height: units.gu(5)
+    width: units.gu(20)
+    source: "qrc:/images/add.svg"
+    label {
+        //: this appears in a button with limited space (around 14 characters)
+        text: qsTr("Queue all")
+        font.pixelSize: units.fx("medium")
+        width: parent.width - units.gu(6)
+        elide: Text.ElideRight
+    }
+
     property var containerItem
 
-    height: units.gu(4)
-
-    onClicked: delayAddQueue.start()
+    onClicked: {
+        delayAddQueue.start()
+    }
 
     Timer {
         id: delayAddQueue
@@ -32,35 +43,5 @@ MouseArea {
         onTriggered: {
             addQueue(containerItem)
         }
-    }
-
-    Image {
-        id: icon
-        anchors.left: parent.left
-        anchors.verticalCenter: parent.verticalCenter
-        height: parent.height
-        width: height
-        sourceSize.height: height
-        sourceSize.width: width
-        source: "qrc:/images/add.svg"
-    }
-    BrightnessContrast {
-        anchors.fill: icon
-        source: icon
-        /*!FIXME: brightness: 0.5+styleMusic.view.primaryColor.hslLightness*/
-        brightness: Qt.colorEqual(styleMusic.view.primaryColor, "black") ? -0.5 : +0.5
-    }
-
-    Text {
-        color: styleMusic.view.primaryColor
-        anchors.left: icon.right
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.leftMargin: units.gu(2)
-        anchors.topMargin: units.gu(1)
-        //: this appears in a button with limited space (around 14 characters)
-        text: qsTr("Queue all")
-        font.pixelSize: units.fx("medium")
-        elide: Text.ElideRight
-        width: parent.width - icon.width - anchors.leftMargin
     }
 }
