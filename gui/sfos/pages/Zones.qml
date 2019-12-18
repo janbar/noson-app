@@ -112,7 +112,7 @@ MusicPage {
                     }
                 }
 
-                contentHeight: units.gu(10)
+                contentHeight: units.gu(12)
                 coverSize: units.gu(5)
                 noCover: "qrc:/images/no_cover.png"
 
