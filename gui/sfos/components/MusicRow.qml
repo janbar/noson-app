@@ -22,7 +22,7 @@ import "ListItemActions"
 Item {
     id: row
     
-    property real contentHeight: columnComponent.height + Theme.paddingSmall //units.gu(6)
+    property real contentHeight: units.gu(6)
     property alias column: columnComponent.sourceComponent
     property real coverSize: contentHeight
     property string noCover: "qrc:/images/no_cover.png"
@@ -74,7 +74,7 @@ Item {
         width: cover.visible ? coverSize : units.dp(1)
         color: "transparent"
         anchors {
-            verticalCenter: parent.verticalCenter
+            //verticalCenter: parent.verticalCenter
             topMargin: units.gu(1)
             bottomMargin: units.gu(1)
         }
