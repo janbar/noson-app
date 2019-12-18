@@ -231,7 +231,6 @@
         <file>sfos/components/BlurredBackground.qml</file>
         <file>sfos/components/ClockTumbler.qml</file>
         <file>sfos/components/CoverGrid.qml</file>
-        <file>sfos/components/NosonIcon.qml</file>
         <file>sfos/components/IndexEmptyState.qml</file>
         <file>sfos/components/IndexUpdateState.qml</file>
         <file>sfos/components/MusicCheckBox.qml</file>
@@ -267,5 +266,6 @@
         <file>sfos/pages/ThisDevice/QueueAllButton.qml</file>
         <file>sfos/pages/ThisDevice/ShuffleButton.qml</file>
         <file>sfos/pages/ThisDevice/SongsView.qml</file>
+        <file>sfos/components/MusicIcon.qml</file>
     </qresource>
 </RCC>

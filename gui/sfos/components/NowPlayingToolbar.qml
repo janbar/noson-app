@@ -46,15 +46,15 @@ Item {
             rightMargin: units.gu(2)
             top: mirror ? parent.top : musicToolbarFullButtonContainer.bottom
         }
-        height: units.gu(5)
+        height: units.gu(6)
         width: parent.width
 
         /* Mute button */
-        NosonIcon {
+        MusicIcon {
             id: nowPlayingMuteButton
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
-            height: units.gu(4)
+            height: units.gu(6)
             width: height
             source: player.mute ? "qrc:/images/audio-volume-muted.svg" : "qrc:/images/audio-volume.svg"
             objectName: "muteShape"
@@ -123,11 +123,11 @@ Item {
         }
 
         /* equalizer button */
-        NosonIcon {
+        MusicIcon {
             id: nightmodeButton
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            height: units.gu(3) // smaller
+            height: units.gu(5) // smaller
             source: "qrc:/images/settings.svg"
             opacity: 1.0
             onClicked: {
@@ -157,9 +157,9 @@ Item {
             color: "transparent"
             visible: player.isPlayingQueued()
 
-            NosonIcon {
+            MusicIcon {
                 id: repeatIcon
-                height: units.gu(3)
+                height: units.gu(5)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: "qrc:/images/media-playlist-repeat.svg"
@@ -184,9 +184,9 @@ Item {
             color: "transparent"
             visible: player.isPlayingQueued()
 
-            NosonIcon {
+            MusicIcon {
                 id: nowPlayingPreviousIndicator
-                height: units.gu(3)
+                height: units.gu(5)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: "qrc:/images/media-skip-backward.svg"
@@ -203,9 +203,9 @@ Item {
             width: height
             color: "transparent"
 
-            NosonIcon {
+            MusicIcon {
                 id: nowPlayingPlayIndicator
-                height: units.gu(6)
+                height: units.gu(8)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: player.isPlaying ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
@@ -224,9 +224,9 @@ Item {
             color: "transparent"
             visible: player.isPlayingQueued()
 
-            NosonIcon {
+            MusicIcon {
                 id: nowPlayingNextIndicator
-                height: units.gu(3)
+                height: units.gu(5)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: "qrc:/images/media-skip-forward.svg"
@@ -247,9 +247,9 @@ Item {
             color: "transparent"
             visible: player.isPlayingQueued()
 
-            NosonIcon {
+            MusicIcon {
                 id: shuffleIcon
-                height: units.gu(3)
+                height: units.gu(5)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: "qrc:/images/media-playlist-shuffle.svg"

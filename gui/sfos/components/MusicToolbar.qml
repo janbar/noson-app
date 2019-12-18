@@ -99,7 +99,7 @@ Item {
             }
 
             /* Play/Pause button */
-            NosonIcon {
+            MusicIcon {
                 id: disabledPlayerControlsPlayButton
                 anchors {
                     right: parent.right
@@ -108,13 +108,13 @@ Item {
                 }
                 visible: player.currentCount > 0
                 color: styleMusic.playerControls.foregroundColor
-                height: units.gu(5)
+                height: units.gu(6)
                 source: player.isPlaying ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
                 width: height
             }
 
             /* Select input */
-            NosonIcon {
+            MusicIcon {
                 id: disabledPlayerControlsSelectButton
                 anchors {
                     right: parent.right
@@ -215,7 +215,7 @@ Item {
             }
 
             /* Play/Pause button */
-            NosonIcon {
+            MusicIcon {
                 id: playerControlsPlayButton
                 anchors {
                     right: parent.right

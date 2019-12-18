@@ -138,12 +138,12 @@ Page {
                         color: "transparent"
 
                          Row {
-                            spacing: units.gu(4)
+                            spacing: units.gu(1)
                             anchors.fill: parent
 
-                            NosonIcon {
+                            MusicIcon {
                                 source: "qrc:/images/media-playlist.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 label.text: player.queueInfo
                                 label.font.pixelSize: units.fx("x-small")
 
@@ -158,46 +158,46 @@ Page {
                                     }
                             }
 
-                            NosonIcon {
+                            MusicIcon {
                                 source: "qrc:/images/location.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 label.text: currentZoneTag
                                 label.font.pixelSize: units.fx("x-small")
 
                                 onClicked: pageStack.push("qrc:/sfos/pages/Zones.qml")
                             }
 
-                            NosonIcon {
+                            MusicIcon {
                                 id: viewType
                                 visible: false
                                 source: isListView ? "qrc:/images/view-grid-symbolic.svg" : "qrc:/images/view-list-symbolic.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 onClicked: {
                                     isListView = !isListView
                                 }
                             }
 
-                            NosonIcon {
+                            MusicIcon {
                                 id: find
                                 visible: false
                                 source: "qrc:/images/find.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 onClicked: searchClicked()
                             }
 
-                            NosonIcon {
+                            MusicIcon {
                                 id: selection
                                 visible: false
                                 source: "qrc:/images/select.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 onClicked: thisPage.state = "selection"
                             }
 
-                            NosonIcon {
+                            MusicIcon {
                                 id: add
                                 visible: false
                                 source: "qrc:/images/add.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 label.text: qsTr("Add")
                                 label.font.pixelSize: units.fx("x-small")
                                 onClicked: addClicked()
@@ -228,13 +228,13 @@ Page {
                         color: "transparent"
 
                         Row {
-                            spacing: units.gu(4)
+                            spacing: units.gu(1)
 
-                            NosonIcon {
+                            MusicIcon {
                                 id: closeSelection
                                 visible: true
                                 source: "qrc:/images/close.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 label.text: qsTr("Close")
                                 label.font.pixelSize: units.fx("x-small")
                                 onClicked: {
@@ -243,49 +243,49 @@ Page {
                                 }
                             }
 
-                            NosonIcon {
+                            MusicIcon {
                                 id: selectAll
                                 visible: true
                                 source: "qrc:/images/select.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 label.text: qsTr("All")
                                 label.font.pixelSize: units.fx("x-small")
                                 onClicked: selectAllClicked()
                             }
 
-                            NosonIcon {
+                            MusicIcon {
                                 id: selectNone
                                 visible: true
                                 source: "qrc:/images/select-undefined.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 label.text: qsTr("Clear")
                                 label.font.pixelSize: units.fx("x-small")
                                 onClicked: selectNoneClicked()
                             }
 
-                            NosonIcon {
+                            MusicIcon {
                                 id: addToQueue
                                 visible: true
                                 source: "qrc:/images/add.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 onClicked: addToQueueClicked()
                             }
 
-                            NosonIcon {
+                            MusicIcon {
                                 id: addToPlaylist
                                 visible: true
                                 source: "qrc:/images/add-to-playlist.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 onClicked: addToPlaylistClicked()
                             }
                         }
 
-                        NosonIcon {
+                        MusicIcon {
                             id: removeSelected
                             anchors.right: parent.right
                             visible: true
                             source: "qrc:/images/delete.svg"
-                            height: units.gu(3)
+                            height: units.gu(5)
                             onClicked: removeSelectedClicked()
                         }
                     }
@@ -309,15 +309,15 @@ Page {
                         anchors.topMargin: units.gu(1)
                         anchors.leftMargin: units.gu(1)
                         anchors.rightMargin: units.gu(1)
-                        height: units.gu(3)
+                        height: units.gu(5)
                         color: "transparent"
 
                         Row {
-                            spacing: units.gu(4)
+                            spacing: units.gu(1)
 
-                            NosonIcon {
+                            MusicIcon {
                                 source: "qrc:/images/media-playlist.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 label.text: player.queueInfo
                                 label.font.pixelSize: units.fx("x-small")
 
@@ -329,29 +329,29 @@ Page {
                                 }
                             }
 
-                            NosonIcon {
+                            MusicIcon {
                                 id: reload
                                 visible: true
                                 source: "qrc:/images/reload.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 onClicked: reloadClicked()
                             }
 
-                            NosonIcon {
+                            MusicIcon {
                                 id: groupAll
                                 visible: true
                                 source: "qrc:/images/select.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 label.text: qsTr("All")
                                 label.font.pixelSize: units.fx("x-small")
                                 onClicked: groupAllZoneClicked()
                             }
 
-                            NosonIcon {
+                            MusicIcon {
                                 id: group
                                 visible: true
                                 source: "qrc:/images/group.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 label.text: qsTr("Done")
                                 label.font.pixelSize: units.fx("x-small")
                                 onClicked: groupZoneClicked()
@@ -378,34 +378,34 @@ Page {
                         anchors.topMargin: units.gu(1)
                         anchors.leftMargin: units.gu(1)
                         anchors.rightMargin: units.gu(1)
-                        height: units.gu(3)
+                        height: units.gu(5)
                         color: "transparent"
 
                         Row {
-                            spacing: units.gu(4)
+                            spacing: units.gu(1)
 
-                            NosonIcon {
+                            MusicIcon {
                                 source: "qrc:/images/location.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 label.text: currentZoneTag
                                 label.font.pixelSize: units.fx("x-small")
                             }
 
-                            NosonIcon {
+                            MusicIcon {
                                 id: groupAllRoom
                                 visible: true
                                 source: "qrc:/images/select-undefined.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 label.text: qsTr("None")
                                 label.font.pixelSize: units.fx("x-small")
                                 onClicked: groupNoneRoomClicked()
                             }
 
-                            NosonIcon {
+                            MusicIcon {
                                 id: groupRoom
                                 visible: true
                                 source: "qrc:/images/group.svg"
-                                height: units.gu(3)
+                                height: units.gu(5)
                                 label.text: qsTr("Done")
                                 label.font.pixelSize: units.fx("x-small")
                                 onClicked: groupRoomClicked()

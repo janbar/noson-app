@@ -31,15 +31,15 @@ Item {
 
     function fx(s) {
         if (s === "x-small")
-            return Theme.fontSizeExtraSmall * scaleFactor * fontScaleFactor;
+            return Theme.fontSizeTiny * scaleFactor * fontScaleFactor;
         if (s === "small")
-            return Theme.fontSizeSmall * scaleFactor * fontScaleFactor;
+            return Theme.fontSizeExtraSmall * scaleFactor * fontScaleFactor;
         if (s === "medium")
-            return Theme.fontSizeMedium * scaleFactor * fontScaleFactor;
+            return Theme.fontSizeSmall * scaleFactor * fontScaleFactor;
         if (s === "large")
-            return Theme.fontSizeLarge * scaleFactor * fontScaleFactor;
+            return Theme.fontSizeMedium * scaleFactor * fontScaleFactor;
         if (s === "x-large")
-            return Theme.fontSizeHuge * scaleFactor * fontScaleFactor;
+            return Theme.fontSizeLarge * scaleFactor * fontScaleFactor;
 
         return 0.0;
     }
