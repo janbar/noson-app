@@ -24,8 +24,9 @@ import QtQml.Models 2.2
 import "Delegates"
 import "Flickables"
 import "ListItemActions"
+import "Dialog"
 
-Item {
+SilicaFlickable {
     id: queue
     property alias listview: queueList
     property alias header: queueList.header
@@ -45,6 +46,7 @@ Item {
         DragMusicListItem {
             id: listItem
             listview: queueList
+            listIndex: model.index
             color: bg.color
             highlightedColor: styleMusic.view.highlightedColor
             highlighted: (player.currentIndex === index)
@@ -59,7 +61,14 @@ Item {
                 listview.reorder(from, to)
             }
 
-            onClick: dialogSongInfo.open(model, [{art: imageSource}], false, true) // don't show action 'play'
+            onClick: dialogSongInfo.open(model, [{art: imageSource}],
+                                         "qrc:/sfos/pages/ArtistView.qml",
+                                         {
+                                             "artistSearch": "A:ARTIST/" + model.author,
+                                             "artist": model.author,
+                                             "covers": makeCoverSource(undefined, model.author, undefined),
+                                             "pageTitle": qsTr("Artist")
+                                         })
 
             imageSources: makeCoverSource(model.art, model.author, model.album)
             description: qsTr("Song")

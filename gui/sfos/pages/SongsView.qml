@@ -144,30 +144,30 @@ MusicPage {
         SelectMusicListItem {
             id: listItem
             listview: songList
+            listIndex: model.index
             reorderable: isPlaylist
             //selectable: true
 
-            onSwipe: {
-                if (isPlaylist) {
-                    listview.focusIndex = index > 0 ? index - 1 : 0;
-                    mainView.jobRunning = true
-                    delayRemoveSelectedFromPlaylist.selectedIndices = [index]
-                    delayRemoveSelectedFromPlaylist.start()
-                    color = "red";
-                }
-            }
-
+/*!FIXME: playlist should be reorderable using drag/drop
             onReorder: {
                 listview.reorder(from, to)
-            }
+            }*/
 
-            onClick: {
+            onClicked: {
+                var arts = [];
                 if (isAlbum)
-                    // header covers
-                    dialogSongInfo.open(model, covers, true, true); // show actions
+                    arts = covers; // header covers
                 else
-                    // item cover
-                    dialogSongInfo.open(model, [{art: imageSource}], true, true); // show actions
+                    arts = [{art: imageSource}]; // item cover
+
+                dialogSongInfo.open(model, arts,
+                                    "qrc:/sfos/pages/ArtistView.qml",
+                                    {
+                                        "artistSearch": "A:ARTIST/" + model.author,
+                                        "artist": model.author,
+                                        "covers": makeCoverSource(undefined, model.author, undefined),
+                                        "pageTitle": qsTr("Artist")
+                                    });
             }
 
             color: "transparent"
@@ -280,7 +280,7 @@ MusicPage {
                     }
                     color: styleMusic.view.foregroundColor
                     elide: Text.ElideRight
-                    font.pixelSize: units.fx("x-large")
+                    font.pixelSize: units.fx("large")
                     maximumLineCount: 1
                     text: line2
                     wrapMode: Text.NoWrap
@@ -432,50 +432,47 @@ MusicPage {
         }
     }
 
-    DialogRemovePlaylist {
-        id: dialogRemovePlaylist
+    Component {
+        id: menuItemComp
+        MenuItem {
+        }
+    }
 
-        onAccepted: {
-            if (songStackPage.isPlaylist) {
-                // removing playlist
-                removeFromFavorites(songStackPage.containerItem.payload)
-                removePlaylist(songStackPage.containerItem.id)
-                pageStack.pop()
+    property MenuItem menuRemovePlaylist: null
+    function onMenuRemovePlaylist() {
+        dialogRemovePlaylist.open(songStackPage.containerItem)
+        dialogRemovePlaylist.onDone.connect(afterRemovedPlaylist.start)
+    }
+    Timer {
+        id: afterRemovedPlaylist
+        interval: 50
+        onTriggered: {
+            if (dialogRemovePlaylist.result === DialogResult.Accepted) {
+                if (dialogRemovePlaylist.status !== DialogStatus.Closed)
+                    restart();
+                else
+                    pageStack.pop();
             }
         }
     }
 
-    /*!TODO
-    // Page actions
-    optionsMenuVisible: true
-    optionsMenuContentItems: [
-        MenuItem {
-            enabled: containerItem ? true : false
-            text: songStackPage.isFavorite ?  qsTr("Remove from favorites") : qsTr("Add to favorites")
-            font.pixelSize: units.fx("medium")
-            onClicked: {
-                if (!songStackPage.isFavorite) {
-                    if (addItemToFavorites(containerItem, pageTitle, songList.headerItem.firstSource))
-                        songStackPage.isFavorite = true
-                } else {
-                    if (removeFromFavorites(containerItem.payload))
-                        songStackPage.isFavorite = false
-                }
-            }
-        },
-        MenuItem {
-            visible: songStackPage.isPlaylist
-            height: (visible ? implicitHeight : 0)
-            text: qsTr("Delete")
-            font.pixelSize: units.fx("medium")
-            onTriggered: {
-                if (isPlaylist)
-                    dialogRemovePlaylist.open()
-            }
+    property MenuItem menuAddItemToFavorites: null
+    property MenuItem menuRemoveFromFavorites: null
+    onIsFavoriteChanged: {
+        if (containerItem) {
+            menuAddItemToFavorites.visible = !songStackPage.isFavorite;
+            menuRemoveFromFavorites.visible = songStackPage.isFavorite;
         }
-    ]
-*/
-    
+    }
+    function onMenuAddItemToFavorites() {
+        if (addItemToFavorites(containerItem, pageTitle, songList.headerItem.firstSource))
+            songStackPage.isFavorite = true
+    }
+    function onMenuRemoveFromFavorites() {
+        if (removeFromFavorites(containerItem.payload))
+            songStackPage.isFavorite = false
+    }
+
     // check favorite on data loaded
     Connections {
         target: AllFavoritesModel
@@ -486,7 +483,16 @@ MusicPage {
     }
 
     Component.onCompleted: {
-        if (containerItem)
+        if (containerItem) {
             isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
+
+            console.debug("Populating menu")
+            menuAddItemToFavorites = menuItemComp.createObject(pageMenu, {"text" : qsTr("Add to favorites"), "visible" : !songStackPage.isFavorite})
+            menuAddItemToFavorites.onClicked.connect(onMenuAddItemToFavorites)
+            menuRemoveFromFavorites = menuItemComp.createObject(pageMenu, {"text" : qsTr("Remove from favorites"), "visible" : songStackPage.isFavorite})
+            menuRemoveFromFavorites.onClicked.connect(onMenuRemoveFromFavorites)
+            menuRemovePlaylist = menuItemComp.createObject(pageMenu, {"text" : qsTr("Delete"), "visible" : songStackPage.isPlaylist})
+            menuRemovePlaylist.onClicked.connect(onMenuRemovePlaylist)
+        }
     }
 }

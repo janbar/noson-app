@@ -123,20 +123,28 @@ MusicPage {
         SelectMusicListItem {
             id: listItem
             listview: songList
+            listIndex: model.index
             reorderable: false
             selectable: true
 
-            onClick: {
+            onClicked: {
                 var item = {
                     id: model.id, title: model.title, album: model.album, author: model.author, albumTrackNo: model.albumTrackNo,
                     payload: makeItemPayload(model)
                 };
+                var arts = [];
                 if (isAlbum)
-                    // header covers
-                    dialogSongInfo.open(item, covers, true, true); // show actions
+                    arts = covers; // header covers
                 else
-                    // item cover
-                    dialogSongInfo.open(item, [{art: imageSource}], true, true); // show actions
+                    arts = [{art: imageSource}]; // item cover
+
+                dialogSongInfo.open(item, arts,
+                                    "qrc:/sfos/pages/ThisDevice/ArtistView.qml",
+                                    {
+                                        "artist": model.author,
+                                        "covers": makeCoverSource(undefined, model.author, undefined),
+                                        "pageTitle": qsTr("Artist")
+                                    }, true); // force show more
             }
 
             color: "transparent"
@@ -230,7 +238,7 @@ MusicPage {
                     }
                     color: styleMusic.view.foregroundColor
                     elide: Text.ElideRight
-                    font.pixelSize: units.fx("x-large")
+                    font.pixelSize: units.fx("large")
                     maximumLineCount: 1
                     text: line2
                     wrapMode: Text.NoWrap

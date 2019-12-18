@@ -59,7 +59,7 @@ Page {
                     fillMode: Image.PreserveAspectFit
                     height: units.gu(10)
                     smooth: true
-                    source: "../images/music_download_icon.png"
+                    source: "qrc:/images/music_download_icon.png"
                 }
 
                 Rectangle {
@@ -93,7 +93,7 @@ Page {
                     width: 1
                     height: units.gu(6)
                     smooth: true
-                    source: "../images/div.png"
+                    source: "qrc:/images/div.png"
                 }
 
                 Rectangle {
@@ -125,7 +125,7 @@ Page {
                     fillMode: Image.PreserveAspectFit
                     height: units.gu(7)
                     smooth: true
-                    source: "../images/wifi_phone_icon.png"
+                    source: "qrc:/images/wifi_phone_icon.png"
                 }
 
                 Rectangle {
@@ -165,7 +165,7 @@ Page {
             Text {
                 color: styleMusic.view.foregroundColor
                 elide: Text.ElideRight
-                font.pointSize: 16.0
+                font.pixelSize: units.fx("large")
                 horizontalAlignment: Text.AlignHCenter
                 maximumLineCount: 6
                 text: qsTr("Make sure that your device is connected to the correct wireless network\nand one or more Sonos products are receiving power.")

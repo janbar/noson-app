@@ -118,7 +118,7 @@ Item {
                     anchors.leftMargin: units.gu(1)
                     text: qsTr("Night mode")
                     checked: player.nightmodeEnabled
-                    onCheckedChanged: {
+                    onClicked: {
                         if (!player.toggleNightmode())
                             checked = player.nightmodeEnabled;
                     }
@@ -135,7 +135,7 @@ Item {
                     anchors.leftMargin: units.gu(1)
                     text: qsTr("Loudness")
                     checked: player.loudnessEnabled
-                    onCheckedChanged: {
+                    onClicked: {
                         if (!player.toggleLoudness())
                             checked = player.loudnessEnabled;
                     }
@@ -158,7 +158,7 @@ Item {
                     anchors.leftMargin: units.gu(1)
                     text: qsTr("Line IN")
                     checked: (player.currentProtocol === 1)
-                    onCheckedChanged: {
+                    onClicked: {
                         if (checked) {
                             if (!player.playLineIN()) {
                                 checked = false;
@@ -184,7 +184,7 @@ Item {
                     anchors.leftMargin: units.gu(1)
                     text: qsTr("TV")
                     checked: (player.currentProtocol === 5)
-                    onCheckedChanged: {
+                    onClicked: {
                         if (checked) {
                             if (!player.playDigitalIN()) {
                                 checked = false;
@@ -204,14 +204,15 @@ Item {
                 }
                 MusicCheckBox {
                     id: playPulse
-                    visible: Sonos.havePulseAudio()
+                    //visible: Sonos.havePulseAudio()
+                    visible: false // No usage on Sailfish
                     anchors.right: parent.right
                     anchors.rightMargin: units.gu(1)
                     anchors.left: parent.left
                     anchors.leftMargin: units.gu(1)
                     text: "PulseAudio" // not translated
                     checked: (player.isPulseStream())
-                    onCheckedChanged: {
+                    onClicked: {
                         if (checked) {
                             if (!player.playPulse()) {
                                 checked = false;

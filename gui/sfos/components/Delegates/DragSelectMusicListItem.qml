@@ -28,6 +28,8 @@ MouseArea {
     property var currentColor: highlighted ? highlightedColor : color
     property bool highlighted: false
     property bool reorderable: true
+    property alias selectable: row.checkable
+    property alias checked: row.checked
 
     signal swipe
     signal click
@@ -38,11 +40,39 @@ MouseArea {
 
     signal imageError
 
+    state: listview.state
+    states: [
+        State {
+            name: "default"
+            PropertyChanges {
+                target: row
+                state: "default"
+            }
+        },
+        State {
+            name: "selection"
+            PropertyChanges {
+                target: row
+                state: "selection"
+                checked: listview.isSelectedIndex(index)
+            }
+        }
+    ]
+
+    Connections {
+        target: listview
+        onSynchronizeChecked: {
+            row.checked = listview.isSelectedIndex(index)
+        }
+    }
+
     Connections {
         target: row
         onActionPressed: actionPressed()
         onAction2Pressed: action2Pressed()
         onAction3Pressed: action3Pressed()
+        onSelected: listview.selectIndex(index)
+        onDeselected: listview.deselectIndex(index)
     }
 
     property alias coverSize: row.coverSize
@@ -59,7 +89,6 @@ MouseArea {
     property alias action3Visible: row.action3Visible
     property alias action3IconSource: row.action3IconSource
     property alias menuVisible: row.menuVisible
-    ///property alias menu: row.menu
 
     property bool held: false
     property int targetIndex: -1
@@ -67,6 +96,7 @@ MouseArea {
     anchors { left: parent.left; right: parent.right }
     //contentHeight: content.height
     height: content.height
+    width: ListView.view.width
 
     drag.target: held ? content : undefined
     drag.axis: Drag.YAxis
@@ -82,18 +112,22 @@ MouseArea {
     }
 
     onPressAndHold: {
-        if (reorderable)
-            held = true
+        if (state !== "selection") {
+            if (reorderable)
+                held = true
+        }
     }
     onReleased: {
-        if (held) {
-            held = false;
-        } else {
-            var diffX = mouse.x - lastX;
-            if (Math.abs(diffX) > units.gu(10)) {
-                swipe();
+        if (state !== "selection") {
+            if (held) {
+                held = false;
             } else {
-                click();
+                var diffX = mouse.x - lastX;
+                if (Math.abs(diffX) > units.gu(10)) {
+                    swipe();
+                } else {
+                    click();
+                }
             }
         }
     }
@@ -104,7 +138,8 @@ MouseArea {
             horizontalCenter: parent.horizontalCenter
             verticalCenter: parent.verticalCenter
         }
-        width: dragArea.width; height: row.contentHeight + units.dp(4)
+        width: dragArea.width;
+        height: row.contentHeight + units.dp(4)
 
         color: held ? dragArea.highlightedColor : dragArea.color
         Behavior on color { ColorAnimation { duration: 100 } }
@@ -138,6 +173,7 @@ MouseArea {
             id: row
             anchors.fill: parent
             onImageError: dragArea.imageError()
+            state: "selection"
         }
     }
 

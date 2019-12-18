@@ -38,8 +38,8 @@ Rectangle {
             height: units.gu(6)
             anchors.verticalCenter: parent.center
 
-            NosonIcon {
-                width: units.gu(4)
+            MusicIcon {
+                width: units.gu(5)
                 height: width
                 anchors.verticalCenter: parent.center
                 anchors.right: parent.right

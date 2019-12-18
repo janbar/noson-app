@@ -186,7 +186,7 @@ SilicaFlickable {
             left: fullviewProgressBackground.left
             right: fullviewProgressBackground.right
             top: fullviewProgressBackground.top
-            topMargin: -units.gu(2)
+            topMargin: -units.gu(1)
         }
         height: units.gu(2)
         width: parent.width
@@ -197,7 +197,7 @@ SilicaFlickable {
             id: fullviewPositionLabel
             anchors {
                 top: progressSliderMusic.bottom
-                topMargin: units.gu(-2)
+                topMargin: units.gu(-4)
                 left: parent.left
                 leftMargin: units.gu(1)
             }
@@ -216,8 +216,6 @@ SilicaFlickable {
                 left: parent.left
                 right: parent.right
                 top: parent.top
-                leftMargin: -units.gu(5)
-                rightMargin: -units.gu(5)
             }
             maximumValue: player.trackDuration  // load value at startup
             objectName: "progressSliderShape"
@@ -283,7 +281,7 @@ SilicaFlickable {
             id: fullviewDurationLabel
             anchors {
                 top: progressSliderMusic.bottom
-                topMargin: units.gu(-2)
+                topMargin: units.gu(-4)
                 right: parent.right
                 rightMargin: units.gu(1)
             }

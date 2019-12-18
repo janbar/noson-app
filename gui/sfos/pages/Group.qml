@@ -31,6 +31,7 @@ MusicPage {
     pageFlickable: groupList
     isListView: true
     listview: groupList
+    showToolbar: false
 
     state: "group"
 
@@ -87,6 +88,7 @@ MusicPage {
             delegate: SelectMusicListItem {
                 id: listItem
                 listview: groupList
+                listIndex: model.index
                 reorderable: false
                 selectable: true
                 highlighted: false
