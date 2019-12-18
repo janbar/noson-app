@@ -213,12 +213,9 @@ SilicaFlickable {
         Slider {
             id: progressSliderMusic
             anchors {
-                fill: sliderBG
                 left: parent.left
                 right: parent.right
                 top: parent.top
-                leftMargin: 0
-                rightMargin: 0
             }
             maximumValue: player.trackDuration  // load value at startup
             objectName: "progressSliderShape"
