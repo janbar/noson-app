@@ -238,11 +238,11 @@ Item {
                 enabled: true
                 onClicked: {
                     if (mainView.nowPlayingPage !== null) {
-/*!TODO
-                        while (stackView.depth > 1 && stackView.currentItem !== mainView.nowPlayingPage) {
-                            stackView.pop();
-                        }
-*/
+                        //!FIXME: doPop:574 - Warning: cannot pop while transition is in progress
+                        //while (pageStack.depth > 1 && pageStack.currentPage !== mainView.nowPlayingPage) {
+                        //    pageStack.pop();
+                        //}
+                        pageStack.pop();
                     } else {
                         tabs.pushNowPlaying();
                     }

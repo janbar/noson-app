@@ -31,6 +31,7 @@ MusicPage {
     pageFlickable: groupList
     isListView: true
     listview: groupList
+    showToolbar: false
 
     state: "group"
 
