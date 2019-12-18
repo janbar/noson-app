@@ -18,31 +18,31 @@
 import QtQuick 2.2
 import Sailfish.Silica 1.0
 
-TextSwitch {
+Item {
     id: control
     property color color: styleMusic.view.foregroundColor
     property color controlDownColor: styleMusic.view.highlightedColor
     property real zoom: 1.0
+    property alias text: label.text
+    property alias font: label.font
+    property alias textAlignment: label.horizontalAlignment
+    property bool checked: false
+    property alias down: area.pressed
+    property alias checkable: area.enabled
 
-    property bool checkable: !busy
+    signal clicked(bool checked)
 
-    //property alias textAlignment: label.horizontalAlignment
+    height: units.gu(5.0 * zoom)
+    width: height
+    opacity: checkable ? 1.0 : 0.1
 
-    opacity: busy ? 0.1: 1.0
-
-    automaticCheck: false
-    onClicked: {
-        if (!busy)
-            checked = !checked;
-    }
-
-/*
-    contentItem: Text {
+    Text {
         id: label
-        rightPadding: control.indicator.width + control.spacing
-        //leftPadding: control.indicator.width + control.spacing
-        text: control.text
-        font: control.font
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.left: parent.left
+        width: parent.width - indicator.width - units.gu(2.0 * zoom)
+        text: ""
+        font.pixelSize: units.fx("medium")
         opacity: enabled ? 1.0 : 0.3
         color: control.down ? control.controlDownColor : control.color
         elide: Text.ElideRight
@@ -50,25 +50,36 @@ TextSwitch {
         verticalAlignment: Text.AlignVCenter
     }
 
-
-    indicator: Rectangle {
-        implicitWidth: units.gu(2.5 * zoom)
-        implicitHeight: units.gu(2.5 * zoom)
-        x: control.width - width - control.rightPadding
-        //x: control.rightPadding
-        y: control.topPadding + control.availableHeight / 2 - height / 2
-        radius: units.dp(0)
+    Rectangle {
+        id: indicator
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.right: parent.right
+        anchors.margins: units.gu(1.0 * zoom)
+        height: parent.height - units.gu(2.0 * zoom)
+        width: height
+        radius: height / 2
         color: "transparent"
         border.color: control.down ? control.controlDownColor : control.color
 
         Rectangle {
-            width: units.gu(1.5 * zoom)
-            height: units.gu(1.5 * zoom)
-            x: units.dp(4 * zoom)
-            y: units.dp(4 * zoom)
-            radius: units.dp(2 * zoom)
+            width: units.gu(2.0 * zoom)
+            height: units.gu(2.0 * zoom)
+            x: units.gu(0.5 * zoom)
+            y: units.gu(0.5 * zoom)
+            radius: height / 2
             color: control.down ? control.controlDownColor : control.color
             visible: control.checked
         }
-    }*/
+    }
+
+    MouseArea {
+        id: area
+        anchors.fill: parent
+        anchors.margins: -units.gu(1.0 * zoom)
+
+        onClicked: {
+            control.checked = !control.checked;
+            control.clicked(control.checked);
+        }
+    }
 }

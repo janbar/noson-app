@@ -139,7 +139,7 @@ Item {
         visible: isFavorite
         anchors.right: action2.left
         anchors.rightMargin: units.gu(1)
-        width: visible ? units.gu(3) : 0
+        width: visible ? units.gu(5) : 0
 
         Rectangle {
             color: "transparent"
@@ -160,7 +160,7 @@ Item {
         visible: false
         anchors.right: action2.left
         anchors.rightMargin: units.gu(1)
-        width: visible ? units.gu(3) : 0
+        width: visible ? units.gu(5) : 0
         property alias iconSource: icon3.source
 
         Rectangle {
@@ -168,7 +168,7 @@ Item {
             width: parent.width
             height: row.height
 
-            NosonIcon {
+            MusicIcon {
                 id: icon3
                 source: row.action3IconSource
                 width: parent.width
@@ -184,14 +184,14 @@ Item {
         visible: false
         anchors.right: action.left
         anchors.rightMargin: units.gu(1)
-        width: visible ? units.gu(3) : 0
+        width: visible ? units.gu(5) : 0
 
         Rectangle {
             color: "transparent"
             width: parent.width
             height: row.height
 
-            NosonIcon {
+            MusicIcon {
                 id: icon2
                 source: row.action2IconSource
                 width: parent.width
@@ -206,15 +206,15 @@ Item {
         id: action
         visible: false
         anchors.right: select.left
-        anchors.rightMargin: units.gu(1)
-        width: units.gu(3)
+        anchors.rightMargin: units.gu(2)
+        width: units.gu(5)
 
         Rectangle {
             color: "transparent"
             width: parent.width
             height: row.height
 
-            NosonIcon {
+            MusicIcon {
                 id: icn
                 source: row.actionIconSource
                 width: parent.width

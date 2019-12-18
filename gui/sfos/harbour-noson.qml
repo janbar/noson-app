@@ -97,6 +97,8 @@ ApplicationWindow {
 
     // property to detect if the UI has finished
     property bool loadedUI: false
+    property real wideSongView: units.gu(70)
+    property bool wideAspect: width >= units.gu(100) && loadedUI
 
     // property to enable pop info on index loaded
     property bool infoLoadedIndex: true // enabled at startup
@@ -111,10 +113,10 @@ ApplicationWindow {
 
     // built-in cache for genre artworks
     property var genreArtworks: []
-    
+
     property bool alarmEnabled: false
     property bool shareIndexInProgress: false
-    
+
     // about alarms
     AlarmsModel {
         id: alarmsModel
@@ -253,7 +255,7 @@ ApplicationWindow {
         if (noZone) {
             noZonePage = pageStack.push("pages/NoZoneState.qml")
         } else {
-            if (pageStack.currentItem === noZonePage) {
+            if (pageStack.currentPage === noZonePage) {
                 pageStack.pop()
             }
         }
@@ -819,10 +821,12 @@ ApplicationWindow {
 
         function pushNowPlaying()
         {
-            if (nowPlayingPage === null)
-                nowPlayingPage = pageStack.push("qrc:/sfos/pages/NowPlaying.qml", false, true);
-            if (nowPlayingPage.isListView) {
-                nowPlayingPage.isListView = false; // ensure full view
+            if (!wideAspect) {
+                if (nowPlayingPage === null)
+                    nowPlayingPage = pageStack.push("qrc:/sfos/pages/NowPlaying.qml", false, true);
+                if (nowPlayingPage.isListView) {
+                    nowPlayingPage.isListView = false; // ensure full view
+                }
             }
         }
         
@@ -843,12 +847,12 @@ ApplicationWindow {
         id: dialogAbout
     }
 
-    DialogSleepTimer {
-        id: dialogSleepTimer
+    DialogSettings {
+        id: dialogSettings
     }
 
-    DialogSongInfo {
-        id: dialogSongInfo
+    DialogSleepTimer {
+        id: dialogSleepTimer
     }
 
     DialogSoundSettings {
@@ -871,6 +875,13 @@ ApplicationWindow {
         id: dialogSearch
     }
 
+    DialogSongInfo {
+        id: dialogSongInfo
+    }
+
+    DialogRemovePlaylist {
+        id: dialogRemovePlaylist
+    }
 
     //==============================================================
     // Spinner
@@ -880,6 +891,7 @@ ApplicationWindow {
     BusyIndicator {
         id: spinner
         anchors.centerIn: parent
+        size: BusyIndicatorSize.Large
         z: 100
         visible: jobRunning
         running: visible

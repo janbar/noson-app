@@ -49,6 +49,32 @@ MusicPage {
         }
     }
 
+    Connections {
+        target: mainView
+        onWideAspectChanged: {
+            if (wideAspect)
+                pageStack.pop()
+        }
+    }
+
+    // FIXME: workaround for when entering wideAspect coming back from a stacked page (AddToPlaylist) and the page being deleted breaks the stacked page
+    onVisibleChanged: {
+        if (wideAspect) {
+           popWaitTimer.start()
+        }
+    }
+
+    Timer {
+        id: popWaitTimer
+        interval: 250
+        onTriggered: {
+            if (pageStack.currentPage === nowPlaying) {
+                pageStack.pop();
+                mainView.nowPlayingPage = null;
+            }
+        }
+    }
+
     // Ensure that the listview has loaded before attempting to positionAt
     function ensureListViewLoaded() {
         if (queueLoader.item.listview.count === player.trackQueue.model.count) {
@@ -73,7 +99,7 @@ MusicPage {
         property alias flickable: view
         anchors {
             fill: parent
-            bottomMargin: nowPlayingToolbar.height
+            bottomMargin: nowPlayingToolbar.height + units.gu(1)
             topMargin: units.gu(1)
         }
         NowPlayingFullView {
@@ -95,7 +121,7 @@ MusicPage {
             bottom: parent.bottom
             bottomMargin: isListView ? nowPlaying.height - height - header.height - footer.height : 0
         }
-        height: units.gu(14)
+        height: units.gu(16)
         width: parent.width
         backgroundColor: "transparent"
 

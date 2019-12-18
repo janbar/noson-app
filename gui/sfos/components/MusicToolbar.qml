@@ -99,7 +99,7 @@ Item {
             }
 
             /* Play/Pause button */
-            NosonIcon {
+            MusicIcon {
                 id: disabledPlayerControlsPlayButton
                 anchors {
                     right: parent.right
@@ -114,7 +114,7 @@ Item {
             }
 
             /* Select input */
-            NosonIcon {
+            MusicIcon {
                 id: disabledPlayerControlsSelectButton
                 anchors {
                     right: parent.right
@@ -123,7 +123,7 @@ Item {
                 }
                 visible: player.currentCount === 0
                 color: styleMusic.playerControls.foregroundColor
-                height: units.gu(6)
+                height: units.gu(5)
                 source: "qrc:/images/input.svg"
                 width: height
             }
@@ -215,7 +215,7 @@ Item {
             }
 
             /* Play/Pause button */
-            NosonIcon {
+            MusicIcon {
                 id: playerControlsPlayButton
                 anchors {
                     right: parent.right
@@ -238,11 +238,11 @@ Item {
                 enabled: true
                 onClicked: {
                     if (mainView.nowPlayingPage !== null) {
-/*!TODO
-                        while (stackView.depth > 1 && stackView.currentItem !== mainView.nowPlayingPage) {
-                            stackView.pop();
-                        }
-*/
+                        //!FIXME: doPop:574 - Warning: cannot pop while transition is in progress
+                        //while (pageStack.depth > 1 && pageStack.currentPage !== mainView.nowPlayingPage) {
+                        //    pageStack.pop();
+                        //}
+                        pageStack.pop();
                     } else {
                         tabs.pushNowPlaying();
                     }

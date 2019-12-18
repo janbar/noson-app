@@ -80,6 +80,7 @@ MusicPage {
             delegate: SelectMusicListItem {
                 id: listItem
                 listview: zoneList
+                listIndex: model.index
                 reorderable: false
                 //selectable: true
                 highlighted: (currentZone === model.name)
@@ -90,6 +91,14 @@ MusicPage {
                 onClicked: {
                     connectZone(model.name)
                 }
+                onAction3Pressed: {
+                    if (zonePlayer.playbackState === "PLAYING")
+                        zonePlayer.pause();
+                    else
+                        zonePlayer.play();
+                }
+                action3Visible: false
+                action3IconSource: ""
                 onAction2Pressed: {
                     pageStack.push("qrc:/sfos/pages/Group.qml", {"zoneId": model.id})
                 }
@@ -112,7 +121,7 @@ MusicPage {
                     }
                 }
 
-                contentHeight: units.gu(10)
+                contentHeight: units.gu(11)
                 coverSize: units.gu(5)
                 noCover: "qrc:/images/no_cover.png"
 

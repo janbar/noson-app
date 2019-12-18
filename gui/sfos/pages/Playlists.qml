@@ -119,7 +119,7 @@ MusicPage {
         anchors.fill: parent
         active: AllPlaylistsModel.count === 0 && !infoLoadedIndex
         asynchronous: true
-        source: "qrc:/components/PlaylistsEmptyState.qml"
+        source: "qrc:/sfos/components/PlaylistsEmptyState.qml"
         visible: active
     }
 

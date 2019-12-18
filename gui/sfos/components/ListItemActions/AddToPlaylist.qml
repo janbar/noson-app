@@ -25,7 +25,7 @@ MenuItem {
     text: qsTr("Add to playlist")
     onClicked: {
         // WARNING: Get the payload of model now to increment the reference count
-        stackView.push("qrc:/ui/AddToPlaylist.qml",
+        pageStack.push("qrc:/sfos/pages/AddToPlaylist.qml",
                        {"chosenElements": [{id: model.Id, payload: model.payload}]})
     }
 }

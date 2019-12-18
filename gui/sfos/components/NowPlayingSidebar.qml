@@ -71,7 +71,7 @@ Page {
     }
 
     footer: Item {
-        height: units.gu(7.25)
+        height: units.gu(8)
         width: parent.width
 
         Rectangle {
