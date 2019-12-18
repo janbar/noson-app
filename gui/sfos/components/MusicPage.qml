@@ -138,7 +138,7 @@ Page {
                         color: "transparent"
 
                          Row {
-                            spacing: units.gu(1)
+                            spacing: units.gu(0.5)
                             anchors.fill: parent
 
                             MusicIcon {
@@ -228,7 +228,7 @@ Page {
                         color: "transparent"
 
                         Row {
-                            spacing: units.gu(1)
+                            spacing: units.gu(0.5)
 
                             MusicIcon {
                                 id: closeSelection
@@ -313,7 +313,7 @@ Page {
                         color: "transparent"
 
                         Row {
-                            spacing: units.gu(1)
+                            spacing: units.gu(0.5)
 
                             MusicIcon {
                                 source: "qrc:/images/media-playlist.svg"
@@ -382,7 +382,7 @@ Page {
                         color: "transparent"
 
                         Row {
-                            spacing: units.gu(1)
+                            spacing: units.gu(0.5)
 
                             MusicIcon {
                                 source: "qrc:/images/location.svg"
