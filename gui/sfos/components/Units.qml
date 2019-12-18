@@ -4,7 +4,7 @@ import Sailfish.Silica 1.0
 Item {
     property real scaleFactor: 1.0
     property real fontScaleFactor: 1.0
-    property real gridUnit: 16.0 * scaleFactor
+    property real gridUnit: 24.0 * scaleFactor
 
     function dp(p) {
         return scaleFactor * p;
