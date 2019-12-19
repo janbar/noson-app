@@ -255,7 +255,7 @@ ApplicationWindow {
         if (noZone) {
             noZonePage = pageStack.push("pages/NoZoneState.qml")
         } else {
-            if (pageStack.currentItem === noZonePage) {
+            if (pageStack.currentPage === noZonePage) {
                 pageStack.pop()
             }
         }
@@ -888,6 +888,7 @@ ApplicationWindow {
     BusyIndicator {
         id: spinner
         anchors.centerIn: parent
+        size: BusyIndicatorSize.Large
         z: 100
         visible: jobRunning
         running: visible

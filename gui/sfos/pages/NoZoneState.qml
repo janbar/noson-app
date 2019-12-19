@@ -165,7 +165,7 @@ Page {
             Text {
                 color: styleMusic.view.foregroundColor
                 elide: Text.ElideRight
-                font.pointSize: 16.0
+                font.pixelSize: units.fx("large")
                 horizontalAlignment: Text.AlignHCenter
                 maximumLineCount: 6
                 text: qsTr("Make sure that your device is connected to the correct wireless network\nand one or more Sonos products are receiving power.")
