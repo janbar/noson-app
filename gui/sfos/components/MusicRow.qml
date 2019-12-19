@@ -33,7 +33,6 @@ Item {
     property alias checked: control.checked
     property alias checkable: control.checkable
 
-    property bool menuVisible: false
     property alias actionVisible: action.visible
     property string actionIconSource: ""
     property alias action2Visible: action2.visible

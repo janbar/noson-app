@@ -188,7 +188,6 @@ MusicPage {
             onActionPressed: trackClicked(model) // play track
             actionVisible: true
             actionIconSource: "qrc:/images/media-preview-start.svg"
-            menuVisible: true
 
             menu: ContextMenu {
                 AddToFavorites {

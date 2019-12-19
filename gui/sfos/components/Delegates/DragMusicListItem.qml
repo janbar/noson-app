@@ -58,7 +58,6 @@ MouseArea {
     property alias action2IconSource: row.action2IconSource
     property alias action3Visible: row.action3Visible
     property alias action3IconSource: row.action3IconSource
-    property alias menuVisible: row.menuVisible
     ///property alias menu: row.menu
 
     property bool held: false
