@@ -109,9 +109,9 @@ MusicPage {
                 }
                 actionVisible: model.isGroup
                 actionIconSource: model.isGroup ? "qrc:/images/edit-clear.svg" : ""
-                menuVisible: model.isGroup
 
                 menu: ContextMenu {
+                    hasContent: model.isGroup
                     MenuItem {
                         text: qsTr("Group")
                         enabled: model.isGroup

@@ -80,9 +80,9 @@ MusicPage {
             }
 
             actionVisible: false
-            menuVisible: (model.id === "SA_RINCON65031_0" ? false : true)
 
             menu: ContextMenu {
+                hasContent: (model.id === "SA_RINCON65031_" ? false : true)
                 Remove {
                     onClicked: {
                         removeService(model.type, model.serialNum)

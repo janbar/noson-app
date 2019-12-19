@@ -69,7 +69,6 @@ SilicaFlickable {
             onActionPressed: indexQueueClicked(model.index)
             actionVisible: true
             actionIconSource: (player.isPlaying && player.currentIndex === index ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-preview-start.svg")
-            menuVisible: true
 /*!TODO
             Component.onCompleted: {
                 console.debug("Populating menu")
