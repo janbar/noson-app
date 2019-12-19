@@ -126,7 +126,7 @@ MouseArea {
                 if (Math.abs(diffX) > units.gu(10)) {
                     swipe();
                 } else {
-                    //click();
+                    click();
                 }
             }
         }
