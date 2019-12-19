@@ -173,23 +173,28 @@ MusicPage {
         }
     }
 
-    // Page actions
-    optionsMenuVisible: true
-    optionsMenuContentItems: [
+    Component {
+        id: menuItemComp
         MenuItem {
-            text: composerViewPage.isFavorite ?  qsTr("Remove from favorites") : qsTr("Add to favorites")
-            font.pixelSize: units.fx("medium")
-            onTriggered: {
-                if (!composerViewPage.isFavorite) {
-                    if (addItemToFavorites(containerItem, pageTitle, "" /*composerAlbumView.headerItem.firstSource*/))
-                        composerViewPage.isFavorite = true
-                } else {
-                    if (removeFromFavorites(containerItem.payload))
-                        composerViewPage.isFavorite = false
-                }
-            }
         }
-    ]
+    }
+
+    property MenuItem menuAddItemToFavorites: null
+    property MenuItem menuRemoveFromFavorites: null
+    onIsFavoriteChanged: {
+        if (containerItem) {
+            menuAddItemToFavorites.visible = !composerViewPage.isFavorite;
+            menuRemoveFromFavorites.visible = composerViewPage.isFavorite;
+        }
+    }
+    function onMenuAddItemToFavorites() {
+        if (addItemToFavorites(containerItem, pageTitle, "" /*composerAlbumView.headerItem.firstSource*/))
+            composerViewPage.isFavorite = true
+    }
+    function onMenuRemoveFromFavorites() {
+        if (removeFromFavorites(containerItem.payload))
+            composerViewPage.isFavorite = false
+    }
 
     // check favorite on data loaded
     Connections {
@@ -212,5 +217,13 @@ MusicPage {
 
     Component.onCompleted: {
         isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
+
+        console.debug("Populating menu")
+        if (containerItem) {
+            menuAddItemToFavorites = menuItemComp.createObject(pageMenu, {"text" : qsTr("Add to favorites"), "visible" : !composerViewPage.isFavorite})
+            menuAddItemToFavorites.onClicked.connect(onMenuAddItemToFavorites)
+            menuRemoveFromFavorites = menuItemComp.createObject(pageMenu, {"text" : qsTr("Remove from favorites"), "visible" : composerViewPage.isFavorite})
+            menuRemoveFromFavorites.onClicked.connect(onMenuRemoveFromFavorites)
+        }
     }
 }
