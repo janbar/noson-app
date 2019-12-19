@@ -63,6 +63,8 @@ MouseArea {
     property alias menuItems: row.menuItems
 
     property bool held: false
+    property int targetIndex: -1
+    property int sourceIndex: -1
 
     anchors { left: parent.left; right: parent.right }
     height: content.height
@@ -81,6 +83,7 @@ MouseArea {
     }
 
     onPressAndHold: {
+        dragArea.sourceIndex = DelegateModel.itemsIndex
         if (reorderable)
             held = true
     }
@@ -144,23 +147,14 @@ MouseArea {
         anchors { fill: parent; margins: 10 }
 
         onEntered: {
-            // save positions
-            if (dragArea.sourceIndex < 0)
-                dragArea.sourceIndex = drag.source.DelegateModel.itemsIndex;
-            dragArea.targetIndex = dragArea.DelegateModel.itemsIndex;
-
-            listview.model.items.move(
-                    drag.source.DelegateModel.itemsIndex,
-                    dragArea.DelegateModel.itemsIndex);
+            drag.source.targetIndex = dragArea.DelegateModel.itemsIndex;
         }
     }
-    property int sourceIndex: -1
-    property int targetIndex: -1
 
     onHeldChanged: {
-        if (!held && sourceIndex >= 0) {
+        if (!held && sourceIndex !== targetIndex) {
+            listview.model.items.move(sourceIndex, targetIndex);
             reorder(sourceIndex, targetIndex);
-            sourceIndex = targetIndex = -1;
         }
     }
 }
