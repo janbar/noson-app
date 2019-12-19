@@ -158,9 +158,10 @@ MusicPage {
                 }
             }
 
+/*!FIXME: playlist should be reorderable using drag/drop
             onReorder: {
                 listview.reorder(from, to)
-            }
+            }*/
 
             onClick: {
                 if (isAlbum)
@@ -191,7 +192,6 @@ MusicPage {
             actionIconSource: "qrc:/images/media-preview-start.svg"
             menuVisible: true
 
-/*!FIXME: delegate is drag area
             menu: ContextMenu {
                 AddToFavorites {
                     isFavorite: listItem.isFavorite
@@ -213,7 +213,7 @@ MusicPage {
                         color = "red";
                     }
                 }
-            }*/
+            }
 
             coverSize: units.gu(5)
 

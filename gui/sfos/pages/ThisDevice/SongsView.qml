@@ -123,6 +123,7 @@ MusicPage {
         SelectMusicListItem {
             id: listItem
             listview: songList
+            listIndex: model.index
             reorderable: false
             selectable: true
 

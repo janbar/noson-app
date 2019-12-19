@@ -267,5 +267,6 @@
         <file>sfos/pages/ThisDevice/ShuffleButton.qml</file>
         <file>sfos/pages/ThisDevice/SongsView.qml</file>
         <file>sfos/components/MusicIcon.qml</file>
+        <file>sfos/components/Delegates/DragSelectMusicListItem.qml</file>
     </qresource>
 </RCC>

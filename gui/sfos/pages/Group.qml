@@ -88,6 +88,7 @@ MusicPage {
             delegate: SelectMusicListItem {
                 id: listItem
                 listview: groupList
+                listIndex: model.index
                 reorderable: false
                 selectable: true
                 highlighted: false

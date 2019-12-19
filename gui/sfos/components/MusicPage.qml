@@ -436,7 +436,7 @@ Page {
             MenuItem {
                     text: qsTr("Sound Settings")
                     onClicked: {
-                        dialogSettings.open();
+                        dialogSoundSettings.open();
                     }
             }
             MenuItem {

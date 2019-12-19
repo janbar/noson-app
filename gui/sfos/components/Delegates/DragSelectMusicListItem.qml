@@ -19,8 +19,8 @@ import QtQuick 2.2
 import Sailfish.Silica 1.0
 import "../"
 
-ListItem {
-    id: area
+MouseArea {
+    id: dragArea
     property ListView listview: null
     property int listIndex: -1
     property color color: styleMusic.view.backgroundColor
@@ -36,6 +36,7 @@ ListItem {
     signal actionPressed
     signal action2Pressed
     signal action3Pressed
+    signal reorder(int from, int to)
 
     signal imageError
 
@@ -88,11 +89,17 @@ ListItem {
     property alias action3Visible: row.action3Visible
     property alias action3IconSource: row.action3IconSource
     property alias menuVisible: row.menuVisible
-    
+
+    property bool held: false
+    property int targetIndex: -1
+
     anchors { left: parent.left; right: parent.right }
     //contentHeight: content.height
     height: content.height
     width: ListView.view.width
+
+    drag.target: held ? content : undefined
+    drag.axis: Drag.YAxis
 
     /* Detect row swipe */
     property string direction: "None"
@@ -104,12 +111,24 @@ ListItem {
         lastY = mouse.y
     }
 
+    onPressAndHold: {
+        if (state !== "selection") {
+            if (reorderable)
+                held = true
+        }
+    }
     onReleased: {
-        var diffX = mouse.x - lastX;
-        if (Math.abs(diffX) > units.gu(15)) {
-            swipe();
-        } else {
-            //click();
+        if (state !== "selection") {
+            if (held) {
+                held = false;
+            } else {
+                var diffX = mouse.x - lastX;
+                if (Math.abs(diffX) > units.gu(10)) {
+                    swipe();
+                } else {
+                    //click();
+                }
+            }
         }
     }
 
@@ -119,27 +138,57 @@ ListItem {
             horizontalCenter: parent.horizontalCenter
             verticalCenter: parent.verticalCenter
         }
-        width: area.width;
+        width: dragArea.width;
         height: row.contentHeight + units.dp(4)
 
-        color: area.color
+        color: held ? dragArea.highlightedColor : dragArea.color
         Behavior on color { ColorAnimation { duration: 100 } }
+
+        radius: 0
+        Drag.active: held
+        Drag.source: dragArea
+        Drag.hotSpot.x: width / 2
+        Drag.hotSpot.y: height / 2
+        states: State {
+            when: held
+
+            ParentChange { target: content; parent: listview.parent }
+            AnchorChanges {
+                target: content
+                anchors { horizontalCenter: undefined; verticalCenter: undefined }
+            }
+        }
 
         // highlight the current position
         Rectangle {
             anchors.centerIn: parent
-            width: area.width
-            height: area.height
-            visible: area.highlighted
-            color: area.highlightedColor
+            width: dragArea.width
+            height: dragArea.height
+            visible: dragArea.highlighted
+            color: dragArea.highlightedColor
             opacity: 0.4
         }
 
         MusicRow {
             id: row
             anchors.fill: parent
-            onImageError: area.imageError()
+            onImageError: dragArea.imageError()
             state: "selection"
+        }
+    }
+
+    DropArea {
+        anchors { fill: parent; margins: 10 }
+
+        onEntered: {
+            drag.source.targetIndex = listIndex;
+        }
+    }
+
+    onHeldChanged: {
+        if (!held && targetIndex !== listIndex) {
+            listview.model.items.move(listIndex, targetIndex);
+            reorder(listIndex, targetIndex);
         }
     }
 }
