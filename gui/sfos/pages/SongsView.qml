@@ -148,22 +148,12 @@ MusicPage {
             reorderable: isPlaylist
             //selectable: true
 
-            onSwipe: {
-                if (isPlaylist) {
-                    listview.focusIndex = index > 0 ? index - 1 : 0;
-                    mainView.jobRunning = true
-                    delayRemoveSelectedFromPlaylist.selectedIndices = [index]
-                    delayRemoveSelectedFromPlaylist.start()
-                    color = "red";
-                }
-            }
-
 /*!FIXME: playlist should be reorderable using drag/drop
             onReorder: {
                 listview.reorder(from, to)
             }*/
 
-            onClick: {
+            onClicked: {
                 if (isAlbum)
                     // header covers
                     dialogSongInfo.open(model, covers, true, true); // show actions

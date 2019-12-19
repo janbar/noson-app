@@ -127,7 +127,7 @@ MusicPage {
             reorderable: false
             selectable: true
 
-            onClick: {
+            onClicked: {
                 var item = {
                     id: model.id, title: model.title, album: model.album, author: model.author, albumTrackNo: model.albumTrackNo,
                     payload: makeItemPayload(model)

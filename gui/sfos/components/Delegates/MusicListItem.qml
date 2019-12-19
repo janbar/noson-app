@@ -56,8 +56,7 @@ ListItem {
     property alias menuVisible: row.menuVisible
 
     anchors { left: parent.left; right: parent.right }
-    //contentHeight: content.height
-    height: content.height
+    contentHeight: content.height
     width: ListView.view.width
 
     /* Detect row swipe */
