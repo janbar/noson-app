@@ -97,7 +97,6 @@ MusicPage {
                 description: qsTr("Room")
                 actionVisible: false
                 action2Visible: false
-                menuVisible: false
 
                 column: Column {
                     Label {

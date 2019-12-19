@@ -188,9 +188,9 @@ MusicPage {
             onActionPressed: playItem(model)
             actionVisible: model.canPlay
             actionIconSource: "qrc:/images/media-preview-start.svg"
-            menuVisible: model.canPlay || model.canQueue
 
             menu: ContextMenu {
+                hasContent: model.canPlay || model.canQueue
                 AddToFavorites {
                     isFavorite: listItem.isFavorite
                     enabled: model.canPlay

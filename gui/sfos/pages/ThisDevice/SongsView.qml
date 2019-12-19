@@ -160,7 +160,6 @@ MusicPage {
             }
             actionVisible: true
             actionIconSource: "qrc:/images/media-preview-start.svg"
-            menuVisible: true
 
             menu: ContextMenu {
                 AddToQueue {
