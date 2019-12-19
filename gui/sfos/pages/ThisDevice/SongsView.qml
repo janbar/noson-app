@@ -132,12 +132,19 @@ MusicPage {
                     id: model.id, title: model.title, album: model.album, author: model.author, albumTrackNo: model.albumTrackNo,
                     payload: makeItemPayload(model)
                 };
+                var arts = [];
                 if (isAlbum)
-                    // header covers
-                    dialogSongInfo.open(item, covers, true, true); // show actions
+                    arts = covers; // header covers
                 else
-                    // item cover
-                    dialogSongInfo.open(item, [{art: imageSource}], true, true); // show actions
+                    arts = [{art: imageSource}]; // item cover
+
+                dialogSongInfo.open(item, arts,
+                                    "qrc:/sfos/pages/ThisDevice/ArtistView.qml",
+                                    {
+                                        "artist": model.author,
+                                        "covers": makeCoverSource(undefined, model.author, undefined),
+                                        "pageTitle": qsTr("Artist")
+                                    }, true); // force show more
             }
 
             color: "transparent"

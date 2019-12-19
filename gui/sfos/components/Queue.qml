@@ -24,6 +24,7 @@ import QtQml.Models 2.2
 import "Delegates"
 import "Flickables"
 import "ListItemActions"
+import "Dialog"
 
 SilicaFlickable {
     id: queue
@@ -60,7 +61,14 @@ SilicaFlickable {
                 listview.reorder(from, to)
             }
 
-            onClick: dialogSongInfo.open(model, [{art: imageSource}], false, true) // don't show action 'play'
+            onClick: dialogSongInfo.open(model, [{art: imageSource}],
+                                         "qrc:/sfos/pages/ArtistView.qml",
+                                         {
+                                             "artistSearch": "A:ARTIST/" + model.author,
+                                             "artist": model.author,
+                                             "covers": makeCoverSource(undefined, model.author, undefined),
+                                             "pageTitle": qsTr("Artist")
+                                         })
 
             imageSources: makeCoverSource(model.art, model.author, model.album)
             description: qsTr("Song")

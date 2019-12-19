@@ -27,57 +27,26 @@ Item {
     id: songInfo
     property var model: null
     property var covers: []
-    property bool actionPlay: false
-    property bool actionMore: false
+    property string moreSource: ""
+    property var moreArgs: ({})
+    property bool forceActionMore: false
+    property alias status: dialog.status
+    signal showMore
 
     DialogBase {
         id: dialog
-
         acceptText: qsTr("Play")
         cancelText: qsTr("Close")
-        /*
-        footer: Row {
-            leftPadding: units.gu(1)
-            rightPadding: units.gu(1)
-            bottomPadding: units.gu(1)
-            spacing: units.gu(1)
-            layoutDirection: Qt.RightToLeft
+        canAccept: true
 
-            Button {
-                flat: true
-                text: qsTr("Close")
-                onClicked: dialog.close()
-            }
-            Button {
-                id: buttonPlay
-                flat: true
-                text: qsTr("Play")
-                visible: false
-                onClicked: dialog.accept()
-            }
-            Button {
-                id: buttonMore
-                flat: true
-                text: qsTr("More")
-                visible: false
-                onClicked: {
-                    dialog.close();
-                    stackView.push("qrc:/ui/ArtistView.qml",
-                                       {
-                                           "artistSearch": "A:ARTIST/" + model.author,
-                                           "artist": model.author,
-                                           "covers": makeCoverSource(undefined, model.author, undefined),
-                                           "pageTitle": qsTr("Artist")
-                                       });
-                }
-            }
+        contentSpacing: units.gu(3)
+
+        onDone: {
+            if (result === DialogResult.None)
+                showMore();
         }
-        */
-
-        width: mainView.minimumWidth - units.gu(2)
 
         onOpened: {
-            timer.restart();
             if (songInfo.model) {
                 card.coverSources = covers
                 card.primaryText = songInfo.model.title !== "" ? songInfo.model.title : qsTr("Unknown Album");
@@ -92,19 +61,14 @@ Item {
                 }
             }
 
-            if (actionPlay) {
-                canAccept = true;
-            } else {
-                canAccept = false;
-            }
             // do not stack more than one page for artist view
             // do not show the artist view for an item of service
-            if (actionMore &&
-                    !pageStack.find(function(item) { return item.objectName === "artistViewPage"; }) &&
-                    !Sonos.isItemFromService(songInfo.model.payload)) {
-                //buttonMore.visible = true;
+            if (forceActionMore || (
+                    !pageStack.find(function(page) { return page.objectName === "artistViewPage"; }) &&
+                    !Sonos.isItemFromService(songInfo.model.payload))) {
+                buttonMore.visible = true;
             } else {
-                //buttonMore.visible = false;
+                buttonMore.visible = false;
             }
         }
 
@@ -113,14 +77,12 @@ Item {
         }
 
         onRejected: {
-            timer.stop()
             card.coverSources = [];
             card.primaryText = "";
             card.secondaryText = "";
             card.tertiaryLabelVisible = "";
             card.tertiaryText = "";
-            //buttonMore.visible = false;
-            //buttonPlay.visible = false;
+            buttonMore.visible = false;
         }
 
         Item {
@@ -213,31 +175,25 @@ Item {
             NumberAnimation { duration: 500 }
         }
 
-        Timer {
-            id: closingDialogTimer
-            interval: 1000
-            onTriggered: {
-                visible = false
-                dialog.close()
+        Button {
+            id: buttonMore
+            visible: false
+            anchors.horizontalCenter: parent.horizontalCenter
+            //: this appears in a button with limited space (around 30 characters)
+            text: qsTr("More")
+            onClicked: {
+                // returning result DialogResult.None
+                dialog.close();
             }
         }
-
-        Timer {
-            id: timer
-            interval: 10000
-            onTriggered: {
-                opacity = 0
-                closingDialogTimer.start()
-            }
-        }
-
     }
 
-    function open(model, covers, showActionPlay, showActionMore) {
+    function open(model, covers, moreSource, moreArgs, forceActionMore) {
         songInfo.model = model;
         songInfo.covers = covers;
-        songInfo.actionPlay = showActionPlay;
-        songInfo.actionMore = showActionMore;
+        songInfo.moreSource = moreSource;
+        songInfo.moreArgs = moreArgs;
+        songInfo.forceActionMore = (forceActionMore ? true : false);
         return dialog.open();
     }
 }
