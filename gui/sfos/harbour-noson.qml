@@ -113,10 +113,10 @@ ApplicationWindow {
 
     // built-in cache for genre artworks
     property var genreArtworks: []
-    
+
     property bool alarmEnabled: false
     property bool shareIndexInProgress: false
-    
+
     // about alarms
     AlarmsModel {
         id: alarmsModel

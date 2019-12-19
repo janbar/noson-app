@@ -19,9 +19,10 @@ import QtQuick 2.2
 import Sailfish.Silica 1.0
 import "../"
 
-ListItem {
+MouseArea {
     id: dragArea
     property ListView listview: null
+    property int listIndex: -1
     property color color: styleMusic.view.backgroundColor
     property color highlightedColor: styleMusic.view.highlightedColor
     property var currentColor: highlighted ? highlightedColor : color
@@ -90,9 +91,11 @@ ListItem {
     property alias menuVisible: row.menuVisible
     
     property bool held: false
+    property int targetIndex: -1
 
     anchors { left: parent.left; right: parent.right }
-    contentHeight: content.height
+    //contentHeight: content.height
+    height: content.height
     width: ListView.view.width
 
     drag.target: held ? content : undefined
@@ -178,23 +181,14 @@ ListItem {
         anchors { fill: parent; margins: 10 }
 
         onEntered: {
-            // save positions
-            if (dragArea.sourceIndex < 0)
-                dragArea.sourceIndex = drag.source.DelegateModel.itemsIndex;
-            dragArea.targetIndex = dragArea.DelegateModel.itemsIndex;
-
-            visualModel.items.move(
-                    drag.source.DelegateModel.itemsIndex,
-                    dragArea.DelegateModel.itemsIndex);
+            drag.source.targetIndex = listIndex;
         }
     }
-    property int sourceIndex: -1
-    property int targetIndex: -1
 
     onHeldChanged: {
-        if (!held && sourceIndex >= 0) {
-            reorder(sourceIndex, targetIndex);
-            sourceIndex = targetIndex = -1;
+        if (!held && targetIndex !== listIndex) {
+            listview.model.items.move(listIndex, targetIndex);
+            reorder(listIndex, targetIndex);
         }
     }
 }

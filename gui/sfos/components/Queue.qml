@@ -45,6 +45,7 @@ SilicaFlickable {
         DragMusicListItem {
             id: listItem
             listview: queueList
+            listIndex: model.index
             color: bg.color
             highlightedColor: styleMusic.view.highlightedColor
             highlighted: (player.currentIndex === index)

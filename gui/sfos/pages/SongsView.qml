@@ -144,6 +144,7 @@ MusicPage {
         SelectMusicListItem {
             id: listItem
             listview: songList
+            listIndex: model.index
             reorderable: isPlaylist
             //selectable: true
 
@@ -190,6 +191,7 @@ MusicPage {
             actionIconSource: "qrc:/images/media-preview-start.svg"
             menuVisible: true
 
+/*!FIXME: delegate is drag area
             menu: ContextMenu {
                 AddToFavorites {
                     isFavorite: listItem.isFavorite
@@ -211,7 +213,7 @@ MusicPage {
                         color = "red";
                     }
                 }
-            }
+            }*/
 
             coverSize: units.gu(5)
 
