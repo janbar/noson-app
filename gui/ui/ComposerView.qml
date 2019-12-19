@@ -185,6 +185,7 @@ MusicPage {
     optionsMenuVisible: true
     optionsMenuContentItems: [
         MenuItem {
+            enabled: containerItem ? true : false
             text: composerViewPage.isFavorite ?  qsTr("Remove from favorites") : qsTr("Add to favorites")
             font.pointSize: units.fs("medium")
             onTriggered: {
@@ -219,6 +220,7 @@ MusicPage {
     }
 
     Component.onCompleted: {
-        isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
+        if (containerItem)
+            isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
     }
 }

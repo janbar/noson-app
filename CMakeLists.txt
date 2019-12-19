@@ -97,7 +97,7 @@ endif()
 
 add_custom_target(
   "run"
-  QML2_IMPORT_PATH=${CMAKE_BINARY_DIR}/backend/qml ${CMAKE_BINARY_DIR}/gui/noson-gui --debug
+  QML2_IMPORT_PATH=${CMAKE_BINARY_DIR}/backend/qml ${CMAKE_BINARY_DIR}/gui/noson-gui --d
   DEPENDS NosonApp NosonApp-qmldir
         NosonThumbnailer NosonThumbnailer-qmldir
         NosonMediaScanner NosonMediaScanner-qmldir
