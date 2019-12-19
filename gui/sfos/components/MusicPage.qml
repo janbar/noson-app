@@ -117,7 +117,7 @@ Page {
             //Bottom toolbar
             Item {
                 id: footerToolbar
-                height: units.gu(7.25)
+                height: units.gu(8)
                 width: parent.width
 
                 Rectangle {
@@ -418,7 +418,7 @@ Page {
             Loader {
                 id: musicToolbar
                 active: true
-                height: visible ? units.gu(7.25) : 0
+                height: visible ? units.gu(8) : 0
                 anchors { // start offscreen
                     left: parent.left
                     right: parent.right
