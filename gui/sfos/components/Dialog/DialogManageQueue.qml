@@ -38,6 +38,8 @@ DialogBase {
 
     TextField {
         id: playlistName
+        anchors.left: parent.left
+        anchors.right: parent.right
         font.pixelSize: units.fx("medium")
         placeholderText: qsTr("Enter playlist name")
     }
