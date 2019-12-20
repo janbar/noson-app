@@ -77,12 +77,6 @@ DialogBase {
                     id: link
                     font.pixelSize: units.fx("small")
                     text: "<a href='https://www.last.fm/api/account/create'>" + qsTr("Get an API account") + "</a>"
-                    /*!FIXME onLinkHovered: {
-                        if (hoveredLink)
-                            font.bold = true;
-                        else
-                            font.bold = false;
-                    }*/
                     onLinkActivated: Qt.openUrlExternally(link)
                     linkColor: styleMusic.view.linkColor
                 }
