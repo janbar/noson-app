@@ -76,7 +76,7 @@ SilicaFlickable {
             onImageError: model.art = "" // reset invalid url from model
             onActionPressed: indexQueueClicked(model.index)
             actionVisible: true
-            actionIconSource: (player.isPlaying && player.currentIndex === index ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-preview-start.svg")
+            actionIconSource: (player.isPlaying && player.currentIndex === index ? "image://theme/icon-m-pause" : "image://theme/icon-m-play")
 /*!TODO
             Component.onCompleted: {
                 console.debug("Populating menu")

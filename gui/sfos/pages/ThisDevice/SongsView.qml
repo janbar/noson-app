@@ -159,7 +159,7 @@ MusicPage {
                 trackClicked({id: model.id, payload: payload}, true);
             }
             actionVisible: true
-            actionIconSource: "qrc:/images/media-preview-start.svg"
+            actionIconSource: "image://theme/icon-m-play"
 
             menu: ContextMenu {
                 AddToQueue {

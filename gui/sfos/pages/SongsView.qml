@@ -187,7 +187,7 @@ MusicPage {
             onImageError: model.art = "" // reset invalid url from model
             onActionPressed: trackClicked(model) // play track
             actionVisible: true
-            actionIconSource: "qrc:/images/media-preview-start.svg"
+            actionIconSource: "image://theme/icon-m-play"
 
             menu: ContextMenu {
                 AddToFavorites {

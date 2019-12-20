@@ -49,6 +49,7 @@ Page {
     property alias footer: footerToolbar
     property alias header: pageHeader
     property alias pageMenu: pageMenu._contentColumn
+    property alias pageMenuQuickSelect: pageMenu.quickSelect
     property alias optionsMenu: optionsMenu._contentColumn
     property alias musicToolbar: musicToolbar
     
@@ -142,7 +143,7 @@ Page {
                             anchors.fill: parent
 
                             MusicIcon {
-                                source: "qrc:/images/media-playlist.svg"
+                                source: "image://theme/icon-m-media-playlists"
                                 height: units.gu(5)
                                 label.text: player.queueInfo
                                 label.font.pixelSize: units.fx("x-small")
@@ -159,7 +160,7 @@ Page {
                             }
 
                             MusicIcon {
-                                source: "qrc:/images/location.svg"
+                                source: "image://theme/icon-m-location"
                                 height: units.gu(5)
                                 label.text: currentZoneTag
                                 label.font.pixelSize: units.fx("x-small")
@@ -170,7 +171,7 @@ Page {
                             MusicIcon {
                                 id: viewType
                                 visible: false
-                                source: isListView ? "qrc:/images/view-grid-symbolic.svg" : "qrc:/images/view-list-symbolic.svg"
+                                source: isListView ? "image://theme/icon-m-tabs" : "image://theme/icon-m-menu"
                                 height: units.gu(5)
                                 onClicked: {
                                     isListView = !isListView
@@ -180,7 +181,7 @@ Page {
                             MusicIcon {
                                 id: find
                                 visible: false
-                                source: "qrc:/images/find.svg"
+                                source: "image://theme/icon-m-search"
                                 height: units.gu(5)
                                 onClicked: searchClicked()
                             }
@@ -188,7 +189,7 @@ Page {
                             MusicIcon {
                                 id: selection
                                 visible: false
-                                source: "qrc:/images/select.svg"
+                                source: "image://theme/icon-m-acknowledge"
                                 height: units.gu(5)
                                 onClicked: thisPage.state = "selection"
                             }
@@ -196,7 +197,7 @@ Page {
                             MusicIcon {
                                 id: add
                                 visible: false
-                                source: "qrc:/images/add.svg"
+                                source: "image://theme/icon-m-add"
                                 height: units.gu(5)
                                 label.text: qsTr("Add")
                                 label.font.pixelSize: units.fx("x-small")
@@ -233,7 +234,7 @@ Page {
                             MusicIcon {
                                 id: closeSelection
                                 visible: true
-                                source: "qrc:/images/close.svg"
+                                source: "image://theme/icon-m-close"
                                 height: units.gu(5)
                                 label.text: qsTr("Close")
                                 label.font.pixelSize: units.fx("x-small")
@@ -246,7 +247,7 @@ Page {
                             MusicIcon {
                                 id: selectAll
                                 visible: true
-                                source: "qrc:/images/select.svg"
+                                source: "image://theme/icon-m-acknowledge"
                                 height: units.gu(5)
                                 label.text: qsTr("All")
                                 label.font.pixelSize: units.fx("x-small")
@@ -256,7 +257,7 @@ Page {
                             MusicIcon {
                                 id: selectNone
                                 visible: true
-                                source: "qrc:/images/select-undefined.svg"
+                                source: "image://theme/icon-m-clear"
                                 height: units.gu(5)
                                 label.text: qsTr("Clear")
                                 label.font.pixelSize: units.fx("x-small")
@@ -266,7 +267,7 @@ Page {
                             MusicIcon {
                                 id: addToQueue
                                 visible: true
-                                source: "qrc:/images/add.svg"
+                                source: "image://theme/icon-m-media-playlists"
                                 height: units.gu(5)
                                 onClicked: addToQueueClicked()
                             }
@@ -274,7 +275,7 @@ Page {
                             MusicIcon {
                                 id: addToPlaylist
                                 visible: true
-                                source: "qrc:/images/add-to-playlist.svg"
+                                source: "image://theme/icon-m-add"
                                 height: units.gu(5)
                                 onClicked: addToPlaylistClicked()
                             }
@@ -284,7 +285,7 @@ Page {
                             id: removeSelected
                             anchors.right: parent.right
                             visible: true
-                            source: "qrc:/images/delete.svg"
+                            source: "image://theme/icon-m-delete"
                             height: units.gu(5)
                             onClicked: removeSelectedClicked()
                         }
@@ -316,7 +317,7 @@ Page {
                             spacing: units.gu(0.5)
 
                             MusicIcon {
-                                source: "qrc:/images/media-playlist.svg"
+                                source: "image://theme/icon-m-media-playlists"
                                 height: units.gu(5)
                                 label.text: player.queueInfo
                                 label.font.pixelSize: units.fx("x-small")
@@ -332,7 +333,7 @@ Page {
                             MusicIcon {
                                 id: reload
                                 visible: true
-                                source: "qrc:/images/reload.svg"
+                                source: "image://theme/icon-m-reload"
                                 height: units.gu(5)
                                 onClicked: reloadClicked()
                             }
@@ -340,7 +341,7 @@ Page {
                             MusicIcon {
                                 id: groupAll
                                 visible: true
-                                source: "qrc:/images/select.svg"
+                                source: "image://theme/icon-m-acknowledge"
                                 height: units.gu(5)
                                 label.text: qsTr("All")
                                 label.font.pixelSize: units.fx("x-small")
@@ -350,7 +351,7 @@ Page {
                             MusicIcon {
                                 id: group
                                 visible: true
-                                source: "qrc:/images/group.svg"
+                                source: "image://theme/icon-m-accept"
                                 height: units.gu(5)
                                 label.text: qsTr("Done")
                                 label.font.pixelSize: units.fx("x-small")
@@ -385,16 +386,16 @@ Page {
                             spacing: units.gu(0.5)
 
                             MusicIcon {
-                                source: "qrc:/images/location.svg"
+                                source: "image://theme/icon-m-location"
                                 height: units.gu(5)
                                 label.text: currentZoneTag
                                 label.font.pixelSize: units.fx("x-small")
                             }
 
                             MusicIcon {
-                                id: groupAllRoom
+                                id: groupNoneRoom
                                 visible: true
-                                source: "qrc:/images/select-undefined.svg"
+                                source: "image://theme/icon-m-clear"
                                 height: units.gu(5)
                                 label.text: qsTr("None")
                                 label.font.pixelSize: units.fx("x-small")
@@ -404,7 +405,7 @@ Page {
                             MusicIcon {
                                 id: groupRoom
                                 visible: true
-                                source: "qrc:/images/group.svg"
+                                source: "image://theme/icon-m-accept"
                                 height: units.gu(5)
                                 label.text: qsTr("Done")
                                 label.font.pixelSize: units.fx("x-small")

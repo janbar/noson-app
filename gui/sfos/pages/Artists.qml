@@ -71,12 +71,11 @@ MusicPage {
             objectName: "artistsPageGridItem" + index
             primaryText: model.artist !== undefined && model.artist !== "" ? model.artist : qsTr("Unknown Artist")
             secondaryTextVisible: false
-            isFavorite: (AllFavoritesModel.findFavorite(model.payload).length > 0)
 
             // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
-                onCountChanged: {
+                onLoaded: {
                     artistCard.isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
                 }
             }
@@ -99,7 +98,7 @@ MusicPage {
             }
 
             Component.onCompleted: {
-                isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
+                artistCard.isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
             }
         }
     }

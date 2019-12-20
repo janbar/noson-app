@@ -26,9 +26,15 @@ DialogBase {
 
     acceptText: qsTr("Close")
 
+    contentSpacing: units.gu(3)
+
     Text {
-        anchors.left: parent.left
-        anchors.right: parent.right
+        anchors {
+            left: parent.left
+            right: parent.right
+            leftMargin: Theme.horizontalPageMargin
+            rightMargin: Theme.horizontalPageMargin
+        }
         text: qsTr("Whenever you make changes to your music library, such as adding and removing tracks, or adjusting album artwork, you will need to update the music index on Sonos before these changes will show up in the Sonos controller.")
         wrapMode: Text.WordWrap
         color: styleMusic.dialog.foregroundColor
@@ -37,6 +43,7 @@ DialogBase {
     }
 
     Button {
+        anchors.horizontalCenter: parent.horizontalCenter
         height: units.gu(6)
         text: qsTr("Update music index now")
         onClicked: {

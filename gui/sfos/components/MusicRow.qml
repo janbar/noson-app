@@ -149,7 +149,7 @@ Item {
                 width: parent.width
                 height: width
                 anchors.centerIn: parent
-                source: "qrc:/images/starred.svg"
+                source: "image://theme/icon-m-favorite-selected"
             }
         }
     }

@@ -71,16 +71,18 @@ else()
   add_executable(noson-gui ${noson-gui_SOURCES} ${noson-gui-resources})
 endif()
 
-if (BUILD_SAILFISHOS)
-add_definitions(-DSAILFISHOS)
-target_link_libraries(noson-gui Qt5::Gui Qt5::Qml Qt5::Quick Qt5::Widgets Qt5::Xml Qt5::Svg sailfishapp)
+if(BUILD_SAILFISHOS)
+  add_definitions(-DSAILFISHOS)
+  target_link_libraries(noson-gui Qt5::Gui Qt5::Qml Qt5::Quick Qt5::Widgets Qt5::Xml Qt5::Svg sailfishapp)
 else()
-target_link_libraries(noson-gui Qt5::Gui Qt5::Qml Qt5::Quick Qt5::QuickControls2 Qt5::Widgets Qt5::Xml Qt5::Svg)
+  target_link_libraries(noson-gui Qt5::Gui Qt5::Qml Qt5::Quick Qt5::QuickControls2 Qt5::Widgets Qt5::Xml Qt5::Svg)
+endif()
+
+if(QT_STATICPLUGIN)
+  add_definitions(-DQT_STATICPLUGIN)
+  target_link_libraries(noson-gui NosonApp NosonThumbnailer NosonMediaScanner)
 endif()
 
 if(MSVC)
   target_link_libraries(noson-gui ws2_32)
 endif()
-
-install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/noson-gui
-	DESTINATION ${PLUGINS_DIR})

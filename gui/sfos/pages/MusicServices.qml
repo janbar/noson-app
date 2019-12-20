@@ -110,11 +110,7 @@ MusicPage {
             }
         }
 
-        opacity: isListView ? 1.0 : 0.0
-        visible: opacity > 0.0
-        Behavior on opacity {
-            NumberAnimation { duration: 250 }
-        }
+        visible: isListView
     }
 
     MusicGridView {
@@ -144,11 +140,7 @@ MusicPage {
             }
         }
 
-        opacity: isListView ? 0.0 : 1.0
-        visible: opacity > 0.0
-        Behavior on opacity {
-            NumberAnimation { duration: 250 }
-        }
+        visible: !isListView
     }
     
     onAddClicked: {

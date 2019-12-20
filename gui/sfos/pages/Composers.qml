@@ -71,12 +71,11 @@ MusicPage {
             objectName: "composersPageGridItem" + index
             primaryText: model.composer !== undefined && model.composer !== "" ? model.composer : qsTr("Unknown Composer")
             secondaryTextVisible: false
-            isFavorite: (AllFavoritesModel.findFavorite(model.payload).length > 0)
 
             // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
-                onCountChanged: {
+                onLoaded: {
                     composerCard.isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
                 }
             }

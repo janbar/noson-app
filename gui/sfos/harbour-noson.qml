@@ -11,6 +11,16 @@ import Nemo.Configuration 1.0
 ApplicationWindow {
     id: mainView
 
+    MusicInfoBox {
+        height: units.gu(4)
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.leftMargin: Theme.horizontalPageMargin * 2
+        anchors.right: parent.right
+        anchors.rightMargin: Theme.horizontalPageMargin * 2
+        visible: pageStack.currentPage.pageTitle !== undefined
+    }
+
     initialPage: Component {
         MusicServices {
         }
@@ -144,10 +154,7 @@ ApplicationWindow {
 
         onCountChanged: alarmEnabled = isAlarmEnabled()
     }
-    
-    
-    
-    
+
     ////////////////////////////////////////////////////////////////////////////
     ////
     //// Events
@@ -349,21 +356,10 @@ ApplicationWindow {
         alarmEnabled = isAlarmEnabled();
     }
 
-    
-    
-    
+    ////////////////////////////////////////////////////////////////////////////
     ////
     //// Global actions & helpers
     ////
-
-    // Find index of a command line argument else -1
-    function indexOfArgument(argv) {
-        for (var i = 0; i < ApplicationArguments.length; ++i) {
-            if (ApplicationArguments[i].indexOf(argv) === 0)
-                return i;
-        }
-        return -1;
-    }
 
     // Custom debug funtion that's easier to shut off
     function customdebug(text) {

@@ -56,7 +56,8 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             height: units.gu(6)
             width: height
-            source: player.mute ? "qrc:/images/audio-volume-muted.svg" : "qrc:/images/audio-volume.svg"
+            source: player.mute ? "image://theme/icon-m-speaker-mute"
+                                : volumeGroupSlider.value > 0 ? "image://theme/icon-m-speaker-on" : "image://theme/icon-m-speaker"
             objectName: "muteShape"
             opacity: 1.0
             onClicked: {
@@ -65,11 +66,15 @@ Item {
             }
         }
 
-        Slider {
+        StyledSlider {
             id: volumeGroupSlider
             anchors.left: nowPlayingMuteButton.right
+            anchors.leftMargin: units.gu(1)
+            anchors.rightMargin: units.gu(1)
             anchors.right: nightmodeButton.left
             anchors.verticalCenter: parent.verticalCenter
+            leftMargin: units.gu(1)
+            rightMargin: units.gu(1)
             stepSize: 2.5
             minimumValue: 0
             maximumValue: 100
@@ -81,7 +86,7 @@ Item {
 
             onValueChanged: {
                 if (Math.abs(value - inValue) >= 1.0) {
-                    if (pressed && value > inValue + 5.0) {
+                    if (down && value > inValue + 5.0) {
                         value = inValue + 5.0; // loop on value changed
                     } else {
                         volumeGroupSlider.inValue = player.volumeMaster = Math.round(value);
@@ -128,7 +133,7 @@ Item {
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
             height: units.gu(5) // smaller
-            source: "qrc:/images/settings.svg"
+            source: "image://theme/icon-m-sounds"
             opacity: 1.0
             onClicked: {
                 dialogSoundSettings.open()
@@ -162,7 +167,7 @@ Item {
                 height: units.gu(5)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                source: "qrc:/images/media-playlist-repeat.svg"
+                source: "image://theme/icon-m-repeat"
                 objectName: "repeatShape"
                 opacity: player.repeat ? 1 : .3
                 onClicked: {
@@ -189,7 +194,7 @@ Item {
                 height: units.gu(5)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                source: "qrc:/images/media-skip-backward.svg"
+                source: "image://theme/icon-m-previous"
                 opacity: player.trackQueue.model.count > 0 && player.currentIndex > 0  ? 1 : .3
                 onClicked: player.previousSong()
             }
@@ -208,7 +213,7 @@ Item {
                 height: units.gu(8)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                source: player.isPlaying ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
+                source: player.isPlaying ? "image://theme/icon-l-pause" : "image://theme/icon-l-play"
                 onClicked: player.toggle()
             }
         }
@@ -229,7 +234,7 @@ Item {
                 height: units.gu(5)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                source: "qrc:/images/media-skip-forward.svg"
+                source: "image://theme/icon-m-next"
                 objectName: "forwardShape"
                 opacity: player.trackQueue.model.count > 0 && (player.currentIndex + 1) < player.trackQueue.model.count ? 1 : .3
                 onClicked: player.nextSong()
@@ -252,7 +257,7 @@ Item {
                 height: units.gu(5)
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
-                source: "qrc:/images/media-playlist-shuffle.svg"
+                source: "image://theme/icon-m-shuffle"
                 objectName: "shuffleShape"
                 opacity: player.shuffle ? 1 : .3
                 onClicked: {
