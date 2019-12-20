@@ -125,7 +125,7 @@ MusicPage {
                         text: qsTr("Edit")
                         font.pixelSize: units.fx("medium")
                         enabled: model.id.length > 0
-                        onTriggered: {
+                        onClicked: {
                             alarmList.focusIndex = index;
                             dialogAlarm.open(model);
                         }
@@ -133,7 +133,7 @@ MusicPage {
                     Remove {
                         enabled: true
                         visible: true
-                        onTriggered: {
+                        onClicked: {
                             alarmList.focusIndex = index > 0 ? index - 1 : 0;
                             delayRemoveAlarm.start();
                             color = "red";
