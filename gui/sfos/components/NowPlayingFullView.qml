@@ -214,9 +214,9 @@ SilicaFlickable {
             id: progressSliderMusic
             anchors {
                 left: parent.left
-                leftMargin: units.gu(5)
+                leftMargin: units.gu(4)
                 right: parent.right
-                rightMargin: units.gu(5)
+                rightMargin: units.gu(4)
                 top: parent.top
             }
             handleVisible: false

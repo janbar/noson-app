@@ -20,6 +20,6 @@ import Sailfish.Silica 1.0
 
 Slider {
     id: control
-    leftMargin: 0
-    rightMargin: 0
+    leftMargin: units.gu(1)
+    rightMargin: units.gu(1)
 }

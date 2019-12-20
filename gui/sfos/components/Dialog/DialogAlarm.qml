@@ -46,7 +46,7 @@ Item {
 
         Row {
             width: parent.width
-            spacing: units.gu(1)
+            spacing: Theme.paddingSmall
 
             Item {
                 id: roomLabel
@@ -60,27 +60,33 @@ Item {
                     enabled: false
                     source: "qrc:/images/location.svg"
                     opacity: 0.7
-                    hoverEnabled: false
                 }
             }
 
             ComboBox {
                 id: room
-                textRole: "name"
-                model: []
-                width: parent.width - roomLabel.width - parent.spacing - units.gu(0.5)
-                font.pixelSize: units.fx("medium")
-                currentIndex: -1
-                Component.onCompleted: {
-                    popup.font.pointSize = font.pointSize;
+                label: qsTr("Room")
+                
+                menu: ContextMenu {
+                    Repeater {
+                        id: roomRepeater
+                        //model: roomModel
+                        delegate: MenuItem {
+                            text: name
+                        }
+                    }
                 }
+                width: parent.width - roomLabel.width - parent.spacing - units.gu(0.5)
+                currentIndex: -1
             }
         }
 
         Row {
-            spacing: (parent.width - c1.width - c2.width - c3.width) / 2
+            width: parent.width
+            spacing: Theme.paddingSmall
             Column {
                 id: c1
+                width: (parent.width / 2) - Theme.paddingSmall
                 Label {
                     width: parent.width
                     text: qsTr("Start time")
@@ -91,30 +97,23 @@ Item {
                     opacity: 1.0
                 }
 
-                Row {
-                    ClockTumbler {
-                        id: startHour
-                        model: 24
-                        padding: 1
-                        stepOnHold: 6
-                    }
-                    Label {
-                        text: ":"
-                        color: styleMusic.dialog.labelColor
-                        font.pixelSize: units.fx("medium")
-                        height: startHour.height
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    ClockTumbler {
-                        id: startMinute
-                        model: 60
-                        padding: 1
-                        stepOnHold: 10
+                TimePicker {
+                    id: tpStart
+                    hourMode: DateTime.TwentyFourHours
+                    width: parent.width
+                    Text {
+                            anchors.centerIn: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            color: styleMusic.dialog.labelColor
+                            font.pixelSize: units.fx("medium")
+                            width: parent.width
+                            text: tpStart.timeText
                     }
                 }
             }
             Column {
                 id: c2
+                width: parent.width / 2
                 Label {
                     width: parent.width
                     text: qsTr("Duration")
@@ -125,58 +124,45 @@ Item {
                     opacity: 1.0
                 }
 
-                Row {
-                    ClockTumbler {
-                        id: durationHours
-                        model: [0,1,2]
-                        padding: 1
-                        stepOnHold: 1
+                TimePicker {
+                    id: tpDuration
+                    hourMode: DateTime.TwentyFourHours
+                    width: parent.width
+                    Text {
+                            anchors.centerIn: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            color: styleMusic.dialog.labelColor
+                            font.pixelSize: units.fx("medium")
+                            width: parent.width
+                            text: tpDuration.timeText
                     }
-                    Label {
-                        text: ":"
-                        color: styleMusic.dialog.labelColor
-                        font.pixelSize: units.fx("medium")
-                        height: durationHours.height
-                        verticalAlignment: Text.AlignVCenter
-                    }
-                    ClockTumbler {
-                        id: durationMinutes
-                        model: 60
-                        padding: 1
-                        stepOnHold: 10
-                    }
-                }
-            }
-
-            Column {
-                id: c3
-                spacing: 0
-                Item {
-                    width: volume.width
-                    height: units.gu(2)
-                    Icon {
-                        anchors.centerIn: parent
-                        height: units.gu(5)
-                        width: height
-                        source: volume.value === 0 ? "qrc:/images/audio-volume-muted.svg" : "qrc:/images/audio-volume.svg"
-                        enabled: false
-                        opacity: 0.7
-                        hoverEnabled: false
-                    }
-                }
-
-                Slider {
-                    id: volume
-                    from: 0
-                    value: 20
-                    to: 100
-                    orientation: Qt.Vertical
-                    height: startHour.height
-                    wheelEnabled: true
                 }
             }
         }
 
+        Row {
+            id: c3
+            width: parent.width
+            spacing: Theme.paddingSmall
+
+            Icon {
+                id: volumeIcon
+                height: units.gu(5)
+                width: height
+                source: volume.value === 0 ? "qrc:/images/audio-volume-muted.svg" : "qrc:/images/audio-volume.svg"
+                enabled: false
+                opacity: 0.7
+            }
+        
+            Slider {
+                id: volume
+                minimumValue: 0
+                value: 20
+                maximumValue: 100
+                width: parent.width - volumeIcon.width - 2*Theme.paddingSmall
+            }
+        }
+        
         Row {
             Column {
                 spacing: 0
@@ -286,7 +272,11 @@ Item {
                 metadata = [];
             }
         }
-
+        
+        ListModel {
+            id: rooms
+        }
+            
         Row {
             width: parent.width
             spacing: units.gu(1)
@@ -303,20 +293,22 @@ Item {
                     enabled: false
                     source: "qrc:/images/bell.svg"
                     opacity: 0.7
-                    hoverEnabled: false
                 }
             }
 
             ComboBox {
                 id: program
-                textRole: "title"
-                model: programs
-                width: parent.width - programLabel.width - parent.spacing - units.gu(0.5)
-                font.pixelSize: units.fx("medium")
-                currentIndex: 0
-                Component.onCompleted: {
-                    popup.font.pointSize = font.pointSize;
+                label: qsTr("Program")
+                menu: ContextMenu {
+                    Repeater {
+                        model: programs
+                        delegate: MenuItem {
+                            text: title
+                        }
+                    }
                 }
+                width: parent.width - programLabel.width - parent.spacing - units.gu(0.5)
+                currentIndex: 0
             }
         }
 
@@ -326,18 +318,19 @@ Item {
             room.currentIndex = -1;
             if (isNew) {
                 var now = new Date();
-                durationHours.currentIndex = 1;
-                durationMinutes.currentIndex = 0;
-                startHour.currentIndex = now.getHours();
-                startMinute.currentIndex = now.getMinutes();
+                tpDuration.hour = 1;
+                tpDuration.minute = 0;
+                tpStart.hour = now.getHours();
+                tpStart.minute = now.getMinutes();
                 if (roomModel != null && roomModel.count > 0) {
-                    room.model = roomModel;
+                    roomRepeater.model = roomModel;
                     room.currentIndex = 0;
                     for (i = 0; i < roomModel.count; ++i)
                         if (roomModel.get(i).name === currentZone)
                             room.currentIndex = i
-                } else
-                    room.model = [];
+                } else {
+                    roomRepeater.model = [];
+                }
                 volume.value = model.volume;
                 monday.checked = true;
                 tuesday.checked = true;
@@ -347,21 +340,23 @@ Item {
                 saturday.checked = false;
                 sunday.checked = false;
             } else {
-                var index = model.duration.substr(0,2).valueOf();
-                if (index > durationHours.model.count)
-                    durationHours.currentIndex = durationHours.model.count - 1;
-                else
-                    durationHours.currentIndex = index;
-                durationMinutes.currentIndex = model.duration.substr(3,2).valueOf();
-                startHour.currentIndex = model.startLocalTime.substr(0,2).valueOf();
-                startMinute.currentIndex = model.startLocalTime.substr(3,2).valueOf();
+                var index = model.duration.substr(0,2).valueOf();                
+                if (index > 23) {
+                    tpDuration.hour = 23;
+                } else {
+                    tpDuration.hour = parseInt(index);
+                }
+                tpDuration.minute = model.duration.substr(3,2).valueOf();
+                tpStart.hour = model.startLocalTime.substr(0,2).valueOf();
+                tpStart.minute = model.startLocalTime.substr(3,2).valueOf();
                 if (roomModel != null && roomModel.count > 0) {
-                    room.model = roomModel;
+                    roomRepeater.model = roomModel;
                     for (i = 0; i < roomModel.count; ++i)
                         if (roomModel.get(i).id === model.roomId)
                             room.currentIndex = i
-                } else
-                    room.model = [];
+                } else {
+                    roomRepeater.model = [];
+                }
                 volume.value = model.volume;
                 monday.checked = model.recurrence.indexOf("MON") >= 0;
                 tuesday.checked = model.recurrence.indexOf("TUE") >= 0;
@@ -374,7 +369,7 @@ Item {
             loadPrograms();
         }
 
-        onClosed: {
+        onDone: {
             alarm.closed(); // forward signal
         }
 
@@ -427,8 +422,8 @@ Item {
             model.roomId = roomModel.get(room.currentIndex).id;
             model.volume = volume.value;
             model.recurrence = makeRecurrence();
-            model.startLocalTime = makeTime(startHour.currentIndex, startMinute.currentIndex, 0);
-            model.duration = makeTime(durationHours.currentIndex, durationMinutes.currentIndex, 0);
+            model.startLocalTime = makeTime(tpStart.hour, tpStart.minute, 0);
+            model.duration = makeTime(tpDuration.hour, tpDuration.minute, 0);
             model.programUri = programs.get(program.currentIndex).uri;
             model.programMetadata = programs.metadata[program.currentIndex];
             if (isNew) {
