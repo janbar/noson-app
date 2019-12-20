@@ -119,9 +119,8 @@ MusicPage {
                 }
                 action2Visible: true
                 action2IconSource: model.includeLinkedZones ? "qrc:/images/share.svg" : "qrc:/images/location-idle.svg"
-                menuVisible: true
 
-                menuItems: [
+                menu: ContextMenu {
                     MenuItem {
                         text: qsTr("Edit")
                         font.pixelSize: units.fx("medium")
@@ -130,7 +129,7 @@ MusicPage {
                             alarmList.focusIndex = index;
                             dialogAlarm.open(model);
                         }
-                    },
+                    }
                     Remove {
                         enabled: true
                         visible: true
@@ -140,7 +139,7 @@ MusicPage {
                             color = "red";
                         }
                     }
-                ]
+                }
 
                 contentHeight: units.gu(8)
 

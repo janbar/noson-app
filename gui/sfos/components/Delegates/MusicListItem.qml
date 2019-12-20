@@ -53,7 +53,6 @@ ListItem {
     property alias action2IconSource: row.action2IconSource
     property alias action3Visible: row.action3Visible
     property alias action3IconSource: row.action3IconSource
-    property alias menuVisible: row.menuVisible
 
     anchors { left: parent.left; right: parent.right }
     contentHeight: content.height

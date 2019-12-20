@@ -855,10 +855,6 @@ ApplicationWindow {
         id: dialogSleepTimer
     }
 
-    DialogSongInfo {
-        id: dialogSongInfo
-    }
-
     DialogSoundSettings {
         id: dialogSoundSettings
     }
@@ -879,6 +875,13 @@ ApplicationWindow {
         id: dialogSearch
     }
 
+    DialogSongInfo {
+        id: dialogSongInfo
+    }
+
+    DialogRemovePlaylist {
+        id: dialogRemovePlaylist
+    }
 
     //==============================================================
     // Spinner

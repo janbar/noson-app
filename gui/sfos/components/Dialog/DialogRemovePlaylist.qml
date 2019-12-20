@@ -20,30 +20,49 @@ import QtQuick.Layouts 1.1
 import Sailfish.Silica 1.0
 import QtQml.Models 2.3
 
-DialogBase {
-    id: dialog
+Item {
+    id: removingPlaylist
+    property var containerItem: null
+    property alias result: dialog.result
+    property alias status: dialog.status
+    signal done
 
-    acceptText: qsTr("Ok")
-    cancelText: qsTr("Cancel")
+    DialogBase {
+        id: dialog
 
-    Label {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        //: this is a title of a dialog with a prompt to delete a playlist
-        text: qsTr("Permanently delete playlist ?")
-        wrapMode: Label.WordWrap
-        color: styleMusic.dialog.labelColor
-        font.pixelSize: units.fx("large")
-        font.bold: true
+        acceptText: qsTr("Ok")
+        cancelText: qsTr("Cancel")
+        onDone: removingPlaylist.done()
+        onAccepted: {
+            // removing playlist
+            removeFromFavorites(removingPlaylist.containerItem.payload)
+            removePlaylist(removingPlaylist.containerItem.id)
+        }
+
+        Label {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            //: this is a title of a dialog with a prompt to delete a playlist
+            text: qsTr("Permanently delete playlist ?")
+            wrapMode: Label.WordWrap
+            color: styleMusic.dialog.labelColor
+            font.pixelSize: units.fx("large")
+            font.bold: true
+        }
+
+        Text {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            text: qsTr("This cannot be undone.")
+            wrapMode: Text.WordWrap
+            color: styleMusic.dialog.foregroundColor
+            font.pixelSize: units.fx("medium")
+            font.weight: Font.Normal
+        }
     }
 
-    Text {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        text: qsTr("This cannot be undone.")
-        wrapMode: Text.WordWrap
-        color: styleMusic.dialog.foregroundColor
-        font.pixelSize: units.fx("medium")
-        font.weight: Font.Normal
+    function open(containerItem) {
+        removingPlaylist.containerItem = containerItem;
+        return dialog.open();
     }
 }

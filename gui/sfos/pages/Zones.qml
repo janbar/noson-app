@@ -109,9 +109,9 @@ MusicPage {
                 }
                 actionVisible: model.isGroup
                 actionIconSource: model.isGroup ? "qrc:/images/edit-clear.svg" : ""
-                menuVisible: model.isGroup
 
                 menu: ContextMenu {
+                    hasContent: model.isGroup
                     MenuItem {
                         text: qsTr("Group")
                         enabled: model.isGroup
@@ -121,8 +121,7 @@ MusicPage {
                     }
                 }
 
-                //contentHeight: units.gu(11)
-                height: units.gu(11)
+                contentHeight: units.gu(11)
                 coverSize: units.gu(5)
                 noCover: "qrc:/images/no_cover.png"
 

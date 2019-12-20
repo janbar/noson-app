@@ -68,8 +68,12 @@ Item {
         Slider {
             id: volumeGroupSlider
             anchors.left: nowPlayingMuteButton.right
+            anchors.leftMargin: units.gu(2)
+            anchors.rightMargin: units.gu(2)
             anchors.right: nightmodeButton.left
             anchors.verticalCenter: parent.verticalCenter
+            leftMargin: 0
+            rightMargin: 0
             stepSize: 2.5
             minimumValue: 0
             maximumValue: 100
@@ -81,7 +85,7 @@ Item {
 
             onValueChanged: {
                 if (Math.abs(value - inValue) >= 1.0) {
-                    if (pressed && value > inValue + 5.0) {
+                    if (down && value > inValue + 5.0) {
                         value = inValue + 5.0; // loop on value changed
                     } else {
                         volumeGroupSlider.inValue = player.volumeMaster = Math.round(value);

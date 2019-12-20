@@ -31,8 +31,6 @@ ListItem {
     property alias selectable: row.checkable
     property alias checked: row.checked
 
-    signal swipe
-    signal click
     signal actionPressed
     signal action2Pressed
     signal action3Pressed
@@ -87,30 +85,10 @@ ListItem {
     property alias action2IconSource: row.action2IconSource
     property alias action3Visible: row.action3Visible
     property alias action3IconSource: row.action3IconSource
-    property alias menuVisible: row.menuVisible
     
     anchors { left: parent.left; right: parent.right }
     contentHeight: content.height
     width: ListView.view.width
-
-    /* Detect row swipe */
-    property string direction: "None"
-    property real lastX: -1
-    property real lastY: -1
-
-    onPressed: {
-        lastX = mouse.x
-        lastY = mouse.y
-    }
-
-    onReleased: {
-        var diffX = mouse.x - lastX;
-        if (Math.abs(diffX) > units.gu(15)) {
-            swipe();
-        } else {
-            //click();
-        }
-    }
 
     Rectangle {
         id: content

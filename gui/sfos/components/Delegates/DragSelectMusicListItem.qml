@@ -88,7 +88,6 @@ MouseArea {
     property alias action2IconSource: row.action2IconSource
     property alias action3Visible: row.action3Visible
     property alias action3IconSource: row.action3IconSource
-    property alias menuVisible: row.menuVisible
 
     property bool held: false
     property int targetIndex: -1
@@ -126,7 +125,7 @@ MouseArea {
                 if (Math.abs(diffX) > units.gu(10)) {
                     swipe();
                 } else {
-                    //click();
+                    click();
                 }
             }
         }
