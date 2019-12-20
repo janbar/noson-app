@@ -216,10 +216,10 @@ MusicPage {
     }
 
     Component.onCompleted: {
-        isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
-
-        console.debug("Populating menu")
         if (containerItem) {
+            isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
+
+            console.debug("Populating menu")
             menuAddItemToFavorites = menuItemComp.createObject(pageMenu, {"text" : qsTr("Add to favorites"), "visible" : !composerViewPage.isFavorite})
             menuAddItemToFavorites.onClicked.connect(onMenuAddItemToFavorites)
             menuRemoveFromFavorites = menuItemComp.createObject(pageMenu, {"text" : qsTr("Remove from favorites"), "visible" : composerViewPage.isFavorite})

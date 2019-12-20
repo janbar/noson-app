@@ -432,6 +432,7 @@ MusicPage {
         }
     }
 
+    /*!TODO
     DialogRemovePlaylist {
         id: dialogRemovePlaylist
 
@@ -444,25 +445,11 @@ MusicPage {
             }
         }
     }
-
+*/
     /*!TODO
     // Page actions
     optionsMenuVisible: true
     optionsMenuContentItems: [
-        MenuItem {
-            enabled: containerItem ? true : false
-            text: songStackPage.isFavorite ?  qsTr("Remove from favorites") : qsTr("Add to favorites")
-            font.pixelSize: units.fx("medium")
-            onClicked: {
-                if (!songStackPage.isFavorite) {
-                    if (addItemToFavorites(containerItem, pageTitle, songList.headerItem.firstSource))
-                        songStackPage.isFavorite = true
-                } else {
-                    if (removeFromFavorites(containerItem.payload))
-                        songStackPage.isFavorite = false
-                }
-            }
-        },
         MenuItem {
             visible: songStackPage.isPlaylist
             height: (visible ? implicitHeight : 0)
@@ -475,7 +462,29 @@ MusicPage {
         }
     ]
 */
-    
+    Component {
+        id: menuItemComp
+        MenuItem {
+        }
+    }
+
+    property MenuItem menuAddItemToFavorites: null
+    property MenuItem menuRemoveFromFavorites: null
+    onIsFavoriteChanged: {
+        if (containerItem) {
+            menuAddItemToFavorites.visible = !songStackPage.isFavorite;
+            menuRemoveFromFavorites.visible = songStackPage.isFavorite;
+        }
+    }
+    function onMenuAddItemToFavorites() {
+        if (addItemToFavorites(containerItem, pageTitle, songList.headerItem.firstSource))
+            songStackPage.isFavorite = true
+    }
+    function onMenuRemoveFromFavorites() {
+        if (removeFromFavorites(containerItem.payload))
+            songStackPage.isFavorite = false
+    }
+
     // check favorite on data loaded
     Connections {
         target: AllFavoritesModel
@@ -486,7 +495,14 @@ MusicPage {
     }
 
     Component.onCompleted: {
-        if (containerItem)
+        if (containerItem) {
             isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
+
+            console.debug("Populating menu")
+            menuAddItemToFavorites = menuItemComp.createObject(pageMenu, {"text" : qsTr("Add to favorites"), "visible" : !songStackPage.isFavorite})
+            menuAddItemToFavorites.onClicked.connect(onMenuAddItemToFavorites)
+            menuRemoveFromFavorites = menuItemComp.createObject(pageMenu, {"text" : qsTr("Remove from favorites"), "visible" : songStackPage.isFavorite})
+            menuRemoveFromFavorites.onClicked.connect(onMenuRemoveFromFavorites)
+        }
     }
 }
