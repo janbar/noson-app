@@ -204,7 +204,8 @@ Item {
                 }
                 MusicCheckBox {
                     id: playPulse
-                    visible: Sonos.havePulseAudio()
+                    //visible: Sonos.havePulseAudio()
+                    visible: false // No usage on Sailfish
                     anchors.right: parent.right
                     anchors.rightMargin: units.gu(1)
                     anchors.left: parent.left
