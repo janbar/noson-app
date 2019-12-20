@@ -30,8 +30,21 @@ Item {
     property string moreSource: ""
     property var moreArgs: ({})
     property bool forceActionMore: false
-    property alias status: dialog.status
-    signal showMore
+
+    function showMore() {
+        if (dialogSongInfo.moreSource)
+            showMoreAfterClose.start();
+    }
+    Timer {
+        id: showMoreAfterClose
+        interval: 50
+        onTriggered: {
+            if (dialog.status !== DialogStatus.Closed)
+                restart();
+            else
+                pageStack.push(dialogSongInfo.moreSource, dialogSongInfo.moreArgs);
+        }
+    }
 
     DialogBase {
         id: dialog

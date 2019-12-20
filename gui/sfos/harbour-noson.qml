@@ -877,19 +877,10 @@ ApplicationWindow {
 
     DialogSongInfo {
         id: dialogSongInfo
-        onShowMore: {
-            if (dialogSongInfo.moreSource)
-                showMore.start();
-        }
-        Timer {
-            id: showMore
-            interval: 50
-            onTriggered: {
-                if (dialogSongInfo.status !== DialogStatus.Closed)
-                    restart();
-                pageStack.push(dialogSongInfo.moreSource, dialogSongInfo.moreArgs);
-            }
-        }
+    }
+
+    DialogRemovePlaylist {
+        id: dialogRemovePlaylist
     }
 
     //==============================================================

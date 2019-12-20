@@ -432,39 +432,27 @@ MusicPage {
         }
     }
 
-    /*!TODO
-    DialogRemovePlaylist {
-        id: dialogRemovePlaylist
-
-        onAccepted: {
-            if (songStackPage.isPlaylist) {
-                // removing playlist
-                removeFromFavorites(songStackPage.containerItem.payload)
-                removePlaylist(songStackPage.containerItem.id)
-                pageStack.pop()
-            }
-        }
-    }
-*/
-    /*!TODO
-    // Page actions
-    optionsMenuVisible: true
-    optionsMenuContentItems: [
-        MenuItem {
-            visible: songStackPage.isPlaylist
-            height: (visible ? implicitHeight : 0)
-            text: qsTr("Delete")
-            font.pixelSize: units.fx("medium")
-            onTriggered: {
-                if (isPlaylist)
-                    dialogRemovePlaylist.open()
-            }
-        }
-    ]
-*/
     Component {
         id: menuItemComp
         MenuItem {
+        }
+    }
+
+    property MenuItem menuRemovePlaylist: null
+    function onMenuRemovePlaylist() {
+        dialogRemovePlaylist.open(songStackPage.containerItem)
+        dialogRemovePlaylist.onDone.connect(afterRemovedPlaylist.start)
+    }
+    Timer {
+        id: afterRemovedPlaylist
+        interval: 50
+        onTriggered: {
+            if (dialogRemovePlaylist.result === DialogResult.Accepted) {
+                if (dialogRemovePlaylist.status !== DialogStatus.Closed)
+                    restart();
+                else
+                    pageStack.pop();
+            }
         }
     }
 
@@ -503,6 +491,8 @@ MusicPage {
             menuAddItemToFavorites.onClicked.connect(onMenuAddItemToFavorites)
             menuRemoveFromFavorites = menuItemComp.createObject(pageMenu, {"text" : qsTr("Remove from favorites"), "visible" : songStackPage.isFavorite})
             menuRemoveFromFavorites.onClicked.connect(onMenuRemoveFromFavorites)
+            menuRemovePlaylist = menuItemComp.createObject(pageMenu, {"text" : qsTr("Delete"), "visible" : songStackPage.isPlaylist})
+            menuRemovePlaylist.onClicked.connect(onMenuRemovePlaylist)
         }
     }
 }
