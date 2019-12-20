@@ -133,7 +133,9 @@ add_custom_target(NosonApp-qmldir ALL
     DEPENDS ${QMLFILES}
 )
 
-# Install plugin file
-MESSAGE(STATUS "PlugIns install path: ${PLUGINS_DIR}")
-install(TARGETS NosonApp DESTINATION ${PLUGINS_DIR}/NosonApp/)
-install(FILES   qmldir DESTINATION ${PLUGINS_DIR}/NosonApp/)
+if(NOT QT_STATICPLUGIN)
+  # Install plugin file
+  MESSAGE(STATUS "PlugIns install path: ${PLUGINS_DIR}")
+  install(TARGETS NosonApp DESTINATION ${PLUGINS_DIR}/NosonApp/)
+  install(FILES   qmldir DESTINATION ${PLUGINS_DIR}/NosonApp/)
+endif()

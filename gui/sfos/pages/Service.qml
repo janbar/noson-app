@@ -165,7 +165,7 @@ MusicPage {
             // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
-                onCountChanged: {
+                onLoaded: {
                     listItem.isFavorite = model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
                 }
             }
@@ -187,7 +187,7 @@ MusicPage {
                     : ""
             onActionPressed: playItem(model)
             actionVisible: model.canPlay
-            actionIconSource: "qrc:/images/media-preview-start.svg"
+            actionIconSource: "image://theme/icon-m-play"
 
             menu: ContextMenu {
                 hasContent: model.canPlay || model.canQueue
@@ -233,15 +233,11 @@ MusicPage {
             }
 
             Component.onCompleted: {
-                isFavorite = model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
+                listItem.isFavorite = model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
             }
         }
 
-        opacity: isListView ? 1.0 : 0.0
-        visible: opacity > 0.0
-        Behavior on opacity {
-            NumberAnimation { duration: 250 }
-        }
+        visible: isListView
 
         onAtYEndChanged: {
             if (mediaList.atYEnd && mediaModel.totalCount > mediaModel.count) {
@@ -258,7 +254,7 @@ MusicPage {
         model: mediaModel
 
         delegate: Card {
-            id: favoriteCard
+            id: mediaCard
             primaryText: model.title
             secondaryText: model.description.length > 0 ? model.description
                          : model.type === 1 ? model.artist.length > 0 ? model.artist : qsTr("Album")
@@ -269,13 +265,11 @@ MusicPage {
                          : model.type === 5 ? qsTr("Radio")
                          : ""
 
-            isFavorite: model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
-
             // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
                 onLoaded: {
-                    isFavorite = model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
+                    mediaCard.isFavorite = model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
                 }
             }
 
@@ -292,6 +286,7 @@ MusicPage {
 
             onClicked: clickItem(model)
             onPressAndHold: {
+                customdebug("###### pressed and held")
                 if (model.canPlay) {
                     if (isFavorite && removeFromFavorites(model.payload))
                         isFavorite = false;
@@ -303,13 +298,13 @@ MusicPage {
                 }
             }
             onPlayClicked: playItem(model)
+
+            Component.onCompleted: {
+                isFavorite = model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
+            }
         }
 
-        opacity: isListView ? 0.0 : 1.0
-        visible: opacity > 0.0
-        Behavior on opacity {
-            NumberAnimation { duration: 250 }
-        }
+        visible: !isListView
 
         onAtYEndChanged: {
             if (mediaGrid.atYEnd && mediaModel.totalCount > mediaModel.count) {
@@ -324,15 +319,16 @@ MusicPage {
         }
     }
 
-    property MenuItem menuItemGoBack: null
-    onIsRootChanged: menuItemGoBack.visible = !isRoot // enable the menu when the content isn't root
+    property MenuItem menuItemPageUp: null
+    onIsRootChanged: menuItemPageUp.visible = !isRoot // enable the menu when the content isn't root
+    pageMenuQuickSelect: true
 
     Component.onCompleted: {
         mediaModel.init(Sonos, serviceItem.payload, false)
         mediaModel.asyncLoad()
         // create the menu item to navigate back. Starting from root it isn't visible
-        menuItemGoBack = menuItemComp.createObject(pageMenu, {"text" : qsTr("Go back"), "visible" : false})
-        menuItemGoBack.onClicked.connect(goUpClicked)
+        menuItemPageUp = menuItemComp.createObject(pageMenu, {"text" : qsTr("Page Up"), "visible" : false})
+        menuItemPageUp.onClicked.connect(goUpClicked)
     }
 
     onGoUpClicked: {
@@ -387,6 +383,7 @@ MusicPage {
         anchors.fill: parent
         source: "qrc:/sfos/components/ServiceRegistration.qml"
         active: false
+        visible: active
     }
 
     Loader {
@@ -394,6 +391,7 @@ MusicPage {
         anchors.fill: parent
         source: "qrc:/sfos/components/ServiceLogin.qml"
         active: false
+        visible: active
     }
 
     Connections {
@@ -401,7 +399,7 @@ MusicPage {
         onIsAuthExpiredChanged: {
             var auth;
             if (mediaModel.isAuthExpired) {
-                if (mediaModel.policyAuth == 1) {
+                if (mediaModel.policyAuth === 1) {
                     if (!loginService.active) {
                         // first try with saved login/password
                         auth = mediaModel.getDeviceAuth();
@@ -412,7 +410,7 @@ MusicPage {
                             mediaModel.asyncLoad();
                         }
                     }
-                } else if (mediaModel.policyAuth == 2 || mediaModel.policyAuth == 3) {
+                } else if (mediaModel.policyAuth === 2 || mediaModel.policyAuth === 3) {
                     if (registeringService.active)
                         registeringService.active = false; // restart new registration
                     else

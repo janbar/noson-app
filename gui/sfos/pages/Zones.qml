@@ -108,7 +108,7 @@ MusicPage {
                     Sonos.startUnjoinZone(model.payload)
                 }
                 actionVisible: model.isGroup
-                actionIconSource: model.isGroup ? "qrc:/images/edit-clear.svg" : ""
+                actionIconSource: model.isGroup ? "image://theme/icon-m-clear" : ""
 
                 menu: ContextMenu {
                     hasContent: model.isGroup
@@ -153,7 +153,7 @@ MusicPage {
                         action3IconSource = "";
                     } else {
                         action3Visible = true;
-                        action3IconSource = (zonePlayer.playbackState === "PLAYING" ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-preview-start.svg");
+                        action3IconSource = (zonePlayer.playbackState === "PLAYING" ? "image://theme/icon-m-pause" : "image://theme/icon-m-play");
                     }
                     // translate the state
                     switch (zonePlayer.playbackState)

@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2019
+ *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import QtQuick 2.2
 import Sailfish.Silica 1.0
 import QtGraphicalEffects 1.0
@@ -8,7 +25,7 @@ MouseArea {
     property alias label: label
     property color color: styleMusic.view.foregroundColor
     property color pressedColor: styleMusic.view.highlightedColor
-    property alias rotationRunning: icon.rotationRunning
+    property alias animationRunning: icon.animationRunning
     property alias iconSize: icon.height
     height: units.gu(5)
     width: row.width + units.gu(2)
@@ -30,38 +47,36 @@ MouseArea {
 
         Image {
             id: icon
+
+            property real margins: parent.height < units.gu(3) ? 0.0 : units.gu(1)
+
             anchors.verticalCenter: parent.verticalCenter
-            height: parent.height < units.gu(3) ? parent.height : (parent.height - units.gu(2))
+            height: parent.height - margins
             width: area.visible ? height : 0
             sourceSize.height: height
             sourceSize.width: width
             source: "qrc:/images/delete.svg"
 
-            property bool rotationRunning: false
+            property bool animationRunning: false
 
-            onRotationRunningChanged: {
-                if (rotationRunning)
+            onAnimationRunningChanged: {
+                if (animationRunning)
                     animator.start();
-                else {
+                else
                     animator.stop();
-                    animator.angle = 0;
-                }
             }
 
             Timer {
                 id: animator
-                interval: 500
+                interval: 333
                 repeat: true
-                property int angle: 0
                 onTriggered: {
-                    angle = (angle + 30) % 360;
+                    opacity = (opacity === 0.0 ? 1.0 : 0.0);
                 }
             }
 
-            transform: Rotation {
-                origin.x: icon.x - units.gu(1) + icon.width / 2
-                origin.y: icon.y - units.gu(1) + icon.height / 2
-                angle: animator.angle
+            Behavior on opacity {
+                NumberAnimation { duration: 200 }
             }
         }
 
@@ -105,30 +120,3 @@ MouseArea {
     onEntered: ripple.opacity = 0.1
     onExited: ripple.opacity = 0
 }
-/*
-IconButton {
-    id: icn
-    
-    property string source: "qrc:/images/delete.svg"
-    property alias color: label.color
-    property alias label: label
-    property int preferredWidth: (label.width > height ? label.width : height)
-
-    height: units.gu(3)
-    width: preferredWidth
-    icon.source: source
-    icon.width: height
-    icon.height: height
-    enabled: true
-    visible: true
-    
-    Label {
-        id: label
-        anchors {
-            top: parent.bottom
-            horizontalCenter: parent.horizontalCenter
-        }
-        font.pixelSize: units.fx("x-small")
-    }
-}
-*/

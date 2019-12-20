@@ -34,6 +34,7 @@ MusicPage {
         id: serviceGrid
         itemWidth: units.gu(15)
         heightOffset: units.gu(7)
+        clip: true
 
         model: SortFilterModel {
             model: AllServicesModel

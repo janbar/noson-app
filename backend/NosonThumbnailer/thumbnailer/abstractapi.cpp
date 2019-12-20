@@ -22,9 +22,23 @@
 
 #include <QDebug>
 
+#include "lastfm/lastfm.h"
+#include "deezer/deezer.h"
+
 using namespace thumbnailer;
 
 AbstractAPI::Store AbstractAPI::apis;
+
+namespace {
+  // registering APIs
+  bool init()
+  {
+    AbstractAPI::registerMe(new LastfmAPI());
+    AbstractAPI::registerMe(new DeezerAPI());
+    return 0;
+  }
+  int dummy = init();
+}
 
 AbstractAPI::Store::~Store()
 {

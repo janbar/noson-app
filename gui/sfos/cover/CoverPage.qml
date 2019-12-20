@@ -5,17 +5,17 @@ CoverBackground {
     Label {
         id: label
         anchors.centerIn: parent
-        text: qsTr("My Cover")
+        text: qsTr("noson")
     }
 
     Image {
         anchors.centerIn: parent
         fillMode: Image.PreserveAspectCrop
-        source: "qrc:/images/noson.png"
-        width: Math.min(parent.height, parent.width) * 0.80
+        source: "qrc:/sfos/images/noson.svg"
+        width: Math.min(parent.height, parent.width) / 2
         height: width
-        sourceSize.height: 512
-        sourceSize.width: 512
+        sourceSize.height: height
+        sourceSize.width: width
     }
 
     Image {

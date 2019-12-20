@@ -5,12 +5,6 @@
 
 using namespace thumbnailer;
 
-namespace
-{
-  // register the API
-  bool dummy = AbstractAPI::registerMe(new LastfmAPI());
-}
-
 bool LastfmAPI::configure(NetManager* nam, const QString& apiKey)
 {
   (void)nam; // no check done for the key

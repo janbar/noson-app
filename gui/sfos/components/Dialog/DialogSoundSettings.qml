@@ -34,11 +34,13 @@ Item {
 
         acceptText: qsTr("Close")
 
-        Slider {
+        StyledSlider {
             id: trebleSlider
             anchors {
                 left: parent.left
                 right: parent.right
+                leftMargin: Theme.horizontalPageMargin + units.gu(5)
+                rightMargin: Theme.horizontalPageMargin + units.gu(5)
             }
             
             minimumValue: -10
@@ -68,11 +70,13 @@ Item {
             }
         }
          
-        Slider {
+        StyledSlider {
             id: bassSlider
             anchors {
                 left: parent.left
                 right: parent.right
+                leftMargin: Theme.horizontalPageMargin + units.gu(5)
+                rightMargin: Theme.horizontalPageMargin + units.gu(5)
             }
             
             minimumValue: -10
@@ -103,13 +107,19 @@ Item {
         }
 
         Row {
-            width: parent.width
+            anchors {
+                left: parent.left
+                right: parent.right
+                leftMargin: Theme.horizontalPageMargin
+                rightMargin: Theme.horizontalPageMargin
+            }
+
             spacing: units.gu(1)
 
             Column {
                 id: modes
                 width: (parent.width - parent.spacing) / 2
-                spacing: 0
+                spacing: units.gu(1)
                 MusicCheckBox {
                     id: nightMode
                     anchors.right: parent.right
@@ -149,7 +159,7 @@ Item {
             Column {
                 id: inputs
                 width: (parent.width - parent.spacing) / 2
-                spacing: 0
+                spacing: units.gu(1)
                 MusicCheckBox {
                     id: playIN
                     anchors.right: parent.right

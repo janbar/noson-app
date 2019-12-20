@@ -22,7 +22,7 @@ import "../"
 MusicIcon {
     height: units.gu(5)
     width: units.gu(20)
-    source: "qrc:/images/add.svg"
+    source: "image://theme/icon-m-media-playlists"
     label {
         //: this appears in a button with limited space (around 14 characters)
         text: qsTr("Queue all")

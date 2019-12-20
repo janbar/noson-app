@@ -61,10 +61,10 @@ QtObject {
         property color foregroundColor: Theme.primaryColor
         property color labelColor: Theme.primaryColor
         property color progressBackgroundColor: "grey"
-        property color progressForegroundColor: "#19b1e9"
+        property color progressForegroundColor: Theme.highlightColor
         property color progressHandleColor: Theme.primaryColor
         property color volumeBackgroundColor: "grey"
-        property color volumeForegroundColor: "#e95420"
+        property color volumeForegroundColor: Theme.primaryColor
         property color volumeHandleColor: Theme.primaryColor
     }
 
