@@ -56,8 +56,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             height: units.gu(6)
             width: height
-            source: player.mute ? "image://theme/icon-m-speaker-mute"
-                                : volumeGroupSlider.value > 0 ? "image://theme/icon-m-speaker-on" : "image://theme/icon-m-speaker"
+            source: player.mute ? "image://theme/icon-m-speaker-mute" : "image://theme/icon-m-speaker"
             objectName: "muteShape"
             opacity: 1.0
             onClicked: {
@@ -73,8 +72,8 @@ Item {
             anchors.rightMargin: units.gu(1)
             anchors.right: nightmodeButton.left
             anchors.verticalCenter: parent.verticalCenter
-            leftMargin: units.gu(1)
-            rightMargin: units.gu(1)
+            leftMargin: units.gu(2)
+            rightMargin: units.gu(2)
             stepSize: 2.5
             minimumValue: 0
             maximumValue: 100
