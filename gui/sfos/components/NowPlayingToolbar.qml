@@ -65,15 +65,13 @@ Item {
             }
         }
 
-        Slider {
+        StyledSlider {
             id: volumeGroupSlider
             anchors.left: nowPlayingMuteButton.right
-            anchors.leftMargin: units.gu(2)
-            anchors.rightMargin: units.gu(2)
+            anchors.leftMargin: units.gu(1)
+            anchors.rightMargin: units.gu(1)
             anchors.right: nightmodeButton.left
             anchors.verticalCenter: parent.verticalCenter
-            leftMargin: 0
-            rightMargin: 0
             stepSize: 2.5
             minimumValue: 0
             maximumValue: 100
