@@ -81,7 +81,8 @@ SilicaFlickable {
             BrightnessContrast {
                 anchors.bottom: parent.bottom
                 source: blurred
-                brightness: Theme.DarkOnLight ? +0.5 : -0.5
+                /*!FIXME: brightness: 0.5-styleMusic.nowPlaying.primaryColor.hslLightness*/
+                brightness: Qt.colorEqual(styleMusic.nowPlaying.primaryColor, "black") ? +0.5 : -0.5
                 width: albumImageContainer.width
                 height: albumImageContainer.height
             }
