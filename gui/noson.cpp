@@ -70,7 +70,6 @@ int main(int argc, char *argv[])
     setupApp(app);
 
     QSettings settings;
-
 #ifndef SAILFISHOS
     QString style = QQuickStyle::name();
     if (!style.isEmpty())
@@ -102,8 +101,6 @@ int main(int argc, char *argv[])
 #else
     engine.rootContext()->setContextProperty("Android", QVariant(false));
 #endif
-    
-#ifndef SAILFISHOS
     // select and bind styles available and known to work
     QStringList availableStyles;
 #if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
@@ -125,18 +122,14 @@ int main(int argc, char *argv[])
     }
 #endif
     engine.rootContext()->setContextProperty("AvailableStyles", availableStyles);
-#endif
-#endif
-    
+
     // handle signal exit(int) issued by the qml instance
-#ifndef SAILFISHOS
     QObject::connect(&engine, &QQmlApplicationEngine::exit, doExit);
-#endif
+
 #if defined(Q_OS_IOS)
     importStaticPlugins(&engine);
 #endif
 
-#ifndef SAILFISHOS
     engine.load(QUrl("qrc:/noson.qml"));
     if (engine.rootObjects().isEmpty()) {
         qWarning() << "Failed to load QML";
@@ -145,7 +138,10 @@ int main(int argc, char *argv[])
 #else
     QScopedPointer<QQuickView> view(SailfishApp::createView());
     view->setSource(QUrl("qrc:/sfos/harbour-noson.qml"));
-    QObject::connect(view->engine(), &QQmlApplicationEngine::quit, &app, QCoreApplication::quit);    
+    QObject::connect(view->engine(), &QQmlApplicationEngine::quit, &app, QCoreApplication::quit);
+    // 100MB cache for network data
+    view->engine()->setNetworkAccessManagerFactory(new DiskCacheFactory(CACHE_SIZE));
+    // bind version string
     view->engine()->rootContext()->setContextProperty("VersionString", QString(APP_VERSION));
     view->showFullScreen();
 #endif
