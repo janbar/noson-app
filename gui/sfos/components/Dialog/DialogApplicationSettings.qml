@@ -51,6 +51,12 @@ DialogBase {
 
     ColumnLayout {
         id: settingsColumn
+        anchors {
+            left: parent.left
+            right: parent.right
+            leftMargin: Theme.horizontalPageMargin
+            rightMargin: Theme.horizontalPageMargin
+        }
         spacing: units.gu(1)
 
         ColumnLayout {
@@ -69,14 +75,14 @@ DialogBase {
                 }
                 Text {
                     id: link
-                    font.pixelSize: units.fx("x-small")
+                    font.pixelSize: units.fx("small")
                     text: "<a href='https://www.last.fm/api/account/create'>" + qsTr("Get an API account") + "</a>"
-                    onLinkHovered: {
+                    /*!FIXME onLinkHovered: {
                         if (hoveredLink)
                             font.bold = true;
                         else
                             font.bold = false;
-                    }
+                    }*/
                     onLinkActivated: Qt.openUrlExternally(link)
                     linkColor: styleMusic.view.linkColor
                 }
