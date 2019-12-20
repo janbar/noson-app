@@ -219,6 +219,7 @@ SilicaFlickable {
                 rightMargin: units.gu(5)
                 top: parent.top
             }
+            handleVisible: false
             maximumValue: player.trackDuration  // load value at startup
             objectName: "progressSliderShape"
             value: player.trackPosition  // load value at startup
