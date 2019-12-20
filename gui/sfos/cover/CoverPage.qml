@@ -12,7 +12,7 @@ CoverBackground {
         anchors.centerIn: parent
         fillMode: Image.PreserveAspectCrop
         source: "qrc:/images/noson.png"
-        width: Math.min(parent.height, parent.width) * 0.80
+        width: Math.min(parent.height, parent.width) / 2
         height: width
         sourceSize.height: 512
         sourceSize.width: 512
