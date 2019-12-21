@@ -47,20 +47,6 @@ MusicPage {
         onTopologyChanged: roomModel.load(Sonos)
     }
 
-    DialogAlarm {
-        id: dialogAlarm
-        container: alarmsModel
-        roomModel: roomModel
-
-        onOpened: {
-            alarmsModel.updatePending = true;
-        }
-
-        onClosed: {
-            alarmsModel.updatePending = false;
-        }
-    }
-
     function getRoomById(id) {
         for (var i = 0; i < roomModel.count; ++i)
             if (roomModel.get(i).id === id)
@@ -95,8 +81,10 @@ MusicPage {
                 description: qsTr("Alarm")
 
                 signal editNew
-                onEditNew: dialogAlarm.open(model, true, index)
-
+                onEditNew: {
+                    dialogAlarm.open(model, true, index)
+                }
+                
                 onClicked: {
                     alarmList.focusIndex = index;
                     dialogAlarm.open(model);
@@ -141,7 +129,7 @@ MusicPage {
                     }
                 }
 
-                contentHeight: units.gu(8)
+                contentHeight: units.gu(10)
 
                 column: Column {
                     spacing: units.gu(1)
@@ -230,7 +218,7 @@ MusicPage {
         anchors.fill: parent
         active: alarmList.count === 0 && !infoLoadedIndex
         asynchronous: true
-        source: "qrc:/components/AlarmsEmptyState.qml"
+        source: "qrc:/sfos/components/AlarmsEmptyState.qml"
         visible: active
     }
 
@@ -246,5 +234,9 @@ MusicPage {
             alarmsModel.updatePending = false; // relase model reset
             popInfo.open(qsTr("Action can't be performed"));
         }
+    }
+    
+    Component.onCompleted: {
+        dialogAlarm.roomModel = roomModel
     }
 }

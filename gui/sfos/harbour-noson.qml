@@ -868,6 +868,19 @@ ApplicationWindow {
     DialogRemovePlaylist {
         id: dialogRemovePlaylist
     }
+    
+    DialogAlarm {
+        id: dialogAlarm
+        container: alarmsModel
+
+        onOpened: {
+            alarmsModel.updatePending = true;
+        }
+
+        onClosed: {
+            alarmsModel.updatePending = false;
+        }
+    }
 
     //==============================================================
     // Spinner
