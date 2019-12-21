@@ -210,13 +210,16 @@ SilicaFlickable {
             width: units.gu(3)
         }
 
-        Slider {
+        StyledSlider {
             id: progressSliderMusic
             anchors {
                 left: parent.left
+                leftMargin: units.gu(5)
                 right: parent.right
+                rightMargin: units.gu(5)
                 top: parent.top
             }
+            handleVisible: false
             maximumValue: player.trackDuration  // load value at startup
             objectName: "progressSliderShape"
             value: player.trackPosition  // load value at startup
@@ -239,10 +242,10 @@ SilicaFlickable {
                 }
             }
 
-            onPressedChanged: {
-                seeking = pressed
+            onDownChanged: {
+                seeking = down
 
-                if (!pressed) {
+                if (!down) {
                     seeked = true
                     seekInTrack.start(); // start or restart the request
 

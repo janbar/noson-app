@@ -5,11 +5,19 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 option(INSTALL_TESTS "Install the tests on make install" on)
 option(BUILD_SAILFISHOS "Build the SailfishOS application" OFF)
 
+if(IOS OR BUILD_SAILFISHOS)
+  set(QT_STATICPLUGIN ON CACHE BOOL "Build static plugins" FORCE)
+endif()
+
 set(APP_VERSION       "4.1.0")
 set(APP_VERSION_CODE  51)
 set(APP_NAME          "noson")
 set(APP_ID            "io.github.janbar.noson")
-set(EXEC              "noson-app")
+if(QT_STATICPLUGIN)
+  set(EXEC            "noson")
+else()
+  set(EXEC            "noson-app")
+endif()
 set(ICON_FILE         "noson.png")
 set(DESKTOP_FILE_NAME "noson.desktop")
 set(APPDATA_FILE_NAME "noson.appdata.xml")
@@ -29,15 +37,19 @@ set(PLUGINS_DIR ${CMAKE_INSTALL_FULL_LIBDIR}/${APP_NAME})
 set(NOSON_GUI "${PLUGINS_DIR}/noson-gui")
 set(NOSON_CLI "${PLUGINS_DIR}/noson-cli")
 
-configure_file(
-  ${EXEC}.in
-  ${CMAKE_CURRENT_BINARY_DIR}/${EXEC}
-)
-
-install(
-  PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/${EXEC}"
-  DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+if(QT_STATICPLUGIN)
+  set(APP_DESKTOP_ID "${APP_NAME}")
+else()
+  set(APP_DESKTOP_ID "${APP_ID}")
+  configure_file(
+    ${EXEC}.in
+    ${CMAKE_CURRENT_BINARY_DIR}/${EXEC}
+  )
+  install(
+    PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/${EXEC}"
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+  )
+endif()
 
 configure_file(
   ${DESKTOP_FILE_NAME}.in
@@ -46,13 +58,32 @@ configure_file(
 
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE_NAME}
-  DESTINATION ${DESKTOP_DIR} RENAME ${APP_ID}.desktop
+  DESTINATION ${DESKTOP_DIR} RENAME ${APP_DESKTOP_ID}.desktop
 )
 
-install(
-  FILES "gui/images/${ICON_FILE}"
-  DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps RENAME ${APP_NAME}.png
-)
+if(BUILD_SAILFISHOS)
+  install(
+    FILES "gui/sfos/images/${APP_NAME}-86x86.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/86x86/apps RENAME ${APP_NAME}.png
+  )
+  install(
+    FILES "gui/sfos/images/${APP_NAME}-108x108.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/108x108/apps RENAME ${APP_NAME}.png
+  )
+  install(
+    FILES "gui/sfos/images/${APP_NAME}-128x128.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/128x128/apps RENAME ${APP_NAME}.png
+  )
+  install(
+    FILES "gui/sfos/images/${APP_NAME}.svg"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps
+  )
+else()
+  install(
+    FILES "gui/images/${ICON_FILE}"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps RENAME ${APP_NAME}.png
+  )
+endif()
 
 configure_file(
   ${APPDATA_FILE_NAME}.in
@@ -72,6 +103,14 @@ endif()
 
 add_subdirectory(backend)
 add_subdirectory(gui)
+
+if(QT_STATICPLUGIN)
+  install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/gui/noson-gui
+          DESTINATION ${CMAKE_INSTALL_BINDIR} RENAME ${EXEC})
+else()
+  install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/gui/noson-gui
+          DESTINATION ${PLUGINS_DIR})
+endif()
 
 if(ANDROID)
   configure_file(
@@ -96,14 +135,24 @@ if(ANDROID)
   )
 endif()
 
-add_custom_target(
-  "run"
-  QML2_IMPORT_PATH=${CMAKE_BINARY_DIR}/backend/qml ${CMAKE_BINARY_DIR}/gui/noson-gui --debug
-  DEPENDS NosonApp NosonApp-qmldir
-        NosonThumbnailer NosonThumbnailer-qmldir
-        NosonMediaScanner NosonMediaScanner-qmldir
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/gui
-)
+if(QT_STATICPLUGIN)
+  add_custom_target(
+    "run"
+    ${CMAKE_BINARY_DIR}/${EXEC} --debug
+    DEPENDS noson-gui
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+  )
+else()
+  add_custom_target(
+    "run"
+    QML2_IMPORT_PATH=${CMAKE_BINARY_DIR}/backend/qml ${CMAKE_BINARY_DIR}/gui/noson-gui --debug
+    DEPENDS noson-gui
+            NosonApp NosonApp-qmldir
+            NosonThumbnailer NosonThumbnailer-qmldir
+            NosonMediaScanner NosonMediaScanner-qmldir
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/gui
+  )
+endif()
 
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in
