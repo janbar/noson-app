@@ -25,12 +25,6 @@
 
 using namespace thumbnailer;
 
-namespace
-{
-  // register the API
-  bool dummy = AbstractAPI::registerMe(new DeezerAPI());
-}
-
 bool DeezerAPI::configure(NetManager* nam, const QString& apiKey)
 {
   (void)nam;
