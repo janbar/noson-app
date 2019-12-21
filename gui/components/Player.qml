@@ -322,6 +322,7 @@ Item {
         player.zoneName = zone.handle.zoneName;
         player.zoneShortName = zone.handle.zoneShortName;
         player.controllerURI = zone.handle.controllerURI;
+        player.sleepTimerEnabled = zone.handle.remainingSleepTimerDuration() > 0 ? true : false;
         trackQueue.initQueue(zone.handle);
     }
 
