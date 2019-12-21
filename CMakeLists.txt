@@ -61,10 +61,29 @@ install(
   DESTINATION ${DESKTOP_DIR} RENAME ${APP_DESKTOP_ID}.desktop
 )
 
-install(
-  FILES "gui/images/${ICON_FILE}"
-  DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps RENAME ${APP_NAME}.png
-)
+if(BUILD_SAILFISHOS)
+  install(
+    FILES "gui/sfos/images/${APP_NAME}-86x86.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/86x86/apps RENAME ${APP_NAME}.png
+  )
+  install(
+    FILES "gui/sfos/images/${APP_NAME}-108x108.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/108x108/apps RENAME ${APP_NAME}.png
+  )
+  install(
+    FILES "gui/sfos/images/${APP_NAME}-128x128.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/128x128/apps RENAME ${APP_NAME}.png
+  )
+  install(
+    FILES "gui/sfos/images/${APP_NAME}.svg"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps
+  )
+else()
+  install(
+    FILES "gui/images/${ICON_FILE}"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps RENAME ${APP_NAME}.png
+  )
+endif()
 
 configure_file(
   ${APPDATA_FILE_NAME}.in
