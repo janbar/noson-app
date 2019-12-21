@@ -2,7 +2,7 @@
 <!-- Copyright 2015 Jean-Luc Barriere <jlbarriere68@gmail.com> -->
 <component type="desktop-application">
   <id>@APP_ID@</id>
-  <launchable type="desktop-id">@APP_ID@.desktop</launchable>
+  <launchable type="desktop-id">@APP_DESKTOP_ID@.desktop</launchable>
   <name>@APP_NAME@</name>
   <project_license>GPL-3.0-only</project_license>
   <developer_name>Jean-Luc Barriere</developer_name>

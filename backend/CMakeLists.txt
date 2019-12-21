@@ -25,6 +25,6 @@ add_subdirectory(NosonThumbnailer)
 add_subdirectory(NosonMediaScanner)
 
 # build the cli tool for desktop only
-if(NOT ANDROID AND NOT IOS)
+if(NOT ANDROID AND NOT IOS AND NOT BUILD_SAILFISHOS)
     add_subdirectory(cli)
 endif()

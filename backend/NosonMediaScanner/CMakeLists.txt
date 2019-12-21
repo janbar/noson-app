@@ -109,7 +109,9 @@ add_custom_target(NosonMediaScanner-qmldir ALL
     DEPENDS ${QMLFILES}
 )
 
-# Install plugin file
-MESSAGE(STATUS "PlugIns install path: ${PLUGINS_DIR}")
-install(TARGETS NosonMediaScanner DESTINATION ${PLUGINS_DIR}/NosonMediaScanner/)
-install(FILES   qmldir DESTINATION ${PLUGINS_DIR}/NosonMediaScanner/)
+if(NOT QT_STATICPLUGIN)
+  # Install plugin file
+  MESSAGE(STATUS "PlugIns install path: ${PLUGINS_DIR}")
+  install(TARGETS NosonMediaScanner DESTINATION ${PLUGINS_DIR}/NosonMediaScanner/)
+  install(FILES   qmldir DESTINATION ${PLUGINS_DIR}/NosonMediaScanner/)
+endif()

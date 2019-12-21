@@ -39,11 +39,11 @@ void setupApp(QGuiApplication& app);
 void prepareTranslator(QGuiApplication& app, const QString& translationPath, const QString& translationPrefix, const QLocale& locale);
 void doExit(int code);
 
-#if defined(Q_OS_IOS)
+#if defined(QT_STATICPLUGIN)
 #include "../backend/NosonApp/plugin.h"
 #include "../backend/NosonThumbnailer/plugin.h"
 #include "../backend/NosonMediaScanner/plugin.h"
-void importStaticPlugins(QQmlApplicationEngine* engine)
+void importStaticPlugins(QQmlEngine* engine)
 {
   { NosonAppPlugin e; e.initializeEngine(engine, "NosonApp"); e.registerTypes("NosonApp"); }
   { ThumbnailerPlugin e; e.initializeEngine(engine, "NosonThumbnailer"); e.registerTypes("NosonThumbnailer"); }
@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
     // handle signal exit(int) issued by the qml instance
     QObject::connect(&engine, &QQmlApplicationEngine::exit, doExit);
 
-#if defined(Q_OS_IOS)
+#if defined(QT_STATICPLUGIN)
     importStaticPlugins(&engine);
 #endif
 
@@ -137,6 +137,9 @@ int main(int argc, char *argv[])
     }
 #else
     QScopedPointer<QQuickView> view(SailfishApp::createView());
+#ifdef QT_STATICPLUGIN
+    importStaticPlugins(view->engine());
+#endif
     view->setSource(QUrl("qrc:/sfos/harbour-noson.qml"));
     QObject::connect(view->engine(), &QQmlApplicationEngine::quit, &app, QCoreApplication::quit);
     // 100MB cache for network data

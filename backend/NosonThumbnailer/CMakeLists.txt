@@ -90,7 +90,9 @@ add_custom_target(NosonThumbnailer-qmldir ALL
     DEPENDS ${QMLFILES}
 )
 
-# Install plugin file
-MESSAGE(STATUS "PlugIns install path: ${PLUGINS_DIR}")
-install(TARGETS NosonThumbnailer DESTINATION ${PLUGINS_DIR}/NosonThumbnailer/)
-install(FILES   qmldir DESTINATION ${PLUGINS_DIR}/NosonThumbnailer/)
+if(NOT QT_STATICPLUGIN)
+  # Install plugin file
+  MESSAGE(STATUS "PlugIns install path: ${PLUGINS_DIR}")
+  install(TARGETS NosonThumbnailer DESTINATION ${PLUGINS_DIR}/NosonThumbnailer/)
+  install(FILES   qmldir DESTINATION ${PLUGINS_DIR}/NosonThumbnailer/)
+endif()
