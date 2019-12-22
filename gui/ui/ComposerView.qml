@@ -169,7 +169,7 @@ MusicPage {
             // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
-                onCountChanged: {
+                onLoaded: {
                     albumCard.isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
                 }
             }

@@ -164,12 +164,6 @@ Item {
         }
         color: styleMusic.card.backgroundColor
         opacity: cardMouseArea.pressed ? 0.3 : 0
-
-        Behavior on opacity {
-            NumberAnimation {
-                duration: 250
-            }
-        }
     }
 
     /* Capture mouse events */
