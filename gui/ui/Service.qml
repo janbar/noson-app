@@ -170,7 +170,7 @@ MusicPage {
             // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
-                onCountChanged: {
+                onLoaded: {
                     listItem.isFavorite = model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
                 }
             }
@@ -239,7 +239,7 @@ MusicPage {
             }
 
             Component.onCompleted: {
-                isFavorite = model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
+                listItem.isFavorite = model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
             }
         }
 
@@ -264,7 +264,7 @@ MusicPage {
         model: mediaModel
 
         delegate: Card {
-            id: favoriteCard
+            id: mediaCard
             primaryText: model.title
             secondaryText: model.description.length > 0 ? model.description
                          : model.type === 1 ? model.artist.length > 0 ? model.artist : qsTr("Album")
@@ -274,8 +274,6 @@ MusicPage {
                          : model.type === 5 && model.canQueue ? model.artist.length > 0 ? model.artist : qsTr("Song")
                          : model.type === 5 ? qsTr("Radio")
                          : ""
-
-            isFavorite: model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
 
             // check favorite on data loaded
             Connections {
@@ -309,6 +307,10 @@ MusicPage {
                 }
             }
             onPlayClicked: playItem(model)
+
+            Component.onCompleted: {
+                mediaCard.isFavorite = model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
+            }
         }
 
         opacity: isListView ? 0.0 : 1.0
@@ -383,6 +385,7 @@ MusicPage {
         anchors.fill: parent
         source: "qrc:/components/ServiceRegistration.qml"
         active: false
+        visible: active
     }
 
     Loader {
@@ -390,6 +393,7 @@ MusicPage {
         anchors.fill: parent
         source: "qrc:/components/ServiceLogin.qml"
         active: false
+        visible: active
     }
 
     Connections {
@@ -397,7 +401,7 @@ MusicPage {
         onIsAuthExpiredChanged: {
             var auth;
             if (mediaModel.isAuthExpired) {
-                if (mediaModel.policyAuth == 1) {
+                if (mediaModel.policyAuth === 1) {
                     if (!loginService.active) {
                         // first try with saved login/password
                         auth = mediaModel.getDeviceAuth();
@@ -408,7 +412,7 @@ MusicPage {
                             mediaModel.asyncLoad();
                         }
                     }
-                } else if (mediaModel.policyAuth == 2 || mediaModel.policyAuth == 3) {
+                } else if (mediaModel.policyAuth === 2 || mediaModel.policyAuth === 3) {
                     if (registeringService.active)
                         registeringService.active = false; // restart new registration
                     else
