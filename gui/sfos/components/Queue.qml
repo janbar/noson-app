@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2013, 2014, 2015, 2016
+ * Copyright (C) 2013-2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *      Andrew Hayzen <ahayzen@gmail.com>
  *      Daniel Holm <d.holmen@gmail.com>
  *      Victor Thompson <victor.thompson@gmail.com>
@@ -31,37 +32,18 @@ SilicaFlickable {
     property alias listview: queueList
     property alias header: queueList.header
     property alias headerItem: queueList.headerItem
-    property alias backgroundColor: bg.color
     clip: true
-
-    Rectangle {
-        id: bg
-        anchors.fill: parent
-        color: "transparent"
-    }
 
     Component {
         id: dragDelegate
 
-        DragMusicListItem {
+        MusicListItem {
             id: listItem
-            listview: queueList
-            listIndex: model.index
-            color: bg.color
+            color: "transparent"
             highlightedColor: styleMusic.view.highlightedColor
             highlighted: (player.currentIndex === index)
 
-            onSwipe: {
-                listview.focusIndex = index > 0 ? index - 1 : 0;
-                removeTrackFromQueue(model);
-                color = "red";
-            }
-
-            onReorder: {
-                listview.reorder(from, to)
-            }
-
-            onClick: dialogSongInfo.open(model, [{art: imageSource}],
+            onClicked: dialogSongInfo.open(model, [{art: imageSource}],
                                          "qrc:/sfos/pages/ArtistView.qml",
                                          {
                                              "artistSearch": "A:ARTIST/" + model.author,
@@ -77,28 +59,26 @@ SilicaFlickable {
             onActionPressed: indexQueueClicked(model.index)
             actionVisible: true
             actionIconSource: (player.isPlaying && player.currentIndex === index ? "image://theme/icon-m-pause" : "image://theme/icon-m-play")
-/*!TODO
-            Component.onCompleted: {
-                console.debug("Populating menu")
-                
-                var component = Qt.createComponent("AddToFavorites.qml");
-                var newMenuItem = component.createObject(menuItems, {"enabled" : !model.isService, "visible": enabled, "description": listItem.description, "art": model.art })
 
-                component = Qt.createComponent("AddToPlaylist.qml");
-                newMenuItem = component.createObject(menuItems, {"enabled" : !model.isService, "visible": enabled })
-                
-                
+            menu: ContextMenu {
+                AddToFavorites {
+                    enabled: parent.enabled && !model.isService
+                    visible: enabled
+                    description: listItem.description
+                    art: model.art ? model.art : ""
+                }
+                AddToPlaylist {
+                    enabled: parent.enabled && !model.isService
+                    visible: enabled
+                }
+                Remove {
+                    onClicked: {
+                        listview.focusIndex = index > 0 ? index - 1 : 0;
+                        removeTrackFromQueue(model);
+                        color = "red";
+                    }
+                }
             }
-*/
-
-//                Remove {
- //                   onTriggered: {
- //                       listview.focusIndex = index > 0 ? index - 1 : 0;
- ///                       removeTrackFromQueue(model);
- //                       color = "red";
- //                   }
- //               }
-            
 
             coverSize: units.gu(5)
 
@@ -161,5 +141,4 @@ SilicaFlickable {
         }
 
     }
-
 }

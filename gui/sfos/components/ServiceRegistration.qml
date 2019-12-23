@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2017
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +26,7 @@ Rectangle {
     anchors {
         fill: parent
     }
-    color: styleMusic.view.backgroundColor
+    color: "transparent"
 
     Column {
         id: noMusicTextColumn
@@ -64,8 +65,8 @@ Rectangle {
             color: styleMusic.view.foregroundColor
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignHCenter
-            maximumLineCount: 4
-            text: qsTr("This will require to authenticate against the music service again, as credentials cannot be retrieved from Sonos device.")
+            maximumLineCount: 10
+            text: qsTr("First, the third-party service must have been configured with the official Sonos app. Then this will require authenticating again with the music service, as the credentials cannot be retrieved from the Sonos device.")
             width: parent.width
             wrapMode: Text.WordWrap
             font.pixelSize: units.fx("medium")

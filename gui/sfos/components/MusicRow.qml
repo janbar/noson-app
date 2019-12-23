@@ -1,19 +1,20 @@
 /*
-* Copyright (C) 2013, 2014, 2015, 2016, 2017
-*      Jean-Luc Barriere <jlbarriere68@gmail.com>
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; version 3.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2019
+ *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
@@ -22,13 +23,15 @@ import "ListItemActions"
 Item {
     id: row
     
-    property real contentHeight: units.gu(6)
+    property real contentHeight: units.gu(7)
     property alias column: columnComponent.sourceComponent
     property real coverSize: contentHeight
     property string noCover: "qrc:/images/no_cover.png"
     property var imageSources: []
     property string imageSource: ""
     property string description: ""
+    property string rowNumber: ""
+    property string rowNumberColor: styleMusic.view.primaryColor
     property bool isFavorite: false
     property alias checked: control.checked
     property alias checkable: control.checkable
@@ -47,7 +50,7 @@ Item {
     signal deselected
 
     signal imageError(var index)
-            
+
     anchors.leftMargin: units.gu(1)
     anchors.rightMargin: units.gu(1)
 
@@ -69,13 +72,24 @@ Item {
 
     Rectangle {
         id: image
-        height: contentHeight
-        width: cover.visible ? coverSize : units.dp(1)
+        height: coverSize
+        width: cover.visible ? height : rowNumber.visible ? units.gu(3) : units.dp(1)
+        border.color: cover.visible ? Theme.rgba(styleMusic.view.foregroundColor, 0.2) : "transparent"
         color: "transparent"
-        anchors {
-            //verticalCenter: parent.verticalCenter
-            topMargin: units.gu(1)
-            bottomMargin: units.gu(1)
+        anchors.verticalCenter: parent.verticalCenter
+
+        Text {
+            id: rowNumber
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            anchors.right: parent.right
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideLeft
+            text: row.rowNumber
+            color: row.rowNumberColor
+            font.pixelSize: text.length < 3 ? units.fx("x-large") : units.fx("small")
+            visible: text !== ""
         }
 
         Image {
@@ -88,7 +102,7 @@ Item {
             fillMode: Image.PreserveAspectCrop
             height: coverSize
             width: height
-            source: imageSources !== undefined && imageSources.length ? imageSources[index].art : noCover
+            source: imageSources.length ? imageSources[index].art : noCover
             sourceSize.height: 512
             sourceSize.width: 512
 
@@ -113,11 +127,10 @@ Item {
         anchors {
             verticalCenter: parent.verticalCenter
             left: image.right
-            leftMargin: units.gu(2)
+            leftMargin: units.gu(1)
+            right: parent.right
+            rightMargin: units.gu(1)
         }
-
-        width: imageSources === undefined ? parent.width - parent.spacing - action.width
-                                        : parent.width - image.width - parent.spacing - action.width
 
         onSourceComponentChanged: {
             for (var i=0; i < item.children.length; i++) {

@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2017
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +24,7 @@ Item {
     objectName: "musicToolbarObject"
 
     property alias color: bg.color
+    property alias playButtonAnimationRunning: playerControlsPlayButton.animationRunning
 
     Rectangle {
         id: bg
@@ -111,6 +113,15 @@ Item {
                 height: units.gu(6)
                 source: player.isPlaying ? "image://theme/icon-l-pause" : "image://theme/icon-l-play"
                 width: height
+                animationInterval: 100
+
+                Connections {
+                    target: player
+                    onPlaybackStateChanged: {
+                        if (player.playbackState !== "TRANSITIONING")
+                            disabledPlayerControlsPlayButton.animationRunning = false
+                    }
+                }
             }
 
             /* Select input */
@@ -135,7 +146,7 @@ Item {
                 }
                 onClicked: {
                     if (player.currentCount > 0)
-                        player.playQueue(true)
+                        disabledPlayerControlsPlayButton.animationRunning = player.playQueue(true)
                     else
                         dialogSelectSource.open()
                 }
@@ -214,21 +225,6 @@ Item {
                 }
             }
 
-            /* Play/Pause button */
-            MusicIcon {
-                id: playerControlsPlayButton
-                anchors {
-                    right: parent.right
-                    rightMargin: units.gu(3)
-                    verticalCenter: parent.verticalCenter
-                }
-                color: styleMusic.playerControls.foregroundColor
-                height: units.gu(6)
-                source: player.playbackState === "PLAYING" ? "image://theme/icon-l-pause" : "image://theme/icon-l-play"
-                objectName: "playShape"
-                width: height
-            }
-
             /* Mouse area to jump to now playing */
             MouseArea {
                 anchors {
@@ -249,27 +245,30 @@ Item {
                 }
             }
 
-            /* Mouse area for the play button (ontop of the jump to now playing) */
-            MouseArea {
+            /* Play/Pause button */
+            MusicIcon {
+                id: playerControlsPlayButton
                 anchors {
-                    bottom: parent.bottom
-                    horizontalCenter: playerControlsPlayButton.horizontalCenter
-                    top: parent.top
+                    right: parent.right
+                    rightMargin: units.gu(3)
+                    verticalCenter: parent.verticalCenter
                 }
-                onClicked: player.toggle()
-                width: units.gu(8)
+                color: styleMusic.playerControls.foregroundColor
+                height: units.gu(6)
+                source: player.playbackState === "PLAYING" ? "image://theme/icon-l-pause" : "image://theme/icon-l-play"
+                objectName: "playShape"
+                width: height
+                animationInterval: 100 // fast flashing
+                onClicked: animationRunning = player.toggle()
 
-                Rectangle {
-                    anchors {
-                        fill: parent
-                    }
-                    color: styleMusic.playerControls.foregroundColor
-                    opacity: parent.pressed ? 0.1 : 0
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 250
-                        }
+                // control the animation depending of the playback state
+                Connections {
+                    target: player
+                    onPlaybackStateChanged: {
+                        if (player.playbackState !== "TRANSITIONING")
+                            playerControlsPlayButton.animationRunning = false
+                        else if (!playerControlsPlayButton.animationRunning)
+                            playerControlsPlayButton.animationRunning = true
                     }
                 }
             }

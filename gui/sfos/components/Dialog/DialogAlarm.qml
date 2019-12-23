@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2018
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,30 +39,19 @@ Item {
 
         //: this is a title of a dialog to configure an alarm
         title: qsTr("Alarm")
-        contentSpacing: units.gu(1)
-        edgeMargins: units.gu(0)
+        contentSpacing: units.gu(2)
 
         acceptText: qsTr("Save")
         cancelText: qsTr("Cancel")
 
         Row {
-            width: parent.width
-            spacing: Theme.paddingSmall
-
-            Item {
-                id: roomLabel
-                width: units.gu(5)
-                height: room.height
-                Icon {
-                    anchors.centerIn: parent
-                    height: units.gu(5)
-                    width: height
-                    color: styleMusic.dialog.labelColor
-                    enabled: false
-                    source: "qrc:/images/location.svg"
-                    opacity: 0.7
-                }
+            anchors {
+                left: parent.left
+                right: parent.right
+                leftMargin: Theme.horizontalPageMargin
+                rightMargin: Theme.horizontalPageMargin
             }
+            spacing: Theme.paddingSmall
 
             ComboBox {
                 id: room
@@ -76,17 +66,25 @@ Item {
                         }
                     }
                 }
-                width: parent.width - roomLabel.width - parent.spacing - units.gu(0.5)
+                width: parent.width
                 currentIndex: -1
             }
         }
 
-        Row {
-            width: parent.width
+        property real pickerSize: (width > height ? height / 3.0 : width / 2) - Theme.paddingSmall
+
+        RowLayout {
+            anchors {
+                left: parent.left
+                right: parent.right
+                leftMargin: 0
+                rightMargin: 0
+            }
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             spacing: Theme.paddingSmall
             Column {
                 id: c1
-                width: (parent.width / 2) - Theme.paddingSmall
+                width: dialog.pickerSize
                 Label {
                     width: parent.width
                     text: qsTr("Start time")
@@ -94,7 +92,6 @@ Item {
                     elide: Text.ElideRight
                     font.pixelSize: units.fx("medium")
                     horizontalAlignment: Text.AlignHCenter
-                    opacity: 1.0
                 }
 
                 TimePicker {
@@ -113,7 +110,7 @@ Item {
             }
             Column {
                 id: c2
-                width: parent.width / 2
+                width: dialog.pickerSize
                 Label {
                     width: parent.width
                     text: qsTr("Duration")
@@ -121,7 +118,6 @@ Item {
                     elide: Text.ElideRight
                     font.pixelSize: units.fx("medium")
                     horizontalAlignment: Text.AlignHCenter
-                    opacity: 1.0
                 }
 
                 TimePicker {
@@ -139,35 +135,19 @@ Item {
                 }
             }
         }
-
-        Row {
-            id: c3
-            width: parent.width
-            spacing: Theme.paddingSmall
-
-            Icon {
-                id: volumeIcon
-                height: units.gu(5)
-                width: height
-                source: volume.value === 0 ? "qrc:/images/audio-volume-muted.svg" : "qrc:/images/audio-volume.svg"
-                enabled: false
-                opacity: 0.7
-            }
         
-            Slider {
-                id: volume
-                minimumValue: 0
-                value: 20
-                maximumValue: 100
-                width: parent.width - volumeIcon.width - 2*Theme.paddingSmall
+        RowLayout {
+            anchors {
+                left: parent.left
+                right: parent.right
+                leftMargin: Theme.horizontalPageMargin
+                rightMargin: Theme.horizontalPageMargin
             }
-        }
-        
-        Row {
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Column {
                 spacing: 0
                 Label {
-                    text: "  " + qsTr("Mon")
+                    text: qsTr("Mon")
                     color: styleMusic.dialog.labelColor
                     font.pixelSize: units.fx("small")
                     width: parent.width
@@ -175,13 +155,13 @@ Item {
                 }
                 MusicCheckBox {
                     id: monday
-                    zoom: 0.66
+                    zoom: 0.80
                 }
             }
             Column {
                 spacing: 0
                 Label {
-                    text: "  " + qsTr("Tue")
+                    text: qsTr("Tue")
                     color: styleMusic.dialog.labelColor
                     font.pixelSize: units.fx("small")
                     width: parent.width
@@ -189,13 +169,13 @@ Item {
                 }
                 MusicCheckBox {
                     id: tuesday
-                    zoom: 0.66
+                    zoom: 0.80
                 }
             }
             Column {
                 spacing: 0
                 Label {
-                    text: "  " + qsTr("Wed")
+                    text: qsTr("Wed")
                     color: styleMusic.dialog.labelColor
                     font.pixelSize: units.fx("small")
                     width: parent.width
@@ -203,13 +183,13 @@ Item {
                 }
                 MusicCheckBox {
                     id: wednesday
-                    zoom: 0.66
+                    zoom: 0.80
                 }
             }
             Column {
                 spacing: 0
                 Label {
-                    text: "  " + qsTr("Thu")
+                    text: qsTr("Thu")
                     color: styleMusic.dialog.labelColor
                     font.pixelSize: units.fx("small")
                     width: parent.width
@@ -217,13 +197,13 @@ Item {
                 }
                 MusicCheckBox {
                     id: thursday
-                    zoom: 0.66
+                    zoom: 0.80
                 }
             }
             Column {
                 spacing: 0
                 Label {
-                    text: "  " + qsTr("Fri")
+                    text: qsTr("Fri")
                     color: styleMusic.dialog.labelColor
                     font.pixelSize: units.fx("small")
                     width: parent.width
@@ -231,13 +211,13 @@ Item {
                 }
                 MusicCheckBox {
                     id: friday
-                    zoom: 0.66
+                    zoom: 0.80
                 }
             }
             Column {
                 spacing: 0
                 Label {
-                    text: "  " + qsTr("Sat")
+                    text: qsTr("Sat")
                     color: styleMusic.dialog.labelColor
                     font.pixelSize: units.fx("small")
                     width: parent.width
@@ -245,13 +225,13 @@ Item {
                 }
                 MusicCheckBox {
                     id: saturday
-                    zoom: 0.66
+                    zoom: 0.80
                 }
             }
             Column {
                 spacing: 0
                 Label {
-                    text: "  " + qsTr("Sun")
+                    text: qsTr("Sun")
                     color: styleMusic.dialog.labelColor
                     font.pixelSize: units.fx("small")
                     width: parent.width
@@ -259,7 +239,7 @@ Item {
                 }
                 MusicCheckBox {
                     id: sunday
-                    zoom: 0.66
+                    zoom: 0.80
                 }
             }
         }
@@ -278,11 +258,16 @@ Item {
         }
             
         Row {
-            width: parent.width
-            spacing: units.gu(1)
+            anchors {
+                left: parent.left
+                right: parent.right
+                leftMargin: Theme.horizontalPageMargin
+                rightMargin: Theme.horizontalPageMargin
+            }
+            spacing: Theme.paddingSmall
 
             Item {
-                id: programLabel
+                id: programIcon
                 width: units.gu(5)
                 height: program.height
                 Icon {
@@ -291,14 +276,13 @@ Item {
                     width: height
                     color: styleMusic.dialog.labelColor
                     enabled: false
-                    source: "qrc:/images/bell.svg"
+                    source: "image://theme/icon-m-alarm"
                     opacity: 0.7
                 }
             }
 
             ComboBox {
                 id: program
-                label: qsTr("Program")
                 menu: ContextMenu {
                     Repeater {
                         model: programs
@@ -307,8 +291,36 @@ Item {
                         }
                     }
                 }
-                width: parent.width - programLabel.width - parent.spacing - units.gu(0.5)
+                width: parent.width - programIcon.width - parent.spacing
                 currentIndex: 0
+            }
+        }
+
+        Row {
+            id: c3
+            anchors {
+                left: parent.left
+                right: parent.right
+                leftMargin: Theme.horizontalPageMargin
+                rightMargin: Theme.horizontalPageMargin
+            }
+            spacing: Theme.paddingSmall
+
+            Icon {
+                id: volumeIcon
+                height: units.gu(5)
+                width: height
+                source: volume.value === 0 ? "qrc:/sfos/images/icon-m-speaker-muted.svg" : "qrc:/sfos/images/icon-m-speaker.svg"
+                enabled: false
+                opacity: 0.7
+            }
+
+            StyledSlider {
+                id: volume
+                minimumValue: 0
+                value: 20
+                maximumValue: 100
+                width: parent.width - volumeIcon.width - 2 * parent.spacing
             }
         }
 

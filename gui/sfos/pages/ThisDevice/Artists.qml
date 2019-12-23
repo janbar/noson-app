@@ -17,7 +17,6 @@
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
-
 import QtQuick.Layouts 1.1
 import NosonApp 1.0
 import NosonMediaScanner 1.0

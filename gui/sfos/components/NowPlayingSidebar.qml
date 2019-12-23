@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016, 2017
+ * Copyright (C) 2016-2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -23,6 +23,50 @@ Page {
     id: nowPlayingSidebar
     anchors.fill: parent
 
+    // under construction
+    Item {
+        anchors {
+            fill: parent
+        }
+
+        Rectangle {
+            id: notImplemented
+            anchors {
+                fill: parent
+            }
+            color: "transparent"
+
+            Column {
+                anchors.centerIn: parent
+                spacing: units.gu(4)
+                width: units.gu(36)
+
+                Label {
+                    color: styleMusic.view.labelColor
+                    elide: Text.ElideRight
+                    font.pixelSize: units.fx("x-large")
+                    horizontalAlignment: Text.AlignHCenter
+                    maximumLineCount: 2
+                    text: qsTr("Under construction")
+                    width: parent.width
+                    wrapMode: Text.WordWrap
+                }
+
+                Label {
+                    color: styleMusic.view.foregroundColor
+                    elide: Text.ElideRight
+                    font.pixelSize: units.fx("medium")
+                    horizontalAlignment: Text.AlignLeft
+                    maximumLineCount: 8
+                    text: qsTr("This feature will be added in a next version. Please rate the App.")
+                    width: parent.width
+                    wrapMode: Text.WordWrap
+                }
+            }
+        }
+    }
+
+/*!TODO
     property bool isListView: true
 
     Column {
@@ -154,5 +198,5 @@ Page {
     onVisibleChanged: {
         if (visible)
             ensureListViewLoaded();
-    }
+    }*/
 }

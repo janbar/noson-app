@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +18,6 @@
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
-
 import NosonMediaScanner 1.0
 import "../components"
 import "../components/Delegates"
@@ -64,14 +64,13 @@ MusicPage {
         delegate: MusicListItem {
             id: listItem
 
-            property bool held: false
-            onPressAndHold: held = true
-            onReleased: held = false
             onClicked: clickItem(model)
 
             color: listItem.held ? "lightgrey" : "transparent"
 
             imageSources: [{art: model.art}]
+
+            coverSize: units.gu(5)
 
             column: Column {
                 Label {
@@ -84,7 +83,7 @@ MusicPage {
             }
         }
 
-        visible: isListView ? true : false
+        visible: isListView ? !MediaScanner.emptyState : false
     }
 
     MusicGridView {
@@ -104,7 +103,7 @@ MusicPage {
             onClicked: clickItem(model)
         }
 
-        visible: isListView ? false : true
+        visible: isListView ? false : !MediaScanner.emptyState
     }
 
     GenreList {

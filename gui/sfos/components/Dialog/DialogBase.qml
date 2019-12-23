@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2017
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,10 +27,6 @@ Dialog {
       Content will be put inside a column in the foreround of the Dialog.
     */
     default property alias _contentChildren: contentsColumn.data
-    /*!
-      The property holds the margins from the dialog's dismissArea.
-      */
-    property real edgeMargins: units.gu(2)
 
     property string title: ""
     property string acceptText: qsTr("Ok")

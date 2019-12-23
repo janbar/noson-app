@@ -1,5 +1,7 @@
 /*
- * Copyright (C) 2015, 2016
+ * Copyright (C) 2015-2019
+ *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *      Andrew Hayzen <ahayzen@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify

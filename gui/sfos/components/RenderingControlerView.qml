@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016
+ * Copyright (C) 2016-2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -73,7 +73,7 @@ MusicListView {
                 width: parent.width
 
                 /* Mute button */
-                Icon {
+                MusicIcon {
                     id: muteButton
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
@@ -139,7 +139,7 @@ MusicListView {
                 }
 
                 /* Grip button */
-                Icon {
+                MusicIcon {
                     id: gripButton
                     anchors.right: parent.right
                     anchors.rightMargin: - units.gu(1)

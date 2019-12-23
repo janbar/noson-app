@@ -77,7 +77,7 @@ Item {
         var zp = zone.handle;
         zp.disableMPRIS2();
         zone.handle = zonePlayer;
-        zone.handle.enableMPRIS2();
+        //zone.handle.enableMPRIS2(); //not used with Sailfish
         zone.pid = zonePlayer.pid;
 
         // execute all handlers to signal the changes

@@ -1,5 +1,7 @@
 /*
- * Copyright (C) 2014, 2015
+ * Copyright (C) 2014-2019
+ *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *      Andrew Hayzen <ahayzen@gmail.com>
  *      Daniel Holm <d.holmen@gmail.com>
  *      Victor Thompson <victor.thompson@gmail.com>

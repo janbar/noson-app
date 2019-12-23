@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2016, 2017
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +18,6 @@
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
-
 import QtQml.Models 2.3
 import NosonApp 1.0
 import "../components"
@@ -144,14 +144,7 @@ MusicPage {
         SelectMusicListItem {
             id: listItem
             listview: songList
-            listIndex: model.index
-            reorderable: isPlaylist
-            //selectable: true
-
-/*!FIXME: playlist should be reorderable using drag/drop
-            onReorder: {
-                listview.reorder(from, to)
-            }*/
+            //reorderable: isPlaylist
 
             onClicked: {
                 var arts = [];
@@ -180,8 +173,9 @@ MusicPage {
                 }
             }
 
-            noCover: !songStackPage.isAlbum ? "qrc:/images/no_cover.png" : "qrc:/images/no_cover.png"
-            imageSources: !songStackPage.isAlbum ? makeCoverSource(model.art, model.author, model.album) : [{art: "qrc:/images/no_cover.png"}]
+            noCover: "qrc:/images/no_cover.png"
+            rowNumber: songStackPage.isAlbum ? model.albumTrackNo !== "" ? model.albumTrackNo : "#" : ""
+            imageSources: !songStackPage.isAlbum ? makeCoverSource(model.art, model.author, model.album) : []
             description: qsTr("Song")
 
             onImageError: model.art = "" // reset invalid url from model
@@ -398,7 +392,7 @@ MusicPage {
                         items.push({"payload": songsModel.get(indicies[i]).payload});
                     }
                 }
-                stackView.push("qrc:/ui/AddToPlaylist.qml", {"chosenElements": items})
+                pageStack.push("qrc:/sfos/pages/AddToPlaylist.qml", {"chosenElements": items})
                 songList.selectNone()
                 songStackPage.state = "default"
             }

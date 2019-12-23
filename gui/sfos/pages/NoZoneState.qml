@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2016, 2017
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +19,6 @@
 import QtQuick 2.2
 import QtQuick.Layouts 1.1
 import Sailfish.Silica 1.0
-
 import QtGraphicalEffects 1.0
 import NosonThumbnailer 1.0
 
@@ -27,6 +27,8 @@ Page {
 
     property string pageTitle: qsTr("No zone")
     property bool isRoot: true
+
+    backNavigation: false
 
     // Overlay to show when no zone found
     Rectangle {
@@ -165,7 +167,7 @@ Page {
             Text {
                 color: styleMusic.view.foregroundColor
                 elide: Text.ElideRight
-                font.pixelSize: units.fx("large")
+                font.pixelSize: units.fx("medium")
                 horizontalAlignment: Text.AlignHCenter
                 maximumLineCount: 6
                 text: qsTr("Make sure that your device is connected to the correct wireless network\nand one or more Sonos products are receiving power.")

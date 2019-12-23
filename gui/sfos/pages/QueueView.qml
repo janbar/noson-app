@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2017
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +35,6 @@ MusicPage {
         id: queue
         anchors.fill: parent
     }
-
-    // Page actions
-    optionsMenuVisible: true
 
     Component {
         id: menuItemComp

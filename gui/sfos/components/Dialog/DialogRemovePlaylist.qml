@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2016, 2017
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +17,7 @@
  */
 
 import QtQuick 2.2
-import QtQuick.Layouts 1.1
 import Sailfish.Silica 1.0
-import QtQml.Models 2.3
 
 Item {
     id: removingPlaylist
@@ -29,10 +28,13 @@ Item {
 
     DialogBase {
         id: dialog
+        title: qsTr("Permanently delete playlist ?")
 
         acceptText: qsTr("Ok")
         cancelText: qsTr("Cancel")
+
         onDone: removingPlaylist.done()
+
         onAccepted: {
             // removing playlist
             removeFromFavorites(removingPlaylist.containerItem.payload)
@@ -40,26 +42,20 @@ Item {
         }
 
         Label {
-            anchors.left: parent.left
-            anchors.right: parent.right
+            anchors {
+                left: parent.left
+                right: parent.right
+                leftMargin: Theme.horizontalPageMargin
+                rightMargin: Theme.horizontalPageMargin
+            }
             //: this is a title of a dialog with a prompt to delete a playlist
-            text: qsTr("Permanently delete playlist ?")
+            text: qsTr("This cannot be undone.")
             wrapMode: Label.WordWrap
             color: styleMusic.dialog.labelColor
             font.pixelSize: units.fx("large")
             font.bold: true
         }
-
-        Text {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            text: qsTr("This cannot be undone.")
-            wrapMode: Text.WordWrap
-            color: styleMusic.dialog.foregroundColor
-            font.pixelSize: units.fx("medium")
-            font.weight: Font.Normal
-        }
-    }
+   }
 
     function open(containerItem) {
         removingPlaylist.containerItem = containerItem;

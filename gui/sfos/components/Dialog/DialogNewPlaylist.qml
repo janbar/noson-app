@@ -1,6 +1,7 @@
-/*
- * Copyright (C) 2016, 2017
+﻿/*
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,40 +24,18 @@ DialogBase {
     //: this is a title of a dialog with a prompt to add a new playlist
     title: qsTr("New playlist")
 
-    acceptText: ""
-    cancelText: qsTr("Close")
+    cancelText: qsTr("Cancel")
+    acceptText: qsTr("Create")
 
-    Label {
-        id: newplaylistoutput
-        color: "red"
-        visible: false // should only be visible when an error is made.
-        anchors.left: parent.left
-        anchors.right: parent.right
-        wrapMode: Text.WordWrap
-        font.weight: Font.Normal
+    onAccepted: {
+        createPlaylist(playlistName.text)
     }
+
+    canAccept: playlistName.text.length > 0
 
     TextField {
         id: playlistName
         placeholderText: qsTr("Enter playlist name")
         width: dialog.width
     }
-
-    Button {
-        height: units.gu(6)
-        text: qsTr("Create")
-        onClicked: {
-            newplaylistoutput.visible = false // make sure its hidden now if there was an error last time
-            if (playlistName.text.length > 0) { // make sure something is acually inputed
-                createPlaylist(playlistName.text)
-                dialog.accept()
-            }
-            else {
-                newplaylistoutput.visible = true
-                newplaylistoutput.text = qsTr("Please type in a name.")
-            }
-        }
-    }
-
-    //Component.onCompleted: playlistName.forceActiveFocus()
 }

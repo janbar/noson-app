@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2016, 2017
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +18,6 @@
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
-
 import QtQuick.Layouts 1.1
 import NosonApp 1.0
 import "../components"
@@ -30,7 +30,7 @@ MusicPage {
     objectName: "playlistsPage"
     pageTitle: qsTr("Playlists")
     pageFlickable: playlistsGrid
-    searchable: true
+    searchable: AllPlaylistsModel.count > 1
     addVisible: true
 
     property bool changed: false

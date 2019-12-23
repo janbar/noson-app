@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016, 2017
+ * Copyright (C) 2016-2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  */
 
 import QtQuick 2.2
-import QtQuick.Controls 2.2
+import Sailfish.Silica 1.0
 
 
 Item {
@@ -32,6 +32,7 @@ Item {
     property color labelColor: styleMusic.popover.labelColor
     readonly property bool displayable: containerLayout.height >= containerLayout.rowHeight
 
+    /*!TODO
     Popup {
         id: popover
         width: parent.width
@@ -51,8 +52,8 @@ Item {
             anchors.centerIn: parent
             readonly property double rowHeight: units.gu(7)
             readonly property double minHeight: rowHeight + units.gu(4)
-            readonly property double maxHeight: mainView.height - /*header-footer*/units.gu(15)
-            property int contentHeight: player.renderingModel.count * rowHeight + /*margins*/units.gu(6)
+            readonly property double maxHeight: mainView.height - units.gu(15)
+            property int contentHeight: player.renderingModel.count * rowHeight + units.gu(6)
             width: parent.width
             height: contentHeight > maxHeight ? maxHeight : contentHeight
 
@@ -115,5 +116,5 @@ Item {
             renderingBubble.opened = true
             popover.open()
         }
-    }
+    }*/
 }
