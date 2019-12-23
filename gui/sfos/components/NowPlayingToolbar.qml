@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2013, 2014, 2015, 2016
+ * Copyright (C) 2013-2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *      Andrew Hayzen <ahayzen@gmail.com>
  *      Daniel Holm <d.holmen@gmail.com>
  *      Victor Thompson <victor.thompson@gmail.com>
@@ -56,7 +57,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             height: units.gu(6)
             width: height
-            source: player.mute ? "image://theme/icon-m-speaker-mute" : "image://theme/icon-m-speaker"
+            source: player.mute ? "qrc:/sfos/images/icon-m-speaker-muted.svg" : "qrc:/sfos/images/icon-m-speaker.svg"
             objectName: "muteShape"
             opacity: 1.0
             onClicked: {
@@ -213,7 +214,19 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: player.isPlaying ? "image://theme/icon-l-pause" : "image://theme/icon-l-play"
-                onClicked: player.toggle()
+                animationInterval: 100 // fast flashing
+                onClicked: animationRunning = player.toggle()
+
+                // control the animation depending of the playback state
+                Connections {
+                    target: player
+                    onPlaybackStateChanged: {
+                        if (player.playbackState !== "TRANSITIONING")
+                            nowPlayingPlayIndicator.animationRunning = false
+                        else if (!nowPlayingPlayIndicator.animationRunning)
+                            nowPlayingPlayIndicator.animationRunning = true
+                    }
+                }
             }
         }
 

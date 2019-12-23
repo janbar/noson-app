@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2013, 2014, 2015, 2016
+ * Copyright (C) 2013-2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *      Andrew Hayzen <ahayzen@gmail.com>
  *      Daniel Holm <d.holmen@gmail.com>
  *      Victor Thompson <victor.thompson@gmail.com>
@@ -20,7 +21,6 @@
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
-
 import NosonApp 1.0
 import "../components"
 import "../components/Delegates"
@@ -35,10 +35,9 @@ MusicPage {
     //: this appears in the header with limited space (around 20 characters)
     pageTitle: qsTr("Select playlist")
     pageFlickable: addtoPlaylistView
-    searchable: true
-    searchResultsCount: AllPlaylistsModel.count
+    searchable: AllPlaylistsModel.count > 1
 
-    state: "selector"
+    state: "addToPlaylist"
 
     property var chosenElements: []
 
@@ -50,11 +49,28 @@ MusicPage {
         }
     }
 
+    onSearchClicked: filter.visible = true
+
+    //Header
+    MusicFilter {
+        id: filter
+        visible: false
+        onVisibleChanged: showToolbar = !visible
+    }
+
     MusicGridView {
         id: addtoPlaylistView
         itemWidth: units.gu(12)
         heightOffset: units.gu(7)
-        model: AllPlaylistsModel
+        model: SortFilterModel {
+            model: AllPlaylistsModel
+            sort.property: "title"
+            sort.order: Qt.AscendingOrder
+            sortCaseSensitivity: Qt.CaseInsensitive
+            filter.property: "normalized"
+            filter.pattern: new RegExp(normalizedInput(filter.displayText), "i")
+            filterCaseSensitivity: Qt.CaseInsensitive
+        }
         clip: true
         delegate: Card {
             id: playlist
@@ -66,59 +82,9 @@ MusicPage {
                 songPlaylistLoader.model = model;
                 addToPlaylistPage.addItemList(model.id, chosenElements, songPlaylistLoader.item.containerUpdateID());
                 songPlaylistLoader.sourceComponent = null;
-                stackView.pop();
+                pageStack.pop();
             }
         }
-    }
-
-    footer: Item {
-        height: units.gu(6)
-        width: parent.width
-
-        Rectangle {
-            id: selectorToolBar
-            anchors.fill: parent
-            color: styleMusic.playerControls.backgroundColor
-            opacity: addToPlaylistPage.state === "selector" ? 1.0 : 0.0
-            enabled: opacity > 0
-
-            Rectangle {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.topMargin: units.gu(1.5)
-                anchors.rightMargin: units.gu(1)
-                anchors.leftMargin: units.gu(1)
-                height: units.gu(3)
-                color: "transparent"
-
-                Row {
-                    spacing: units.gu(1)
-
-                    Icon {
-                        id: selectorFind
-                        visible: true
-                        source: "qrc:/images/find.svg"
-                        height: units.gu(5)
-                        onClicked: searchClicked()
-                    }
-
-                    Icon {
-                        id: add
-                        visible: true
-                        source: "qrc:/images/add.svg"
-                        height: units.gu(5)
-                        label.text: qsTr("Add")
-                        label.font.pixelSize: units.fx("x-small")
-                        onClicked: addClicked()
-                    }
-                }
-            }
-        }
-    }
-
-    DialogNewPlaylist {
-        id: dialogNewPlaylist
     }
 
     onAddClicked: dialogNewPlaylist.open()
@@ -141,7 +107,7 @@ MusicPage {
     // Overlay to show when no playlists are on the device
     Loader {
         anchors.fill: parent
-        active: AllPlaylistsModel.count === 0 && loadedIndex
+        active: AllPlaylistsModel.count === 0 && !infoLoadedIndex
         asynchronous: true
         source: "../components/PlaylistsEmptyState.qml"
         visible: active

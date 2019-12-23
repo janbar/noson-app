@@ -26,6 +26,7 @@ MouseArea {
     property color color: styleMusic.view.foregroundColor
     property color pressedColor: styleMusic.view.highlightedColor
     property alias animationRunning: icon.animationRunning
+    property int animationInterval: 500 // slow flashing
     property alias iconSize: icon.height
     height: units.gu(5)
     width: row.width + units.gu(2)
@@ -68,15 +69,16 @@ MouseArea {
 
             Timer {
                 id: animator
-                interval: 333
+                interval: area.animationInterval
                 repeat: true
                 onTriggered: {
                     opacity = (opacity === 0.0 ? 1.0 : 0.0);
                 }
+                onRunningChanged: opacity = 1.0 // reset opacity on stop
             }
 
             Behavior on opacity {
-                NumberAnimation { duration: 200 }
+                NumberAnimation { duration: area.animationInterval / 2 }
             }
         }
 
@@ -100,6 +102,7 @@ MouseArea {
         maskSource: row
     }
 
+    /*
     Rectangle {
         id: ripple
         readonly property bool square: area.implicitWidth <= area.implicitHeight
@@ -119,4 +122,5 @@ MouseArea {
 
     onEntered: ripple.opacity = 0.1
     onExited: ripple.opacity = 0
+    */
 }

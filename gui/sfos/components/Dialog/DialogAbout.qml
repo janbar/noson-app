@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2016-2019
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +24,10 @@ import NosonApp 1.0
 DialogBase {
     id: dialog
     title: qsTr("About")
+
+    cancelText: qsTr("Close")
+    acceptText: ""
+    canAccept: false
 
     contentSpacing: units.gu(2)
 

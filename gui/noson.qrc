@@ -274,5 +274,7 @@
         <file>sfos/images/noson-108x108.png</file>
         <file>sfos/images/noson-128x128.png</file>
         <file>sfos/components/MusicInfoBox.qml</file>
+        <file>sfos/images/icon-m-speaker.svg</file>
+        <file>sfos/images/icon-m-speaker-muted.svg</file>
     </qresource>
 </RCC>

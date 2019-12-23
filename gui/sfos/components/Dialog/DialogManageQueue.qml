@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2017
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +24,9 @@ DialogBase {
     //: this is a title of a dialog to manage queue
     title: qsTr("Manage queue")
 
-    acceptText: qsTr("Close")
+    cancelText: qsTr("Close")
+    acceptText: ""
+    canAccept: false
 
     Label {
         id: newplaylistoutput

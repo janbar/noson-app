@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2018
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +18,6 @@
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
-
 import QtQml.Models 2.3
 import NosonApp 1.0
 import "../components"
@@ -97,7 +97,7 @@ MusicPage {
                     }
                 }
                 actionVisible: true
-                actionIconSource: model.enabled ? "qrc:/images/media-record.svg" : "qrc:/images/media-preview-start.svg"
+                actionIconSource: model.enabled ? "image://theme/icon-m-sounds" : "image://theme/icon-m-silent"
                 onAction2Pressed: {
                     model.includeLinkedZones = !model.includeLinkedZones;
                     if (!Sonos.updateAlarm(model.payload)) {
@@ -106,7 +106,7 @@ MusicPage {
                     }
                 }
                 action2Visible: true
-                action2IconSource: model.includeLinkedZones ? "qrc:/images/share.svg" : "qrc:/images/location-idle.svg"
+                action2IconSource: model.includeLinkedZones ? "image://theme/icon-m-share" : "image://theme/icon-m-location"
 
                 menu: ContextMenu {
                     MenuItem {
@@ -129,7 +129,7 @@ MusicPage {
                     }
                 }
 
-                contentHeight: units.gu(10)
+                contentHeight: units.gu(12)
 
                 column: Column {
                     spacing: units.gu(1)

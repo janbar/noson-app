@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2017
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +23,6 @@ import "../"
 ListItem {
     id: area
     property ListView listview: null
-    property int listIndex: -1
     property color color: styleMusic.view.backgroundColor
     property color highlightedColor: styleMusic.view.highlightedColor
     property var currentColor: highlighted ? highlightedColor : color
@@ -79,6 +79,8 @@ ListItem {
     property alias imageSources: row.imageSources
     property alias imageSource: row.imageSource
     property alias noCover: row.noCover
+    property alias rowNumber: row.rowNumber
+    property alias rowNumberColor: row.rowNumberColor
     property alias actionVisible: row.actionVisible
     property alias actionIconSource: row.actionIconSource
     property alias action2Visible: row.action2Visible

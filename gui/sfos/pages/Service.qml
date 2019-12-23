@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2017
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -152,15 +153,12 @@ MusicPage {
         delegate: MusicListItem {
             id: listItem
 
-            property bool held: false
-            onPressAndHold: held = true
-            onReleased: held = false
             onClicked: {
                 if (model.isContainer)
                     clickItem(model)
             }
 
-            color: listItem.held ? "lightgrey" : "transparent"
+            color: "transparent"
 
             // check favorite on data loaded
             Connections {
@@ -286,7 +284,6 @@ MusicPage {
 
             onClicked: clickItem(model)
             onPressAndHold: {
-                customdebug("###### pressed and held")
                 if (model.canPlay) {
                     if (isFavorite && removeFromFavorites(model.payload))
                         isFavorite = false;

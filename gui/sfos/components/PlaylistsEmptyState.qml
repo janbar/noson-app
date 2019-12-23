@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2016, 2017
+ * Copyright (C) 2016-2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *      Andrew Hayzen <ahayzen@gmail.com>
  *      Daniel Holm <d.holmen@gmail.com>
  *      Victor Thompson <victor.thompson@gmail.com>
@@ -25,7 +26,7 @@ import Sailfish.Silica 1.0
 Rectangle {
     id: playlistsEmptyState
     anchors.fill: parent
-    color: styleMusic.view.backgroundColor
+    color: "transparent"
 
     Column {
         anchors.centerIn: parent

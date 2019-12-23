@@ -17,7 +17,6 @@
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
-
 import QtQml.Models 2.3
 import NosonApp 1.0
 import NosonMediaScanner 1.0
@@ -123,7 +122,6 @@ MusicPage {
         SelectMusicListItem {
             id: listItem
             listview: songList
-            listIndex: model.index
             reorderable: false
             selectable: true
 
@@ -149,8 +147,9 @@ MusicPage {
 
             color: "transparent"
 
-            noCover: !songStackPage.isAlbum ? "qrc:/images/no_cover.png" : "qrc:/images/no_cover.png"
-            imageSources: !songStackPage.isAlbum ? makeFileCoverSource(model) : [{art: "qrc:/images/no_cover.png"}]
+            noCover: "qrc:/images/no_cover.png"
+            rowNumber: songStackPage.isAlbum ? model.albumTrackNo > 0 ? model.albumTrackNo.toString() : "#" : ""
+            imageSources: !songStackPage.isAlbum ? makeFileCoverSource(model) : []
             description: qsTr("Song")
 
             onImageError: model.art = "" // reset invalid url from model

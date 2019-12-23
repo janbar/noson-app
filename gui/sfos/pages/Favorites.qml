@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2016, 2017
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +18,6 @@
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
-
 import QtQuick.Layouts 1.1
 import NosonApp 1.0
 import "../components"
@@ -69,11 +69,7 @@ MusicPage {
                 color = "red";
             }
 
-            property bool held: false
-            onPressAndHold: held = true
-            onReleased: held = false
-
-            color: listItem.held ? "lightgrey" : "transparent"
+            color: "transparent"
 
             noCover: model.type === 5 && !model.canQueue ? "qrc:/images/radio.png"
                    : model.type === 2 ? "qrc:/images/none.png"
@@ -201,9 +197,9 @@ MusicPage {
             // clear queue when playing bundle
             if (model.type !== 5 && model.canQueue) {
                 if (player.removeAllTracksFromQueue())
-                    player.playFavorite(model);
+                    musicToolbar.playButtonAnimationRunning = player.playFavorite(model);
             } else {
-               player.playFavorite(model);
+               musicToolbar.playButtonAnimationRunning = player.playFavorite(model);
             }
         }
     }
@@ -211,7 +207,7 @@ MusicPage {
     function clickItem(model) {
         if (!model.isService) {
             if (model.type === 1) {
-                stackView.push("qrc:/ui/SongsView.qml",
+                pageStack.push("qrc:/sfos/pages/SongsView.qml",
                                    {
                                        "containerItem": {id: model.objectId, payload: model.object},
                                        "songSearch": model.objectId,
@@ -226,7 +222,7 @@ MusicPage {
                                    })
             }
             else if (model.type === 2) {
-                stackView.push("qrc:/ui/ArtistView.qml",
+                pageStack.push("qrc:/sfos/pages/ArtistView.qml",
                                    {
                                        "containerItem": {id: model.objectId, payload: model.object},
                                        "artistSearch": model.objectId,
@@ -236,7 +232,7 @@ MusicPage {
                                    })
             }
             else if (model.type === 3) {
-                stackView.push("qrc:/ui/SongsView.qml",
+                pageStack.push("qrc:/sfos/pages/SongsView.qml",
                                    {
                                        "containerItem": {id: model.objectId, payload: model.object},
                                        "songSearch": model.objectId + "//",
@@ -249,7 +245,7 @@ MusicPage {
                                    })
             }
             else if (model.type === 4) {
-                stackView.push("qrc:/ui/SongsView.qml",
+                pageStack.push("qrc:/sfos/pages/SongsView.qml",
                                    {
                                        "containerItem": {id: model.objectId, payload: model.object},
                                        "songSearch": model.objectId,
@@ -263,7 +259,7 @@ MusicPage {
                                    })
             }
             else if (model.type === 5) {
-                player.playFavorite(model) // play it
+                musicToolbar.playButtonAnimationRunning = player.playFavorite(model) // play it
             }
         } else {
             delayFavoritePlayAll.model = model

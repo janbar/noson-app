@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016, 2017
+ * Copyright (C) 2016-2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  */
 
 import QtQuick 2.2
-import QtQuick.Controls 2.2
+import Sailfish.Silica 1.0
 
 Item {
     property string controlledZone: ""
@@ -30,7 +30,7 @@ Item {
         anchors {
             fill: parent
         }
-        color: styleMusic.view.backgroundColor
+        color: "transparent"
 
         Column {
             anchors.centerIn: parent
@@ -51,7 +51,7 @@ Item {
             Label {
                 color: styleMusic.view.foregroundColor
                 elide: Text.ElideRight
-                font.pixelSize: units.fx("large")
+                font.pixelSize: units.fx("medium")
                 horizontalAlignment: Text.AlignLeft
                 maximumLineCount: 8
                 text: qsTr("This feature will be added in a next version. Please rate the App.")

@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2016, 2017
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,65 +29,9 @@ DialogBase {
 
     property bool showSelector: false
 
-    acceptText: qsTr("Close")
-
-    Label {
-        id: sourceOutput
-        anchors.left: parent.left
-        anchors.right: parent.right
-        wrapMode: Text.WordWrap
-        color: "red"
-        font.pixelSize: units.fx("x-small")
-        font.weight: Font.Normal
-        visible: false // should only be visible when an error is made.
-    }
-
-    TextField {
-        id: url
-        text: inputStreamUrl
-        width: parent.width
-        placeholderText: qsTr("Enter stream URL")
-    }
-
-    Connections {
-        target: player
-        onJobFailed: {
-            sourceOutput.text = qsTr("Playing failed.")
-            sourceOutput.visible = true
-        }
-    }
-
-    Button {
-        id: buttonPlayStream
-        height: units.gu(6)
-        text: qsTr("Play stream")
-        onClicked: {
-            sourceOutput.visible = false // make sure its hidden now if there was an error last time
-            if (url.text.length > 0) { // make sure something is acually inputed
-                if (player.playStream(url.text, "")) {
-                    inputStreamUrl = url.text
-                }
-                else {
-                    sourceOutput.text = qsTr("Playing failed.")
-                    sourceOutput.visible = true
-                }
-            }
-            else {
-                sourceOutput.visible = true
-                sourceOutput.text = qsTr("Please type in an URL.")
-            }
-        }
-    }
-
-    Label {
-        visible: showSelector
-        anchors.left: parent.left
-        anchors.right: parent.right
-        text: qsTr("Select the audio input.")
-        wrapMode: Text.WordWrap
-        color: styleMusic.dialog.labelColor
-        font.weight: Font.Normal
-    }
+    cancelText: qsTr("Close")
+    acceptText: ""
+    canAccept: false
 
     ListModel {
         id: selectorModel
@@ -99,6 +44,11 @@ DialogBase {
     ComboBox {
         id: selector
         visible: showSelector
+        label: qsTr("Select the audio input:")
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
         menu: ContextMenu {
                 MenuItem {
                     text: qsTr("Queue")
@@ -129,7 +79,8 @@ DialogBase {
                 }
                 MenuItem {
                     text: qsTr("Play PulseAudio")
-                    visible: Sonos.havePulseAudio()
+                    //visible: Sonos.havePulseAudio()
+                    visible: false // No usage on Sailfish
                     onClicked: {
                         if (!player.playPulse())
                             popInfo.open(qsTr("Action can't be performed"))
@@ -138,9 +89,70 @@ DialogBase {
                     }
                 }
         }
-        
-        Layout.fillWidth: true
+
         currentIndex: 0
+    }
+
+    Item {
+        id: separator
+        visible: showSelector
+        width: parent.width
+        height: units.gu(3)
+    }
+
+    Label {
+        id: sourceOutput
+        anchors {
+            left: parent.left
+            right: parent.right
+            leftMargin: Theme.horizontalPageMargin
+            rightMargin: Theme.horizontalPageMargin
+        }
+        wrapMode: Text.WordWrap
+        color: "red"
+        font.pixelSize: units.fx("x-small")
+        font.weight: Font.Normal
+        visible: false // should only be visible when an error is made.
+    }
+
+    TextField {
+        id: url
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
+        text: inputStreamUrl
+        placeholderText: qsTr("Enter stream URL")
+    }
+
+    Connections {
+        target: player
+        onJobFailed: {
+            sourceOutput.text = qsTr("Playing failed.")
+            sourceOutput.visible = true
+        }
+    }
+
+    Button {
+        id: buttonPlayStream
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: qsTr("Play stream")
+        onClicked: {
+            sourceOutput.visible = false // make sure its hidden now if there was an error last time
+            if (url.text.length > 0) { // make sure something is acually inputed
+                if (player.playStream(url.text, "")) {
+                    inputStreamUrl = url.text
+                }
+                else {
+                    sourceOutput.text = qsTr("Playing failed.")
+                    sourceOutput.visible = true
+                }
+            }
+            else {
+                sourceOutput.visible = true
+                sourceOutput.text = qsTr("Please type in an URL.")
+            }
+        }
     }
 
     onOpened: {

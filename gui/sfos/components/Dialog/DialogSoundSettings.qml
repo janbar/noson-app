@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2018
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +31,10 @@ Item {
         //: this is a title of a dialog to configure sound settings
         title: qsTr("Sound settings")
         contentSpacing: units.gu(1)
-        edgeMargins: units.gu(0)
 
-        acceptText: qsTr("Close")
+        cancelText: qsTr("Close")
+        acceptText: ""
+        canAccept: false
 
         StyledSlider {
             id: trebleSlider

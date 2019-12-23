@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2013, 2014, 2015, 2016
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *      Andrew Hayzen <ahayzen@gmail.com>
  *      Daniel Holm <d.holmen@gmail.com>
  *      Victor Thompson <victor.thompson@gmail.com>
@@ -68,7 +69,11 @@ Page {
         },
         State {
             name: "group"
+        },
+        State {
+            name: "addToPlaylist"
         }
+
     ]
 
     signal goUpClicked // action for a non-root page
@@ -410,6 +415,50 @@ Page {
                                 label.text: qsTr("Done")
                                 label.font.pixelSize: units.fx("x-small")
                                 onClicked: groupRoomClicked()
+                            }
+                        }
+                    }
+                }
+
+                Rectangle {
+                    id: addToPlaylistToolbar
+                    anchors.fill: parent
+                    color: styleMusic.playerControls.backgroundColor
+
+                    opacity: thisPage.state === "addToPlaylist" ? 1.0 : 0.0
+                    enabled: opacity > 0
+                    Behavior on opacity {
+                        NumberAnimation { duration: 100 }
+                    }
+
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.topMargin: units.gu(1)
+                        anchors.leftMargin: units.gu(1)
+                        anchors.rightMargin: units.gu(1)
+                        height: units.gu(5)
+                        color: "transparent"
+
+                        Row {
+                            spacing: units.gu(0.5)
+
+                            MusicIcon {
+                                id: playlistFind
+                                source: "image://theme/icon-m-search"
+                                height: units.gu(5)
+                                onClicked: searchClicked()
+                            }
+
+                            MusicIcon {
+                                id: playlistAdd
+                                visible: true
+                                source: "image://theme/icon-m-add"
+                                height: units.gu(5)
+                                label.text: qsTr("Add")
+                                label.font.pixelSize: units.fx("x-small")
+                                onClicked: addClicked()
                             }
                         }
                     }

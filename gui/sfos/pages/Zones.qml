@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2016-2019
+ * Copyright (C) 2019
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
+ *      Adam Pigg <adam@piggz.co.uk>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +81,6 @@ MusicPage {
             delegate: SelectMusicListItem {
                 id: listItem
                 listview: zoneList
-                listIndex: model.index
                 reorderable: false
                 //selectable: true
                 highlighted: (currentZone === model.name)
@@ -121,7 +121,7 @@ MusicPage {
                     }
                 }
 
-                contentHeight: units.gu(11)
+                contentHeight: units.gu(12)
                 coverSize: units.gu(5)
                 noCover: "qrc:/images/no_cover.png"
 
@@ -133,9 +133,9 @@ MusicPage {
                 property string currentDuration: ""
 
                 function handleZPSourceChanged() {
-                    if (zonePlayer.currentProtocol == 1) {
+                    if (zonePlayer.currentProtocol === 1) {
                         imageSources = [{art: "qrc:/images/linein.png"}];
-                    } else if (zonePlayer.currentProtocol == 5) {
+                    } else if (zonePlayer.currentProtocol === 5) {
                         imageSources = [{art: "qrc:/images/tv.png"}];
                     } else {
                         imageSources = makeCoverSource(zonePlayer.currentMetaArt, zonePlayer.currentMetaArtist, zonePlayer.currentMetaAlbum);
