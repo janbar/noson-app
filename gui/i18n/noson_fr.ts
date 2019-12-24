@@ -34,17 +34,17 @@
         <translation>Choisir une liste</translation>
     </message>
     <message>
-        <location filename="../ui/AddToPlaylist.qml" line="109"/>
+        <location filename="../ui/AddToPlaylist.qml" line="124"/>
         <source>Add</source>
         <translation>Ajouter</translation>
     </message>
     <message>
-        <location filename="../ui/AddToPlaylist.qml" line="158"/>
+        <location filename="../ui/AddToPlaylist.qml" line="176"/>
         <source>song added</source>
         <translation>titre ajouté</translation>
     </message>
     <message>
-        <location filename="../ui/AddToPlaylist.qml" line="161"/>
+        <location filename="../ui/AddToPlaylist.qml" line="179"/>
         <source>Action can&apos;t be performed</source>
         <translation>L&apos;action a échoué</translation>
     </message>
@@ -213,8 +213,8 @@
         <translation>Artiste inconnu</translation>
     </message>
     <message>
-        <location filename="../ui/Artists.qml" line="87"/>
-        <location filename="../ui/Artists.qml" line="93"/>
+        <location filename="../ui/Artists.qml" line="86"/>
+        <location filename="../ui/Artists.qml" line="92"/>
         <source>Artist</source>
         <translation>Artiste</translation>
     </message>
@@ -253,12 +253,12 @@
         <translation>Artiste inconnu</translation>
     </message>
     <message>
-        <location filename="../ui/ComposerView.qml" line="188"/>
+        <location filename="../ui/ComposerView.qml" line="189"/>
         <source>Remove from favorites</source>
         <translation>Supprimer des favoris</translation>
     </message>
     <message>
-        <location filename="../ui/ComposerView.qml" line="188"/>
+        <location filename="../ui/ComposerView.qml" line="189"/>
         <source>Add to favorites</source>
         <translation>Ajouter aux favoris</translation>
     </message>
@@ -276,8 +276,8 @@
         <translation>Compositeur inconnu</translation>
     </message>
     <message>
-        <location filename="../ui/Composers.qml" line="87"/>
-        <location filename="../ui/Composers.qml" line="93"/>
+        <location filename="../ui/Composers.qml" line="86"/>
+        <location filename="../ui/Composers.qml" line="92"/>
         <source>Composer</source>
         <translation>Compositeur</translation>
     </message>
@@ -985,7 +985,7 @@
 <context>
     <name>MusicFilter</name>
     <message>
-        <location filename="../components/MusicFilter.qml" line="57"/>
+        <location filename="../components/MusicFilter.qml" line="56"/>
         <source>Search music</source>
         <translation>Rechercher de la musique</translation>
     </message>
@@ -997,45 +997,45 @@
         <translation type="vanished">Aucun élément trouvé</translation>
     </message>
     <message>
-        <location filename="../components/MusicPage.qml" line="121"/>
-        <location filename="../components/MusicPage.qml" line="321"/>
+        <location filename="../components/MusicPage.qml" line="118"/>
+        <location filename="../components/MusicPage.qml" line="318"/>
         <source>Queue</source>
         <translation>File d&apos;attente</translation>
     </message>
     <message>
-        <location filename="../components/MusicPage.qml" line="123"/>
+        <location filename="../components/MusicPage.qml" line="120"/>
         <source>Now playing</source>
         <translation>Lecture en cours</translation>
     </message>
     <message>
-        <location filename="../components/MusicPage.qml" line="170"/>
+        <location filename="../components/MusicPage.qml" line="167"/>
         <source>Add</source>
         <translation>Ajouter</translation>
     </message>
     <message>
-        <location filename="../components/MusicPage.qml" line="232"/>
+        <location filename="../components/MusicPage.qml" line="229"/>
         <source>Close</source>
         <translation>Fermer</translation>
     </message>
     <message>
-        <location filename="../components/MusicPage.qml" line="245"/>
-        <location filename="../components/MusicPage.qml" line="339"/>
+        <location filename="../components/MusicPage.qml" line="242"/>
+        <location filename="../components/MusicPage.qml" line="336"/>
         <source>All</source>
         <translation>Tous</translation>
     </message>
     <message>
-        <location filename="../components/MusicPage.qml" line="255"/>
+        <location filename="../components/MusicPage.qml" line="252"/>
         <source>Clear</source>
         <translation>Nettoyer</translation>
     </message>
     <message>
-        <location filename="../components/MusicPage.qml" line="349"/>
-        <location filename="../components/MusicPage.qml" line="403"/>
+        <location filename="../components/MusicPage.qml" line="346"/>
+        <location filename="../components/MusicPage.qml" line="400"/>
         <source>Done</source>
         <translation>Finir</translation>
     </message>
     <message>
-        <location filename="../components/MusicPage.qml" line="393"/>
+        <location filename="../components/MusicPage.qml" line="390"/>
         <source>None</source>
         <translation>Aucun</translation>
     </message>
@@ -1143,7 +1143,7 @@
         <translation>Sans titre</translation>
     </message>
     <message>
-        <location filename="../components/Player.qml" line="383"/>
+        <location filename="../components/Player.qml" line="403"/>
         <source>Action can&apos;t be performed</source>
         <translation>L&apos;action a échoué</translation>
     </message>
@@ -1287,9 +1287,13 @@
         <translation>Activation du service</translation>
     </message>
     <message>
-        <location filename="../components/ServiceLogin.qml" line="51"/>
         <source>This will require to authenticate against the music service again, as credentials cannot be retrieved from Sonos device.</source>
-        <translation>Cela nécessitera de s&apos;authentifier à nouveau au près du service de musique, car les informations d&apos;identification ne peuvent pas être récupérées à partir du dispositif Sonos.</translation>
+        <translation type="vanished">Cela nécessitera de s&apos;authentifier à nouveau au près du service de musique, car les informations d&apos;identification ne peuvent pas être récupérées à partir du dispositif Sonos.</translation>
+    </message>
+    <message>
+        <location filename="../components/ServiceLogin.qml" line="51"/>
+        <source>First, the third-party service must have been configured with the official Sonos app. Then this will require authenticating again with the music service, as the credentials cannot be retrieved from the Sonos device.</source>
+        <translation>Tout d&apos;abord, le service tiers doit avoir été configuré avec l&apos;application Sonos officielle. Puis cela nécessitera de s&apos;authentifier à nouveau au près du service de musique, car les informations d&apos;identification ne peuvent pas être récupérées à partir du dispositif Sonos.</translation>
     </message>
     <message>
         <location filename="../components/ServiceLogin.qml" line="77"/>
@@ -1321,9 +1325,13 @@
         <translation>Activation du service</translation>
     </message>
     <message>
-        <location filename="../components/ServiceRegistration.qml" line="68"/>
         <source>This will require to authenticate against the music service again, as credentials cannot be retrieved from Sonos device.</source>
-        <translation>Cela nécessitera de s&apos;authentifier à nouveau au près du service de musique, car les informations d&apos;identification ne peuvent pas être récupérées à partir du dispositif Sonos.</translation>
+        <translation type="vanished">Cela nécessitera de s&apos;authentifier à nouveau au près du service de musique, car les informations d&apos;identification ne peuvent pas être récupérées à partir du dispositif Sonos.</translation>
+    </message>
+    <message>
+        <location filename="../components/ServiceRegistration.qml" line="68"/>
+        <source>First, the third-party service must have been configured with the official Sonos app. Then this will require authenticating again with the music service, as the credentials cannot be retrieved from the Sonos device.</source>
+        <translation>Tout d&apos;abord, le service tiers doit avoir été configuré avec l&apos;application Sonos officielle. Puis cela nécessitera de s&apos;authentifier à nouveau au près du service de musique, car les informations d&apos;identification ne peuvent pas être récupérées à partir du dispositif Sonos.</translation>
     </message>
     <message>
         <location filename="../components/ServiceRegistration.qml" line="93"/>
