@@ -234,7 +234,19 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: styleMusic.playerControls.labelColor
                 source: player.isPlaying ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
-                onClicked: player.toggle()
+                animationInterval: 100 // fast flashing
+                onClicked: animationRunning = player.toggle()
+
+                // control the animation depending of the playback state
+                Connections {
+                    target: player
+                    onPlaybackStateChanged: {
+                        if (player.playbackState !== "TRANSITIONING")
+                            nowPlayingPlayIndicator.animationRunning = false
+                        else if (!nowPlayingPlayIndicator.animationRunning)
+                            nowPlayingPlayIndicator.animationRunning = true
+                    }
+                }
             }
         }
 

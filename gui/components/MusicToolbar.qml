@@ -110,6 +110,15 @@ Item {
                 height: units.gu(6)
                 source: player.isPlaying ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
                 width: height
+                animationInterval: 100
+
+                Connections {
+                    target: player
+                    onPlaybackStateChanged: {
+                        if (player.playbackState !== "TRANSITIONING")
+                            disabledPlayerControlsPlayButton.animationRunning = false
+                    }
+                }
             }
 
             /* Select input */
@@ -213,21 +222,6 @@ Item {
                 }
             }
 
-            /* Play/Pause button */
-            Icon {
-                id: playerControlsPlayButton
-                anchors {
-                    right: parent.right
-                    rightMargin: units.gu(3)
-                    verticalCenter: parent.verticalCenter
-                }
-                color: styleMusic.playerControls.foregroundColor
-                height: units.gu(6)
-                source: player.playbackState === "PLAYING" ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
-                objectName: "playShape"
-                width: height
-            }
-
             /* Mouse area to jump to now playing */
             MouseArea {
                 anchors {
@@ -246,27 +240,30 @@ Item {
                 }
             }
 
-            /* Mouse area for the play button (ontop of the jump to now playing) */
-            MouseArea {
+            /* Play/Pause button */
+            Icon {
+                id: playerControlsPlayButton
                 anchors {
-                    bottom: parent.bottom
-                    horizontalCenter: playerControlsPlayButton.horizontalCenter
-                    top: parent.top
+                    right: parent.right
+                    rightMargin: units.gu(3)
+                    verticalCenter: parent.verticalCenter
                 }
-                onClicked: player.toggle()
-                width: units.gu(8)
+                color: styleMusic.playerControls.foregroundColor
+                height: units.gu(6)
+                source: player.playbackState === "PLAYING" ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-playback-start.svg"
+                objectName: "playShape"
+                width: height
+                animationInterval: 100 // fast flashing
+                onClicked: animationRunning = player.toggle()
 
-                Rectangle {
-                    anchors {
-                        fill: parent
-                    }
-                    color: styleMusic.playerControls.foregroundColor
-                    opacity: parent.pressed ? 0.1 : 0
-
-                    Behavior on opacity {
-                        NumberAnimation {
-                            duration: 250
-                        }
+                // control the animation depending of the playback state
+                Connections {
+                    target: player
+                    onPlaybackStateChanged: {
+                        if (player.playbackState !== "TRANSITIONING")
+                            playerControlsPlayButton.animationRunning = false
+                        else if (!playerControlsPlayButton.animationRunning)
+                            playerControlsPlayButton.animationRunning = true
                     }
                 }
             }
