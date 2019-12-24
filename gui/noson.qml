@@ -1080,10 +1080,10 @@ ApplicationWindow {
                     height: width
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
-                    source: shareIndexInProgress ? "qrc:/images/sync.svg" : player.sleepTimerEnabled ? "qrc:/images/timer.svg" : "qrc:/images/alarm.svg"
+                    source: shareIndexInProgress ? "qrc:/images/download.svg" : player.sleepTimerEnabled ? "qrc:/images/timer.svg" : "qrc:/images/alarm.svg"
                     visible: player.sleepTimerEnabled || alarmEnabled || shareIndexInProgress
                     enabled: visible
-                    rotationRunning: shareIndexInProgress
+                    animationRunning: shareIndexInProgress
                 }
             }
 

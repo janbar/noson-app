@@ -25,7 +25,8 @@ MouseArea {
     property alias label: label
     property color color: styleMusic.view.foregroundColor
     property color pressedColor: styleMusic.view.highlightedColor
-    property alias rotationRunning: icon.rotationRunning
+    property alias animationRunning: icon.animationRunning
+    property int animationInterval: 500 // slow flashing
     property alias iconSize: icon.height
     height: units.gu(5)
     width: row.width + units.gu(2)
@@ -56,29 +57,27 @@ MouseArea {
 
             property bool rotationRunning: false
 
-            onRotationRunningChanged: {
-                if (rotationRunning)
+            property bool animationRunning: false
+
+            onAnimationRunningChanged: {
+                if (animationRunning)
                     animator.start();
-                else {
+                else
                     animator.stop();
-                    animator.angle = 0;
-                }
             }
 
             Timer {
                 id: animator
-                interval: 500
+                interval: area.animationInterval
                 repeat: true
-                property int angle: 0
                 onTriggered: {
-                    angle = (angle + 30) % 360;
+                    opacity = (opacity === 0.0 ? 1.0 : 0.0);
                 }
+                onRunningChanged: opacity = 1.0 // reset opacity on stop
             }
 
-            transform: Rotation {
-                origin.x: icon.x - units.gu(1) + icon.width / 2
-                origin.y: icon.y - units.gu(1) + icon.height / 2
-                angle: animator.angle
+            Behavior on opacity {
+                NumberAnimation { duration: area.animationInterval / 2 }
             }
         }
 

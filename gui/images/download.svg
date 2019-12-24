@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="90"
+   height="90.000076"
+   id="svg3140"
+   version="1.1"
+   inkscape:version="0.48+devel r12275"
+   sodipodi:docname="save.svg">
+  <defs
+     id="defs3142" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.0931702"
+     inkscape:cx="23.521695"
+     inkscape:cy="45.345037"
+     inkscape:document-units="px"
+     inkscape:current-layer="g4978"
+     showgrid="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1029"
+     inkscape:window-x="0"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3178"
+       empspacing="6"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       originx="0px"
+       originy="-1.1368684e-13px" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata3145">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-962.36212)">
+    <g
+       id="g4978"
+       transform="translate(-60,548.00002)">
+      <path
+         sodipodi:type="star"
+         style="color:#000000;fill:#808080;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         id="path4984"
+         sodipodi:sides="3"
+         sodipodi:cx="111"
+         sodipodi:cy="174.09448"
+         sodipodi:r1="5.8309517"
+         sodipodi:r2="2.9154758"
+         sodipodi:arg1="1.0471976"
+         sodipodi:arg2="2.0943951"
+         inkscape:flatsided="true"
+         inkscape:rounded="0.06"
+         inkscape:randomized="0"
+         d="m 113.91548,179.14423 c -0.52479,0.30299 -8.74643,-4.44378 -8.74643,-5.04975 0,-0.60597 8.22164,-5.35273 8.74643,-5.04975 C 114.44026,169.34772 114.44026,178.84125 113.91548,179.14423 Z"
+         transform="matrix(0,-5.2516315,5.3321268,0,-823.29386,1035.6713)"
+         inkscape:transform-center-y="5.0717206" />
+      <path
+         style="font-size:xx-small;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#808080;fill-opacity:1;stroke:none;stroke-width:4;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+         d="m 96.00005,414.36213 0,35.00002 17.99995,0 0,-35.00002 L 96.00005,414.36213 Z"
+         id="path4988"
+         inkscape:connector-curvature="0" />
+      <path
+         inkscape:connector-curvature="0"
+         style="color:#000000;fill:#808080;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         d="m 83.3125,489.3621 c -7.560545,0.10254 -8.3125,0.93749 -8.3125,7.5 0,7.5 1,7.5 12,7.5 l 36,0 c 11,0 12,0 12,-7.5 0,-7.50001 -1,-7.5 -12,-7.5 l -36,0 C 85.625,489.3621 84.392578,489.34745 83.3125,489.3621 z m 42.4375,5 0.5,0 c 3.45007,0 3.75,-10e-6 3.75,2.5 0,2.49999 -0.29993,2.5 -3.75,2.5 l -0.5,0 c -3.45008,0 -3.75,-10e-6 -3.75,-2.5 C 122,494.36209 122.29992,494.3621 125.75,494.3621 Z"
+         id="rect3408" />
+      <rect
+         style="color:#000000;fill:none;stroke:none;stroke-width:6;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         id="rect3047"
+         width="90"
+         height="90"
+         x="60"
+         y="414.36218" />
+    </g>
+  </g>
+</svg>
