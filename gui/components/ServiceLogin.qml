@@ -47,8 +47,8 @@ Rectangle {
             color: styleMusic.view.foregroundColor
             elide: Text.ElideRight
             horizontalAlignment: Text.AlignHCenter
-            maximumLineCount: 6
-            text: qsTr("This will require to authenticate against the music service again, as credentials cannot be retrieved from Sonos device.")
+            maximumLineCount: 10
+            text: qsTr("First, the third-party service must have been configured with the official Sonos app. Then this will require authenticating again with the music service, as the credentials cannot be retrieved from the Sonos device.")
             width: parent.width
             wrapMode: Text.WordWrap
             font.pointSize: units.fs("medium")
