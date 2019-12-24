@@ -138,9 +138,9 @@ MusicPage {
                 property string currentDuration: ""
 
                 function handleZPSourceChanged() {
-                    if (zonePlayer.currentProtocol == 1) {
+                    if (zonePlayer.currentProtocol === 1) {
                         imageSources = [{art: "qrc:/images/linein.png"}];
-                    } else if (zonePlayer.currentProtocol == 5) {
+                    } else if (zonePlayer.currentProtocol === 5) {
                         imageSources = [{art: "qrc:/images/tv.png"}];
                     } else {
                         imageSources = makeCoverSource(zonePlayer.currentMetaArt, zonePlayer.currentMetaArtist, zonePlayer.currentMetaAlbum);
@@ -204,6 +204,7 @@ MusicPage {
                         color: styleMusic.view.primaryColor
                         font.pointSize: units.fs("large")
                         text: model.isGroup ? model.shortName : model.name
+                        width: parent.width
                     }
 
                     Label {
@@ -212,6 +213,7 @@ MusicPage {
                         font.pointSize: units.fs("small")
                         text: model.isGroup ? model.name : playbackState
                         visible: text !== ""
+                        width: parent.width
                     }
 
                     Row {
