@@ -31,6 +31,8 @@ Row {
     property var imageSources: []
     property string imageSource: ""
     property string description: ""
+    property string rowNumber: ""
+    property string rowNumberColor: styleMusic.view.primaryColor
     property bool isFavorite: false
     property alias checked: select.checked
     property alias checkable: select.checkable
@@ -70,44 +72,60 @@ Row {
         }
     ]
 
-    Rectangle {
-        id: image
+    Item {
         height: contentHeight
-        width: cover.visible ? coverSize : units.dp(1)
-        color: "transparent"
-        anchors {
-            verticalCenter: parent.verticalCenter
-            topMargin: units.gu(1)
-            bottomMargin: units.gu(1)
-        }
+        width: image.width
 
-        Image {
-            id: cover
-            anchors {
-                verticalCenter: parent.verticalCenter
-            }
-            property int index: 0
-            asynchronous: true
-            fillMode: Image.PreserveAspectCrop
+        Rectangle {
+            id: image
             height: coverSize
-            width: height
-            source: imageSources !== undefined && imageSources.length ? imageSources[index].art : noCover
-            sourceSize.height: 512
-            sourceSize.width: 512
+            width: cover.visible ? height : rowNumber.visible ? units.gu(3) : units.dp(1)
+            border.color: cover.visible ? "grey" : "transparent"
+            color: "transparent"
+            anchors.verticalCenter: parent.verticalCenter
 
-            onStatusChanged: {
-                if (status === Image.Error) {
-                    row.imageError(index)
-                    if (imageSources.length > (index + 1)) {
-                        source = imageSources[++index].art
-                    } else {
-                        source = noCover
-                    }
-                } else if (status === Image.Ready) {
-                    imageSource = source;
-                }
+            Text {
+                id: rowNumber
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.right: parent.right
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideLeft
+                text: row.rowNumber
+                color: row.rowNumberColor
+                font.pointSize: text.length < 3 ? units.fs("x-large") : units.fs("small")
+                visible: text !== ""
             }
-            visible: imageSources.length > 0
+
+            Image {
+                id: cover
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                }
+                property int index: 0
+                asynchronous: true
+                fillMode: Image.PreserveAspectCrop
+                height: coverSize
+                width: height
+                source: imageSources.length ? imageSources[index].art : noCover
+                sourceSize.height: 512
+                sourceSize.width: 512
+
+                onStatusChanged: {
+                    if (status === Image.Error) {
+                        row.imageError(index)
+                        if (imageSources.length > (index + 1)) {
+                            source = imageSources[++index].art
+                        } else {
+                            source = noCover
+                        }
+                    } else if (status === Image.Ready) {
+                        imageSource = source;
+                    }
+                }
+                visible: imageSources.length > 0
+            }
         }
     }
 
@@ -117,8 +135,7 @@ Row {
             verticalCenter: parent.verticalCenter
         }
 
-        width: imageSources === undefined ? parent.width - parent.spacing - action.width - menu.width
-                                         : parent.width - image.width - parent.spacing - action.width - menu.width
+        width: parent.width - image.width - parent.spacing - menu.width
 
         onSourceComponentChanged: {
             for (var i=0; i < item.children.length; i++) {

@@ -77,7 +77,7 @@ MusicPage {
             }
         }
 
-        visible: isListView ? true : false
+        visible: isListView ? !shareIndexInProgress : false
     }
 
     MusicGridView {
@@ -100,7 +100,7 @@ MusicPage {
             }
         }
 
-        visible: isListView ? false : true
+        visible: isListView ? false : !shareIndexInProgress
     }
 
     Component.onCompleted: {

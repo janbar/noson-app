@@ -184,8 +184,9 @@ MusicPage {
                 }
             }
 
-            noCover: !songStackPage.isAlbum ? "qrc:/images/no_cover.png" : "qrc:/images/no_cover.png"
-            imageSources: !songStackPage.isAlbum ? makeCoverSource(model.art, model.author, model.album) : [{art: "qrc:/images/no_cover.png"}]
+            noCover: "qrc:/images/no_cover.png"
+            rowNumber: songStackPage.isAlbum ? model.albumTrackNo !== "" ? model.albumTrackNo : "#" : ""
+            imageSources: !songStackPage.isAlbum ? makeCoverSource(model.art, model.author, model.album) : []
             description: qsTr("Song")
 
             onImageError: model.art = "" // reset invalid url from model

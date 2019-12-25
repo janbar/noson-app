@@ -89,7 +89,7 @@ MusicPage {
             }
         }
 
-        visible: isListView ? true : false
+        visible: isListView ? !MediaScanner.emptyState : false
     }
 
     MusicGridView {
@@ -109,7 +109,7 @@ MusicPage {
             onClicked: clickItem(model)
         }
 
-        visible: isListView ? false : true
+        visible: isListView ? false : !MediaScanner.emptyState
     }
 
     GenreList {
