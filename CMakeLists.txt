@@ -11,13 +11,25 @@ endif()
 
 set(APP_VERSION       "4.1.1")
 set(APP_VERSION_CODE  52)
-set(APP_NAME          "noson")
 set(APP_ID            "io.github.janbar.noson")
+set(APP_NAME          "noson")
+
 if(QT_STATICPLUGIN)
-  set(EXEC            "noson")
+  if(BUILD_SAILFISHOS)
+    set(EXEC            "harbour-noson")
+    set(ICON_NAME       "${EXEC}")
+    set(APP_DESKTOP_ID  "${EXEC}")
+  else()
+    set(EXEC          	"noson")
+    set(ICON_NAME     	"${EXEC}")
+    set(APP_DESKTOP_ID	"${EXEC}")
+  endif()
 else()
-  set(EXEC            "noson-app")
+  set(EXEC              "noson-app")
+  set(ICON_NAME         "${APP_NAME}")
+  set(APP_DESKTOP_ID    "${APP_ID}")
 endif()
+
 set(ICON_FILE         "noson.png")
 set(DESKTOP_FILE_NAME "noson.desktop")
 set(APPDATA_FILE_NAME "noson.appdata.xml")
@@ -37,10 +49,7 @@ set(PLUGINS_DIR ${CMAKE_INSTALL_FULL_LIBDIR}/${APP_NAME})
 set(NOSON_GUI "${PLUGINS_DIR}/noson-gui")
 set(NOSON_CLI "${PLUGINS_DIR}/noson-cli")
 
-if(QT_STATICPLUGIN)
-  set(APP_DESKTOP_ID "${APP_NAME}")
-else()
-  set(APP_DESKTOP_ID "${APP_ID}")
+if(NOT QT_STATICPLUGIN)
   configure_file(
     ${EXEC}.in
     ${CMAKE_CURRENT_BINARY_DIR}/${EXEC}
@@ -63,25 +72,25 @@ install(
 
 if(BUILD_SAILFISHOS)
   install(
-    FILES "gui/sfos/images/${APP_NAME}-86x86.png"
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/86x86/apps RENAME ${APP_NAME}.png
+    FILES "gui/sfos/images/${ICON_NAME}-86x86.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/86x86/apps RENAME "${ICON_NAME}.png"
   )
   install(
-    FILES "gui/sfos/images/${APP_NAME}-108x108.png"
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/108x108/apps RENAME ${APP_NAME}.png
+    FILES "gui/sfos/images/${ICON_NAME}-108x108.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/108x108/apps RENAME "${ICON_NAME}.png"
   )
   install(
-    FILES "gui/sfos/images/${APP_NAME}-128x128.png"
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/128x128/apps RENAME ${APP_NAME}.png
+    FILES "gui/sfos/images/${ICON_NAME}-128x128.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/128x128/apps RENAME "${ICON_NAME}.png"
   )
   install(
-    FILES "gui/sfos/images/${APP_NAME}.svg"
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps
+    FILES "gui/sfos/images/${ICON_NAME}.svg"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps 
   )
 else()
   install(
     FILES "gui/images/${ICON_FILE}"
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps RENAME ${APP_NAME}.png
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps RENAME ${ICON_NAME}.png
   )
 endif()
 

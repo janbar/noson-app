@@ -28,7 +28,7 @@ CoverBackground {
     Image {
         anchors.centerIn: parent
         fillMode: Image.PreserveAspectCrop
-        source: "qrc:/sfos/images/noson.svg"
+        source: "qrc:/sfos/images/harbour-noson.svg"
         width: Math.min(parent.height, parent.width) / 2
         height: width
         sourceSize.height: height
