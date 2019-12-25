@@ -2,7 +2,7 @@
 Name=@APP_NAME@
 _Comment=Sonos music
 Exec=@EXEC@
-Icon=@APP_NAME@
+Icon=@ICON_NAME@
 Terminal=false
 Type=Application
 Categories=AudioVideo;Audio;

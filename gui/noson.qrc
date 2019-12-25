@@ -269,12 +269,12 @@
         <file>sfos/pages/ThisDevice/SongsView.qml</file>
         <file>sfos/components/MusicIcon.qml</file>
         <file>sfos/components/Delegates/DragSelectMusicListItem.qml</file>
-        <file>sfos/images/noson.svg</file>
-        <file>sfos/images/noson-86x86.png</file>
-        <file>sfos/images/noson-108x108.png</file>
-        <file>sfos/images/noson-128x128.png</file>
         <file>sfos/components/MusicInfoBox.qml</file>
         <file>sfos/images/icon-m-speaker.svg</file>
         <file>sfos/images/icon-m-speaker-muted.svg</file>
+        <file>sfos/images/harbour-noson-86x86.png</file>
+        <file>sfos/images/harbour-noson-108x108.png</file>
+        <file>sfos/images/harbour-noson-128x128.png</file>
+        <file>sfos/images/harbour-noson.svg</file>
     </qresource>
 </RCC>
