@@ -79,7 +79,7 @@ Row {
         Rectangle {
             id: image
             height: coverSize
-            width: cover.visible ? height : rowNumber.visible ? units.gu(3) : units.dp(1)
+            width: cover.visible ? height : rowNumber.visible ? units.gu(5) : units.dp(1)
             border.color: cover.visible ? "grey" : "transparent"
             color: "transparent"
             anchors.verticalCenter: parent.verticalCenter
