@@ -157,7 +157,7 @@ MusicPage {
     // Overlay to show when no playlists are on the device
     Loader {
         anchors.fill: parent
-        active: AllPlaylistsModel.count === 0 && loadedIndex
+        active: AllPlaylistsModel.count === 0 && !infoLoadedIndex
         asynchronous: true
         source: "../components/PlaylistsEmptyState.qml"
         visible: active
