@@ -181,14 +181,25 @@ ApplicationWindow {
     Connections {
         target: Qt.application
         onStateChanged: {
-            if (Qt.application.state === Qt.ApplicationSuspended)
-                applicationSuspended = true;
-            else if (applicationSuspended === true) {
-                applicationSuspended = false;
-                if (!noZone) {
-                    jobRunning = true;
-                    delayWakeUp.start();
+            switch (Qt.application.state) {
+            case Qt.ApplicationSuspended:
+            case Qt.ApplicationInactive:
+                if (!applicationSuspended) {
+                    customdebug("Application state changed to suspended");
+                    applicationSuspended = true;
                 }
+                break;
+            case Qt.ApplicationHidden:
+            case Qt.ApplicationActive:
+                if (applicationSuspended) {
+                    customdebug("Application state changed to active");
+                    applicationSuspended = false;
+                    if (!noZone) {
+                        jobRunning = true;
+                        delayWakeUp.start();
+                    }
+                }
+                break;
             }
         }
     }
