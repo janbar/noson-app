@@ -174,6 +174,11 @@ Sonos::~Sonos()
   m_workerPool.clear();
 }
 
+void Sonos::debug(int debug)
+{
+  m_system.Debug(debug);
+}
+
 bool Sonos::startInit(int debug)
 {
   return m_workerPool.tryStart(new InitWorker(*this, debug));
