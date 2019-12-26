@@ -57,12 +57,9 @@ DialogBase {
             leftMargin: Theme.horizontalPageMargin
             rightMargin: Theme.horizontalPageMargin
         }
-        property string www: "<a href='https://www.deezer.com'>DEEZER</a>"
         text: qsTr("By default thumbnails are downloaded from %1. You can configure another provider by specifying the API key.")
-                .arg(www)
-        onLinkActivated: Qt.openUrlExternally(www)
-        linkColor: styleMusic.view.linkColor
-        font.pixelSize: unist.fx("medium")
+                .arg("<b>DEEZER</b>")
+        font.pixelSize: units.fx("medium")
         wrapMode: Text.WordWrap
         color: styleMusic.view.foregroundColor
     }
