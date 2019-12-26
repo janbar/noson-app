@@ -236,7 +236,7 @@ MusicPage {
                     }
                     color: styleMusic.view.foregroundColor
                     elide: Text.ElideRight
-                    font.pixelSize: units.fx("large")
+                    font.pixelSize: units.fx("x-large")
                     maximumLineCount: 1
                     text: line2
                     wrapMode: Text.NoWrap
