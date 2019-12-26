@@ -30,8 +30,12 @@ DialogBase {
 
     Label {
         id: newplaylistoutput
-        anchors.left: parent.left
-        anchors.right: parent.right
+        anchors {
+            left: parent.left
+            right: parent.right
+            leftMargin: Theme.horizontalPageMargin
+            rightMargin: Theme.horizontalPageMargin
+        }
         wrapMode: Text.WordWrap
         color: "red"
         font.pixelSize: units.fx("small")
@@ -48,7 +52,7 @@ DialogBase {
     }
 
     Button {
-        height: units.gu(6)
+        anchors.horizontalCenter: parent.horizontalCenter
         text: qsTr("Save queue")
         onClicked: {
             newplaylistoutput.visible = false // make sure its hidden now if there was an error last time
@@ -66,18 +70,28 @@ DialogBase {
         }
     }
 
+    Item {
+        id: separator
+        width: parent.width
+        height: units.gu(3)
+    }
+
     Label {
-        anchors.left: parent.left
-        anchors.right: parent.right
+        anchors {
+            left: parent.left
+            right: parent.right
+            leftMargin: Theme.horizontalPageMargin
+            rightMargin: Theme.horizontalPageMargin
+        }
         text: qsTr("Clearing the queue cannot be undone.")
         wrapMode: Text.WordWrap
         color: styleMusic.dialog.labelColor
-        font.pixelSize: units.fx("small")
-        font.weight: Font.Normal
+        font.pixelSize: units.fx("medium")
+        font.bold: true
     }
 
     Button {
-        height: units.gu(6)
+        anchors.horizontalCenter: parent.horizontalCenter
         text: qsTr("Clear queue")
         onClicked: {
             // clearing queue
