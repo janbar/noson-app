@@ -1,4 +1,5 @@
-build/
-CMakeLists.txt.user*
+build*/
+*.user*
 *.qmlc
+*.list
 .DS_Store
