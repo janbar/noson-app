@@ -19,6 +19,7 @@
 import QtQuick 2.2
 import Sailfish.Silica 1.0
 import QtQuick.Layouts 1.1
+import NosonApp 1.0
 import NosonThumbnailer 1.0
 import "../"
 
@@ -47,9 +48,28 @@ DialogBase {
         apiKey.text = settings.lastfmKey;
     }
 
+    SectionHeader { text: qsTr("Thumbnails") }
+
+    Text {
+        anchors {
+            left: parent.left
+            right: parent.right
+            leftMargin: Theme.horizontalPageMargin
+            rightMargin: Theme.horizontalPageMargin
+        }
+        property string www: "<a href='https://www.deezer.com'>DEEZER</a>"
+        text: qsTr("By default thumbnails are downloaded from %1. You can configure another provider by specifying the API key.")
+                .arg(www)
+        onLinkActivated: Qt.openUrlExternally(www)
+        linkColor: styleMusic.view.linkColor
+        font.pixelSize: unist.fx("medium")
+        wrapMode: Text.WordWrap
+        color: styleMusic.view.foregroundColor
+    }
+
     ColumnLayout {
         visible: true
-        spacing: units.gu(0.5)
+        spacing: units.gu(1)
         RowLayout {
             anchors {
                 left: parent.left
@@ -81,6 +101,25 @@ DialogBase {
             placeholderText: qsTr("Enter a valid API key");
             inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhUrlCharactersOnly
             Layout.fillWidth: true
+        }
+    }
+
+    SectionHeader { text: qsTr("System") }
+
+    MusicCheckBox {
+        anchors {
+            left: parent.left
+            right: parent.right
+            leftMargin: Theme.horizontalPageMargin
+            rightMargin: Theme.horizontalPageMargin
+        }
+        text: qsTr("Enable debug log output")
+        font.pixelSize: units.fx("medium")
+        onClicked: {
+            if (checked)
+                Sonos.debug(4);
+            else
+                Sonos.debug(mainView.debugLevel);
         }
     }
 }
