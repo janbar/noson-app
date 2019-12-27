@@ -79,7 +79,7 @@ if(NOT OPENSSL_FOUND)
 endif()
 
 # Provides dependency FLAC
-if(NOT BUILD_DEPENDENCIES)
+if(NOT BUILD_DEPENDENCIES AND NOT BUILD_SAILFISHOS)
     find_package(FLAC)
     find_package(FLACXX)
 endif()
