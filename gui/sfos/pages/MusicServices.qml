@@ -62,11 +62,7 @@ MusicPage {
         delegate: MusicListItem {
             id: serviceItem
 
-            property bool held: false
-            onPressAndHold: held = true
-            onReleased: held = false
-
-            color: serviceItem.held ? "lightgrey" : "transparent"
+            color: "transparent"
 
             noCover: "qrc:/images/radio.png"
             imageSources: [{art: model.type === "65031" ? "qrc:/images/tunein.png" : model.icon}]
