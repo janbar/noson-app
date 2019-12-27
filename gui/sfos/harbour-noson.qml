@@ -836,8 +836,10 @@ ApplicationWindow {
         function pushNowPlaying()
         {
             if (!wideAspect) {
-                if (nowPlayingPage === null)
-                    nowPlayingPage = pageStack.push("qrc:/sfos/pages/NowPlaying.qml", false, true);
+                if (nowPlayingPage === null) {
+                    pageStack.completeAnimation();
+                    nowPlayingPage = pageStack.push("qrc:/sfos/pages/NowPlaying.qml");
+                }
                 if (nowPlayingPage.isListView) {
                     nowPlayingPage.isListView = false; // ensure full view
                 }
