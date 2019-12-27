@@ -87,6 +87,7 @@ Item {
         }
 
         onAccepted: {
+            pageStack.pop();
             trackClicked(songInfo.model); // play track
         }
 
