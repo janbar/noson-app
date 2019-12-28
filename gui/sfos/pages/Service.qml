@@ -381,6 +381,17 @@ MusicPage {
         source: "qrc:/sfos/components/ServiceRegistration.qml"
         active: false
         visible: active
+
+        onVisibleChanged: {
+            // hide the footer and toolbar to let more room
+            if (visible) {
+                showToolbar = false;
+                footer.visible = false;
+            } else {
+                showToolbar = true;
+                footer.visible = true;
+            }
+        }
     }
 
     Loader {
