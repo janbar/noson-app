@@ -103,7 +103,8 @@ Item {
                         value = inValue + 5.0; // loop on value changed
                     } else {
                         volumeGroupSlider.inValue = player.volumeMaster = Math.round(value);
-                        setVolume.start();
+                        if (pressed)
+                            setVolume.start();
                     }
                 }
             }

@@ -117,8 +117,6 @@ MusicListView {
                             setVolume.start();
                     }
 
-                    onPressedChanged: finger(held)
-
                     Timer {
                         interval: 200
                         repeat: true
