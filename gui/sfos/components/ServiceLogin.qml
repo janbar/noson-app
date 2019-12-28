@@ -29,7 +29,7 @@ Rectangle {
     Column {
         id: noMusicTextColumn
         anchors.centerIn: parent
-        spacing: units.gu(4)
+        spacing: units.gu(3)
         width: parent.width > units.gu(44) ? parent.width - units.gu(8) : units.gu(36)
 
         Label {
@@ -73,7 +73,6 @@ Rectangle {
                 left: parent.left
                 right: parent.right
             }
-            focus: true
             inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhEmailCharactersOnly
             placeholderText: qsTr("User name")
             font.pixelSize: units.fx("medium")
@@ -85,15 +84,17 @@ Rectangle {
                 left: parent.left
                 right: parent.right
             }
-            focus: true
             inputMethodHints: Qt.ImhHiddenText
             placeholderText: qsTr("Password")
             echoMode: TextInput.Password
             font.pixelSize: units.fx("medium")
+
+            Keys.onReturnPressed: signInService()
+            Keys.onEnterPressed: signInService()
         }
 
         Component.onCompleted: {
-           username.text = mediaModel.username;
+            username.text = mediaModel.username;
         }
 
         Button {
@@ -103,26 +104,27 @@ Rectangle {
             text: qsTr("Submit")
             width: parent.width
 
-            onClicked: {
-                mainView.jobRunning = true
-                delayLoginService.start()
+            onClicked: signInService()
+        }
+    }
+
+    function signInService() {
+        mainView.jobRunning = true;
+        delayLoginService.start();
+    }
+
+    Timer {
+        id: delayLoginService
+        interval: 100
+        onTriggered: {
+            loginOutput.visible = false;
+            var ret = mediaModel.requestSessionId(username.text, password.text);
+            mainView.jobRunning = false;
+            if (ret === 0) {
+                customdebug("Service login failed.");
+                loginOutput.text = qsTr("Login failed.");
+                loginOutput.visible = true;
             }
         }
-
-        Timer {
-            id: delayLoginService
-            interval: 100
-            onTriggered: {
-                loginOutput.visible = false;
-                var ret = mediaModel.requestSessionId(username.text, password.text);
-                mainView.jobRunning = false;
-                if (ret === 0) {
-                    customdebug("Service login failed.");
-                    loginOutput.text = qsTr("Login failed.");
-                    loginOutput.visible = true;
-                }
-            }
-        }
-
     }
 }

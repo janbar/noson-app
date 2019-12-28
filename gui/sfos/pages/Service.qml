@@ -389,6 +389,17 @@ MusicPage {
         source: "qrc:/sfos/components/ServiceLogin.qml"
         active: false
         visible: active
+
+        onVisibleChanged: {
+            // hide the footer and toolbar to let more room for focused inputs
+            if (visible) {
+                showToolbar = false;
+                footer.visible = false;
+            } else {
+                showToolbar = true;
+                footer.visible = true;
+            }
+        }
     }
 
     Connections {
