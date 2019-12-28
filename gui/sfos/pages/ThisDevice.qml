@@ -66,7 +66,7 @@ MusicPage {
 
             onClicked: clickItem(model)
 
-            color: listItem.held ? "lightgrey" : "transparent"
+            color: "transparent"
 
             imageSources: [{art: model.art}]
 
