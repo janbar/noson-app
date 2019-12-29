@@ -22,7 +22,6 @@ import "Flickables"
 
 MusicListView {
     id: renderingControlList
-    anchors.fill: parent
     clip: true
 
     model: player.renderingModel
@@ -31,24 +30,24 @@ MusicListView {
     property color backgroundColor: styleMusic.view.backgroundColor
     property color foregroundColor: styleMusic.view.foregroundColor
     property color labelColor: styleMusic.view.labelColor
-    property bool held: false
-
-    signal finger(bool isHeld)
+    readonly property real rowHeight: units.gu(8)
 
     delegate: SimpleListItem {
         id: renderingControlListItem
         objectName: "renderingControlListItem" + index
 
         color: renderingControlList.backgroundColor
+        contentHeight: renderingControlList.rowHeight
 
         column: Column {
+            id: column
             anchors.top: parent.top
             width: parent.width
+            spacing: 0
 
             Label {
                 id: nameLabel
-                font.pixelSize: units.fx("medium")
-                font.weight: Font.Normal
+                font.pixelSize: units.fx("small")
                 text: model.name
                 color: renderingControlList.labelColor
                 elide: Text.ElideRight
@@ -56,7 +55,7 @@ MusicListView {
                 maximumLineCount: 1
                 verticalAlignment: Text.AlignVCenter
                 anchors {
-                    leftMargin: units.gu(2)
+                    leftMargin: units.gu(3)
                     left: parent.left
                 }
             }
@@ -66,7 +65,7 @@ MusicListView {
                 id: controlerContainer
                 anchors {
                     left: parent.left
-                    leftMargin: units.gu(2)
+                    leftMargin: units.gu(2.5)
                     right: parent.right
                 }
                 height: units.gu(5)
@@ -79,51 +78,34 @@ MusicListView {
                     anchors.verticalCenter: parent.verticalCenter
                     height: units.gu(5)
                     width: height
-                    source: model.mute ? "qrc:/images/audio-volume-muted.svg" : "qrc:/images/audio-volume.svg"
-                    opacity: model.mute ? 1.0 : 0.6
+                    source: model.mute ? "qrc:/sfos/images/icon-m-speaker-muted.svg" : "qrc:/sfos/images/icon-m-speaker.svg"
                     color: renderingControlList.foregroundColor
                     onClicked: {
                         if (player.toggleMute(model.uuid))
                             player.renderingModel.setMute(index, !model.mute)
-                        finger(held)
                     }
                 }
 
                 StyledSlider {
                     id: volumeSlider
-                    anchors.leftMargin: units.gu(2)
+                    objectName: "volumeSliderShape"
+                    anchors.leftMargin: units.gu(1.5)
                     anchors.left: muteButton.right
-                    anchors.rightMargin: units.gu(2)
                     anchors.right: gripButton.left
                     anchors.verticalCenter: parent.verticalCenter
-                    wheelEnabled: false // wheel cannot be handle here
+                    leftMargin: units.gu(2)
+                    rightMargin: units.gu(2)
                     stepSize: 2.5
-                    live: true
-                    from: 0
-                    to: 100
-                    objectName: "volumeSliderShape"
+                    minimumValue: 0
+                    maximumValue: 100
+                    animateValue: false
                     value: model.volume
                     enabled: !model.outputFixed
                     opacity: (model.outputFixed ? 0.2 : 1.0)
 
-                    handleSize: (model.outputFixed ? 0 : units.gu(2))
-                    handleColor: labelColor
-                    handleBorderColor: handleColor
-                    backgroundColor: styleMusic.playerControls.volumeBackgroundColor
-                    foregroundColor: styleMusic.playerControls.volumeForegroundColor
-
                     onValueChanged: {
-                        if (pressed)
+                        if (down)
                             setVolume.start();
-                    }
-
-                    onPressedChanged: finger(held)
-
-                    Timer {
-                        interval: 200
-                        repeat: true
-                        running: volumeSlider.pressed
-                        onTriggered: finger(held)
                     }
 
                     Timer {
@@ -133,7 +115,6 @@ MusicListView {
                             if (!player.setVolume(model.uuid, volumeSlider.value)) {
                                 customdebug("Set volume failed for zone " + model.uuid);
                             }
-                            finger(held);
                         }
                     }
                 }
@@ -142,18 +123,13 @@ MusicListView {
                 MusicIcon {
                     id: gripButton
                     anchors.right: parent.right
-                    anchors.rightMargin: - units.gu(1)
+                    anchors.rightMargin: units.gu(1)
                     anchors.verticalCenter: parent.verticalCenter
-                    source: "qrc:/images/grip.svg"
-                    width: units.gu(5)
-                    height: width
-                    opacity: renderingControlList.held ? 1.0 : 0.6
+                    source: "qrc:/sfos/images/icon-m-grip.svg"
+                    opacity: 0.1
+                    height: units.gu(5)
+                    width: height
                     color: renderingControlList.foregroundColor
-                    onPressed: finger(held)
-                    onPressAndHold: {
-                        held = !held
-                        finger(held)
-                    }
                 }
             }
         }

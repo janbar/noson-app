@@ -20,18 +20,16 @@ import QtQuick 2.2
 import Sailfish.Silica 1.0
 import "../"
 
-MouseArea {
+ListItem {
     id: area
 
     property color color: styleMusic.view.backgroundColor
     property color highlightedColor: styleMusic.view.highlightedColor
     property var currentColor: highlighted ? highlightedColor : color
     property bool highlighted: false
-
     property alias column: row.column
 
     anchors { left: parent.left; right: parent.right }
-    height: content.height
 
     Rectangle {
         id: content
@@ -39,7 +37,7 @@ MouseArea {
             horizontalCenter: parent.horizontalCenter
             verticalCenter: parent.verticalCenter
         }
-        width: area.width; height: row.implicitHeight + units.dp(4)
+        width: area.width
 
         color: area.color
         Behavior on color { ColorAnimation { duration: 100 } }

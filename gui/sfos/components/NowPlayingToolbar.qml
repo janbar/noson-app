@@ -29,12 +29,18 @@ Item {
     property bool mirror: false
     property alias backgroundColor: bg.color
     property alias bottomProgressHint: playerControlsProgressBar.visible
-    readonly property real toolbarHeight: musicToolbarFullVolumeContainer.height + musicToolbarFullButtonContainer.height
+    readonly property real toolbarHeight: musicToolbarFullVolumeContainer.height + musicToolbarFullButtonContainer.height + renderingBubble.height
 
     Rectangle {
         id: bg
         anchors.fill: parent
         color: "transparent"
+    }
+
+    RenderingBubble {
+        id: renderingBubble
+        anchors.top: musicToolbarFullVolumeContainer.bottom
+        active: player.renderingControlCount > 1
     }
 
     /* volume slider component */
@@ -47,7 +53,7 @@ Item {
             rightMargin: units.gu(2)
             top: mirror ? parent.top : musicToolbarFullButtonContainer.bottom
         }
-        height: units.gu(6)
+        height: units.gu(7)
         width: parent.width
 
         /* Mute button */
@@ -70,8 +76,7 @@ Item {
             id: volumeGroupSlider
             anchors.left: nowPlayingMuteButton.right
             anchors.leftMargin: units.gu(1)
-            anchors.rightMargin: units.gu(1)
-            anchors.right: nightmodeButton.left
+            anchors.right: settingsButton.left
             anchors.verticalCenter: parent.verticalCenter
             leftMargin: units.gu(2)
             rightMargin: units.gu(2)
@@ -90,16 +95,11 @@ Item {
                         value = inValue + 5.0; // loop on value changed
                     } else {
                         volumeGroupSlider.inValue = player.volumeMaster = Math.round(value);
-                        setVolume.start();
+                        if (down)
+                            setVolume.start();
                     }
                 }
             }
-
-            /*!TODO?onPressedChanged: {
-                // open the bubble
-                if (pressed && player.renderingControlCount > 1)
-                    renderingBubble.open(musicToolbarFullVolumeContainer)
-            }*/
 
             Timer {
                 id: setVolume
@@ -127,17 +127,26 @@ Item {
             }
         }
 
-        /* equalizer button */
+        /* setting button */
         MusicIcon {
-            id: nightmodeButton
+            id: settingsButton
             anchors.right: parent.right
+            anchors.rightMargin: - units.gu(1)
             anchors.verticalCenter: parent.verticalCenter
             height: units.gu(5) // smaller
-            source: "image://theme/icon-m-sounds"
+            source: renderingBubble.active ? "qrc:/sfos/images/icon-m-settings.svg" : "image://theme/icon-m-sounds"
             opacity: 1.0
             onClicked: {
-                dialogSoundSettings.open()
+                if (!renderingBubble.active)
+                    dialogSoundSettings.open()
+                else {
+                    if (!renderingBubble.opened)
+                        renderingBubble.open();
+                    else
+                        renderingBubble.close();
+                }
             }
+            color: renderingBubble.opened ? styleMusic.view.highlightedColor : styleMusic.view.foregroundColor
         }
     }
 

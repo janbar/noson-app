@@ -20,8 +20,6 @@ import QtQuick 2.2
 import Sailfish.Silica 1.0
 
 Row {
-    height: units.gu(7)
-
     property alias column: columnComponent.sourceComponent
 
     spacing: units.gu(2)

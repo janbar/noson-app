@@ -18,103 +18,52 @@
 import QtQuick 2.2
 import Sailfish.Silica 1.0
 
+Loader {
+    id: loader
+    asynchronous: true
+    active: false
+    width: parent.width
 
-Item {
-    id: renderingBubble
-    anchors {
-        left: parent.left
-        right: parent.right
-        margins: units.gu(2)
-    }
+    property real maxWidth: parent.width
+    property real maxHeight: mainView.height - units.gu(32)
+    property real contentHeight:  units.gu(4) + player.renderingModel.count * (item ? item.rowHeight : 0)
+    property real preferedHeight: contentHeight > maxHeight ? maxHeight : contentHeight
     property bool opened: false
-    property color backgroundColor: styleMusic.popover.backgroundColor
-    property color foregroundColor: styleMusic.popover.foregroundColor
-    property color labelColor: styleMusic.popover.labelColor
-    readonly property bool displayable: containerLayout.height >= containerLayout.rowHeight
 
-    /*!TODO
-    Popup {
-        id: popover
-        width: parent.width
-        height: containerLayout.height
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
-
-        background: Rectangle {
-                id: containerLayoutBackground
-                anchors.fill: parent
-                color: renderingBubble.backgroundColor
-                radius: units.gu(1)
-                opacity: 0.9
-            }
-
-        Item {
-            id: containerLayout
-            anchors.centerIn: parent
-            readonly property double rowHeight: units.gu(7)
-            readonly property double minHeight: rowHeight + units.gu(4)
-            readonly property double maxHeight: mainView.height - units.gu(15)
-            property int contentHeight: player.renderingModel.count * rowHeight + units.gu(6)
-            width: parent.width
-            height: contentHeight > maxHeight ? maxHeight : contentHeight
-
-            RenderingControlerView {
-                id: renderingControlerView
-                backgroundColor: "transparent"
-                foregroundColor: renderingBubble.foregroundColor
-                labelColor: renderingBubble.labelColor
-                anchors.topMargin: units.gu(2)
-                anchors.bottomMargin: units.gu(2)
-            }
-
-            Connections {
-                target: renderingControlerView
-                onFinger: {
-                    if (isHeld && bubbleTimer.running)
-                        timer.stop()
-                    else if (!isHeld)
-                        timer.restart()
-                }
-            }
-        }
-
-        Behavior on opacity {
-            NumberAnimation { duration: 500 }
-        }
-
-        onOpened: timer.start()
-    }
-
-    Timer {
-        id: timer
-        interval: 5000
-        onTriggered: {
+    onActiveChanged: {
+        if (!active)
             opened = false
-            popover.close()
-        }
     }
 
-    Connections {
-        target: popover
-        onClosed: {
-            if (renderingBubble.opened) {
-                renderingBubble.opened = false
-                timer.stop()
-            }
-        }
+    height: opened ? preferedHeight : 0
+    visible: height > 0
+
+    Behavior on height {
+        SmoothedAnimation { velocity: 20 * preferedHeight }
     }
 
-    function open(caller) {
-        if (!renderingBubble.opened && containerLayout.height > containerLayout.minHeight) {
-            popover.parent = caller;
-            var gc = renderingBubble.parent.mapToItem(null, 0, 0)
-            if (gc.y > (mainView.height - mainView.header.height) / 2) {
-                popover.y = - (popover.height + units.gu(2))
-            } else {
-                popover.y = parent.height + units.gu(2)
-            }
+    function open() {
+        if (status !== Loader.Ready)
+            loader.loaded.connect(open);
+        else {
             player.refreshRendering()
-            renderingBubble.opened = true
-            popover.open()
+            opened = true;
         }
-    }*/
+    }
+
+    function close() {
+        opened = false;
+    }
+
+    sourceComponent: Component {
+        RenderingControlerView {
+            id: renderingControlerView
+            backgroundColor: "transparent"
+            foregroundColor: styleMusic.view.foregroundColor
+            labelColor: styleMusic.view.labelColor
+            anchors.fill: loader
+            anchors.topMargin: units.gu(2)
+            anchors.bottomMargin: units.gu(2)
+        }
+    }
 }

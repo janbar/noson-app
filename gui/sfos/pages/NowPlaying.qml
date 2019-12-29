@@ -121,13 +121,9 @@ MusicPage {
             bottom: parent.bottom
             bottomMargin: isListView ? nowPlaying.height - height - header.height - footer.height : 0
         }
-        height: units.gu(16)
+        height: toolbarHeight
         width: parent.width
         backgroundColor: "transparent"
-
-        Behavior on anchors.bottomMargin {
-            NumberAnimation { duration: 100 }
-        }
     }
 
     Loader {
