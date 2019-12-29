@@ -19,11 +19,6 @@ import QtQuick 2.0
 import Sailfish.Silica 1.0
 
 CoverBackground {
-    Label {
-        id: label
-        anchors.centerIn: parent
-        text: qsTr("noson")
-    }
 
     Image {
         anchors.centerIn: parent
@@ -33,6 +28,7 @@ CoverBackground {
         height: width
         sourceSize.height: height
         sourceSize.width: width
+        opacity: 0.50
     }
 
     Image {

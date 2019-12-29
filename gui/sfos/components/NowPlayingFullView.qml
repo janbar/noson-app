@@ -47,8 +47,9 @@ SilicaFlickable {
 
             CoverGrid {
                 id: albumImage
-                anchors.centerIn: parent
-                size: parent.height
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                size: Math.min(parent.height, parent.width)
                 overlay: false
 
                 Component.onCompleted: {
@@ -141,7 +142,7 @@ SilicaFlickable {
         }
 
         /* Detect cover art swipe */
-        MouseArea {
+        /*MouseArea {
             anchors.fill: parent
             property string direction: "None"
             property real lastX: -1
@@ -168,7 +169,7 @@ SilicaFlickable {
                     }
                 }
             }
-        }
+        }*/
     }
 
     /* Background for progress bar component */
