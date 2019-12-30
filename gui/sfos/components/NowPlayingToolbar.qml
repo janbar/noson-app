@@ -29,6 +29,7 @@ Item {
     property bool mirror: false
     property alias backgroundColor: bg.color
     property alias bottomProgressHint: playerControlsProgressBar.visible
+    property real preferedHeight: units.gu(16)
     readonly property real toolbarHeight: musicToolbarFullVolumeContainer.height + musicToolbarFullButtonContainer.height + renderingBubble.height
 
     Rectangle {
@@ -53,7 +54,7 @@ Item {
             rightMargin: units.gu(2)
             top: mirror ? parent.top : musicToolbarFullButtonContainer.bottom
         }
-        height: units.gu(7)
+        height: preferedHeight * 0.4375 // 7/16
         width: parent.width
 
         /* Mute button */
@@ -157,7 +158,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        height: units.gu(9)
+        height: preferedHeight * 0.5625 // 9/16
         width: parent.width
 
         /* Repeat button */
