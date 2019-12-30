@@ -39,10 +39,8 @@ Page {
         }
         NowPlayingToolbar {
             id: nowPlayingToolBar
-            anchors {
-                fill: undefined
-            }
-            height: units.gu(14)
+            preferedHeight: units.gu(16)
+            height: toolbarHeight
             width: parent.width
             bottomProgressHint: false
             mirror: true

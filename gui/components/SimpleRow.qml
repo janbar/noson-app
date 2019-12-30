@@ -19,8 +19,6 @@ import QtQuick 2.9
 import QtQuick.Controls 2.2
 
 Row {
-    height: units.gu(7)
-
     property alias column: columnComponent.sourceComponent
 
     spacing: units.gu(2)

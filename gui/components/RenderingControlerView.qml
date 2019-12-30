@@ -22,7 +22,6 @@ import "Flickables"
 
 MusicListView {
     id: renderingControlList
-    anchors.fill: parent
     clip: true
 
     model: player.renderingModel
@@ -31,6 +30,7 @@ MusicListView {
     property color backgroundColor: styleMusic.view.backgroundColor
     property color foregroundColor: styleMusic.view.foregroundColor
     property color labelColor: styleMusic.view.labelColor
+    readonly property real rowHeight: units.gu(7)
     property bool held: false
 
     signal finger(bool isHeld)
@@ -40,8 +40,10 @@ MusicListView {
         objectName: "renderingControlListItem" + index
 
         color: renderingControlList.backgroundColor
+        height: renderingControlList.rowHeight
 
         column: Column {
+            id: column
             anchors.top: parent.top
             width: parent.width
 

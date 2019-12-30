@@ -61,6 +61,7 @@ Item {
                 backgroundColor: "transparent"
                 foregroundColor: renderingBubble.foregroundColor
                 labelColor: renderingBubble.labelColor
+                anchors.fill: parent
                 anchors.topMargin: units.gu(2)
                 anchors.bottomMargin: units.gu(2)
             }

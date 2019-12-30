@@ -46,8 +46,9 @@ Flickable {
 
             CoverGrid {
                 id: albumImage
-                anchors.centerIn: parent
-                size: parent.height
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                size: Math.min(parent.height, parent.width)
                 overlay: false
 
                 Component.onCompleted: {
@@ -216,6 +217,7 @@ Flickable {
                 right: parent.right
                 top: parent.top
             }
+            from: 0
             to: player.trackDuration  // load value at startup
             objectName: "progressSliderShape"
             value: player.trackPosition  // load value at startup

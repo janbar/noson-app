@@ -29,6 +29,7 @@ Item {
     property bool mirror: false
     property alias backgroundColor: bg.color
     property alias bottomProgressHint: playerControlsProgressBar.visible
+    property real preferedHeight: units.gu(16)
     readonly property real toolbarHeight: musicToolbarFullVolumeContainer.height + musicToolbarFullButtonContainer.height
 
     Rectangle {
@@ -47,7 +48,7 @@ Item {
             rightMargin: units.gu(2)
             top: mirror ? parent.top : musicToolbarFullButtonContainer.bottom
         }
-        height: units.gu(6)
+        height: preferedHeight * 0.4375 // 7/16
         width: parent.width
 
         RenderingBubble {
@@ -77,7 +78,7 @@ Item {
             anchors.left: nowPlayingMuteButton.right
             anchors.leftMargin: units.gu(2)
             anchors.rightMargin: units.gu(2)
-            anchors.right: nightmodeButton.left
+            anchors.right: settingsButton.left
             anchors.verticalCenter: parent.verticalCenter
             wheelEnabled: true
             stepSize: 2.5
@@ -141,9 +142,9 @@ Item {
             }
         }
 
-        /* equalizer button */
+        /* setting button */
         Icon {
-            id: nightmodeButton
+            id: settingsButton
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
             height: units.gu(5) // smaller
@@ -163,7 +164,7 @@ Item {
             left: parent.left
             right: parent.right
         }
-        height: units.gu(8)
+        height: preferedHeight * 0.5625 // 9/16
         width: parent.width
 
         /* Repeat button */
