@@ -30,6 +30,8 @@ Item {
     property alias backgroundColor: bg.color
     property alias bottomProgressHint: playerControlsProgressBar.visible
     property real preferedHeight: units.gu(16)
+    property real maxHeight: parent.height
+    property alias renderingBubble: renderingBubble
     readonly property real toolbarHeight: musicToolbarFullVolumeContainer.height + musicToolbarFullButtonContainer.height + renderingBubble.height
 
     Rectangle {
@@ -41,6 +43,7 @@ Item {
     RenderingBubble {
         id: renderingBubble
         anchors.top: musicToolbarFullVolumeContainer.bottom
+        maxHeight: parent.maxHeight - musicToolbarFullVolumeContainer.height - musicToolbarFullButtonContainer.height
         active: player.renderingControlCount > 1
     }
 

@@ -31,6 +31,7 @@ MusicPage {
     showToolbar: false
 
     onIsListViewChanged: {
+        nowPlayingToolbar.renderingBubble.close();
         if (isListView) {
             listview = queueLoader.item.listview;
             // When changing to the queue positionAt the currentIndex
@@ -121,7 +122,7 @@ MusicPage {
             bottom: parent.bottom
             bottomMargin: isListView ? nowPlaying.height - height - header.height - footer.height : 0
         }
-        preferedHeight: mainView.height * 0.20 > units.gu(16) ? Math.min((mainView.height * 0.25), units.gu(28)) : units.gu(16)
+        preferedHeight: !isListView && mainView.height * 0.20 > units.gu(16) ? Math.min((mainView.height * 0.25), units.gu(28)) : units.gu(16)
         height: toolbarHeight
         width: parent.width
         backgroundColor: "transparent"

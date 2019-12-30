@@ -22,6 +22,7 @@ Loader {
     id: loader
     asynchronous: true
     active: false
+    visible: false
     width: parent.width
 
     property real maxWidth: parent.width
@@ -36,10 +37,16 @@ Loader {
     }
 
     height: opened ? preferedHeight : 0
-    visible: height > 0
 
     Behavior on height {
-        SmoothedAnimation { velocity: 20 * preferedHeight }
+        NumberAnimation {
+            easing.type: Easing.OutExpo
+            duration: 300;
+            onStopped: {
+                if (loader.height === 0)
+                    visible = false
+            }
+        }
     }
 
     function open() {
@@ -47,7 +54,7 @@ Loader {
             loader.loaded.connect(open);
         else {
             player.refreshRendering()
-            opened = true;
+            opened = visible = true;
         }
     }
 
