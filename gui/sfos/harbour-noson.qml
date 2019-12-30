@@ -187,6 +187,7 @@ ApplicationWindow {
                 if (!applicationSuspended) {
                     customdebug("Application state changed to suspended");
                     applicationSuspended = true;
+                    mainView.deactivate(); // is it better for power consumption ?
                 }
                 break;
             case Qt.ApplicationHidden:
