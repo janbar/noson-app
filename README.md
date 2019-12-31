@@ -44,9 +44,9 @@ qt5-qtquickcontrols2-devel qt5-qtgraphicaleffects qt5-qtsvg-devel \
 qt5-qtsvg zlib-devel openssl-devel flac-devel pulseaudio-libs-devel \
 dbus-devel
 ```
-  - Build tools: `git` `cmake >= 3.1.0` `gcc-c++ >= 4.8.5 | clang >= 3.4`
+  - Build tools: `git` `cmake >= 3.8.2` `gcc-c++ >= 4.8.5 | clang >= 3.4`
 
-  - As needed you have to install **cmake >= 3.1.0**
+  - As needed you have to install **cmake >= 3.8.2**
 
     ```bash
     $ wget https://github.com/Kitware/CMake/releases/download/v3.14.7/cmake-3.14.7-Linux-x86_64.tar.gz

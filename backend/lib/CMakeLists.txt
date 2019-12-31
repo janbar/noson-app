@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.8.2)
 
 option(BUILD_DEPENDENCIES "Build dependencies from sources" OFF)
 option(LIBNOSON_GIT_MASTER "Build the development branch of libnoson" OFF)
