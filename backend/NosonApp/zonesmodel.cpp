@@ -252,7 +252,6 @@ bool ZonesModel::loadData()
   {
     ZPRef* r = mp.value();
     m_players.erase(mp);
-    QObject::disconnect(r->player, SIGNAL(jobFailed(int)), this, SIGNAL(zpJobFailed(int)));
     QObject::disconnect(r->player, SIGNAL(connectedChanged(int)), this, SIGNAL(zpConnectedChanged(int)));
     QObject::disconnect(r->player, SIGNAL(renderingChanged(int)), this, SIGNAL(zpRenderingChanged(int)));
     QObject::disconnect(r->player, SIGNAL(renderingGroupChanged(int)), this, SIGNAL(zpRenderingGroupChanged(int)));
@@ -276,7 +275,6 @@ bool ZonesModel::loadData()
     p->init(m_provider, zone);
     m_players.insert(p->zoneName(), new ZPRef(p));
     p->setPid(m_nextPid++);
-    QObject::connect(p, SIGNAL(jobFailed(int)), this, SIGNAL(zpJobFailed(int)));
     QObject::connect(p, SIGNAL(connectedChanged(int)), this, SIGNAL(zpConnectedChanged(int)));
     QObject::connect(p, SIGNAL(renderingChanged(int)), this, SIGNAL(zpRenderingChanged(int)));
     QObject::connect(p, SIGNAL(renderingGroupChanged(int)), this, SIGNAL(zpRenderingGroupChanged(int)));

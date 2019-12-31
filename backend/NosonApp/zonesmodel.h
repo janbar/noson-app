@@ -122,7 +122,6 @@ signals:
   void countChanged();
   void loaded(bool succeeded);
 
-  void zpJobFailed(int pid);
   void zpConnectedChanged(int pid);
   void zpRenderingChanged(int pid);
   void zpRenderingGroupChanged(int pid);

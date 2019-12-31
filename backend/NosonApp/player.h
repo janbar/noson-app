@@ -24,6 +24,7 @@
 #include <noson/sonosplayer.h>
 
 #include "queuemodel.h"
+#include "future.h"
 
 #include <QObject>
 
@@ -75,8 +76,6 @@ public:
   bool init(Sonos* sonos, const SONOS::ZonePtr& zone);
   bool connected() const { return m_connected; }
   QString controllerURI() const { return m_controllerURI; }
-  void beginJob();
-  void endJob();
 
   SONOS::ZonePtr zone() const;
   int pid() const { return m_pid; }
@@ -91,10 +90,60 @@ public:
   Q_INVOKABLE QString zoneShortName() const;
   Q_INVOKABLE QString coordinatorName() const;
 
+  ///////////////////////////////////////////////////////////////////////////////
+  ///
+  /// About futures
+
+  Q_INVOKABLE Future* tryPing();
+  Q_INVOKABLE Future* tryConfigureSleepTimer(int seconds);
+  Q_INVOKABLE Future* tryRemainingSleepTimerDuration();
+  Q_INVOKABLE Future* tryPlay();
+  Q_INVOKABLE Future* tryStop();
+  Q_INVOKABLE Future* tryPause();
+  Q_INVOKABLE Future* tryPrevious();
+  Q_INVOKABLE Future* tryNext();
+  Q_INVOKABLE Future* tryToggleRepeat();
+  Q_INVOKABLE Future* tryToggleShuffle();
+  Q_INVOKABLE Future* tryToggleMute();
+  Q_INVOKABLE Future* tryToggleMute(const QString& uuid);
+  Q_INVOKABLE Future* tryToggleNightmode();
+  Q_INVOKABLE Future* tryToggleNightmode(const QString& uuid);
+  Q_INVOKABLE Future* tryToggleLoudness();
+  Q_INVOKABLE Future* tryToggleLoudness(const QString& uuid);
+  Q_INVOKABLE Future* tryToggleOutputFixed(const QString& uuid);
+  Q_INVOKABLE Future* tryPlayLineIN();
+  Q_INVOKABLE Future* tryPlayDigitalIN();
+  Q_INVOKABLE Future* tryPlayQueue(bool start);
+  Q_INVOKABLE Future* trySeekTime(int timesec);
+  Q_INVOKABLE Future* trySeekTrack(int position);
+  Q_INVOKABLE Future* tryAddItemToQueue(const QVariant& payload, int position);
+  Q_INVOKABLE Future* tryAddMultipleItemsToQueue(const QVariantList& payloads);
+  Q_INVOKABLE Future* tryRemoveAllTracksFromQueue();
+  Q_INVOKABLE Future* tryRemoveTrackFromQueue(const QString& id, int containerUpdateID);
+  Q_INVOKABLE Future* tryReorderTrackInQueue(int trackNo, int newPosition, int containerUpdateID);
+  Q_INVOKABLE Future* trySaveQueue(const QString& title);
+  Q_INVOKABLE Future* tryCreateSavedQueue(const QString& title);
+  Q_INVOKABLE Future* tryAddItemToSavedQueue(const QString& SQid, const QVariant& payload, int containerUpdateID);
+  Q_INVOKABLE Future* tryAddMultipleItemsToSavedQueue(const QString& SQid, const QVariantList& payloads, int containerUpdateID);
+  Q_INVOKABLE Future* tryRemoveTracksFromSavedQueue(const QString& SQid, const QVariantList& indexes, int containerUpdateID);
+  Q_INVOKABLE Future* tryReorderTrackInSavedQueue(const QString& SQid, int index, int newIndex, int containerUpdateID);
+  Q_INVOKABLE Future* tryPlaySource(const QVariant& payload);
+  Q_INVOKABLE Future* tryPlayStream(const QString& url, const QString& title);
+  Q_INVOKABLE Future* tryPlayFavorite(const QVariant& payload);
+  Q_INVOKABLE Future* tryPlayPulse();
+
+  Q_INVOKABLE Future* trySetTreble(double val);
+  Q_INVOKABLE Future* trySetBass(double val);
+  Q_INVOKABLE Future* trySetVolumeGroup(double volume);
+  Q_INVOKABLE Future* trySetVolume(const QString& uuid, double volume);
+
+  ///////////////////////////////////////////////////////////////////////////////
+  ///
+  /// Synchonous
+
   Q_INVOKABLE bool configureSleepTimer(int seconds);
   Q_INVOKABLE int remainingSleepTimerDuration();
 
-  Q_INVOKABLE bool startPlaySource(const QVariant& payload); // asynchronous
   Q_INVOKABLE bool play();
   Q_INVOKABLE bool stop();
   Q_INVOKABLE bool pause();
@@ -113,7 +162,6 @@ public:
   Q_INVOKABLE bool toggleOutputFixed(const QString& uuid);
   Q_INVOKABLE bool supportsOutputFixed(const QString& uuid);
 
-  Q_INVOKABLE bool startPlayStream(const QString& url, const QString& title); // asynchonous
   Q_INVOKABLE bool playStream(const QString& url, const QString& title);
 
   Q_INVOKABLE bool playPulse();
@@ -145,10 +193,10 @@ public:
   Q_INVOKABLE bool saveQueue(const QString& title);
   Q_INVOKABLE bool createSavedQueue(const QString& title);
   Q_INVOKABLE int addItemToSavedQueue(const QString& SQid, const QVariant& payload, int containerUpdateID);
+  Q_INVOKABLE int addMultipleItemsToSavedQueue(const QString& SQid, const QVariantList& payloads, int containerUpdateID);
   Q_INVOKABLE bool removeTracksFromSavedQueue(const QString& SQid, const QVariantList& indexes, int containerUpdateID);
   Q_INVOKABLE bool reorderTrackInSavedQueue(const QString& SQid, int index, int newIndex, int containerUpdateID);
 
-  Q_INVOKABLE bool startPlayFavorite(const QVariant& payload); // asynchronous
   Q_INVOKABLE bool playFavorite(const QVariant& payload);
 
   bool nightmode() const { return m_RCGroup.nightmode; }
@@ -218,7 +266,6 @@ public:
   void unregisterContent(ListModel<Player>* model);
 
 signals:
-  void jobFailed(int pid);
   void connectedChanged(int pid);
   void renderingChanged(int pid);
   void renderingGroupChanged(int pid);
@@ -260,6 +307,462 @@ private:
   static void playerEventCB(void* handle);
 
   Mpris2* m_mpris2;
+
+  ///////////////////////////////////////////////////////////////////////////////
+  ///
+  /// About promises
+
+  class PromisePing : public Promise
+  {
+  public:
+    PromisePing(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+  };
+
+  class PromiseConfigureSleepTimer : public Promise
+  {
+  public:
+    PromiseConfigureSleepTimer(Player& player, int seconds)
+    : m_player(player), m_seconds(seconds) { }
+    void run() override;
+  private:
+    Player& m_player;
+    int m_seconds;
+  };
+
+  class PromiseRemainingSleepTimerDuration : public Promise
+  {
+  public:
+    PromiseRemainingSleepTimerDuration(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+  };
+
+  class PromisePlay : public Promise
+  {
+  public:
+    PromisePlay(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+  };
+
+  class PromiseStop : public Promise
+  {
+  public:
+    PromiseStop(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+  };
+
+  class PromisePause : public Promise
+  {
+  public:
+    PromisePause(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+  };
+
+  class PromisePrevious : public Promise
+  {
+  public:
+    PromisePrevious(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+  };
+
+  class PromiseNext : public Promise
+  {
+  public:
+    PromiseNext(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+  };
+
+  class PromiseToggleRepeat : public Promise
+  {
+  public:
+    PromiseToggleRepeat(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+  };
+
+  class PromiseToggleShuffle : public Promise
+  {
+  public:
+    PromiseToggleShuffle(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+  };
+
+  class PromiseToggleMute : public Promise
+  {
+  public:
+    PromiseToggleMute(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+  };
+
+  class PromiseToggleMuteUUID : public Promise
+  {
+  public:
+    PromiseToggleMuteUUID(Player& player, const QString& uuid)
+    : m_player(player), m_uuid(uuid) { }
+    void run() override;
+  private:
+    Player& m_player;
+    const QString m_uuid;
+  };
+
+  class PromiseToggleNightmode : public Promise
+  {
+  public:
+    PromiseToggleNightmode(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+  };
+
+  class PromiseToggleNightmodeUUID : public Promise
+  {
+  public:
+    PromiseToggleNightmodeUUID(Player& player, const QString& uuid)
+    : m_player(player), m_uuid(uuid) { }
+    void run() override;
+  private:
+    Player& m_player;
+    const QString m_uuid;
+  };
+
+  class PromiseToggleLoudness : public Promise
+  {
+  public:
+    PromiseToggleLoudness(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+    const QString m_uuid;
+  };
+
+  class PromiseToggleLoudnessUUID : public Promise
+  {
+  public:
+    PromiseToggleLoudnessUUID(Player& player, const QString& uuid)
+    : m_player(player), m_uuid(uuid) { }
+    void run() override;
+  private:
+    Player& m_player;
+    const QString m_uuid;
+  };
+
+  class PromiseToggleOutputFixed : public Promise
+  {
+  public:
+    PromiseToggleOutputFixed(Player& player, const QString& uuid)
+    : m_player(player), m_uuid(uuid) { }
+    void run() override;
+  private:
+    Player& m_player;
+    const QString m_uuid;
+  };
+
+  class PromisePlayLineIN : public Promise
+  {
+  public:
+    PromisePlayLineIN(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+  };
+
+  class PromisePlayDigitalIN : public Promise
+  {
+  public:
+    PromisePlayDigitalIN(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+  };
+
+  class PromisePlayQueue : public Promise
+  {
+  public:
+    PromisePlayQueue(Player& player, bool start)
+    : m_player(player), m_start(start) { }
+    void run() override;
+  private:
+    Player& m_player;
+    bool m_start;
+  };
+
+  class PromiseSeekTime : public Promise
+  {
+  public:
+    PromiseSeekTime(Player& player, int timesec)
+    : m_player(player), m_timesec(timesec) { }
+    void run() override;
+  private:
+    Player& m_player;
+    int m_timesec;
+  };
+
+  class PromiseSeekTrack : public Promise
+  {
+  public:
+    PromiseSeekTrack(Player& player, int position)
+    : m_player(player), m_position(position) { }
+    void run() override;
+  private:
+    Player& m_player;
+    int m_position;
+  };
+
+  class PromiseAddItemToQueue : public Promise
+  {
+  public:
+    PromiseAddItemToQueue(Player& player, const QVariant& payload, int position)
+    : m_player(player), m_payload(payload), m_position(position) { }
+    void run() override;
+  private:
+    Player& m_player;
+    const QVariant m_payload;
+    int m_position;
+  };
+
+  class PromiseAddMultipleItemsToQueue : public Promise
+  {
+  public:
+    PromiseAddMultipleItemsToQueue(Player& player, const QVariantList& payloads)
+    : m_player(player), m_payloads(payloads) { }
+    void run() override;
+  private:
+    Player& m_player;
+    const QVariantList m_payloads;
+  };
+
+  class PromiseRemoveAllTracksFromQueue : public Promise
+  {
+  public:
+    PromiseRemoveAllTracksFromQueue(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+  };
+
+  class PromiseRemoveTrackFromQueue : public Promise
+  {
+  public:
+    PromiseRemoveTrackFromQueue(Player& player, const QString& id, int containerUpdateID)
+    : m_player(player), m_id(id), m_containerUpdateID(containerUpdateID) { }
+    void run() override;
+  private:
+    Player& m_player;
+    const QString m_id;
+    int m_containerUpdateID;
+  };
+
+  class PromiseReorderTrackInQueue : public Promise
+  {
+  public:
+    PromiseReorderTrackInQueue(Player& player, int trackNo, int newPosition, int containerUpdateID)
+    : m_player(player), m_trackNo(trackNo), m_newPosition(newPosition), m_containerUpdateID(containerUpdateID) { }
+    void run() override;
+  private:
+    Player& m_player;
+    int m_trackNo;
+    int m_newPosition;
+    int m_containerUpdateID;
+  };
+
+  class PromiseSaveQueue : public Promise
+  {
+  public:
+    PromiseSaveQueue(Player& player, const QString& title)
+    : m_player(player), m_title(title) { }
+    void run() override;
+  private:
+    Player& m_player;
+    const QString m_title;
+  };
+
+  class PromiseCreateSavedQueue : public Promise
+  {
+  public:
+    PromiseCreateSavedQueue(Player& player, const QString& title)
+    : m_player(player), m_title(title) { }
+    void run() override;
+  private:
+    Player& m_player;
+    const QString m_title;
+  };
+
+  class PromiseAddItemToSavedQueue : public Promise
+  {
+  public:
+    PromiseAddItemToSavedQueue(Player& player, const QString& SQid, const QVariant& payload, int containerUpdateID)
+    : m_player(player), m_SQid(SQid), m_payload(payload), m_containerUpdateID(containerUpdateID) { }
+    void run() override;
+  private:
+    Player& m_player;
+    const QString m_SQid;
+    const QVariant m_payload;
+    int m_containerUpdateID;
+  };
+
+  class PromiseAddMultipleItemsToSavedQueue : public Promise
+  {
+  public:
+    PromiseAddMultipleItemsToSavedQueue(Player& player, const QString& SQid, const QVariantList& payloads, int containerUpdateID)
+    : m_player(player), m_SQid(SQid), m_payloads(payloads), m_containerUpdateID(containerUpdateID) { }
+    void run() override;
+  private:
+    Player& m_player;
+    const QString m_SQid;
+    const QVariantList m_payloads;
+    int m_containerUpdateID;
+  };
+
+  class PromiseRemoveTracksFromSavedQueue : public Promise
+  {
+  public:
+    PromiseRemoveTracksFromSavedQueue(Player& player, const QString& SQid, const QVariantList& indexes, int containerUpdateID)
+    : m_player(player), m_SQid(SQid), m_indexes(indexes), m_containerUpdateID(containerUpdateID) { }
+    void run() override;
+  private:
+    Player& m_player;
+    const QString m_SQid;
+    const QVariantList m_indexes;
+    int m_containerUpdateID;
+  };
+
+  class PromiseReorderTrackInSavedQueue : public Promise
+  {
+  public:
+    PromiseReorderTrackInSavedQueue(Player& player, const QString& SQid, int index, int newIndex, int containerUpdateID)
+    : m_player(player), m_SQid(SQid), m_index(index), m_newIndex(newIndex), m_containerUpdateID(containerUpdateID) { }
+    void run() override;
+  private:
+    Player& m_player;
+    const QString m_SQid;
+    int m_index;
+    int m_newIndex;
+    int m_containerUpdateID;
+  };
+
+  class PromisePlaySource : public Promise
+  {
+  public:
+    PromisePlaySource(Player& player, const QVariant& payload)
+    : m_player(player), m_payload(payload) { }
+    void run() override;
+  private:
+    Player& m_player;
+    QVariant m_payload;
+  };
+
+  class PromisePlayStream : public Promise
+  {
+  public:
+    PromisePlayStream(Player& player, const QString& url, const QString& title)
+    : m_player(player), m_url(url), m_title(title) { }
+    void run() override;
+  private:
+    Player& m_player;
+    const QString m_url;
+    const QString m_title;
+  };
+
+  class PromisePlayFavorite : public Promise
+  {
+  public:
+    PromisePlayFavorite(Player& player, const QVariant& payload)
+    : m_player(player), m_payload(payload) { }
+    void run() override;
+  private:
+    Player& m_player;
+    QVariant m_payload;
+  };
+
+  class PromisePlayPulse : public Promise
+  {
+  public:
+    PromisePlayPulse(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+  };
+
+  class PromiseSetTreble : public Promise
+  {
+  public:
+    PromiseSetTreble(Player& player, double val)
+    : m_player(player), m_val(val) { }
+    void run() override;
+  private:
+    Player& m_player;
+    double m_val;
+  };
+
+  class PromiseSetBass : public Promise
+  {
+  public:
+    PromiseSetBass(Player& player, double val)
+    : m_player(player), m_val(val) { }
+    void run() override;
+  private:
+    Player& m_player;
+    double m_val;
+  };
+
+  class PromiseSetVolumeGroup : public Promise
+  {
+  public:
+    PromiseSetVolumeGroup(Player& player, double volume)
+    : m_player(player), m_volume(volume) { }
+    void run() override;
+  private:
+    Player& m_player;
+    double m_volume;
+  };
+
+  class PromiseSetVolume : public Promise
+  {
+  public:
+    PromiseSetVolume(Player& player, const QString& uuid, double volume)
+    : m_player(player), m_uuid(uuid), m_volume(volume) { }
+    void run() override;
+  private:
+    Player& m_player;
+    const QString m_uuid;
+    double m_volume;
+  };
+
 };
 
 }

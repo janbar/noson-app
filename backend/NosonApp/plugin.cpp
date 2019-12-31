@@ -21,6 +21,7 @@
 #include "plugin.h"
 #include "sonos.h"
 #include "player.h"
+#include "future.h"
 #include "renderingmodel.h"
 #include "alarmsmodel.h"
 #include "qmlsortfiltermodel.h"
@@ -34,8 +35,8 @@ void NosonAppPlugin::registerTypes(const char *uri)
 {
   // register utils types
   qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 0, "SortFilterModel");
-  qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
-  qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
+  qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 0, "FilterBehavior", "Not instantiable");
+  qmlRegisterUncreatableType<SortBehavior>(uri, 1, 0, "SortBehavior", "Not instantiable");
 
   // register noson singletons
   qmlRegisterSingletonType<Sonos>(uri, 1, 0, "Sonos", Sonos::sonos_provider);
@@ -70,6 +71,7 @@ void NosonAppPlugin::registerTypes(const char *uri)
 
   qRegisterMetaType<Sonos*>("Sonos*");
   qRegisterMetaType<Player*>("Player*");
+  qRegisterMetaType<Future*>("Future*");
 }
 
 void NosonAppPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

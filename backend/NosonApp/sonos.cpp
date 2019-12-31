@@ -21,6 +21,7 @@
 #include "sonos.h"
 #include "listmodel.h"
 #include "alarmsmodel.h"
+
 #include <noson/requestbroker.h>
 #include <noson/imageservice.h>
 #include <noson/filestreamer.h>
@@ -35,106 +36,6 @@
 #define DEFAULT_MAX_THREAD     16
 
 using namespace nosonapp;
-
-namespace nosonapp
-{
-
-class InitWorker : public QRunnable
-{
-public:
-  InitWorker(Sonos& sonos, int debug)
-  : m_sonos(sonos)
-  , m_debug(debug)
-  { }
-
-  virtual void run() override
-  {
-    m_sonos.beginJob();
-    m_sonos.init(m_debug);
-    m_sonos.endJob();
-  }
-private:
-  Sonos& m_sonos;
-  int m_debug;
-};
-
-class JoinZonesWorker : public QRunnable
-{
-public:
-  JoinZonesWorker(Sonos& sonos, const QVariantList& zonePayloads, const QVariant& toZonePayload)
-  : m_sonos(sonos)
-  , m_zonePayloads(zonePayloads)
-  , m_toZonePayload(toZonePayload)
-  { }
-
-  virtual void run() override
-  {
-    m_sonos.beginJob();
-    m_sonos.joinZones(m_zonePayloads, m_toZonePayload);
-    m_sonos.endJob();
-  }
-private:
-  Sonos& m_sonos;
-  QVariantList m_zonePayloads;
-  QVariant m_toZonePayload;
-};
-
-class UnjoinRoomsWorker : public QRunnable
-{
-public:
-  UnjoinRoomsWorker(Sonos& sonos, const QVariantList& roomPayloads)
-  : m_sonos(sonos)
-  , m_roomPayloads(roomPayloads)
-  { }
-
-  virtual void run() override
-  {
-    m_sonos.beginJob();
-    m_sonos.unjoinRooms(m_roomPayloads);
-    m_sonos.endJob();
-  }
-private:
-  Sonos& m_sonos;
-  QVariantList m_roomPayloads;
-};
-
-class UnjoinZoneWorker : public QRunnable
-{
-public:
-  UnjoinZoneWorker(Sonos& sonos, const QVariant& zonePayload)
-  : m_sonos(sonos)
-  , m_zonePayload(zonePayload)
-  { }
-
-  virtual void run() override
-  {
-    m_sonos.beginJob();
-    m_sonos.unjoinZone(m_zonePayload);
-    m_sonos.endJob();
-  }
-private:
-  Sonos& m_sonos;
-  QVariant m_zonePayload;
-};
-
-class RenewSubscriptionsWorker : public QRunnable
-{
-public:
-  RenewSubscriptionsWorker(Sonos& sonos)
-  : m_sonos(sonos)
-  { }
-
-  virtual void run() override
-  {
-    m_sonos.beginJob();
-    m_sonos.renewSubscriptions();
-    m_sonos.endJob();
-  }
-private:
-  Sonos& m_sonos;
-};
-
-}
 
 Sonos::Sonos(QObject* parent)
 : QObject(parent)
@@ -179,9 +80,64 @@ void Sonos::debug(int debug)
   m_system.Debug(debug);
 }
 
-bool Sonos::startInit(int debug)
+Future* Sonos::tryInit(int debug)
 {
-  return m_workerPool.tryStart(new InitWorker(*this, debug));
+  return new Future(new PromiseInit(*this, debug), this);
+}
+
+Future* Sonos::tryRenewSubscriptions()
+{
+  return new Future(new PromiseRenewSubscriptions(*this), this);
+}
+
+Future* Sonos::tryJoinZones(const QVariantList& zonePayloads, const QVariant& toZonePayload)
+{
+  return new Future(new PromiseJoinZones(*this, zonePayloads, toZonePayload), this);
+}
+
+Future* Sonos::tryUnjoinZone(const QVariant& zonePayload)
+{
+  return new Future(new PromiseUnjoinZone(*this, zonePayload), this);
+}
+
+Future* Sonos::tryUnjoinRooms(const QVariantList& roomPayloads)
+{
+  return new Future(new PromiseUnjoinRooms(*this, roomPayloads), this);
+}
+
+Future* Sonos::tryCreateAlarm(const QVariant& alarmPayload)
+{
+  return new Future(new PromiseCreateAlarm(*this, alarmPayload), this);
+}
+
+Future* Sonos::tryUpdateAlarm(const QVariant& alarmPayload)
+{
+  return new Future(new PromiseUpdateAlarm(*this, alarmPayload), this);
+}
+
+Future* Sonos::tryDestroyAlarm(const QString& id)
+{
+  return new Future(new PromiseDestroyAlarm(*this, id), this);
+}
+
+Future* Sonos::tryRefreshShareIndex()
+{
+  return new Future(new PromiseRefreshShareIndex(*this), this);
+}
+
+Future* Sonos::tryDestroySavedQueue(const QString& SQid)
+{
+  return new Future(new PromiseDestroySavedQueue(*this, SQid), this);
+}
+
+Future* Sonos::tryAddItemToFavorites(const QVariant& payload, const QString& description, const QString& artURI)
+{
+  return new Future(new PromiseAddItemToFavorites(*this, payload, description, artURI), this);
+}
+
+Future* Sonos::tryDestroyFavorite(const QString& FVid)
+{
+  return new Future(new PromiseDestroyFavorite(*this, FVid), this);
 }
 
 bool Sonos::init(int debug /*= 0*/)
@@ -230,11 +186,6 @@ void Sonos::deleteServiceOAuth(const QString& type, const QString& sn)
 void Sonos::renewSubscriptions()
 {
   m_system.RenewSubscriptions();
-}
-
-void Sonos::startRenewSubscriptions()
-{
-  m_workerPool.tryStart(new RenewSubscriptionsWorker(*this));
 }
 
 QVariantList Sonos::getZones()
@@ -315,11 +266,6 @@ bool Sonos::joinZones(const QVariantList& zonePayloads, const QVariant& toZonePa
   return false;
 }
 
-bool Sonos::startJoinZones(const QVariantList& zonePayloads, const QVariant& toZonePayload)
-{
-  return m_workerPool.tryStart(new JoinZonesWorker(*this, zonePayloads, toZonePayload));
-}
-
 bool Sonos::unjoinRoom(const QVariant& roomPayload)
 {
   SONOS::ZonePlayerPtr room = roomPayload.value<SONOS::ZonePlayerPtr>();
@@ -346,11 +292,6 @@ bool Sonos::unjoinRooms(const QVariantList& roomPayloads)
   return true;
 }
 
-bool Sonos::startUnjoinRooms(const QVariantList& roomPayloads)
-{
-  return m_workerPool.tryStart(new UnjoinRoomsWorker(*this, roomPayloads));
-}
-
 bool Sonos::unjoinZone(const QVariant& zonePayload)
 {
   SONOS::ZonePtr zone = zonePayload.value<SONOS::ZonePtr>();
@@ -365,11 +306,6 @@ bool Sonos::unjoinZone(const QVariant& zonePayload)
   }
   return false;
 
-}
-
-bool Sonos::startUnjoinZone(const QVariant& zonePayload)
-{
-  return m_workerPool.tryStart(new UnjoinZoneWorker(*this, zonePayload));
 }
 
 bool Sonos::createAlarm(const QVariant& alarmPayload)
@@ -671,4 +607,80 @@ void Sonos::systemEventCB(void *handle)
       sonos->m_shareIndexInProgess = prop.ShareIndexInProgress;
     }
   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///
+/// About promises
+
+void Sonos::PromiseInit::run()
+{
+  bool r = m_sonos.init(m_debug);
+  setResult(QVariant(r));
+}
+
+void Sonos::PromiseRenewSubscriptions::run()
+{
+  m_sonos.renewSubscriptions();
+  setResult(QVariant(true));
+}
+
+void Sonos::PromiseJoinZones::run()
+{
+  bool r = m_sonos.joinZones(m_zonePayloads, m_toZonePayload);
+  setResult(QVariant(r));
+}
+
+void Sonos::PromiseUnjoinZone::run()
+{
+  bool r = m_sonos.unjoinZone(m_zonePayload);
+  setResult(QVariant(r));
+}
+
+void Sonos::PromiseUnjoinRooms::run()
+{
+  bool r = m_sonos.unjoinRooms(m_roomPayloads);
+  setResult(QVariant(r));
+}
+
+void Sonos::PromiseCreateAlarm::run()
+{
+  bool r = m_sonos.createAlarm(m_alarmPayload);
+  setResult(QVariant(r));
+}
+
+void Sonos::PromiseUpdateAlarm::run()
+{
+  bool r = m_sonos.updateAlarm(m_alarmPayload);
+  setResult(QVariant(r));
+}
+
+void Sonos::PromiseDestroyAlarm::run()
+{
+  bool r = m_sonos.destroyAlarm(m_id);
+  setResult(QVariant(r));
+}
+
+void Sonos::PromiseRefreshShareIndex::run()
+{
+  bool r = m_sonos.refreshShareIndex();
+  setResult(QVariant(r));
+}
+
+void Sonos::PromiseDestroySavedQueue::run()
+{
+  bool r = m_sonos.destroySavedQueue(m_SQid);
+  setResult(QVariant(r));
+}
+
+void Sonos::PromiseAddItemToFavorites::run()
+{
+  bool r = m_sonos.addItemToFavorites(m_payload, m_description, m_artURI);
+  setResult(QVariant(r));
+}
+
+void Sonos::PromiseDestroyFavorite::run()
+{
+  bool r = m_sonos.destroyFavorite(m_FVid);
+  setResult(QVariant(r));
 }

@@ -31,73 +31,6 @@
 
 using namespace nosonapp;
 
-namespace nosonapp
-{
-
-class playSourceWorker : public QRunnable
-{
-public:
-  playSourceWorker(Player& player, const QVariant& payload)
-  : m_player(player)
-  , m_payload(payload)
-  { }
-
-  virtual void run() override
-  {
-    m_player.beginJob();
-    if (!m_player.setSource(m_payload) || !m_player.play())
-      emit m_player.jobFailed(m_player.pid());
-    m_player.endJob();
-  }
-private:
-  Player& m_player;
-  QVariant m_payload;
-};
-
-class playStreamWorker : public QRunnable
-{
-public:
-  playStreamWorker(Player& player, const QString& url, const QString& title)
-  : m_player(player)
-  , m_url(url)
-  , m_title(title)
-  { }
-
-  virtual void run() override
-  {
-    m_player.beginJob();
-    if (!m_player.playStream(m_url, m_title))
-      emit m_player.jobFailed(m_player.pid());
-    m_player.endJob();
-  }
-private:
-  Player& m_player;
-  const QString m_url;
-  const QString m_title;
-};
-
-class playFavoriteWorker : public QRunnable
-{
-public:
-  playFavoriteWorker(Player& player, const QVariant& payload)
-  : m_player(player)
-  , m_payload(payload)
-  { }
-
-  virtual void run() override
-  {
-    m_player.beginJob();
-    if (!m_player.playFavorite(m_payload))
-      emit m_player.jobFailed(m_player.pid());
-    m_player.endJob();
-  }
-private:
-  Player& m_player;
-  QVariant m_payload;
-};
-
-}
-
 Player::Player(QObject *parent)
 : QObject(parent)
 , m_pid(0)
@@ -167,18 +100,6 @@ bool Player::init(Sonos* sonos, const SONOS::ZonePtr& zone)
 
   emit connectedChanged(m_pid);
   return false;
-}
-
-void Player::beginJob()
-{
-  if (m_sonos)
-    m_sonos->beginJob();
-}
-
-void Player::endJob()
-{
-  if (m_sonos)
-    m_sonos->endJob();
 }
 
 SONOS::ZonePtr Player::zone() const
@@ -252,6 +173,293 @@ QString Player::coordinatorName() const
   return QString();
 }
 
+Future* Player::tryPing()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromisePing(*this), m_sonos);
+}
+
+Future* Player::tryConfigureSleepTimer(int seconds)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseConfigureSleepTimer(*this, seconds), m_sonos);
+}
+
+Future* Player::tryRemainingSleepTimerDuration()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseRemainingSleepTimerDuration(*this), m_sonos);
+}
+
+Future* Player::tryPlay()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromisePlay(*this), m_sonos);
+}
+
+Future* Player::tryStop()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseStop(*this), m_sonos);
+}
+
+Future* Player::tryPause()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromisePause(*this), m_sonos);
+}
+
+Future* Player::tryPrevious()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromisePrevious(*this), m_sonos);
+}
+
+Future* Player::tryNext()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseNext(*this), m_sonos);
+}
+
+Future* Player::tryToggleRepeat()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseToggleRepeat(*this), m_sonos);
+}
+
+Future* Player::tryToggleShuffle()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseToggleShuffle(*this), m_sonos);
+}
+
+Future* Player::tryToggleMute()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseToggleMute(*this), m_sonos);
+}
+
+Future* Player::tryToggleMute(const QString &uuid)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseToggleMuteUUID(*this, uuid), m_sonos);
+}
+
+Future* Player::tryToggleNightmode()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseToggleNightmode(*this), m_sonos);
+}
+
+Future* Player::tryToggleNightmode(const QString &uuid)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseToggleNightmodeUUID(*this, uuid), m_sonos);
+}
+
+Future* Player::tryToggleLoudness()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseToggleLoudness(*this), m_sonos);
+}
+
+Future* Player::tryToggleLoudness(const QString &uuid)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseToggleLoudnessUUID(*this, uuid), m_sonos);
+}
+
+Future* Player::tryToggleOutputFixed(const QString &uuid)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseToggleOutputFixed(*this, uuid), m_sonos);
+}
+
+Future* Player::tryPlayLineIN()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromisePlayLineIN(*this), m_sonos);
+}
+
+Future* Player::tryPlayDigitalIN()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromisePlayDigitalIN(*this), m_sonos);
+}
+
+Future* Player::tryPlayQueue(bool start)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromisePlayQueue(*this, start), m_sonos);
+}
+
+Future* Player::trySeekTime(int timesec)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseSeekTime(*this, timesec), m_sonos);
+}
+
+Future* Player::trySeekTrack(int position)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseSeekTrack(*this, position), m_sonos);
+}
+
+Future* Player::tryAddItemToQueue(const QVariant &payload, int position)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseAddItemToQueue(*this, payload, position), m_sonos);
+}
+
+Future* Player::tryAddMultipleItemsToQueue(const QVariantList &payloads)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseAddMultipleItemsToQueue(*this, payloads), m_sonos);
+}
+
+Future* Player::tryRemoveAllTracksFromQueue()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseRemoveAllTracksFromQueue(*this), m_sonos);
+}
+
+Future* Player::tryRemoveTrackFromQueue(const QString &id, int containerUpdateID)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseRemoveTrackFromQueue(*this, id, containerUpdateID), m_sonos);
+}
+
+Future* Player::tryReorderTrackInQueue(int trackNo, int newPosition, int containerUpdateID)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseReorderTrackInQueue(*this, trackNo, newPosition, containerUpdateID), m_sonos);
+}
+
+Future* Player::trySaveQueue(const QString &title)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseSaveQueue(*this, title), m_sonos);
+}
+
+Future* Player::tryCreateSavedQueue(const QString &title)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseCreateSavedQueue(*this, title), m_sonos);
+}
+
+Future* Player::tryAddItemToSavedQueue(const QString &SQid, const QVariant &payload, int containerUpdateID)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseAddItemToSavedQueue(*this, SQid, payload, containerUpdateID), m_sonos);
+}
+
+Future* Player::tryAddMultipleItemsToSavedQueue(const QString& SQid, const QVariantList& payloads, int containerUpdateID)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseAddMultipleItemsToSavedQueue(*this, SQid, payloads, containerUpdateID), m_sonos);
+}
+
+Future* Player::tryRemoveTracksFromSavedQueue(const QString &SQid, const QVariantList &indexes, int containerUpdateID)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseRemoveTracksFromSavedQueue(*this, SQid, indexes, containerUpdateID), m_sonos);
+}
+
+Future* Player::tryReorderTrackInSavedQueue(const QString &SQid, int index, int newIndex, int containerUpdateID)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseReorderTrackInSavedQueue(*this, SQid, index, newIndex, containerUpdateID), m_sonos);
+}
+
+Future* Player::tryPlaySource(const QVariant& payload)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromisePlaySource(*this, payload), m_sonos);
+}
+
+Future* Player::tryPlayStream(const QString& url, const QString& title)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromisePlayStream(*this, url, title), m_sonos);
+}
+
+Future* Player::tryPlayFavorite(const QVariant& payload)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromisePlayFavorite(*this, payload), m_sonos);
+}
+
+Future* Player::tryPlayPulse()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromisePlayPulse(*this), m_sonos);
+}
+
+Future* Player::trySetTreble(double val)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseSetTreble(*this, val), m_sonos);
+}
+
+Future* Player::trySetBass(double val)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseSetBass(*this, val), m_sonos);
+}
+
+Future* Player::trySetVolumeGroup(double volume)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseSetVolumeGroup(*this, volume), m_sonos);
+}
+
+Future* Player::trySetVolume(const QString &uuid, double volume)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseSetVolume(*this, uuid, volume), m_sonos);
+}
+
 bool Player::configureSleepTimer(int seconds)
 {
   SONOS::PlayerPtr p(m_player);
@@ -270,11 +478,6 @@ int Player::remainingSleepTimerDuration()
       return (int)(hh * 3600 + hm * 60 + hs);
   }
   return 0;
-}
-
-bool Player::startPlaySource(const QVariant& payload)
-{
-  return m_sonos && m_sonos->startJob(new playSourceWorker(*this, payload));
 }
 
 bool Player::play()
@@ -506,11 +709,6 @@ bool Player::supportsOutputFixed(const QString &uuid)
   return false;
 }
 
-bool Player::startPlayStream(const QString& url, const QString& title)
-{
-  return m_sonos && m_sonos->startJob(new playStreamWorker(*this, url, title));
-}
-
 bool Player::playStream(const QString& url, const QString& title)
 {
   SONOS::PlayerPtr p(m_player);
@@ -666,6 +864,22 @@ int Player::addItemToSavedQueue(const QString& SQid, const QVariant& payload, in
   return p ? p->AddURIToSavedQueue(SQid.toUtf8().constData(), payload.value<SONOS::DigitalItemPtr>(), containerUpdateID) : 0;
 }
 
+int Player::addMultipleItemsToSavedQueue(const QString& SQid, const QVariantList& payloads, int containerUpdateID)
+{
+  SONOS::PlayerPtr p(m_player);
+  if (p)
+  {
+    for (QVariantList::const_iterator it = payloads.begin(); it != payloads.end(); ++it)
+    {
+      containerUpdateID = addItemToSavedQueue(SQid, *it, containerUpdateID);
+      if (containerUpdateID == 0)
+        break;
+    }
+    return containerUpdateID;
+  }
+  return 0;
+}
+
 bool Player::removeTracksFromSavedQueue(const QString& SQid, const QVariantList& indexes, int containerUpdateID)
 {
   SONOS::PlayerPtr p(m_player);
@@ -693,11 +907,6 @@ bool Player::reorderTrackInSavedQueue(const QString& SQid, int index, int newInd
     return p->ReorderTracksInSavedQueue(SQid.toUtf8().constData(), trackList.toUtf8().constData(), newPositionList.toUtf8().constData(), containerUpdateID);
   }
   return false;
-}
-
-bool Player::startPlayFavorite(const QVariant& payload)
-{
-  return m_sonos && m_sonos->startJob(new playFavoriteWorker(*this, payload));
 }
 
 bool Player::playFavorite(const QVariant& payload)
@@ -1307,4 +1516,255 @@ void Player::playerEventCB(void* handle)
       }
     }
   }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///
+/// About promises
+
+void Player::PromisePing::run()
+{
+  bool r = m_player.ping();
+  setResult(QVariant(r));
+}
+
+void Player::PromiseConfigureSleepTimer::run()
+{
+  bool r = m_player.configureSleepTimer(m_seconds);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseRemainingSleepTimerDuration::run()
+{
+  int r = m_player.remainingSleepTimerDuration();
+  setResult(QVariant(r));
+}
+
+void Player::PromisePlay::run()
+{
+  bool r = m_player.play();
+  setResult(QVariant(r));
+}
+
+void Player::PromiseStop::run()
+{
+  bool r = m_player.stop();
+  setResult(QVariant(r));
+}
+
+void Player::PromisePause::run()
+{
+  bool r = m_player.pause();
+  setResult(QVariant(r));
+}
+
+void Player::PromisePrevious::run()
+{
+  bool r = m_player.previous();
+  setResult(QVariant(r));
+}
+
+void Player::PromiseNext::run()
+{
+  bool r = m_player.next();
+  setResult(QVariant(r));
+}
+
+void Player::PromiseToggleRepeat::run()
+{
+  bool r = m_player.toggleRepeat();
+  setResult(QVariant(r));
+}
+
+void Player::PromiseToggleShuffle::run()
+{
+  bool r = m_player.toggleShuffle();
+  setResult(QVariant(r));
+}
+
+void Player::PromiseToggleMute::run()
+{
+  bool r = m_player.toggleMute();
+  setResult(QVariant(r));
+}
+
+void Player::PromiseToggleMuteUUID::run()
+{
+  bool r = m_player.toggleMute(m_uuid);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseToggleNightmode::run()
+{
+  bool r = m_player.toggleNightmode();
+  setResult(QVariant(r));
+}
+
+void Player::PromiseToggleNightmodeUUID::run()
+{
+  bool r = m_player.toggleNightmode(m_uuid);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseToggleLoudness::run()
+{
+  bool r = m_player.toggleLoudness();
+  setResult(QVariant(r));
+}
+
+void Player::PromiseToggleLoudnessUUID::run()
+{
+  bool r = m_player.toggleLoudness(m_uuid);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseToggleOutputFixed::run()
+{
+  bool r = m_player.toggleOutputFixed(m_uuid);
+  setResult(QVariant(r));
+}
+
+void Player::PromisePlayLineIN::run()
+{
+  bool r = m_player.playLineIN();
+  setResult(QVariant(r));
+}
+
+void Player::PromisePlayDigitalIN::run()
+{
+  bool r = m_player.playDigitalIN();
+  setResult(QVariant(r));
+}
+
+void Player::PromisePlayQueue::run()
+{
+  bool r = m_player.playQueue(m_start);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseSeekTime::run()
+{
+  bool r = m_player.seekTime(m_timesec);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseSeekTrack::run()
+{
+  bool r = m_player.seekTrack(m_position);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseAddItemToQueue::run()
+{
+  int r = m_player.addItemToQueue(m_payload, m_position);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseAddMultipleItemsToQueue::run()
+{
+  int r = m_player.addMultipleItemsToQueue(m_payloads);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseRemoveAllTracksFromQueue::run()
+{
+  bool r = m_player.removeAllTracksFromQueue();
+  setResult(QVariant(r));
+}
+
+void Player::PromiseRemoveTrackFromQueue::run()
+{
+  bool r = m_player.removeTrackFromQueue(m_id, m_containerUpdateID);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseReorderTrackInQueue::run()
+{
+  bool r = m_player.reorderTrackInQueue(m_trackNo, m_newPosition, m_containerUpdateID);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseSaveQueue::run()
+{
+  bool r = m_player.saveQueue(m_title);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseCreateSavedQueue::run()
+{
+  bool r = m_player.createSavedQueue(m_title);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseAddItemToSavedQueue::run()
+{
+  int r = m_player.addItemToSavedQueue(m_SQid, m_payload, m_containerUpdateID);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseAddMultipleItemsToSavedQueue::run()
+{
+  int r = m_player.addMultipleItemsToSavedQueue(m_SQid, m_payloads, m_containerUpdateID);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseRemoveTracksFromSavedQueue::run()
+{
+  bool r = m_player.removeTracksFromSavedQueue(m_SQid, m_indexes, m_containerUpdateID);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseReorderTrackInSavedQueue::run()
+{
+  bool r = m_player.reorderTrackInSavedQueue(m_SQid, m_index, m_newIndex, m_containerUpdateID);
+  setResult(QVariant(r));
+}
+void Player::PromisePlaySource::run()
+{
+  if (m_player.setSource(m_payload) && m_player.play())
+    setResult(QVariant(true));
+  else
+    setResult(QVariant(false));
+}
+
+void Player::PromisePlayStream::run()
+{
+  bool r = m_player.playStream(m_url, m_title);
+  setResult(QVariant(r));
+}
+
+void Player::PromisePlayFavorite::run()
+{
+  bool r = m_player.playFavorite(m_payload);
+  setResult(QVariant(r));
+}
+
+void Player::PromisePlayPulse::run()
+{
+  bool r = m_player.playPulse();
+  setResult(QVariant(r));
+}
+
+void Player::PromiseSetTreble::run()
+{
+  bool r = m_player.setTreble(m_val);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseSetBass::run()
+{
+  bool r = m_player.setBass(m_val);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseSetVolumeGroup::run()
+{
+  bool r = m_player.setVolumeGroup(m_volume);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseSetVolume::run()
+{
+  bool r = m_player.setVolume(m_uuid, m_volume);
+  setResult(QVariant(r));
 }

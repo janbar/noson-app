@@ -25,6 +25,7 @@
 
 #include "tools.h"
 #include "locked.h"
+#include "future.h"
 #include "zonesmodel.h"
 #include "roomsmodel.h"
 #include "albumsmodel.h"
@@ -60,7 +61,27 @@ public:
 
   Q_INVOKABLE void debug(int debug);
 
-  Q_INVOKABLE bool startInit(int debug = 0); // asynchronous
+  ///////////////////////////////////////////////////////////////////////////////
+  ///
+  /// About futures
+
+  Q_INVOKABLE Future* tryInit(int debug = 0);
+  Q_INVOKABLE Future* tryRenewSubscriptions();
+  Q_INVOKABLE Future* tryJoinZones(const QVariantList& zonePayloads, const QVariant& toZonePayload);
+  Q_INVOKABLE Future* tryUnjoinZone(const QVariant& zonePayload);
+  Q_INVOKABLE Future* tryUnjoinRooms(const QVariantList& roomPayloads);
+  Q_INVOKABLE Future* tryCreateAlarm(const QVariant& alarmPayload);
+  Q_INVOKABLE Future* tryUpdateAlarm(const QVariant& alarmPayload);
+  Q_INVOKABLE Future* tryDestroyAlarm(const QString& id);
+  Q_INVOKABLE Future* tryRefreshShareIndex();
+  Q_INVOKABLE Future* tryDestroySavedQueue(const QString& SQid);
+  Q_INVOKABLE Future* tryAddItemToFavorites(const QVariant& payload, const QString& description, const QString& artURI);
+  Q_INVOKABLE Future* tryDestroyFavorite(const QString& FVid);
+
+  ///////////////////////////////////////////////////////////////////////////////
+  ///
+  /// Synchonous
+
   Q_INVOKABLE bool init(int debug = 0);
   Q_INVOKABLE bool init(int debug, const QString& url);
 
@@ -74,7 +95,6 @@ public:
   Q_INVOKABLE void deleteServiceOAuth(const QString& type, const QString& sn);
 
   Q_INVOKABLE void renewSubscriptions();
-  Q_INVOKABLE void startRenewSubscriptions();
 
   Q_INVOKABLE QVariantList getZones();
 
@@ -86,14 +106,11 @@ public:
 
   Q_INVOKABLE bool joinZone(const QVariant& zonePayload, const QVariant& toZonePayload);
   Q_INVOKABLE bool joinZones(const QVariantList& zonePayloads, const QVariant& toZonePayload);
-  Q_INVOKABLE bool startJoinZones(const QVariantList& zonePayloads, const QVariant& toZonePayload);
 
   Q_INVOKABLE bool unjoinRoom(const QVariant& roomPayload);
   Q_INVOKABLE bool unjoinRooms(const QVariantList& roomPayloads);
-  Q_INVOKABLE bool startUnjoinRooms(const QVariantList& roomPayloads);
 
   Q_INVOKABLE bool unjoinZone(const QVariant& zonePayload);
-  Q_INVOKABLE bool startUnjoinZone(const QVariant& zonePayload);
 
   Q_INVOKABLE bool createAlarm(const QVariant& alarmPayload);
   Q_INVOKABLE bool updateAlarm(const QVariant& alarmPayload);
@@ -244,6 +261,144 @@ private:
   Locked<QString> m_locale; // language_COUNTRY
 
   static void systemEventCB(void* handle);
+
+  ///////////////////////////////////////////////////////////////////////////////
+  ///
+  /// About promises
+
+  class PromiseInit : public Promise
+  {
+  public:
+    PromiseInit(Sonos& sonos, int debug)
+    : m_sonos(sonos), m_debug(debug) { }
+    void run() override;
+  private:
+    Sonos& m_sonos;
+    int m_debug;
+  };
+
+  class PromiseRenewSubscriptions : public Promise
+  {
+  public:
+    PromiseRenewSubscriptions(Sonos& sonos)
+    : m_sonos(sonos) { }
+    void run() override;
+  private:
+    Sonos& m_sonos;
+  };
+
+  class PromiseJoinZones : public Promise
+  {
+  public:
+    PromiseJoinZones(Sonos& sonos, const QVariantList& zonePayloads, const QVariant& toZonePayload)
+    : m_sonos(sonos), m_zonePayloads(zonePayloads), m_toZonePayload(toZonePayload) { }
+    void run() override;
+  private:
+    Sonos& m_sonos;
+    const QVariantList m_zonePayloads;
+    const QVariant m_toZonePayload;
+  };
+
+  class PromiseUnjoinZone : public Promise
+  {
+  public:
+    PromiseUnjoinZone(Sonos& sonos, const QVariant& zonePayload)
+    : m_sonos(sonos), m_zonePayload(zonePayload) { }
+    void run() override;
+  private:
+    Sonos& m_sonos;
+    const QVariant m_zonePayload;
+  };
+
+  class PromiseUnjoinRooms : public Promise
+  {
+  public:
+    PromiseUnjoinRooms(Sonos& sonos, const QVariantList& roomPayloads)
+    : m_sonos(sonos), m_roomPayloads(roomPayloads) { }
+    void run() override;
+  private:
+    Sonos& m_sonos;
+    const QVariantList m_roomPayloads;
+  };
+
+  class PromiseCreateAlarm : public Promise
+  {
+  public:
+    PromiseCreateAlarm(Sonos& sonos, const QVariant& alarmPayload)
+    : m_sonos(sonos), m_alarmPayload(alarmPayload) { }
+    void run() override;
+  private:
+    Sonos& m_sonos;
+    const QVariant m_alarmPayload;
+  };
+
+  class PromiseUpdateAlarm : public Promise
+  {
+  public:
+    PromiseUpdateAlarm(Sonos& sonos, const QVariant& alarmPayload)
+    : m_sonos(sonos), m_alarmPayload(alarmPayload) { }
+    void run() override;
+  private:
+    Sonos& m_sonos;
+    const QVariant m_alarmPayload;
+  };
+
+  class PromiseDestroyAlarm : public Promise
+  {
+  public:
+    PromiseDestroyAlarm(Sonos& sonos, const QString& id)
+    : m_sonos(sonos), m_id(id) { }
+    void run() override;
+  private:
+    Sonos& m_sonos;
+    const QString m_id;
+  };
+
+  class PromiseRefreshShareIndex : public Promise
+  {
+  public:
+    PromiseRefreshShareIndex(Sonos& sonos)
+    : m_sonos(sonos) { }
+    void run() override;
+  private:
+    Sonos& m_sonos;
+  };
+
+  class PromiseDestroySavedQueue : public Promise
+  {
+  public:
+    PromiseDestroySavedQueue(Sonos& sonos, const QString& SQid)
+    : m_sonos(sonos), m_SQid(SQid) { }
+    void run() override;
+  private:
+    Sonos& m_sonos;
+    const QString m_SQid;
+  };
+
+  class PromiseAddItemToFavorites : public Promise
+  {
+  public:
+    PromiseAddItemToFavorites(Sonos& sonos, const QVariant& payload, const QString& description, const QString& artURI)
+    : m_sonos(sonos), m_payload(payload), m_description(description), m_artURI(artURI) { }
+    void run() override;
+  private:
+    Sonos& m_sonos;
+    QVariant m_payload;
+    const QString m_description;
+    const QString m_artURI;
+  };
+
+  class PromiseDestroyFavorite : public Promise
+  {
+  public:
+    PromiseDestroyFavorite(Sonos& sonos, const QString& FVid)
+    : m_sonos(sonos), m_FVid(FVid) { }
+    void run() override;
+  private:
+    Sonos& m_sonos;
+    const QString m_FVid;
+  };
+
 };
 
 }
