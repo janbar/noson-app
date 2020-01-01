@@ -216,23 +216,17 @@ ApplicationWindow {
             else if (applicationSuspended === true) {
                 applicationSuspended = false;
                 if (!noZone) {
-                    jobRunning = true;
-                    delayWakeUp.start();
+                    player.ping(function(result) {
+                        if (result) {
+                            customdebug("Renew all subscriptions");
+                            var future = Sonos.tryRenewSubscriptions();
+                            future.finished.connect(actionFinished);
+                            future.start();
+                        } else {
+                            noZone = true;
+                        }
+                    });
                 }
-            }
-        }
-    }
-
-    Timer {
-        id: delayWakeUp
-        interval: 100
-        onTriggered: {
-            if (!player.ping()) {
-                noZone = true;
-                jobRunning = false;
-            } else {
-                customdebug("Renew all subscriptions");
-                Sonos.startRenewSubscriptions();
             }
         }
     }
@@ -489,7 +483,9 @@ ApplicationWindow {
             customdebug("ERROR: Connection has failed using the configured URL: " + deviceUrl);
         }
         ssdp = true; // point out the ssdp discovery is used to connect
-        return Sonos.startInit(debugLevel);
+        var future = Sonos.tryInit(debugLevel);
+        future.finished.connect(actionFinished);
+        return future.start();
     }
 
     function reloadZone() {
@@ -501,9 +497,13 @@ ApplicationWindow {
             if (startup) {
                 startup = false;
                 if (playOnStart) {
-                    if (player.playStream(inputStreamUrl, "")) {
-                        tabs.pushNowPlaying();
-                    }
+                    player.playStream(inputStreamUrl, "", function(result) {
+                        if (result) {
+                            tabs.pushNowPlaying();
+                        } else {
+                            actionFailed();
+                        }
+                    });
                 }
             }
         }
@@ -555,16 +555,29 @@ ApplicationWindow {
         return true;
     }
 
+    // default action on failure
+    function actionFailed() {
+        popInfo.open(qsTr("Action can't be performed"));
+    }
+
+    function actionFinished(result) {
+        if (!result)
+            actionFailed();
+    }
+
     // Action on request to update music library
     function updateMusicIndex() {
-        if (Sonos.refreshShareIndex()) {
-            // enable info on loaded index
-            infoLoadedIndex = true;
-            popInfo.open(qsTr("Refreshing of index is running"));
-            return true;
-        }
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        var future = Sonos.tryRefreshShareIndex();
+        future.finished.connect(function(result) {
+            if (result) {
+                // enable info on loaded index
+                infoLoadedIndex = true;
+                popInfo.open(qsTr("Refreshing of index is running"));
+            } else {
+                actionFailed();
+            }
+        });
+        return future.start();
     }
 
     // Action on track clicked
@@ -572,41 +585,63 @@ ApplicationWindow {
         play = play === undefined ? true : play  // default play to true
         var nr = player.trackQueue.model.count + 1; // push back
         if (play) {
-            if (player.playQueue(false))
-            {
-                nr = player.addItemToQueue(modelItem, nr);
-                if (player.seekTrack(nr) && player.play())
-                {
-                    // Show the Now playing page and make sure the track is visible
-                    tabs.pushNowPlaying();
-                    return true;
+            return player.playQueue(false, function(result) {
+                if (result) {
+                    player.addItemToQueue(modelItem, nr, function(result) {
+                        var nr = result;
+                        if (nr > 0) {
+                            player.seekTrack(nr, function(result) {
+                                if (result) {
+                                    player.play(function(result) {
+                                        if (result) {
+                                            // Show the Now playing page and make sure the track is visible
+                                            tabs.pushNowPlaying();
+                                        } else {
+                                            actionFailed();
+                                        }
+                                    });
+                                } else {
+                                    actionFailed();
+                                }
+                            });
+                        } else {
+                            actionFailed();
+                        }
+                    });
+                } else {
+                    actionFailed();
                 }
-            }
-            popInfo.open(qsTr("Action can't be performed"));
-            return false;
-        }
-        else {
-            if (player.addItemToQueue(modelItem, nr)) {
-                popInfo.open(qsTr("song added"));
-                return true;
-            }
-            popInfo.open(qsTr("Action can't be performed"));
-            return false;
+            });
+        } else {
+            return player.addItemToQueue(modelItem, nr, function(result) {
+                if (result > 0) {
+                    popInfo.open(qsTr("song added"));
+                } else {
+                    actionFailed();
+                }
+            });
         }
     }
 
     // Action on track from queue clicked
     function indexQueueClicked(index) {
         if (player.currentIndex === index) {
-            if (player.toggle())
-                return true;
-            popInfo.open(qsTr("Action can't be performed"));
-            return false;
+            return player.toggle(actionFinished);
+        } else {
+            return player.playQueue(false, function(result) {
+                if (result) {
+                    player.seekTrack(index + 1, function(result) {
+                        if (result) {
+                            player.play(actionFinished);
+                        } else {
+                            actionFailed();
+                        }
+                    });
+                } else {
+                    actionFailed();
+                }
+            });
         }
-        else if (player.playQueue(false) && player.seekTrack(index + 1) && player.play())
-            return true;
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
     }
 
     // Action on shuffle button clicked
@@ -633,140 +668,151 @@ ApplicationWindow {
 
     // Action add queue multiple items
     function addMultipleItemsToQueue(modelItemList) {
-        if (player.addMultipleItemsToQueue(modelItemList)) {
-            popInfo.open(qsTr("%n song(s) added", "", modelItemList.length));
-            return true;
-        }
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.addMultipleItemsToQueue(modelItemList, function(result) {
+            if (result > 0) {
+                popInfo.open(qsTr("%n song(s) added", "", modelItemList.length));
+            } else {
+                actionFailed();
+            }
+        });
     }
 
     // Action on play all button clicked
     function playAll(modelItem)
     {
         // replace queue with the bundle item
-        if (player.removeAllTracksFromQueue()) {
-            var nr = player.addItemToQueue(modelItem, 0);
-            if (nr && player.playQueue(false) && player.seekTrack(nr) && player.play()) {
-                // Show the Now playing page and make sure the track is visible
-                tabs.pushNowPlaying();
-                popInfo.open(qsTr("song added"));
-                return true;
+        return player.removeAllTracksFromQueue(function(result) {
+            if (result) {
+                player.addItemToQueue(modelItem, 0, function(result) {
+                    var nr = result;
+                    if (nr > 0) {
+                        player.playQueue(false, function(result) {
+                            if (result) {
+                                player.seekTrack(nr, function(result) {
+                                    if (result) {
+                                        player.play(function(result) {
+                                            if (result) {
+                                                // Show the Now playing page and make sure the track is visible
+                                                tabs.pushNowPlaying();
+                                                popInfo.open(qsTr("song added"));
+                                            } else {
+                                                actionFailed();
+                                            }
+                                        });
+                                    } else {
+                                        actionFailed();
+                                    }
+                                });
+                            } else {
+                                actionFailed();
+                            }
+                        });
+                    } else {
+                        actionFailed();
+                    }
+                });
+            } else {
+                actionFailed();
             }
-        }
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        });
     }
 
     // Action add queue
     function addQueue(modelItem)
     {
         var nr = player.trackQueue.model.count;
-        if (player.addItemToQueue(modelItem, ++nr) > 0) {
-            popInfo.open(qsTr("song added"));
-            return true;
-        }
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.addItemToQueue(modelItem, ++nr, function(result) {
+            if (result > 0) {
+                popInfo.open(qsTr("song added"));
+            } else {
+                actionFailed();
+            }
+        });
     }
 
     // Action delete all tracks from queue
     function removeAllTracksFromQueue()
     {
-        if (player.removeAllTracksFromQueue()) {
-            popInfo.open(qsTr("Queue cleared"));
-            return true;
-        }
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.removeAllTracksFromQueue(function(result) {
+            if (result) {
+                popInfo.open(qsTr("Queue cleared"));
+            } else {
+                actionFailed();
+            }
+        });
     }
 
     // Action on remove queue track
     function removeTrackFromQueue(modelItem) {
-        if (player.removeTrackFromQueue(modelItem))
-            return true;
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.removeTrackFromQueue(modelItem, actionFinished);
     }
 
     // Action on move queue item
     function reorderTrackInQueue(from, to) {
         if (from < to)
             ++to;
-        if (player.reorderTrackInQueue(from + 1, to + 1))
-            return true;
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.reorderTrackInQueue(from + 1, to + 1, actionFinished);
     }
 
     // Action on radio item clicked
     function radioClicked(modelItem) {
-        if (player.playSource(modelItem)) {
-            tabs.pushNowPlaying();
-            return true;
-        }
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.playSource(modelItem, function(result) {
+            if (result)
+                tabs.pushNowPlaying();
+            else
+                popInfo.open(qsTr("Action can't be performed"));
+        });
     }
 
     // Action on save queue
     function saveQueue(title) {
-        if (player.saveQueue(title))
-            return true;
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.saveQueue(title, actionFinished);
     }
 
     // Action on create playlist
     function createPlaylist(title) {
-        if (player.createSavedQueue(title))
-            return true;
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.createSavedQueue(title, actionFinished);
     }
 
     // Action on append item to a playlist
     function addPlaylist(playlistId, modelItem, containerUpdateID) {
-        if (player.addItemToSavedQueue(playlistId, modelItem, containerUpdateID)) {
-            popInfo.open(qsTr("song added"));
-            return true;
-        }
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.addItemToSavedQueue(playlistId, modelItem, containerUpdateID, function(result) {
+            if (result > 0) {
+                popInfo.open(qsTr("song added"));
+            } else {
+                actionFailed();
+            }
+        });
     }
 
     // Action on remove item from a playlist
     function removeTracksFromPlaylist(playlistId, selectedIndices, containerUpdateID) {
-        if (player.removeTracksFromSavedQueue(playlistId, selectedIndices, containerUpdateID)) {
-            popInfo.open(qsTr("%n song(s) removed", "", selectedIndices.length));
-            return true;
-        }
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.removeTracksFromSavedQueue(playlistId, selectedIndices, containerUpdateID, function(result) {
+            if (result) {
+                popInfo.open(qsTr("%n song(s) removed", "", selectedIndices.length));
+            } else {
+                actionFailed();
+            }
+        });
     }
 
     // Action on move playlist item
     function reorderTrackInPlaylist(playlistId, from, to, containerUpdateID) {
-        if (player.reorderTrackInSavedQueue(playlistId, from, to, containerUpdateID))
-            return true;
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.reorderTrackInSavedQueue(playlistId, from, to, containerUpdateID, actionFinished);
     }
 
     // Action on remove a playlist
     function removePlaylist(itemId) {
-        if (Sonos.destroySavedQueue(itemId))
-            return true;
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        var future = Sonos.tryDestroySavedQueue(itemId);
+        future.finished.connect(actionFinished);
+        return future.start();
     }
 
     // Action on check item as favorite
     function addItemToFavorites(modelItem, description, artURI) {
-        if (Sonos.addItemToFavorites(modelItem.payload, description, artURI))
-            return true;
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        var future = Sonos.tryAddItemToFavorites(modelItem.payload, description, artURI);
+        future.finished.connect(actionFinished);
+        return future.start();
     }
 
     // Action on uncheck item from favorites
@@ -774,10 +820,9 @@ ApplicationWindow {
         var id = AllFavoritesModel.findFavorite(itemPayload)
         if (id.length === 0) // no favorite
             return true;
-        if (Sonos.destroyFavorite(id))
-            return true;
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        var future = Sonos.tryDestroyFavorite(id);
+        future.finished.connect(actionFinished);
+        return future.start();
     }
 
     // Helpers
@@ -895,7 +940,7 @@ ApplicationWindow {
         onActivated: {
             var position = player.trackPosition + 10000 < player.trackDuration
                 ? player.trackPosition + 10000 : player.trackDuration;
-            player.seek(position);
+            player.seek(position, actionFinished);
         }
     }
     Shortcut {
@@ -903,43 +948,58 @@ ApplicationWindow {
         onActivated: {
             var position = player.trackPosition - 10000 > 0
                     ? player.trackPosition - 10000 : 0;
-            player.seek(position);
+            player.seek(position, actionFinished);
         }
     }
     Shortcut {
         sequence: "Ctrl+Left"           // Ctrl+Left   Previous Song
         onActivated: {
-            player.previousSong(true);
+            player.previousSong(actionFinished);
         }
     }
     Shortcut {
         sequence: "Ctrl+Right"          // Ctrl+Right  Next Song
         onActivated: {
-            player.nextSong(true, true);
+            player.nextSong(actionFinished);
         }
     }
     Shortcut {
         sequence: "Ctrl+Up"             // Ctrl+Up     Volume up
         onActivated: {
             var v = player.volumeMaster + 5 > 100 ? 100 : player.volumeMaster + 5;
-            if (player.setVolumeGroup(v))
-                player.volumeMaster = Math.round(v);
+            player.setVolumeGroup(v, function(result) {
+                if (result) {
+                    player.volumeMaster = Math.round(v);
+                } else {
+                    actionFailed();
+                }
+            });
         }
     }
     Shortcut {
         sequence: "Ctrl+Down"           // Ctrl+Down   Volume down
         onActivated: {
             var v = player.volumeMaster - 5 < 0 ? 0 : player.volumeMaster - 5;
-            if (player.setVolumeGroup(v))
-                player.volumeMaster = Math.round(v);
+            player.setVolumeGroup(v, function(result) {
+                if (result) {
+                    player.volumeMaster = Math.round(v);
+                } else {
+                    actionFailed();
+                }
+            });
         }
     }
     Shortcut {
         sequence: "Ctrl+R"              // Ctrl+R       Repeat toggle
         onActivated: {
             var old = player.repeat
-            if (player.toggleRepeat())
-                player.repeat = !old
+            player.toggleRepeat(function(result) {
+                if (result) {
+                    player.repeat = !old;
+                } else {
+                    actionFailed();
+                }
+            });
         }
     }
     Shortcut {
@@ -965,7 +1025,7 @@ ApplicationWindow {
     Shortcut {
         sequence: "Ctrl+P"              // Ctrl+P      Toggle playing state
         onActivated: {
-            player.toggle();
+            player.toggle(actionFinished);
         }
     }
     Shortcut {
@@ -978,14 +1038,19 @@ ApplicationWindow {
         sequence: "Ctrl+U"              // Ctrl+U      Shuffle toggle
         onActivated: {
             var old = player.shuffle
-            if (player.toggleShuffle())
-                player.shuffle = !old
+            player.toggleShuffle(function(result) {
+                if (result) {
+                    player.shuffle = !old;
+                } else {
+                    actionFailed();
+                }
+            });
         }
     }
     Shortcut {
         sequence: "P"                   // P          Toggle playing state
         onActivated: {
-            player.toggle();
+            player.toggle(actionFinished);
         }
     }
     Shortcut {

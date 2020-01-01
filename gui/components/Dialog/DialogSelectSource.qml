@@ -62,12 +62,9 @@ DialogBase {
         EnterKey.type: Qt.EnterKeyDone
     }
 
-    Connections {
-        target: player
-        onJobFailed: {
-            sourceOutput.text = qsTr("Playing failed.")
-            sourceOutput.visible = true
-        }
+    function actionFailed() {
+        sourceOutput.text = qsTr("Playing failed.")
+        sourceOutput.visible = true
     }
 
     Button {
@@ -77,13 +74,14 @@ DialogBase {
         onClicked: {
             sourceOutput.visible = false // make sure its hidden now if there was an error last time
             if (url.text.length > 0) { // make sure something is acually inputed
-                if (player.playStream(url.text, "")) {
-                    inputStreamUrl = url.text
-                }
-                else {
-                    sourceOutput.text = qsTr("Playing failed.")
-                    sourceOutput.visible = true
-                }
+                player.playStream(url.text, "", function(result) {
+                    if (result) {
+                        inputStreamUrl = url.text;
+                    } else {
+                        sourceOutput.text = qsTr("Playing failed.");
+                        sourceOutput.visible = true;
+                    }
+                });
             }
             else {
                 sourceOutput.visible = true
@@ -130,28 +128,40 @@ DialogBase {
         onActivated: {
             switch(index) {
                 case 0:
-                    if (!player.playQueue(false))
-                        popInfo.open(qsTr("Action can't be performed"))
-                    else
-                        dialog.accept()
+                    player.playQueue(false, function(result) {
+                        if (result) {
+                            dialog.accept();
+                        } else {
+                            mainView.actionFailed();
+                        }
+                    });
                     break;
                 case 1:
-                    if (!player.playLineIN())
-                        popInfo.open(qsTr("Action can't be performed"))
-                    else
-                        dialog.accept()
+                    player.playLineIN(function(result) {
+                        if (result) {
+                            dialog.accept()
+                        } else {
+                            mainView.actionFailed();
+                        }
+                    });
                     break;
                 case 2:
-                    if (!player.playDigitalIN())
-                        popInfo.open(qsTr("Action can't be performed"))
-                    else
-                        dialog.accept()
+                    player.playDigitalIN(function(result) {
+                        if (result) {
+                            dialog.accept()
+                        } else {
+                            mainView.actionFailed();
+                        }
+                    });
                     break;
                 case 3:
-                    if (!player.playPulse())
-                        popInfo.open(qsTr("Action can't be performed"))
-                    else
-                        dialog.accept()
+                    player.playPulse(function(result) {
+                        if (result) {
+                            dialog.accept()
+                        } else {
+                            mainView.actionFailed();
+                        }
+                    });
                     break;
                 default:
                     break;

@@ -143,7 +143,11 @@ Item {
                 }
                 onClicked: {
                     if (player.currentCount > 0)
-                        player.playQueue(true)
+                        player.playQueue(true, function(result) {
+                            if (!result) {
+                                mainView.actionFailed();
+                            }
+                        });
                     else
                         dialogSelectSource.open()
                 }
@@ -254,7 +258,12 @@ Item {
                 objectName: "playShape"
                 width: height
                 animationInterval: 100 // fast flashing
-                onClicked: animationRunning = player.toggle()
+                onClicked: animationRunning = player.toggle(function(result) {
+                    if (!result) {
+                        animationRunning = false;
+                        mainView.actionFailed();
+                    }
+                })
 
                 // control the animation depending of the playback state
                 Connections {

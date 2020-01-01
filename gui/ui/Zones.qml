@@ -61,8 +61,9 @@ MusicPage {
                     zones.push(model.payload)
             }
             if (coordinator !== null) {
-                Sonos.startJoinZones(zones, coordinator)
-                return true;
+                var future = Sonos.tryJoinZones(zones, coordinator);
+                future.finished.connect(mainView.actionFinished);
+                return future.start();
             }
         }
         return false;
@@ -96,10 +97,15 @@ MusicPage {
                     connectZone(model.name)
                 }
                 onAction3Pressed: {
-                    if (zonePlayer.playbackState === "PLAYING")
-                        zonePlayer.pause();
-                    else
-                        zonePlayer.play();
+                    if (zonePlayer.playbackState === "PLAYING") {
+                        var future = zonePlayer.tryPause();
+                        future.finished.connect(mainView.actionFinished);
+                        future.start();
+                    } else {
+                        var future = zonePlayer.tryPlay();
+                        future.finished.connect(mainView.actionFinished);
+                        future.start();
+                    }
                 }
                 action3Visible: false
                 action3IconSource: ""
@@ -109,7 +115,9 @@ MusicPage {
                 action2Visible: model.isGroup
                 action2IconSource: model.isGroup ? "qrc:/images/edit-cut.svg" : ""
                 onActionPressed: {
-                    Sonos.startUnjoinZone(model.payload)
+                    var future = Sonos.tryUnjoinZone(model.payload);
+                    future.finished.connect(mainView.actionFinished);
+                    future.start();
                 }
                 actionVisible: model.isGroup
                 actionIconSource: model.isGroup ? "qrc:/images/edit-clear.svg" : ""
@@ -187,11 +195,6 @@ MusicPage {
 
                 Connections {
                     target: AllZonesModel
-                    onZpJobFailed: {
-                        if (pid === listItem.pid) {
-                            popInfo.open(qsTr("Action can't be performed"));
-                        }
-                    }
                     onZpSourceChanged: { if (pid === listItem.pid) handleZPSourceChanged(); }
                     onZpPlaybackStateChanged: { if (pid === listItem.pid) handleZPPlaybackStateChanged(); }
                 }

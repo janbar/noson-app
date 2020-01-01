@@ -63,7 +63,6 @@ Item {
 
     property string queueInfo: queueOverviewString()
 
-    signal jobFailed()
     signal stopped()
     signal sourceChanged()
     signal currentPositionChanged(int position, int duration)
@@ -106,105 +105,145 @@ Item {
         return str;
     }
 
-    function ping() {
-        return connected && zone.handle.ping();
+    function ping(onFinished) {
+        if (connected) {
+            var future = zone.handle.tryPing();
+            future.onFinished.connect(onFinished);
+            return future.start();
+        } else {
+            onFinished(false);
+        }
     }
 
-    function stop() {
-        return zone.handle.stop();
+    function stop(onFinished) {
+        var future = zone.handle.tryStop();
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function play() {
-        return zone.handle.play();
+    function play(onFinished) {
+        var future = zone.handle.tryPlay();
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function pause() {
-        return zone.handle.pause();
+    function pause(onFinished) {
+        var future = zone.handle.tryPause();
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function toggle() {
+    function toggle(onFinished) {
         if (isPlaying)
-            return pause();
+            return pause(onFinished);
         else
-            return play();
+            return play(onFinished);
     }
 
-    function playSource(modelItem) {
-        return zone.handle.startPlaySource(modelItem.payload);
+    function playSource(modelItem, onFinished) {
+        var future = zone.handle.tryPlaySource(modelItem.payload);
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function playSong(modelItem) {
-        return playSource(modelItem);
+    function previousSong(onFinished) {
+        var future = zone.handle.tryPrevious();
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function previousSong(startPlaying) {
-        return zone.handle.previous()
+    function nextSong(onFinished) {
+        var future = zone.handle.tryNext();
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function nextSong(startPlaying, fromControls) {
-        return zone.handle.next();
+    function toggleRepeat(onFinished) {
+        var future = zone.handle.tryToggleRepeat();
+        future.onFinished.connect(onFinished);
+        return future.start(false);
     }
 
-    function toggleRepeat() {
-        return zone.handle.toggleRepeat()
+    function toggleShuffle(onFinished) {
+        var future = zone.handle.tryToggleShuffle();
+        future.onFinished.connect(onFinished);
+        return future.start(false);
     }
 
-    function toggleShuffle() {
-        return zone.handle.toggleShuffle()
+    function seek(position, onFinished) {
+        if (player.canSeekInStream()) {
+            var future = zone.handle.trySeekTime(Math.floor(position / 1000));
+            future.onFinished.connect(onFinished);
+            return future.start();
+        } else {
+            onFinished(false);
+        }
     }
 
-    function seek(position) {
-        if (player.canSeekInStream())
-            return zone.handle.seekTime(Math.floor(position / 1000));
-        return false;
+    function setVolumeGroup(volume, onFinished) {
+        var future = zone.handle.trySetVolumeGroup(volume);
+        future.onFinished.connect(onFinished);
+        return future.start(false);
     }
 
-    function setSource(modelItem) {
-        return zone.handle.setSource(modelItem.payload);
+    function setVolume(uuid, volume, onFinished) {
+        var future = zone.handle.trySetVolume(uuid, volume);
+        future.onFinished.connect(onFinished);
+        return future.start(false);
     }
 
-    function setVolumeGroup(volume) {
-        return zone.handle.setVolumeGroup(volume);
+    function setBass(value, onFinished) {
+        var future = zone.handle.trySetBass(value)
+        future.onFinished.connect(onFinished);
+        return future.start(false);
     }
 
-    function setVolume(uuid, volume) {
-        return zone.handle.setVolume(uuid, volume);
+    function setTreble(value, onFinished) {
+        var future = zone.handle.trySetTreble(value)
+        future.onFinished.connect(onFinished);
+        return future.start(false);
     }
 
-    function setBass(value) {
-        return zone.handle.setBass(value)
+    function toggleMuteGroup(onFinished) {
+        var future = zone.handle.tryToggleMute();
+        future.onFinished.connect(onFinished);
+        return future.start(false);
     }
 
-    function setTreble(value) {
-        return zone.handle.setTreble(value)
+    function toggleMute(uuid, onFinished) {
+        var future = zone.handle.tryToggleMute(uuid);
+        future.onFinished.connect(onFinished);
+        return future.start(false);
     }
 
-    function toggleMuteGroup() {
-        return zone.handle.toggleMute();
+    function toggleNightmode(onFinished) {
+        var future = zone.handle.tryToggleNightmode();
+        future.onFinished.connect(onFinished);
+        return future.start(false);
     }
 
-    function toggleMute(uuid) {
-        return zone.handle.toggleMute(uuid);
+    function toggleLoudness(onFinished) {
+        var future = zone.handle.tryToggleLoudness();
+        future.onFinished.connect(onFinished);
+        return future.start(false);
     }
 
-    function toggleNightmode() {
-        return zone.handle.toggleNightmode();
+    function playQueue(start, onFinished) {
+        var future = zone.handle.tryPlayQueue(start);
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function toggleLoudness() {
-        return zone.handle.toggleLoudness();
+    function seekTrack(nr, onFinished) {
+        var future = zone.handle.trySeekTrack(nr);
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function playQueue(start) {
-        return zone.handle.playQueue(start);
-    }
-
-    function seekTrack(nr) {
-        return zone.handle.seekTrack(nr);
-    }
-
-    function addItemToQueue(modelItem, nr) {
-        return zone.handle.addItemToQueue(modelItem.payload, nr);
+    function addItemToQueue(modelItem, nr, onFinished) {
+        var future = zone.handle.tryAddItemToQueue(modelItem.payload, nr);
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
     function makeFilePictureLocalURL(filePath) {
@@ -215,67 +254,103 @@ Item {
         return zone.handle.makeFileStreamItem(filePath, codec, title, album, author, duration, hasArt);
     }
 
-    function addMultipleItemsToQueue(modelItemList) {
+    function addMultipleItemsToQueue(modelItemList, onFinished) {
         var payloads = [];
         for (var i = 0; i < modelItemList.length; ++i)
             payloads.push(modelItemList[i].payload);
-        return zone.handle.addMultipleItemsToQueue(payloads);
+        var future = zone.handle.tryAddMultipleItemsToQueue(payloads);
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function removeAllTracksFromQueue() {
-        return zone.handle.removeAllTracksFromQueue();
+    function removeAllTracksFromQueue(onFinished) {
+        var future = zone.handle.tryRemoveAllTracksFromQueue();
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function removeTrackFromQueue(modelItem) {
-        return zone.handle.removeTrackFromQueue(modelItem.id, trackQueue.model.containerUpdateID());
+    function removeTrackFromQueue(modelItem, onFinished) {
+        var future = zone.handle.tryRemoveTrackFromQueue(modelItem.id, trackQueue.model.containerUpdateID());
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function reorderTrackInQueue(nrFrom, nrTo) {
-        return zone.handle.reorderTrackInQueue(nrFrom, nrTo, trackQueue.model.containerUpdateID());
+    function reorderTrackInQueue(nrFrom, nrTo, onFinished) {
+        var future = zone.handle.tryReorderTrackInQueue(nrFrom, nrTo, trackQueue.model.containerUpdateID());
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function saveQueue(title) {
-        return zone.handle.saveQueue(title);
+    function saveQueue(title, onFinished) {
+        var future = zone.handle.trySaveQueue(title);
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function createSavedQueue(title) {
-        return zone.handle.createSavedQueue(title);
+    function createSavedQueue(title, onFinished) {
+        var future = zone.handle.tryCreateSavedQueue(title);
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function addItemToSavedQueue(playlistId, modelItem, containerUpdateID) {
-        return zone.handle.addItemToSavedQueue(playlistId, modelItem.payload, containerUpdateID);
+    function addItemToSavedQueue(playlistId, modelItem, containerUpdateID, onFinished) {
+        var future = zone.handle.tryAddItemToSavedQueue(playlistId, modelItem.payload, containerUpdateID);
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function removeTracksFromSavedQueue(playlistId, selectedIndices, containerUpdateID) {
-        return zone.handle.removeTracksFromSavedQueue(playlistId, selectedIndices, containerUpdateID);
+    function addMultipleItemsToSavedQueue(playlistId, payloads, containerUpdateID, onFinished) {
+        var future = zone.handle.tryAddMultipleItemsToSavedQueue(playlistId, payloads, containerUpdateID);
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function reorderTrackInSavedQueue(playlistId, index, newIndex, containerUpdateID) {
-        return zone.handle.reorderTrackInSavedQueue(playlistId, index, newIndex, containerUpdateID);
+    function removeTracksFromSavedQueue(playlistId, selectedIndices, containerUpdateID, onFinished) {
+        var future = zone.handle.tryRemoveTracksFromSavedQueue(playlistId, selectedIndices, containerUpdateID);
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function configureSleepTimer(sec) {
-        return zone.handle.configureSleepTimer(sec);
+    function reorderTrackInSavedQueue(playlistId, index, newIndex, containerUpdateID, onFinished) {
+        var future = zone.handle.tryReorderTrackInSavedQueue(playlistId, index, newIndex, containerUpdateID);
+        future.onFinished.connect(onFinished);
+        return future.start();
     }
 
-    function remainingSleepTimerDuration() {
-        return zone.handle.remainingSleepTimerDuration();
+    function configureSleepTimer(sec, onFinished) {
+        var future = zone.handle.tryConfigureSleepTimer(sec);
+        future.onFinished.connect(onFinished);
+        return future.start(false);
     }
 
-    function playStream(url, title) {
-        return zone.handle.startPlayStream(url, (title === "" ? qsTr("Untitled") : title))
+    function remainingSleepTimerDuration(onFinished) {
+        var future = zone.handle.tryRemainingSleepTimerDuration();
+        future.onFinished.connect(onFinished);
+        return future.start(false);
     }
 
-    function playLineIN() {
-        return zone.handle.playLineIN()
+    function playStream(url, title, onFinished) {
+        var future = zone.handle.tryPlayStream(url, (title === "" ? qsTr("Untitled") : title));
+        future.finished.connect(onFinished);
+        return future.start();
     }
 
-    function playDigitalIN() {
-        return zone.handle.playDigitalIN()
+    function playLineIN(onFinished) {
+        var future = zone.handle.tryPlayLineIN();
+        future.finished.connect(onFinished);
+        return future.start();
     }
 
-    function playPulse() {
-        return zone.handle.playPulse()
+    function playDigitalIN(onFinished) {
+        var future = zone.handle.tryPlayDigitalIN();
+        future.finished.connect(onFinished);
+        return future.start();
+    }
+
+    function playPulse(onFinished) {
+        var future = zone.handle.tryPlayPulse();
+        future.finished.connect(onFinished);
+        return future.start();
     }
 
     function isPulseStream() {
@@ -286,8 +361,10 @@ Item {
         return zone.handle.isMyStream(metaSource);
     }
 
-    function playFavorite(modelItem) {
-        return zone.handle.startPlayFavorite(modelItem.payload);
+    function playFavorite(modelItem, onFinished) {
+        var future = zone.handle.tryPlayFavorite(modelItem.payload);
+        future.finished.connect(onFinished);
+        return future.start();
     }
 
     function isPlayingQueued() {
@@ -398,12 +475,6 @@ Item {
 
     Connections {
         target: AllZonesModel
-        onZpJobFailed: {
-            if (pid === zone.pid) {
-                popInfo.open(qsTr("Action can't be performed"));
-                player.jobFailed();
-            }
-        }
         onZpConnectedChanged: { if (pid === zone.pid) handleZPConnectedChanged(); }
         onZpSourceChanged: { if (pid === zone.pid) handleZPSourceChanged(); }
         onZpRenderingGroupChanged: { if (pid === zone.pid) handleZPRenderingGroupChanged(); }
@@ -411,8 +482,11 @@ Item {
         onZpPlayModeChanged: { if (pid === zone.pid) handleZPPlayModeChanged(); }
         onZpPlaybackStateChanged: { if (pid === zone.pid) handleZPPlaybackStateChanged(); }
         onZpSleepTimerChanged: {
-            if (pid === zone.pid)
-              player.sleepTimerEnabled = player.remainingSleepTimerDuration() > 0 ? true : false;
+            if (pid === zone.pid) {
+                player.remainingSleepTimerDuration(function(result) {
+                    player.sleepTimerEnabled = result > 0 ? true : false
+                });
+            }
         }
     }
 

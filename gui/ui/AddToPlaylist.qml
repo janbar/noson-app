@@ -86,7 +86,6 @@ MusicPage {
 
     footer: Item {
         height: units.gu(7.25)
-        width: parent.width
 
         Rectangle {
             id: selectorToolBar
@@ -166,18 +165,28 @@ MusicPage {
     // Add chosen elements
     function addItemList(playlistId, modelItems, containerUpdateID) {
         if (modelItems.length > 0) {
-            var eqcount = 0;
-            for (var i = 0; i < modelItems.length; i++) {
-                containerUpdateID = player.addItemToSavedQueue(playlistId, modelItems[i], containerUpdateID);
-                if (!containerUpdateID || ++eqcount >= queueBatchSize) // limit batch size
-                    break;
+            if (modelItems.length === 1) {
+                player.addItemToSavedQueue(playlistId, modelItems[0], containerUpdateID, function(result) {
+                    if (result > 0) {
+                        popInfo.open(qsTr("song added"));
+                    } else {
+                        mainView.actionFailed();
+                    }
+                });
+            } else {
+                var c = modelItems.length > mainView.queueBatchSize ? mainView.queueBatchSize : modelItems.length;
+                var items = [];
+                for (var i = 0; i < c; i++) {
+                    items.push(modelItems[i].payload);
+                }
+                player.addMultipleItemsToSavedQueue(playlistId, items, containerUpdateID, function(result) {
+                    if (result > 0) {
+                        popInfo.open(qsTr("%n song(s) added", "", items.length));
+                    } else {
+                        mainView.actionFailed();
+                    }
+                });
             }
-            if (eqcount > 0) {
-                popInfo.open(qsTr("song added"));
-                return true;
-            }
-            popInfo.open(qsTr("Action can't be performed"));
-            return false;
         }
     }
 }

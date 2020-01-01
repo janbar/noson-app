@@ -63,8 +63,9 @@ MusicPage {
         }
         // start unjoin rooms
         if (rooms.length > 0) {
-            if (!Sonos.startUnjoinRooms(rooms))
-                return false;
+            var future = Sonos.tryUnjoinRooms(rooms);
+            future.finished.connect(mainView.actionFinished);
+            return future.start();
         }
         return true;
     }

@@ -24,7 +24,7 @@ DialogBase {
     //: this is a title of a dialog to configure standby timer
     title: qsTr("Standby timer")
 
-    property int remainingTime: player.remainingSleepTimerDuration() // Load at startup
+    property int remainingTime: 0
 
     footer: Row {
         leftPadding: units.gu(1)
@@ -41,13 +41,15 @@ DialogBase {
     }
 
     onOpened: {
-        remainingTime = player.remainingSleepTimerDuration();
-        for (var i = 0; i < selectorModel.count; ++i) {
-            if (remainingTime <= selectorModel.get(i).duration) {
-                selector.currentIndex = i;
-                break;
+        player.remainingSleepTimerDuration(function(result) {
+            remainingTime = result;
+            for (var i = 0; i < selectorModel.count; ++i) {
+                if (remainingTime <= selectorModel.get(i).duration) {
+                    selector.currentIndex = i;
+                    break;
+                }
             }
-        }
+        });
     }
 
     ListModel {
@@ -110,10 +112,14 @@ DialogBase {
         onActivated: {
             if (index >= 0) {
                 var sec = model.get(index).duration;
-                if (player.configureSleepTimer(sec))
-                    remainingTime = sec;
-                else
-                    currentIndex = -1; // Reset selection
+                player.configureSleepTimer(sec, function(result) {
+                    if (result) {
+                        remainingTime = sec;
+                    } else {
+                        currentIndex = -1; // Reset selection
+                        mainView.actionFailed();
+                    }
+                });
             }
         }
     }

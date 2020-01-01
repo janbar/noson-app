@@ -85,7 +85,6 @@ Page {
 
     footer: Item {
         height: units.gu(7.25)
-        width: parent.width
 
         Rectangle {
             id: defaultToolBar

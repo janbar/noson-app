@@ -155,9 +155,9 @@ Flickable {
                 var diffX = mouse.x - lastX
                 if (Math.abs(diffX) > units.gu(10)) {
                     if (diffX < 0) {
-                        player.nextSong()
+                        player.nextSong(mainView.actionFinished)
                     } else {
-                        player.previousSong()
+                        player.previousSong(mainView.actionFinished)
                     }
                 }
                 var diffY = mouse.y - lastY
@@ -263,7 +263,7 @@ Flickable {
                 id: seekInTrack
                 interval: 250
                 onTriggered: {
-                    player.seek(progressSliderMusic.value);
+                    player.seek(progressSliderMusic.value, mainView.actionFinished);
                 }
             }
 
