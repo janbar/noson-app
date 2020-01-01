@@ -154,7 +154,7 @@ if(QT_STATICPLUGIN)
 else()
   add_custom_target(
     "run"
-    QML2_IMPORT_PATH=${CMAKE_BINARY_DIR}/backend/qml ${CMAKE_BINARY_DIR}/gui/noson-gui --debug
+    QML2_IMPORT_PATH=${CMAKE_BINARY_DIR}/backend/qml ${CMAKE_BINARY_DIR}/gui/noson-gui
     DEPENDS noson-gui
             NosonApp NosonApp-qmldir
             NosonThumbnailer NosonThumbnailer-qmldir
