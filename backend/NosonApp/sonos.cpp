@@ -42,6 +42,7 @@ Sonos::Sonos(QObject* parent)
 , m_library(ManagedContents())
 , m_shareUpdateID(0)
 , m_shareIndexInProgess(false)
+, m_savedQueuesUpdateID(0)
 , m_system(this, systemEventCB)
 , m_workerPool()
 , m_jobCount(LockedNumber<int>(0))
@@ -566,12 +567,20 @@ void Sonos::systemEventCB(void *handle)
     {
       qDebug("%s: container [%s] has being updated to %u", __FUNCTION__, uit->first.c_str(), uit->second);
 
-      // Reload musical index on any update of shares
       bool shareUpdated = false;
+      bool savedQueuesUpdated = false;
+
+      // Reload musical index on any update of shares
       if (uit->first == "S:" && uit->second != sonos->m_shareUpdateID)
       {
         shareUpdated = true;
         sonos->m_shareUpdateID = uit->second; // Track current updateID
+      }
+      // Reload saved queues on any update
+      else if (uit->first == "SQ:" && uit->second != sonos->m_savedQueuesUpdateID)
+      {
+        savedQueuesUpdated = true;
+        sonos->m_savedQueuesUpdateID = uit->second; // Track current updateID
       }
 
       for (ManagedContents::iterator it = cl->begin(); it != cl->end(); ++it)
@@ -591,6 +600,8 @@ void Sonos::systemEventCB(void *handle)
           _update = true;
         // about shares
         else if (shareUpdated && _base.startsWith(QString::fromUtf8("A:")))
+          _update = true;
+        else if (savedQueuesUpdated && _base.startsWith(QString::fromUtf8("SQ:")))
           _update = true;
 
         if (_update)

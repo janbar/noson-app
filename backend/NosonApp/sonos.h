@@ -252,6 +252,7 @@ private:
   Locked<ManagedContents> m_library;
   unsigned m_shareUpdateID; // Current updateID of SONOS shares
   bool m_shareIndexInProgess;
+  unsigned m_savedQueuesUpdateID; // Current updatedID of SONOS Playlists
 
   SONOS::System m_system;
   QThreadPool m_workerPool;
