@@ -47,18 +47,18 @@ template<class T>
 class ContentProvider
 {
 public:
-  virtual void beforeLoad() = 0;
-  virtual void afterLoad() = 0;
-  virtual void runContentLoader(ListModel<T>* model) = 0;
-  virtual void loadContent(ListModel<T>* model) = 0;
-  virtual void loadAllContent() = 0;
-  virtual void runContentLoaderForContext(ListModel<T>* model, int id) = 0;
-  virtual void loadContentForContext(ListModel<T>* model, int id) = 0;
-  virtual const char* getHost() const = 0;
-  virtual unsigned getPort() const = 0;
-  virtual QString getBaseUrl() const = 0;
-  virtual void registerContent(ListModel<T>* model, const QString& root) = 0;
-  virtual void unregisterContent(ListModel<T>* model) = 0;
+  virtual void beforeLoad() { }
+  virtual void afterLoad() { }
+  virtual void runContentLoader(ListModel<T>* model) { (void)model; }
+  virtual void loadContent(ListModel<T>* model) { (void)model; }
+  virtual void loadAllContent() { }
+  virtual void runContentLoaderForContext(ListModel<T>* model, int id) { (void)model; (void)id; }
+  virtual void loadContentForContext(ListModel<T>* model, int id) { (void)model; (void)id; }
+  virtual const char* getHost() const { return nullptr; }
+  virtual unsigned getPort() const { return 0; }
+  virtual QString getBaseUrl() const { return QString::null; }
+  virtual void registerContent(ListModel<T>* model, const QString& root) { (void)model; (void)root; }
+  virtual void unregisterContent(ListModel<T>* model) { (void)model; }
 };
 
 typedef enum {
@@ -99,11 +99,11 @@ public:
     delete m_lock;
   }
 
-  virtual void clearData() = 0;
+  virtual void clearData() { }
 
-  virtual bool loadData() = 0;
+  virtual bool loadData() { return false; }
 
-  virtual void handleDataUpdate() = 0;
+  virtual void handleDataUpdate() { }
 
   virtual bool loadDataForContext(int id) { (void)id; return false; }
 
