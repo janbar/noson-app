@@ -64,11 +64,19 @@ Item {
             }
 
             onValueChanged: {
-                var treble = Math.round(value)
-                if (treble === player.treble) {
-                    return
+                setTreble.start();
+            }
+
+            Timer {
+                id: setTreble
+                interval: 200
+                onTriggered: {
+                    player.setTreble(Math.round(trebleSlider.value), function(result) {
+                        if (!result) {
+                            customdebug("Set treble failed");
+                        }
+                    })
                 }
-                player.setTreble(treble)
             }
         }
          
@@ -100,11 +108,19 @@ Item {
             }
 
             onValueChanged: {
-                var bass = Math.round(value)
-                if (bass === player.bass) {
-                    return
+                setBass.start();
+            }
+
+            Timer {
+                id: setBass
+                interval: 200
+                onTriggered: {
+                    player.setBass(Math.round(bassSlider.value), function(result) {
+                        if (!result) {
+                            customdebug("Set bass failed");
+                        }
+                    })
                 }
-                player.setBass(bass)
             }
         }
 
@@ -131,8 +147,12 @@ Item {
                     text: qsTr("Night mode")
                     checked: player.nightmodeEnabled
                     onClicked: {
-                        if (!player.toggleNightmode())
-                            checked = player.nightmodeEnabled;
+                        player.toggleNightmode(function(result) {
+                            if (!result) {
+                                checked = player.nightmodeEnabled;
+                                mainView.actionFailed();
+                            }
+                        });
                     }
                     Connections {
                         target: player
@@ -148,8 +168,12 @@ Item {
                     text: qsTr("Loudness")
                     checked: player.loudnessEnabled
                     onClicked: {
-                        if (!player.toggleLoudness())
-                            checked = player.loudnessEnabled;
+                        player.toggleLoudness(function(result) {
+                            if (!result) {
+                                checked = player.loudnessEnabled;
+                                mainView.actionFailed();
+                            }
+                        });
                     }
                     Connections {
                         target: player
@@ -172,16 +196,17 @@ Item {
                     checked: (player.currentProtocol === 1)
                     onClicked: {
                         if (checked) {
-                            if (!player.playLineIN()) {
-                                checked = false;
-                                popInfo.open(qsTr("Action can't be performed"));
-                            } else {
-                                playTV.checked = false
-                                playPulse.checked = false
-                            }
-                        } else if (!player.playQueue(false)) {
-                            popInfo.open(qsTr("Action can't be performed"));
-                        }
+                            player.playLineIN(function(result) {
+                                if (!result) {
+                                    checked = false;
+                                    mainView.actionFailed();
+                                } else {
+                                    playTV.checked = false
+                                    playPulse.checked = false
+                                }
+                            });
+                        } else {
+                            player.playQueue(false, mainView.actionFinished);                        }
                     }
                     Connections {
                         target: player
@@ -198,15 +223,17 @@ Item {
                     checked: (player.currentProtocol === 5)
                     onClicked: {
                         if (checked) {
-                            if (!player.playDigitalIN()) {
-                                checked = false;
-                                popInfo.open(qsTr("Action can't be performed"));
-                            } else {
-                                playIN.checked = false
-                                playPulse.checked = false
-                            }
-                        } else if (!player.playQueue(false)) {
-                            popInfo.open(qsTr("Action can't be performed"))
+                            player.playDigitalIN(function(result) {
+                                if (!result) {
+                                    checked = false;
+                                    mainView.actionFailed();
+                                } else {
+                                    playIN.checked = false
+                                    playPulse.checked = false
+                                }
+                            });
+                        } else {
+                            player.playQueue(false, mainView.actionFinished);
                         }
                     }
                     Connections {
@@ -226,15 +253,17 @@ Item {
                     checked: (player.isPulseStream())
                     onClicked: {
                         if (checked) {
-                            if (!player.playPulse()) {
-                                checked = false;
-                                popInfo.open(qsTr("Action can't be performed"));
-                            } else {
-                                playIN.checked = false
-                                playTV.checked = false
-                            }
-                        } else if (!player.playQueue(false)) {
-                            popInfo.open(qsTr("Action can't be performed"));
+                            player.playPulse(function(result) {
+                                if (!result) {
+                                    checked = false;
+                                    mainView.actionFailed();
+                                } else {
+                                    playIN.checked = false
+                                    playTV.checked = false
+                                }
+                            });
+                        } else {
+                            player.playQueue(false, mainView.actionFinished);
                         }
                     }
                     Connections {

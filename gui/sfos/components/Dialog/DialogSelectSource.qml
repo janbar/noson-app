@@ -53,28 +53,37 @@ DialogBase {
                 MenuItem {
                     text: qsTr("Queue")
                     onClicked: {
-                        if (!player.playQueue(false))
-                            popInfo.open(qsTr("Action can't be performed"))
-                        else
-                            dialog.accept()
+                        player.playQueue(false, function(result) {
+                            if (result) {
+                                dialog.accept();
+                            } else {
+                                mainView.actionFailed();
+                            }
+                        });
                     }
                 }
                 MenuItem {
                     text: qsTr("Play line IN")
                     onClicked: {
-                        if (!player.playLineIN())
-                            popInfo.open(qsTr("Action can't be performed"))
-                        else
-                            dialog.accept()
+                        player.playLineIN(function(result) {
+                            if (result) {
+                                dialog.accept()
+                            } else {
+                                mainView.actionFailed();
+                            }
+                        });
                     }
                 }
                 MenuItem {
                     text: qsTr("Play TV")
                     onClicked: {
-                        if (!player.playDigitalIN())
-                            popInfo.open(qsTr("Action can't be performed"))
-                        else
-                            dialog.accept()
+                        player.playDigitalIN(function(result) {
+                            if (result) {
+                                dialog.accept()
+                            } else {
+                                mainView.actionFailed();
+                            }
+                        });
                     }
                 }
                 MenuItem {
@@ -82,10 +91,13 @@ DialogBase {
                     //visible: Sonos.havePulseAudio()
                     visible: false // No usage on Sailfish
                     onClicked: {
-                        if (!player.playPulse())
-                            popInfo.open(qsTr("Action can't be performed"))
-                        else
-                            dialog.accept()
+                        player.playPulse(function(result) {
+                            if (result) {
+                                dialog.accept()
+                            } else {
+                                mainView.actionFailed();
+                            }
+                        });
                     }
                 }
         }
@@ -125,12 +137,9 @@ DialogBase {
         placeholderText: qsTr("Enter stream URL")
     }
 
-    Connections {
-        target: player
-        onJobFailed: {
-            sourceOutput.text = qsTr("Playing failed.")
-            sourceOutput.visible = true
-        }
+    function actionFailed() {
+        sourceOutput.text = qsTr("Playing failed.")
+        sourceOutput.visible = true
     }
 
     Button {
@@ -140,13 +149,14 @@ DialogBase {
         onClicked: {
             sourceOutput.visible = false // make sure its hidden now if there was an error last time
             if (url.text.length > 0) { // make sure something is acually inputed
-                if (player.playStream(url.text, "")) {
-                    inputStreamUrl = url.text
-                }
-                else {
-                    sourceOutput.text = qsTr("Playing failed.")
-                    sourceOutput.visible = true
-                }
+                player.playStream(url.text, "", function(result) {
+                    if (result) {
+                        inputStreamUrl = url.text;
+                    } else {
+                        sourceOutput.text = qsTr("Playing failed.");
+                        sourceOutput.visible = true;
+                    }
+                });
             }
             else {
                 sourceOutput.visible = true

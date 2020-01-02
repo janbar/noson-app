@@ -132,9 +132,9 @@ MusicPage {
                 id: delayRemoveFavorite
                 interval: 100
                 onTriggered: {
-                    if (!Sonos.destroyFavorite(model.id)) {
-                        popInfo.open(qsTr("Action can't be performed"));
-                    }
+                    var future = Sonos.tryDestroyFavorite(model.id);
+                    future.finished.connect(mainView.actionFinished);
+                    future.start();
                 }
             }
         }
@@ -196,10 +196,15 @@ MusicPage {
         onTriggered: {
             // clear queue when playing bundle
             if (model.type !== 5 && model.canQueue) {
-                if (player.removeAllTracksFromQueue())
-                    musicToolbar.playButtonAnimationRunning = player.playFavorite(model);
+                player.removeAllTracksFromQueue(function(result) {
+                    if (result) {
+                        player.playFavorite(model, mainView.actionFinished);
+                    } else {
+                        mainView.actionFailed();
+                    }
+                });
             } else {
-               musicToolbar.playButtonAnimationRunning = player.playFavorite(model);
+                player.playFavorite(model, mainView.actionFinished);
             }
         }
     }
@@ -259,7 +264,7 @@ MusicPage {
                                    })
             }
             else if (model.type === 5) {
-                musicToolbar.playButtonAnimationRunning = player.playFavorite(model) // play it
+                player.playFavorite(model, mainView.actionFinished); // play it
             }
         } else {
             delayFavoritePlayAll.model = model

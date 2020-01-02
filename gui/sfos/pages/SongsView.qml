@@ -453,10 +453,13 @@ MusicPage {
     property MenuItem menuRemoveFromFavorites: null
     onIsFavoriteChanged: {
         if (containerItem) {
-            menuAddItemToFavorites.visible = !songStackPage.isFavorite;
-            menuRemoveFromFavorites.visible = songStackPage.isFavorite;
+            if (menuAddItemToFavorites)
+                menuAddItemToFavorites.visible = !songStackPage.isFavorite;
+            if (menuRemoveFromFavorites)
+                menuRemoveFromFavorites.visible = songStackPage.isFavorite;
         }
     }
+
     function onMenuAddItemToFavorites() {
         if (addItemToFavorites(containerItem, pageTitle, songList.headerItem.firstSource))
             songStackPage.isFavorite = true

@@ -24,7 +24,6 @@ Item {
     objectName: "musicToolbarObject"
 
     property alias color: bg.color
-    property alias playButtonAnimationRunning: playerControlsPlayButton.animationRunning
 
     Rectangle {
         id: bg
@@ -146,7 +145,12 @@ Item {
                 }
                 onClicked: {
                     if (player.currentCount > 0)
-                        disabledPlayerControlsPlayButton.animationRunning = player.playQueue(true)
+                        disabledPlayerControlsPlayButton.animationRunning = player.playQueue(true, function(result) {
+                            if (!result) {
+                                disabledPlayerControlsPlayButton.animationRunning = false;
+                                mainView.actionFailed();
+                            }
+                        });
                     else
                         dialogSelectSource.open()
                 }
@@ -259,7 +263,12 @@ Item {
                 objectName: "playShape"
                 width: height
                 animationInterval: 100 // fast flashing
-                onClicked: animationRunning = player.toggle()
+                onClicked: animationRunning = player.toggle(function(result) {
+                    if (!result) {
+                        animationRunning = false;
+                        mainView.actionFailed();
+                    }
+                })
 
                 // control the animation depending of the playback state
                 Connections {

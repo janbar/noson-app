@@ -81,8 +81,13 @@ MusicListView {
                     source: model.mute ? "qrc:/sfos/images/icon-m-speaker-muted.svg" : "qrc:/sfos/images/icon-m-speaker.svg"
                     color: renderingControlList.foregroundColor
                     onClicked: {
-                        if (player.toggleMute(model.uuid))
-                            player.renderingModel.setMute(index, !model.mute)
+                        player.toggleMute(model.uuid, function(result) {
+                            if (result) {
+                                player.renderingModel.setMute(index, !model.mute);
+                            } else {
+                                mainView.actionFailed();
+                            }
+                        });
                     }
                 }
 
@@ -98,7 +103,7 @@ MusicListView {
                     stepSize: 2.5
                     minimumValue: 0
                     maximumValue: 100
-                    animateValue: false
+                    animateValue: true
                     value: model.volume
                     enabled: !model.outputFixed
                     opacity: (model.outputFixed ? 0.2 : 1.0)
@@ -110,11 +115,13 @@ MusicListView {
 
                     Timer {
                         id: setVolume
-                        interval: 200
+                        interval: 333
                         onTriggered: {
-                            if (!player.setVolume(model.uuid, volumeSlider.value)) {
-                                customdebug("Set volume failed for zone " + model.uuid);
-                            }
+                            player.setVolume(model.uuid, volumeSlider.value, function(result) {
+                                if (!result) {
+                                    customdebug("Set volume failed for zone " + model.uuid);
+                                }
+                            });
                         }
                     }
                 }

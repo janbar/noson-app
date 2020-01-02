@@ -54,6 +54,18 @@ MusicPage {
         return { id: "none",  name: "" };
     }
 
+    function updateAlarm(payload, onFinished) {
+        var future = Sonos.tryUpdateAlarm(payload);
+        future.finished.connect(onFinished);
+        return future.start();
+    }
+
+    function destroyAlarm(id, onFinished) {
+        var future = Sonos.tryDestroyAlarm(id);
+        future.finished.connect(onFinished);
+        return future.start();
+    }
+
     MultiSelectListView {
         id: alarmList
         anchors.fill: parent
@@ -91,19 +103,23 @@ MusicPage {
                 }
                 onActionPressed: {
                     model.enabled = !model.enabled;
-                    if (!Sonos.updateAlarm(model.payload)) {
-                        popInfo.open(qsTr("Action can't be performed"));
-                        model.enabled = !model.enabled;
-                    }
+                    updateAlarm(model.payload, function(result) {
+                        if (!result) {
+                            model.enabled = !model.enabled;
+                            mainView.actionFailed();
+                        }
+                    });
                 }
                 actionVisible: true
                 actionIconSource: model.enabled ? "image://theme/icon-m-sounds" : "image://theme/icon-m-silent"
                 onAction2Pressed: {
                     model.includeLinkedZones = !model.includeLinkedZones;
-                    if (!Sonos.updateAlarm(model.payload)) {
-                        popInfo.open(qsTr("Action can't be performed"));
-                        model.includeLinkedZones = !model.includeLinkedZones;
-                    }
+                    updateAlarm(model.payload, function(result) {
+                        if (!result) {
+                            model.includeLinkedZones = !model.includeLinkedZones;
+                            mainView.actionFailed();
+                        }
+                    });
                 }
                 action2Visible: true
                 action2IconSource: model.includeLinkedZones ? "image://theme/icon-m-share" : "image://theme/icon-m-location"
@@ -192,11 +208,13 @@ MusicPage {
                     id: delayRemoveAlarm
                     interval: 100
                     onTriggered: {
-                        if (!Sonos.destroyAlarm(model.id)) {
-                            popInfo.open(qsTr("Action can't be performed"));
-                            alarmList.focusIndex = index;
-                            alarmsModel.asyncLoad();
-                        }
+                        destroyAlarm(model.id, function(result) {
+                            if (!result) {
+                                alarmList.focusIndex = index;
+                                alarmsModel.asyncLoad();
+                                mainView.actionFailed();
+                            }
+                        });
                     }
                 }
             }

@@ -71,8 +71,13 @@ Item {
             objectName: "muteShape"
             opacity: 1.0
             onClicked: {
-                player.toggleMuteGroup();
-                player.refreshRendering();
+                player.toggleMuteGroup(function(result) {
+                    if (result) {
+                        player.refreshRendering();
+                    } else {
+                        mainView.actionFailed();
+                    }
+                });
             }
         }
 
@@ -107,13 +112,15 @@ Item {
 
             Timer {
                 id: setVolume
-                interval: 200
+                interval: 333
                 onTriggered: {
-                    if (player.setVolumeGroup(volumeGroupSlider.value)) {
-                        volumeGroupSlider.inValue = player.volumeMaster = Math.round(volumeGroupSlider.value);
-                    } else {
-                        customdebug("Set volume failed");
-                    }
+                    player.setVolumeGroup(volumeGroupSlider.value, function(result) {
+                        if (result) {
+                            volumeGroupSlider.inValue = player.volumeMaster = Math.round(volumeGroupSlider.value);
+                        } else {
+                            customdebug("Set volume failed");
+                        }
+                    });
                 }
             }
 
@@ -185,8 +192,13 @@ Item {
                 opacity: player.repeat ? 1 : .3
                 onClicked: {
                     var old = player.repeat
-                    if (player.toggleRepeat())
-                        player.repeat = !old
+                    player.toggleRepeat(function(result) {
+                        if (result) {
+                            player.repeat = !old;
+                        } else {
+                            mainView.actionFailed();
+                        }
+                    });
                 }
             }
         }
@@ -209,7 +221,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: "image://theme/icon-m-previous"
                 opacity: player.trackQueue.model.count > 0 && player.currentIndex > 0  ? 1 : .3
-                onClicked: player.previousSong()
+                onClicked: player.previousSong(mainView.actionFinished)
             }
         }
 
@@ -228,7 +240,12 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 source: player.isPlaying ? "image://theme/icon-l-pause" : "image://theme/icon-l-play"
                 animationInterval: 100 // fast flashing
-                onClicked: animationRunning = player.toggle()
+                onClicked: animationRunning = player.toggle(function(result) {
+                    if (!result) {
+                        animationRunning = false;
+                        mainView.actionFailed();
+                    }
+                })
 
                 // control the animation depending of the playback state
                 Connections {
@@ -262,7 +279,7 @@ Item {
                 source: "image://theme/icon-m-next"
                 objectName: "forwardShape"
                 opacity: player.trackQueue.model.count > 0 && (player.currentIndex + 1) < player.trackQueue.model.count ? 1 : .3
-                onClicked: player.nextSong()
+                onClicked: player.nextSong(mainView.actionFinished)
             }
         }
 
@@ -287,8 +304,13 @@ Item {
                 opacity: player.shuffle ? 1 : .3
                 onClicked: {
                     var old = player.shuffle
-                    if (player.toggleShuffle())
-                        player.shuffle = !old
+                    player.toggleShuffle(function(result) {
+                        if (result) {
+                            player.shuffle = !old;
+                        } else {
+                            mainView.actionFailed();
+                        }
+                    });
                 }
             }
         }

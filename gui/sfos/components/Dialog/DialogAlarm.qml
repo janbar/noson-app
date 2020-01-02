@@ -430,6 +430,18 @@ Item {
             return str;
         }
 
+        function createAlarm(payload, onFinished) {
+            var future = Sonos.tryCreateAlarm(payload);
+            future.finished.connect(onFinished);
+            return future.start();
+        }
+
+        function updateAlarm(payload, onFinished) {
+            var future = Sonos.tryUpdateAlarm(payload);
+            future.finished.connect(onFinished);
+            return future.start();
+        }
+
         onAccepted: {
             model.roomId = roomModel.get(room.currentIndex).id;
             model.volume = volume.value;
@@ -439,14 +451,19 @@ Item {
             model.programUri = programs.get(program.currentIndex).uri;
             model.programMetadata = programs.metadata[program.currentIndex];
             if (isNew) {
-                if (!Sonos.createAlarm(model.payload))
-                    popInfo.open(qsTr("Action can't be performed"));
-                    alarm.container.remove(newIndex);
+                createAlarm(model.payload, function(result) {
+                    if (!result) {
+                        alarm.container.remove(newIndex);
+                        mainView.actionFailed();
+                    }
+                });
             } else {
-                if (!Sonos.updateAlarm(model.payload)) {
-                    popInfo.open(qsTr("Action can't be performed"));
-                    alarm.container.asyncLoad();
-                }
+                updateAlarm(model.payload, function(result) {
+                    if (!result) {
+                        alarm.container.asyncLoad();
+                        mainView.actionFailed();
+                    }
+                });
             }
         }
 

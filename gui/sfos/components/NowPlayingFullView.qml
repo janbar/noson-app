@@ -260,7 +260,7 @@ SilicaFlickable {
                 id: seekInTrack
                 interval: 250
                 onTriggered: {
-                    player.seek(progressSliderMusic.value);
+                    player.seek(progressSliderMusic.value, mainView.actionFinished);
                 }
             }
 

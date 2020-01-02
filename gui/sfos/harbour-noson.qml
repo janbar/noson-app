@@ -187,7 +187,6 @@ ApplicationWindow {
                 if (!applicationSuspended) {
                     customdebug("Application state changed to suspended");
                     applicationSuspended = true;
-                    mainView.deactivate(); // is it better for power consumption ?
                 }
                 break;
             case Qt.ApplicationHidden:
@@ -196,27 +195,21 @@ ApplicationWindow {
                     customdebug("Application state changed to active");
                     applicationSuspended = false;
                     if (!noZone) {
-                        jobRunning = true;
-                        delayWakeUp.start();
+                        player.ping(function(result) {
+                            if (result) {
+                                customdebug("Renew all subscriptions");
+                                var future = Sonos.tryRenewSubscriptions();
+                                future.finished.connect(actionFinished);
+                                future.start();
+                            } else {
+                                noZone = true;
+                            }
+                        });
                     }
                 }
                 break;
             }
         }
-    }
-
-   Timer {
-      id: delayWakeUp
-      interval: 100
-      onTriggered: {
-          if (!player.ping()) {
-              noZone = true;
-              jobRunning = false;
-          } else {
-             customdebug("Renew all subscriptions");
-             Sonos.startRenewSubscriptions();
-          }
-       }
     }
 
     Connections {
@@ -444,14 +437,16 @@ ApplicationWindow {
     function connectSonos() {
         // if the setting deviceUrl is filled then try it, else continue with the SSDP discovery
         if (deviceUrl.length > 0) {
-            customdebug("NOTICE: Connecting using the configured URL: " + deviceUrl)
-            ssdp = false // point out the ssdp discovery isn't used to connect
+            customdebug("NOTICE: Connecting using the configured URL: " + deviceUrl);
+            ssdp = false; // point out the ssdp discovery isn't used to connect
             if (Sonos.init(debugLevel, deviceUrl))
-                return true
-            customdebug("ERROR: Connection has failed using the configured URL: " + deviceUrl)
+                return true;
+            customdebug("ERROR: Connection has failed using the configured URL: " + deviceUrl);
         }
-        ssdp = true // point out the ssdp discovery is used to connect
-        return Sonos.startInit(debugLevel)
+        ssdp = true; // point out the ssdp discovery is used to connect
+        var future = Sonos.tryInit(debugLevel);
+        future.finished.connect(actionFinished);
+        return future.start();
     }
 
     function reloadZone() {
@@ -463,9 +458,13 @@ ApplicationWindow {
             if (startup) {
                 startup = false;
                 if (playOnStart) {
-                    if (player.playStream(inputStreamUrl, "")) {
-                        tabs.pushNowPlaying();
-                    }
+                    player.playStream(inputStreamUrl, "", function(result) {
+                        if (result) {
+                            tabs.pushNowPlaying();
+                        } else {
+                            actionFailed();
+                        }
+                    });
                 }
             }
         }
@@ -517,16 +516,29 @@ ApplicationWindow {
         return true;
     }
 
+    // default action on failure
+    function actionFailed() {
+        popInfo.open(qsTr("Action can't be performed"));
+    }
+    // default callback on signal finished action
+    function actionFinished(result) {
+        if (!result)
+            actionFailed();
+    }
+
     // Action on request to update music library
     function updateMusicIndex() {
-        if (Sonos.refreshShareIndex()) {
-            // enable info on loaded index
-            infoLoadedIndex = true
-            popInfo.open(qsTr("Refreshing of index is running"))
-            return true
-        }
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+        var future = Sonos.tryRefreshShareIndex();
+        future.finished.connect(function(result) {
+            if (result) {
+                // enable info on loaded index
+                infoLoadedIndex = true;
+                popInfo.open(qsTr("Refreshing of index is running"));
+            } else {
+                actionFailed();
+            }
+        });
+        return future.start();
     }
 
     // Action on track clicked
@@ -535,38 +547,63 @@ ApplicationWindow {
         var nr = player.trackQueue.model.count + 1
         // push back
         if (play) {
-            if (player.playQueue(false)) {
-                nr = player.addItemToQueue(modelItem, nr)
-                if (player.seekTrack(nr) && player.play()) {
-                    // Show the Now playing page and make sure the track is visible
-                    tabs.pushNowPlaying()
-                    return true
+            return player.playQueue(false, function(result) {
+                if (result) {
+                    player.addItemToQueue(modelItem, nr, function(result) {
+                        var nr = result;
+                        if (nr > 0) {
+                            player.seekTrack(nr, function(result) {
+                                if (result) {
+                                    player.play(function(result) {
+                                        if (result) {
+                                            // Show the Now playing page and make sure the track is visible
+                                            tabs.pushNowPlaying();
+                                        } else {
+                                            actionFailed();
+                                        }
+                                    });
+                                } else {
+                                    actionFailed();
+                                }
+                            });
+                        } else {
+                            actionFailed();
+                        }
+                    });
+                } else {
+                    actionFailed();
                 }
-            }
-            popInfo.open(qsTr("Action can't be performed"))
-            return false
+            });
         } else {
-            if (player.addItemToQueue(modelItem, nr)) {
-                popInfo.open(qsTr("song added"))
-                return true
-            }
-            popInfo.open(qsTr("Action can't be performed"))
-            return false
+            return player.addItemToQueue(modelItem, nr, function(result) {
+                if (result > 0) {
+                    popInfo.open(qsTr("song added"));
+                } else {
+                    actionFailed();
+                }
+            });
         }
     }
 
     // Action on track from queue clicked
     function indexQueueClicked(index) {
         if (player.currentIndex === index) {
-            if (player.toggle())
-                return true
-            popInfo.open(qsTr("Action can't be performed"))
-            return false
-        } else if (player.playQueue(false) && player.seekTrack(index + 1)
-                   && player.play())
-            return true
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+            return player.toggle(actionFinished);
+        } else {
+            return player.playQueue(false, function(result) {
+                if (result) {
+                    player.seekTrack(index + 1, function(result) {
+                        if (result) {
+                            player.play(actionFinished);
+                        } else {
+                            actionFailed();
+                        }
+                    });
+                } else {
+                    actionFailed();
+                }
+            });
+        }
     }
 
     // Action on shuffle button clicked
@@ -592,58 +629,80 @@ ApplicationWindow {
 
     // Action add queue multiple items
     function addMultipleItemsToQueue(modelItemList) {
-        if (player.addMultipleItemsToQueue(modelItemList)) {
-            popInfo.open(qsTr("%n song(s) added", "", modelItemList.length))
-            return true
-        }
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+        return player.addMultipleItemsToQueue(modelItemList, function(result) {
+            if (result > 0) {
+                popInfo.open(qsTr("%n song(s) added", "", modelItemList.length));
+            } else {
+                actionFailed();
+            }
+        });
     }
 
     // Action on play all button clicked
     function playAll(modelItem) {
         // replace queue with the bundle item
-        if (player.removeAllTracksFromQueue()) {
-            var nr = player.addItemToQueue(modelItem, 0)
-            if (nr && player.playQueue(false) && player.seekTrack(nr)
-                    && player.play()) {
-                // Show the Now playing page and make sure the track is visible
-                tabs.pushNowPlaying()
-                popInfo.open(qsTr("song added"))
-                return true
+        return player.removeAllTracksFromQueue(function(result) {
+            if (result) {
+                player.addItemToQueue(modelItem, 0, function(result) {
+                    var nr = result;
+                    if (nr > 0) {
+                        player.playQueue(false, function(result) {
+                            if (result) {
+                                player.seekTrack(nr, function(result) {
+                                    if (result) {
+                                        player.play(function(result) {
+                                            if (result) {
+                                                // Show the Now playing page and make sure the track is visible
+                                                tabs.pushNowPlaying();
+                                                popInfo.open(qsTr("song added"));
+                                            } else {
+                                                actionFailed();
+                                            }
+                                        });
+                                    } else {
+                                        actionFailed();
+                                    }
+                                });
+                            } else {
+                                actionFailed();
+                            }
+                        });
+                    } else {
+                        actionFailed();
+                    }
+                });
+            } else {
+                actionFailed();
             }
-        }
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+        });
     }
 
     // Action add queue
     function addQueue(modelItem) {
         var nr = player.trackQueue.model.count
-        if (player.addItemToQueue(modelItem, ++nr) > 0) {
-            popInfo.open(qsTr("song added"))
-            return true
-        }
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+        return player.addItemToQueue(modelItem, ++nr, function(result) {
+            if (result > 0) {
+                popInfo.open(qsTr("song added"));
+            } else {
+                actionFailed();
+            }
+        });
     }
 
     // Action delete all tracks from queue
     function removeAllTracksFromQueue() {
-        if (player.removeAllTracksFromQueue()) {
-            popInfo.open(qsTr("Queue cleared"))
-            return true
-        }
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+        return player.removeAllTracksFromQueue(function(result) {
+            if (result) {
+                popInfo.open(qsTr("Queue cleared"));
+            } else {
+                actionFailed();
+            }
+        });
     }
 
     // Action on remove queue track
     function removeTrackFromQueue(modelItem) {
-        if (player.removeTrackFromQueue(modelItem))
-            return true
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+        return player.removeTrackFromQueue(modelItem, actionFinished);
     }
 
 
@@ -651,91 +710,78 @@ ApplicationWindow {
     function reorderTrackInQueue(from, to) {
         if (from < to)
             ++to;
-        if (player.reorderTrackInQueue(from + 1, to + 1))
-            return true;
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.reorderTrackInQueue(from + 1, to + 1, actionFinished);
     }
 
     // Action on radio item clicked
     function radioClicked(modelItem) {
-        if (player.playSource(modelItem)) {
-            tabs.pushNowPlaying();
-            return true;
-        }
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.playSource(modelItem, function(result) {
+            if (result)
+                tabs.pushNowPlaying();
+            else
+                popInfo.open(qsTr("Action can't be performed"));
+        });
     }
 
     // Action on save queue
     function saveQueue(title) {
-        if (player.saveQueue(title))
-            return true;
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.saveQueue(title, actionFinished);
     }
 
     // Action on create playlist
     function createPlaylist(title) {
-        if (player.createSavedQueue(title))
-            return true;
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.createSavedQueue(title, actionFinished);
     }
 
     // Action on append item to a playlist
     function addPlaylist(playlistId, modelItem, containerUpdateID) {
-        if (player.addItemToSavedQueue(playlistId, modelItem, containerUpdateID)) {
-            popInfo.open(qsTr("song added"));
-            return true;
-        }
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.addItemToSavedQueue(playlistId, modelItem, containerUpdateID, function(result) {
+            if (result > 0) {
+                popInfo.open(qsTr("song added"));
+            } else {
+                actionFailed();
+            }
+        });
     }
 
     // Action on remove item from a playlist
     function removeTracksFromPlaylist(playlistId, selectedIndices, containerUpdateID) {
-        if (player.removeTracksFromSavedQueue(playlistId, selectedIndices, containerUpdateID)) {
-            popInfo.open(qsTr("%n song(s) removed", "", selectedIndices.length));
-            return true;
-        }
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.removeTracksFromSavedQueue(playlistId, selectedIndices, containerUpdateID, function(result) {
+            if (result) {
+                popInfo.open(qsTr("%n song(s) removed", "", selectedIndices.length));
+            } else {
+                actionFailed();
+            }
+        });
     }
 
     // Action on move playlist item
     function reorderTrackInPlaylist(playlistId, from, to, containerUpdateID) {
-        if (player.reorderTrackInSavedQueue(playlistId, from, to, containerUpdateID))
-            return true;
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        return player.reorderTrackInSavedQueue(playlistId, from, to, containerUpdateID, actionFinished);
     }
 
     // Action on remove a playlist
     function removePlaylist(itemId) {
-        if (Sonos.destroySavedQueue(itemId))
-            return true
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+        var future = Sonos.tryDestroySavedQueue(itemId);
+        future.finished.connect(actionFinished);
+        return future.start();
     }
 
     // Action on check item as favorite
     function addItemToFavorites(modelItem, description, artURI) {
-        if (Sonos.addItemToFavorites(modelItem.payload, description, artURI))
-            return true;
-        popInfo.open(qsTr("Action can't be performed"));
-        return false;
+        var future = Sonos.tryAddItemToFavorites(modelItem.payload, description, artURI);
+        future.finished.connect(actionFinished);
+        return future.start();
     }
 
     // Action on uncheck item from favorites
     function removeFromFavorites(itemPayload) {
         var id = AllFavoritesModel.findFavorite(itemPayload)
         if (id.length === 0) // no favorite
-            return true
-        if (Sonos.destroyFavorite(id))
-            return true
-        popInfo.open(qsTr("Action can't be performed"))
-        return false
+            return true;
+        var future = Sonos.tryDestroyFavorite(id);
+        future.finished.connect(actionFinished);
+        return future.start();
     }
 
     // Helpers

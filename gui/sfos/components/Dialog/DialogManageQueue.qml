@@ -57,12 +57,14 @@ DialogBase {
         onClicked: {
             newplaylistoutput.visible = false // make sure its hidden now if there was an error last time
             if (playlistName.text.length > 0) { // make sure something is acually inputed
-                if (!saveQueue(playlistName.text)) {
-                    newplaylistoutput.color = "red"
-                    newplaylistoutput.text = qsTr("Saving failed.")
-                } else {
-                    dialog.accept()
-                }
+                player.saveQueue(playlistName.text, function(result) {
+                    if (!result) {
+                        newplaylistoutput.color = "red";
+                        newplaylistoutput.text = qsTr("Saving failed.");
+                    } else {
+                        dialog.close();
+                    }
+                });
             } else {
                 newplaylistoutput.visible = true
                 newplaylistoutput.text = qsTr("Please type in a name.")
@@ -95,8 +97,8 @@ DialogBase {
         text: qsTr("Clear queue")
         onClicked: {
             // clearing queue
-            removeAllTracksFromQueue()
-            dialog.accept()
+            removeAllTracksFromQueue();
+            dialog.close();
         }
     }
 
