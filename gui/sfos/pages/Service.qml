@@ -154,8 +154,7 @@ MusicPage {
             id: listItem
 
             onClicked: {
-                if (model.isContainer)
-                    clickItem(model)
+                clickItem(model)
             }
 
             color: "transparent"
