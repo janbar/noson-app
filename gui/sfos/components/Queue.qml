@@ -44,13 +44,13 @@ SilicaFlickable {
             highlighted: (player.currentIndex === index)
 
             onClicked: dialogSongInfo.open(model, [{art: imageSource}],
-                                         "qrc:/sfos/pages/ArtistView.qml",
-                                         {
-                                             "artistSearch": "A:ARTIST/" + model.author,
-                                             "artist": model.author,
-                                             "covers": makeCoverSource(undefined, model.author, undefined),
-                                             "pageTitle": qsTr("Artist")
-                                         })
+                                           "qrc:/sfos/pages/ArtistView.qml",
+                                           {
+                                               "artistSearch": "A:ARTIST/" + model.author,
+                                               "artist": model.author,
+                                               "covers": makeCoverSource(undefined, model.author, undefined),
+                                               "pageTitle": qsTr("Artist")
+                                           })
 
             imageSources: makeCoverSource(model.art, model.author, model.album)
             description: qsTr("Song")

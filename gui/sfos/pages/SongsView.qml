@@ -160,7 +160,11 @@ MusicPage {
                                         "artist": model.author,
                                         "covers": makeCoverSource(undefined, model.author, undefined),
                                         "pageTitle": qsTr("Artist")
-                                    });
+                                    },
+                                    true,   // force show more
+                                    true,   // can play
+                                    true    // can queue
+                                    );
             }
 
             color: "transparent"

@@ -31,6 +31,9 @@ Item {
     property string moreSource: ""
     property var moreArgs: ({})
     property bool forceActionMore: false
+    property bool canPlay: false
+    property bool canQueue: false
+    property bool isContainer: false
 
     function showMore() {
         if (dialogSongInfo.moreSource)
@@ -51,7 +54,8 @@ Item {
         id: dialog
 
         cancelText: qsTr("Close")
-        acceptText: qsTr("Play")
+        acceptText: canPlay ? qsTr("Play") : ""
+        canAccept: canPlay
 
         contentSpacing: units.gu(3)
 
@@ -87,8 +91,17 @@ Item {
         }
 
         onAccepted: {
+            if (canPlay) {
+                if (canQueue) {
+                    if (isContainer)
+                        playAll(songInfo.model);
+                    else
+                        trackClicked(songInfo.model);
+                } else {
+                    radioClicked(songInfo.model);
+                }
+            }
             pageStack.pop();
-            trackClicked(songInfo.model); // play track
         }
 
         onRejected: {
@@ -203,12 +216,15 @@ Item {
         }
     }
 
-    function open(model, covers, moreSource, moreArgs, forceActionMore) {
+    function open(model, covers, moreSource, moreArgs, forceActionMore, canPlay, canQueue, isContainer) {
         songInfo.model = model;
         songInfo.covers = covers;
         songInfo.moreSource = moreSource;
         songInfo.moreArgs = moreArgs;
         songInfo.forceActionMore = (forceActionMore ? true : false);
+        songInfo.canPlay = (canPlay ? true : false);
+        songInfo.canQueue = (canQueue ? true : false);
+        songInfo.isContainer = (isContainer ? true : false);
         return dialog.open();
     }
 }
