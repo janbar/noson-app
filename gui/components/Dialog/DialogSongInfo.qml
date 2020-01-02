@@ -27,8 +27,12 @@ Item {
     id: songInfo
     property var model: null
     property var covers: []
-    property bool actionPlay: false
-    property bool actionMore: false
+    property string moreSource: ""
+    property var moreArgs: ({})
+    property bool forceActionMore: false
+    property bool canPlay: false
+    property bool canQueue: false
+    property bool isContainer: false
 
     DialogBase {
         id: dialog
@@ -59,13 +63,7 @@ Item {
                 visible: false
                 onClicked: {
                     dialog.close();
-                    stackView.push("qrc:/ui/ArtistView.qml",
-                                       {
-                                           "artistSearch": "A:ARTIST/" + model.author,
-                                           "artist": model.author,
-                                           "covers": makeCoverSource(undefined, model.author, undefined),
-                                           "pageTitle": qsTr("Artist")
-                                       });
+                    stackView.push(dialogSongInfo.moreSource, dialogSongInfo.moreArgs);
                 }
             }
         }
@@ -88,14 +86,14 @@ Item {
                 }
             }
 
-            if (actionPlay) {
+            if (canPlay) {
                 buttonPlay.visible = true;
             } else {
                 buttonPlay.visible = false;
             }
             // do not stack more than one page for artist view
             // do not show the artist view for an item of service
-            if (actionMore &&
+            if (forceActionMore &&
                     !stackView.find(function(item) { return item.objectName === "artistViewPage"; }) &&
                     !Sonos.isItemFromService(songInfo.model.payload)) {
                 buttonMore.visible = true;
@@ -105,7 +103,16 @@ Item {
         }
 
         onAccepted: {
-            trackClicked(songInfo.model); // play track
+            if (canPlay) {
+                if (canQueue) {
+                    if (isContainer)
+                        playAll(songInfo.model);
+                    else
+                        trackClicked(songInfo.model);
+                } else {
+                    radioClicked(songInfo.model);
+                }
+            }
         }
 
         onClosed: {
@@ -228,11 +235,15 @@ Item {
 
     }
 
-    function open(model, covers, showActionPlay, showActionMore) {
+    function open(model, covers, moreSource, moreArgs, forceActionMore, canPlay, canQueue, isContainer) {
         songInfo.model = model;
         songInfo.covers = covers;
-        songInfo.actionPlay = showActionPlay;
-        songInfo.actionMore = showActionMore;
+        songInfo.moreSource = moreSource;
+        songInfo.moreArgs = moreArgs;
+        songInfo.forceActionMore = (forceActionMore ? true : false);
+        songInfo.canPlay = (canPlay ? true : false);
+        songInfo.canQueue = (canQueue ? true : false);
+        songInfo.isContainer = (isContainer ? true : false);
         return dialog.open();
     }
 }

@@ -351,7 +351,12 @@ MusicPage {
                 "album": model.album,
                 "description": model.description
             };
-            dialogSongInfo.open(songModel, [{art: model.art}], model.canPlay && model.canQueue, false); // show actions
+            dialogSongInfo.open(songModel, [{art: model.art}],
+                                "", undefined, false,
+                                model.canPlay,
+                                model.canQueue,
+                                model.isContainer
+                                );
         }
     }
 

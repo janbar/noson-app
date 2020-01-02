@@ -166,12 +166,24 @@ MusicPage {
             }
 
             onClick: {
+                var arts = [];
                 if (isAlbum)
-                    // header covers
-                    dialogSongInfo.open(model, covers, true, true); // show actions
+                    arts = covers; // header covers
                 else
-                    // item cover
-                    dialogSongInfo.open(model, [{art: imageSource}], true, true); // show actions
+                    arts = [{art: imageSource}]; // item cover
+
+                dialogSongInfo.open(model, arts,
+                                    "qrc:/ui/ArtistView.qml",
+                                    {
+                                        "artistSearch": "A:ARTIST/" + model.author,
+                                        "artist": model.author,
+                                        "covers": makeCoverSource(undefined, model.author, undefined),
+                                        "pageTitle": qsTr("Artist")
+                                    },
+                                    true,   // force show more
+                                    true,   // can play
+                                    true    // can queue
+                                    );
             }
 
             color: "transparent"

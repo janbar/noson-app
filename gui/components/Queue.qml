@@ -59,7 +59,14 @@ Item {
                 listview.reorder(from, to)
             }
 
-            onClick: dialogSongInfo.open(model, [{art: imageSource}], false, true) // don't show action 'play'
+            onClick: dialogSongInfo.open(model, [{art: imageSource}],
+                                         "qrc:/ui/ArtistView.qml",
+                                         {
+                                             "artistSearch": "A:ARTIST/" + model.author,
+                                             "artist": model.author,
+                                             "covers": makeCoverSource(undefined, model.author, undefined),
+                                             "pageTitle": qsTr("Artist")
+                                         })
 
             imageSources: makeCoverSource(model.art, model.author, model.album)
             description: qsTr("Song")
