@@ -60,49 +60,68 @@ if(NOT QT_STATICPLUGIN)
   )
 endif()
 
-configure_file(
-  ${DESKTOP_FILE_NAME}.in
-  ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE_NAME}
-)
-
-install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE_NAME}
-  DESTINATION ${DESKTOP_DIR} RENAME ${APP_DESKTOP_ID}.desktop
-)
-
 if(BUILD_SAILFISHOS)
+  file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${APP_DESKTOP_ID}.desktop "[Desktop Entry]
+Name=${APP_NAME}
+Exec=${EXEC}
+Icon=${ICON_NAME}
+Type=Application
+Categories=AudioVideo;Audio;
+X-Nemo-Application-Type=generic")
+
+  install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/${APP_DESKTOP_ID}.desktop
+    DESTINATION ${DESKTOP_DIR}
+  )
+
   install(
     FILES "gui/sfos/images/${ICON_NAME}-86x86.png"
     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/86x86/apps RENAME "${ICON_NAME}.png"
   )
+
   install(
     FILES "gui/sfos/images/${ICON_NAME}-108x108.png"
     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/108x108/apps RENAME "${ICON_NAME}.png"
   )
+
   install(
     FILES "gui/sfos/images/${ICON_NAME}-128x128.png"
     DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/128x128/apps RENAME "${ICON_NAME}.png"
   )
+
   install(
-    FILES "gui/sfos/images/${ICON_NAME}.svg"
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps 
+    FILES "gui/sfos/images/${ICON_NAME}-172x172.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/172x172/apps RENAME "${ICON_NAME}.png"
   )
 else()
+  file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${APP_DESKTOP_ID}.desktop "[Desktop Entry]
+Name=${APP_NAME}
+Exec=${EXEC}
+Icon=${ICON_NAME}
+Terminal=false
+Type=Application
+Categories=AudioVideo;Audio;")
+
+  install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/${APP_DESKTOP_ID}.desktop
+    DESTINATION ${DESKTOP_DIR}
+  )
+
   install(
     FILES "gui/images/${ICON_FILE}"
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps RENAME ${ICON_NAME}.png
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps RENAME "${ICON_NAME}.png"
+  )
+
+  configure_file(
+    ${APPDATA_FILE_NAME}.in
+    ${CMAKE_CURRENT_BINARY_DIR}/${APPDATA_FILE_NAME}
+  )
+
+  install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/${APPDATA_FILE_NAME}
+    DESTINATION ${APPDATA_DIR} RENAME ${APP_ID}.appdata.xml
   )
 endif()
-
-configure_file(
-  ${APPDATA_FILE_NAME}.in
-  ${CMAKE_CURRENT_BINARY_DIR}/${APPDATA_FILE_NAME}
-)
-
-install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/${APPDATA_FILE_NAME}
-  DESTINATION ${APPDATA_DIR} RENAME ${APP_ID}.appdata.xml
-)
 
 if(MSVC)
   include(MSVCRuntime)
