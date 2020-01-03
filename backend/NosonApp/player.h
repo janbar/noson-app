@@ -232,8 +232,8 @@ public:
   Q_INVOKABLE bool setTreble(double val);
   Q_INVOKABLE bool setBass(double val);
 
-  Q_INVOKABLE bool setVolumeGroup(double volume);
-  Q_INVOKABLE bool setVolume(const QString& uuid, double volume);
+  Q_INVOKABLE bool setVolumeGroup(double volume, bool forFake = false);
+  Q_INVOKABLE bool setVolume(const QString& uuid, double volume, bool forFake = false);
 
   Q_INVOKABLE int currentTrackPosition();
 

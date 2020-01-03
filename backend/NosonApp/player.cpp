@@ -966,7 +966,7 @@ bool Player::setBass(double val)
 
 }
 
-bool Player::setVolumeGroup(double volume)
+bool Player::setVolumeGroup(double volume, bool forFake)
 {
   SONOS::PlayerPtr p(m_player);
   if (p)
@@ -984,7 +984,7 @@ bool Player::setVolumeGroup(double volume)
       double fake = it->volumeFake * r;
       int v = roundDouble(fake < 1.0 ? 0.0 : fake < 100.0 ? fake : 100.0);
       qDebug("%s: req=%3.3f ratio=%3.3f fake=%3.3f vol=%d", __FUNCTION__, volume, r, fake, v);
-      if (p->SetVolume(it->uuid, v))
+      if (forFake || p->SetVolume(it->uuid, v))
         it->volumeFake = fake;
       else
         ret = false;
@@ -997,7 +997,7 @@ bool Player::setVolumeGroup(double volume)
   return false;
 }
 
-bool Player::setVolume(const QString& uuid, double volume)
+bool Player::setVolume(const QString& uuid, double volume, bool forFake)
 {
   SONOS::PlayerPtr p(m_player);
   if (p)
@@ -1014,10 +1014,12 @@ bool Player::setVolume(const QString& uuid, double volume)
         if (it->uuid == _uuid)
         {
           int v = roundDouble(volume);
-          if (!p->SetVolume(it->uuid, v))
+          if (forFake || p->SetVolume(it->uuid, v)) {
+            it->volumeFake = (v == 0 ? 100.0 / 101.0 : volume);
+            it->volume = v;
+          } else {
             return false;
-          it->volumeFake = (v == 0 ? 100.0 / 101.0 : volume);
-          it->volume = v;
+          }
         }
         fake += it->volumeFake;
       }
