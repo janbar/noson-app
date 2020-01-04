@@ -55,11 +55,9 @@ Item {
             Connections {
                 target: player
                 onTrebleChanged:{
-                    if (trebleSlider.down) {
-                        return
+                    if (!trebleSlider.down) {
+                        trebleSlider.value = player.treble;
                     }
-
-                    trebleSlider.value = player.treble
                 }
             }
 
@@ -70,16 +68,23 @@ Item {
             Timer {
                 id: setTreble
                 interval: 200
+                property bool ready: true // false: delay the call
                 onTriggered: {
-                    player.setTreble(Math.round(trebleSlider.value), function(result) {
-                        if (!result) {
-                            customdebug("Set treble failed");
-                        }
-                    })
+                    if (!ready) {
+                        restart();
+                    } else {
+                        ready = false;
+                        player.setTreble(Math.round(trebleSlider.value), function(result) {
+                            ready = true;
+                            if (!result) {
+                                customdebug("Set treble failed");
+                            }
+                        });
+                    }
                 }
             }
         }
-         
+
         StyledSlider {
             id: bassSlider
             anchors {
@@ -99,11 +104,9 @@ Item {
             Connections {
                 target: player
                 onBassChanged:{
-                    if (bassSlider.pressed) {
-                        return
+                    if (!bassSlider.down) {
+                        bassSlider.value = player.bass;
                     }
-
-                    bassSlider.value = player.bass
                 }
             }
 
@@ -114,12 +117,19 @@ Item {
             Timer {
                 id: setBass
                 interval: 200
+                property bool ready: true // false: delay the call
                 onTriggered: {
-                    player.setBass(Math.round(bassSlider.value), function(result) {
-                        if (!result) {
-                            customdebug("Set bass failed");
-                        }
-                    })
+                    if (!ready) {
+                        restart();
+                    } else {
+                        ready = false;
+                        player.setBass(Math.round(bassSlider.value), function(result) {
+                            ready = true;
+                            if (!result) {
+                                customdebug("Set bass failed");
+                            }
+                        });
+                    }
                 }
             }
         }
