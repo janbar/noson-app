@@ -4,6 +4,7 @@ CONFIG += sailfishapp_qml
 
 DISTFILES += harbour-noson.qml \
     components/CoverGrid.qml \
+    components/DataFailureState.qml \
     components/Delegates/Card.qml \
     components/Delegates/DragMusicListItem.qml \
     components/Delegates/DragSelectMusicListItem.qml \

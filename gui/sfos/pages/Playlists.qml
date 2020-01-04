@@ -124,4 +124,17 @@ MusicPage {
     }
 
     onAddClicked: dialogNewPlaylist.open()
+
+    // Overlay to show when load failed
+    Loader {
+        anchors.fill: parent
+        active: AllPlaylistsModel.failure
+        asynchronous: true
+        sourceComponent: Component {
+            DataFailureState {
+                onReloadClicked: AllPlaylistsModel.asyncLoad();
+            }
+        }
+        visible: active
+    }
 }
