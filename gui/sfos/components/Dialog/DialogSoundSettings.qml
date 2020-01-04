@@ -30,7 +30,7 @@ Item {
 
         //: this is a title of a dialog to configure sound settings
         title: qsTr("Sound settings")
-        contentSpacing: units.gu(1)
+        contentSpacing: units.gu(2)
 
         cancelText: qsTr("Close")
         acceptText: ""
@@ -142,7 +142,7 @@ Item {
                 rightMargin: Theme.horizontalPageMargin
             }
 
-            spacing: units.gu(1)
+            spacing: units.gu(2)
 
             Column {
                 id: modes
@@ -159,7 +159,7 @@ Item {
                     onClicked: {
                         player.toggleNightmode(function(result) {
                             if (!result) {
-                                checked = player.nightmodeEnabled;
+                                nightMode.checked = player.nightmodeEnabled;
                                 mainView.actionFailed();
                             }
                         });
@@ -180,7 +180,7 @@ Item {
                     onClicked: {
                         player.toggleLoudness(function(result) {
                             if (!result) {
-                                checked = player.loudnessEnabled;
+                                loudness.checked = player.loudnessEnabled;
                                 mainView.actionFailed();
                             }
                         });
@@ -208,7 +208,7 @@ Item {
                         if (checked) {
                             player.playLineIN(function(result) {
                                 if (!result) {
-                                    checked = false;
+                                    playIN.checked = false;
                                     mainView.actionFailed();
                                 } else {
                                     playTV.checked = false
@@ -235,7 +235,7 @@ Item {
                         if (checked) {
                             player.playDigitalIN(function(result) {
                                 if (!result) {
-                                    checked = false;
+                                    playTV.checked = false;
                                     mainView.actionFailed();
                                 } else {
                                     playIN.checked = false
@@ -265,7 +265,7 @@ Item {
                         if (checked) {
                             player.playPulse(function(result) {
                                 if (!result) {
-                                    checked = false;
+                                    playPulse.checked = false;
                                     mainView.actionFailed();
                                 } else {
                                     playIN.checked = false
