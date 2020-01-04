@@ -236,7 +236,7 @@ Item {
                     onClicked: {
                         player.toggleNightmode(function(result) {
                             if (!result) {
-                                checked = player.nightmodeEnabled;
+                                nightMode.checked = player.nightmodeEnabled;
                                 mainView.actionFailed();
                             }
                         });
@@ -259,7 +259,7 @@ Item {
                     onClicked: {
                         player.toggleLoudness(function(result) {
                             if (!result) {
-                                checked = player.loudnessEnabled;
+                                loudness.checked = player.loudnessEnabled;
                                 mainView.actionFailed();
                             }
                         });
@@ -289,7 +289,7 @@ Item {
                         if (checked) {
                             player.playLineIN(function(result) {
                                 if (!result) {
-                                    checked = false;
+                                    playIN.checked = false;
                                     mainView.actionFailed();
                                 } else {
                                     playTV.checked = false
@@ -319,7 +319,7 @@ Item {
                         if (checked) {
                             player.playDigitalIN(function(result) {
                                 if (!result) {
-                                    checked = false;
+                                    playTV.checked = false;
                                     mainView.actionFailed();
                                 } else {
                                     playIN.checked = false
@@ -350,7 +350,7 @@ Item {
                         if (checked) {
                             player.playPulse(function(result) {
                                 if (!result) {
-                                    checked = false;
+                                    playPulse.checked = false;
                                     mainView.actionFailed();
                                 } else {
                                     playIN.checked = false
