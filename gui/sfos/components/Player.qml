@@ -145,8 +145,17 @@ Item {
 
     function playSource(modelItem, onFinished) {
         var future = zone.handle.tryPlaySource(modelItem.payload);
-        future.onFinished.connect(onFinished);
-        return future.start();
+        // hack: run animation now without waiting event
+        future.finished.connect(function(result) {
+            if (!result)
+                handleZPPlaybackStateChanged();
+            onFinished(result);
+        });
+        if (future.start()) {
+            player.playbackState = "TRANSITIONING";
+            return true;
+        }
+        return false;
     }
 
     function previousSong(onFinished) {
@@ -342,8 +351,17 @@ Item {
 
     function playStream(url, title, onFinished) {
         var future = zone.handle.tryPlayStream(url, (title === "" ? qsTr("Untitled") : title));
-        future.finished.connect(onFinished);
-        return future.start();
+        // hack: run animation now without waiting event
+        future.finished.connect(function(result) {
+            if (!result)
+                handleZPPlaybackStateChanged();
+            onFinished(result);
+        });
+        if (future.start()) {
+            player.playbackState = "TRANSITIONING";
+            return true;
+        }
+        return false;
     }
 
     function playLineIN(onFinished) {
@@ -374,8 +392,17 @@ Item {
 
     function playFavorite(modelItem, onFinished) {
         var future = zone.handle.tryPlayFavorite(modelItem.payload);
-        future.finished.connect(onFinished);
-        return future.start();
+        // hack: run animation now without waiting event
+        future.finished.connect(function(result) {
+            if (!result)
+                handleZPPlaybackStateChanged();
+            onFinished(result);
+        });
+        if (future.start()) {
+            player.playbackState = "TRANSITIONING";
+            return true;
+        }
+        return false;
     }
 
     function isPlayingQueued() {
