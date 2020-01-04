@@ -67,8 +67,14 @@ MusicPage {
         property var selectedIndices: []
         onTriggered: {
             songList.focusIndex = selectedIndices[selectedIndices.length-1];
-            if (removeTracksFromPlaylist(containerItem.id, selectedIndices, songsModel.containerUpdateID())) {
-                songsModel.asyncLoad();
+            if (!removeTracksFromPlaylist(containerItem.id, selectedIndices, songsModel.containerUpdateID(), function(result) {
+                if (result) {
+                    popInfo.open(qsTr("%n song(s) removed", "", selectedIndices.length));
+                } else {
+                    mainView.actionFailed();
+                }
+            })) {
+                mainView.actionFailed();
             }
         }
     }
@@ -335,23 +341,14 @@ MusicPage {
         onReorder: {
             customdebug("Reorder item " + from + " to " + to);
             songList.focusIndex = to;
-            mainView.jobRunning = true
-            delayReorderTrackInPlaylist.argFrom = from
-            delayReorderTrackInPlaylist.argTo = to
-            delayReorderTrackInPlaylist.start()
-        }
-
-        Timer {
-            id: delayReorderTrackInPlaylist
-            interval: 100
-            property int argFrom: 0
-            property int argTo: 0
-            onTriggered: {
-                if (reorderTrackInPlaylist(containerItem.id, argFrom, argTo, songsModel.containerUpdateID())) {
+            if (!reorderTrackInPlaylist(containerItem.id, from, to, songsModel.containerUpdateID(), function(result) {
+                if (!result) {
                     songsModel.asyncLoad();
-                } else {
-                    mainView.jobRunning = false;
+                    mainView.actionFailed();
                 }
+            })) {
+                songsModel.asyncLoad();
+                mainView.actionFailed();
             }
         }
 
