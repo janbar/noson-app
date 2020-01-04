@@ -2,7 +2,7 @@ project(noson-app C CXX)
 cmake_minimum_required(VERSION 3.8.2)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-option(INSTALL_TESTS "Install the tests on make install" on)
+option(INSTALL_TESTS "Install the tests on make install" OFF)
 option(BUILD_SAILFISHOS "Build the SailfishOS application" OFF)
 
 if(IOS OR BUILD_SAILFISHOS)
@@ -10,7 +10,7 @@ if(IOS OR BUILD_SAILFISHOS)
 endif()
 
 set(APP_VERSION       "4.2.0")
-set(APP_VERSION_CODE  53)
+set(APP_VERSION_CODE  54)
 set(APP_ID            "io.github.janbar.noson")
 set(APP_NAME          "noson")
 

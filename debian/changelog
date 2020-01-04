@@ -1,4 +1,11 @@
-noson-app (4.1) UNRELEASED; urgency=low
+noson-app (4.2) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 4.2.0
+  * libnoson 2.3
+  * All actions are asynchronous
+  * Fixes playlist edition
+  * GUI improvements
 
   [ janbar ]
   * Release 4.1.0
