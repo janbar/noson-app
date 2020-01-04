@@ -33,6 +33,7 @@ class QueueModel : public QAbstractListModel, public ListModel<Player>
 {
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
+  Q_PROPERTY(bool failure READ dataFailure NOTIFY loaded)
 
 public:
   enum QueueRoles

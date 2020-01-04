@@ -176,6 +176,7 @@ bool ArtistsModel::loadData()
   }
   if (cl.failure())
   {
+    m_dataState = DataStatus::DataFailure;
     emit loaded(false);
     return false;
   }

@@ -203,9 +203,9 @@ bool AlbumsModel::loadData()
     else
       delete item;
   }
-
   if (cl.failure())
   {
+    m_dataState = DataStatus::DataFailure;
     emit loaded(false);
     return false;
   }

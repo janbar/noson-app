@@ -63,9 +63,10 @@ public:
 
 typedef enum {
   DataBlank     = 0,
-  DataNotFound  = 1,
-  DataLoaded    = 2,
-  DataSynced    = 3
+  DataFailure   = 1,
+  DataNotFound  = 2,
+  DataLoaded    = 3,
+  DataSynced    = 4
 } DataStatus;
 
 template<class T>
@@ -106,6 +107,8 @@ public:
   virtual void handleDataUpdate() { }
 
   virtual bool loadDataForContext(int id) { (void)id; return false; }
+
+  virtual bool dataFailure() { return m_dataState == DataStatus::DataFailure; }
 
 public:
   T* m_provider;

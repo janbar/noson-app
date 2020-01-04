@@ -67,6 +67,7 @@ class AlbumsModel : public QAbstractListModel, public ListModel<Sonos>
 {
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
+  Q_PROPERTY(bool failure READ dataFailure NOTIFY loaded)
 
 public:
   enum AlbumRoles
