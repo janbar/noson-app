@@ -104,4 +104,17 @@ MusicPage {
             }
         }
     }
+
+    // Overlay to show when load failed
+    Loader {
+        anchors.fill: parent
+        active: AllAlbumsModel.failure
+        asynchronous: true
+        sourceComponent: Component {
+            DataFailureState {
+                onReloadClicked: AllAlbumsModel.asyncLoad();
+            }
+        }
+        visible: active
+    }
 }

@@ -278,4 +278,17 @@ MusicPage {
             delayFavoritePlayAll.start()
         }
     }
+
+    // Overlay to show when load failed
+    Loader {
+        anchors.fill: parent
+        active: AllFavoritesModel.failure
+        asynchronous: true
+        sourceComponent: Component {
+            DataFailureState {
+                onReloadClicked: AllFavoritesModel.asyncLoad();
+            }
+        }
+        visible: active
+    }
 }

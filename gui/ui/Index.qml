@@ -150,7 +150,7 @@ MusicPage {
     // Overlay to show when no index found
     Loader {
         anchors.fill: parent
-        active: noIndex && !infoLoadedIndex && !shareIndexInProgress
+        active: noIndex && !infoLoadedIndex && !shareIndexInProgress && !AllGenresModel.failure
         asynchronous: true
         source: "qrc:/components/IndexEmptyState.qml"
         visible: active
@@ -169,4 +169,16 @@ MusicPage {
         stackView.push(model.source);
     }
 
+    // Overlay to show when load failed
+    Loader {
+        anchors.fill: parent
+        active: AllGenresModel.failure
+        asynchronous: true
+        sourceComponent: Component {
+            DataFailureState {
+                onReloadClicked: AllGenresModel.asyncLoad();
+            }
+        }
+        visible: active
+    }
 }
