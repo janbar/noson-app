@@ -275,5 +275,6 @@
         <file>sfos/images/harbour-noson.svg</file>
         <file>sfos/images/icon-m-settings.svg</file>
         <file>sfos/images/icon-m-grip.svg</file>
+        <file>components/DataFailureState.qml</file>
     </qresource>
 </RCC>
