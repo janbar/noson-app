@@ -55,7 +55,7 @@ DialogBase {
                     onClicked: {
                         player.playQueue(false, function(result) {
                             if (result) {
-                                dialog.accept();
+                                dialog.close();
                             } else {
                                 mainView.actionFailed();
                             }
@@ -67,7 +67,7 @@ DialogBase {
                     onClicked: {
                         player.playLineIN(function(result) {
                             if (result) {
-                                dialog.accept()
+                                dialog.close()
                             } else {
                                 mainView.actionFailed();
                             }
@@ -79,7 +79,7 @@ DialogBase {
                     onClicked: {
                         player.playDigitalIN(function(result) {
                             if (result) {
-                                dialog.accept()
+                                dialog.close()
                             } else {
                                 mainView.actionFailed();
                             }
@@ -93,7 +93,7 @@ DialogBase {
                     onClicked: {
                         player.playPulse(function(result) {
                             if (result) {
-                                dialog.accept()
+                                dialog.close()
                             } else {
                                 mainView.actionFailed();
                             }

@@ -51,7 +51,7 @@ DialogBase {
         text: qsTr("Update music index now")
         onClicked: {
             updateMusicIndex();
-            dialog.accept()
+            dialog.close();
         }
         enabled: !shareIndexInProgress
     }
