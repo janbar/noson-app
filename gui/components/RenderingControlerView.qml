@@ -32,8 +32,32 @@ MusicListView {
     property color labelColor: styleMusic.view.labelColor
     readonly property real rowHeight: units.gu(7)
     property bool held: false
+    property bool volumePressed: false
 
     signal finger(bool isHeld)
+
+    // try to reset the model on signal renderingControlChanged
+    Connections {
+        target: player
+        onRenderingControlChanged: {
+            refreshRendering.start()
+        }
+    }
+
+    // delay the refresh while volume handle is pressed to avoid breaking of drag
+    Timer {
+        id: refreshRendering
+        interval: 0
+        onTriggered: {
+            if (volumePressed) {
+                interval = 100; // retry in 100ms
+                restart();
+            } else {
+                player.refreshRendering();
+                interval = 0;
+            }
+        }
+    }
 
     delegate: SimpleListItem {
         id: renderingControlListItem
@@ -124,6 +148,11 @@ MusicListView {
                             setVolume.start();
                     }
 
+                    onPressedChanged: {
+                        // report the handle is pressed to delay the model reset
+                        renderingControlList.volumePressed = pressed;
+                    }
+
                     Timer {
                         interval: 200
                         repeat: true
@@ -133,14 +162,23 @@ MusicListView {
 
                     Timer {
                         id: setVolume
-                        interval: 333
+                        interval: 200
+                        property bool ready: true // false: delay the call
                         onTriggered: {
-                            player.setVolume(model.uuid, volumeSlider.value, function(result) {
-                                if (!result) {
-                                    customdebug("Set volume failed for zone " + model.uuid);
-                                }
-                            });
-                            finger(held);
+                            if (!ready) {
+                                player.setVolumeForFake(model.uuid, volumeSlider.value);
+                                finger(held);
+                                restart();
+                            } else {
+                                ready = false;
+                                player.setVolume(model.uuid, volumeSlider.value, function(result) {
+                                    ready = true; // become ready on finished
+                                    if (!result) {
+                                        customdebug("Set volume failed for zone " + model.uuid);
+                                    }
+                                });
+                                finger(held);
+                            }
                         }
                     }
                 }

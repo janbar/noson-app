@@ -123,15 +123,24 @@ Item {
 
             Timer {
                 id: setVolume
-                interval: 333
+                interval: 200
+                property bool ready: true // false: delay the call
                 onTriggered: {
-                    player.setVolumeGroup(volumeGroupSlider.value, function(result) {
-                        if (result) {
+                    if (!ready) {
+                        if (player.setVolumeForFake(volumeGroupSlider.value))
                             volumeGroupSlider.inValue = player.volumeMaster = Math.round(volumeGroupSlider.value);
-                        } else {
-                            customdebug("Set volume failed");
-                        }
-                    });
+                        restart();
+                    } else {
+                        ready = false;
+                        player.setVolumeGroup(volumeGroupSlider.value, function(result) {
+                            ready = true; // become ready on finished
+                            if (result) {
+                                volumeGroupSlider.inValue = player.volumeMaster = Math.round(volumeGroupSlider.value);
+                            } else {
+                                customdebug("Set volume failed");
+                            }
+                        });
+                    }
                 }
             }
 
