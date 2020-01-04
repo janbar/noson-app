@@ -36,8 +36,8 @@ Dialog {
       The question to the user.
       \qmlproperty string text
      */
-    property string text
-
+    property alias text: message.text
+    property alias textHorizontalAlignment: message.horizontalAlignment
     property real contentSpacing: units.gu(1)
 
     Column {
@@ -52,6 +52,13 @@ Dialog {
             cancelText: dialog.cancelText
         }
         Text {
+            id: message
+            anchors {
+                left: parent.left
+                right: parent.right
+                leftMargin: Theme.horizontalPageMargin
+                rightMargin: Theme.horizontalPageMargin
+            }
             horizontalAlignment: Text.AlignHCenter
             text: dialog.text
             font.pixelSize: units.fx("medium")
