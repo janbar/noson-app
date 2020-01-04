@@ -30,7 +30,7 @@ Item {
 
         //: this is a title of a dialog to configure sound settings
         title: qsTr("Sound settings")
-        contentSpacing: units.gu(2)
+        contentSpacing: units.gu(1)
 
         cancelText: qsTr("Close")
         acceptText: ""
@@ -132,6 +132,13 @@ Item {
                     }
                 }
             }
+        }
+
+        Rectangle {
+            //!FIXME: for space
+            width: parent.width
+            height: units.gu(2)
+            color: "transparent"
         }
 
         Row {
