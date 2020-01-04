@@ -67,6 +67,7 @@ Item {
     signal stopped()
     signal sourceChanged()
     signal currentPositionChanged(int position, int duration)
+    signal renderingControlChanged() // see function refreshRendering
 
     onCurrentCountChanged: queueInfo = queueOverviewString()
     onCurrentIndexChanged: queueInfo = queueOverviewString()
@@ -82,6 +83,7 @@ Item {
         // execute all handlers to signal the changes
         player.handleZPConnectedChanged();
         player.handleZPSourceChanged();
+        player.handleZPRenderingCountChanged();
         player.handleZPRenderingGroupChanged();
         player.handleZPRenderingChanged();
         player.handleZPPlayModeChanged();
@@ -179,6 +181,14 @@ Item {
         } else {
             onFinished(false);
         }
+    }
+
+    function setVolumeGroupForFake(volume) {
+        return zone.handle.setVolumeGroup(volume, true);
+    }
+
+    function setVolumeForFake(uuid, volume) {
+        return zone.handle.setVolume(uuid, volume, true);
     }
 
     function setVolumeGroup(volume, onFinished) {
@@ -386,8 +396,9 @@ Item {
     }
 
     // reload the rendering model
+    // it should be triggered on signal renderingControlChanged
     function refreshRendering() {
-        handleZPRenderingChanged();
+        renderingModelLoader.item.load(zone.handle);
     }
 
     ////////////////////////////////////////////////////////////////////////////
@@ -446,8 +457,11 @@ Item {
     }
 
     function handleZPRenderingChanged() {
-        renderingModelLoader.item.load(zone.handle);
-        renderingControlCount = renderingModelLoader.item.count;
+        renderingControlChanged();
+    }
+
+    function handleZPRenderingCountChanged() {
+        player.renderingControlCount = zone.handle.renderingCount;
     }
 
     function handleZPPlaybackStateChanged() {
@@ -478,6 +492,7 @@ Item {
         target: AllZonesModel
         onZpConnectedChanged: { if (pid === zone.pid) handleZPConnectedChanged(); }
         onZpSourceChanged: { if (pid === zone.pid) handleZPSourceChanged(); }
+        onZpRenderingCountChanged: { if (pid === zone.pid) handleZPRenderingCountChanged(); }
         onZpRenderingGroupChanged: { if (pid === zone.pid) handleZPRenderingGroupChanged(); }
         onZpRenderingChanged: { if (pid === zone.pid) handleZPRenderingChanged(); }
         onZpPlayModeChanged: { if (pid === zone.pid) handleZPPlayModeChanged(); }
