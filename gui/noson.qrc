@@ -272,9 +272,6 @@
         <file>sfos/components/MusicInfoBox.qml</file>
         <file>sfos/images/icon-m-speaker.svg</file>
         <file>sfos/images/icon-m-speaker-muted.svg</file>
-        <file>sfos/images/harbour-noson-86x86.png</file>
-        <file>sfos/images/harbour-noson-108x108.png</file>
-        <file>sfos/images/harbour-noson-128x128.png</file>
         <file>sfos/images/harbour-noson.svg</file>
         <file>sfos/images/icon-m-settings.svg</file>
         <file>sfos/images/icon-m-grip.svg</file>
