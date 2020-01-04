@@ -184,14 +184,17 @@ MouseArea {
         anchors { fill: parent; margins: 10 }
 
         onEntered: {
-            drag.source.targetIndex = dragArea.DelegateModel.itemsIndex;
+            dragArea.targetIndex = dragArea.DelegateModel.itemsIndex;
+            listview.model.items.move(
+                               drag.source.DelegateModel.itemsIndex,
+                               dragArea.DelegateModel.itemsIndex);
         }
     }
 
     onHeldChanged: {
         if (!held && sourceIndex !== targetIndex) {
-            listview.model.items.move(sourceIndex, targetIndex);
             reorder(sourceIndex, targetIndex);
+            targetIndex = -1;
         }
     }
 }
