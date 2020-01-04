@@ -255,6 +255,7 @@ bool ZonesModel::loadData()
     QObject::disconnect(r->player, SIGNAL(connectedChanged(int)), this, SIGNAL(zpConnectedChanged(int)));
     QObject::disconnect(r->player, SIGNAL(renderingChanged(int)), this, SIGNAL(zpRenderingChanged(int)));
     QObject::disconnect(r->player, SIGNAL(renderingGroupChanged(int)), this, SIGNAL(zpRenderingGroupChanged(int)));
+    QObject::disconnect(r->player, SIGNAL(renderingCountChanged(int)), this, SIGNAL(zpRenderingCountChanged(int)));
     QObject::disconnect(r->player, SIGNAL(sourceChanged(int)), this, SIGNAL(zpSourceChanged(int)));
     QObject::disconnect(r->player, SIGNAL(playbackStateChanged(int)), this, SIGNAL(zpPlaybackStateChanged(int)));
     QObject::disconnect(r->player, SIGNAL(playModeChanged(int)), this, SIGNAL(zpPlayModeChanged(int)));
@@ -278,6 +279,7 @@ bool ZonesModel::loadData()
     QObject::connect(p, SIGNAL(connectedChanged(int)), this, SIGNAL(zpConnectedChanged(int)));
     QObject::connect(p, SIGNAL(renderingChanged(int)), this, SIGNAL(zpRenderingChanged(int)));
     QObject::connect(p, SIGNAL(renderingGroupChanged(int)), this, SIGNAL(zpRenderingGroupChanged(int)));
+    QObject::connect(p, SIGNAL(renderingCountChanged(int)), this, SIGNAL(zpRenderingCountChanged(int)));
     QObject::connect(p, SIGNAL(sourceChanged(int)), this, SIGNAL(zpSourceChanged(int)));
     QObject::connect(p, SIGNAL(playbackStateChanged(int)), this, SIGNAL(zpPlaybackStateChanged(int)));
     QObject::connect(p, SIGNAL(playModeChanged(int)), this, SIGNAL(zpPlayModeChanged(int)));

@@ -37,6 +37,7 @@ class Mpris2;
 class Player : public QObject, public ContentProvider<Player>
 {
   Q_OBJECT
+  Q_PROPERTY(int renderingCount READ renderingCount NOTIFY renderingCountChanged)
   Q_PROPERTY(bool muteMaster READ muteMaster NOTIFY renderingGroupChanged)
   Q_PROPERTY(bool nightmode READ nightmode NOTIFY renderingGroupChanged)
   Q_PROPERTY(bool loudness READ loudness NOTIFY renderingGroupChanged)
@@ -199,6 +200,7 @@ public:
 
   Q_INVOKABLE bool playFavorite(const QVariant& payload);
 
+  int renderingCount() const { return m_RCTable.size(); }
   bool nightmode() const { return m_RCGroup.nightmode; }
   bool loudness() const { return m_RCGroup.loudness; }
   bool muteMaster() const { return m_RCGroup.mute; }
@@ -269,6 +271,7 @@ signals:
   void connectedChanged(int pid);
   void renderingChanged(int pid);
   void renderingGroupChanged(int pid);
+  void renderingCountChanged(int pid);
   void sourceChanged(int pid);
   void playbackStateChanged(int pid);
   void playModeChanged(int pid);

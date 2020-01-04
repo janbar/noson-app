@@ -1285,8 +1285,9 @@ void Player::handleRenderingControlChange()
   if (p)
   {
 #define RENDERING_UNCHANGED     0
-#define RENDERING_GROUP_CHANGED 1
-#define RENDERING_CHANGED       2
+#define RENDERING_COUNT_CHANGED 1
+#define RENDERING_GROUP_CHANGED 2
+#define RENDERING_CHANGED       4
     unsigned signalMask = RENDERING_UNCHANGED;
 
     SONOS::SRPList props = p->GetRenderingProperty();
@@ -1344,7 +1345,7 @@ void Player::handleRenderingControlChange()
       m_RCGroup.volume = roundDouble(volume);
       m_RCGroup.mute = mute;
       m_RCGroup.outputFixed = outputFixed;
-      signalMask |= RENDERING_GROUP_CHANGED | RENDERING_CHANGED; // handles group & subordinate update
+      signalMask |= RENDERING_COUNT_CHANGED | RENDERING_GROUP_CHANGED | RENDERING_CHANGED; // handles group & subordinate update
     }
     else
     {
@@ -1472,6 +1473,8 @@ void Player::handleRenderingControlChange()
     qDebug("%s: sig=%d volume: %3.3f [%d]", __FUNCTION__, signalMask, m_RCGroup.volumeFake, m_RCGroup.volume);
 
     // emit signal about changes
+    if (signalMask & RENDERING_COUNT_CHANGED)
+      emit renderingCountChanged(m_pid);
     if (signalMask & RENDERING_GROUP_CHANGED)
       emit renderingGroupChanged(m_pid);
     if (signalMask & RENDERING_CHANGED)

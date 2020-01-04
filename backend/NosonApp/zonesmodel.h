@@ -125,6 +125,7 @@ signals:
   void zpConnectedChanged(int pid);
   void zpRenderingChanged(int pid);
   void zpRenderingGroupChanged(int pid);
+  void zpRenderingCountChanged(int pid);
   void zpSourceChanged(int pid);
   void zpPlaybackStateChanged(int pid);
   void zpPlayModeChanged(int pid);
