@@ -150,7 +150,7 @@ MusicPage {
     // Overlay to show when no index found
     Loader {
         anchors.fill: parent
-        active: noIndex && !infoLoadedIndex
+        active: noIndex && !infoLoadedIndex && !shareIndexInProgress
         asynchronous: true
         source: "qrc:/components/IndexEmptyState.qml"
         visible: active
