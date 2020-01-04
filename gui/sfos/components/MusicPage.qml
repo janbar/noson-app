@@ -235,6 +235,7 @@ Page {
 
                         Row {
                             spacing: units.gu(0.5)
+                            property bool squeeze: addToQueue.visible && addToPlaylist.visible && removeSelected.visible
 
                             MusicIcon {
                                 id: closeSelection
@@ -254,7 +255,7 @@ Page {
                                 visible: true
                                 source: "image://theme/icon-m-acknowledge"
                                 height: units.gu(5)
-                                label.text: qsTr("All")
+                                label.text: parent.squeeze ? "" : qsTr("All")
                                 label.font.pixelSize: units.fx("x-small")
                                 onClicked: selectAllClicked()
                             }
@@ -264,7 +265,7 @@ Page {
                                 visible: true
                                 source: "image://theme/icon-m-clear"
                                 height: units.gu(5)
-                                label.text: qsTr("Clear")
+                                label.text: parent.squeeze ? "" : qsTr("Clear")
                                 label.font.pixelSize: units.fx("x-small")
                                 onClicked: selectNoneClicked()
                             }
