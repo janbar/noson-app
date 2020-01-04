@@ -786,19 +786,13 @@ ApplicationWindow {
     }
 
     // Action on remove item from a playlist
-    function removeTracksFromPlaylist(playlistId, selectedIndices, containerUpdateID) {
-        return player.removeTracksFromSavedQueue(playlistId, selectedIndices, containerUpdateID, function(result) {
-            if (result) {
-                popInfo.open(qsTr("%n song(s) removed", "", selectedIndices.length));
-            } else {
-                actionFailed();
-            }
-        });
+    function removeTracksFromPlaylist(playlistId, selectedIndices, containerUpdateID, onFinished) {
+        return player.removeTracksFromSavedQueue(playlistId, selectedIndices, containerUpdateID, onFinished);
     }
 
     // Action on move playlist item
-    function reorderTrackInPlaylist(playlistId, from, to, containerUpdateID) {
-        return player.reorderTrackInSavedQueue(playlistId, from, to, containerUpdateID, actionFinished);
+    function reorderTrackInPlaylist(playlistId, from, to, containerUpdateID, onFinished) {
+        return player.reorderTrackInSavedQueue(playlistId, from, to, containerUpdateID, onFinished);
     }
 
     // Action on remove a playlist
