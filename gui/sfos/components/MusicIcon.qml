@@ -102,7 +102,6 @@ MouseArea {
         maskSource: row
     }
 
-    /*
     Rectangle {
         id: ripple
         readonly property bool square: area.implicitWidth <= area.implicitHeight
@@ -120,7 +119,11 @@ MouseArea {
         }
     }
 
-    onEntered: ripple.opacity = 0.1
-    onExited: ripple.opacity = 0
-    */
+    onPressedChanged: {
+        if (pressed) {
+            ripple.opacity = 0.1;
+        } else {
+            ripple.opacity = 0;
+        }
+    }
 }
