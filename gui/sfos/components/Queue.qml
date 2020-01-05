@@ -75,7 +75,7 @@ SilicaFlickable {
                     onClicked: {
                         listview.focusIndex = index > 0 ? index - 1 : 0;
                         removeTrackFromQueue(model);
-                        color = "red";
+                        listItem.color = "red";
                     }
                 }
             }

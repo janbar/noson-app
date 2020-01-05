@@ -210,7 +210,7 @@ MusicPage {
                         listview.focusIndex = index > 0 ? index - 1 : 0;
                         delayRemoveSelectedFromPlaylist.selectedIndices = [index]
                         delayRemoveSelectedFromPlaylist.start()
-                        color = "red";
+                        listItem.color = "red";
                     }
                 }
             }
