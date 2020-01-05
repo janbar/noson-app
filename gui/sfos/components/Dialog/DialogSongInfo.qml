@@ -45,8 +45,46 @@ Item {
         onTriggered: {
             if (dialog.status !== DialogStatus.Closed)
                 restart();
-            else
+            else {
+                dialog.clearDialog();
                 pageStack.push(dialogSongInfo.moreSource, dialogSongInfo.moreArgs);
+            }
+        }
+    }
+
+    function playSong() {
+        if (dialogSongInfo.canPlay)
+            playSongAfterClose.start();
+    }
+    Timer {
+        id: playSongAfterClose
+        interval: 50
+        onTriggered: {
+            if (dialog.status !== DialogStatus.Closed)
+                restart();
+            else {
+                dialog.clearDialog();
+                if (canQueue) {
+                    if (isContainer)
+                        playAll(songInfo.model);
+                    else
+                        trackClicked(songInfo.model);
+                } else {
+                    radioClicked(songInfo.model);
+                }
+            }
+        }
+    }
+
+    Timer {
+        id: clearDialogAfterClose
+        interval: 50
+        onTriggered: {
+            if (dialog.status !== DialogStatus.Closed)
+                restart();
+            else {
+                dialog.clearDialog();
+            }
         }
     }
 
@@ -60,14 +98,31 @@ Item {
         contentSpacing: units.gu(3)
 
         onDone: {
-            if (result === DialogResult.None)
+            switch (result) {
+            case DialogResult.None:
                 showMore();
+                break;
+            case DialogResult.Accepted:
+                playSong();
+                break;
+            default:
+                clearDialogAfterClose.start();
+            }
+        }
+
+        function clearDialog() {
+            card.coverSources = [];
+            card.primaryText = "";
+            card.secondaryText = "";
+            card.tertiaryLabelVisible = "";
+            card.tertiaryText = "";
+            buttonMore.visible = false;
         }
 
         onOpened: {
             if (songInfo.model) {
                 card.coverSources = covers
-                card.primaryText = songInfo.model.title !== "" ? songInfo.model.title : qsTr("Unknown Album");
+                card.primaryText = songInfo.model.title !== "" ? songInfo.model.title : qsTr("Unknown Title");
                 card.secondaryText = songInfo.model.author !== "" ? songInfo.model.author : qsTr("Unknown Artist");
                 card.tertiaryLabelVisible = (songInfo.model.album.length > 0);
                 if (songInfo.model.albumTrackNo) {
@@ -88,29 +143,6 @@ Item {
             } else {
                 buttonMore.visible = false;
             }
-        }
-
-        onAccepted: {
-            if (canPlay) {
-                if (canQueue) {
-                    if (isContainer)
-                        playAll(songInfo.model);
-                    else
-                        trackClicked(songInfo.model);
-                } else {
-                    radioClicked(songInfo.model);
-                }
-            }
-            pageStack.pop();
-        }
-
-        onRejected: {
-            card.coverSources = [];
-            card.primaryText = "";
-            card.secondaryText = "";
-            card.tertiaryLabelVisible = "";
-            card.tertiaryText = "";
-            buttonMore.visible = false;
         }
 
         Item {
