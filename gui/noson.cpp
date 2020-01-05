@@ -24,6 +24,15 @@
 #include "diskcache/diskcachefactory.h"
 
 #define CACHE_SIZE 100000000L
+#ifndef SAILFISHOS
+#define ORG_NAME          "janbar"
+#define APP_NAME          "io.github.janbar.noson"
+#define APP_DISPLAY_NAME  "noson"
+#else
+#define ORG_NAME          "harbour-noson"
+#define APP_NAME          "harbour-noson"
+#define APP_DISPLAY_NAME  "noson"
+#endif
 
 #ifdef Q_OS_WIN
 #include <WinSock2.h>
@@ -61,9 +70,9 @@ int main(int argc, char *argv[])
         return ret;
 #endif
 
-    QGuiApplication::setApplicationName("io.github.janbar.noson");
-    QGuiApplication::setApplicationDisplayName("noson");
-    QGuiApplication::setOrganizationName("janbar");
+    QGuiApplication::setApplicationName(APP_NAME);
+    QGuiApplication::setApplicationDisplayName(APP_DISPLAY_NAME);
+    QGuiApplication::setOrganizationName(ORG_NAME);
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
