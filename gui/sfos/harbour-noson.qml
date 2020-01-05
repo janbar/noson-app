@@ -552,6 +552,7 @@ ApplicationWindow {
                     player.addItemToQueue(modelItem, nr, function(result) {
                         var nr = result;
                         if (nr > 0) {
+                            popInfo.open(qsTr("song added"));
                             player.seekTrack(nr, function(result) {
                                 if (result) {
                                     player.play(function(result) {
@@ -646,6 +647,7 @@ ApplicationWindow {
                 player.addItemToQueue(modelItem, 0, function(result) {
                     var nr = result;
                     if (nr > 0) {
+                        popInfo.open(qsTr("song added"));
                         player.playQueue(false, function(result) {
                             if (result) {
                                 player.seekTrack(nr, function(result) {
@@ -654,7 +656,6 @@ ApplicationWindow {
                                             if (result) {
                                                 // Show the Now playing page and make sure the track is visible
                                                 tabs.pushNowPlaying();
-                                                popInfo.open(qsTr("song added"));
                                             } else {
                                                 actionFailed();
                                             }
