@@ -219,6 +219,7 @@ Page {
 
                 Row {
                     spacing: units.gu(0.5)
+                    property bool squeeze: !mainView.wideAspect && addToQueue.visible && addToPlaylist.visible && removeSelected.visible
 
                     Icon {
                         id: closeSelection
@@ -238,7 +239,7 @@ Page {
                         visible: true
                         source: "qrc:/images/select.svg"
                         height: units.gu(5)
-                        label.text: qsTr("All")
+                        label.text: parent.squeeze ? "" : qsTr("All")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: selectAllClicked()
                     }
@@ -248,7 +249,7 @@ Page {
                         visible: true
                         source: "qrc:/images/select-undefined.svg"
                         height: units.gu(5)
-                        label.text: qsTr("Clear")
+                        label.text: parent.squeeze ? "" : qsTr("Clear")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: selectNoneClicked()
                     }
