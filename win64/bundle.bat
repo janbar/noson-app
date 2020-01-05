@@ -67,12 +67,12 @@ rem Copy MSVC Redist Files
 copy %VCREDIST_DIR%\vc_redist.x64.exe %FILES%
 
 rem Copy OpenSSL depends
-copy %BUILD_DIR%\backend\lib\openssl\crypto\"libcrypto-1_1-x64.dll" %FILES%
-copy %BUILD_DIR%\backend\lib\openssl\ssl\"libssl-1_1-x64.dll" %FILES%
+copy %BUILD_DIR%\backend\lib\openssl-1.1-build\crypto\"libcrypto-1_1-x64.dll" %FILES%
+copy %BUILD_DIR%\backend\lib\openssl-1.1-build\ssl\"libssl-1_1-x64.dll" %FILES%
 
 rem Copy FLAC depends
-copy %BUILD_DIR%\backend\lib\flac\"libFLAC.dll" %FILES%
-copy %BUILD_DIR%\backend\lib\flac\"libFLAC++.dll" %FILES%
+copy %BUILD_DIR%\backend\lib\flac-build\"libFLAC.dll" %FILES%
+copy %BUILD_DIR%\backend\lib\flac-build\"libFLAC++.dll" %FILES%
 
 rem Copy application Files
 copy %BUILD_DIR%\gui\noson-gui.exe %FILES%
