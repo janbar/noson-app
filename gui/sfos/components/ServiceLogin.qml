@@ -109,7 +109,7 @@ Rectangle {
     }
 
     function signInService() {
-        mainView.jobRunning = true;
+        mainView.jobRunning = true; // it will be cleared on delayLoginService finished
         delayLoginService.start();
     }
 
