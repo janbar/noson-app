@@ -94,7 +94,7 @@ Rectangle {
             width: parent.width
 
             onClicked: {
-                mainView.jobRunning = true
+                mainView.jobRunning = true // it will be cleared on delayRegisterService finished
                 delayRegisterService.start()
             }
         }

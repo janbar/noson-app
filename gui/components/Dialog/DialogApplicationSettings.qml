@@ -71,7 +71,7 @@ DialogBase {
         }
 
         if (needRestart) {
-            jobRunning = true;
+            mainView.jobRunning = true;
             Qt.exit(16);
         }
     }

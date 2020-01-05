@@ -160,7 +160,6 @@ MusicPage {
             onSwipe: {
                 if (isPlaylist) {
                     listview.focusIndex = index > 0 ? index - 1 : 0;
-                    mainView.jobRunning = true
                     delayRemoveSelectedFromPlaylist.selectedIndices = [index]
                     delayRemoveSelectedFromPlaylist.start()
                     color = "red";
@@ -228,7 +227,6 @@ MusicPage {
                     visible: enabled
                     onTriggered: {
                         listview.focusIndex = index > 0 ? index - 1 : 0;
-                        mainView.jobRunning = true
                         delayRemoveSelectedFromPlaylist.selectedIndices = [index]
                         delayRemoveSelectedFromPlaylist.start()
                         color = "red";
@@ -422,7 +420,6 @@ MusicPage {
             }
 
             onRemoveSelectedClicked: {
-                mainView.jobRunning = true
                 delayRemoveSelectedFromPlaylist.selectedIndices = songList.getSelectedIndices()
                 if (delayRemoveSelectedFromPlaylist.selectedIndices.length > 0)
                     songList.focusIndex = delayRemoveSelectedFromPlaylist.selectedIndices[delayRemoveSelectedFromPlaylist.selectedIndices.length - 1]

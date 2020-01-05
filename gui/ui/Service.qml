@@ -426,7 +426,7 @@ MusicPage {
             } else {
                 loginService.active = false;
                 registeringService.active = false;
-                mainView.jobRunning = true;
+                mainView.jobRunning = true; // it will be cleared on load finished
                 // save new incarnation of accounts settings
                 auth = mediaModel.getDeviceAuth();
                 var acls = deserializeACLS(settings.accounts);

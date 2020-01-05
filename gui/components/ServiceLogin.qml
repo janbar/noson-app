@@ -105,7 +105,7 @@ Rectangle {
             width: parent.width
 
             onClicked: {
-                mainView.jobRunning = true
+                mainView.jobRunning = true // it will be cleared on delayLoginService finished
                 delayLoginService.start()
             }
         }
