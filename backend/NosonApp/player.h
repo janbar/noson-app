@@ -132,6 +132,7 @@ public:
   Q_INVOKABLE Future* tryPlayStream(const QString& url, const QString& title);
   Q_INVOKABLE Future* tryPlayFavorite(const QVariant& payload);
   Q_INVOKABLE Future* tryPlayPulse();
+  Q_INVOKABLE Future* tryCurrentTrackPosition();
 
   Q_INVOKABLE Future* trySetTreble(double val);
   Q_INVOKABLE Future* trySetBass(double val);
@@ -766,6 +767,15 @@ private:
     double m_volume;
   };
 
+  class PromiseCurrentTrackPosition : public Promise
+  {
+  public:
+    PromiseCurrentTrackPosition(Player& player)
+    : m_player(player) { }
+    void run() override;
+  private:
+    Player& m_player;
+  };
 };
 
 }

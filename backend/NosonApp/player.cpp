@@ -432,6 +432,13 @@ Future* Player::tryPlayPulse()
   return new Future(new PromisePlayPulse(*this), m_sonos);
 }
 
+Future* Player::tryCurrentTrackPosition()
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseCurrentTrackPosition(*this), m_sonos);
+}
+
 Future* Player::trySetTreble(double val)
 {
   if (!m_sonos)
@@ -1771,5 +1778,11 @@ void Player::PromiseSetVolumeGroup::run()
 void Player::PromiseSetVolume::run()
 {
   bool r = m_player.setVolume(m_uuid, m_volume);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseCurrentTrackPosition::run()
+{
+  int r = m_player.currentTrackPosition();
   setResult(QVariant(r));
 }
