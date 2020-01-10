@@ -47,7 +47,7 @@ Item {
     property string playbackState: ""
     readonly property bool isPlaying: (playbackState === "PLAYING")
     property int trackPosition: 0
-    property int trackDuration: 1
+    property int trackDuration: 0
     property int volumeMaster: 0
     property int bass: 0
     property int treble: 0
@@ -404,6 +404,16 @@ Item {
         return false;
     }
 
+    function syncTrackPosition() {
+        var future = zone.handle.tryCurrentTrackPosition();
+        future.finished.connect(function(result) {
+            var npos = (result > 0 ? 1000 * result : 0);
+            player.trackPosition = npos > player.trackDuration ? 0 : npos;
+            //customdebug("sync position to " + player.trackPosition);
+        });
+        future.start(false);
+    }
+
     function isPlayingQueued() {
         return player.trackDuration > 0;
     }
@@ -437,7 +447,9 @@ Item {
         player.zoneName = zone.handle.zoneName;
         player.zoneShortName = zone.handle.zoneShortName;
         player.controllerURI = zone.handle.controllerURI;
-        player.sleepTimerEnabled = zone.handle.remainingSleepTimerDuration() > 0 ? true : false;
+        player.remainingSleepTimerDuration(function(result) {
+            player.sleepTimerEnabled = result > 0 ? true : false
+        });
         trackQueue.initQueue(zone.handle);
     }
 
@@ -453,9 +465,12 @@ Item {
         player.currentProtocol = zone.handle.currentProtocol;
         player.trackDuration = 1000 * zone.handle.currentTrackDuration;
         // reset position
-        var npos = 1000 * zone.handle.currentTrackPosition();
-        player.trackPosition = npos > player.trackDuration ? 0 : npos;
-
+        if (zone.handle.currentTrackDuration > 0) {
+            player.syncTrackPosition();
+        } else {
+            player.trackPosition = 0;
+        }
+        // reset cover
         if (player.currentProtocol == 1) {
             player.covers = [{art: "qrc:/images/linein.png"}];
         } else if (player.currentProtocol == 5) {
@@ -492,24 +507,23 @@ Item {
 
     function handleZPPlaybackStateChanged() {
         player.playbackState = zone.handle.playbackState;
-        if (zone.handle.playbackState === "PLAYING" && player.currentIndex >= 0) {
+        if (zone.handle.playbackState === "PLAYING" && zone.handle.currentIndex >= 0 &&
+                zone.handle.currentTrackDuration > 0) {
             // Starting playback of queued track the position can be resetted without any event
             // from the SONOS device. This hack query to retrieve the real position after a short
             // time (3sec).
-            syncPosition.start();
+            delaySyncTrackPosition.start();
         } else if (zone.handle.playbackState === "STOPPED") {
             stopped();
         }
     }
 
     Timer {
-        id: syncPosition
+        id: delaySyncTrackPosition
         interval: 3000
         onTriggered: {
-            if (isPlaying) {
-                var npos = 1000 * zone.handle.currentTrackPosition();
-                player.trackPosition = npos > player.trackDuration ? 0 : npos;
-                customdebug("sync position to " + player.trackPosition);
+            if (isPlaying && trackDuration > 0) {
+                syncTrackPosition();
             }
         }
     }
