@@ -136,9 +136,8 @@ Item {
 
             // do not stack more than one page for artist view
             // do not show the artist view for an item of service
-            if (forceActionMore || (
-                    !pageStack.find(function(page) { return page.objectName === "artistViewPage"; }) &&
-                    !Sonos.isItemFromService(songInfo.model.payload))) {
+            if (!pageStack.find(function(page) { return page.objectName === "artistViewPage"; }) &&
+                    (forceActionMore || !Sonos.isItemFromService(songInfo.model.payload))) {
                 buttonMore.visible = true;
             } else {
                 buttonMore.visible = false;
