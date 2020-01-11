@@ -153,7 +153,7 @@ Item {
             anchors.right: parent.right
             anchors.rightMargin: - units.gu(1)
             anchors.verticalCenter: parent.verticalCenter
-            height: units.gu(5) // smaller
+            height: units.gu(6)
             source: renderingBubble.active ? "qrc:/sfos/images/icon-m-settings.svg" : "image://theme/icon-m-sounds"
             opacity: 1.0
             onClicked: {
