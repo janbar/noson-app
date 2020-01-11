@@ -17,6 +17,7 @@
 
 import QtQuick 2.0
 import Sailfish.Silica 1.0
+import "../"
 
 CoverBackground {
 
@@ -48,12 +49,12 @@ CoverBackground {
 
         CoverAction {
             iconSource: "image://theme/icon-cover-next"
-            onTriggered: player.nextSong();
+            onTriggered: player.nextSong(mainView.actionFinished);
         }
 
         CoverAction {
             iconSource: player.isPlaying ? "image://theme/icon-cover-pause" : "image://theme/icon-cover-play"
-            onTriggered: player.toggle();
+            onTriggered: player.toggle(mainView.actionFinished);
         }
     }
 }
