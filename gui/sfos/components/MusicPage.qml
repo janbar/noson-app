@@ -49,7 +49,8 @@ Page {
     property alias removeSelectedVisible: removeSelected.visible
     property alias footer: footerToolbar
     property alias header: pageHeader
-    property alias pageMenu: pageMenu._contentColumn
+    property alias pageMenuActive: pageMenu.active
+    property alias pageMenuContent: pageMenu._contentColumn
     property alias pageMenuQuickSelect: pageMenu.quickSelect
     property alias optionsMenu: optionsMenu._contentColumn
     property alias musicToolbar: musicToolbar

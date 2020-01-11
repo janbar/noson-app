@@ -157,7 +157,7 @@ MusicPage {
     Component.onCompleted: {
         console.debug("Populating menu")
         for (var i=0; i< tabs.rowCount() ; i++){
-            var newMenuItem = menuItemComp.createObject(pageMenu, {"text" : tabs.get(i).title, "source" : tabs.get(i).source})
+            var newMenuItem = menuItemComp.createObject(pageMenuContent, {"text" : tabs.get(i).title, "source" : tabs.get(i).source})
             newMenuItem.onClicked.connect(tabs.pushPage)
         }
     }

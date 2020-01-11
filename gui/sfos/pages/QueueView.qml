@@ -42,9 +42,9 @@ MusicPage {
         }
     }
     Component.onCompleted: {
-        var newMenuItem = menuItemComp.createObject(pageMenu, {"text" : qsTr("Manage Queue") })
+        var newMenuItem = menuItemComp.createObject(pageMenuContent, {"text" : qsTr("Manage Queue") })
         newMenuItem.onClicked.connect(dialogManageQueue.open)
-        newMenuItem = menuItemComp.createObject(pageMenu, {"text" : qsTr("Select Source") })
+        newMenuItem = menuItemComp.createObject(pageMenuContent, {"text" : qsTr("Select Source") })
         newMenuItem.onClicked.connect(dialogSelectSource.open)
     }
 }

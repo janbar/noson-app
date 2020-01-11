@@ -222,9 +222,9 @@ MusicPage {
             isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
 
             console.debug("Populating menu")
-            menuAddItemToFavorites = menuItemComp.createObject(pageMenu, {"text" : qsTr("Add to favorites"), "visible" : !artistViewPage.isFavorite})
+            menuAddItemToFavorites = menuItemComp.createObject(pageMenuContent, {"text" : qsTr("Add to favorites"), "visible" : !artistViewPage.isFavorite})
             menuAddItemToFavorites.onClicked.connect(onMenuAddItemToFavorites)
-            menuRemoveFromFavorites = menuItemComp.createObject(pageMenu, {"text" : qsTr("Remove from favorites"), "visible" : artistViewPage.isFavorite})
+            menuRemoveFromFavorites = menuItemComp.createObject(pageMenuContent, {"text" : qsTr("Remove from favorites"), "visible" : artistViewPage.isFavorite})
             menuRemoveFromFavorites.onClicked.connect(onMenuRemoveFromFavorites)
         }
     }
