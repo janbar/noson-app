@@ -20,6 +20,7 @@ import QtQuick 2.2
 import QtQuick.Layouts 1.1
 import Sailfish.Silica 1.0
 import QtQml.Models 2.3
+import "../"
 
 DialogBase {
     id: dialog
@@ -45,15 +46,15 @@ DialogBase {
         font.weight: Font.Normal
     }
 
-    Button {
+    MusicIcon {
         anchors.horizontalCenter: parent.horizontalCenter
+        label.text: qsTr("Update music index now")
+        source: "image://theme/icon-s-device-download"
         height: units.gu(6)
-        text: qsTr("Update music index now")
         onClicked: {
             updateMusicIndex();
             dialog.close();
         }
         enabled: !shareIndexInProgress
     }
-
 }

@@ -45,11 +45,10 @@ Rectangle {
         MusicIcon {
             id: reload
             anchors.horizontalCenter: parent.horizontalCenter
-            visible: true
-            source: "image://theme/icon-m-reload"
-            height: units.gu(5)
-            onClicked: reloadClicked()
             label.text: qsTr("Retry")
+            source: "image://theme/icon-m-reload"
+            height: units.gu(6)
+            onClicked: reloadClicked()
         }
     }
 }

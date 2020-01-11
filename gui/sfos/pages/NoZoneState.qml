@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.1
 import Sailfish.Silica 1.0
 import QtGraphicalEffects 1.0
 import NosonThumbnailer 1.0
+import "../components/"
 
 Page {
     id: noZoneStatePage
@@ -175,13 +176,12 @@ Page {
                 wrapMode: Text.WordWrap
             }
 
-            Button {
-                //background: green
-                height: units.gu(5)
-                width: units.gu(36)
+            MusicIcon {
                 anchors.horizontalCenter: parent.horizontalCenter
                 //: this appears in a button with limited space (around 30 characters)
-                text: qsTr("Search for Sonos zones")
+                label.text: qsTr("Search for Sonos zones")
+                source: "image://theme/icon-m-sync"
+                height: units.gu(6)
                 enabled: !mainView.jobRunning
                 onClicked: {
                     Thumbnailer.reset(); // reset thumbnailer state

@@ -20,7 +20,7 @@ import QtQuick 2.2
 import Sailfish.Silica 1.0
 import QtQuick.Layouts 1.1
 import NosonApp 1.0
-
+import "../"
 
 DialogBase {
     id: dialog
@@ -142,10 +142,12 @@ DialogBase {
         sourceOutput.visible = true
     }
 
-    Button {
+    MusicIcon {
         id: buttonPlayStream
         anchors.horizontalCenter: parent.horizontalCenter
-        text: qsTr("Play stream")
+        label.text: qsTr("Play stream")
+        source: "image://theme/icon-m-play"
+        height: units.gu(6)
         onClicked: {
             sourceOutput.visible = false // make sure its hidden now if there was an error last time
             if (url.text.length > 0) { // make sure something is acually inputed

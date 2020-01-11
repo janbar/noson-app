@@ -234,12 +234,14 @@ Item {
             NumberAnimation { duration: 500 }
         }
 
-        Button {
+        MusicIcon {
             id: buttonMore
             visible: false
             anchors.horizontalCenter: parent.horizontalCenter
             //: this appears in a button with limited space (around 30 characters)
-            text: qsTr("More")
+            label.text: qsTr("More")
+            source: "image://theme/icon-m-search"
+            height: units.gu(6)
             onClicked: {
                 // returning result DialogResult.None
                 dialog.close();

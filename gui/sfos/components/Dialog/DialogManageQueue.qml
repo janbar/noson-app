@@ -18,6 +18,7 @@
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
+import "../"
 
 DialogBase {
     id: dialog
@@ -51,9 +52,11 @@ DialogBase {
         placeholderText: qsTr("Enter playlist name")
     }
 
-    Button {
+    MusicIcon {
         anchors.horizontalCenter: parent.horizontalCenter
-        text: qsTr("Save queue")
+        label.text: qsTr("Save queue")
+        source: "image://theme/icon-s-device-upload"
+        height: units.gu(6)
         onClicked: {
             newplaylistoutput.visible = false // make sure its hidden now if there was an error last time
             if (playlistName.text.length > 0) { // make sure something is acually inputed
@@ -89,12 +92,13 @@ DialogBase {
         wrapMode: Text.WordWrap
         color: styleMusic.dialog.labelColor
         font.pixelSize: units.fx("medium")
-        font.bold: true
     }
 
-    Button {
+    MusicIcon {
         anchors.horizontalCenter: parent.horizontalCenter
-        text: qsTr("Clear queue")
+        label.text: qsTr("Clear queue")
+        source: "image://theme/icon-m-delete"
+        height: units.gu(6)
         onClicked: {
             // clearing queue
             removeAllTracksFromQueue();

@@ -53,7 +53,6 @@ Item {
             wrapMode: Label.WordWrap
             color: styleMusic.dialog.labelColor
             font.pixelSize: units.fx("large")
-            font.bold: true
         }
    }
 
