@@ -29,6 +29,7 @@ import "../components/Dialog"
 MusicPage {
     id: servicePage
     objectName: "servicePage"
+    pageMenuEnabled: !mediaModel.isRoot
     isRoot: mediaModel.isRoot
     multiView: true
     searchable: true

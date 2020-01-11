@@ -35,6 +35,7 @@ MusicPage {
     //: this appears in the header with limited space (around 20 characters)
     pageTitle: qsTr("Select playlist")
     pageFlickable: addtoPlaylistView
+    pageMenuEnabled: false
     searchable: AllPlaylistsModel.count > 1
 
     state: "addToPlaylist"

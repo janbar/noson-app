@@ -30,6 +30,7 @@ MusicPage {
     objectName: "genresPage"
     pageTitle: qsTr("Genres")
     pageFlickable: genreGridView
+    pageMenuEnabled: false
     searchable: true
 
     Component.onCompleted: {

@@ -29,6 +29,7 @@ MusicPage {
     objectName: "addServicePage"
     pageTitle: qsTr("Add Service")
     pageFlickable: serviceGrid
+    pageMenuEnabled: false
     searchable: false
 
     MusicGridView {

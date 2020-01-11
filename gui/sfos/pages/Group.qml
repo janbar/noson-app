@@ -29,6 +29,7 @@ MusicPage {
     objectName: "groupPage"
     pageTitle: qsTr("Group")
     pageFlickable: groupList
+    pageMenuEnabled: false
     isListView: true
     listview: groupList
     showToolbar: false

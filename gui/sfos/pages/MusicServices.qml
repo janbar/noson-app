@@ -30,6 +30,7 @@ MusicPage {
     objectName: "servicesPage"
     pageTitle: qsTr("My Services")
     pageFlickable: serviceGrid.visible ? serviceGrid : serviceList
+    pageMenuEnabled: true
     multiView: true
     addVisible: true
 

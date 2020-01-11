@@ -28,6 +28,7 @@ MusicPage {
     objectName: "artistViewPage"
     visible: false
     pageFlickable: artistAlbumView
+    pageMenuEnabled: true
 
     property var containerItem: null
 

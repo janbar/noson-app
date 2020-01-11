@@ -28,6 +28,7 @@ MusicPage {
     objectName: "artistViewPage"
     visible: false
     pageFlickable: artistAlbumView
+    pageMenuEnabled: false
 
     property string artist: ""
     property var covers: []

@@ -29,6 +29,7 @@ MusicPage {
     id: albumsPage
     objectName: "albumsPage"
     pageFlickable: albumGridView
+    pageMenuEnabled: false
     searchable: true
 
     AlbumList {

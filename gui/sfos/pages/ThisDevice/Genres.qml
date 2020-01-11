@@ -29,6 +29,7 @@ MusicPage {
     id: genresPage
     objectName: "genresPage"
     pageFlickable: genreGridView
+    pageMenuEnabled: false
     searchable: true
 
     GenreList {

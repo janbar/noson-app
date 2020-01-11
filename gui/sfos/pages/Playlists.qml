@@ -30,6 +30,7 @@ MusicPage {
     objectName: "playlistsPage"
     pageTitle: qsTr("Playlists")
     pageFlickable: playlistsGrid
+    pageMenuEnabled: false
     searchable: AllPlaylistsModel.count > 1
     addVisible: true
 

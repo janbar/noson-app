@@ -30,6 +30,7 @@ MusicPage {
     objectName: "artistsPage"
     pageTitle: qsTr("Artists")
     pageFlickable: artistGridView
+    pageMenuEnabled: false
     searchable: true
 
     Component.onCompleted: {

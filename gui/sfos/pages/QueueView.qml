@@ -28,6 +28,7 @@ MusicPage {
     objectName: "queuePage"   
     pageTitle: qsTr("Queue")
     pageFlickable: queue
+    pageMenuEnabled: true
     isListView: true
     listview: queue.listview
 

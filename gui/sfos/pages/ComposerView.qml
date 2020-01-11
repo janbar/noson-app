@@ -30,6 +30,7 @@ MusicPage {
     objectName: "composerViewPage"
     visible: false
     pageFlickable: composerAlbumView
+    pageMenuEnabled: true
 
     property var containerItem: null
 

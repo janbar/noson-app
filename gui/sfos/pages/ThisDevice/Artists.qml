@@ -29,6 +29,7 @@ MusicPage {
     id: artistsPage
     objectName: "artistsPage"
     pageFlickable: artistGridView
+    pageMenuEnabled: false
     searchable: true
 
     ArtistList {

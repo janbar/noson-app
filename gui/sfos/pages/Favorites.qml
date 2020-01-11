@@ -31,6 +31,7 @@ MusicPage {
     objectName: "favoritesPage"
     pageTitle: qsTr("Favorites")
     pageFlickable: favoriteGrid.visible ? favoriteGrid : favoriteList
+    pageMenuEnabled: false
     multiView: true
     searchable: true
 

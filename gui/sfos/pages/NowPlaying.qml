@@ -27,6 +27,7 @@ MusicPage {
 
     pageTitle: qsTr("Now playing")
     pageFlickable: nowPlayingView.flickable
+    pageMenuEnabled: true
     isListView: false
     showToolbar: false
 

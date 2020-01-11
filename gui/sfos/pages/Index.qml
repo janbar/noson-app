@@ -29,6 +29,7 @@ import "../components/Dialog"
 MusicPage {
     id: indexPage
     objectName: "indexPage"
+    pageMenuEnabled: false
     isRoot: true
     multiView: true
     searchable: false

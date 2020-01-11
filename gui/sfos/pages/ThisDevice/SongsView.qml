@@ -30,6 +30,7 @@ MusicPage {
     objectName: "songsPage"
     visible: false
     pageFlickable: songList
+    pageMenuEnabled: false
     isListView: true
     listview: songList
 

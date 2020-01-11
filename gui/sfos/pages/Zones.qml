@@ -30,6 +30,7 @@ MusicPage {
     objectName: "zonePage"
     pageTitle: qsTr("Zones")
     pageFlickable: zoneList
+    pageMenuEnabled: false
     isListView: true
     listview: zoneList
 

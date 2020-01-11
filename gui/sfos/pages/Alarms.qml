@@ -31,6 +31,7 @@ MusicPage {
     objectName: "alarmsPage"
     pageTitle: qsTr("Alarm clock")
     pageFlickable: alarmList
+    pageMenuEnabled: false
     isListView: true
     listview: alarmList
     addVisible: true

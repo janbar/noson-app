@@ -30,6 +30,7 @@ MusicPage {
     objectName: "albumsPage"
     pageTitle: qsTr("Albums")
     pageFlickable: albumGridView
+    pageMenuEnabled: false
     searchable: true
 
     Component.onCompleted: {
