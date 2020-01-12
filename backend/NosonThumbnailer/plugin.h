@@ -58,6 +58,8 @@ public:
 
   Q_INVOKABLE bool configure(const QString& apiName, const QString& apiKey);
 
+  Q_INVOKABLE QString apiName() { return m_p->apiName(); }
+
   Q_INVOKABLE void setTrace(bool trace) { m_p->setTrace(trace); }
 
   Q_INVOKABLE void clearCache() { m_p->clearCache(); }

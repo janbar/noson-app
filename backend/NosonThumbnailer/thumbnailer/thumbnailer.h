@@ -206,6 +206,8 @@ namespace thumbnailer
 
     void configure(const QString& apiName, const QString& apiKey);
 
+    QString apiName();
+
     void setTrace(bool trace_client);
 
     void clearCache();

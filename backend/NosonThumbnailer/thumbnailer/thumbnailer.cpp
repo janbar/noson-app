@@ -97,6 +97,7 @@ namespace thumbnailer
 
     bool isValid() const;
     void configure(const QString& apiName, const QString& apiKey);
+    const char* apiName();
     void setTrace(bool trace_client);
     void clearCache();
     void reset();
@@ -391,6 +392,13 @@ namespace thumbnailer
     valid_ = true;
   }
 
+  const char* ThumbnailerImpl::apiName()
+  {
+    if (api_)
+      return api_->name();
+    return nullptr;
+  }
+
   void ThumbnailerImpl::setTrace(bool trace_client)
   {
     qInfo().noquote() << "thumbnailer: enable trace client";
@@ -585,6 +593,14 @@ namespace thumbnailer
   void Thumbnailer::configure(const QString& apiName, const QString &apiKey)
   {
     p_->configure(apiName, apiKey);
+  }
+
+  QString Thumbnailer::apiName()
+  {
+    const char* name = p_->apiName();
+    if (name)
+      return QString(name);
+    return QString();
   }
 
   void Thumbnailer::setTrace(bool trace_client)
