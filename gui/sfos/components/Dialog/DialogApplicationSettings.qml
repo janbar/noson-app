@@ -58,7 +58,7 @@ DialogBase {
             rightMargin: Theme.horizontalPageMargin
         }
         text: qsTr("By default thumbnails are downloaded from %1. You can configure another provider by specifying the API key.")
-                .arg("<b>DEEZER</b>")
+                .arg("<b>deezer</b>")
         font.pixelSize: units.fx("medium")
         wrapMode: Text.WordWrap
         color: styleMusic.view.foregroundColor

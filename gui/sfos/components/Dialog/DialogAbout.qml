@@ -145,7 +145,7 @@ DialogBase {
             width: units.gu(10)
             height: units.gu(2.5)
             fillMode: Image.PreserveAspectCrop
-            source: "qrc:/images/deezer.png"
+            source: Qt.colorEqual(styleMusic.view.primaryColor, "black") ? "qrc:/images/Deezer_Logo_RVB_Black.svg" : "qrc:/images/Deezer_Logo_RVB_White.svg"
             sourceSize.width: width
             sourceSize.height: height
             MouseArea {

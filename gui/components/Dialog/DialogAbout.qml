@@ -109,7 +109,7 @@ DialogBase {
             width: units.gu(10)
             height: units.gu(2.5)
             fillMode: Image.PreserveAspectCrop
-            source: "qrc:/images/deezer.png"
+            source: settings.theme === 1 ? "qrc:/images/Deezer_Logo_RVB_White.svg" : "qrc:/images/Deezer_Logo_RVB_Black.svg"
             sourceSize.width: width
             sourceSize.height: height
             MouseArea {

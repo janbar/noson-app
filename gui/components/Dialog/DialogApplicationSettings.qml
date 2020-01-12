@@ -216,8 +216,7 @@ DialogBase {
                 property int acceptedValue: 0
                 model: [
                     qsTr("Light"),
-                    qsTr("Dark"),
-                    qsTr("System default")
+                    qsTr("Dark")
                 ]
 
                 currentIndex: settings.theme

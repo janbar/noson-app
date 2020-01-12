@@ -173,7 +173,6 @@
         <file>components/Dialog/DialogAbout.qml</file>
         <file>components/Dialog/DialogApplicationSettings.qml</file>
         <file>images/lastfm.png</file>
-        <file>images/deezer.png</file>
         <file>images/download.svg</file>
         <file>sfos/harbour-noson.qml</file>
         <file>sfos/cover/CoverPage.qml</file>
@@ -277,5 +276,7 @@
         <file>sfos/images/icon-m-grip.svg</file>
         <file>components/DataFailureState.qml</file>
         <file>sfos/components/DataFailureState.qml</file>
+        <file>images/Deezer_Logo_RVB_Black.svg</file>
+        <file>images/Deezer_Logo_RVB_White.svg</file>
     </qresource>
 </RCC>
