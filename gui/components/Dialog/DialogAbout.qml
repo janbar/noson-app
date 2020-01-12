@@ -19,6 +19,7 @@ import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import NosonApp 1.0
+import NosonThumbnailer 1.0
 
 
 DialogBase {
@@ -92,6 +93,7 @@ DialogBase {
     GridLayout {
         Layout.fillWidth: true
         Image {
+            id: lastfm
             Layout.alignment: Qt.AlignCenter
             width: units.gu(10)
             height: units.gu(2.5)
@@ -103,8 +105,10 @@ DialogBase {
                 anchors.fill: parent
                 onClicked: Qt.openUrlExternally("https://www.last.fm")
             }
+            visible: (thumbApiName === "LASTFM")
         }
         Image {
+            id: deezer
             Layout.alignment: Qt.AlignCenter
             width: units.gu(10)
             height: units.gu(2.5)
@@ -116,6 +120,13 @@ DialogBase {
                 anchors.fill: parent
                 onClicked: Qt.openUrlExternally("https://www.deezer.com")
             }
+            visible: (thumbApiName === "DEEZER")
         }
+    }
+
+    property string thumbApiName: ""
+
+    onOpened: {
+        thumbApiName = Thumbnailer.apiName();
     }
 }

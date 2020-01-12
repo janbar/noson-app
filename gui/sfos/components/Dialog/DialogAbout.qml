@@ -20,6 +20,7 @@ import QtQuick 2.2
 import Sailfish.Silica 1.0
 import QtQuick.Layouts 1.1
 import NosonApp 1.0
+import NosonThumbnailer 1.0
 
 DialogBase {
     id: dialog
@@ -139,6 +140,7 @@ DialogBase {
                 anchors.fill: parent
                 onClicked: Qt.openUrlExternally("https://www.last.fm")
             }
+            visible: (thumbApiName === "LASTFM")
         }
         Image {
             Layout.alignment: Qt.AlignCenter
@@ -152,6 +154,13 @@ DialogBase {
                 anchors.fill: parent
                 onClicked: Qt.openUrlExternally("https://www.deezer.com")
             }
+            visible: (thumbApiName === "DEEZER")
         }
+    }
+
+    property string thumbApiName: ""
+
+    onOpened: {
+        thumbApiName = Thumbnailer.apiName();
     }
 }
