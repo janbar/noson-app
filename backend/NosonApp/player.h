@@ -308,6 +308,8 @@ private:
   Locked<ManagedQueue> m_queue;
   unsigned m_queueUpdateID;
 
+  bool m_shareIndexInProgress;
+
   static void playerEventCB(void* handle);
 
   Mpris2* m_mpris2;

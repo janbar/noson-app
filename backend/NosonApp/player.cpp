@@ -42,6 +42,7 @@ Player::Player(QObject *parent)
 , m_currentProtocol(-1)
 , m_queue(ManagedQueue(nullptr, ""))
 , m_queueUpdateID(0)
+, m_shareIndexInProgress(false)
 , m_mpris2(nullptr)
 {
 }
@@ -56,6 +57,8 @@ Player::~Player()
       unregisterContent(queue->model);
     }
   }
+  if (m_sonos && m_shareIndexInProgress)
+    m_sonos->shareIndexFinished();
   disableMPRIS2();
   m_player.reset();
   m_sonos = nullptr;
@@ -1506,6 +1509,18 @@ void Player::playerEventCB(void* handle)
 
     if ((events & SONOS::SVCEvent_ContentDirectoryChanged))
     {
+      SONOS::ContentProperty prop = p->GetContentProperty();
+
+      // Signal share index events
+      if (player->m_sonos && prop.ShareIndexInProgress != player->m_shareIndexInProgress)
+      {
+        if (prop.ShareIndexInProgress)
+          emit player->m_sonos->shareIndexInProgress();
+        else
+          emit player->m_sonos->shareIndexFinished();
+        player->m_shareIndexInProgress = prop.ShareIndexInProgress;
+      }
+
       Locked<ManagedQueue>::pointer cl = player->m_queue.Get();
       // find the base of the model from its root
       if (cl->model)
@@ -1517,7 +1532,6 @@ void Player::playerEventCB(void* handle)
         else
           _base.append(cl->model->m_root.left(slash));
 
-        SONOS::ContentProperty prop = p->GetContentProperty();
         for (std::vector<std::pair<std::string, unsigned> >::const_iterator uit = prop.ContainerUpdateIDs.begin(); uit != prop.ContainerUpdateIDs.end(); ++uit)
         {
           qDebug("%s: container [%s] has being updated to %u", __FUNCTION__, uit->first.c_str(), uit->second);
