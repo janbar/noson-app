@@ -357,19 +357,23 @@ ApplicationWindow {
         target: Sonos
         onAlarmClockChanged: alarmsModel.asyncLoad()
         onShareIndexInProgress: {
-            shareIndexInProgress = true;
-            AllAlbumsModel.clearModel();
-            AllArtistsModel.clearModel();
-            AllComposersModel.clearModel();
-            AllGenresModel.clearModel();
+            if (!shareIndexInProgress) {
+                shareIndexInProgress = true;
+                AllAlbumsModel.clearModel();
+                AllArtistsModel.clearModel();
+                AllComposersModel.clearModel();
+                AllGenresModel.clearModel();
+            }
         }
         onShareIndexFinished: {
-            shareIndexInProgress = false;
-            // Queue item metadata could be outdated: force reloading of the queue
-            player.trackQueue.loadQueue();
-            // Force reload genres to be sure the items count is uptodate
-            if (!AllGenresModel.isNew()) {
-                AllGenresModel.asyncLoad();
+            if (shareIndexInProgress) {
+                shareIndexInProgress = false;
+                // Queue item metadata could be outdated: force reloading of the queue
+                player.trackQueue.loadQueue();
+                // Force reload genres to be sure the items count is uptodate
+                if (!AllGenresModel.isNew()) {
+                    AllGenresModel.asyncLoad();
+                }
             }
         }
     }
