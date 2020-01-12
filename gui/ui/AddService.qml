@@ -51,7 +51,7 @@ MusicPage {
             secondaryTextVisible: false
             isFavorite: false
 
-            noCover: "qrc:/images/radio.png"
+            noCover: ""
             coverSources: [{art: model.type === "65031" ? "qrc:/images/tunein.png" : model.icon}]
 
             onClicked: {

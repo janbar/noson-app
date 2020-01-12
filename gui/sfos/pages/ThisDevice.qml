@@ -70,7 +70,7 @@ MusicPage {
             color: "transparent"
 
             imageSources: [{art: model.art}]
-
+            noCover: ""
             coverSize: units.gu(5)
 
             column: Column {
@@ -98,7 +98,7 @@ MusicPage {
             id: favoriteCard
             primaryText: model.title
             secondaryTextVisible: false
-
+            noCover: ""
             coverSources: [{art: model.art}]
 
             onClicked: clickItem(model)

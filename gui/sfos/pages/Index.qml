@@ -54,7 +54,7 @@ MusicPage {
             onClicked: clickItem(model)
 
             color: listItem.held ? "lightgrey" : "transparent"
-
+            noCover: ""
             imageSources: [{art: model.art}]
 
             coverSize: units.gu(5)
@@ -87,7 +87,7 @@ MusicPage {
             id: favoriteCard
             primaryText: model.title
             secondaryTextVisible: false
-
+            noCover: ""
             coverSources: [{art: model.art}]
 
             onClicked: clickItem(model)
