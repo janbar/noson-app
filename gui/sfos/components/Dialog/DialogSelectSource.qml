@@ -180,6 +180,8 @@ DialogBase {
                 default:
                     selector.currentIndex = 0;
             }
+        } else {
+           showSelector = false;
         }
     }
 
