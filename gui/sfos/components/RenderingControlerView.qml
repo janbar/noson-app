@@ -89,7 +89,7 @@ MusicListView {
                 id: controlerContainer
                 anchors {
                     left: parent.left
-                    leftMargin: units.gu(2.5)
+                    leftMargin: units.gu(1.5)
                     right: parent.right
                 }
                 height: units.gu(5)
@@ -167,11 +167,10 @@ MusicListView {
                 MusicIcon {
                     id: gripButton
                     anchors.right: parent.right
-                    anchors.rightMargin: units.gu(1)
                     anchors.verticalCenter: parent.verticalCenter
                     source: "qrc:/sfos/images/icon-m-grip.svg"
                     opacity: 0.1
-                    height: units.gu(5)
+                    height: units.gu(6)
                     width: height
                     color: renderingControlList.foregroundColor
                 }

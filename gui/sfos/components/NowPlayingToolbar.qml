@@ -52,9 +52,9 @@ Item {
         id: musicToolbarFullVolumeContainer
         anchors {
             left: parent.left
-            leftMargin: units.gu(2)
+            leftMargin: units.gu(1)
             right: parent.right
-            rightMargin: units.gu(2)
+            rightMargin: units.gu(1)
             top: mirror ? parent.top : musicToolbarFullButtonContainer.bottom
         }
         height: preferedHeight * 0.4375 // 7/16
