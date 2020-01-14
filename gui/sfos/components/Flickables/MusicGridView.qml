@@ -22,12 +22,7 @@ import Sailfish.Silica 1.0
 
 SilicaGridView {
     id: gridView
-    anchors {
-        bottomMargin: units.gu(1)
-        fill: parent
-        leftMargin: units.gu(0)
-        rightMargin: units.gu(0)
-    }
+    anchors.fill: parent
     cellHeight: cellSize + heightOffset
     cellWidth: cellSize + widthOffset
 
