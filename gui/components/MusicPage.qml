@@ -94,10 +94,9 @@ Page {
             enabled: opacity > 0
 
             Rectangle {
+                anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.topMargin: units.gu(1)
                 anchors.leftMargin: units.gu(1)
                 anchors.rightMargin: units.gu(1)
                 height: units.gu(5)
@@ -208,10 +207,9 @@ Page {
             }
 
             Rectangle {
+                anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.topMargin: units.gu(1)
                 anchors.leftMargin: units.gu(1)
                 anchors.rightMargin: units.gu(1)
                 height: units.gu(5)
@@ -294,10 +292,9 @@ Page {
             }
 
             Rectangle {
+                anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.topMargin: units.gu(1)
                 anchors.leftMargin: units.gu(1)
                 anchors.rightMargin: units.gu(1)
                 height: units.gu(3)
@@ -363,10 +360,9 @@ Page {
             }
 
             Rectangle {
+                anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.topMargin: units.gu(1)
                 anchors.leftMargin: units.gu(1)
                 anchors.rightMargin: units.gu(1)
                 height: units.gu(3)
