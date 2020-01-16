@@ -404,10 +404,6 @@ ApplicationWindow {
         onShareIndexInProgress: {
             if (!shareIndexInProgress) {
                 shareIndexInProgress = true;
-                AllAlbumsModel.clearModel();
-                AllArtistsModel.clearModel();
-                AllComposersModel.clearModel();
-                AllGenresModel.clearModel();
             }
         }
         onShareIndexFinished: {
