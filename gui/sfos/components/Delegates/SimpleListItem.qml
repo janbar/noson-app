@@ -33,11 +33,7 @@ ListItem {
 
     Rectangle {
         id: content
-        anchors {
-            horizontalCenter: parent.horizontalCenter
-            verticalCenter: parent.verticalCenter
-        }
-        width: area.width
+        anchors.fill: parent
 
         color: area.color
         Behavior on color { ColorAnimation { duration: 100 } }
