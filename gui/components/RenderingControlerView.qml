@@ -127,7 +127,7 @@ MusicListView {
                     anchors.rightMargin: units.gu(2)
                     anchors.right: gripButton.left
                     anchors.verticalCenter: parent.verticalCenter
-                    wheelEnabled: false // wheel cannot be handle here
+                    wheelEnabled: true
                     stepSize: 2.5
                     live: true
                     from: 0
@@ -142,6 +142,11 @@ MusicListView {
                     handleBorderColor: handleColor
                     backgroundColor: styleMusic.playerControls.volumeBackgroundColor
                     foregroundColor: styleMusic.playerControls.volumeForegroundColor
+
+                    onMoved: {
+                        if (!pressed)
+                            setVolume.start();
+                    }
 
                     onValueChanged: {
                         if (pressed)
@@ -180,6 +185,19 @@ MusicListView {
                                 finger(held);
                             }
                         }
+                    }
+
+                    Connections {
+                        target: model
+                        onVolumeChanged: {
+                            // update an icoming change when released only to be smoothest
+                            if (!volumeSlider.pressed)
+                                volumeSlider.value = model.volume;
+                        }
+                    }
+
+                    Component.onCompleted: {
+                        value = model.volume;
                     }
                 }
 

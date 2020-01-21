@@ -103,6 +103,11 @@ Item {
 
             property double inValue
 
+            onMoved: {
+                if (!pressed)
+                    setVolume.start();
+            }
+
             onValueChanged: {
                 if (Math.abs(value - inValue) >= 1.0) {
                     if (pressed && value > inValue + 5.0) {
