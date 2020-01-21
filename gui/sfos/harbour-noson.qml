@@ -201,6 +201,9 @@ ApplicationWindow {
                                 var future = Sonos.tryRenewSubscriptions();
                                 future.finished.connect(actionFinished);
                                 future.start();
+                                // resync track position after sleeping
+                                if (player.isPlaying && player.trackDuration > 0)
+                                    player.syncTrackPosition();
                             } else {
                                 noZone = true;
                             }
