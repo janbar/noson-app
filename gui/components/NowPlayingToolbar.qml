@@ -168,7 +168,7 @@ Item {
             id: settingsButton
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
-            height: units.gu(5) // smaller
+            height: units.gu(6)
             width: height
             source: "qrc:/images/settings.svg"
             opacity: 1.0

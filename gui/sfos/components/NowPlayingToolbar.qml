@@ -85,6 +85,7 @@ Item {
             id: volumeGroupSlider
             anchors.left: nowPlayingMuteButton.right
             anchors.leftMargin: units.gu(1)
+            anchors.rightMargin: units.gu(1)
             anchors.right: settingsButton.left
             anchors.verticalCenter: parent.verticalCenter
             leftMargin: units.gu(2)
@@ -151,7 +152,6 @@ Item {
         MusicIcon {
             id: settingsButton
             anchors.right: parent.right
-            anchors.rightMargin: - units.gu(1)
             anchors.verticalCenter: parent.verticalCenter
             height: units.gu(6)
             source: renderingBubble.active ? "qrc:/sfos/images/icon-m-settings.svg" : "image://theme/icon-m-sounds"
