@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017
+ * Copyright (C) 2017-2020
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -24,38 +24,40 @@ MouseArea {
     property alias source: icon.source
     property alias label: label
     property color color: styleMusic.view.foregroundColor
+    property color backgroundColor: "transparent"
     property color pressedColor: styleMusic.view.highlightedColor
     property alias animationRunning: icon.animationRunning
     property int animationInterval: 500 // slow flashing
     property alias iconSize: icon.height
+    property real borderPadding: units.gu(1)
     height: units.gu(5)
-    width: row.width + units.gu(2)
+    width: row.width + 2 * borderPadding
     enabled: true
     visible: true
     hoverEnabled: enabled && visible
 
+    Rectangle {
+        id: background
+        anchors.fill: parent
+        color: backgroundColor
+        radius: height / 2
+    }
+
     Row {
         id: row
-        spacing: units.gu(0.5)
+        spacing: label.text !== "" ? units.gu(0.5) : 0
         height: parent.height
         visible: false
-        anchors.verticalCenter: parent.verticalCenter
-
-        Item {
-            height: parent.height
-            width: units.gu(0.5)
-        }
+        anchors.centerIn: parent
 
         Image {
             id: icon
             anchors.verticalCenter: parent.verticalCenter
-            height: parent.height < units.gu(3) ? parent.height : (parent.height - units.gu(2))
+            height: parent.height < units.gu(3) ? parent.height : parent.height - 2 * borderPadding
             width: area.visible ? height : 0
             sourceSize.height: height
             sourceSize.width: width
             source: "qrc:/images/delete.svg"
-
-            property bool rotationRunning: false
 
             property bool animationRunning: false
 
@@ -84,7 +86,7 @@ MouseArea {
         Label {
             id: label
             anchors.verticalCenter: parent.verticalCenter
-            width: area.visible ? implicitWidth : 0
+            width: text !== "" && area.visible ? implicitWidth + units.gu(0.5) : 0
         }
     }
 
