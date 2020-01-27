@@ -192,12 +192,12 @@ MusicListView {
                         onVolumeChanged: {
                             // update an icoming change when released only to be smoothest
                             if (!volumeSlider.pressed)
-                                volumeSlider.value = model.volume;
+                                volumeSlider.value = model.volume > 0 ? model.volume : 0.0;
                         }
                     }
 
                     Component.onCompleted: {
-                        value = model.volume;
+                        value = model.volume > 0 ? model.volume : 0.0;
                     }
                 }
 
