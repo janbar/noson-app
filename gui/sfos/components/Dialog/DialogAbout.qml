@@ -150,7 +150,8 @@ DialogBase {
                 id: deezer
                 width: parent.width
                 fillMode: Image.PreserveAspectCrop
-                source: settings.theme === 1 ? "qrc:/images/Deezer_Logo_RVB_White.svg" : "qrc:/images/Deezer_Logo_RVB_Black.svg"
+                source: Qt.colorEqual(styleMusic.view.primaryColor, "black") ? "qrc:/images/Deezer_Logo_RVB_Black.svg"
+                                                                             : "qrc:/images/Deezer_Logo_RVB_White.svg"
                 sourceSize.width: width
                 visible: (thumbApiName === "DEEZER")
             }
