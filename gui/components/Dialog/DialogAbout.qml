@@ -90,37 +90,40 @@ DialogBase {
         text: qsTr("Thumbnails powered by:")
         font.pointSize: units.fs("medium")
     }
-    GridLayout {
-        Layout.fillWidth: true
-        Image {
-            id: lastfm
-            Layout.alignment: Qt.AlignCenter
+    Column {
+        width: dialog.availableWidth
+        Rectangle {
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "transparent"
             width: units.gu(10)
-            height: units.gu(2.5)
-            fillMode: Image.PreserveAspectCrop
-            source: "qrc:/images/lastfm.png"
-            sourceSize.width: width
-            sourceSize.height: height
+            height: units.gu(3)
             MouseArea {
                 anchors.fill: parent
-                onClicked: Qt.openUrlExternally("https://www.last.fm")
+                onClicked: {
+                    if (lastfm.visible)
+                        Qt.openUrlExternally("https://www.last.fm");
+                    else if (deezer.visible)
+                        Qt.openUrlExternally("https://www.deezer.com");
+                }
             }
-            visible: (thumbApiName === "LASTFM")
-        }
-        Image {
-            id: deezer
-            Layout.alignment: Qt.AlignCenter
-            width: units.gu(10)
-            height: units.gu(2.5)
-            fillMode: Image.PreserveAspectCrop
-            source: settings.theme === 1 ? "qrc:/images/Deezer_Logo_RVB_White.svg" : "qrc:/images/Deezer_Logo_RVB_Black.svg"
-            sourceSize.width: width
-            sourceSize.height: height
-            MouseArea {
-                anchors.fill: parent
-                onClicked: Qt.openUrlExternally("https://www.deezer.com")
+
+            Image {
+                id: lastfm
+                width: parent.width
+                fillMode: Image.PreserveAspectCrop
+                source: "qrc:/images/lastfm.png"
+                sourceSize.width: width
+                visible: (thumbApiName === "LASTFM")
             }
-            visible: (thumbApiName === "DEEZER")
+
+            Image {
+                id: deezer
+                width: parent.width
+                fillMode: Image.PreserveAspectCrop
+                source: settings.theme === 1 ? "qrc:/images/Deezer_Logo_RVB_White.svg" : "qrc:/images/Deezer_Logo_RVB_Black.svg"
+                sourceSize.width: width
+                visible: (thumbApiName === "DEEZER")
+            }
         }
     }
 

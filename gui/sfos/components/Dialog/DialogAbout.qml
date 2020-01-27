@@ -120,41 +120,40 @@ DialogBase {
         text: qsTr("Thumbnails powered by:")
         font.pixelSize: units.fx("medium")
     }
-    GridLayout {
-        anchors {
-            left: parent.left
-            right: parent.right
-            leftMargin: Theme.horizontalPageMargin
-            rightMargin: Theme.horizontalPageMargin
-        }
-        Layout.fillWidth: true
-        Image {
-            Layout.alignment: Qt.AlignCenter
+    Column {
+        width: parent.width
+        Rectangle {
+            anchors.horizontalCenter: parent.horizontalCenter
+            color: "transparent"
             width: units.gu(10)
-            height: units.gu(2.5)
-            fillMode: Image.PreserveAspectCrop
-            source: "qrc:/images/lastfm.png"
-            sourceSize.width: width
-            sourceSize.height: height
+            height: units.gu(3)
             MouseArea {
                 anchors.fill: parent
-                onClicked: Qt.openUrlExternally("https://www.last.fm")
+                onClicked: {
+                    if (lastfm.visible)
+                        Qt.openUrlExternally("https://www.last.fm");
+                    else if (deezer.visible)
+                        Qt.openUrlExternally("https://www.deezer.com");
+                }
             }
-            visible: (thumbApiName === "LASTFM")
-        }
-        Image {
-            Layout.alignment: Qt.AlignCenter
-            width: units.gu(10)
-            height: units.gu(2.5)
-            fillMode: Image.PreserveAspectCrop
-            source: Qt.colorEqual(styleMusic.view.primaryColor, "black") ? "qrc:/images/Deezer_Logo_RVB_Black.svg" : "qrc:/images/Deezer_Logo_RVB_White.svg"
-            sourceSize.width: width
-            sourceSize.height: height
-            MouseArea {
-                anchors.fill: parent
-                onClicked: Qt.openUrlExternally("https://www.deezer.com")
+
+            Image {
+                id: lastfm
+                width: parent.width
+                fillMode: Image.PreserveAspectCrop
+                source: "qrc:/images/lastfm.png"
+                sourceSize.width: width
+                visible: (thumbApiName === "LASTFM")
             }
-            visible: (thumbApiName === "DEEZER")
+
+            Image {
+                id: deezer
+                width: parent.width
+                fillMode: Image.PreserveAspectCrop
+                source: settings.theme === 1 ? "qrc:/images/Deezer_Logo_RVB_White.svg" : "qrc:/images/Deezer_Logo_RVB_Black.svg"
+                sourceSize.width: width
+                visible: (thumbApiName === "DEEZER")
+            }
         }
     }
 
