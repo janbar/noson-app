@@ -78,8 +78,24 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     setupApp(app);
 
+#if defined(SAILFISHOS)
+    QScopedPointer<QQuickView> view(SailfishApp::createView());
+
+#ifdef QT_STATICPLUGIN
+    importStaticPlugins(view->engine());
+#endif
+
+    view->setSource(QUrl("qrc:/sfos/harbour-noson.qml"));
+    QObject::connect(view->engine(), &QQmlApplicationEngine::quit, &app, QCoreApplication::quit);
+    // 100MB cache for network data
+    view->engine()->setNetworkAccessManagerFactory(new DiskCacheFactory(CACHE_SIZE));
+    // bind version string
+    view->engine()->rootContext()->setContextProperty("VersionString", QString(APP_VERSION));
+    view->showFullScreen();
+
+#else
     QSettings settings;
-#ifndef SAILFISHOS
+    QStringList availableStyles;
     QString style = QQuickStyle::name();
     if (!style.isEmpty())
         settings.setValue("style", style);
@@ -87,11 +103,7 @@ int main(int argc, char *argv[])
     {
         if (settings.value("style").isNull())
         {
-#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
             QQuickStyle::setStyle("Material");
-#else
-            QQuickStyle::setStyle("Material");
-#endif
             settings.setValue("style", QQuickStyle::name());
         }
         QQuickStyle::setStyle(settings.value("style").toString());
@@ -104,18 +116,17 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("VersionString", QString(APP_VERSION));
     // bind arguments
     engine.rootContext()->setContextProperty("ApplicationArguments", app.arguments());
+
+#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
     // bind Android flag
-#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
     engine.rootContext()->setContextProperty("Android", QVariant(true));
-#else
-    engine.rootContext()->setContextProperty("Android", QVariant(false));
-#endif
     // select and bind styles available and known to work
-    QStringList availableStyles;
-#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
     availableStyles.append("Default");
     availableStyles.append("Material");
 #else
+    // bind Android flag
+    engine.rootContext()->setContextProperty("Android", QVariant(false));
+    // select and bind styles available and known to work
     for (QString style : QQuickStyle::availableStyles())
     {
       if (style == "Default")
@@ -144,18 +155,6 @@ int main(int argc, char *argv[])
         qWarning() << "Failed to load QML";
         return -1;
     }
-#else
-    QScopedPointer<QQuickView> view(SailfishApp::createView());
-#ifdef QT_STATICPLUGIN
-    importStaticPlugins(view->engine());
-#endif
-    view->setSource(QUrl("qrc:/sfos/harbour-noson.qml"));
-    QObject::connect(view->engine(), &QQmlApplicationEngine::quit, &app, QCoreApplication::quit);
-    // 100MB cache for network data
-    view->engine()->setNetworkAccessManagerFactory(new DiskCacheFactory(CACHE_SIZE));
-    // bind version string
-    view->engine()->rootContext()->setContextProperty("VersionString", QString(APP_VERSION));
-    view->showFullScreen();
 #endif
 
     ret = app.exec();
