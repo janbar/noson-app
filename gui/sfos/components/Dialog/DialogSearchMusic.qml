@@ -39,10 +39,8 @@ DialogBase {
 
     TextField {
         id: searchField
-        anchors {
-            left: parent.left
-            right: parent.right
-        }
+        anchors.left: parent.left
+        anchors.right: parent.right
         placeholderText: qsTr("Type search")
         font.pixelSize: units.fx("medium")
     }

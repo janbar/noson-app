@@ -45,6 +45,7 @@ public:
     NickNameRole,
     NormalizedRole,
     TypeRole,
+    AuthRole,
   };
 
   AllServicesModel(QObject* parent = 0);

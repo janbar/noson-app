@@ -129,10 +129,8 @@ DialogBase {
 
     TextField {
         id: url
-        anchors {
-            left: parent.left
-            right: parent.right
-        }
+        anchors.left: parent.left
+        anchors.right: parent.right
         text: inputStreamUrl
         placeholderText: qsTr("Enter stream URL")
     }

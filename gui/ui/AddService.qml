@@ -21,6 +21,7 @@ import NosonApp 1.0
 import "../components"
 import "../components/Delegates"
 import "../components/Flickables"
+import "../components/Dialog"
 
 
 MusicPage {
@@ -56,22 +57,44 @@ MusicPage {
 
             onClicked: {
                if (model.type !== "65031") {
-                    var serialNum = 0;
-                    var acls = deserializeACLS(settings.accounts);
-                    for (var i = 0; i < acls.length; ++i) {
-                        if (acls[i].type === model.type && parseInt(acls[i].sn) >= serialNum)
-                            serialNum = parseInt(acls[i].sn) + 1;
-                    }
-                    customdebug("Register service " + model.title + " (" + model.type + ") with serial " + serialNum);
-                    Sonos.addServiceOAuth(model.type, serialNum, "", "", "");
-                    MyServicesModel.asyncLoad();
-                    acls.push({type: model.type, sn: serialNum, key: "", token: "", username: ""});
-                    settings.accounts = serializeACLS(acls);                    
+                   // for UserId the label is username
+                   if (model.auth !== "UserId") {
+                       dialogServiceLabel.serviceType = model.type;
+                       dialogServiceLabel.serviceIcon = model.icon;
+                       dialogServiceLabel.open();
+                   } else {
+                       createAccount(model.type, "");
+                       stackView.pop();
+                   }
+               } else {
+                   stackView.pop();
                }
-               stackView.pop();
             }
         }
     }
 
+    function createAccount(serviceType, label) {
+        var serialNum = 0;
+        var acls = deserializeACLS(settings.accounts);
+        for (var i = 0; i < acls.length; ++i) {
+            if (acls[i].type === serviceType && parseInt(acls[i].sn) >= serialNum) {
+                serialNum = parseInt(acls[i].sn) + 1;
+            }
+        }
+        customdebug("Register service " + serviceType + " '" + label + "' with serial " + serialNum);
+        Sonos.addServiceOAuth(serviceType, serialNum, "", "", label);
+        MyServicesModel.asyncLoad();
+        acls.push({type: serviceType, sn: serialNum, key: "", token: "", username: label});
+        settings.accounts = serializeACLS(acls);
+    }
+
+    DialogServiceLabel {
+        id: dialogServiceLabel
+        onAccepted: {
+            createAccount(serviceType, label);
+            // back to my services
+            stackView.pop();
+        }
+    }
 }
 

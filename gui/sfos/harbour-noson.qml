@@ -955,6 +955,10 @@ ApplicationWindow {
         id: dialogRemovePlaylist
     }
     
+    DialogServiceLabel {
+        id: dialogServiceLabel
+    }
+
     DialogAlarm {
         id: dialogAlarm
         container: alarmsModel
@@ -967,6 +971,7 @@ ApplicationWindow {
             alarmsModel.updatePending = false;
         }
     }
+
 
     //==============================================================
     // Spinner

@@ -278,5 +278,7 @@
         <file>sfos/components/DataFailureState.qml</file>
         <file>images/Deezer_Logo_RVB_Black.svg</file>
         <file>images/Deezer_Logo_RVB_White.svg</file>
+        <file>components/Dialog/DialogServiceLabel.qml</file>
+        <file>sfos/components/Dialog/DialogServiceLabel.qml</file>
     </qresource>
 </RCC>

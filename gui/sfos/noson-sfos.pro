@@ -20,7 +20,9 @@ DISTFILES += harbour-noson.qml \
     components/Dialog/DialogRemovePlaylist.qml \
     components/Dialog/DialogSearchMusic.qml \
     components/Dialog/DialogSelectSource.qml \
+    components/Dialog/DialogServiceLabel.qml \
     components/Dialog/DialogSettings.qml \
+    components/Dialog/DialogServiceLabel.qml \
     components/Dialog/DialogSleepTimer.qml \
     components/Dialog/DialogSongInfo.qml \
     components/Dialog/DialogSoundSettings.qml \

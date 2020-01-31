@@ -94,6 +94,8 @@ DialogBase {
         }
         TextField {
             id: apiKey
+            anchors.left: parent.left
+            anchors.right: parent.right
             font.pixelSize: units.fx("medium")
             placeholderText: qsTr("Enter a valid API key");
             inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhUrlCharactersOnly

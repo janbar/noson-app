@@ -85,6 +85,8 @@ QVariant AllServicesModel::data(const QModelIndex& index, int role) const
     return item->normalized();
   case TypeRole:
     return item->type();
+  case AuthRole:
+    return item->auth();
   default:
     return QVariant();
   }
@@ -100,6 +102,7 @@ QHash<int, QByteArray> AllServicesModel::roleNames() const
   roles[NickNameRole] = "nickName";
   roles[NormalizedRole] = "normalized";
   roles[TypeRole] = "type";
+  roles[AuthRole] = "auth";
   return roles;
 }
 
@@ -118,6 +121,7 @@ QVariantMap AllServicesModel::get(int row)
   model[roles[NickNameRole]] = item->nickName();
   model[roles[NormalizedRole]] = item->normalized();
   model[roles[TypeRole]] = item->type();
+  model[roles[AuthRole]] = item->auth();
   return model;
 }
 
