@@ -4,8 +4,8 @@
 <context>
     <name>AddService</name>
     <message>
-        <location filename="../sfos/pages/AddService.qml" line="30"/>
-        <location filename="../ui/AddService.qml" line="29"/>
+        <location filename="../sfos/pages/AddService.qml" line="31"/>
+        <location filename="../ui/AddService.qml" line="30"/>
         <source>Add Service</source>
         <translation type="unfinished"></translation>
     </message>
@@ -41,7 +41,7 @@
         <translation>Select playlist</translation>
     </message>
     <message numerus="yes">
-        <location filename="../sfos/pages/AddToPlaylist.qml" line="135"/>
+        <location filename="../sfos/pages/AddToPlaylist.qml" line="136"/>
         <location filename="../ui/AddToPlaylist.qml" line="184"/>
         <source>%n song(s) added</source>
         <translation type="unfinished">
@@ -55,7 +55,7 @@
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/AddToPlaylist.qml" line="122"/>
+        <location filename="../sfos/pages/AddToPlaylist.qml" line="123"/>
         <location filename="../ui/AddToPlaylist.qml" line="171"/>
         <source>song added</source>
         <translation>song added</translation>
@@ -85,61 +85,61 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Alarms.qml" line="93"/>
+        <location filename="../sfos/pages/Alarms.qml" line="94"/>
         <location filename="../ui/Alarms.qml" line="111"/>
         <source>Alarm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Alarms.qml" line="253"/>
+        <location filename="../sfos/pages/Alarms.qml" line="254"/>
         <location filename="../ui/Alarms.qml" line="270"/>
         <source>Action can&apos;t be performed</source>
         <translation type="unfinished">Action can&apos;t be performed</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Alarms.qml" line="129"/>
+        <location filename="../sfos/pages/Alarms.qml" line="130"/>
         <location filename="../ui/Alarms.qml" line="146"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Alarms.qml" line="187"/>
+        <location filename="../sfos/pages/Alarms.qml" line="188"/>
         <location filename="../ui/Alarms.qml" line="204"/>
         <source>Mon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Alarms.qml" line="189"/>
+        <location filename="../sfos/pages/Alarms.qml" line="190"/>
         <location filename="../ui/Alarms.qml" line="206"/>
         <source>Tue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Alarms.qml" line="191"/>
+        <location filename="../sfos/pages/Alarms.qml" line="192"/>
         <location filename="../ui/Alarms.qml" line="208"/>
         <source>Wed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Alarms.qml" line="193"/>
+        <location filename="../sfos/pages/Alarms.qml" line="194"/>
         <location filename="../ui/Alarms.qml" line="210"/>
         <source>Thu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Alarms.qml" line="195"/>
+        <location filename="../sfos/pages/Alarms.qml" line="196"/>
         <location filename="../ui/Alarms.qml" line="212"/>
         <source>Fri</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Alarms.qml" line="197"/>
+        <location filename="../sfos/pages/Alarms.qml" line="198"/>
         <location filename="../ui/Alarms.qml" line="214"/>
         <source>Sat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Alarms.qml" line="199"/>
+        <location filename="../sfos/pages/Alarms.qml" line="200"/>
         <location filename="../ui/Alarms.qml" line="216"/>
         <source>Sun</source>
         <translation type="unfinished"></translation>
@@ -169,24 +169,24 @@
         <translation>Albums</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Albums.qml" line="71"/>
-        <location filename="../sfos/pages/Albums.qml" line="96"/>
+        <location filename="../sfos/pages/Albums.qml" line="72"/>
+        <location filename="../sfos/pages/Albums.qml" line="97"/>
         <location filename="../ui/Albums.qml" line="67"/>
         <location filename="../ui/Albums.qml" line="92"/>
         <source>Unknown Album</source>
         <translation>Unknown Album</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Albums.qml" line="72"/>
-        <location filename="../sfos/pages/Albums.qml" line="95"/>
+        <location filename="../sfos/pages/Albums.qml" line="73"/>
+        <location filename="../sfos/pages/Albums.qml" line="96"/>
         <location filename="../ui/Albums.qml" line="68"/>
         <location filename="../ui/Albums.qml" line="91"/>
         <source>Unknown Artist</source>
         <translation>Unknown Artist</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Albums.qml" line="94"/>
-        <location filename="../sfos/pages/Albums.qml" line="102"/>
+        <location filename="../sfos/pages/Albums.qml" line="95"/>
+        <location filename="../sfos/pages/Albums.qml" line="103"/>
         <location filename="../ui/Albums.qml" line="90"/>
         <location filename="../ui/Albums.qml" line="98"/>
         <source>Album</source>
@@ -196,8 +196,8 @@
 <context>
     <name>ArtistView</name>
     <message numerus="yes">
-        <location filename="../sfos/pages/ArtistView.qml" line="98"/>
-        <location filename="../sfos/pages/ThisDevice/ArtistView.qml" line="96"/>
+        <location filename="../sfos/pages/ArtistView.qml" line="99"/>
+        <location filename="../sfos/pages/ThisDevice/ArtistView.qml" line="97"/>
         <location filename="../ui/ArtistView.qml" line="102"/>
         <location filename="../ui/ThisDevice/ArtistView.qml" line="102"/>
         <source>%n album(s)</source>
@@ -207,8 +207,8 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../sfos/pages/ArtistView.qml" line="117"/>
-        <location filename="../sfos/pages/ThisDevice/ArtistView.qml" line="115"/>
+        <location filename="../sfos/pages/ArtistView.qml" line="118"/>
+        <location filename="../sfos/pages/ThisDevice/ArtistView.qml" line="116"/>
         <location filename="../ui/ArtistView.qml" line="121"/>
         <location filename="../ui/ThisDevice/ArtistView.qml" line="121"/>
         <source>%n song(s)</source>
@@ -218,35 +218,35 @@
         </translation>
     </message>
     <message>
-        <location filename="../sfos/pages/ArtistView.qml" line="142"/>
-        <location filename="../sfos/pages/ArtistView.qml" line="158"/>
+        <location filename="../sfos/pages/ArtistView.qml" line="143"/>
+        <location filename="../sfos/pages/ArtistView.qml" line="159"/>
         <location filename="../ui/ArtistView.qml" line="150"/>
         <location filename="../ui/ArtistView.qml" line="166"/>
         <source>Unknown Album</source>
         <translation>Unknown Album</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/ArtistView.qml" line="156"/>
+        <location filename="../sfos/pages/ArtistView.qml" line="157"/>
         <location filename="../ui/ArtistView.qml" line="164"/>
         <source>Album</source>
         <translation>Album</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/ArtistView.qml" line="82"/>
-        <location filename="../sfos/pages/ArtistView.qml" line="157"/>
+        <location filename="../sfos/pages/ArtistView.qml" line="83"/>
+        <location filename="../sfos/pages/ArtistView.qml" line="158"/>
         <location filename="../ui/ArtistView.qml" line="86"/>
         <location filename="../ui/ArtistView.qml" line="165"/>
         <source>Unknown Artist</source>
         <translation>Unknown Artist</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/ArtistView.qml" line="227"/>
+        <location filename="../sfos/pages/ArtistView.qml" line="228"/>
         <location filename="../ui/ArtistView.qml" line="190"/>
         <source>Remove from favorites</source>
         <translation>Remove from favorites</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/ArtistView.qml" line="225"/>
+        <location filename="../sfos/pages/ArtistView.qml" line="226"/>
         <location filename="../ui/ArtistView.qml" line="190"/>
         <source>Add to favorites</source>
         <translation>Add to favorites</translation>
@@ -261,14 +261,14 @@
         <translation>Artists</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Artists.qml" line="72"/>
+        <location filename="../sfos/pages/Artists.qml" line="73"/>
         <location filename="../ui/Artists.qml" line="68"/>
         <source>Unknown Artist</source>
         <translation>Unknown Artist</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Artists.qml" line="90"/>
-        <location filename="../sfos/pages/Artists.qml" line="96"/>
+        <location filename="../sfos/pages/Artists.qml" line="91"/>
+        <location filename="../sfos/pages/Artists.qml" line="97"/>
         <location filename="../ui/Artists.qml" line="86"/>
         <location filename="../ui/Artists.qml" line="92"/>
         <source>Artist</source>
@@ -278,13 +278,13 @@
 <context>
     <name>ComposerView</name>
     <message>
-        <location filename="../sfos/pages/ComposerView.qml" line="81"/>
+        <location filename="../sfos/pages/ComposerView.qml" line="82"/>
         <location filename="../ui/ComposerView.qml" line="85"/>
         <source>Unknown Composer</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../sfos/pages/ComposerView.qml" line="97"/>
+        <location filename="../sfos/pages/ComposerView.qml" line="98"/>
         <location filename="../ui/ComposerView.qml" line="101"/>
         <source>%n album(s)</source>
         <translation type="unfinished">
@@ -293,7 +293,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../sfos/pages/ComposerView.qml" line="116"/>
+        <location filename="../sfos/pages/ComposerView.qml" line="117"/>
         <location filename="../ui/ComposerView.qml" line="120"/>
         <source>%n song(s)</source>
         <translation type="unfinished">
@@ -302,33 +302,33 @@
         </translation>
     </message>
     <message>
-        <location filename="../sfos/pages/ComposerView.qml" line="141"/>
-        <location filename="../sfos/pages/ComposerView.qml" line="157"/>
+        <location filename="../sfos/pages/ComposerView.qml" line="142"/>
+        <location filename="../sfos/pages/ComposerView.qml" line="158"/>
         <location filename="../ui/ComposerView.qml" line="149"/>
         <location filename="../ui/ComposerView.qml" line="165"/>
         <source>Unknown Album</source>
         <translation type="unfinished">Unknown Album</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/ComposerView.qml" line="155"/>
+        <location filename="../sfos/pages/ComposerView.qml" line="156"/>
         <location filename="../ui/ComposerView.qml" line="163"/>
         <source>Album</source>
         <translation type="unfinished">Album</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/ComposerView.qml" line="156"/>
+        <location filename="../sfos/pages/ComposerView.qml" line="157"/>
         <location filename="../ui/ComposerView.qml" line="164"/>
         <source>Unknown Artist</source>
         <translation type="unfinished">Unknown Artist</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/ComposerView.qml" line="225"/>
+        <location filename="../sfos/pages/ComposerView.qml" line="226"/>
         <location filename="../ui/ComposerView.qml" line="189"/>
         <source>Remove from favorites</source>
         <translation type="unfinished">Remove from favorites</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/ComposerView.qml" line="223"/>
+        <location filename="../sfos/pages/ComposerView.qml" line="224"/>
         <location filename="../ui/ComposerView.qml" line="189"/>
         <source>Add to favorites</source>
         <translation type="unfinished">Add to favorites</translation>
@@ -343,14 +343,14 @@
         <translation type="unfinished">Composers</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Composers.qml" line="72"/>
+        <location filename="../sfos/pages/Composers.qml" line="73"/>
         <location filename="../ui/Composers.qml" line="68"/>
         <source>Unknown Composer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Composers.qml" line="90"/>
-        <location filename="../sfos/pages/Composers.qml" line="96"/>
+        <location filename="../sfos/pages/Composers.qml" line="91"/>
+        <location filename="../sfos/pages/Composers.qml" line="97"/>
         <location filename="../ui/Composers.qml" line="86"/>
         <location filename="../ui/Composers.qml" line="92"/>
         <source>Composer</source>
@@ -367,7 +367,7 @@
     </message>
     <message>
         <location filename="../components/DataFailureState.qml" line="52"/>
-        <location filename="../sfos/components/DataFailureState.qml" line="52"/>
+        <location filename="../sfos/components/DataFailureState.qml" line="48"/>
         <source>Retry</source>
         <translation type="unfinished"></translation>
     </message>
@@ -375,43 +375,43 @@
 <context>
     <name>DialogAbout</name>
     <message>
-        <location filename="../components/Dialog/DialogAbout.qml" line="26"/>
-        <location filename="../sfos/components/Dialog/DialogAbout.qml" line="26"/>
+        <location filename="../components/Dialog/DialogAbout.qml" line="27"/>
+        <location filename="../sfos/components/Dialog/DialogAbout.qml" line="27"/>
         <source>About</source>
         <translation type="unfinished">About</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogAbout.qml" line="37"/>
-        <location filename="../sfos/components/Dialog/DialogAbout.qml" line="28"/>
+        <location filename="../components/Dialog/DialogAbout.qml" line="38"/>
+        <location filename="../sfos/components/Dialog/DialogAbout.qml" line="29"/>
         <source>Close</source>
         <translation type="unfinished">Close</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogAbout.qml" line="47"/>
-        <location filename="../sfos/components/Dialog/DialogAbout.qml" line="42"/>
+        <location filename="../components/Dialog/DialogAbout.qml" line="48"/>
+        <location filename="../sfos/components/Dialog/DialogAbout.qml" line="43"/>
         <source>The project has started in 2015 and is intented to make a fast and smart controller for your SONOS devices. You can browse your music library and play track or radio on any zones. You can manage grouping zones, queue, and playlists, and fully control the playback.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogAbout.qml" line="56"/>
-        <location filename="../sfos/components/Dialog/DialogAbout.qml" line="56"/>
+        <location filename="../components/Dialog/DialogAbout.qml" line="57"/>
+        <location filename="../sfos/components/Dialog/DialogAbout.qml" line="57"/>
         <source>Author: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogAbout.qml" line="62"/>
-        <location filename="../sfos/components/Dialog/DialogAbout.qml" line="67"/>
+        <location filename="../components/Dialog/DialogAbout.qml" line="63"/>
+        <location filename="../sfos/components/Dialog/DialogAbout.qml" line="68"/>
         <source>Version: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogAbout.qml" line="89"/>
-        <location filename="../sfos/components/Dialog/DialogAbout.qml" line="119"/>
+        <location filename="../components/Dialog/DialogAbout.qml" line="90"/>
+        <location filename="../sfos/components/Dialog/DialogAbout.qml" line="120"/>
         <source>Thumbnails powered by:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/components/Dialog/DialogAbout.qml" line="93"/>
+        <location filename="../sfos/components/Dialog/DialogAbout.qml" line="94"/>
         <source>Sailfish port by: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -544,24 +544,19 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogApplicationSettings.qml" line="220"/>
-        <source>System default</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../components/Dialog/DialogApplicationSettings.qml" line="237"/>
+        <location filename="../components/Dialog/DialogApplicationSettings.qml" line="236"/>
         <source>Restart is required</source>
         <translation type="unfinished">Restart is required</translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogApplicationSettings.qml" line="266"/>
+        <location filename="../components/Dialog/DialogApplicationSettings.qml" line="265"/>
         <location filename="../sfos/components/Dialog/DialogApplicationSettings.qml" line="90"/>
         <source>Get an API account</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../components/Dialog/DialogApplicationSettings.qml" line="280"/>
-        <location filename="../sfos/components/Dialog/DialogApplicationSettings.qml" line="98"/>
+        <location filename="../components/Dialog/DialogApplicationSettings.qml" line="279"/>
+        <location filename="../sfos/components/Dialog/DialogApplicationSettings.qml" line="100"/>
         <source>Enter a valid API key</source>
         <translation type="unfinished"></translation>
     </message>
@@ -576,12 +571,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/components/Dialog/DialogApplicationSettings.qml" line="104"/>
+        <location filename="../sfos/components/Dialog/DialogApplicationSettings.qml" line="106"/>
         <source>System</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/components/Dialog/DialogApplicationSettings.qml" line="113"/>
+        <location filename="../sfos/components/Dialog/DialogApplicationSettings.qml" line="115"/>
         <source>Enable debug log output</source>
         <translation type="unfinished"></translation>
     </message>
@@ -603,50 +598,50 @@
     <name>DialogManageQueue</name>
     <message>
         <location filename="../components/Dialog/DialogManageQueue.qml" line="25"/>
-        <location filename="../sfos/components/Dialog/DialogManageQueue.qml" line="25"/>
+        <location filename="../sfos/components/Dialog/DialogManageQueue.qml" line="26"/>
         <source>Manage queue</source>
         <extracomment>this is a title of a dialog to manage queue</extracomment>
         <translation>Manage queue</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogManageQueue.qml" line="36"/>
-        <location filename="../sfos/components/Dialog/DialogManageQueue.qml" line="27"/>
+        <location filename="../sfos/components/Dialog/DialogManageQueue.qml" line="28"/>
         <source>Close</source>
         <translation type="unfinished">Close</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogManageQueue.qml" line="55"/>
-        <location filename="../sfos/components/Dialog/DialogManageQueue.qml" line="51"/>
+        <location filename="../sfos/components/Dialog/DialogManageQueue.qml" line="52"/>
         <source>Enter playlist name</source>
         <translation>Enter playlist name</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogManageQueue.qml" line="62"/>
-        <location filename="../sfos/components/Dialog/DialogManageQueue.qml" line="56"/>
+        <location filename="../sfos/components/Dialog/DialogManageQueue.qml" line="57"/>
         <source>Save queue</source>
         <translation>Save queue</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogManageQueue.qml" line="69"/>
-        <location filename="../sfos/components/Dialog/DialogManageQueue.qml" line="63"/>
+        <location filename="../sfos/components/Dialog/DialogManageQueue.qml" line="66"/>
         <source>Saving failed.</source>
         <translation>Saving failed.</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogManageQueue.qml" line="76"/>
-        <location filename="../sfos/components/Dialog/DialogManageQueue.qml" line="70"/>
+        <location filename="../sfos/components/Dialog/DialogManageQueue.qml" line="73"/>
         <source>Please type in a name.</source>
         <translation>Please type in a name.</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogManageQueue.qml" line="84"/>
-        <location filename="../sfos/components/Dialog/DialogManageQueue.qml" line="88"/>
+        <location filename="../sfos/components/Dialog/DialogManageQueue.qml" line="91"/>
         <source>Clearing the queue cannot be undone.</source>
         <translation>Clearing the queue cannot be undone.</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogManageQueue.qml" line="93"/>
-        <location filename="../sfos/components/Dialog/DialogManageQueue.qml" line="97"/>
+        <location filename="../sfos/components/Dialog/DialogManageQueue.qml" line="99"/>
         <source>Clear queue</source>
         <translation>Clear queue</translation>
     </message>
@@ -667,7 +662,7 @@
     </message>
     <message>
         <location filename="../components/Dialog/DialogNewPlaylist.qml" line="55"/>
-        <location filename="../sfos/components/Dialog/DialogNewPlaylist.qml" line="38"/>
+        <location filename="../sfos/components/Dialog/DialogNewPlaylist.qml" line="40"/>
         <source>Enter playlist name</source>
         <translation>Enter playlist name</translation>
     </message>
@@ -738,55 +733,55 @@
     </message>
     <message>
         <location filename="../components/Dialog/DialogSearchMusic.qml" line="67"/>
-        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="67"/>
+        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="65"/>
         <source>Artists</source>
         <translation>Artists</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogSearchMusic.qml" line="69"/>
-        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="69"/>
+        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="67"/>
         <source>Albums</source>
         <translation>Albums</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogSearchMusic.qml" line="71"/>
-        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="71"/>
+        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="69"/>
         <source>Songs</source>
         <translation>Songs</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogSearchMusic.qml" line="73"/>
-        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="73"/>
+        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="71"/>
         <source>Playlists</source>
         <translation>Playlists</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogSearchMusic.qml" line="75"/>
-        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="75"/>
+        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="73"/>
         <source>Radios</source>
         <translation>Radios</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogSearchMusic.qml" line="77"/>
-        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="77"/>
+        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="75"/>
         <source>Podcasts</source>
         <translation>Podcasts</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogSearchMusic.qml" line="79"/>
-        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="79"/>
+        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="77"/>
         <source>Genres</source>
         <translation>Genres</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogSearchMusic.qml" line="81"/>
-        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="81"/>
+        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="79"/>
         <source>Composers</source>
         <translation>Composers</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogSearchMusic.qml" line="111"/>
-        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="46"/>
+        <location filename="../sfos/components/Dialog/DialogSearchMusic.qml" line="44"/>
         <source>Type search</source>
         <translation>Type search</translation>
     </message>
@@ -808,21 +803,21 @@
     </message>
     <message>
         <location filename="../components/Dialog/DialogSelectSource.qml" line="60"/>
-        <location filename="../sfos/components/Dialog/DialogSelectSource.qml" line="137"/>
+        <location filename="../sfos/components/Dialog/DialogSelectSource.qml" line="135"/>
         <source>Enter stream URL</source>
         <translation>Enter stream URL</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogSelectSource.qml" line="66"/>
         <location filename="../components/Dialog/DialogSelectSource.qml" line="81"/>
-        <location filename="../sfos/components/Dialog/DialogSelectSource.qml" line="141"/>
+        <location filename="../sfos/components/Dialog/DialogSelectSource.qml" line="139"/>
         <location filename="../sfos/components/Dialog/DialogSelectSource.qml" line="156"/>
         <source>Playing failed.</source>
         <translation>Playing failed.</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogSelectSource.qml" line="73"/>
-        <location filename="../sfos/components/Dialog/DialogSelectSource.qml" line="148"/>
+        <location filename="../sfos/components/Dialog/DialogSelectSource.qml" line="146"/>
         <source>Play stream</source>
         <translation>Play stream</translation>
     </message>
@@ -876,22 +871,54 @@
     </message>
 </context>
 <context>
+    <name>DialogServiceLabel</name>
+    <message>
+        <location filename="../components/Dialog/DialogServiceLabel.qml" line="25"/>
+        <source>Add Service</source>
+        <extracomment>this is a title of a dialog to add a new service</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogServiceLabel.qml" line="40"/>
+        <location filename="../sfos/components/Dialog/DialogServiceLabel.qml" line="35"/>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogServiceLabel.qml" line="60"/>
+        <location filename="../sfos/components/Dialog/DialogServiceLabel.qml" line="62"/>
+        <source>You can specify a label for the new service to differentiate it from an existing one for the same provider.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../components/Dialog/DialogServiceLabel.qml" line="66"/>
+        <location filename="../sfos/components/Dialog/DialogServiceLabel.qml" line="70"/>
+        <source>Enter the label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../sfos/components/Dialog/DialogServiceLabel.qml" line="36"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DialogSettings</name>
     <message>
         <location filename="../components/Dialog/DialogSettings.qml" line="25"/>
-        <location filename="../sfos/components/Dialog/DialogSettings.qml" line="26"/>
+        <location filename="../sfos/components/Dialog/DialogSettings.qml" line="27"/>
         <source>Sonos settings</source>
         <translation>Sonos settings</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogSettings.qml" line="36"/>
-        <location filename="../sfos/components/Dialog/DialogSettings.qml" line="28"/>
+        <location filename="../sfos/components/Dialog/DialogSettings.qml" line="29"/>
         <source>Close</source>
         <translation type="unfinished">Close</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogSettings.qml" line="44"/>
-        <location filename="../sfos/components/Dialog/DialogSettings.qml" line="41"/>
+        <location filename="../sfos/components/Dialog/DialogSettings.qml" line="42"/>
         <source>Whenever you make changes to your music library, such as adding and removing tracks, or adjusting album artwork, you will need to update the music index on Sonos before these changes will show up in the Sonos controller.</source>
         <translation>Whenever you make changes to your music library, such as adding and removing tracks, or adjusting album artwork, you will need to update the music index on Sonos before these changes will show up in the Sonos controller.</translation>
     </message>
@@ -992,19 +1019,19 @@
     <name>DialogSongInfo</name>
     <message>
         <location filename="../components/Dialog/DialogSongInfo.qml" line="49"/>
-        <location filename="../sfos/components/Dialog/DialogSongInfo.qml" line="56"/>
+        <location filename="../sfos/components/Dialog/DialogSongInfo.qml" line="94"/>
         <source>Close</source>
         <translation type="unfinished">Close</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogSongInfo.qml" line="55"/>
-        <location filename="../sfos/components/Dialog/DialogSongInfo.qml" line="57"/>
+        <location filename="../sfos/components/Dialog/DialogSongInfo.qml" line="95"/>
         <source>Play</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogSongInfo.qml" line="62"/>
-        <location filename="../sfos/components/Dialog/DialogSongInfo.qml" line="211"/>
+        <location filename="../sfos/components/Dialog/DialogSongInfo.qml" line="242"/>
         <source>More</source>
         <extracomment>this appears in a button with limited space (around 30 characters)</extracomment>
         <translation type="unfinished"></translation>
@@ -1015,21 +1042,25 @@
     </message>
     <message>
         <location filename="../components/Dialog/DialogSongInfo.qml" line="77"/>
-        <location filename="../sfos/components/Dialog/DialogSongInfo.qml" line="70"/>
         <source>Unknown Album</source>
         <translation type="unfinished">Unknown Album</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogSongInfo.qml" line="78"/>
-        <location filename="../sfos/components/Dialog/DialogSongInfo.qml" line="71"/>
+        <location filename="../sfos/components/Dialog/DialogSongInfo.qml" line="126"/>
         <source>Unknown Artist</source>
         <translation type="unfinished">Unknown Artist</translation>
     </message>
     <message>
         <location filename="../components/Dialog/DialogSongInfo.qml" line="81"/>
-        <location filename="../sfos/components/Dialog/DialogSongInfo.qml" line="74"/>
+        <location filename="../sfos/components/Dialog/DialogSongInfo.qml" line="129"/>
         <source>%1 - track #%2</source>
         <translation>%1 - track #%2</translation>
+    </message>
+    <message>
+        <location filename="../sfos/components/Dialog/DialogSongInfo.qml" line="125"/>
+        <source>Unknown Title</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1097,48 +1128,48 @@
         <translation>Favorites</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Favorites.qml" line="83"/>
-        <location filename="../sfos/pages/Favorites.qml" line="169"/>
-        <location filename="../sfos/pages/Favorites.qml" line="224"/>
+        <location filename="../sfos/pages/Favorites.qml" line="84"/>
+        <location filename="../sfos/pages/Favorites.qml" line="170"/>
+        <location filename="../sfos/pages/Favorites.qml" line="205"/>
         <location filename="../ui/Favorites.qml" line="82"/>
         <location filename="../ui/Favorites.qml" line="172"/>
-        <location filename="../ui/Favorites.qml" line="231"/>
+        <location filename="../ui/Favorites.qml" line="211"/>
         <source>Album</source>
         <translation>Album</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Favorites.qml" line="84"/>
-        <location filename="../sfos/pages/Favorites.qml" line="170"/>
-        <location filename="../sfos/pages/Favorites.qml" line="236"/>
+        <location filename="../sfos/pages/Favorites.qml" line="85"/>
+        <location filename="../sfos/pages/Favorites.qml" line="171"/>
+        <location filename="../sfos/pages/Favorites.qml" line="217"/>
         <location filename="../ui/Favorites.qml" line="83"/>
         <location filename="../ui/Favorites.qml" line="173"/>
-        <location filename="../ui/Favorites.qml" line="243"/>
+        <location filename="../ui/Favorites.qml" line="223"/>
         <source>Artist</source>
         <translation>Artist</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Favorites.qml" line="85"/>
-        <location filename="../sfos/pages/Favorites.qml" line="171"/>
-        <location filename="../sfos/pages/Favorites.qml" line="247"/>
+        <location filename="../sfos/pages/Favorites.qml" line="86"/>
+        <location filename="../sfos/pages/Favorites.qml" line="172"/>
+        <location filename="../sfos/pages/Favorites.qml" line="228"/>
         <location filename="../ui/Favorites.qml" line="84"/>
         <location filename="../ui/Favorites.qml" line="174"/>
-        <location filename="../ui/Favorites.qml" line="254"/>
+        <location filename="../ui/Favorites.qml" line="234"/>
         <source>Genre</source>
         <translation>Genre</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Favorites.qml" line="86"/>
-        <location filename="../sfos/pages/Favorites.qml" line="172"/>
-        <location filename="../sfos/pages/Favorites.qml" line="261"/>
+        <location filename="../sfos/pages/Favorites.qml" line="87"/>
+        <location filename="../sfos/pages/Favorites.qml" line="173"/>
+        <location filename="../sfos/pages/Favorites.qml" line="242"/>
         <location filename="../ui/Favorites.qml" line="85"/>
         <location filename="../ui/Favorites.qml" line="175"/>
-        <location filename="../ui/Favorites.qml" line="268"/>
+        <location filename="../ui/Favorites.qml" line="248"/>
         <source>Playlist</source>
         <translation>Playlist</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Favorites.qml" line="87"/>
-        <location filename="../sfos/pages/Favorites.qml" line="173"/>
+        <location filename="../sfos/pages/Favorites.qml" line="88"/>
+        <location filename="../sfos/pages/Favorites.qml" line="174"/>
         <location filename="../ui/Favorites.qml" line="86"/>
         <location filename="../ui/Favorites.qml" line="176"/>
         <source>Song</source>
@@ -1149,8 +1180,8 @@
         <translation type="vanished">Action can&apos;t be performed</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Favorites.qml" line="226"/>
-        <location filename="../ui/Favorites.qml" line="233"/>
+        <location filename="../sfos/pages/Favorites.qml" line="207"/>
+        <location filename="../ui/Favorites.qml" line="213"/>
         <source>Unknown Album</source>
         <translation>Unknown Album</translation>
     </message>
@@ -1168,8 +1199,8 @@
         <translation type="vanished">&lt;Undefined&gt;</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Genres.qml" line="173"/>
-        <location filename="../sfos/pages/Genres.qml" line="181"/>
+        <location filename="../sfos/pages/Genres.qml" line="174"/>
+        <location filename="../sfos/pages/Genres.qml" line="182"/>
         <location filename="../ui/Genres.qml" line="169"/>
         <location filename="../ui/Genres.qml" line="177"/>
         <source>Genre</source>
@@ -1185,7 +1216,7 @@
         <translation>Group</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Group.qml" line="97"/>
+        <location filename="../sfos/pages/Group.qml" line="98"/>
         <location filename="../ui/Group.qml" line="100"/>
         <source>Room</source>
         <translation>Room</translation>
@@ -1194,31 +1225,31 @@
 <context>
     <name>Index</name>
     <message>
-        <location filename="../sfos/pages/Index.qml" line="36"/>
+        <location filename="../sfos/pages/Index.qml" line="37"/>
         <location filename="../ui/Index.qml" line="35"/>
         <source>My Index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Index.qml" line="116"/>
+        <location filename="../sfos/pages/Index.qml" line="117"/>
         <location filename="../ui/Index.qml" line="121"/>
         <source>Artists</source>
         <translation type="unfinished">Artists</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Index.qml" line="121"/>
+        <location filename="../sfos/pages/Index.qml" line="122"/>
         <location filename="../ui/Index.qml" line="126"/>
         <source>Albums</source>
         <translation type="unfinished">Albums</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Index.qml" line="126"/>
+        <location filename="../sfos/pages/Index.qml" line="127"/>
         <location filename="../ui/Index.qml" line="131"/>
         <source>Genres</source>
         <translation type="unfinished">Genres</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Index.qml" line="131"/>
+        <location filename="../sfos/pages/Index.qml" line="132"/>
         <location filename="../ui/Index.qml" line="136"/>
         <source>Composers</source>
         <translation type="unfinished">Composers</translation>
@@ -1258,80 +1289,80 @@
         <translation type="vanished">No items found</translation>
     </message>
     <message>
-        <location filename="../components/MusicPage.qml" line="117"/>
-        <location filename="../components/MusicPage.qml" line="317"/>
+        <location filename="../components/MusicPage.qml" line="116"/>
+        <location filename="../components/MusicPage.qml" line="315"/>
         <source>Queue</source>
         <translation>Queue</translation>
     </message>
     <message>
-        <location filename="../components/MusicPage.qml" line="119"/>
+        <location filename="../components/MusicPage.qml" line="118"/>
         <location filename="../sfos/components/MusicPage.qml" line="160"/>
         <source>Now playing</source>
         <translation>Now playing</translation>
     </message>
     <message>
-        <location filename="../components/MusicPage.qml" line="166"/>
+        <location filename="../components/MusicPage.qml" line="165"/>
         <location filename="../sfos/components/MusicPage.qml" line="207"/>
-        <location filename="../sfos/components/MusicPage.qml" line="460"/>
+        <location filename="../sfos/components/MusicPage.qml" line="456"/>
         <source>Add</source>
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="../components/MusicPage.qml" line="228"/>
-        <location filename="../sfos/components/MusicPage.qml" line="245"/>
+        <location filename="../components/MusicPage.qml" line="227"/>
+        <location filename="../sfos/components/MusicPage.qml" line="244"/>
         <source>Close</source>
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../components/MusicPage.qml" line="241"/>
-        <location filename="../components/MusicPage.qml" line="335"/>
-        <location filename="../sfos/components/MusicPage.qml" line="258"/>
-        <location filename="../sfos/components/MusicPage.qml" line="352"/>
+        <location filename="../components/MusicPage.qml" line="240"/>
+        <location filename="../components/MusicPage.qml" line="333"/>
+        <location filename="../sfos/components/MusicPage.qml" line="257"/>
+        <location filename="../sfos/components/MusicPage.qml" line="350"/>
         <source>All</source>
         <translation>All</translation>
     </message>
     <message>
-        <location filename="../components/MusicPage.qml" line="251"/>
-        <location filename="../sfos/components/MusicPage.qml" line="268"/>
+        <location filename="../components/MusicPage.qml" line="250"/>
+        <location filename="../sfos/components/MusicPage.qml" line="267"/>
         <source>Clear</source>
         <translation>Clear</translation>
     </message>
     <message>
-        <location filename="../components/MusicPage.qml" line="345"/>
-        <location filename="../components/MusicPage.qml" line="399"/>
-        <location filename="../sfos/components/MusicPage.qml" line="362"/>
-        <location filename="../sfos/components/MusicPage.qml" line="416"/>
+        <location filename="../components/MusicPage.qml" line="343"/>
+        <location filename="../components/MusicPage.qml" line="396"/>
+        <location filename="../sfos/components/MusicPage.qml" line="360"/>
+        <location filename="../sfos/components/MusicPage.qml" line="413"/>
         <source>Done</source>
         <translation>Done</translation>
     </message>
     <message>
-        <location filename="../components/MusicPage.qml" line="389"/>
-        <location filename="../sfos/components/MusicPage.qml" line="406"/>
+        <location filename="../components/MusicPage.qml" line="386"/>
+        <location filename="../sfos/components/MusicPage.qml" line="403"/>
         <source>None</source>
         <translation>None</translation>
     </message>
     <message>
-        <location filename="../sfos/components/MusicPage.qml" line="488"/>
+        <location filename="../sfos/components/MusicPage.qml" line="484"/>
         <source>Sound Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/components/MusicPage.qml" line="494"/>
+        <location filename="../sfos/components/MusicPage.qml" line="490"/>
         <source>Standby Timer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/components/MusicPage.qml" line="500"/>
+        <location filename="../sfos/components/MusicPage.qml" line="496"/>
         <source>Sonos Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/components/MusicPage.qml" line="506"/>
+        <location filename="../sfos/components/MusicPage.qml" line="502"/>
         <source>General Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/components/MusicPage.qml" line="512"/>
+        <location filename="../sfos/components/MusicPage.qml" line="508"/>
         <source>About</source>
         <translation type="unfinished">About</translation>
     </message>
@@ -1349,7 +1380,7 @@
         <translation type="unfinished">My Services</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/MusicServices.qml" line="69"/>
+        <location filename="../sfos/pages/MusicServices.qml" line="70"/>
         <location filename="../ui/MusicServices.qml" line="71"/>
         <source>Service</source>
         <translation type="unfinished"></translation>
@@ -1373,19 +1404,19 @@
 <context>
     <name>NoZoneState</name>
     <message>
-        <location filename="../sfos/pages/NoZoneState.qml" line="28"/>
+        <location filename="../sfos/pages/NoZoneState.qml" line="29"/>
         <location filename="../ui/NoZoneState.qml" line="27"/>
         <source>No zone</source>
         <translation>No zone</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/NoZoneState.qml" line="162"/>
+        <location filename="../sfos/pages/NoZoneState.qml" line="163"/>
         <location filename="../ui/NoZoneState.qml" line="159"/>
         <source>No Sonos zone found</source>
         <translation>No Sonos zone found</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/NoZoneState.qml" line="173"/>
+        <location filename="../sfos/pages/NoZoneState.qml" line="174"/>
         <source>Make sure that your device is connected to the correct wireless network
 and one or more Sonos products are receiving power.</source>
         <translation type="unfinished"></translation>
@@ -1396,7 +1427,7 @@ and one or more Sonos products are receiving power.</source>
         <translation>Make sure that your device is connected to the correct wireless network and one or more Sonos products are receiving power.</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/NoZoneState.qml" line="184"/>
+        <location filename="../sfos/pages/NoZoneState.qml" line="182"/>
         <location filename="../ui/NoZoneState.qml" line="181"/>
         <source>Search for Sonos zones</source>
         <extracomment>this appears in a button with limited space (around 30 characters)</extracomment>
@@ -1412,12 +1443,12 @@ and one or more Sonos products are receiving power.</source>
         <translation>Now playing</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/NowPlaying.qml" line="152"/>
+        <location filename="../sfos/pages/NowPlaying.qml" line="153"/>
         <source>Manage Queue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/NowPlaying.qml" line="154"/>
+        <location filename="../sfos/pages/NowPlaying.qml" line="155"/>
         <source>Select Source</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1489,8 +1520,8 @@ and one or more Sonos products are receiving power.</source>
         <translation>Playlists</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Playlists.qml" line="103"/>
-        <location filename="../sfos/pages/Playlists.qml" line="111"/>
+        <location filename="../sfos/pages/Playlists.qml" line="104"/>
+        <location filename="../sfos/pages/Playlists.qml" line="112"/>
         <location filename="../ui/Playlists.qml" line="99"/>
         <location filename="../ui/Playlists.qml" line="107"/>
         <source>Playlist</source>
@@ -1548,12 +1579,12 @@ and one or more Sonos products are receiving power.</source>
         <translation>Queue</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/QueueView.qml" line="45"/>
+        <location filename="../sfos/pages/QueueView.qml" line="46"/>
         <source>Manage Queue</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/QueueView.qml" line="47"/>
+        <location filename="../sfos/pages/QueueView.qml" line="48"/>
         <source>Select Source</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1591,67 +1622,67 @@ and one or more Sonos products are receiving power.</source>
 <context>
     <name>Service</name>
     <message>
-        <location filename="../sfos/pages/Service.qml" line="86"/>
+        <location filename="../sfos/pages/Service.qml" line="87"/>
         <location filename="../ui/Service.qml" line="91"/>
         <source>No items found</source>
         <translation type="unfinished">No items found</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Service.qml" line="120"/>
+        <location filename="../sfos/pages/Service.qml" line="121"/>
         <location filename="../ui/Service.qml" line="125"/>
         <source>Search</source>
         <translation>Search</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Service.qml" line="178"/>
-        <location filename="../sfos/pages/Service.qml" line="257"/>
+        <location filename="../sfos/pages/Service.qml" line="179"/>
+        <location filename="../sfos/pages/Service.qml" line="258"/>
         <location filename="../ui/Service.qml" line="185"/>
         <location filename="../ui/Service.qml" line="269"/>
         <source>Album</source>
         <translation>Album</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Service.qml" line="179"/>
-        <location filename="../sfos/pages/Service.qml" line="258"/>
+        <location filename="../sfos/pages/Service.qml" line="180"/>
+        <location filename="../sfos/pages/Service.qml" line="259"/>
         <location filename="../ui/Service.qml" line="186"/>
         <location filename="../ui/Service.qml" line="270"/>
         <source>Artist</source>
         <translation>Artist</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Service.qml" line="180"/>
-        <location filename="../sfos/pages/Service.qml" line="259"/>
+        <location filename="../sfos/pages/Service.qml" line="181"/>
+        <location filename="../sfos/pages/Service.qml" line="260"/>
         <location filename="../ui/Service.qml" line="187"/>
         <location filename="../ui/Service.qml" line="271"/>
         <source>Genre</source>
         <translation>Genre</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Service.qml" line="181"/>
-        <location filename="../sfos/pages/Service.qml" line="260"/>
+        <location filename="../sfos/pages/Service.qml" line="182"/>
+        <location filename="../sfos/pages/Service.qml" line="261"/>
         <location filename="../ui/Service.qml" line="188"/>
         <location filename="../ui/Service.qml" line="272"/>
         <source>Playlist</source>
         <translation>Playlist</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Service.qml" line="182"/>
-        <location filename="../sfos/pages/Service.qml" line="261"/>
+        <location filename="../sfos/pages/Service.qml" line="183"/>
+        <location filename="../sfos/pages/Service.qml" line="262"/>
         <location filename="../ui/Service.qml" line="189"/>
         <location filename="../ui/Service.qml" line="273"/>
         <source>Song</source>
         <translation>Song</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Service.qml" line="183"/>
-        <location filename="../sfos/pages/Service.qml" line="262"/>
+        <location filename="../sfos/pages/Service.qml" line="184"/>
+        <location filename="../sfos/pages/Service.qml" line="263"/>
         <location filename="../ui/Service.qml" line="190"/>
         <location filename="../ui/Service.qml" line="274"/>
         <source>Radio</source>
         <translation>Radio</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Service.qml" line="326"/>
+        <location filename="../sfos/pages/Service.qml" line="327"/>
         <source>Page Up</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1747,9 +1778,9 @@ and one or more Sonos products are receiving power.</source>
 <context>
     <name>SongsView</name>
     <message>
-        <location filename="../sfos/pages/SongsView.qml" line="189"/>
-        <location filename="../sfos/pages/ThisDevice/SongsView.qml" line="157"/>
-        <location filename="../ui/SongsView.qml" line="208"/>
+        <location filename="../sfos/pages/SongsView.qml" line="190"/>
+        <location filename="../sfos/pages/ThisDevice/SongsView.qml" line="158"/>
+        <location filename="../ui/SongsView.qml" line="207"/>
         <location filename="../ui/ThisDevice/SongsView.qml" line="162"/>
         <source>Song</source>
         <translation>Song</translation>
@@ -1757,10 +1788,10 @@ and one or more Sonos products are receiving power.</source>
     <message numerus="yes">
         <location filename="../sfos/pages/SongsView.qml" line="318"/>
         <location filename="../sfos/pages/SongsView.qml" line="319"/>
-        <location filename="../sfos/pages/ThisDevice/SongsView.qml" line="275"/>
         <location filename="../sfos/pages/ThisDevice/SongsView.qml" line="276"/>
-        <location filename="../ui/SongsView.qml" line="337"/>
-        <location filename="../ui/SongsView.qml" line="338"/>
+        <location filename="../sfos/pages/ThisDevice/SongsView.qml" line="277"/>
+        <location filename="../ui/SongsView.qml" line="335"/>
+        <location filename="../ui/SongsView.qml" line="336"/>
         <location filename="../ui/ThisDevice/SongsView.qml" line="280"/>
         <location filename="../ui/ThisDevice/SongsView.qml" line="281"/>
         <source>%n song(s)</source>
@@ -1770,19 +1801,19 @@ and one or more Sonos products are receiving power.</source>
         </translation>
     </message>
     <message>
-        <location filename="../sfos/pages/SongsView.qml" line="489"/>
-        <location filename="../ui/SongsView.qml" line="470"/>
+        <location filename="../sfos/pages/SongsView.qml" line="488"/>
+        <location filename="../ui/SongsView.qml" line="467"/>
         <source>Remove from favorites</source>
         <translation>Remove from favorites</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/SongsView.qml" line="487"/>
-        <location filename="../ui/SongsView.qml" line="470"/>
+        <location filename="../sfos/pages/SongsView.qml" line="486"/>
+        <location filename="../ui/SongsView.qml" line="467"/>
         <source>Add to favorites</source>
         <translation>Add to favorites</translation>
     </message>
     <message numerus="yes">
-        <location filename="../sfos/pages/SongsView.qml" line="72"/>
+        <location filename="../sfos/pages/SongsView.qml" line="73"/>
         <location filename="../ui/SongsView.qml" line="71"/>
         <source>%n song(s) removed</source>
         <translation type="unfinished">
@@ -1791,16 +1822,16 @@ and one or more Sonos products are receiving power.</source>
         </translation>
     </message>
     <message>
-        <location filename="../sfos/pages/SongsView.qml" line="168"/>
-        <location filename="../sfos/pages/ThisDevice/SongsView.qml" line="144"/>
-        <location filename="../ui/SongsView.qml" line="187"/>
+        <location filename="../sfos/pages/SongsView.qml" line="169"/>
+        <location filename="../sfos/pages/ThisDevice/SongsView.qml" line="145"/>
+        <location filename="../ui/SongsView.qml" line="186"/>
         <location filename="../ui/ThisDevice/SongsView.qml" line="149"/>
         <source>Artist</source>
         <translation type="unfinished">Artist</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/SongsView.qml" line="491"/>
-        <location filename="../ui/SongsView.qml" line="485"/>
+        <location filename="../sfos/pages/SongsView.qml" line="490"/>
+        <location filename="../ui/SongsView.qml" line="482"/>
         <source>Delete</source>
         <translation>Delete</translation>
     </message>
@@ -1808,25 +1839,25 @@ and one or more Sonos products are receiving power.</source>
 <context>
     <name>ThisDevice</name>
     <message>
-        <location filename="../sfos/pages/ThisDevice.qml" line="36"/>
+        <location filename="../sfos/pages/ThisDevice.qml" line="37"/>
         <location filename="../ui/ThisDevice.qml" line="35"/>
         <source>This Device</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/ThisDevice.qml" line="43"/>
+        <location filename="../sfos/pages/ThisDevice.qml" line="44"/>
         <location filename="../ui/ThisDevice.qml" line="48"/>
         <source>Artists</source>
         <translation type="unfinished">Artists</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/ThisDevice.qml" line="48"/>
+        <location filename="../sfos/pages/ThisDevice.qml" line="49"/>
         <location filename="../ui/ThisDevice.qml" line="53"/>
         <source>Albums</source>
         <translation type="unfinished">Albums</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/ThisDevice.qml" line="53"/>
+        <location filename="../sfos/pages/ThisDevice.qml" line="54"/>
         <location filename="../ui/ThisDevice.qml" line="58"/>
         <source>Genres</source>
         <translation type="unfinished">Genres</translation>
@@ -1856,37 +1887,37 @@ and one or more Sonos products are receiving power.</source>
         <translation>Zones</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Zones.qml" line="90"/>
+        <location filename="../sfos/pages/Zones.qml" line="91"/>
         <location filename="../ui/Zones.qml" line="94"/>
         <source>Zone</source>
         <translation>Zone</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Zones.qml" line="124"/>
+        <location filename="../sfos/pages/Zones.qml" line="125"/>
         <location filename="../ui/Zones.qml" line="128"/>
         <source>Group</source>
         <translation>Group</translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Zones.qml" line="169"/>
+        <location filename="../sfos/pages/Zones.qml" line="170"/>
         <location filename="../ui/Zones.qml" line="174"/>
         <source>Stopped</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Zones.qml" line="170"/>
+        <location filename="../sfos/pages/Zones.qml" line="171"/>
         <location filename="../ui/Zones.qml" line="175"/>
         <source>Playing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Zones.qml" line="171"/>
+        <location filename="../sfos/pages/Zones.qml" line="172"/>
         <location filename="../ui/Zones.qml" line="176"/>
         <source>Paused playback</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/pages/Zones.qml" line="172"/>
+        <location filename="../sfos/pages/Zones.qml" line="173"/>
         <location filename="../ui/Zones.qml" line="177"/>
         <source>Transitioning</source>
         <translation type="unfinished"></translation>
@@ -1904,31 +1935,32 @@ and one or more Sonos products are receiving power.</source>
         <translation type="unfinished">&lt;Undefined&gt;</translation>
     </message>
     <message>
-        <location filename="../sfos/harbour-noson.qml" line="238"/>
+        <location filename="../sfos/harbour-noson.qml" line="241"/>
         <source>Index loaded</source>
         <translation type="unfinished">Index loaded</translation>
     </message>
     <message>
-        <location filename="../sfos/harbour-noson.qml" line="536"/>
+        <location filename="../sfos/harbour-noson.qml" line="539"/>
         <source>Refreshing of index is running</source>
         <translation type="unfinished">Refreshing of index is running</translation>
     </message>
     <message>
-        <location filename="../sfos/harbour-noson.qml" line="521"/>
-        <location filename="../sfos/harbour-noson.qml" line="722"/>
+        <location filename="../sfos/harbour-noson.qml" line="524"/>
+        <location filename="../sfos/harbour-noson.qml" line="726"/>
         <source>Action can&apos;t be performed</source>
         <translation type="unfinished">Action can&apos;t be performed</translation>
     </message>
     <message>
-        <location filename="../sfos/harbour-noson.qml" line="580"/>
-        <location filename="../sfos/harbour-noson.qml" line="657"/>
-        <location filename="../sfos/harbour-noson.qml" line="685"/>
-        <location filename="../sfos/harbour-noson.qml" line="740"/>
+        <location filename="../sfos/harbour-noson.qml" line="558"/>
+        <location filename="../sfos/harbour-noson.qml" line="584"/>
+        <location filename="../sfos/harbour-noson.qml" line="653"/>
+        <location filename="../sfos/harbour-noson.qml" line="689"/>
+        <location filename="../sfos/harbour-noson.qml" line="744"/>
         <source>song added</source>
         <translation type="unfinished">song added</translation>
     </message>
     <message numerus="yes">
-        <location filename="../sfos/harbour-noson.qml" line="634"/>
+        <location filename="../sfos/harbour-noson.qml" line="638"/>
         <source>%n song(s) added</source>
         <translation type="unfinished">
             <numerusform>%n song added</numerusform>
@@ -1936,7 +1968,7 @@ and one or more Sonos products are receiving power.</source>
         </translation>
     </message>
     <message>
-        <location filename="../sfos/harbour-noson.qml" line="696"/>
+        <location filename="../sfos/harbour-noson.qml" line="700"/>
         <source>Queue cleared</source>
         <translation type="unfinished">Queue cleared</translation>
     </message>
@@ -1948,27 +1980,27 @@ and one or more Sonos products are receiving power.</source>
         </translation>
     </message>
     <message>
-        <location filename="../sfos/harbour-noson.qml" line="876"/>
+        <location filename="../sfos/harbour-noson.qml" line="880"/>
         <source>My Index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/harbour-noson.qml" line="877"/>
+        <location filename="../sfos/harbour-noson.qml" line="881"/>
         <source>Favorites</source>
         <translation type="unfinished">Favorites</translation>
     </message>
     <message>
-        <location filename="../sfos/harbour-noson.qml" line="878"/>
+        <location filename="../sfos/harbour-noson.qml" line="882"/>
         <source>Playlists</source>
         <translation type="unfinished">Playlists</translation>
     </message>
     <message>
-        <location filename="../sfos/harbour-noson.qml" line="879"/>
+        <location filename="../sfos/harbour-noson.qml" line="883"/>
         <source>Alarm clock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../sfos/harbour-noson.qml" line="880"/>
+        <location filename="../sfos/harbour-noson.qml" line="884"/>
         <source>This Device</source>
         <translation type="unfinished"></translation>
     </message>
