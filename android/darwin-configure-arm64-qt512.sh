@@ -5,6 +5,7 @@ cd build-arm64
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home/
 export ANDROID_SDK=/Users/Shared/Android/Sdk
 export ANDROID_NDK=$ANDROID_SDK/ndk-bundle
+export ANDROID_NATIVE_API_LEVEL=16
 export QT_DIR=/Users/Shared/Qt/5.12.6/android_arm64_v8a
 
 cmake ../.. -DCMAKE_SYSTEM_NAME=Android \
@@ -13,9 +14,10 @@ cmake ../.. -DCMAKE_SYSTEM_NAME=Android \
 -DCMAKE_MAKE_PROGRAM=$ANDROID_NDK/prebuilt/darwin-x86_64/bin/make \
 -DCMAKE_BUILD_TYPE=Release \
 -DANDROID_ABI="arm64-v8a" \
--DANDROID_PLATFORM_LEVEL="android-16" \
 -DANDROID_STL_PREFIX="llvm-libc++" \
 -DANDROID_STL_SHARED_LIBRARIES="c++_shared" \
+-DANDROID_NATIVE_API_LEVEL=$ANDROID_NATIVE_API_LEVEL \
+-DQT_ANDROID_PLATFORM_LEVEL=$ANDROID_NATIVE_API_LEVEL \
 -DQT_ANDROID_TOOLCHAIN_TOOL_PREFIX="aarch64-linux-android" \
 -DQT_ANDROID_SDK_ROOT=$ANDROID_SDK \
 -DQT_ANDROID_NDK_ROOT=$ANDROID_NDK \

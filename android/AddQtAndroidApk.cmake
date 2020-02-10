@@ -206,8 +206,8 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     endif()
 
     # specify the Android API level
-    if(ANDROID_PLATFORM_LEVEL)
-        set(TARGET_LEVEL_OPTIONS --android-platform android-${ANDROID_PLATFORM_LEVEL})
+    if(QT_ANDROID_PLATFORM_LEVEL)
+        set(TARGET_LEVEL_OPTIONS --android-platform android-${QT_ANDROID_PLATFORM_LEVEL})
     endif()
 
     # create a custom command that will run the androiddeployqt utility to prepare the Android package
