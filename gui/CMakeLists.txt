@@ -64,6 +64,7 @@ add_definitions(-DAPP_VERSION="${APP_VERSION}")
 qt5_add_resources(noson-gui-resources noson.qrc)
 
 if(ANDROID)
+  add_definitions(-frtti) # dynamic_cast: https://github.com/android/ndk/issues/519
   add_library(noson-gui SHARED ${noson-gui_SOURCES} ${noson-gui-resources})
 elseif(MSVC)
   add_executable(noson-gui WIN32 ${noson-gui_SOURCES} ${noson-gui-resources})
