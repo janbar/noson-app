@@ -25,6 +25,7 @@ import NosonThumbnailer 1.0
 import "components"
 import "components/Dialog"
 import Nemo.Configuration 1.0
+import Nemo.KeepAlive 1.2
 
 ApplicationWindow {
     id: mainView
@@ -37,6 +38,10 @@ ApplicationWindow {
         anchors.right: parent.right
         anchors.rightMargin: Theme.horizontalPageMargin * 2
         visible: pageStack.currentPage.pageTitle !== undefined
+    }
+
+    KeepAlive {
+        enabled: true
     }
 
     initialPage: Component {
