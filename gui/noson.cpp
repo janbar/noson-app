@@ -85,12 +85,12 @@ int main(int argc, char *argv[])
     importStaticPlugins(view->engine());
 #endif
 
-    view->setSource(QUrl("qrc:/sfos/harbour-noson.qml"));
     QObject::connect(view->engine(), &QQmlApplicationEngine::quit, &app, QCoreApplication::quit);
     // 100MB cache for network data
     view->engine()->setNetworkAccessManagerFactory(new DiskCacheFactory(CACHE_SIZE));
     // bind version string
     view->engine()->rootContext()->setContextProperty("VersionString", QString(APP_VERSION));
+    view->setSource(QUrl("qrc:/sfos/harbour-noson.qml"));
     view->showFullScreen();
 
 #else
