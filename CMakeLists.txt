@@ -9,8 +9,8 @@ if(IOS OR BUILD_SAILFISHOS)
   set(QT_STATICPLUGIN ON CACHE BOOL "Build static plugins" FORCE)
 endif()
 
-set(APP_VERSION       "4.3.1")
-set(APP_VERSION_CODE  62)
+set(APP_VERSION       "4.3.2")
+set(APP_VERSION_CODE  63)
 set(APP_ID            "io.github.janbar.noson")
 set(APP_NAME          "noson")
 
