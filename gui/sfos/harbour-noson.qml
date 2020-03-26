@@ -61,7 +61,7 @@ ApplicationWindow {
         id: settings
         path: "/uk/co/piggz/noson"
         synchronous: true
-        
+
         property real scaleFactor: 1.0
         property real fontScaleFactor: 1.0
         property bool firstRun: true
@@ -72,28 +72,28 @@ ApplicationWindow {
         property string lastfmKey
         property string deviceUrl
     }
-    
+
     StyleLight {
         id: styleMusic
     }
-    
+
     Units {
         id: units
         scaleFactor: 1.0
         fontScaleFactor: 1.0
     }
-    
+
     // The player handles all actions to control the music
     Player {
         id: player
     }
-    
+
     PopInfo {
         id: popInfo
         backgroundColor: styleMusic.popover.backgroundColor
         labelColor: styleMusic.popover.labelColor
     }
-    
+
     // Variables
     property string appName: "Noson"    // My name
     property int debugLevel: 2          // My debug level
@@ -794,9 +794,9 @@ ApplicationWindow {
         var minutes = Math.floor(duration / 1000 / 60)
         var seconds = Math.floor(duration / 1000) % 60
         // Make sure that we never see "NaN:NaN"
-        if (minutes.toString() == 'NaN')
+        if (minutes.toString() === 'NaN')
             minutes = 0
-        if (seconds.toString() == 'NaN')
+        if (seconds.toString() === 'NaN')
             seconds = 0
         return minutes + ":" + (seconds < 10 ? "0" + seconds : seconds)
     }
@@ -906,7 +906,7 @@ ApplicationWindow {
                 }
             }
         }
-        
+
         function pushPage(source) {
                 pageStack.push(source);
         }
@@ -935,7 +935,7 @@ ApplicationWindow {
     DialogSoundSettings {
         id: dialogSoundSettings
     }
-    
+
     DialogNewPlaylist {
         id: dialogNewPlaylist
     }
@@ -947,7 +947,7 @@ ApplicationWindow {
     DialogSelectSource {
         id: dialogSelectSource
     }
-    
+
     DialogSearchMusic {
         id: dialogSearch
     }
@@ -959,7 +959,7 @@ ApplicationWindow {
     DialogRemovePlaylist {
         id: dialogRemovePlaylist
     }
-    
+
     DialogServiceLabel {
         id: dialogServiceLabel
     }
