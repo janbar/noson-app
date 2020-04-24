@@ -56,7 +56,7 @@ public:
   virtual void loadContentForContext(ListModel<T>* model, int id) { (void)model; (void)id; }
   virtual const char* getHost() const { return nullptr; }
   virtual unsigned getPort() const { return 0; }
-  virtual QString getBaseUrl() const { return QString::null; }
+  virtual QString getBaseUrl() const { return QString(); }
   virtual void registerContent(ListModel<T>* model, const QString& root) { (void)model; (void)root; }
   virtual void unregisterContent(ListModel<T>* model) { (void)model; }
 };
