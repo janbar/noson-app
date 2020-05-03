@@ -88,3 +88,8 @@ endif()
 if(MSVC)
   target_link_libraries(noson-gui ws2_32)
 endif()
+
+if(${CMAKE_SYSTEM_NAME} STREQUAL "SunOS")
+  find_library(SOCKET socket REQUIRED)
+  target_link_libraries(noson-gui socket)
+endif()
