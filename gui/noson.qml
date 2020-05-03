@@ -15,11 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.9
+import QtQuick 2.8
 import QtQuick.Layouts 1.3
-import QtQuick.Controls 2.2
-import QtQuick.Controls.Material 2.2
-import QtQuick.Controls.Universal 2.2
+import QtQuick.Controls 2.1
+import QtQuick.Controls.Material 2.1
+import QtQuick.Controls.Universal 2.1
 import Qt.labs.settings 1.0
 import QtGraphicalEffects 1.0
 import NosonApp 1.0
@@ -914,7 +914,19 @@ ApplicationWindow {
     ////
 
     Shortcut {
-        sequences: ["Esc", "Back"]
+        sequence: "Esc"
+        enabled: noZone === false && stackView.depth > 1
+        onActivated: {
+            if (stackView.depth > 1) {
+                if (stackView.currentItem.isRoot)
+                    stackView.pop()
+                else
+                    stackView.currentItem.goUpClicked()
+            }
+        }
+    }
+    Shortcut {
+        sequence: "Back"
         enabled: noZone === false && stackView.depth > 1
         onActivated: {
             if (stackView.depth > 1) {
