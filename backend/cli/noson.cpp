@@ -53,12 +53,18 @@
 #include "builtin.h"
 
 #ifdef __WINDOWS__
+#define LASTERROR WSAGetLastError()
+#define ERRNO_INTR WSAEINTR
+#define FLUSHOUT() fflush(stderr);
 #define PRINT(a) fprintf(stderr, a)
 #define PRINT1(a,b) fprintf(stderr, a, b)
 #define PRINT2(a,b,c) fprintf(stderr, a, b, c)
 #define PRINT3(a,b,c,d) fprintf(stderr, a, b, c, d)
 #define PRINT4(a,b,c,d,e) fprintf(stderr, a, b, c, d, e)
 #else
+#define LASTERROR errno
+#define ERRNO_INTR EINTR
+#define FLUSHOUT() fflush(stdout);
 #define PRINT(a) fprintf(stdout, a)
 #define PRINT1(a,b) fprintf(stdout, a, b)
 #define PRINT2(a,b,c) fprintf(stdout, a, b, c)
@@ -72,7 +78,7 @@
 
 static const char * getCmd(char **begin, char **end, const std::string& option);
 static const char * getCmdOption(char **begin, char **end, const std::string& option);
-static void readStream(std::istream*);
+static void readInStream();
 
 SONOS::System * gSonos = 0;
 SONOS::PlayerPtr gPlayer;
@@ -172,7 +178,7 @@ int main(int argc, char** argv)
   for (SONOS::ZoneList::const_iterator it = zones.begin(); it != zones.end(); ++it)
     PRINT2("Found zone '%s' with coordinator '%s'\n", it->second->GetZoneName().c_str(), it->second->GetCoordinator()->c_str());
 
-  readStream(&std::cin);
+  readInStream();
 
   if (gPlayer)
     gPlayer.reset();
@@ -788,17 +794,67 @@ static bool parseCommand(const std::string& line)
   return true;
 }
 
-static void readStream(std::istream *file)
+static void prompt() {
+  if (gSonos->IsConnected() && gPlayer)
+    PRINT1("%s >>> ", gPlayer->GetZone()->GetZoneName().c_str());
+  else
+    PRINT(">>> ");
+  FLUSHOUT();
+}
+
+static void readInStream()
 {
-  while (*file)
+  static int maxlen = 1023;
+  char* buf = new char[maxlen + 1];
+  size_t len = 0;
+  bool run = true;
+#ifndef __WINDOWS__
+  fd_set fds;
+#endif
+
+  prompt();
+
+  while (run)
   {
-    std::string sline;
-    if (gSonos->IsConnected() && gPlayer)
-      PRINT1("%s >>> ", gPlayer->GetZone()->GetZoneName().c_str());
-    else
-      PRINT(">>> ");
-    getline(*file, sline);
-    if (!parseCommand(sline))
-      break;
+#ifndef __WINDOWS__
+    struct timeval tv;
+    tv.tv_sec = 1;
+    tv.tv_usec = 0;
+    FD_ZERO(&fds);
+    FD_SET(STDIN_FILENO, &fds);
+    int r = select(STDIN_FILENO + 1, &fds, NULL, NULL, &tv);
+    if (r > 0 && FD_ISSET(STDIN_FILENO, &fds))
+#endif
+    {
+      int chr;
+      while (run && (chr = getchar()) != EOF)
+      {
+        if (chr != '\n')
+        {
+          if (len < maxlen)
+            buf[len++] = (char) chr;
+        }
+        else
+        {
+          buf[len] = '\0';
+          if ((run = parseCommand(buf)))
+          {
+            len = 0;
+            prompt();
+          }
+        }
+      }
+    }
+#ifndef __WINDOWS__
+    else if (r < 0)
+    {
+      if (LASTERROR == ERRNO_INTR)
+        continue;
+      else
+        break;
+    }
+#endif
   }
+
+  delete[] buf;
 }
