@@ -109,49 +109,39 @@ int main(int argc, char *argv[])
         QQuickStyle::setStyle(settings.value("style").toString());
     }
 
-    QQmlApplicationEngine engine;
+    QScopedPointer<QQmlApplicationEngine> engine(new QQmlApplicationEngine());
     // 100MB cache for network data
-    engine.setNetworkAccessManagerFactory(new DiskCacheFactory(CACHE_SIZE));
+    engine->setNetworkAccessManagerFactory(new DiskCacheFactory(CACHE_SIZE));
     // bind version string
-    engine.rootContext()->setContextProperty("VersionString", QString(APP_VERSION));
+    engine->rootContext()->setContextProperty("VersionString", QString(APP_VERSION));
     // bind arguments
-    engine.rootContext()->setContextProperty("ApplicationArguments", app.arguments());
+    engine->rootContext()->setContextProperty("ApplicationArguments", app.arguments());
 
 #if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
     // bind Android flag
-    engine.rootContext()->setContextProperty("Android", QVariant(true));
+    engine->rootContext()->setContextProperty("Android", QVariant(true));
     // select and bind styles available and known to work
     availableStyles.append("Default");
     availableStyles.append("Material");
 #else
     // bind Android flag
-    engine.rootContext()->setContextProperty("Android", QVariant(false));
+    engine->rootContext()->setContextProperty("Android", QVariant(false));
     // select and bind styles available and known to work
-    for (QString style : QQuickStyle::availableStyles())
-    {
-      if (style == "Default")
-        availableStyles.append(style);
-      else if (style == "Fusion")
-        availableStyles.append(style);
-      else if (style == "Imagine")
-        availableStyles.append(style);
-      else if (style == "Material")
-        availableStyles.append(style);
-      else if (style == "Universal")
-        availableStyles.append(style);
-    }
+    availableStyles.append("Default");
+    availableStyles.append("Material");
+    availableStyles.append("Universal");
 #endif
-    engine.rootContext()->setContextProperty("AvailableStyles", availableStyles);
+    engine->rootContext()->setContextProperty("AvailableStyles", availableStyles);
 
     // handle signal exit(int) issued by the qml instance
-    QObject::connect(&engine, &QQmlApplicationEngine::exit, doExit);
+    QObject::connect(engine.data(), &QQmlApplicationEngine::exit, doExit);
 
 #if defined(QT_STATICPLUGIN)
-    importStaticPlugins(&engine);
+    importStaticPlugins(engine.data());
 #endif
 
-    engine.load(QUrl("qrc:/noson.qml"));
-    if (engine.rootObjects().isEmpty()) {
+    engine->load(QUrl("qrc:/noson.qml"));
+    if (engine->rootObjects().isEmpty()) {
         qWarning() << "Failed to load QML";
         return -1;
     }
