@@ -133,9 +133,9 @@ MusicListView {
                     from: 0
                     to: 100
                     objectName: "volumeSliderShape"
-                    value: model.volume
                     enabled: !model.outputFixed
                     opacity: (model.outputFixed ? 0.2 : 1.0)
+                    value: model.volume
 
                     handleSize: (model.outputFixed ? 0 : units.gu(2))
                     handleColor: labelColor
@@ -185,19 +185,6 @@ MusicListView {
                                 finger(held);
                             }
                         }
-                    }
-
-                    Connections {
-                        target: model
-                        onVolumeChanged: {
-                            // update an icoming change when released only to be smoothest
-                            if (!volumeSlider.pressed)
-                                volumeSlider.value = model.volume > 0 ? model.volume : 0.0;
-                        }
-                    }
-
-                    Component.onCompleted: {
-                        value = model.volume > 0 ? model.volume : 0.0;
                     }
                 }
 

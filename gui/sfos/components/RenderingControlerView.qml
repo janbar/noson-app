@@ -130,6 +130,7 @@ MusicListView {
                     animateValue: true
                     enabled: !model.outputFixed
                     opacity: (model.outputFixed ? 0.2 : 1.0)
+                    value: model.volume
 
                     onValueChanged: {
                         if (down)
@@ -159,19 +160,6 @@ MusicListView {
                                 });
                             }
                         }
-                    }
-
-                    Connections {
-                        target: model
-                        onVolumeChanged: {
-                            // update an icoming change when released only to be smoothest
-                            if (!volumeSlider.down)
-                                volumeSlider.value = model.value;
-                        }
-                    }
-
-                    Component.onCompleted: {
-                        value = model.volume;
                     }
                 }
 
