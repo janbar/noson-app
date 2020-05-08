@@ -157,8 +157,9 @@ int main(int argc, char *argv[])
 void setupApp(QGuiApplication& app) {
 #ifndef Q_OS_WIN
     SignalHandler *sh = new SignalHandler(&app);
-    sh->catchSignal(SIGHUP, 0);
-    sh->catchSignal(SIGALRM, 0);
+    sh->catchSignal(SIGHUP);
+    sh->catchSignal(SIGALRM);
+    app.connect(sh, &SignalHandler::catched, [=](int signal){ fprintf(stderr, "Signal: [%d]\n", signal); });
 #endif
     // set translators
     QLocale locale = QLocale::system();
