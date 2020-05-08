@@ -11,7 +11,7 @@ public:
   SignalHandler(QObject *parent = 0);
   virtual ~SignalHandler();
 
-  bool catchSignal(int signal, int flags);
+  bool catchSignal(int signal);
   void omitSignal(int signal);
 
 signals:
@@ -27,7 +27,7 @@ private:
   QSocketNotifier *m_notifier;
 
   static int m_pipe[2];
-  static void handler(int signal);
+  static void handler(int signal, siginfo_t * info, void * data);
 };
 
 #endif // SIGNALHANDLER_H

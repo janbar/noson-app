@@ -29,19 +29,20 @@ SignalHandler::~SignalHandler()
   qDebug("Signal handler is destroyed.");
 }
 
-bool SignalHandler::catchSignal(int signal, int flags)
+bool SignalHandler::catchSignal(int signal)
 {
   struct sigaction act;
-  act.sa_handler = handler;
+  memset(&act, '\0', sizeof(struct sigaction));
+  act.sa_sigaction = &handler;
+  act.sa_flags |= SA_SIGINFO;
   sigemptyset(&act.sa_mask);
-  act.sa_flags = 0;
-  act.sa_flags |= flags;
   return (sigaction(signal, &act, 0) == 0);
 }
 
 void SignalHandler::omitSignal(int signal)
 {
   struct sigaction act;
+  memset(&act, '\0', sizeof(struct sigaction));
   act.sa_handler = SIG_DFL;
   sigemptyset(&act.sa_mask);
   sigaction(signal, &act, 0);
@@ -57,9 +58,11 @@ void SignalHandler::forward()
   m_notifier->setEnabled(true);
 }
 
-void SignalHandler::handler(int signal)
+void SignalHandler::handler(int signal, siginfo_t * info, void * data)
 {
   size_t w = ::write(m_pipe[0], &signal, sizeof(signal));
   (void)w;
+  (void)info;
+  (void)data;
 }
 
