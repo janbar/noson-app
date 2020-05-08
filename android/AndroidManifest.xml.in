@@ -30,6 +30,14 @@
 			<meta-data android:name="android.app.ministro_needed_msg" android:value="@string/ministro_needed_msg"/>
 			<meta-data android:name="android.app.fatal_error_msg" android:value="@string/fatal_error_msg"/>-->
 			<meta-data android:name="android.app.background_running" android:value="true"/>
+      <!-- extract android style -->
+      <!-- available android:values :
+          * default - In most cases this will be the same as "full", but it can also be something else if needed, e.g., for compatibility reasons
+          * full - useful QWidget & Quick Controls 1 apps
+          * minimal - useful for Quick Controls 2 apps, it is much faster than "full"
+          * none - useful for apps that don't use any of the above Qt modules-->
+      <meta-data android:name="android.app.extract_android_style" android:value="default"/>
+      <!-- extract android style -->
 		</activity>
 	</application>
 	<supports-screens android:anyDensity="true" android:normalScreens="true" android:smallScreens="true" android:largeScreens="true"/>

@@ -6,7 +6,7 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Hom
 export ANDROID_SDK=/Users/Shared/Android/Sdk
 export ANDROID_NDK=$ANDROID_SDK/ndk-bundle
 export ANDROID_NATIVE_API_LEVEL=16
-export QT_DIR=/Users/Shared/Qt/5.12.6/android_arm64_v8a
+export QT_DIR=/Users/Shared/Qt/5.12.8/android_arm64_v8a
 
 cmake ../.. -DCMAKE_SYSTEM_NAME=Android \
 -DCMAKE_PREFIX_PATH=$QT_DIR \
