@@ -4,7 +4,7 @@ cd build-armv7
 
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home/
 export ANDROID_SDK=/Users/Shared/Android/Sdk
-export ANDROID_NDK=$ANDROID_SDK/ndk-bundle
+export ANDROID_NDK=/Users/Shared/Android/android-ndk-r17c
 export ANDROID_NATIVE_API_LEVEL=16
 export QT_DIR=/Users/Shared/Qt/5.11.3/android_armv7
 

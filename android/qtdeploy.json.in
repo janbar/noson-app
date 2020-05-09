@@ -5,7 +5,7 @@
  "ndk": "@QT_ANDROID_NDK_ROOT@",
  "sdkBuildToolsRevision": "@QT_ANDROID_SDK_BUILDTOOLS_REVISION@",
  "toolchain-prefix": "@QT_ANDROID_TOOLCHAIN_PREFIX@",
- "tool-prefix": "@QT_ANDROID_TOOLCHAIN_TOOL_PREFIX@",
+ "tool-prefix": "@QT_ANDROID_TOOL_PREFIX@",
  "toolchain-version": "@QT_ANDROID_TOOLCHAIN_VERSION@",
  "ndk-host": "@ANDROID_NDK_HOST_SYSTEM_NAME@",
  "target-architecture": "@ANDROID_ABI@",

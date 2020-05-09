@@ -4,7 +4,7 @@ cd build-armv7
 
 export JAVA_HOME=/home/jlb/bin/jdk1.8.0
 export ANDROID_SDK=/home/shared/Android/Sdk
-export ANDROID_NDK=$ANDROID_SDK/ndk-bundle
+export ANDROID_NDK=/home/shared/Android/android-ndk-r17c
 export ANDROID_NATIVE_API_LEVEL=16
 export QT_DIR=/home/shared/Qt/5.11.3/android_armv7
 
@@ -16,7 +16,7 @@ cmake ../.. -DCMAKE_SYSTEM_NAME=Android \
 -DANDROID_ABI="armeabi-v7a" \
 -DANDROID_NATIVE_API_LEVEL=$ANDROID_NATIVE_API_LEVEL \
 -DQT_ANDROID_PLATFORM_LEVEL=$ANDROID_NATIVE_API_LEVEL \
--DQT_ANDROID_TOOLCHAIN_TOOL_PREFIX="arm-linux-androideabi" \
+-DQT_ANDROID_TOOL_PREFIX="arm-linux-androideabi" \
 -DQT_ANDROID_SDK_ROOT=$ANDROID_SDK \
 -DQT_ANDROID_NDK_ROOT=$ANDROID_NDK \
 -DQT_ANDROID_QT_ROOT=$QT_DIR \
