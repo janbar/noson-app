@@ -30,8 +30,9 @@ MouseArea {
     property int animationInterval: 500 // slow flashing
     property alias iconSize: icon.height
     property real borderPadding: units.gu(0.5)
+    readonly property real implicitWidth: row.width + 2 * borderPadding
+    width: implicitWidth
     height: units.gu(5)
-    width: row.width + 2 * borderPadding
     enabled: true
     visible: true
     hoverEnabled: enabled && visible
