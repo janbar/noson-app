@@ -45,9 +45,9 @@ DialogBase {
     Text {
         color: styleMusic.dialog.foregroundColor
         width: dialog.availableWidth
-        text: qsTr("The project has started in 2015 and is intented to make a fast and smart controller for your SONOS devices."
-                   + " You can browse your music library and play track or radio on any zones."
-                   + " You can manage grouping zones, queue, and playlists, and fully control the playback.")
+        text: qsTr("This project was started in 2015 with the intention of creating a fast, smart controller for your SONOS devices."
+                   + " Browse and manage your music libraries by groupings and play to any zone. Listen to radio stations from around"
+                   + " the world and queue up your tracks just the way you like it. Enjoy!")
         wrapMode: Label.Wrap
         font.pointSize: units.fs("medium")
     }
