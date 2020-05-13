@@ -25,11 +25,6 @@ Page {
 
     property bool isListView: true
 
-    BlurredBackground {
-        id: bg
-        anchors.fill: parent
-    }
-
     Column {
         id: toolbar
         anchors {
