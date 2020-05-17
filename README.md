@@ -75,7 +75,7 @@ $ sudo make install
   - To uninstall the application type `sudo make uninstall`
 
 ### Others supported platforms (without extra features*)
-- Sailfish OS (>= 3.0), go to [harbour-noson](https://github.com/piggz/harbour-noson) for further details
+- Sailfish OS (>= 3.0)
 - MacOSX (XCode >= 9.0)
 - Android (SDK 21.0, Android >= 16 Lollipop)
 - Windows (MSVC 2017)
@@ -94,7 +94,7 @@ Also that will write debug output into the file `noson.log`. **Please be careful
 
 **You must first disable the running firewall on the system where the app is running. The app must listen to Sonos device events to function properly.**
 
-In some circonstances your network couldn't allow broadcast/multicast traffic. To workaround the limitation you can configure the application by specifying the device endpoint (from the release >= 3.16).
+In some circonstances your network couldn't allow broadcast/multicast traffic. To workaround the limitation you can configure the application by specifying a Sonos device endpoint.
 
 Launch the *Noson* application from command line as follows.
 
