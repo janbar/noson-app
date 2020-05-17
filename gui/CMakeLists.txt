@@ -19,10 +19,10 @@ find_package(Qt5Svg REQUIRED)
 file(GLOB QML_JS_FILES *.qml *.js)
 file(GLOB APP_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.qml *.js *.json)
 
-add_subdirectory(components)
-add_subdirectory(ui)
 if (BUILD_SAILFISHOS)
-  add_subdirectory(sfos)
+  add_subdirectory(silica)
+else()
+  add_subdirectory(controls2)
 endif()
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -61,7 +61,11 @@ endif()
 
 add_definitions(-DAPP_VERSION="${APP_VERSION}")
 
-qt5_add_resources(noson-gui-resources noson.qrc)
+if (BUILD_SAILFISHOS)
+  qt5_add_resources(noson-gui-resources noson_silica.qrc)
+else()
+  qt5_add_resources(noson-gui-resources noson_controls2.qrc)
+endif()
 
 if(ANDROID)
   add_definitions(-frtti) # dynamic_cast: https://github.com/android/ndk/issues/519

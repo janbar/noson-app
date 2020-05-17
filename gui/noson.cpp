@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     view->engine()->setNetworkAccessManagerFactory(new DiskCacheFactory(CACHE_SIZE));
     // bind version string
     view->engine()->rootContext()->setContextProperty("VersionString", QString(APP_VERSION));
-    view->setSource(QUrl("qrc:/sfos/harbour-noson.qml"));
+    view->setSource(QUrl("qrc:/silica/noson.qml"));
     view->showFullScreen();
 
 #else
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
     importStaticPlugins(engine.data());
 #endif
 
-    engine->load(QUrl("qrc:/noson.qml"));
+    engine->load(QUrl("qrc:/controls2/noson.qml"));
     if (engine->rootObjects().isEmpty()) {
         qWarning() << "Failed to load QML";
         return -1;

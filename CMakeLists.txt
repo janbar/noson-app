@@ -74,25 +74,14 @@ X-Nemo-Application-Type=generic")
     DESTINATION ${DESKTOP_DIR}
   )
 
-  install(
-    FILES "gui/sfos/images/${ICON_NAME}-86x86.png"
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/86x86/apps RENAME "${ICON_NAME}.png"
-  )
-
-  install(
-    FILES "gui/sfos/images/${ICON_NAME}-108x108.png"
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/108x108/apps RENAME "${ICON_NAME}.png"
-  )
-
-  install(
-    FILES "gui/sfos/images/${ICON_NAME}-128x128.png"
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/128x128/apps RENAME "${ICON_NAME}.png"
-  )
-
-  install(
-    FILES "gui/sfos/images/${ICON_NAME}-172x172.png"
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/172x172/apps RENAME "${ICON_NAME}.png"
-  )
+  install(FILES "gui/silica/images/${ICON_NAME}-86x86.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/86x86/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/silica/images/${ICON_NAME}-108x108.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/108x108/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/silica/images/${ICON_NAME}-128x128.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/128x128/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/silica/images/${ICON_NAME}-172x172.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/172x172/apps RENAME "${ICON_NAME}.png")
 else()
   file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${APP_DESKTOP_ID}.desktop "[Desktop Entry]
 Name=${APP_NAME}
@@ -107,10 +96,38 @@ Categories=AudioVideo;Audio;")
     DESTINATION ${DESKTOP_DIR}
   )
 
-  install(
-    FILES "gui/images/${ICON_FILE}"
-    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps RENAME "${ICON_NAME}.png"
-  )
+  install(FILES "gui/icons/${ICON_NAME}-8x8.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/8x8/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/icons/${ICON_NAME}-16x16.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/16x16/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/icons/${ICON_NAME}-22x22.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/22x22/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/icons/${ICON_NAME}-24x24.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/24x24/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/icons/${ICON_NAME}-32x32.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/32x32/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/icons/${ICON_NAME}-36x36.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/36x36/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/icons/${ICON_NAME}-42x42.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/42x42/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/icons/${ICON_NAME}-48x48.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/48x48/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/icons/${ICON_NAME}-64x64.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/64x64/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/icons/${ICON_NAME}-72x72.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/72x72/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/icons/${ICON_NAME}-80x80.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/80x80/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/icons/${ICON_NAME}-96x96.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/96x96/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/icons/${ICON_NAME}-128x128.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/128x128/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/icons/${ICON_NAME}-192x192.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/192x192/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/icons/${ICON_NAME}-256x256.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps RENAME "${ICON_NAME}.png")
+  install(FILES "gui/icons/${ICON_NAME}-512x512.png"
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/512x512/apps RENAME "${ICON_NAME}.png")
 
   configure_file(
     ${APPDATA_FILE_NAME}.in
