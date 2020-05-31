@@ -80,7 +80,7 @@ $ sudo make install
 - Android (SDK 21.0, Android >= 16 Lollipop)
 - Windows (MSVC 2017)
 
-<small>(\*) PulseAudio is available with freedesktop and obviously you can only stream your local music library.</small>
+<small>(\*) PulseAudio is available only with freedesktop (Linux/BSD). So on those platforms you can only stream your local music library.</small>
 
 ## Enabling debug output
 
@@ -89,6 +89,10 @@ Launch the *Noson* application from command line as follows.
 - `noson-app --debug 2>&1 | tee noson.log`
 
 Also that will write debug output into the file `noson.log`. **Please be carefull to not paste debug log on public area before cleaning it from any credentials**. Debugging registration of music services will log entered credentials.
+
+## Streaming my local music files
+
+Noson will scan music files only from the standard directory containing audio media. Depending of the platform and your language, it could be "~/Music" on freedesktop. When you drop files in this location, you should be able to stream them to your Sonos device with Noson. The local library will be exposed in the page "This Device". Supported files are flac, mp3, mp4 and ogg.
 
 ## SSDP discovery fails
 
