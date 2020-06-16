@@ -52,6 +52,7 @@ ApplicationWindow {
         property string accounts: ""
         property string lastfmKey: ""
         property string deviceUrl: ""
+        property string musicLocation: ""
     }
 
     Material.accent: Material.Grey

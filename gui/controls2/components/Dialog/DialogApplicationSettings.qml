@@ -19,6 +19,7 @@ import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import NosonThumbnailer 1.0
+import NosonMediaScanner 1.0
 import "../"
 
 
@@ -50,6 +51,7 @@ DialogBase {
         scaleBox.acceptedValue = settings.scaleFactor;
         themeBox.acceptedValue = settings.theme;
         apiKey.text = settings.lastfmKey;
+        addMusicPath.text = settings.musicLocation;
     }
     onAccepted: {
         var needRestart = (styleBox.currentIndex !== styleBox.styleIndex ||
@@ -68,6 +70,16 @@ DialogBase {
                 if (Thumbnailer.configure("DEEZER", "n/a"))
                     thumbValid = true;
             }
+        }
+
+        var mdir = addMusicPath.displayText.trim();
+        if (settings.musicLocation !== mdir) {
+            if (settings.musicLocation.length > 0)
+                MediaScanner.removeRootPath(settings.musicLocation);
+            if (mdir.length > 0 && MediaScanner.addRootPath(mdir))
+                settings.musicLocation = mdir;
+            else
+                settings.musicLocation = "";
         }
 
         if (needRestart) {
@@ -244,6 +256,23 @@ DialogBase {
             Layout.fillHeight: true
         }
 
+        ColumnLayout {
+            visible: !Android
+            spacing: units.gu(0.5)
+            Layout.fillWidth: true
+            Label {
+                font.pointSize: units.fs("medium")
+                text: "Additional music location"
+            }
+            TextField {
+                id: addMusicPath
+                font.pointSize: units.fs("medium")
+                placeholderText: qsTr("Enter a valid path");
+                inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhUrlCharactersOnly
+                EnterKey.type: Qt.EnterKeyDone
+                Layout.fillWidth: true
+            }
+        }
 
         ColumnLayout {
             visible: true

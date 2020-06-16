@@ -118,6 +118,8 @@ MusicPage {
 
     Component.onCompleted: {
         genres.init();
+        if (settings.musicLocation.length > 0)
+            MediaScanner.addRootPath(settings.musicLocation);
         MediaScanner.start();
     }
 
