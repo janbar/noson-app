@@ -262,7 +262,7 @@ DialogBase {
             Layout.fillWidth: true
             Label {
                 font.pointSize: units.fs("medium")
-                text: "Additional music location"
+                text: qsTr("Additional music location")
             }
             TextField {
                 id: addMusicPath

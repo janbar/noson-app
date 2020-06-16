@@ -549,6 +549,11 @@
         <translation type="unfinished">Restart is required</translation>
     </message>
     <message>
+        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="265"/>
+        <source>Additional music location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="270"/>
         <source>Enter a valid path</source>
         <translation type="unfinished"></translation>
