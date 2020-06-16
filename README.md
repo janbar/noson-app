@@ -92,7 +92,7 @@ Also that will write debug output into the file `noson.log`. **Please be careful
 
 ## Streaming my local music files
 
-Noson will scan music files only from the standard directory containing audio media. Depending of the platform and your language, it could be "~/Music" on freedesktop. When you drop files in this location, you should be able to stream them to your Sonos device with Noson. The local library will be exposed in the page "This Device". Supported files are flac, mp3, mp4 and ogg.
+Noson will scan music files only from the standard directory containing audio media. Depending of the platform and your language, it could be "~/Music" on freedesktop. When you drop files in this location, you should be able to stream them to your Sonos device with Noson. The local library will be exposed in the page "This Device". Supported files are flac, mp3, mp4 and ogg. An additionnal music location can be configured in the general settings.
 
 ## SSDP discovery fails
 
