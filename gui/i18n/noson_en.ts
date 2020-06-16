@@ -508,54 +508,59 @@
 <context>
     <name>DialogApplicationSettings</name>
     <message>
-        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="27"/>
+        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="28"/>
         <location filename="../silica/components/Dialog/DialogApplicationSettings.qml" line="29"/>
         <source>General settings</source>
         <translation type="unfinished">General settings</translation>
     </message>
     <message>
-        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="38"/>
+        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="39"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="43"/>
+        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="44"/>
         <source>Ok</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="180"/>
+        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="192"/>
         <source>Style</source>
         <translation type="unfinished">Style</translation>
     </message>
     <message>
-        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="211"/>
+        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="223"/>
         <source>Theme</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="218"/>
+        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="230"/>
         <source>Light</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="219"/>
+        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="231"/>
         <source>Dark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="236"/>
+        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="248"/>
         <source>Restart is required</source>
         <translation type="unfinished">Restart is required</translation>
     </message>
     <message>
-        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="265"/>
+        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="270"/>
+        <source>Enter a valid path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="294"/>
         <location filename="../silica/components/Dialog/DialogApplicationSettings.qml" line="90"/>
         <source>Get an API account</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="279"/>
+        <location filename="../controls2/components/Dialog/DialogApplicationSettings.qml" line="308"/>
         <location filename="../silica/components/Dialog/DialogApplicationSettings.qml" line="100"/>
         <source>Enter a valid API key</source>
         <translation type="unfinished"></translation>
@@ -1979,30 +1984,30 @@ and one or more Sonos products are receiving power.</source>
 <context>
     <name>noson</name>
     <message>
-        <location filename="../controls2/noson.qml" line="256"/>
+        <location filename="../controls2/noson.qml" line="257"/>
         <location filename="../silica/noson.qml" line="246"/>
         <source>Index loaded</source>
         <translation>Index loaded</translation>
     </message>
     <message>
-        <location filename="../controls2/noson.qml" line="574"/>
+        <location filename="../controls2/noson.qml" line="575"/>
         <location filename="../silica/noson.qml" line="544"/>
         <source>Refreshing of index is running</source>
         <translation>Refreshing of index is running</translation>
     </message>
     <message>
-        <location filename="../controls2/noson.qml" line="559"/>
-        <location filename="../controls2/noson.qml" line="762"/>
+        <location filename="../controls2/noson.qml" line="560"/>
+        <location filename="../controls2/noson.qml" line="763"/>
         <location filename="../silica/noson.qml" line="529"/>
         <location filename="../silica/noson.qml" line="731"/>
         <source>Action can&apos;t be performed</source>
         <translation>Action can&apos;t be performed</translation>
     </message>
     <message>
-        <location filename="../controls2/noson.qml" line="617"/>
-        <location filename="../controls2/noson.qml" line="696"/>
-        <location filename="../controls2/noson.qml" line="725"/>
-        <location filename="../controls2/noson.qml" line="780"/>
+        <location filename="../controls2/noson.qml" line="618"/>
+        <location filename="../controls2/noson.qml" line="697"/>
+        <location filename="../controls2/noson.qml" line="726"/>
+        <location filename="../controls2/noson.qml" line="781"/>
         <location filename="../silica/noson.qml" line="563"/>
         <location filename="../silica/noson.qml" line="589"/>
         <location filename="../silica/noson.qml" line="658"/>
@@ -2012,7 +2017,7 @@ and one or more Sonos products are receiving power.</source>
         <translation>song added</translation>
     </message>
     <message numerus="yes">
-        <location filename="../controls2/noson.qml" line="672"/>
+        <location filename="../controls2/noson.qml" line="673"/>
         <location filename="../silica/noson.qml" line="643"/>
         <source>%n song(s) added</source>
         <translation>
@@ -2021,7 +2026,7 @@ and one or more Sonos products are receiving power.</source>
         </translation>
     </message>
     <message>
-        <location filename="../controls2/noson.qml" line="737"/>
+        <location filename="../controls2/noson.qml" line="738"/>
         <location filename="../silica/noson.qml" line="705"/>
         <source>Queue cleared</source>
         <translation>Queue cleared</translation>
@@ -2034,27 +2039,27 @@ and one or more Sonos products are receiving power.</source>
         </translation>
     </message>
     <message>
-        <location filename="../controls2/noson.qml" line="1185"/>
+        <location filename="../controls2/noson.qml" line="1186"/>
         <source>Standby timer</source>
         <translation>Standby timer</translation>
     </message>
     <message>
-        <location filename="../controls2/noson.qml" line="1192"/>
+        <location filename="../controls2/noson.qml" line="1193"/>
         <source>Sonos settings</source>
         <translation>Sonos settings</translation>
     </message>
     <message>
-        <location filename="../controls2/noson.qml" line="1197"/>
+        <location filename="../controls2/noson.qml" line="1198"/>
         <source>General settings</source>
         <translation>General settings</translation>
     </message>
     <message>
-        <location filename="../controls2/noson.qml" line="1202"/>
+        <location filename="../controls2/noson.qml" line="1203"/>
         <source>About</source>
         <translation>About</translation>
     </message>
     <message>
-        <location filename="../controls2/noson.qml" line="1214"/>
+        <location filename="../controls2/noson.qml" line="1215"/>
         <source>My Services</source>
         <translation>My Services</translation>
     </message>
@@ -2063,7 +2068,7 @@ and one or more Sonos products are receiving power.</source>
         <translation type="vanished">My Radios</translation>
     </message>
     <message>
-        <location filename="../controls2/noson.qml" line="1216"/>
+        <location filename="../controls2/noson.qml" line="1217"/>
         <location filename="../silica/noson.qml" line="886"/>
         <source>Favorites</source>
         <translation>Favorites</translation>
@@ -2081,31 +2086,31 @@ and one or more Sonos products are receiving power.</source>
         <translation type="vanished">Genres</translation>
     </message>
     <message>
-        <location filename="../controls2/noson.qml" line="169"/>
+        <location filename="../controls2/noson.qml" line="170"/>
         <location filename="../silica/noson.qml" line="145"/>
         <source>&lt;Undefined&gt;</source>
         <translation type="unfinished">&lt;Undefined&gt;</translation>
     </message>
     <message>
-        <location filename="../controls2/noson.qml" line="1215"/>
+        <location filename="../controls2/noson.qml" line="1216"/>
         <location filename="../silica/noson.qml" line="885"/>
         <source>My Index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../controls2/noson.qml" line="1217"/>
+        <location filename="../controls2/noson.qml" line="1218"/>
         <location filename="../silica/noson.qml" line="887"/>
         <source>Playlists</source>
         <translation>Playlists</translation>
     </message>
     <message>
-        <location filename="../controls2/noson.qml" line="1218"/>
+        <location filename="../controls2/noson.qml" line="1219"/>
         <location filename="../silica/noson.qml" line="888"/>
         <source>Alarm clock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../controls2/noson.qml" line="1219"/>
+        <location filename="../controls2/noson.qml" line="1220"/>
         <location filename="../silica/noson.qml" line="889"/>
         <source>This Device</source>
         <translation type="unfinished"></translation>
