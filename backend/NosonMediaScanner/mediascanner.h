@@ -73,6 +73,10 @@ public:
   void unregisterModel(ListModel * model);
   QList<MediaFilePtr> allParsedFiles() const;
 
+  Q_INVOKABLE bool addRootPath(const QString& dirPath);
+  Q_INVOKABLE bool removeRootPath(const QString& dirPath);
+  Q_INVOKABLE void clearRoots();
+
 signals:
   void emptyStateChanged();
   void workingChanged();

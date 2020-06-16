@@ -110,5 +110,22 @@ void MediaScanner::unregisterModel(ListModel * model)
 
 QList<MediaFilePtr> MediaScanner::allParsedFiles() const
 {
+  Q_ASSERT(m_engine);
   return m_engine->allParsedFiles();
+}
+
+bool MediaScanner::addRootPath(const QString &dirPath)
+{
+  return m_engine ? m_engine->addRootPath(dirPath) : false;
+}
+
+bool MediaScanner::removeRootPath(const QString &dirPath)
+{
+  return m_engine ? m_engine->removeRootPath(dirPath) : false;
+}
+
+void MediaScanner::clearRoots()
+{
+  if (m_engine)
+    m_engine->clearRoots();
 }

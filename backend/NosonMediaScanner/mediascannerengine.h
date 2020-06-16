@@ -51,6 +51,10 @@ public:
   bool working() const { return m_working; }
   QList<MediaFilePtr> allParsedFiles() const;
 
+  bool addRootPath(const QString& dirPath);
+  bool removeRootPath(const QString& dirPath);
+  void clearRoots();
+
   void stop();
 
 private slots:

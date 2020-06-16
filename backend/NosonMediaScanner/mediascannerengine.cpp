@@ -121,6 +121,46 @@ QList<MediaFilePtr> MediaScannerEngine::allParsedFiles() const
   return list;
 }
 
+bool MediaScannerEngine::addRootPath(const QString& dirPath)
+{
+  m_roots.append(dirPath);
+  if (QThread::isRunning())
+    launchScan(dirPath);
+  return true;
+}
+
+bool MediaScannerEngine::removeRootPath(const QString& dirPath)
+{
+  for(QStringList::iterator it = m_roots.begin(); it != m_roots.end(); ++it)
+  {
+    if (dirPath != *it)
+      continue;
+    m_roots.erase(it);
+    QList<FileMap::iterator> cleaned;
+    m_fileItemsLock->lock(); //is recursive
+    cleanNode(dirPath, true, cleaned);
+    for (FileMap::iterator it : cleaned)
+      m_files.erase(it);
+    m_fileItemsLock->unlock();
+    return true;
+  }
+  return false;
+}
+
+void MediaScannerEngine::clearRoots()
+{
+  m_fileItemsLock->lock(); //is recursive
+  for (const QString& path : m_roots)
+  {
+    QList<FileMap::iterator> cleaned;
+    cleanNode(path, true, cleaned);
+  }
+  m_files.clear();
+  m_roots.clear();
+  m_fileItemsLock->unlock();
+}
+
+
 void MediaScannerEngine::stop()
 {
   if (QThread::isRunning())
