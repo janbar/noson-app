@@ -123,6 +123,11 @@ QList<MediaFilePtr> MediaScannerEngine::allParsedFiles() const
 
 bool MediaScannerEngine::addRootPath(const QString& dirPath)
 {
+  for (const QString& path : m_roots)
+  {
+    if (path == dirPath)
+      return false;
+  }
   m_roots.append(dirPath);
   if (QThread::isRunning())
     launchScan(dirPath);
