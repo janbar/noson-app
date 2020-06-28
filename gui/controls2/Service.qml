@@ -328,6 +328,7 @@ MusicPage {
     Component.onCompleted: {
         mediaModel.init(Sonos, serviceItem.payload, false)
         mediaModel.asyncLoad()
+        searchable = (mediaModel.listSearchCategories().length > 0)
     }
 
     onGoUpClicked: {

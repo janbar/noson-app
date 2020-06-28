@@ -323,6 +323,7 @@ MusicPage {
     Component.onCompleted: {
         mediaModel.init(Sonos, serviceItem.payload, false)
         mediaModel.asyncLoad()
+        searchable = (mediaModel.listSearchCategories().length > 0)
         // create the menu item to navigate back. Starting from root it isn't visible
         menuItemPageUp = menuItemComp.createObject(pageMenuContent, {"text" : qsTr("Page Up"), "visible" : false})
         menuItemPageUp.onClicked.connect(goUpClicked)
