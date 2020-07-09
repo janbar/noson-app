@@ -6,7 +6,7 @@ export JAVA_HOME=/home/jlb/bin/jdk1.8.0
 export ANDROID_SDK=/home/shared/Android/Sdk
 export ANDROID_NDK=/home/shared/Android/android-ndk-r17c
 export ANDROID_NATIVE_API_LEVEL=16
-export QT_DIR=/home/shared/Qt/5.12.8/android_arm64_v8a
+export QT_DIR=/home/shared/Qt/5.12.9/android_arm64_v8a
 
 cmake ../.. -DCMAKE_SYSTEM_NAME=Android \
 -DCMAKE_PREFIX_PATH=$QT_DIR \
