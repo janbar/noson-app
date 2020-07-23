@@ -276,6 +276,7 @@ static bool parseCommand(const std::string& line)
       PRINT("  2:Type ROOM,STARTTIME,RECURRENCE,DURATION,VOLUME,PROGRAM\n");
       PRINT("  3:New value\n");
       PRINT("  Program 0 for Buzzer or the index of favorite (see SHOWFV)\n");
+      PRINT("REFRESHSHAREINDEX             Update the music index on Sonos\n");
       PRINT("HELP                          Print this help\n");
       PRINT("\n");
     }
@@ -785,6 +786,13 @@ static bool parseCommand(const std::string& line)
       }
       else
         PERROR("Error: Missing arguments.\n");
+    }
+    else if (token == "REFRESHSHAREINDEX")
+    {
+      if (gSonos->RefreshShareIndex())
+        PERROR("Succeeded\n");
+      else
+        PERROR("Failed\n");
     }
     else
     {
