@@ -219,15 +219,39 @@ DialogBase {
             spacing: units.gu(1)
             Layout.fillWidth: true
             Label {
-                text: qsTr("Loudness volume control")
+                text: qsTr("Perceived loudness volume control")
                 font.pointSize: units.fs("medium");
             }
+
+            Text {
+                text: "?"
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: explanation.open()
+                }
+                font.bold: true
+                color: styleMusic.view.linkColor
+
+                Popup {
+                    id: explanation
+                    Text {
+                        textFormat: Text.RichText
+                        text: qsTr("Instead of linear 1-100% volume controls, adjust volume by perceived loudness.<br/>For a longer explanation, click <a href=https://www.dr-lex.be/info-stuff/volumecontrols.html>here.</a>")
+                        onLinkActivated: Qt.openUrlExternally(link)
+                        color: styleMusic.view.labelColor
+                        linkColor: styleMusic.view.linkColor
+                    }
+                }
+            }
+
             CheckBox {
                 checked: settings.loudnessVolumeControl
                 onCheckedChanged: {
                     settings.loudnessVolumeControl = checked
                 }
             }
+
         }
 
         RowLayout {
