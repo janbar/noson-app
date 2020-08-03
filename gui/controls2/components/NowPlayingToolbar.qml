@@ -104,12 +104,20 @@ Item {
             readonly property real loudnessToVoltageExponent: 0.67
             readonly property real voltageToLoudnessExponent: 1/0.67
 
-            function linearVolume() {
-                return  Math.pow(value, voltageToLoudnessExponent) * 100
+            function volume() {
+                if (settings.loudnessVolumeControl) {
+                    return Math.pow(value, voltageToLoudnessExponent) * 100;
+                } else {
+                    return value * 100;
+                }
             }
 
-            function setLinearVolume(linear) {
-                value = Math.pow(linear/100, loudnessToVoltageExponent);
+            function setVolume(linear) {
+                if (settings.loudnessVolumeControl) {
+                    value = Math.pow(linear/100, loudnessToVoltageExponent);
+                } else {
+                    value = linear / 100;
+                }
             }
 
             property double inValue
@@ -120,11 +128,11 @@ Item {
             }
 
             onValueChanged: {
-                if (Math.abs(linearVolume() - inValue) >= 1.0) {
-                    if (pressed && linearVolume() > inValue + 5.0) {
-                        setLinearVolume(inValue + 5.0); // loop on value changed
+                if (Math.abs(volume() - inValue) >= 1.0) {
+                    if (pressed && volume() > inValue + 5.0) {
+                        setVolume(inValue + 5.0); // loop on value changed
                     } else {
-                        volumeGroupSlider.inValue = player.volumeMaster = Math.round(linearVolume());
+                        volumeGroupSlider.inValue = player.volumeMaster = Math.round(volume());
                         if (pressed)
                             setVolume.start();
                     }
@@ -143,20 +151,26 @@ Item {
                 property bool ready: true // false: delay the call
                 onTriggered: {
                     if (!ready) {
-                        if (player.setVolumeForFake(volumeGroupSlider.linearVolume()))
-                            volumeGroupSlider.inValue = player.volumeMaster = Math.round(volumeGroupSlider.linearVolume());
+                        if (player.setVolumeForFake(volumeGroupSlider.volume()))
+                            volumeGroupSlider.inValue = player.volumeMaster = Math.round(volumeGroupSlider.volume());
                         restart();
                     } else {
                         ready = false;
-                        player.setVolumeGroup(volumeGroupSlider.linearVolume(), function(result) {
+                        player.setVolumeGroup(volumeGroupSlider.volume(), function(result) {
                             ready = true; // become ready on finished
                             if (result) {
-                                volumeGroupSlider.inValue = player.volumeMaster = Math.round(volumeGroupSlider.linearVolume());
+                                volumeGroupSlider.inValue = player.volumeMaster = Math.round(volumeGroupSlider.volume());
                             } else {
                                 customdebug("Set volume failed");
                             }
                         });
                     }
+                }
+            }
+            Connections {
+                target: settings
+                function onLoudnessVolumeControlChanged() {
+                    volumeGroupSlider.setVolume(volumeGroupSlider.inValue);
                 }
             }
 
@@ -166,14 +180,14 @@ Item {
                     // update an icoming change when released only to be smoothest
                     if (!volumeGroupSlider.pressed) {
                         volumeGroupSlider.inValue = player.volumeMaster;
-                        volumeGroupSlider.setLinearVolume(volumeGroupSlider.inValue)
+                        volumeGroupSlider.setVolume(volumeGroupSlider.inValue)
                     }
                 }
             }
 
             Component.onCompleted: {
                 inValue = player.volumeMaster;
-                setLinearVolume(inValue)
+                setVolume(inValue)
             }
         }
 

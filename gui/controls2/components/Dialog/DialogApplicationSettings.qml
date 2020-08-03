@@ -216,6 +216,21 @@ DialogBase {
         }
 
         RowLayout {
+            spacing: units.gu(1)
+            Layout.fillWidth: true
+            Label {
+                text: qsTr("Loudness volume control")
+                font.pointSize: units.fs("medium");
+            }
+            CheckBox {
+                checked: settings.loudnessVolumeControl
+                onCheckedChanged: {
+                    settings.loudnessVolumeControl = checked
+                }
+            }
+        }
+
+        RowLayout {
             visible: styleBox.currentText === "Material" || styleBox.currentText === "Universal"
             spacing: units.gu(1)
             Layout.fillWidth: true
