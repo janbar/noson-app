@@ -86,7 +86,7 @@ Item {
             anchors.right: settingsButton.left
             anchors.verticalCenter: parent.verticalCenter
             wheelEnabled: true
-            stepSize: 2.5
+            stepSize: 1.0
             live: true
             from: 0
             to: 100
@@ -111,7 +111,7 @@ Item {
             onValueChanged: {
                 if (Math.abs(value - inValue) >= 1.0) {
                     if (pressed && value > inValue + 5.0) {
-                        value = inValue + 5.0; // loop on value changed
+                        value = inValue + 3.0; // loop on value changed
                     } else {
                         volumeGroupSlider.inValue = player.volumeMaster = Math.round(value);
                         if (pressed)

@@ -128,7 +128,7 @@ MusicListView {
                     anchors.right: gripButton.left
                     anchors.verticalCenter: parent.verticalCenter
                     wheelEnabled: true
-                    stepSize: 2.5
+                    stepSize: 1.0
                     live: true
                     from: 0
                     to: 100
