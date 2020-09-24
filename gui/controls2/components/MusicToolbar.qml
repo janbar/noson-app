@@ -231,7 +231,6 @@ Item {
                             right: parent.right
                         }
                         color: styleMusic.view.secondaryColor
-                        elide: Text.ElideRight
                         font.pointSize: units.fs("small")
                         text: player.currentMetaArtist
                     }
