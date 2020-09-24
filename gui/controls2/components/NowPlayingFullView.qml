@@ -136,23 +136,6 @@ Flickable {
 				running: true
 				repeat: true
             }
-
-			
-			
-            Label {
-                id: nowPlayingWideAspectArtist
-                anchors {
-                    left: parent.left
-                    leftMargin: units.gu(1)
-                    right: parent.right
-                    rightMargin: units.gu(1)
-                }
-                color: styleMusic.nowPlaying.primaryColor
-                elide: Text.ElideRight
-                font.pointSize: units.fs("small")
-                font.weight: Font.DemiBold
-                text: player.currentMetaArtist
-            }
         }
 
         /* Detect cover art swipe */
