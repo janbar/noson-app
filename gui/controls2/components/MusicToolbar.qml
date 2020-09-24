@@ -226,10 +226,6 @@ Item {
 
                     Label {
                         id: playerControlsArtist
-                        anchors {
-                            left: parent.left
-                            right: parent.right
-                        }
                         color: styleMusic.view.secondaryColor
                         font.pointSize: units.fs("small")
                         text: player.currentMetaArtist
