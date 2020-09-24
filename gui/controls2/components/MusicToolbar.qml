@@ -213,19 +213,38 @@ Item {
                 }
 
                 /* Artist of track */
-                Label {
-                    id: playerControlsArtist
-                    anchors {
-                        left: parent.left
-                        right: parent.right
+                    Rectangle {
+                        id: trackLabelMask
+                        anchors {
+                            left: playerControlsLabels.left
+                            right: playerControlsLabels.right
+                        }
+                    height: playerControlsArtist.height
+                    clip: true
+                    color: "transparent"
+
+
+                    Label {
+                        id: playerControlsArtist
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                        }
+                        color: styleMusic.view.secondaryColor
+                        elide: Text.ElideRight
+                        font.pointSize: units.fs("small")
+                        text: player.currentMetaArtist
                     }
-                    color: styleMusic.view.secondaryColor
-                    elide: Text.ElideRight
-                    font.pointSize: units.fs("small")
-                    text: player.currentMetaArtist
+                }
+				
+                Timer {
+                    interval: 35
+                    onTriggered: moveMarquee()
+                    running: true
+                    repeat: true
                 }
             }
-
+			
             /* Mouse area to jump to now playing */
             MouseArea {
                 anchors {
@@ -313,5 +332,15 @@ Item {
                 }
             }
         }
+    }
+	
+    function moveMarquee() {
+        if (playerControlsArtist.width > playerControlsLabels.width) {
+            if (playerControlsArtist.x + playerControlsArtist.width < -20) {
+                playerControlsArtist.x = playerControlsLabels.width;
+            }
+            playerControlsArtist.x -= 1;
+        } else
+            playerControlsArtist.x = 0;
     }
 }
