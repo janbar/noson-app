@@ -123,17 +123,18 @@ Flickable {
             /* Artist of track */
             Label {
                 id: nowPlayingWideAspectArtist
-                anchors {
-                    left: parent.left
-                    leftMargin: units.gu(1)
-                    right: parent.right
-                    rightMargin: units.gu(1)
-                }
                 color: styleMusic.nowPlaying.primaryColor
-                elide: Text.ElideRight
                 font.pointSize: units.fs("small")
                 font.weight: Font.DemiBold
                 text: player.currentMetaArtist
+                x:units.gu(1)
+            }
+
+            Timer {
+                interval: 35
+                onTriggered: moveMarquee()
+                running: true
+                repeat: true
             }
         }
 
@@ -300,5 +301,15 @@ Flickable {
             verticalAlignment: Text.AlignVCenter
             width: units.gu(3)
         }
+    }
+
+    function moveMarquee(){
+        if (nowPlayingWideAspectArtist.width > nowPlayingWideAspectArtist.parent.width){
+            if(nowPlayingWideAspectArtist.x + nowPlayingWideAspectArtist.width < -20){
+                nowPlayingWideAspectArtist.x = nowPlayingWideAspectArtist.parent.width;
+            }
+            nowPlayingWideAspectArtist.x -= 1;
+        } else if (nowPlayingWideAspectArtist.x !== units.gu(1))
+            nowPlayingWideAspectArtist.x = units.gu(1);
     }
 }

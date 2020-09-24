@@ -199,30 +199,49 @@ Item {
                 }
 
                 /* Title of track */
-                Label {
-                    id: playerControlsTitle
-                    anchors {
-                        left: parent.left
-                        right: parent.right
+                Rectangle {
+                        id: trackTitleLabelMask
+                        anchors {
+                            left: playerControlsLabels.left
+                            right: playerControlsLabels.right
+                        }
+                    height: playerControlsTitle.height
+                    clip: true
+                    color: "transparent"
+
+                    Label {
+                        id: playerControlsTitle
+                        color: styleMusic.view.primaryColor
+                        font.pointSize: units.fs("medium")
+                        font.weight: Font.DemiBold
+                        text: player.currentMetaTitle
                     }
-                    color: styleMusic.view.primaryColor
-                    elide: Text.ElideRight
-                    font.pointSize: units.fs("medium")
-                    font.weight: Font.DemiBold
-                    text: player.currentMetaTitle
                 }
 
                 /* Artist of track */
-                Label {
-                    id: playerControlsArtist
-                    anchors {
-                        left: parent.left
-                        right: parent.right
+                Rectangle {
+                        id: trackArtistLabelMask
+                        anchors {
+                            left: playerControlsLabels.left
+                            right: playerControlsLabels.right
+                        }
+                    height: playerControlsArtist.height
+                    clip: true
+                    color: "transparent"
+
+                    Label {
+                        id: playerControlsArtist
+                        color: styleMusic.view.secondaryColor
+                        font.pointSize: units.fs("small")
+                        text: player.currentMetaArtist
                     }
-                    color: styleMusic.view.secondaryColor
-                    elide: Text.ElideRight
-                    font.pointSize: units.fs("small")
-                    text: player.currentMetaArtist
+                }
+
+                Timer {
+                    interval: 35
+                    onTriggered: moveMarquee()
+                    running: true
+                    repeat: true
                 }
             }
 
@@ -313,5 +332,23 @@ Item {
                 }
             }
         }
+    }
+
+    function moveMarquee() {
+        if (playerControlsArtist.width > playerControlsLabels.width) {
+            if (playerControlsArtist.x + playerControlsArtist.width < -20) {
+                playerControlsArtist.x = playerControlsLabels.width;
+            }
+            playerControlsArtist.x -= 1;
+        } else if (playerControlsArtist.x !== 0)
+            playerControlsArtist.x = 0;
+
+        if (playerControlsTitle.width > playerControlsLabels.width) {
+            if (playerControlsTitle.x + playerControlsTitle.width < -20) {
+                playerControlsTitle.x = playerControlsLabels.width;
+            }
+            playerControlsTitle.x -= 1;
+        } else if (playerControlsTitle.x !== 0)
+            playerControlsTitle.x = 0;
     }
 }
