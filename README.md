@@ -88,17 +88,37 @@ Launch the *Noson* application from command line as follows.
 
 - `noson-app --debug 2>&1 | tee noson.log`
 
-Also that will write debug output into the file `noson.log`. **Please be carefull to not paste debug log on public area before cleaning it from any credentials**. Debugging registration of music services will log entered credentials.
+Also, that will write debug output into the file `noson.log`. **Please be careful to not paste debug log on public area before cleaning it from any credentials**. Debugging registration of music services will log entered credentials.
 
 ## Streaming my local music files
 
-Noson will scan music files only from the standard directory containing audio media. Depending of the platform and your language, it could be "~/Music" on freedesktop. When you drop files in this location, you should be able to stream them to your Sonos device with Noson. The local library will be exposed in the page "This Device". Supported files are flac, mp3, mp4 and ogg. An additionnal music location can be configured in the general settings.
+Noson will scan music files only from the standard directory containing audio media. Depending on the platform and your language, it could be "~/Music" on freedesktop. When you drop files in this location, you should be able to stream them to your Sonos device with Noson. The local library will be exposed in the page "This Device". Supported files are flac, mp3, mp4 and ogg. An additionnal music location can be configured in the general settings.
 
 ## SSDP discovery fails
 
-**You must first disable the running firewall on the system where the app is running. The app must listen to Sonos device events to function properly.**
+**You must first disable the running firewall on the system where the app is running, or add extra rules for your firewall profile. The app must listen to Sonos device events to function properly.**
 
-In some circonstances your network couldn't allow broadcast/multicast traffic. To workaround the limitation you can configure the application by specifying a Sonos device endpoint.
+**To add the according to [Sonos](https://support.sonos.com/s/article/688?language=en_US), required rules to `ufw` you can use the following instructions :**.
+
+- Create a file named `noson` in /etc/ufw/applications.d` with the following:
+
+``` ini
+[noson]
+title=noson Sonos controller app
+description=controls Sonos devices on the same network
+ports=80,443,445,1400:1410,3400,3401,3405,3445,3500,4070,4444/tcp|136,137,138,139,1900,1901,2869,10243,10280,10281,10282,10283,10284,5353,6969/udp|35382
+```
+
+- Update the rules for ufw with:
+
+``` bash
+sudo ufw app update noson
+sudo ufw allow noson
+```
+
+---
+
+In some circumstances your network couldn't allow broadcast/multicast traffic. To workaround the limitation you can configure the application by specifying a Sonos device endpoint.
 
 Launch the *Noson* application from command line as follows.
 
