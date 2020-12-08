@@ -111,7 +111,7 @@ Item {
             onValueChanged: {
                 if (Math.abs(value - inValue) >= 1.0) {
                     if (pressed && value > inValue + 5.0) {
-                        value = inValue + 1.0; // loop on value changed
+                        value = inValue + 2.0; // loop on value changed
                     } else {
                         volumeGroupSlider.inValue = player.volumeMaster = Math.round(value);
                         if (pressed)
