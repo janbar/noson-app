@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016, 2017
+ * Copyright (C) 2016-2020
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -30,7 +30,12 @@ MouseArea {
 
     property alias column: row.column
 
-    anchors { left: parent.left; right: parent.right }
+    Component.onCompleted: {
+        if (parent != null) {
+            anchors.left = parent.left;
+            anchors.right = parent.right;
+        }
+    }
 
     Rectangle {
         id: content
