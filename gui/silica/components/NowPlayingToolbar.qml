@@ -90,7 +90,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
             leftMargin: units.gu(2)
             rightMargin: units.gu(2)
-            stepSize: 2.5
+            stepSize: 1.0
             minimumValue: 0
             maximumValue: 100
             objectName: "volumeGroupSliderShape"
@@ -102,7 +102,7 @@ Item {
             onValueChanged: {
                 if (Math.abs(value - inValue) >= 1.0) {
                     if (down && value > inValue + 5.0) {
-                        value = inValue + 5.0; // loop on value changed
+                        value = inValue + 2.0; // loop on value changed
                     } else {
                         volumeGroupSlider.inValue = player.volumeMaster = Math.round(value);
                         if (down)
