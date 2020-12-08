@@ -1,6 +1,6 @@
 Name:           harbour-noson
-Version:        4.4.2
-Release:        14
+Version:        4.4.5
+Release:        15
 Summary:        SONOS device controller
 License:        GPL-3.0-or-later
 Group:          Productivity/Multimedia/Sound/Players
