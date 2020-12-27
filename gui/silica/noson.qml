@@ -447,13 +447,20 @@ ApplicationWindow {
         if (deviceUrl.length > 0) {
             customdebug("NOTICE: Connecting using the configured URL: " + deviceUrl);
             ssdp = false; // point out the ssdp discovery isn't used to connect
-            if (Sonos.init(debugLevel, deviceUrl))
+            if (Sonos.init(debugLevel, deviceUrl)) {
+                Sonos.renewSubscriptions();
                 return true;
+            }
             customdebug("ERROR: Connection has failed using the configured URL: " + deviceUrl);
         }
         ssdp = true; // point out the ssdp discovery is used to connect
         var future = Sonos.tryInit(debugLevel);
-        future.finished.connect(actionFinished);
+        future.finished.connect(function(result){
+            if (result)
+                Sonos.renewSubscriptions();
+            else
+                actionFailed();
+        });
         return future.start();
     }
 
