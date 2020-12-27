@@ -1,24 +1,29 @@
-rm -rf build-arm64/*
-mkdir -p build-arm64
-cd build-arm64
+BDIR=build-armv7-nougat
+rm -rf $BDIR/*
+mkdir -p $BDIR
+cd $BDIR
 
 export JAVA_HOME=/home/jlb/bin/jdk1.8.0
 export ANDROID_SDK=/home/shared/Android/Sdk
 export ANDROID_NDK=/home/shared/Android/android-ndk-r17c
 export ANDROID_NATIVE_API_LEVEL=16
-export QT_DIR=/home/shared/Qt/5.12.9/android_arm64_v8a
+export ANDROID_SDK_MINVER=24
+export ANDROID_SDK_TARGET=26
+export QT_DIR=/home/shared/Qt/5.12.9/android_armv7
 
 cmake ../.. -DCMAKE_SYSTEM_NAME=Android \
 -DCMAKE_PREFIX_PATH=$QT_DIR \
 -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake \
 -DCMAKE_MAKE_PROGRAM=$ANDROID_NDK/prebuilt/linux-x86_64/bin/make \
 -DCMAKE_BUILD_TYPE=Release \
--DANDROID_ABI="arm64-v8a" \
+-DANDROID_ABI="armeabi-v7a" \
 -DANDROID_STL_PREFIX="llvm-libc++" \
 -DANDROID_STL_SHARED_LIBRARIES="c++_shared" \
+-DANDROID_SDK_MINVER=$ANDROID_SDK_MINVER \
+-DANDROID_SDK_TARGET=$ANDROID_SDK_TARGET \
 -DANDROID_NATIVE_API_LEVEL=$ANDROID_NATIVE_API_LEVEL \
 -DQT_ANDROID_PLATFORM_LEVEL=$ANDROID_NATIVE_API_LEVEL \
--DQT_ANDROID_TOOL_PREFIX="aarch64-linux-android" \
+-DQT_ANDROID_TOOL_PREFIX="arm-linux-androideabi" \
 -DQT_ANDROID_SDK_ROOT=$ANDROID_SDK \
 -DQT_ANDROID_NDK_ROOT=$ANDROID_NDK \
 -DQT_ANDROID_QT_ROOT=$QT_DIR \

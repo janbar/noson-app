@@ -1,21 +1,26 @@
-rm -rf build-arm64/*
-mkdir -p build-arm64
-cd build-arm64
+BDIR=build-arm64-nougat
+rm -rf $BDIR/*
+mkdir -p $BDIR
+cd $BDIR
 
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home/
-export ANDROID_SDK=/Users/Shared/Android/Sdk
-export ANDROID_NDK=/Users/Shared/Android/android-ndk-r17c
+export JAVA_HOME=/home/jlb/bin/jdk1.8.0
+export ANDROID_SDK=/home/shared/Android/Sdk
+export ANDROID_NDK=/home/shared/Android/android-ndk-r17c
 export ANDROID_NATIVE_API_LEVEL=16
-export QT_DIR=/Users/Shared/Qt/5.12.9/android_arm64_v8a
+export ANDROID_SDK_MINVER=24
+export ANDROID_SDK_TARGET=26
+export QT_DIR=/home/shared/Qt/5.12.9/android_arm64_v8a
 
 cmake ../.. -DCMAKE_SYSTEM_NAME=Android \
 -DCMAKE_PREFIX_PATH=$QT_DIR \
 -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake \
--DCMAKE_MAKE_PROGRAM=$ANDROID_NDK/prebuilt/darwin-x86_64/bin/make \
+-DCMAKE_MAKE_PROGRAM=$ANDROID_NDK/prebuilt/linux-x86_64/bin/make \
 -DCMAKE_BUILD_TYPE=Release \
 -DANDROID_ABI="arm64-v8a" \
 -DANDROID_STL_PREFIX="llvm-libc++" \
 -DANDROID_STL_SHARED_LIBRARIES="c++_shared" \
+-DANDROID_SDK_MINVER=$ANDROID_SDK_MINVER \
+-DANDROID_SDK_TARGET=$ANDROID_SDK_TARGET \
 -DANDROID_NATIVE_API_LEVEL=$ANDROID_NATIVE_API_LEVEL \
 -DQT_ANDROID_PLATFORM_LEVEL=$ANDROID_NATIVE_API_LEVEL \
 -DQT_ANDROID_TOOL_PREFIX="aarch64-linux-android" \

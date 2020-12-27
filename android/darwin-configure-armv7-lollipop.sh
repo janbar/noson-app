@@ -1,11 +1,14 @@
-rm -rf build-armv7/*
-mkdir -p build-armv7
-cd build-armv7
+BDIR=build-armv7-lollipop
+rm -rf $BDIR/*
+mkdir -p $BDIR
+cd $BDIR
 
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home/
 export ANDROID_SDK=/Users/Shared/Android/Sdk
 export ANDROID_NDK=/Users/Shared/Android/android-ndk-r17c
 export ANDROID_NATIVE_API_LEVEL=16
+export ANDROID_SDK_MINVER=18
+export ANDROID_SDK_TARGET=19
 export QT_DIR=/Users/Shared/Qt/5.11.3/android_armv7
 
 cmake ../.. -DCMAKE_SYSTEM_NAME=Android \
@@ -14,6 +17,8 @@ cmake ../.. -DCMAKE_SYSTEM_NAME=Android \
 -DCMAKE_MAKE_PROGRAM=$ANDROID_NDK/prebuilt/darwin-x86_64/bin/make \
 -DCMAKE_BUILD_TYPE=Release \
 -DANDROID_ABI="armeabi-v7a" \
+-DANDROID_SDK_MINVER=$ANDROID_SDK_MINVER \
+-DANDROID_SDK_TARGET=$ANDROID_SDK_TARGET \
 -DANDROID_NATIVE_API_LEVEL=$ANDROID_NATIVE_API_LEVEL \
 -DQT_ANDROID_PLATFORM_LEVEL=$ANDROID_NATIVE_API_LEVEL \
 -DQT_ANDROID_TOOLCHAIN_TOOL_PREFIX="arm-linux-androideabi" \
