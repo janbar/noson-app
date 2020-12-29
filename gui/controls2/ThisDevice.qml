@@ -59,6 +59,11 @@ MusicPage {
               art: "qrc:/images/folder_genre.png",
               source: "qrc:/controls2/ThisDevice/Genres.qml"
           });
+          indexModel.append({
+              title: qsTr("Composer"),
+              art: "qrc:/images/folder_composer.png",
+              source: "qrc:/controls2/ThisDevice/Composers.qml"
+          });
       }
     }
 

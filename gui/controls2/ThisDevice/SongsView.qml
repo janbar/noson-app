@@ -41,6 +41,7 @@ MusicPage {
     property string album: ""
     property string artist: ""
     property string genre: ""
+    property string composer: ""
 
     // enable selection toolbar
     selectable: true
@@ -57,6 +58,7 @@ MusicPage {
         album: songStackPage.album
         artist: songStackPage.artist
         genre: songStackPage.genre
+        composer: songStackPage.composer
         Component.onCompleted: init()
     }
 
