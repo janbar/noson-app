@@ -34,6 +34,7 @@ public:
   const QString& author() { return m_file->mediaInfo->artist; }
   const QString& album() { return m_file->mediaInfo->album; }
   const QString& genre() { return m_file->mediaInfo->genre; }
+  const QString& composer() { return m_file->mediaInfo->composer; }
   const QString& codec() { return m_file->mediaInfo->codec; }
   const QString& filePath() { return m_file->filePath; }
   int albumTrackNo() { return m_file->mediaInfo->trackNo; }
@@ -60,6 +61,7 @@ class Tracks : public ListModel
   Q_PROPERTY(QString artist READ artistFilter WRITE setArtistFilter NOTIFY artistChanged)
   Q_PROPERTY(QString album READ albumFilter WRITE setAlbumFilter NOTIFY albumChanged)
   Q_PROPERTY(QString genre READ genreFilter WRITE setGenreFilter NOTIFY genreChanged)
+  Q_PROPERTY(QString composer READ composerFilter WRITE setComposerFilter NOTIFY composerChanged)
 
   typedef Aggregate<TrackModel> AggregateType;
   typedef AggregateType::TuplePtr ItemPtr;
@@ -74,6 +76,7 @@ public:
     AlbumRole,
     AuthorRole,
     GenreRole,
+    ComposerRole,
     CodecRole,
     FilePathRole,
     AlbumTrackNoRole,
@@ -96,6 +99,8 @@ public:
   void setAlbumFilter(const QString& filter) { m_albumFilter = filter; emit albumChanged(); }
   const QString& genreFilter() { return m_genreFilter; }
   void setGenreFilter(const QString& filter) { m_genreFilter = filter; emit genreChanged(); }
+  const QString& composerFilter() { return m_composerFilter; }
+  void setComposerFilter(const QString& filter) { m_composerFilter = filter; emit composerChanged(); }
 
   void addItem(ItemPtr& item);
 
@@ -128,6 +133,7 @@ signals:
   void artistChanged();
   void albumChanged();
   void genreChanged();
+  void composerChanged();
 
 protected:
   QHash<int, QByteArray> roleNames() const override;
@@ -138,6 +144,7 @@ private:
   QString m_artistFilter;
   QString m_albumFilter;
   QString m_genreFilter;
+  QString m_composerFilter;
 };
 
 }

@@ -194,6 +194,8 @@ int M4AParser::parse_ilst(uint64_t * remaining, FILE * fp, MediaInfo * info)
       loadUtf8Value(&rest, fp, info->artist);
     else if (child == 0xa967656e) // _gen
       loadUtf8Value(&rest, fp, info->genre);
+    else if (child == 0xa9777274) // _wrt
+      loadUtf8Value(&rest, fp, info->composer);
     else if (child == 0xa9646179) // _day
     {
       QString str;

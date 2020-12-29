@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2019 Jean-Luc Barriere
+ *      Copyright (C) 2020 Jean-Luc Barriere
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,8 +15,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef ALBUMS_H
-#define ALBUMS_H
+#ifndef COMPOSERS_H
+#define COMPOSERS_H
 
 #include "aggregate.h"
 #include "listmodel.h"
@@ -25,16 +25,12 @@
 namespace mediascanner
 {
 
-class AlbumModel : public Model
+class ComposerModel : public Model
 {
 public:
-  AlbumModel(const MediaFilePtr& file);
+  ComposerModel(const MediaFilePtr& file);
   const QByteArray& key() const { return m_key; }
-  const QString& artist() { return m_file->mediaInfo->artist; }
-  const QString& album() { return m_file->mediaInfo->album; }
-  const QString& filePath() { return m_file->filePath; }
-  int year() { return m_file->mediaInfo->year; }
-  bool hasArt() { return m_file->mediaInfo->hasArt; }
+  const QString& composer() { return m_file->mediaInfo->composer; }
   const QString& normalized() { return m_normalized; }
   QVariant payload() const;
 private:
@@ -42,14 +38,12 @@ private:
   QString m_normalized;
 };
 
-class Albums : public ListModel
+class Composers : public ListModel
 {
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
-  Q_PROPERTY(QString artist READ artistFilter WRITE setArtistFilter NOTIFY artistChanged)
-  Q_PROPERTY(QString composer READ composerFilter WRITE setComposerFilter NOTIFY composerChanged)
 
-  typedef Aggregate<AlbumModel> AggregateType;
+  typedef Aggregate<ComposerModel> AggregateType;
   typedef AggregateType::TuplePtr ItemPtr;
 
 public:
@@ -58,23 +52,12 @@ public:
   {
     PayloadRole,
     IdRole,
-    ArtistRole,
-    AlbumRole,
-    FilePathRole,
-    YearRole,
-    HasArtRole,
-    NormalizedRole,
     ComposerRole,
+    NormalizedRole,
   };
 
-  Albums(QObject* parent = nullptr);
-  virtual ~Albums() override;
-
-  const QString& artistFilter() { return m_artistFilter; }
-  void setArtistFilter(const QString& filter) { m_artistFilter = filter; emit artistChanged(); }
-
-  const QString& composerFilter() { return m_composerFilter; }
-  void setComposerFilter(const QString& filter) { m_composerFilter = filter; emit composerChanged(); }
+  Composers(QObject* parent = nullptr);
+  virtual ~Composers() override;
 
   void addItem(ItemPtr& item);
 
@@ -104,21 +87,17 @@ signals:
   void loaded(bool succeeded);
   void dataUpdated();
 
-  void artistChanged();
-  void composerChanged();
-
 protected:
   QHash<int, QByteArray> roleNames() const override;
 
 private:
   AggregateType m_data;
   QList<ItemPtr> m_items;
-  QString m_artistFilter;
-  QString m_composerFilter;
 };
 
 }
 
-Q_DECLARE_METATYPE(mediascanner::Aggregate<mediascanner::AlbumModel>::TuplePtr);
+Q_DECLARE_METATYPE(mediascanner::Aggregate<mediascanner::ComposerModel>::TuplePtr);
 
-#endif // ALBUMS_H
+#endif /* COMPOSERS_H */
+

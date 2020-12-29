@@ -29,6 +29,7 @@ struct MediaInfo
   QString artist;
   QString album;
   QString genre;
+  QString composer;
   int trackNo;
   int year;
   bool hasArt;

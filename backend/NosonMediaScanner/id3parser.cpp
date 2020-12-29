@@ -71,6 +71,7 @@ struct ID3Iinfo
   QByteArray album;
   QByteArray genre;
   QByteArray artist;
+  QByteArray composer;
   int artist_priority;
   int track_no;
   bool has_art;
@@ -569,6 +570,9 @@ static void _parse_id3v2_frame(struct ID3v2FrameHeader * fh, const char * frame_
     /* TALB, TAL */
   else if (fid[1] == 'A' && fid[2] == 'L')
     _get_id3v2_frame_info(frame_data, frame_size, &info->album, csconv, 1);
+    /* TCOM (Composer) */
+  else if (fid[1] == 'C' && fid[2] == 'O' && fid[3] == 'M')
+    _get_id3v2_frame_info(frame_data, frame_size, &info->composer, csconv, 1);
     /* TCON (Content/Genre) */
   else if (fid[1] == 'C' && fid[2] == 'O' && fid[3] == 'N')
     _get_id3v2_genre(frame_data, frame_size, &info->genre, csconv);

@@ -41,6 +41,8 @@ void MediaExtractor::run()
         infoPtr->artist = TAG_UNDEFINED;
       if (infoPtr->genre.isEmpty())
         infoPtr->genre = TAG_UNDEFINED;
+      if (infoPtr->composer.isEmpty())
+        infoPtr->composer = TAG_UNDEFINED;
 
       //qDebug("parsing %s (%s) succeeded", m_filePtr->filePath.toUtf8().constData(), m_filePtr->parser->commonName());
       m_filePtr->mediaInfo.swap(infoPtr);
@@ -53,6 +55,7 @@ void MediaExtractor::run()
       qDebug("album       = %s", info->album.toUtf8().constData());
       qDebug("artist      = %s", info->artist.toUtf8().constData());
       qDebug("genre       = %s", info->genre.toUtf8().constData());
+      qDebug("composer    = %s", info->composer.toUtf8().constData());
       qDebug("track no    = %d", info->trackNo);
       qDebug("year        = %d", info->year);
       qDebug("container   = %s", info->container.toUtf8().constData());

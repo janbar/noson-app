@@ -43,6 +43,7 @@ Tracks::Tracks(QObject * parent)
 , m_artistFilter()
 , m_albumFilter()
 , m_genreFilter()
+, m_composerFilter()
 {
 }
 
@@ -114,6 +115,8 @@ QVariant Tracks::data(const QModelIndex& index, int role) const
     return item->model.album();
   case GenreRole:
     return item->model.genre();
+  case ComposerRole:
+    return item->model.composer();
   case FilePathRole:
     return item->model.filePath();
   case CodecRole:
@@ -167,6 +170,7 @@ QHash<int, QByteArray> Tracks::roleNames() const
   roles[AuthorRole] = "author";
   roles[AlbumRole] = "album";
   roles[GenreRole] = "genre";
+  roles[ComposerRole] = "composer";
   roles[FilePathRole] = "filePath";
   roles[CodecRole] = "codec";
   roles[AlbumTrackNoRole] = "albumTrackNo";
@@ -197,6 +201,7 @@ QVariantMap Tracks::get(int row)
   model[roles[AuthorRole]] = item->model.author();
   model[roles[AlbumRole]] = item->model.album();
   model[roles[GenreRole]] = item->model.genre();
+  model[roles[ComposerRole]] = item->model.composer();
   model[roles[FilePathRole]] = item->model.filePath();
   model[roles[CodecRole]] = item->model.codec();
   model[roles[AlbumTrackNoRole]] = item->model.albumTrackNo();
@@ -252,6 +257,7 @@ void Tracks::onFileAdded(const MediaFilePtr& file)
           (m_artistFilter.isEmpty() || m_artistFilter.compare(file->mediaInfo->artist, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
           (m_albumFilter.isEmpty() || m_albumFilter.compare(file->mediaInfo->album, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
           (m_genreFilter.isEmpty() || m_genreFilter.compare(file->mediaInfo->genre, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
+          (m_composerFilter.isEmpty() || m_composerFilter.compare(file->mediaInfo->composer, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
           m_data.insertFile(file, &key))
     addItem(m_data.find(key).value());
 }

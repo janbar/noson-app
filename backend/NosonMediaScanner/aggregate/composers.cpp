@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2019 Jean-Luc Barriere
+ *      Copyright (C) 2020 Jean-Luc Barriere
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,41 +15,38 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#include "albums.h"
+#include "composers.h"
 
 using namespace mediascanner;
 
-AlbumModel::AlbumModel(const MediaFilePtr& file)
+ComposerModel::ComposerModel(const MediaFilePtr& file)
 : Model(file)
 {
   if (file->mediaInfo)
   {
-    m_key = file->mediaInfo->artist.toLower().toUtf8()
-        .append("/").append(file->mediaInfo->album.toLower().toUtf8());
-    m_normalized = normalizedString(file->mediaInfo->album);
+    m_key = file->mediaInfo->composer.toLower().toUtf8();
+    m_normalized = normalizedString(file->mediaInfo->composer);
   }
 }
 
-QVariant AlbumModel::payload() const
+QVariant ComposerModel::payload() const
 {
   QVariant var;
   var.setValue<MediaFilePtr>(m_file);
   return var;
 }
 
-Albums::Albums(QObject * parent)
+Composers::Composers(QObject * parent)
 : ListModel(parent)
-, m_artistFilter()
-, m_composerFilter()
 {
 }
 
-Albums::~Albums()
+Composers::~Composers()
 {
   clear();
 }
 
-void Albums::addItem(ItemPtr& item)
+void Composers::addItem(ItemPtr& item)
 {
   {
     LockGuard lock(m_lock);
@@ -60,7 +57,7 @@ void Albums::addItem(ItemPtr& item)
   emit countChanged();
 }
 
-void Albums::removeItem(const QByteArray& id)
+void Composers::removeItem(const QByteArray& id)
 {
   {
     LockGuard lock(m_lock);
@@ -80,14 +77,14 @@ void Albums::removeItem(const QByteArray& id)
   emit countChanged();
 }
 
-int Albums::rowCount(const QModelIndex& parent) const
+int Composers::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
   LockGuard lock(m_lock);
   return m_items.count();
 }
 
-QVariant Albums::data(const QModelIndex& index, int role) const
+QVariant Composers::data(const QModelIndex& index, int role) const
 {
   LockGuard lock(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
@@ -104,16 +101,8 @@ QVariant Albums::data(const QModelIndex& index, int role) const
   }
   case IdRole:
     return item->model.key();
-  case ArtistRole:
-    return item->model.artist();
-  case AlbumRole:
-    return item->model.album();
-  case FilePathRole:
-    return item->model.filePath();
-  case YearRole:
-    return item->model.year();
-  case HasArtRole:
-    return item->model.hasArt();
+  case ComposerRole:
+    return item->model.composer();
   case NormalizedRole:
     return item->model.normalized();
   default:
@@ -121,7 +110,7 @@ QVariant Albums::data(const QModelIndex& index, int role) const
   }
 }
 
-bool Albums::setData(const QModelIndex &index, const QVariant &value, int role)
+bool Composers::setData(const QModelIndex &index, const QVariant &value, int role)
 {
   LockGuard lock(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
@@ -135,22 +124,17 @@ bool Albums::setData(const QModelIndex &index, const QVariant &value, int role)
   }
 }
 
-QHash<int, QByteArray> Albums::roleNames() const
+QHash<int, QByteArray> Composers::roleNames() const
 {
   QHash<int, QByteArray> roles;
   roles[PayloadRole] = "payload";
   roles[IdRole] = "id";
-  roles[ArtistRole] = "artist";
-  roles[AlbumRole] = "album";
-  roles[FilePathRole] = "filePath";
-  roles[YearRole] = "year";
-  roles[HasArtRole] = "hasArt";
-  roles[NormalizedRole] = "normalized";
   roles[ComposerRole] = "composer";
+  roles[NormalizedRole] = "normalized";
   return roles;
 }
 
-QVariantMap Albums::get(int row)
+QVariantMap Composers::get(int row)
 {
   LockGuard lock(m_lock);
   if (row < 0 || row >= m_items.count())
@@ -162,16 +146,12 @@ QVariantMap Albums::get(int row)
   var.setValue<ItemPtr>(item);
   model[roles[PayloadRole]] = var;
   model[roles[IdRole]] = item->model.key();
-  model[roles[ArtistRole]] = item->model.artist();
-  model[roles[AlbumRole]] = item->model.album();
-  model[roles[FilePathRole]] = item->model.filePath();
-  model[roles[YearRole]] = item->model.year();
-  model[roles[HasArtRole]] = item->model.hasArt();
+  model[roles[ComposerRole]] = item->model.composer();
   model[roles[NormalizedRole]] = item->model.normalized();
   return model;
 }
 
-void Albums::clear()
+void Composers::clear()
 {
   LockGuard lock(m_lock);
   if (m_dataState == ListModel::New)
@@ -185,7 +165,7 @@ void Albums::clear()
   m_dataState = ListModel::NoData;
 }
 
-bool Albums::load()
+bool Composers::load()
 {
   {
     LockGuard lock(m_lock);
@@ -205,17 +185,14 @@ bool Albums::load()
   return true;
 }
 
-void Albums::onFileAdded(const MediaFilePtr& file)
+void Composers::onFileAdded(const MediaFilePtr& file)
 {
   QByteArray key;
-  if (
-          (m_artistFilter.isEmpty() || m_artistFilter.compare(file->mediaInfo->artist, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
-          (m_composerFilter.isEmpty() || m_composerFilter.compare(file->mediaInfo->composer, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
-          m_data.insertFile(file, &key))
+  if (m_data.insertFile(file, &key))
     addItem(m_data.find(key).value());
 }
 
-void Albums::onFileRemoved(const MediaFilePtr& file)
+void Composers::onFileRemoved(const MediaFilePtr& file)
 {
   QByteArray key;
   if (m_data.removeFile(file, &key))

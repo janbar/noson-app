@@ -62,6 +62,7 @@ set(
   aggregate/genres.cpp
   aggregate/albums.cpp
   aggregate/tracks.cpp
+  aggregate/composers.cpp
 )
 
 set(
@@ -89,6 +90,7 @@ set(
   aggregate/genres.h
   aggregate/albums.h
   aggregate/tracks.h
+  aggregate/composers.h
 )
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})

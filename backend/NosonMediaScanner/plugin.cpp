@@ -21,6 +21,7 @@
 #include "aggregate/genres.h"
 #include "aggregate/albums.h"
 #include "aggregate/tracks.h"
+#include "aggregate/composers.h"
 
 #include <QtQml>
 #include <QtQml/QQmlContext>
@@ -39,6 +40,7 @@ void MediaScannerPlugin::registerTypes(const char* uri)
   qmlRegisterType<mediascanner::Genres>(uri, 1, 0, "GenreList");
   qmlRegisterType<mediascanner::Albums>(uri, 1, 0, "AlbumList");
   qmlRegisterType<mediascanner::Tracks>(uri, 1, 0, "TrackList");
+  qmlRegisterType<mediascanner::Composers>(uri, 1, 0, "ComposerList");
 }
 
 void MediaScannerPlugin::initializeEngine(QQmlEngine* engine, const char* uri)
