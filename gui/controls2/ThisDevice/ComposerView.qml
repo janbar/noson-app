@@ -64,7 +64,7 @@ MusicPage {
             coverSources: composerViewPage.covers
             titleColumn: Item {}
             rightColumn: Item {
-                height: units.gu(6)
+                height: units.gu(9)
 
                 Row {
                     id: r1
@@ -119,6 +119,36 @@ MusicPage {
                         maximumLineCount: 1
                         text: qsTr("%n song(s)", "", songComposerModel.count)
                         visible: songComposerModel.count > 0
+                    }
+                }
+
+                Row {
+                    id: r3
+                    anchors {
+                        topMargin: units.gu(0.5)
+                        top: r2.bottom
+                        left: parent.left
+                        right: parent.right
+                        leftMargin: units.gu(-1)
+                    }
+
+                    Icon {
+                        height: units.gu(5)
+                        width: height
+                        source: "qrc:/images/view-list-symbolic.svg"
+                        onClicked: {
+                            stackView.push("qrc:/controls2/ThisDevice/SongsView.qml",
+                                               {
+                                                   "covers": composerViewPage.covers,
+                                                   "album": undefined,
+                                                   "artist": "",
+                                                   "genre": "",
+                                                   "composer": composerViewPage.composer,
+                                                   "pageTitle": pageTitle,
+                                                   "line1": "",
+                                                   "line2": (composerViewPage.composer !== "<Undefined>" ? composerViewPage.composer : tr_undefined)
+                                               })
+                        }
                     }
                 }
             }
