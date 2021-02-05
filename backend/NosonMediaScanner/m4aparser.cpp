@@ -279,7 +279,10 @@ int M4AParser::parse_mvhd(uint64_t * remaining, FILE * fp, MediaInfo * info)
   *remaining -= MVHD_SIZE;
   unsigned scale = read32be(buf + 12);
   unsigned duration = read32be(buf + 16);
-  info->duration = (int) (duration / scale);
+  if (scale != 0)
+    info->duration = (int) (duration / scale);
+  else
+    info->duration = (int) duration;
   return 1;
 }
 
