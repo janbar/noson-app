@@ -113,8 +113,8 @@ endif()
 # Provides dependency noson
 if(NOT LIBNOSON_GIT_MASTER)
     download_project(PROJ noson
-        URL "${CMAKE_CURRENT_SOURCE_DIR}/noson-2.3.3.tar.gz"
-        URL_HASH MD5=33844eaeb0f8f124713d7aba6debc79d
+        URL "${CMAKE_CURRENT_SOURCE_DIR}/noson-2.4.0.tar.gz"
+        URL_HASH MD5=d6c0a794ce55f5afd4754011cb0eaa02
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
         UPDATE_DISCONNECTED ON)
 else()
