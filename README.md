@@ -75,7 +75,6 @@ $ sudo make install
   - To uninstall the application type `sudo make uninstall`
 
 ### Others supported platforms (without extra features*)
-- Sailfish OS (>= 3.0)
 - MacOSX (XCode >= 9.0)
 - Android (SDK 21.0, Android >= 16 Lollipop)
 - Windows (MSVC 2017)

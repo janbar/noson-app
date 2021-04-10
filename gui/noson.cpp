@@ -7,12 +7,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QSettings>
-#ifdef SAILFISHOS
-#include <sailfishapp/sailfishapp.h>
-#include <QQuickView>
-#else
 #include <QtQuickControls2>
-#endif
 #include <QTranslator>
 #include <QDebug>
 #include <QDir>
@@ -24,15 +19,9 @@
 #include "diskcache/diskcachefactory.h"
 
 #define CACHE_SIZE 100000000L
-#ifndef SAILFISHOS
 #define ORG_NAME          "janbar"
 #define APP_NAME          "io.github.janbar.noson"
 #define APP_DISPLAY_NAME  "noson"
-#else
-#define ORG_NAME          "harbour-noson"
-#define APP_NAME          "harbour-noson"
-#define APP_DISPLAY_NAME  "noson"
-#endif
 
 #ifdef Q_OS_WIN
 #include <WinSock2.h>
@@ -78,22 +67,6 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     setupApp(app);
 
-#if defined(SAILFISHOS)
-    QScopedPointer<QQuickView> view(SailfishApp::createView());
-
-#ifdef QT_STATICPLUGIN
-    importStaticPlugins(view->engine());
-#endif
-
-    QObject::connect(view->engine(), &QQmlApplicationEngine::quit, &app, QCoreApplication::quit);
-    // 100MB cache for network data
-    view->engine()->setNetworkAccessManagerFactory(new DiskCacheFactory(CACHE_SIZE));
-    // bind version string
-    view->engine()->rootContext()->setContextProperty("VersionString", QString(APP_VERSION));
-    view->setSource(QUrl("qrc:/silica/noson.qml"));
-    view->showFullScreen();
-
-#else
     QSettings settings;
     QStringList availableStyles;
     QString style = QQuickStyle::name();
@@ -145,7 +118,6 @@ int main(int argc, char *argv[])
         qWarning() << "Failed to load QML";
         return -1;
     }
-#endif
 
     ret = app.exec();
 #ifdef Q_OS_WIN
