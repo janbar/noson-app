@@ -45,6 +45,7 @@ class Player : public QObject, public ContentProvider<Player>
   Q_PROPERTY(int volumeMaster READ volumeMaster NOTIFY renderingGroupChanged)
   Q_PROPERTY(int treble READ treble NOTIFY renderingGroupChanged)
   Q_PROPERTY(int bass READ bass NOTIFY renderingGroupChanged)
+  Q_PROPERTY(int subGain READ subGain NOTIFY renderingGroupChanged)
 
   // Read only
   Q_PROPERTY(int pid READ pid NOTIFY connectedChanged)
@@ -136,6 +137,7 @@ public:
 
   Q_INVOKABLE Future* trySetTreble(double val);
   Q_INVOKABLE Future* trySetBass(double val);
+  Q_INVOKABLE Future* trySetSubGain(double val);
   Q_INVOKABLE Future* trySetVolumeGroup(double volume);
   Q_INVOKABLE Future* trySetVolume(const QString& uuid, double volume);
 
@@ -213,6 +215,7 @@ public:
   int volumeRF() const { return m_RCGroup.volume; }
   int treble() const { return m_RCGroup.treble; }
   int bass() const { return m_RCGroup.bass; }
+  int subGain() const { return m_RCGroup.subGain; }
 
   struct RCProperty
   {
@@ -225,6 +228,7 @@ public:
     int volume = 0;
     int treble = 0;
     int bass = 0;
+    int subGain = 0;
     double volumeFake = 0.;
   };
 
@@ -234,6 +238,7 @@ public:
 
   Q_INVOKABLE bool setTreble(double val);
   Q_INVOKABLE bool setBass(double val);
+  Q_INVOKABLE bool setSubGain(double val);
 
   Q_INVOKABLE bool setVolumeGroup(double volume, bool forFake = false);
   Q_INVOKABLE bool setVolume(const QString& uuid, double volume, bool forFake = false);
@@ -739,6 +744,17 @@ private:
   {
   public:
     PromiseSetBass(Player& player, double val)
+    : m_player(player), m_val(val) { }
+    void run() override;
+  private:
+    Player& m_player;
+    double m_val;
+  };
+
+  class PromiseSetSubGain : public Promise
+  {
+  public:
+    PromiseSetSubGain(Player& player, double val)
     : m_player(player), m_val(val) { }
     void run() override;
   private:

@@ -51,6 +51,7 @@ Item {
     property int volumeMaster: 0
     property int bass: 0
     property int treble: 0
+    property int subGain: 0
     property bool repeat: false
     property bool shuffle: false
     property bool mute: false
@@ -207,6 +208,12 @@ Item {
 
     function setVolume(uuid, volume, onFinished) {
         var future = zone.handle.trySetVolume(uuid, volume);
+        future.onFinished.connect(onFinished);
+        return future.start(false);
+    }
+
+    function setSubGain(value, onFinished) {
+        var future = zone.handle.trySetSubGain(value)
         future.onFinished.connect(onFinished);
         return future.start(false);
     }
@@ -491,6 +498,7 @@ Item {
         player.volumeMaster = zone.handle.volumeMaster;
         player.treble = zone.handle.treble;
         player.bass = zone.handle.bass;
+        player.subGain = zone.handle.subGain;
         player.mute = zone.handle.muteMaster;
         player.nightmodeEnabled = zone.handle.nightmode;
         player.loudnessEnabled = zone.handle.loudness;

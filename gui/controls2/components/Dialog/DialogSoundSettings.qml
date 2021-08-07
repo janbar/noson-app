@@ -59,7 +59,7 @@ Item {
                     font.pointSize: units.fs("medium")
                     verticalAlignment: Text.AlignVCenter
                     height: trebleSlider.height
-                    width: units.gu(10)
+                    width: units.gu(12)
 
                 }
                 StyledSlider {
@@ -120,7 +120,7 @@ Item {
                 spacing: 0
                 Item {
                     id: c0
-                    width: units.gu(11)
+                    width: units.gu(13)
                     height: units.gu(1)
                 }
                 Label {
@@ -160,7 +160,7 @@ Item {
                     font.pointSize: units.fs("medium")
                     verticalAlignment: Text.AlignVCenter
                     height: bassSlider.height
-                    width: units.gu(10)
+                    width: units.gu(12)
                 }
                 StyledSlider {
                     id: bassSlider
@@ -206,6 +206,71 @@ Item {
                                     ready = true;
                                     if (!result) {
                                         customdebug("Set bass failed");
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+
+            Row {
+                width: parent.width
+                spacing: units.gu(1)
+
+                Label {
+                    id: subGainLabel
+                    text: qsTr("Subwoofer")
+                    color: styleMusic.dialog.labelColor
+                    font.pointSize: units.fs("medium")
+                    verticalAlignment: Text.AlignVCenter
+                    height: subGainSlider.height
+                    width: units.gu(12)
+                }
+                StyledSlider {
+                    id: subGainSlider
+                    live: true
+                    from: -10
+                    to: 10
+                    wheelEnabled: true
+                    orientation: Qt.Horizontal
+                    handleSize: units.gu(2)
+                    handleColor: styleMusic.playerControls.volumeHandleColor
+                    handleColorPressed: styleMusic.playerControls.backgroundColor
+                    handleBorderColor: handleColor
+                    backgroundColor: styleMusic.playerControls.volumeBackgroundColor
+                    foregroundColor: styleMusic.playerControls.volumeForegroundColor
+                    size: parent.width - trebleLabel.width - parent.spacing - units.gu(1)
+                    stepSize: 1.0
+
+                    value: player.subGain // load value at startup
+
+                    Connections {
+                        target: player
+                        onSubGainChanged:{
+                            if (!subGainSlider.pressed) {
+                                subGainSlider.value = player.subGain;
+                            }
+                        }
+                    }
+
+                    onMoved: {
+                        setSubGain.start();
+                    }
+
+                    Timer {
+                        id: setSubGain
+                        interval: 300
+                        property bool ready: true // false: delay the call
+                        onTriggered: {
+                            if (!ready) {
+                                restart();
+                            } else {
+                                ready = false;
+                                player.setSubGain(Math.round(subGainSlider.value), function(result) {
+                                    ready = true;
+                                    if (!result) {
+                                        customdebug("Set subGain failed");
                                     }
                                 });
                             }
