@@ -112,7 +112,7 @@ Item {
                 }
             }
 
-            function setVolume(linear) {
+            function setLinearVolume(linear) {
                 if (settings.loudnessVolumeControl) {
                     value = Math.pow(linear/100, loudnessToVoltageExponent);
                 } else {
@@ -130,7 +130,7 @@ Item {
             onValueChanged: {
                 if (Math.abs(volume() - inValue) >= 1.0) {
                     if (pressed && volume() > inValue + 5.0) {
-                        setVolume(inValue + 5.0); // loop on value changed
+                        setLinearVolume(inValue + 5.0); // loop on value changed
                     } else {
                         volumeGroupSlider.inValue = player.volumeMaster = Math.round(volume());
                         if (pressed)
@@ -170,7 +170,7 @@ Item {
             Connections {
                 target: settings
                 function onLoudnessVolumeControlChanged() {
-                    volumeGroupSlider.setVolume(volumeGroupSlider.inValue);
+                    volumeGroupSlider.setLinearVolume(volumeGroupSlider.inValue);
                 }
             }
 
@@ -180,14 +180,14 @@ Item {
                     // update an icoming change when released only to be smoothest
                     if (!volumeGroupSlider.pressed) {
                         volumeGroupSlider.inValue = player.volumeMaster;
-                        volumeGroupSlider.setVolume(volumeGroupSlider.inValue)
+                        volumeGroupSlider.setLinearVolume(volumeGroupSlider.inValue)
                     }
                 }
             }
 
             Component.onCompleted: {
                 inValue = player.volumeMaster;
-                setVolume(inValue)
+                setLinearVolume(inValue)
             }
         }
 
