@@ -41,19 +41,6 @@ Item {
 
     signal imageError(var index)
 
-    /* Animations */
-    Behavior on height {
-        NumberAnimation {
-            duration: 250
-        }
-    }
-
-    Behavior on width {
-        NumberAnimation {
-            duration: 250
-        }
-    }
-
     /* Background for card */
     Rectangle {
         id: bg
