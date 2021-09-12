@@ -22,8 +22,8 @@ import "../"
 
 Item {
     id: card
-    height: parent.parent.cellHeight
-    width: parent.parent.cellWidth
+    height: parent ? parent.parent.cellHeight : 0
+    width: parent ? parent.parent.cellWidth : 0
 
     property alias color: bg.color
     property alias coversGridVisible: coverGrid.visible
