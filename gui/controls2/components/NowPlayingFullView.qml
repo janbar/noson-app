@@ -64,7 +64,7 @@ Flickable {
         Item {
             id: nowPlayingWideAspectLabelsBackground
             anchors.bottom: albumImageContainer.bottom
-            height: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(10) : units.gu(13)
+            height: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(13) : units.gu(16)
             width: parent.width
 
             clip: true
@@ -173,7 +173,7 @@ Flickable {
     Rectangle {
         id: fullviewProgressBackground
         anchors.bottom: fullviewBackground.bottom
-        height: units.gu(3)
+        height: units.gu(6)
         width: parent.width
         color: fullviewBackground.color
     }
@@ -185,7 +185,7 @@ Flickable {
             left: fullviewProgressBackground.left
             right: fullviewProgressBackground.right
             top: fullviewProgressBackground.top
-            topMargin: -units.gu(2)
+            topMargin: -units.gu(1)
         }
         height: units.gu(2)
         width: parent.width
@@ -196,7 +196,7 @@ Flickable {
             id: fullviewPositionLabel
             anchors {
                 top: progressSliderMusic.bottom
-                topMargin: units.gu(-2)
+                topMargin: units.gu(-1)
                 left: parent.left
                 leftMargin: units.gu(1)
             }
@@ -289,7 +289,7 @@ Flickable {
             id: fullviewDurationLabel
             anchors {
                 top: progressSliderMusic.bottom
-                topMargin: units.gu(-2)
+                topMargin: units.gu(-1)
                 right: parent.right
                 rightMargin: units.gu(1)
             }
