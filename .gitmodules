@@ -1,0 +1,4 @@
+[submodule "backend/lib/noson"]
+	path = backend/lib/noson
+	url = https://github.com/janbar/noson.git
+  branch = master
