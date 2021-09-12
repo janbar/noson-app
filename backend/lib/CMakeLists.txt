@@ -79,7 +79,7 @@ if(NOT OPENSSL_FOUND)
 endif()
 
 # Provides dependency FLAC
-if(NOT BUILD_DEPENDENCIES AND NOT QT_STATICPLUGIN)
+if(NOT BUILD_DEPENDENCIES)
     find_package(FLAC)
     find_package(FLACXX)
 endif()
