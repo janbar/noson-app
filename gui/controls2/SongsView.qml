@@ -99,8 +99,8 @@ MusicPage {
 
     Connections {
         target: songsModel
-        onDataUpdated: songsModel.asyncLoad()
-        onLoaded: {
+        function onDataUpdated() { songsModel.asyncLoad(); }
+        function onLoaded(succeeded) {
             songsModel.resetModel()
             if (succeeded) {
                 if (songList.focusIndex > 0) {
@@ -109,7 +109,7 @@ MusicPage {
                 }
             }
         }
-        onLoadedMore: {
+        function onLoadedMore(succeeded) {
             if (succeeded) {
                 songsModel.appendModel();
                 if (songList.focusIndex > 0) {
@@ -196,7 +196,7 @@ MusicPage {
             // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
-                onCountChanged: {
+                function onCountChanged() {
                     listItem.isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
                 }
             }
@@ -381,9 +381,9 @@ MusicPage {
 
         Connections {
             target: songStackPage
-            onSelectAllClicked: songList.selectAll()
-            onSelectNoneClicked: songList.selectNone()
-            onAddToQueueClicked: {
+            function onSelectAllClicked() { songList.selectAll(); }
+            function onSelectNoneClicked() { songList.selectNone(); }
+            function onAddToQueueClicked() {
                 var indicies = songList.getSelectedIndices();
                 // when select all then add the container if exists
                 if (containerItem && indicies.length === songsModel.count) {
@@ -403,7 +403,7 @@ MusicPage {
                     }
                 }
             }
-            onAddToPlaylistClicked: {
+            function onAddToPlaylistClicked() {
                 var items = []
                 var indicies = songList.getSelectedIndices();
                 // when select all then add the container if exists
@@ -419,7 +419,7 @@ MusicPage {
                 songStackPage.state = "default"
             }
 
-            onRemoveSelectedClicked: {
+            function onRemoveSelectedClicked() {
                 delayRemoveSelectedFromPlaylist.selectedIndices = songList.getSelectedIndices()
                 if (delayRemoveSelectedFromPlaylist.selectedIndices.length > 0)
                     songList.focusIndex = delayRemoveSelectedFromPlaylist.selectedIndices[delayRemoveSelectedFromPlaylist.selectedIndices.length - 1]
@@ -491,7 +491,7 @@ MusicPage {
     // check favorite on data loaded
     Connections {
         target: AllFavoritesModel
-        onCountChanged: {
+        function onCountChanged() {
             if (containerItem)
                 isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
         }

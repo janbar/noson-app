@@ -151,7 +151,7 @@ Item {
 
             Connections {
                 target: player
-                onVolumeMasterChanged: {
+                function onVolumeMasterChanged() {
                     // update an icoming change when released only to be smoothest
                     if (!volumeGroupSlider.pressed)
                         volumeGroupSlider.value = volumeGroupSlider.inValue = player.volumeMaster;
@@ -273,7 +273,7 @@ Item {
                 // control the animation depending of the playback state
                 Connections {
                     target: player
-                    onPlaybackStateChanged: {
+                    function onPlaybackStateChanged() {
                         if (player.playbackState !== "TRANSITIONING")
                             nowPlayingPlayIndicator.animationRunning = false
                         else if (!nowPlayingPlayIndicator.animationRunning)
@@ -374,8 +374,8 @@ Item {
 
             Connections {
                 target: player
-                onCurrentPositionChanged: playerControlsProgressBarHint.hint(position, duration)
-                onStopped: playerControlsProgressBarHint.hint(0, player.trackDuration)
+                function onCurrentPositionChanged(position, duration) { playerControlsProgressBarHint.hint(position, duration); }
+                function onStopped() { playerControlsProgressBarHint.hint(0, player.trackDuration); }
             }
         }
     }

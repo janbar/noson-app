@@ -74,7 +74,7 @@ MusicPage {
             // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
-                onLoaded: {
+                function onLoaded() {
                     genreCard.isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
                 }
             }
@@ -113,7 +113,7 @@ MusicPage {
 
             Connections {
                 target: coverBuilder
-                onStatusChanged: {
+                function onStatusChanged() {
                     if (coverBuilder.status === Loader.Ready) {
                         mainView.genreArtworks[model.genre] = coverBuilder.artwork.slice(0);
                         genreCard.coverSources = coverBuilder.artwork.slice(0);

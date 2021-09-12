@@ -48,7 +48,7 @@ MusicPage {
 
     Connections {
         target: Sonos
-        onTopologyChanged: roomModel.load(Sonos)
+        function onTopologyChanged() { roomModel.load(Sonos); }
     }
 
     DialogAlarm {
@@ -241,7 +241,7 @@ MusicPage {
 
         Connections {
             target: alarmsModel
-            onCountChanged: {
+            function onCountChanged() {
                 if (alarmList.focusIndex < alarmsModel.count)
                     alarmList.positionViewAtIndex(alarmList.focusIndex, ListView.Center);
             }

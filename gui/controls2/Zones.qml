@@ -195,8 +195,8 @@ MusicPage {
 
                 Connections {
                     target: AllZonesModel
-                    onZpSourceChanged: { if (pid === listItem.pid) handleZPSourceChanged(); }
-                    onZpPlaybackStateChanged: { if (pid === listItem.pid) handleZPPlaybackStateChanged(); }
+                    function onZpSourceChanged(pid) { if (pid === listItem.pid) handleZPSourceChanged(); }
+                    function onZpPlaybackStateChanged(pid) { if (pid === listItem.pid) handleZPPlaybackStateChanged(); }
                 }
 
                 column: Column {
@@ -271,14 +271,14 @@ MusicPage {
         // on resetting model
         Connections {
             target: AllZonesModel
-            onCountChanged: {
+            function onCountChanged() {
                 zoneList.selectCurrentZone()
             }
         }
         // on change of the current zone
         Connections {
             target: mainView
-            onZoneChanged: {
+            function onZoneChanged() {
                 zoneList.selectCurrentZone()
             }
         }

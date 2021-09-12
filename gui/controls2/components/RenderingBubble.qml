@@ -68,7 +68,7 @@ Item {
 
             Connections {
                 target: renderingControlerView
-                onFinger: {
+                function onFinger(isHeld) {
                     if (isHeld && bubbleTimer.running)
                         timer.stop()
                     else if (!isHeld)
@@ -95,7 +95,7 @@ Item {
 
     Connections {
         target: popover
-        onClosed: {
+        function onClosed() {
             if (renderingBubble.opened) {
                 renderingBubble.opened = false
                 timer.stop()
