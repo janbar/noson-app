@@ -1129,6 +1129,24 @@ ApplicationWindow {
                     enabled: !mainView.jobRunning
                 }
             }
+            Item {
+                width: units.gu(6)
+                height: width
+
+                Icon {
+                    width: units.gu(5)
+                    height: width
+                    anchors.centerIn: parent
+                    source: "qrc:/images/home.svg"
+
+                    onClicked: {
+                        stackView.pop()
+                    }
+
+                    visible: (stackView.currentItem !== null && !stackView.currentItem.isRoot)
+                    enabled: visible
+                }
+            }
 
             Label {
                 id: titleLabel
@@ -1162,23 +1180,8 @@ ApplicationWindow {
                     width: units.gu(5)
                     height: width
                     anchors.centerIn: parent
-                    source: "qrc:/images/home.svg"
-
-                    onClicked: {
-                        stackView.pop()
-                    }
-
-                    visible: (stackView.currentItem !== null && !stackView.currentItem.isRoot)
-                    enabled: visible
-                }
-
-                Icon {
-                    width: units.gu(5)
-                    height: width
-                    anchors.centerIn: parent
                     source: "qrc:/images/contextual-menu.svg"
 
-                    visible: (stackView.currentItem === null || stackView.currentItem.isRoot)
                     enabled: visible
 
                     onClicked: optionsMenu.open()
