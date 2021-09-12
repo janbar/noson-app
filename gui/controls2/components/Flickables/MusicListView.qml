@@ -21,6 +21,9 @@ import QtQuick 2.9
 import QtQuick.Controls 2.2
 
 ListView {
+    // Let the header get hidden when scrolling down, but not get moved down when scrolling up
+    headerPositioning: ListView.PullBackHeader
+
     Component.onCompleted: {
         // Return values depending on the grid unit definition
         // for Flickable.maximumFlickVelocity and Flickable.flickDeceleration
