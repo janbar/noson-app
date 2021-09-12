@@ -53,6 +53,7 @@ ApplicationWindow {
         property string lastfmKey: ""
         property string deviceUrl: ""
         property string musicLocation: ""
+        property bool listView: false
     }
 
     Material.accent: Material.Grey

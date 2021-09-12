@@ -29,7 +29,7 @@ Page {
     property string pageTitle: ""
     property Flickable pageFlickable: null
     property int searchResultsCount
-    property bool isListView: false
+    property bool isListView: settings.listView
     property ListView listview: null
     property bool isRoot: true // by default this page is root
     property bool showToolbar: true // by default enable the music tool bar
@@ -134,10 +134,10 @@ Page {
                     Icon {
                         id: viewType
                         visible: false
-                        source: isListView ? "qrc:/images/view-grid-symbolic.svg" : "qrc:/images/view-list-symbolic.svg"
+                        source: settings.listView ? "qrc:/images/view-grid-symbolic.svg" : "qrc:/images/view-list-symbolic.svg"
                         height: units.gu(5)
                         onClicked: {
-                            isListView = !isListView
+                            settings.listView = !settings.listView
                         }
                     }
 
