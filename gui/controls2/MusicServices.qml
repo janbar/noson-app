@@ -73,6 +73,8 @@ MusicPage {
             onClicked: {
                 stackView.push("qrc:/controls2/Service.qml",
                                    {
+                                       "isListView": isListView,
+                                       "parentDisplayType": 1,
                                        "serviceItem": model,
                                        "pageTitle": model.title
                                    })
@@ -136,6 +138,8 @@ MusicPage {
             onClicked: {
                 stackView.push("qrc:/controls2/Service.qml",
                                    {
+                                       "isListView": isListView,
+                                       "parentDisplayType": 0,
                                        "serviceItem": model,
                                        "pageTitle": model.title
                                    })
