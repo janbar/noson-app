@@ -129,10 +129,6 @@ MusicPage {
         }
     }
 
-    onDisplayTypeChanged: {
-        isListView = (displayType === 0 /*Grid*/ || displayType === 3 /*Editorial*/) ? false : true
-    }
-
     // Overlay to show when no item available
     Loader {
         id: emptyState

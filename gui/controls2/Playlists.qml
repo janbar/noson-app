@@ -89,6 +89,7 @@ MusicPage {
             onClicked: {
                 stackView.push("qrc:/controls2/SongsView.qml",
                                    {
+                                       "isListView": isListView,
                                        "containerItem": makeContainerItem(model),
                                        "songSearch": model.id,
                                        "album": undefined,
