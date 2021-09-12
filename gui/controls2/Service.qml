@@ -156,7 +156,7 @@ MusicPage {
             property bool held: false
             onPressAndHold: held = true
             onReleased: held = false
-            onClicked: {
+            onClick: {
                 clickItem(model)
             }
 

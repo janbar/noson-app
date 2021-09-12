@@ -93,7 +93,7 @@ MusicPage {
                 color: "transparent"
                 description: qsTr("Zone")
 
-                onClicked: {
+                onClick: {
                     connectZone(model.name)
                 }
                 onAction3Pressed: {

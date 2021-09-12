@@ -113,7 +113,7 @@ MusicPage {
                 signal editNew
                 onEditNew: dialogAlarm.open(model, true, index)
 
-                onClicked: {
+                onClick: {
                     alarmList.focusIndex = index;
                     dialogAlarm.open(model);
                 }

@@ -70,18 +70,34 @@ MouseArea {
     property real lastX: -1
     property real lastY: -1
 
+    acceptedButtons: Qt.RightButton | Qt.LeftButton
+
     onPressed: {
+        if (mouse.button == Qt.RightButton) {
+            return;
+        }
         lastX = mouse.x
         lastY = mouse.y
     }
 
     onReleased: {
+        if (mouse.button == Qt.RightButton) {
+            return;
+        }
         var diffX = mouse.x - lastX;
         if (Math.abs(diffX) > units.gu(15)) {
             swipe();
         } else {
             click();
         }
+    }
+    onClicked: {
+        if (mouse.button == Qt.RightButton) {
+            row.openMenu(this, mouse.x, mouse.y);
+            mouse.accepted = true;
+            return;
+        }
+        mouse.accepted = false;
     }
 
     Rectangle {

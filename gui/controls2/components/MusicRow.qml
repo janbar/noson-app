@@ -54,6 +54,24 @@ Row {
 
     signal imageError(var index)
 
+    function openMenu(parent, x, y) {
+        if (optionsMenu.count === 0) {
+            return;
+        }
+        var isEmpty = true;
+        for (var i=0; i<optionsMenu.count; i++) {
+            if (optionsMenu.contentData[i].enabled) {
+                isEmpty = false;
+                break;
+            }
+        }
+        if (isEmpty) {
+            return;
+        }
+
+        optionsMenu.popup(parent, x, y);
+    }
+
     spacing: units.gu(1)
 
     state: "default"
@@ -261,14 +279,7 @@ Row {
                 anchors.centerIn: parent
                 source: "qrc:/images/contextual-menu.svg"
 
-                onClicked: optionsMenu.open()
-
-                Menu {
-                    id: optionsMenu
-                    width: implicitWidth * units.scaleFactor
-                    x: parent.width - width
-                    transformOrigin: Menu.TopRight
-                }
+                onClicked: optionsMenu.popup(this, 0, 0)
             }
         }
 
@@ -309,4 +320,10 @@ Row {
         }
     }
 
+    Menu {
+        id: optionsMenu
+        width: implicitWidth * units.scaleFactor
+        x: parent.width - width
+        transformOrigin: Menu.TopRight
+    }
 }

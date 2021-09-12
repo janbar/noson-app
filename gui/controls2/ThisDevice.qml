@@ -77,7 +77,7 @@ MusicPage {
             property bool held: false
             onPressAndHold: held = true
             onReleased: held = false
-            onClicked: clickItem(model)
+            onClick: clickItem(model)
 
             color: listItem.held ? "lightgrey" : "transparent"
             noCover: ""
