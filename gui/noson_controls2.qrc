@@ -91,6 +91,7 @@
         <file>controls2/components/Dialog/DialogSearchMusic.qml</file>
         <file>controls2/components/MusicCheckBox.qml</file>
         <file>controls2/components/Delegates/SelectMusicListItem.qml</file>
+        <file>controls2/components/ScrollFixer.qml</file>
         <file>controls2/Playlists.qml</file>
         <file>controls2/SongsView.qml</file>
         <file>images/add.svg</file>

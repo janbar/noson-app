@@ -68,7 +68,7 @@ MouseArea {
     property int targetIndex: -1
     property int sourceIndex: -1
 
-    anchors { left: parent.left; right: parent.right }
+    anchors { left: parent ? parent.left : undefined; right: parent ? parent.right : undefined; }
     height: content.height
 
     drag.target: held ? content : undefined
