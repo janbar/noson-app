@@ -110,27 +110,36 @@ if(NOT FLAC_FOUND OR NOT FLACXX_FOUND)
     list(APPEND noson_DEPENDENCIES FLAC FLACXX)
 endif()
 
-# Provides dependency noson
-if(NOT LIBNOSON_GIT_MASTER)
-    download_project(PROJ noson
-        URL "${CMAKE_CURRENT_SOURCE_DIR}/noson-2.4.1.tar.gz"
-        URL_HASH MD5=e348e6c77bdc568bdc411cece5aaf7bc
-        PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-        UPDATE_DISCONNECTED ON)
-else()
-    download_project(PROJ noson
-        GIT_REPOSITORY https://github.com/janbar/noson.git
-        GIT_TAG master
-        GIT_SHALLOW 1
-        PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-        UPDATE_DISCONNECTED OFF)
-endif()
 set(BUILD_SHARED_LIBS OFF)
-add_subdirectory(
-    ${CMAKE_CURRENT_BINARY_DIR}/noson-src/noson
-    ${CMAKE_CURRENT_BINARY_DIR}/noson-build
-    EXCLUDE_FROM_ALL
-)
+
+# Provides dependency noson
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/noson/CMakeLists.txt)
+    message(STATUS "Using libnoson submodule")
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/noson/noson)
+else()
+    if(NOT LIBNOSON_GIT_MASTER)
+        message(STATUS "Using bundled libnoson")
+        download_project(PROJ noson
+            URL "${CMAKE_CURRENT_SOURCE_DIR}/noson-2.4.1.tar.gz"
+            URL_HASH MD5=e348e6c77bdc568bdc411cece5aaf7bc
+            PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+            UPDATE_DISCONNECTED ON)
+    else()
+        message(STATUS "Downloading git master libnoson")
+        download_project(PROJ noson
+            GIT_REPOSITORY https://github.com/janbar/noson.git
+            GIT_TAG master
+            GIT_SHALLOW 1
+            PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+            UPDATE_DISCONNECTED OFF)
+    endif()
+    add_subdirectory(
+        ${CMAKE_CURRENT_BINARY_DIR}/noson-src/noson
+        ${CMAKE_CURRENT_BINARY_DIR}/noson-build
+        EXCLUDE_FROM_ALL
+    )
+endif()
+
 set(noson_LIBRARIES noson                               PARENT_SCOPE)
 set(noson_INCLUDE_DIRS "${noson_BINARY_DIR}/public"     PARENT_SCOPE)
 set(noson_FOUND ON                                      PARENT_SCOPE)
