@@ -135,7 +135,7 @@ Row {
             verticalCenter: parent.verticalCenter
         }
 
-        width: parent.width - image.width - parent.spacing - menu.width
+        width: parent.width - image.width - parent.spacing - menu.width - action.width - action2.width - action3.width - units.gu(1)
 
         onSourceComponentChanged: {
             for (var i=0; i < item.children.length; i++) {
@@ -147,27 +147,6 @@ Row {
                 }
                 // binds to width so it is updated when screen size changes
                 item.children[i].width = Qt.binding(function () { return width; })
-            }
-        }
-    }
-
-    Item {
-        id: favorite
-        visible: isFavorite
-        anchors.right: action2.left
-        anchors.rightMargin: units.gu(1)
-        width: visible ? units.gu(5) : 0
-
-        Rectangle {
-            color: "transparent"
-            width: parent.width
-            height: row.height
-
-            Icon {
-                width: parent.width
-                height: width
-                anchors.centerIn: parent
-                source: "qrc:/images/starred.svg"
             }
         }
     }
@@ -226,7 +205,7 @@ Row {
         anchors.right: menu.left
         anchors.rightMargin: units.gu(1)
         width: units.gu(5)
-        property alias iconSource: icon.source
+        property string iconSource: ""
 
         Rectangle {
             color: "transparent"
@@ -235,7 +214,7 @@ Row {
 
             Icon {
                 id: icon
-                source: ""
+                source: isFavorite ? "qrc:/images/starred.svg" : action.iconSource
                 width: parent.width
                 height: width
                 anchors.centerIn: parent
