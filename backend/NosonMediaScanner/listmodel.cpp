@@ -27,13 +27,17 @@ ListModel::ListModel(QObject * parent)
 , m_dataState(ListModel::New)
 , m_updateSignaled(false)
 {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+  m_lock = new QRecursiveMutex;
+#else
   m_lock = new QMutex(QMutex::Recursive);
+#endif
 }
 
 ListModel::~ListModel()
 {
   {
-    LockGuard g(m_lock);
+    QMutexLocker g(m_lock);
     m_provider->unregisterModel(this);
   }
   delete m_lock;
@@ -41,7 +45,7 @@ ListModel::~ListModel()
 
 bool ListModel::init(bool fill /*= true*/)
 {
-  LockGuard g(m_lock);
+  QMutexLocker g(m_lock);
   m_provider->unregisterModel(this);
   m_provider->registerModel(this);
   m_dataState = ListModel::NoData;

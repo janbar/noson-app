@@ -23,7 +23,6 @@
 
 #include <QThread>
 #include <QThreadPool>
-#include <QMutex>
 #include <QWaitCondition>
 #include <QList>
 #include <QSet>
@@ -31,6 +30,11 @@
 #include <QQueue>
 #include <QFileInfo>
 #include <QFileSystemWatcher>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+#include <QRecursiveMutex>
+#else
+#include <QMutex>
+#endif
 
 namespace mediascanner
 {
@@ -84,7 +88,11 @@ private:
   NodeMap m_nodes;
   NodeMap m_items;
   FileMap m_files;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+  QRecursiveMutex * m_fileItemsLock;
+#else
   QMutex * m_fileItemsLock;
+#endif
   QFileSystemWatcher m_watcher;
   QList<MediaParserPtr> m_parsers;
   QThreadPool m_workerPool;

@@ -55,7 +55,7 @@ Tracks::~Tracks()
 void Tracks::addItem(ItemPtr& item)
 {
   {
-    LockGuard lock(m_lock);
+    QMutexLocker lock(m_lock);
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     m_items << item;
     endInsertRows();
@@ -66,7 +66,7 @@ void Tracks::addItem(ItemPtr& item)
 void Tracks::removeItem(const QByteArray& id)
 {
   {
-    LockGuard lock(m_lock);
+    QMutexLocker lock(m_lock);
     int row = 0;
     for (const ItemPtr& item : m_items)
     {
@@ -86,13 +86,13 @@ void Tracks::removeItem(const QByteArray& id)
 int Tracks::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   return m_items.count();
 }
 
 QVariant Tracks::data(const QModelIndex& index, int role) const
 {
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -146,7 +146,7 @@ QVariant Tracks::data(const QModelIndex& index, int role) const
 
 bool Tracks::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return false;
 
@@ -187,7 +187,7 @@ QHash<int, QByteArray> Tracks::roleNames() const
 
 QVariantMap Tracks::get(int row)
 {
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const ItemPtr item = m_items[row];
@@ -218,7 +218,7 @@ QVariantMap Tracks::get(int row)
 
 void Tracks::clear()
 {
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   if (m_dataState == ListModel::New)
       return;
   if (m_items.count() > 0)
@@ -233,7 +233,7 @@ void Tracks::clear()
 bool Tracks::load()
 {
   {
-    LockGuard lock(m_lock);
+    QMutexLocker lock(m_lock);
     beginResetModel();
     clear();
 

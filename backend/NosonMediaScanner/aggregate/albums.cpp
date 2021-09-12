@@ -52,7 +52,7 @@ Albums::~Albums()
 void Albums::addItem(ItemPtr& item)
 {
   {
-    LockGuard lock(m_lock);
+    QMutexLocker lock(m_lock);
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     m_items << item;
     endInsertRows();
@@ -63,7 +63,7 @@ void Albums::addItem(ItemPtr& item)
 void Albums::removeItem(const QByteArray& id)
 {
   {
-    LockGuard lock(m_lock);
+    QMutexLocker lock(m_lock);
     int row = 0;
     for (const ItemPtr& item : m_items)
     {
@@ -83,13 +83,13 @@ void Albums::removeItem(const QByteArray& id)
 int Albums::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   return m_items.count();
 }
 
 QVariant Albums::data(const QModelIndex& index, int role) const
 {
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -123,7 +123,7 @@ QVariant Albums::data(const QModelIndex& index, int role) const
 
 bool Albums::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return false;
 
@@ -152,7 +152,7 @@ QHash<int, QByteArray> Albums::roleNames() const
 
 QVariantMap Albums::get(int row)
 {
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const ItemPtr item = m_items[row];
@@ -173,7 +173,7 @@ QVariantMap Albums::get(int row)
 
 void Albums::clear()
 {
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   if (m_dataState == ListModel::New)
       return;
   if (m_items.count() > 0)
@@ -188,7 +188,7 @@ void Albums::clear()
 bool Albums::load()
 {
   {
-    LockGuard lock(m_lock);
+    QMutexLocker lock(m_lock);
     beginResetModel();
     clear();
 
