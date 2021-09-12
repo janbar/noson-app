@@ -135,7 +135,7 @@ Row {
             verticalCenter: parent.verticalCenter
         }
 
-        width: parent.width - image.width - parent.spacing - menu.width
+        width: parent.width - image.width - parent.spacing - menu.width - favorite.width - action.width - action2.width - action3.width - units.gu(1)
 
         onSourceComponentChanged: {
             for (var i=0; i < item.children.length; i++) {
