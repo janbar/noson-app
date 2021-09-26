@@ -1,0 +1,32 @@
+name: build ubuntu-latest
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        run: "sudo apt-get install libflac-dev libflac++-dev libpulse-dev
+              qtbase5-dev qttools5-dev qttools5-dev-tools qtdeclarative5-dev
+              qtdeclarative5-dev-tools qtquickcontrols2-5-dev libqt5svg5-dev
+              qml-module-qt-labs-settings qml-module-qtgraphicaleffects
+              qml-module-qtqml-models2 qml-module-qtquick2
+              qml-module-qtquick-controls2 qml-module-qtquick-layouts
+              qml-module-qtquick-particles2 qml-module-qtquick-templates2
+              qml-module-qtquick-window2 libqt5dbus5 libqt5svg5
+              zlib1g-dev libssl-dev libpulse-dev libflac-dev libflac++-dev
+              libdbus-1-dev"
+      - name: Configure build
+        run: "cmake -B build
+                    -Wno-dev"
+      - name: Build
+        run:  cmake --build build
