@@ -57,7 +57,7 @@ MusicPage {
             property bool held: false
             onPressAndHold: held = true
             onReleased: held = false
-            onClicked: clickItem(model)
+            onClick: clickItem(model)
 
             color: listItem.held ? "lightgrey" : "transparent"
             noCover: ""
@@ -144,7 +144,7 @@ MusicPage {
 
     Connections {
         target: AllGenresModel
-        onCountChanged: resetIndexModel()
+        function onCountChanged() { resetIndexModel(); }
     }
 
     // Overlay to show when no index found

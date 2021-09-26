@@ -40,10 +40,10 @@ Item {
 
     Connections {
         target: queue
-        onDataUpdated: {
+        function onDataUpdated() {
             queue.asyncLoad();
         }
-        onLoaded: {
+        function onLoaded(succeeded) {
             if (succeeded) {
                 queue.resetModel()
                 trackCount = queue.count

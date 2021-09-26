@@ -54,7 +54,7 @@ Flickable {
                 }
                 Connections {
                     target: player
-                    onSourceChanged: {
+                    function onSourceChanged() {
                         albumImage.covers = player.covers.slice();
                     }
                 }
@@ -64,7 +64,7 @@ Flickable {
         Item {
             id: nowPlayingWideAspectLabelsBackground
             anchors.bottom: albumImageContainer.bottom
-            height: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(10) : units.gu(13)
+            height: nowPlayingWideAspectTitle.lineCount === 1 ? units.gu(13) : units.gu(16)
             width: parent.width
 
             clip: true
@@ -173,7 +173,7 @@ Flickable {
     Rectangle {
         id: fullviewProgressBackground
         anchors.bottom: fullviewBackground.bottom
-        height: units.gu(3)
+        height: units.gu(6)
         width: parent.width
         color: fullviewBackground.color
     }
@@ -185,7 +185,7 @@ Flickable {
             left: fullviewProgressBackground.left
             right: fullviewProgressBackground.right
             top: fullviewProgressBackground.top
-            topMargin: -units.gu(2)
+            topMargin: -units.gu(1)
         }
         height: units.gu(2)
         width: parent.width
@@ -196,7 +196,7 @@ Flickable {
             id: fullviewPositionLabel
             anchors {
                 top: progressSliderMusic.bottom
-                topMargin: units.gu(-2)
+                topMargin: units.gu(-1)
                 left: parent.left
                 leftMargin: units.gu(1)
             }
@@ -268,7 +268,7 @@ Flickable {
 
             Connections {
                 target: player
-                onCurrentPositionChanged: {
+                function onCurrentPositionChanged(position, duration) {
                     // seeked is a workaround for bug 1310706 as the first position after a seek is sometimes invalid (0)
                     if (progressSliderMusic.seeking === false && !progressSliderMusic.seeked) {
                         fullviewPositionLabel.text = durationToString(position)
@@ -280,7 +280,7 @@ Flickable {
 
                     progressSliderMusic.seeked = false;
                 }
-                onStopped: fullviewPositionLabel.text = durationToString(0);
+                function onStopped() { fullviewPositionLabel.text = durationToString(0); }
             }
         }
 
@@ -289,7 +289,7 @@ Flickable {
             id: fullviewDurationLabel
             anchors {
                 top: progressSliderMusic.bottom
-                topMargin: units.gu(-2)
+                topMargin: units.gu(-1)
                 right: parent.right
                 rightMargin: units.gu(1)
             }

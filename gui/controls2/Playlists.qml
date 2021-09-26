@@ -70,7 +70,7 @@ MusicPage {
             // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
-                onLoaded: {
+                function onLoaded() {
                     isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
                 }
             }
@@ -89,6 +89,7 @@ MusicPage {
             onClicked: {
                 stackView.push("qrc:/controls2/SongsView.qml",
                                    {
+                                       "isListView": isListView,
                                        "containerItem": makeContainerItem(model),
                                        "songSearch": model.id,
                                        "album": undefined,

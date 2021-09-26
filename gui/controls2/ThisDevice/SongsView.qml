@@ -304,9 +304,9 @@ MusicPage {
 
         Connections {
             target: songStackPage
-            onSelectAllClicked: songList.selectAll()
-            onSelectNoneClicked: songList.selectNone()
-            onAddToQueueClicked: {
+            function onSelectAllClicked() { songList.selectAll(); }
+            function onSelectNoneClicked() { songList.selectNone(); }
+            function onAddToQueueClicked() {
                 var indicies = songList.getSelectedIndices();
                 var items = [];
                 for (var i = 0; i < indicies.length; i++) {

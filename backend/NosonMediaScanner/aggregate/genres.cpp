@@ -49,7 +49,7 @@ Genres::~Genres()
 void Genres::addItem(ItemPtr& item)
 {
   {
-    LockGuard lock(m_lock);
+    QMutexLocker lock(m_lock);
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     m_items << item;
     endInsertRows();
@@ -60,7 +60,7 @@ void Genres::addItem(ItemPtr& item)
 void Genres::removeItem(const QByteArray& id)
 {
   {
-    LockGuard lock(m_lock);
+    QMutexLocker lock(m_lock);
     int row = 0;
     for (const ItemPtr& item : m_items)
     {
@@ -80,13 +80,13 @@ void Genres::removeItem(const QByteArray& id)
 int Genres::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   return m_items.count();
 }
 
 QVariant Genres::data(const QModelIndex& index, int role) const
 {
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -112,7 +112,7 @@ QVariant Genres::data(const QModelIndex& index, int role) const
 
 bool Genres::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return false;
 
@@ -136,7 +136,7 @@ QHash<int, QByteArray> Genres::roleNames() const
 
 QVariantMap Genres::get(int row)
 {
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const ItemPtr item = m_items[row];
@@ -153,7 +153,7 @@ QVariantMap Genres::get(int row)
 
 void Genres::clear()
 {
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   if (m_dataState == ListModel::New)
       return;
   if (m_items.count() > 0)
@@ -168,7 +168,7 @@ void Genres::clear()
 bool Genres::load()
 {
   {
-    LockGuard lock(m_lock);
+    QMutexLocker lock(m_lock);
     beginResetModel();
     clear();
 

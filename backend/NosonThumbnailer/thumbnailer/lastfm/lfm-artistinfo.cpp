@@ -40,7 +40,7 @@ void LFMArtistInfo::queryInfo(NetRequest* prepared)
 {
   QUrlQuery post;
   post.addQueryItem("api_key", m_apiKey);
-  QByteArray postData;
+  QString postData;
   postData.append(post.toString());
 
   QUrlQuery qry;
@@ -55,7 +55,7 @@ void LFMArtistInfo::queryInfo(NetRequest* prepared)
   prepared->setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
   prepared->setHeader("Accept", "text/xml");
   prepared->setHeader("Accept-Charset", "utf-8");
-  prepared->setData(postData);
+  prepared->setData(postData.toUtf8());
   prepared->setUrl(QUrl(url));
 }
 

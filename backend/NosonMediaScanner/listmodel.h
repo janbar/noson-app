@@ -24,7 +24,11 @@
 #include <QObject>
 #include <QAbstractListModel>
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+class QRecursiveMutex;
+#else
 class QMutex;
+#endif
 
 namespace mediascanner
 {
@@ -55,7 +59,11 @@ public slots:
   virtual void onFileRemoved(const MediaFilePtr& file) = 0;
   
 protected:
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+  QRecursiveMutex * m_lock;
+#else
   QMutex * m_lock;
+#endif
   MediaScanner * m_provider;
   dataState m_dataState;
 

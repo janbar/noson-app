@@ -49,7 +49,7 @@ Artists::~Artists()
 void Artists::addItem(ItemPtr& item)
 {
   {
-    LockGuard lock(m_lock);
+    QMutexLocker lock(m_lock);
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     m_items << item;
     endInsertRows();
@@ -60,7 +60,7 @@ void Artists::addItem(ItemPtr& item)
 void Artists::removeItem(const QByteArray& id)
 {
   {
-    LockGuard lock(m_lock);
+    QMutexLocker lock(m_lock);
     int row = 0;
     for (const ItemPtr& item : m_items)
     {
@@ -80,13 +80,13 @@ void Artists::removeItem(const QByteArray& id)
 int Artists::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   return m_items.count();
 }
 
 QVariant Artists::data(const QModelIndex& index, int role) const
 {
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -112,7 +112,7 @@ QVariant Artists::data(const QModelIndex& index, int role) const
 
 bool Artists::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return false;
 
@@ -136,7 +136,7 @@ QHash<int, QByteArray> Artists::roleNames() const
 
 QVariantMap Artists::get(int row)
 {
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const ItemPtr item = m_items[row];
@@ -153,7 +153,7 @@ QVariantMap Artists::get(int row)
 
 void Artists::clear()
 {
-  LockGuard lock(m_lock);
+  QMutexLocker lock(m_lock);
   if (m_dataState == ListModel::New)
       return;
   if (m_items.count() > 0)
@@ -168,7 +168,7 @@ void Artists::clear()
 bool Artists::load()
 {
   {
-    LockGuard lock(m_lock);
+    QMutexLocker lock(m_lock);
     beginResetModel();
     clear();
 

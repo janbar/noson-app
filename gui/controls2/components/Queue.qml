@@ -140,7 +140,7 @@ Item {
 
         Connections {
             target: player.trackQueue.model
-            onLoaded: {
+            function onLoaded() {
                 if (queueList.focusIndex > 0) {
                     queueList.positionViewAtIndex(queueList.focusIndex, ListView.Center);
                     queueList.focusIndex = 0;

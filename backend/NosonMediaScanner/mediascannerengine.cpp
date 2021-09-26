@@ -44,7 +44,11 @@ MediaScannerEngine::MediaScannerEngine(MediaScanner * scanner, QObject* parent)
 , m_nodes()
 , m_items()
 , m_files()
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+, m_fileItemsLock(new QRecursiveMutex)
+#else
 , m_fileItemsLock(new QMutex(QMutex::Recursive))
+#endif
 , m_watcher()
 , m_parsers()
 , m_workerPool()
@@ -72,7 +76,7 @@ MediaScannerEngine::~MediaScannerEngine()
 
 void MediaScannerEngine::addParser(MediaParser* parser)
 {
-  LockGuard gc(m_condLock);
+  QMutexLocker gc(m_condLock);
   for (MediaParserPtr p : m_parsers)
   {
     if (p->commonName() == parser->commonName())
@@ -83,7 +87,7 @@ void MediaScannerEngine::addParser(MediaParser* parser)
 
 void MediaScannerEngine::removeParser(const QString& name)
 {
-  LockGuard gc(m_condLock);
+  QMutexLocker gc(m_condLock);
   QList<MediaParserPtr>::iterator it = m_parsers.begin();
   while (it != m_parsers.end())
   {
@@ -112,7 +116,7 @@ void MediaScannerEngine::setMaxThread(int maxThread)
 
 QList<MediaFilePtr> MediaScannerEngine::allParsedFiles() const
 {
-  LockGuard g(m_fileItemsLock);
+  QMutexLocker g(m_fileItemsLock);
 
   QList<MediaFilePtr> list;
   for (const MediaFilePtr& file : m_files)
@@ -191,7 +195,7 @@ void MediaScannerEngine::onFileChanged(const QString& filePath)
   QFile f(filePath);
   if (f.exists() && f.size() > FILE_MIN_SIZE)
   {
-    LockGuard g(m_fileItemsLock);
+    QMutexLocker g(m_fileItemsLock);
 
     NodeMap::iterator it = m_items.find(filePath);
     if (it != m_items.end())
@@ -252,7 +256,7 @@ void MediaScannerEngine::run()
 
 void MediaScannerEngine::launchScan(const QString& dirPath)
 {
-  LockGuard gc(m_condLock);
+  QMutexLocker gc(m_condLock);
   m_todo.enqueue(dirPath);
   m_cond.wakeOne();
 }
@@ -282,7 +286,7 @@ void MediaScannerEngine::scanDir(const QString &dirPath, const QList<MediaParser
         MediaParserPtr p = matchParser(parsers, info);
         if (p)
         {
-          LockGuard g(m_fileItemsLock);
+          QMutexLocker g(m_fileItemsLock);
 
           NodeMap::iterator itf = m_items.find(info.absoluteFilePath());
           if (itf == m_items.end())
@@ -385,7 +389,7 @@ void MediaScannerEngine::cleanNode(const QString& nodeName, bool evenPinned, QLi
   if (m_scanner->isDebug())
     qDebug("Clean node %s", nodeName.toUtf8().constData());
 
-  LockGuard g(m_fileItemsLock);
+  QMutexLocker g(m_fileItemsLock);
 
   QPair<FileMap::iterator, FileMap::iterator> pair = m_files.equal_range(nodeName);
   FileMap::iterator it = pair.first;

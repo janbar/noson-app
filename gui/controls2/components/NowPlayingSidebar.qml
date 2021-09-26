@@ -62,8 +62,13 @@ Page {
                     fill: undefined
                 }
                 clip: true
-                height: width + units.gu(3)
+                height: width + units.gu(6)
                 width: parent.width
+            }
+
+            Item {
+                width: queue.width
+                height: 20
             }
         }
     }

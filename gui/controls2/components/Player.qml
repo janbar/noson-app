@@ -530,14 +530,14 @@ Item {
 
     Connections {
         target: AllZonesModel
-        onZpConnectedChanged: { if (pid === zone.pid) handleZPConnectedChanged(); }
-        onZpSourceChanged: { if (pid === zone.pid) handleZPSourceChanged(); }
-        onZpRenderingCountChanged: { if (pid === zone.pid) handleZPRenderingCountChanged(); }
-        onZpRenderingGroupChanged: { if (pid === zone.pid) handleZPRenderingGroupChanged(); }
-        onZpRenderingChanged: { if (pid === zone.pid) handleZPRenderingChanged(); }
-        onZpPlayModeChanged: { if (pid === zone.pid) handleZPPlayModeChanged(); }
-        onZpPlaybackStateChanged: { if (pid === zone.pid) handleZPPlaybackStateChanged(); }
-        onZpSleepTimerChanged: {
+        function onZpConnectedChanged(pid) { if (pid === zone.pid) handleZPConnectedChanged(); }
+        function onZpSourceChanged(pid) { if (pid === zone.pid) handleZPSourceChanged(); }
+        function onZpRenderingCountChanged(pid) { if (pid === zone.pid) handleZPRenderingCountChanged(); }
+        function onZpRenderingGroupChanged(pid) { if (pid === zone.pid) handleZPRenderingGroupChanged(); }
+        function onZpRenderingChanged(pid) { if (pid === zone.pid) handleZPRenderingChanged(); }
+        function onZpPlayModeChanged(pid) { if (pid === zone.pid) handleZPPlayModeChanged(); }
+        function onZpPlaybackStateChanged(pid) { if (pid === zone.pid) handleZPPlaybackStateChanged(); }
+        function onZpSleepTimerChanged(pid) {
             if (pid === zone.pid) {
                 player.remainingSleepTimerDuration(function(result) {
                     player.sleepTimerEnabled = result > 0 ? true : false

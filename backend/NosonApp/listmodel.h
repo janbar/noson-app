@@ -30,13 +30,15 @@
 #include <QObject>
 #include <QRunnable>
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+#include <QRecursiveMutex>
+#endif
+
 Q_DECLARE_METATYPE(SONOS::DigitalItemPtr)
 Q_DECLARE_METATYPE(SONOS::ZonePtr)
 Q_DECLARE_METATYPE(SONOS::ZonePlayerPtr)
 Q_DECLARE_METATYPE(SONOS::SMServicePtr)
 Q_DECLARE_METATYPE(SONOS::AlarmPtr)
-
-#define USE_RECURSIVE_MUTEX
 
 namespace nosonapp
 {
@@ -82,10 +84,10 @@ public:
   , m_dataState(DataBlank)
   , m_updateSignaled(false)
   {
-  #ifdef USE_RECURSIVE_MUTEX
-    m_lock = new QMutex(QMutex::Recursive);
+  #if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    m_lock = new QRecursiveMutex;
   #else
-    m_lock = new QMutex();
+    m_lock = new QMutex(QMutex::Recursive);
   #endif
   }
 
@@ -112,7 +114,11 @@ public:
 
 public:
   T* m_provider;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+  QRecursiveMutex* m_lock;
+#else
   QMutex* m_lock;
+#endif
   unsigned m_updateID;
   QString m_root;
   bool m_pending;

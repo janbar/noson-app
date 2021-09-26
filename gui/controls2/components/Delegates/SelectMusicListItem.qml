@@ -61,18 +61,18 @@ MouseArea {
 
     Connections {
         target: listview
-        onSynchronizeChecked: {
+        function onSynchronizeChecked() {
             row.checked = listview.isSelectedIndex(index)
         }
     }
 
     Connections {
         target: row
-        onActionPressed: actionPressed()
-        onAction2Pressed: action2Pressed()
-        onAction3Pressed: action3Pressed()
-        onSelected: listview.selectIndex(index)
-        onDeselected: listview.deselectIndex(index)
+        function onActionPressed() { actionPressed(); }
+        function onAction2Pressed() { action2Pressed(); }
+        function onAction3Pressed() { action3Pressed(); }
+        function onSelected() { listview.selectIndex(index); }
+        function onDeselected() { listview.deselectIndex(index); }
     }
 
     property alias contentHeight: row.contentHeight
@@ -109,12 +109,20 @@ MouseArea {
     property real lastX: -1
     property real lastY: -1
 
+    acceptedButtons: Qt.RightButton | Qt.LeftButton
+
     onPressed: {
+        if (mouse.button == Qt.RightButton) {
+            return;
+        }
         lastX = mouse.x
         lastY = mouse.y
     }
 
     onPressAndHold: {
+        if (mouse.button == Qt.RightButton) {
+            return;
+        }
         if (state !== "selection") {
             dragArea.sourceIndex = DelegateModel.itemsIndex
             if (reorderable)
@@ -122,6 +130,9 @@ MouseArea {
         }
     }
     onReleased: {
+        if (mouse.button == Qt.RightButton) {
+            return;
+        }
         if (state !== "selection") {
             if (held) {
                 held = false;
@@ -133,6 +144,8 @@ MouseArea {
                     click();
                 }
             }
+        } else {
+            click();
         }
     }
 
@@ -189,6 +202,15 @@ MouseArea {
                                drag.source.DelegateModel.itemsIndex,
                                dragArea.DelegateModel.itemsIndex);
         }
+    }
+
+    onClicked: {
+        if (mouse.button === Qt.RightButton) {
+            row.openMenu(this, mouse.x, mouse.y);
+            mouse.accepted = true;
+            return;
+        }
+        mouse.accepted = false;
     }
 
     onHeldChanged: {

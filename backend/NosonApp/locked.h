@@ -18,7 +18,12 @@
 #ifndef NOSONAPPLOCKED_H
 #define NOSONAPPLOCKED_H
 
+#include <QtGlobal>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+#include <QRecursiveMutex>
+#else
 #include <QMutex>
+#endif
 
 namespace nosonapp
 {
@@ -35,7 +40,12 @@ public:
    * destructor.
    * @param lock The pointer to lockable object
    */
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+  LockGuard(QRecursiveMutex * lock)
+#else
   LockGuard(QMutex * lock)
+#endif
   : m_lock(lock)
   {
     if (m_lock)
@@ -61,7 +71,11 @@ public:
   }
   
 private:
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+  QRecursiveMutex * m_lock;
+#else
   QMutex * m_lock;
+#endif
 };
 
 template<typename T>
@@ -70,7 +84,11 @@ class Locked
 public:
   Locked(const T& val)
   : m_val(val)
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+  , m_lock(new QRecursiveMutex) {}
+#else
   , m_lock(new QMutex(QMutex::Recursive)) {}
+#endif
   
   ~Locked()
   {
@@ -93,7 +111,11 @@ public:
   class pointer
   {
   public:
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    pointer(T& val, QRecursiveMutex*& lock) : m_val(val), m_g(lock) {}
+#else
     pointer(T& val, QMutex*& lock) : m_val(val), m_g(lock) {}
+#endif
     T& operator* () const { return m_val; }
     T *operator->() const { return &m_val; }
   private:
@@ -108,7 +130,11 @@ public:
   
 protected:
   T m_val;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+  QRecursiveMutex * m_lock;
+#else
   QMutex * m_lock;
+#endif
   
   // Prevent copy
   Locked(const Locked<T>& other);

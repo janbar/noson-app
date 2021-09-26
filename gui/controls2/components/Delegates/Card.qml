@@ -22,8 +22,8 @@ import "../"
 
 Item {
     id: card
-    height: parent.parent.cellHeight
-    width: parent.parent.cellWidth
+    height: parent ? parent.parent.cellHeight : 0
+    width: parent ? parent.parent.cellWidth : 0
 
     property alias color: bg.color
     property alias coversGridVisible: coverGrid.visible
@@ -43,19 +43,6 @@ Item {
     signal playClicked(var mouse)
 
     signal imageError(var index)
-
-    /* Animations */
-    Behavior on height {
-        NumberAnimation {
-            duration: 250
-        }
-    }
-
-    Behavior on width {
-        NumberAnimation {
-            duration: 250
-        }
-    }
 
     /* Background for card */
     Rectangle {

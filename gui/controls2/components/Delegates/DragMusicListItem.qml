@@ -40,9 +40,9 @@ MouseArea {
 
     Connections {
         target: row
-        onActionPressed: actionPressed()
-        onAction2Pressed: action2Pressed()
-        onAction3Pressed: action3Pressed()
+        function onActionPressed() { actionPressed(); }
+        function onAction2Pressed() { action2Pressed(); }
+        function onAction3Pressed() { action3Pressed(); }
     }
 
     property alias contentHeight: row.contentHeight
@@ -68,7 +68,7 @@ MouseArea {
     property int targetIndex: -1
     property int sourceIndex: -1
 
-    anchors { left: parent.left; right: parent.right }
+    anchors { left: parent ? parent.left : undefined; right: parent ? parent.right : undefined; }
     height: content.height
 
     drag.target: held ? content : undefined
@@ -79,17 +79,31 @@ MouseArea {
     property real lastX: -1
     property real lastY: -1
 
+    acceptedButtons: Qt.RightButton | Qt.LeftButton
+
     onPressed: {
+        if (mouse.button == Qt.RightButton) {
+            return;
+        }
+
         lastX = mouse.x
         lastY = mouse.y
     }
 
     onPressAndHold: {
+        if (mouse.button == Qt.RightButton) {
+            return;
+        }
+
         dragArea.sourceIndex = DelegateModel.itemsIndex
         if (reorderable)
             held = true
     }
     onReleased: {
+        if (mouse.button == Qt.RightButton) {
+            return;
+        }
+
         if (held) {
             held = false;
         } else {
@@ -100,6 +114,14 @@ MouseArea {
                 click();
             }
         }
+    }
+    onClicked: {
+        if (mouse.button == Qt.RightButton) {
+            row.openMenu(this, mouse.x, mouse.y);
+            mouse.accepted = true;
+            return;
+        }
+        mouse.accepted = false;
     }
 
     Rectangle {
