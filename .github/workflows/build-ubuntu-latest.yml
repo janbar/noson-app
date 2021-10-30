@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install dependencies
-        run: "sudo apt-get install libflac-dev libflac++-dev libpulse-dev
+        run: "sudo apt-get update && sudo apt-get install libflac-dev libflac++-dev libpulse-dev
               qtbase5-dev qttools5-dev qttools5-dev-tools qtdeclarative5-dev
               qtdeclarative5-dev-tools qtquickcontrols2-5-dev libqt5svg5-dev
               qml-module-qt-labs-settings qml-module-qtgraphicaleffects
