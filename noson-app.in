@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 # Launch the CLI else the GUI
 [ "--cli" = "$1" ] && shift && exec @NOSON_CLI@ $@
