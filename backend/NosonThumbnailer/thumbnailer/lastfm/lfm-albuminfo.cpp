@@ -40,8 +40,7 @@ void LFMAlbumInfo::queryInfo(NetRequest* prepared)
 {
   QUrlQuery post;
   post.addQueryItem("api_key", m_apiKey);
-  QByteArray postData;
-  postData.append(post.toString());
+  QByteArray postData(post.toString().toUtf8());
 
   QUrlQuery qry;
   qry.addQueryItem("method","album.getinfo");
