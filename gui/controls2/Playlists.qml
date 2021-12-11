@@ -62,6 +62,8 @@ MusicPage {
 
         delegate: Card {
             id: playlistCard
+            height: playlistsGrid.cellHeight
+            width: playlistsGrid.cellWidth
             primaryText: model.title
             secondaryTextVisible: false
 

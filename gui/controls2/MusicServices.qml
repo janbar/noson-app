@@ -125,6 +125,8 @@ MusicPage {
 
         delegate: Card {
             id: serviceCard
+            height: serviceGrid.cellHeight
+            width: serviceGrid.cellWidth
             primaryText: model.title
             secondaryText: model.nickName
             isFavorite: false

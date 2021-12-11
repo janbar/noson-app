@@ -167,6 +167,8 @@ MusicPage {
 
         delegate: Card {
             id: favoriteCard
+            height: favoriteGrid.cellHeight
+            width: favoriteGrid.cellWidth
             primaryText: model.title
             secondaryText: model.description.length > 0 ? model.description
                          : model.type === 1 ? qsTr("Album")

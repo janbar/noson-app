@@ -67,6 +67,8 @@ MusicPage {
 
         delegate: Card {
             id: albumCard
+            height: albumGridView.cellHeight
+            width: albumGridView.cellWidth
             coverSources: makeFileCoverSource(model.hasArt, model.filePath, model.artist, model.album)
             objectName: "albumsPageGridItem" + index
             primaryText: (model.album !== "<Undefined>" ? model.album : tr_undefined)

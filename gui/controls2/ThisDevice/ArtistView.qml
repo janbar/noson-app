@@ -167,6 +167,8 @@ MusicPage {
 
         delegate: Card {
             id: albumCard
+            height: artistAlbumView.cellHeight
+            width: artistAlbumView.cellWidth
             coverSources: makeFileCoverSource(model.hasArt, model.filePath, model.artist, model.album)
             primaryText: (model.album !== "<Undefined>" ? model.album : tr_undefined)
             secondaryTextVisible: false

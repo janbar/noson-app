@@ -62,6 +62,8 @@ MusicPage {
 
         delegate: Card {
             id: composerCard
+            height: composerGridView.cellHeight
+            width: composerGridView.cellWidth
             coverSources: makeCoverSource(undefined, model.composer, undefined)
             noCover: "qrc:/images/none.png"
             objectName: "composersPageGridItem" + index

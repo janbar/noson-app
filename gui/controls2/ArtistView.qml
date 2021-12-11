@@ -146,6 +146,8 @@ MusicPage {
         }
         delegate: Card {
             id: albumCard
+            height: artistAlbumView.cellHeight
+            width: artistAlbumView.cellWidth
             coverSources: makeCoverSource(model.art, model.artist, model.title)
             primaryText: model.title !== "" ? model.title : qsTr("Unknown Album")
             secondaryTextVisible: false

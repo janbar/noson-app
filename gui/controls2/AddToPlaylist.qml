@@ -71,6 +71,8 @@ MusicPage {
 
         delegate: Card {
             id: playlist
+            height: addtoPlaylistView.cellHeight
+            width: addtoPlaylistView.cellWidth
             coverSources: [{art: model.art}]
             primaryText: model.title
             secondaryTextVisible: false

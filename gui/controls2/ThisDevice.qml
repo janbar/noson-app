@@ -106,6 +106,8 @@ MusicPage {
 
         delegate: Card {
             id: favoriteCard
+            height: indexGrid.cellHeight
+            width: indexGrid.cellWidth
             primaryText: model.title
             secondaryTextVisible: false
             noCover: ""

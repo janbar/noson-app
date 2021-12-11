@@ -64,6 +64,8 @@ MusicPage {
 
         delegate: Card {
             id: genreCard
+            height: genreGridView.cellHeight
+            width: genreGridView.cellWidth
             coversGridVisible: true
             coverSources: []
             coverFlow: 4

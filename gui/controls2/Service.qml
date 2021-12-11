@@ -264,6 +264,8 @@ MusicPage {
 
         delegate: Card {
             id: mediaCard
+            height: mediaGrid.cellHeight
+            width: mediaGrid.cellWidth
             primaryText: model.title
             secondaryText: model.description.length > 0 ? model.description
                          : model.type === 1 ? model.artist.length > 0 ? model.artist : qsTr("Album")

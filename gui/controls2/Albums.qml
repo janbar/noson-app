@@ -62,6 +62,8 @@ MusicPage {
 
         delegate: Card {
             id: albumCard
+            height: albumGridView.cellHeight
+            width: albumGridView.cellWidth
             coverSources: makeCoverSource(model.art, model.artist, model.title)
             objectName: "albumsPageGridItem" + index
             primaryText: model.title !== undefined && model.title !== "" ? model.title : qsTr("Unknown Album")
