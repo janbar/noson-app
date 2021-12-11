@@ -62,7 +62,12 @@ MouseArea {
     property alias menuVisible: row.menuVisible
     property alias menuItems: row.menuItems
 
-    anchors { left: parent.left; right: parent.right }
+    Component.onCompleted: {
+        if (parent != null) {
+            anchors.left = parent.left;
+            anchors.right = parent.right;
+        }
+    }
     height: content.height
 
     /* Detect row swipe */
