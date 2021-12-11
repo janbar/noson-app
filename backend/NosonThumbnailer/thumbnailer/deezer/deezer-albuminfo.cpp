@@ -41,8 +41,6 @@ void DEEZERAlbumInfo::queryInfo(NetRequest* prepared)
   qry.addQueryItem("output", "json");
   qry.addQueryItem("limit", "1");
   QString q;
-  QString _artist(m_artist);
-  QString _album(m_album);
   q.append("artist:\"").append(AbstractAPI::normalizeArtist(m_artist)).append('"');
   q.append(" album:\"").append(AbstractAPI::normalizeAlbum(m_album)).append('"');
   qry.addQueryItem("q", q);
