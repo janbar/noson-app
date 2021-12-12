@@ -109,6 +109,8 @@ if(MSVC)
   configure_msvc_runtime()
 endif()
 
+find_package(Qt5 5.9.2 COMPONENTS Core REQUIRED)
+
 add_subdirectory(backend)
 add_subdirectory(gui)
 

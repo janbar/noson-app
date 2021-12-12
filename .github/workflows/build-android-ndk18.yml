@@ -76,7 +76,6 @@ jobs:
                     -DQt5Xml_DIR=${Qt5_DIR}/lib/cmake/Qt5Xml
                     -DQt5Svg_DIR=${Qt5_DIR}/lib/cmake/Qt5Svg
                     -DQt5Widgets_DIR=${Qt5_DIR}/lib/cmake/Qt5Widgets
-                    -DQt5AndroidExtras_DIR=${Qt5_DIR}/lib/cmake/Qt5AndroidExtras
                     -Wno-dev"
       - name: Build
         run:  cmake --build build

@@ -5,11 +5,11 @@ cd $BDIR
 
 export JAVA_HOME=/home/jlb/bin/jdk1.8.0
 export ANDROID_SDK=/home/shared/Android/Sdk
-export ANDROID_NDK=/home/shared/Android/android-ndk-r17c
+export ANDROID_NDK=/home/shared/Android/android-ndk-r18b
 export ANDROID_NATIVE_API_LEVEL=16
 export ANDROID_SDK_MINVER=24
 export ANDROID_SDK_TARGET=26
-export QT_DIR=/home/shared/Qt/5.12.9/android_armv7
+export QT_DIR=/home/shared/Qt/5.12.12/android_armv7
 
 cmake ../.. -DCMAKE_SYSTEM_NAME=Android \
 -DCMAKE_PREFIX_PATH=$QT_DIR \
@@ -28,6 +28,7 @@ cmake ../.. -DCMAKE_SYSTEM_NAME=Android \
 -DQT_ANDROID_NDK_ROOT=$ANDROID_NDK \
 -DQT_ANDROID_QT_ROOT=$QT_DIR \
 -DQT_ANDROID_SDK_BUILDTOOLS_REVISION="21.0.0" \
+-DQt5_DIR=$QT_DIR/lib/cmake/Qt5 \
 -DQt5Core_DIR=$QT_DIR/lib/cmake/Qt5Core \
 -DQt5Gui_DIR=$QT_DIR/lib/cmake/Qt5Gui \
 -DQt5Qml_DIR=$QT_DIR/lib/cmake/Qt5Qml \
