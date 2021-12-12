@@ -37,6 +37,7 @@ MusicPage {
     property string line1: ""
     property string line2: ""
     property var covers: []
+    property int coverFlow: 1
     property bool isAlbum: false
     property bool isPlaylist: false
     property string year: ""
@@ -288,7 +289,7 @@ MusicPage {
             }
             height: contentHeight
             coverSources: songStackPage.covers
-            coverFlow: 4
+            coverFlow: songStackPage.coverFlow
             titleColumn: Column {
                 spacing: units.gu(1)
 

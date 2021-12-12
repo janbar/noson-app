@@ -82,7 +82,7 @@ MusicPage {
                                        "containerItem": makeContainerItem(model),
                                        "composerSearch": model.id,
                                        "composer": model.composer,
-                                       "covers": [{art: composerCard.imageSource}],
+                                       "covers": composerCard.imageSource != "" ? [{art: composerCard.imageSource}] : coverSources,
                                        "pageTitle": qsTr("Composer")
                                    })
             }

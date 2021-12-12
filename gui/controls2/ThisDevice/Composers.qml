@@ -70,7 +70,7 @@ MusicPage {
                 stackView.push("qrc:/controls2/ThisDevice/ComposerView.qml",
                                    {
                                        "composer": model.composer,
-                                       "covers": [{art: composerCard.imageSource}],
+                                       "covers": composerCard.imageSource != "" ? [{art: composerCard.imageSource}] : coverSources,
                                        "pageTitle": pageTitle
                                    })
             }

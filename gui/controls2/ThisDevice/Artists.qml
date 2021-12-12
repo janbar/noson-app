@@ -70,7 +70,7 @@ MusicPage {
                 stackView.push("qrc:/controls2/ThisDevice/ArtistView.qml",
                                    {
                                        "artist": model.artist,
-                                       "covers": [{art: artistCard.imageSource}],
+                                       "covers": artistCard.imageSource != "" ? [{art: artistCard.imageSource}] : coverSources,
                                        "pageTitle": pageTitle
                                    })
             }

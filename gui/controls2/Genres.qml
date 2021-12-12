@@ -84,7 +84,7 @@ MusicPage {
                 // read from artworks cache
                 var covers = mainView.genreArtworks[model.genre];
                 if (covers !== undefined)
-                    coverSources = covers.slice(0);
+                    coverSources = covers;
                 else {
                     delayCoverBuilder.start();
                 }
@@ -116,7 +116,7 @@ MusicPage {
                 onStatusChanged: {
                     if (coverBuilder.status === Loader.Ready) {
                         mainView.genreArtworks[model.genre] = coverBuilder.artwork.slice(0);
-                        genreCard.coverSources = coverBuilder.artwork.slice(0);
+                        genreCard.coverSources = mainView.genreArtworks[model.genre];
                     }
                 }
             }
@@ -163,6 +163,7 @@ MusicPage {
                                    {
                                        "containerItem": makeContainerItem(model),
                                        "songSearch": model.id + "//",
+                                       "coverFlow": 4,
                                        "covers": coverSources,
                                        "album": undefined,
                                        "genre": model.genre,

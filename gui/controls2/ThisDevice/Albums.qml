@@ -79,7 +79,7 @@ MusicPage {
                                    {
                                        "album": model.album,
                                        "artist": model.artist,
-                                       "covers": [{art: (albumCard.imageSource != "" ? albumCard.imageSource : coverSources)}],
+                                       "covers": albumCard.imageSource != "" ? [{art: albumCard.imageSource}] : coverSources,
                                        "isAlbum": true,
                                        "genre": "",
                                        "pageTitle": pageTitle,

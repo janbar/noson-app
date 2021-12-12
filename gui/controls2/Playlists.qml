@@ -92,6 +92,7 @@ MusicPage {
                                        "containerItem": makeContainerItem(model),
                                        "songSearch": model.id,
                                        "album": undefined,
+                                       "coverFlow": 4,
                                        "covers": coverSources,
                                        "isPlaylist": true,
                                        "genre": undefined,

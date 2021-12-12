@@ -84,7 +84,7 @@ MusicPage {
                                        "songSearch": model.id,
                                        "album": model.title,
                                        "artist": model.artist,
-                                       "covers": [{art: (albumCard.imageSource != "" ? albumCard.imageSource : coverSources)}],
+                                       "covers": albumCard.imageSource != "" ? [{art: albumCard.imageSource}] : coverSources,
                                        "isAlbum": true,
                                        "genre": "",
                                        "pageTitle": qsTr("Album"),

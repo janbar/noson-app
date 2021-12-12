@@ -53,7 +53,7 @@ Item {
             while (covers.length > 4) {  // remove any covers after 4
                 covers.pop()
             }
-            imageRow.flowCount = covers.length > flowModel ? flowModel : covers.length
+            imageRow.flowCount = Math.min(flowModel,covers.length)
         }
     }
 
@@ -96,7 +96,7 @@ Item {
 
         Repeater {
             id: repeat
-            model: imageRow.flowCount === 0 ? 1 : imageRow.flowCount
+            model: imageRow.flowCount
             delegate: Image {
                 asynchronous: true
                 fillMode: Image.PreserveAspectCrop
