@@ -6,7 +6,7 @@ cd $BDIR
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home/
 export ANDROID_SDK=/Users/Shared/Android/Sdk
 export ANDROID_NDK=/Users/Shared/Android/android-ndk-r18b
-export ANDROID_NATIVE_API_LEVEL=16
+export ANDROID_NATIVE_API_LEVEL=24
 export ANDROID_SDK_MINVER=24
 export ANDROID_SDK_TARGET=26
 export QT_DIR=/Users/Shared/Qt/5.12.12/android_x86
