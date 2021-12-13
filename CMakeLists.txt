@@ -123,10 +123,6 @@ else()
 endif()
 
 if(ANDROID)
-  configure_file(
-    ${CMAKE_SOURCE_DIR}/android/AndroidManifest.xml.in
-    ${CMAKE_SOURCE_DIR}/android/package-sources/AndroidManifest.xml
-  )
   include(android/AddQtAndroidApk.cmake)
   add_dependencies(noson-gui NosonApp NosonApp-qmldir
       NosonThumbnailer NosonThumbnailer-qmldir
