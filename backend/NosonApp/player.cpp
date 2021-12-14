@@ -456,6 +456,13 @@ Future* Player::trySetBass(double val)
   return new Future(new PromiseSetBass(*this, val), m_sonos);
 }
 
+Future* Player::trySetSubGain(double val)
+{
+  if (!m_sonos)
+    return nullptr;
+  return new Future(new PromiseSetSubGain(*this, val), m_sonos);
+}
+
 Future* Player::trySetVolumeGroup(double volume)
 {
   if (!m_sonos)
@@ -976,6 +983,25 @@ bool Player::setBass(double val)
 
 }
 
+bool Player::setSubGain(double val)
+{
+  SONOS::PlayerPtr p(m_player);
+  if (p)
+  {
+    bool ret = true;
+    for (RCTable::iterator it = m_RCTable.begin(); it != m_RCTable.end(); ++it)
+    {
+      if (p->SetSubGain(it->uuid, val))
+        m_RCGroup.subGain = it->subGain = val;
+      else
+        ret = false;
+    }
+    return ret;
+  }
+  return false;
+
+}
+
 bool Player::setVolumeGroup(double volume, bool forFake)
 {
   SONOS::PlayerPtr p(m_player);
@@ -1323,6 +1349,7 @@ void Player::handleRenderingControlChange()
         item.volumeFake = it->property.VolumeMaster > 0 ? (double)it->property.VolumeMaster : 100.0 / 101.0;
         item.treble = it->property.Treble;
         item.bass = it->property.Bass;
+        item.subGain = it->property.SubGain;
         m_RCTable.push_back(item);
         if (!item.mute)
           mute = false; // exists active audio in group
@@ -1341,6 +1368,7 @@ void Player::handleRenderingControlChange()
           m_RCGroup.loudness = item.loudness;
           m_RCGroup.treble = item.treble;
           m_RCGroup.bass = item.bass;
+          m_RCGroup.subGain = item.subGain;
         }
 
         ++it;
@@ -1365,6 +1393,7 @@ void Player::handleRenderingControlChange()
       bool nightmode = false;
       bool loudness = false;
       int treble = 0, bass = 0;
+      int subGain = 0;
       SONOS::SRPList::const_iterator it = props.begin();
       std::vector<RCProperty>::iterator itz = m_RCTable.begin();
       while (it != props.end())
@@ -1405,6 +1434,11 @@ void Player::handleRenderingControlChange()
           itz->bass = it->property.Bass;
           signalMask |= RENDERING_CHANGED;
         }
+        if (it->property.SubGain != itz->subGain)
+        {
+          itz->subGain = it->property.SubGain;
+          signalMask |= RENDERING_CHANGED;
+        }
 
         // As the sound settings relate the connected group and doesn't handle separately each subordinate,
         // i gatherer data from the master zone that is the first on the array.
@@ -1414,6 +1448,7 @@ void Player::handleRenderingControlChange()
           loudness = LoudnessAsBool;
           treble = it->property.Treble;
           bass = it->property.Bass;
+          subGain = it->property.SubGain;
         }
         // And override data from the first subordinate updated accordinaly with sended values
         else
@@ -1426,6 +1461,8 @@ void Player::handleRenderingControlChange()
             treble = it->property.Treble;
           if (it->property.Bass == m_RCGroup.bass)
             bass = it->property.Bass;
+          if (it->property.SubGain == m_RCGroup.subGain)
+            subGain = it->property.SubGain;
         }
 
         if (it->property.VolumeMaster != itz->volume)
@@ -1476,6 +1513,7 @@ void Player::handleRenderingControlChange()
       m_RCGroup.loudness = loudness;
       m_RCGroup.treble = treble;
       m_RCGroup.bass = bass;
+      m_RCGroup.subGain = subGain;
       m_RCGroup.outputFixed = outputFixed;
       signalMask |= RENDERING_GROUP_CHANGED; // handles group update
     }
@@ -1780,6 +1818,12 @@ void Player::PromiseSetTreble::run()
 void Player::PromiseSetBass::run()
 {
   bool r = m_player.setBass(m_val);
+  setResult(QVariant(r));
+}
+
+void Player::PromiseSetSubGain::run()
+{
+  bool r = m_player.setSubGain(m_val);
   setResult(QVariant(r));
 }
 
