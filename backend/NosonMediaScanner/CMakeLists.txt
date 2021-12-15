@@ -11,10 +11,11 @@ option(DISABLE_ID3PARSER "Disable ID3 parser" OFF)
 option(DISABLE_MP4PARSER "Disable MP4 parser" OFF)
 option(DISABLE_OGGPARSER "Disable OGG parser" OFF)
 
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Gui REQUIRED)
-find_package(Qt5Qml REQUIRED)
-find_package(Qt5Quick REQUIRED)
+find_package(Qt6 REQUIRED)
+find_package(Qt6Core REQUIRED)
+find_package(Qt6Gui REQUIRED)
+find_package(Qt6Qml REQUIRED)
+find_package(Qt6Quick REQUIRED)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 11)
@@ -103,7 +104,7 @@ endif()
 
 set_target_properties(NosonMediaScanner PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_DIRECTORY}/NosonMediaScanner)
-target_link_libraries(NosonMediaScanner Qt5::Core Qt5::Gui Qt5::Qml Qt5::Quick)
+target_link_libraries(NosonMediaScanner Qt6::Core Qt6::Gui Qt6::Qml Qt6::Quick)
 
 # Copy qmldir file to build dir for running in QtCreator
 add_custom_target(NosonMediaScanner-qmldir ALL
