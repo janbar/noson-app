@@ -120,7 +120,8 @@ if(MSVC)
   configure_msvc_runtime()
 endif()
 
-find_package(Qt5 5.15 COMPONENTS Core REQUIRED)
+set(QT_MIN_VERSION 6.4.0)
+find_package(Qt6 ${QT_MIN_VERSION} REQUIRED)
 
 add_subdirectory(backend)
 add_subdirectory(gui)
