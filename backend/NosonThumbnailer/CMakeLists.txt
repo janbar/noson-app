@@ -4,8 +4,9 @@ set(CMAKE_AUTOMOC ON)
 
 option(QT_STATICPLUGIN "Build a static plugin" OFF)
 
-find_package(Qt5Qml REQUIRED)
-find_package(Qt5Quick REQUIRED)
+find_package(Qt6 REQUIRED)
+find_package(Qt6Qml REQUIRED)
+find_package(Qt6Quick REQUIRED)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 11)
@@ -82,7 +83,7 @@ endif()
 
 set_target_properties(NosonThumbnailer PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_DIRECTORY}/NosonThumbnailer)
-target_link_libraries(NosonThumbnailer Qt5::Qml Qt5::Quick)
+target_link_libraries(NosonThumbnailer Qt6::Qml Qt6::Quick)
 
 # Copy qmldir file to build dir for running in QtCreator
 add_custom_target(NosonThumbnailer-qmldir ALL
