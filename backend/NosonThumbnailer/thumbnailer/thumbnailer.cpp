@@ -71,7 +71,7 @@ namespace thumbnailer
 
     QString details_;
     QSize requested_size_;
-    ThumbnailerImpl& thumbnailer_;
+    ThumbnailerImpl* thumbnailer_;
     std::unique_ptr<Job> job_;
     std::function<void()> send_request_;
 
@@ -141,9 +141,10 @@ namespace thumbnailer
           ThumbnailerImpl& thumbnailer,
           Job* job,
           bool trace_client)
-  : details_(details)
+  : QObject(nullptr)
+  , details_(details)
   , requested_size_(requested_size)
-  , thumbnailer_(thumbnailer)
+  , thumbnailer_(&thumbnailer)
   , job_(job)
   , finished_(false)
   , is_valid_(false)
@@ -178,7 +179,7 @@ namespace thumbnailer
       // if the caller destroys a whole bunch of requests at once, we'd
       // schedule the next request in the queue before the caller gets
       // a chance to destroy the next request.
-      QMetaObject::invokeMethod(&thumbnailer_, "pump_limiter", Qt::QueuedConnection);
+      QMetaObject::invokeMethod(thumbnailer_, "pump_limiter", Qt::QueuedConnection);
       disconnect();
     }
   }
@@ -193,7 +194,7 @@ namespace thumbnailer
       // We depend on calls to pump the limiter exactly once for each request that was sent.
       // Whenever a (real) DBus call finishes, we inform the limiter, so it can kick off
       // the next pending job.
-      thumbnailer_.limiter().done();
+      thumbnailer_->limiter().done();
     }
 
     if (cancelled_)
@@ -210,26 +211,26 @@ namespace thumbnailer
     {
       case ReplySuccess:
         // reset the network error count
-        thumbnailer_.onReply(job_->isCached());
+        thumbnailer_->onReply(job_->isCached());
         break; // continue
 
       case ReplyNetworkError:
-        thumbnailer_.onNetworkError();
+        thumbnailer_->onNetworkError();
         finishWithError("Thumbnailer: " + job_->errorString());
         return;
       case ReplyFatalError:
-        thumbnailer_.onFatalError();
+        thumbnailer_->onFatalError();
         finishWithError("Thumbnailer: " + job_->errorString());
         return;
       case ReplyQuotaExceeded:
-        thumbnailer_.onQuotaExceeded();
+        thumbnailer_->onQuotaExceeded();
         // before renew the request all connected signal must be cleared
         disconnect(job_.get(), SIGNAL(finished()), this, SLOT(callFinished()));
         public_request_->start(); // reschedule the request
         return;
       default:
         // reset the network error count
-        thumbnailer_.onReply(job_->isCached());
+        thumbnailer_->onReply(job_->isCached());
         finishWithError("Thumbnailer: " + job_->errorString());
         return;
     }
@@ -292,7 +293,7 @@ namespace thumbnailer
       connect(job_.get(), SIGNAL(finished()), this, SLOT(callFinished()));
       job_->start();
     };
-    cancel_func_ = thumbnailer_.limiter().schedule(send_request_);
+    cancel_func_ = thumbnailer_->limiter().schedule(send_request_);
   }
 
   void RequestImpl::waitForFinished()
@@ -310,7 +311,7 @@ namespace thumbnailer
     if (cancel_func_())
     {
       Q_ASSERT(!job_);
-      thumbnailer_.limiter().schedule_now(send_request_);
+      thumbnailer_->limiter().schedule_now(send_request_);
     }
   }
 

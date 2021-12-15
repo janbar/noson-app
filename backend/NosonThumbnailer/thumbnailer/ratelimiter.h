@@ -41,7 +41,7 @@ namespace thumbnailer
     RateLimiter(RateLimiter const&) = delete;
     RateLimiter& operator=(RateLimiter const&) = delete;
 
-    typedef std::function<bool() noexcept> CancelFunc;
+    typedef std::function<bool()> CancelFunc;
 
     // Schedule a job to run.  If the concurrency limit has not been
     // reached, the job will be run immediately.  Otherwise it will be
