@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.8.2...3.20)
 
 OPTION (BUILD_LIBNOSON "Build libnoson from sources." ON)
 
-find_package(Qt5Core REQUIRED)
-message(STATUS "Found Qt5 version ${Qt5Core_VERSION}")
+find_package(Qt6 REQUIRED)
+message(STATUS "Found Qt6 version ${Qt6_VERSION}")
 
 if(NOT BUILD_DEPENDENCIES)
     if(NOT BUILD_LIBNOSON)

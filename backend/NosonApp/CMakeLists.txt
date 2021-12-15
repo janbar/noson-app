@@ -4,17 +4,18 @@ set(CMAKE_AUTOMOC ON)
 
 option(QT_STATICPLUGIN "Build a static plugin" OFF)
 
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Gui REQUIRED)
-find_package(Qt5Qml REQUIRED)
-find_package(Qt5Quick REQUIRED)
+find_package(Qt6 REQUIRED)
+find_package(Qt6Core REQUIRED)
+find_package(Qt6Gui REQUIRED)
+find_package(Qt6Qml REQUIRED)
+find_package(Qt6Quick REQUIRED)
 
 if(UNIX AND NOT APPLE)
 #    include( FindPkgConfig )
 #    pkg_check_modules(DBUS QUIET dbus-1)
     find_library(DBUS_LIBRARIES dbus-1)
     if(DBUS_LIBRARIES)
-        find_package(Qt5DBus REQUIRED)
+        find_package(Qt6DBus REQUIRED)
         set(HAVE_DBUS 1)
         add_definitions(-DHAVE_DBUS)
         message(STATUS "Enable interface MPRIS")
@@ -99,10 +100,10 @@ set(
 if(HAVE_DBUS)
     set(NosonApp_SOURCES ${NosonApp_SOURCES} dbus/mpris2.cpp)
     set(NosonApp_HEADERS ${NosonApp_HEADERS} dbus/mpris2.h)
-    qt5_add_dbus_adaptor(NosonApp_SOURCES
+    qt6_add_dbus_adaptor(NosonApp_SOURCES
         dbus/org.mpris.MediaPlayer2.xml
         dbus/mpris2.h nosonapp::Mpris2 mpris2_root Mpris2Root)
-    qt5_add_dbus_adaptor(NosonApp_SOURCES
+    qt6_add_dbus_adaptor(NosonApp_SOURCES
         dbus/org.mpris.MediaPlayer2.Player.xml
         dbus/mpris2.h nosonapp::Mpris2 mpris2_player Mpris2Player)
 endif()
@@ -119,10 +120,10 @@ endif()
 
 set_target_properties(NosonApp PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_DIRECTORY}/NosonApp)
-target_link_libraries(NosonApp ${noson_LIBRARIES} Qt5::Gui Qt5::Qml Qt5::Quick)
+target_link_libraries(NosonApp ${noson_LIBRARIES} Qt6::Gui Qt6::Qml Qt6::Quick)
 
 if(HAVE_DBUS)
-  target_link_libraries(NosonApp Qt5::DBus)
+  target_link_libraries(NosonApp Qt6::DBus)
 endif()
 
 # Copy qmldir file to build dir for running in QtCreator
