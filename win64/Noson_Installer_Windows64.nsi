@@ -140,6 +140,8 @@ Section "Noson" Noson
     File Files\Qt5OpenGL.dll
     File Files\Qt5PrintSupport.dll
     File Files\Qt5Qml.dll
+    File Files\Qt5QmlModels.dll
+    File Files\Qt5QmlWorkerScript.dll
     File Files\Qt5Quick.dll
     File Files\Qt5QuickControls2.dll
     File Files\Qt5QuickTemplates2.dll

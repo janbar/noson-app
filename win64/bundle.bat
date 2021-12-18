@@ -1,12 +1,12 @@
 rem Batch file to copy the necessary files for the Windows Installer
 
-set QT_DIR="C:\Qt\5.12.12\msvc2015_64"
+set QT_DIR="C:\Qt\5.15.2\msvc2015_64"
 rem get the VC redistributable installer from https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
 set VCREDIST_DIR="C:\Qt"
 rem the path to the source directory
 set SOURCE_DIR="..\"
 rem the path to the build directory
-set BUILD_DIR="..\..\build-noson-app-Desktop_Qt_5_12_12_MSVC2015_64bit-Release\"
+set BUILD_DIR="..\..\build-noson-app-Desktop_Qt_5_15_2_MSVC2015_64bit-Release\"
 
 rem Copy Files
 set FILES="Files"
@@ -21,6 +21,8 @@ copy %QT_DIR%\bin\Qt5Network.dll %FILES%
 copy %QT_DIR%\bin\Qt5OpenGL.dll %FILES%
 copy %QT_DIR%\bin\Qt5PrintSupport.dll %FILES%
 copy %QT_DIR%\bin\Qt5Qml.dll %FILES%
+copy %QT_DIR%\bin\Qt5QmlModels.dll %FILES%
+copy %QT_DIR%\bin\Qt5QmlWorkerScript.dll %FILES%
 copy %QT_DIR%\bin\Qt5Quick.dll %FILES%
 copy %QT_DIR%\bin\Qt5QuickWidgets.dll %FILES%
 copy %QT_DIR%\bin\Qt5QuickControls2.dll %FILES%
