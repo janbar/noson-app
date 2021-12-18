@@ -91,7 +91,7 @@ Var StartMenuFolder
 ;------------------------------------------------------------------------
 ;Components description
 
-Section "MSVC++ 2017 Runtime" MSVC
+Section "MSVC++ Runtime" MSVC
 
   SetOutPath "$INSTDIR"
   File Files\VC_redist.x64.exe
@@ -99,7 +99,7 @@ Section "MSVC++ 2017 Runtime" MSVC
   Delete "$INSTDIR\VC_redist.x64.exe"
 
 SectionEnd
-LangString DESC_MSVC ${LANG_ENGLISH} "Microsoft Visual C++ 2017 SP1 Runtime Libraries. Typically already installed on your PC. You only need to install them if it doesn't work without ;-)."
+LangString DESC_MSVC ${LANG_ENGLISH} "Microsoft Visual C++ Runtime Libraries. Typically already installed on your PC. You only need to install them if it doesn't work without ;-)."
 
 Section "Noson" Noson
   SectionIn RO

@@ -1,12 +1,12 @@
 rem Batch file to copy the necessary files for the Windows Installer
 
-set QT_DIR="C:\Qt\5.12.12\msvc2017_64"
+set QT_DIR="C:\Qt\5.12.12\msvc2015_64"
 rem get the VC redistributable installer from https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
 set VCREDIST_DIR="C:\Qt"
 rem the path to the source directory
 set SOURCE_DIR="..\"
 rem the path to the build directory
-set BUILD_DIR="..\..\build-noson-app\"
+set BUILD_DIR="..\..\build-noson-app-Desktop_Qt_5_12_12_MSVC2015_64bit-Release\"
 
 rem Copy Files
 set FILES="Files"
@@ -61,7 +61,7 @@ xcopy /E %QT_DIR%\qml\QtQuick.2 %FILES%\QtQuick.2
 rem Copy Qt translations
 rem Qt5: see http://doc.qt.io/qt-5/linguist-programmers.html
 mkdir %FILES%\translations
-copy %QT_DIR%\translations\qtbase_en.qm %FILES%\translations
+copy %QT_DIR%\translations\qtbase_*.qm %FILES%\translations
 
 rem Copy MSVC Redist Files
 copy %VCREDIST_DIR%\vc_redist.x64.exe %FILES%
