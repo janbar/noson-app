@@ -30,8 +30,8 @@ jobs:
         id: cache-qt
         uses: actions/cache@v1
         with:
-          path: ../Qt
-          key: ${{ runner.os }}-QtCache
+          path: ../Qt/5.12.9/android_arm64_v8a
+          key: ${{ runner.os }}-QtCache-5129-android_arm64_v8a
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
         with:
