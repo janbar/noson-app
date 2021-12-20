@@ -21,6 +21,16 @@
 #define NOSONAPPFILTERBEHAVIOR_H
 
 #include <QSortFilterProxyModel>
+#if QT_VERSION < 0x050F00 //QT_VERSION_CHECK(5, 15, 0)
+#define REGEXP_TYPE         QRegExp
+#define REGEXP_GETFILTER    filterRegExp
+#define REGEXP_SETFILTER(a) setFilterRegExp(a)
+#else
+#include <QRegularExpression>
+#define REGEXP_TYPE         QRegularExpression
+#define REGEXP_GETFILTER    filterRegularExpression
+#define REGEXP_SETFILTER(a) setFilterRegularExpression(a)
+#endif
 
 namespace nosonapp
 {
@@ -29,15 +39,15 @@ class FilterBehavior : public QObject {
     Q_OBJECT
 
     Q_PROPERTY(QString property READ property WRITE setProperty NOTIFY propertyChanged)
-    Q_PROPERTY(QRegExp pattern READ pattern WRITE setPattern NOTIFY patternChanged)
+    Q_PROPERTY(REGEXP_TYPE pattern READ pattern WRITE setPattern NOTIFY patternChanged)
 
 public:
     explicit FilterBehavior(QObject *parent = 0);
 
     QString property() const;
     void setProperty(const QString& property);
-    QRegExp pattern() const;
-    void setPattern(QRegExp pattern);
+    REGEXP_TYPE pattern() const;
+    void setPattern(REGEXP_TYPE pattern);
 
 Q_SIGNALS:
     void propertyChanged();
@@ -45,7 +55,7 @@ Q_SIGNALS:
 
 private:
     QString m_property;
-    QRegExp m_pattern;
+    REGEXP_TYPE m_pattern;
 };
 
 }
