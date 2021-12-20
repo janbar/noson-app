@@ -45,7 +45,7 @@ ServiceItem::ServiceItem(const SONOS::SMServicePtr& ptr)
 QVariant ServiceItem::payload() const
 {
   QVariant var;
-  var.setValue<SONOS::SMServicePtr>(m_ptr);
+  var.setValue<SONOS::SMServicePtr>(SONOS::SMServicePtr(m_ptr));
   return var;
 }
 
@@ -65,7 +65,7 @@ ServicesModel::~ServicesModel()
 void ServicesModel::addItem(ServiceItem* item)
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items << item;
     endInsertRows();
@@ -76,17 +76,13 @@ void ServicesModel::addItem(ServiceItem* item)
 int ServicesModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   return m_items.count();
 }
 
 QVariant ServicesModel::data(const QModelIndex& index, int role) const
 {
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -133,7 +129,7 @@ QHash<int, QByteArray> ServicesModel::roleNames() const
 
 QVariantMap ServicesModel::get(int row)
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const ServiceItem* item = m_items[row];
@@ -153,7 +149,7 @@ QVariantMap ServicesModel::get(int row)
 
 void ServicesModel::clearData()
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
@@ -168,7 +164,7 @@ bool ServicesModel::loadData()
     return false;
   }
 
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
   m_dataState = DataStatus::DataNotFound;
@@ -199,7 +195,7 @@ bool ServicesModel::asyncLoad()
 void ServicesModel::resetModel()
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     if (m_dataState != DataStatus::DataLoaded)
       return;
     beginResetModel();

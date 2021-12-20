@@ -50,12 +50,9 @@ Player::Player(QObject *parent)
 Player::~Player()
 {
   {
-    Locked<ManagedQueue>::pointer queue = m_queue.Get();
-    if (queue->model)
-    {
-      LockGuard g(queue->model->m_lock);
-      unregisterContent(queue->model);
-    }
+    // queue model must be unregistered before destroying this
+    auto queue = m_queue.Get();
+    unregisterContent(*queue);
   }
   if (m_sonos && m_shareIndexInProgress)
     m_sonos->shareIndexFinished();
@@ -1225,7 +1222,7 @@ void Player::registerContent(ListModel<Player>* model, const QString& root)
   if (model)
   {
     qDebug("%s: %p (%s)", __FUNCTION__, model, model->m_root.toUtf8().constData());
-    Locked<ManagedQueue>::pointer rc = m_queue.Get();
+    auto rc = m_queue.Get();
     if (rc->model == model)
     {
       rc->root = root;
@@ -1240,17 +1237,9 @@ void Player::registerContent(ListModel<Player>* model, const QString& root)
 
 void Player::unregisterContent(ListModel<Player>* model)
 {
-  if (model)
-  {
-    qDebug("%s: %p (%s)", __FUNCTION__, model, model->m_root.toUtf8().constData());
-    Locked<ManagedQueue>::pointer rc = m_queue.Get();
-    if (rc->model == model)
-    {
-      rc->model->m_provider = nullptr;
-      rc->model = nullptr;
-      rc->root.clear();
-    }
-  }
+  auto mq = m_queue.Get();
+  if (mq->model == model)
+    unregisterContent(*mq);
 }
 
 void Player::handleTransportChange()
@@ -1521,7 +1510,7 @@ void Player::playerEventCB(void* handle)
         player->m_shareIndexInProgress = prop.ShareIndexInProgress;
       }
 
-      Locked<ManagedQueue>::pointer cl = player->m_queue.Get();
+      auto cl = player->m_queue.Get();
       // find the base of the model from its root
       if (cl->model)
       {
@@ -1541,6 +1530,18 @@ void Player::playerEventCB(void* handle)
         }
       }
     }
+  }
+}
+
+void Player::unregisterContent(ManagedQueue& mq)
+{
+  if (mq.model)
+  {
+    LockGuard<QRecursiveMutex> g(mq.model->m_lock);
+    qDebug("%s: %p (%s)", __FUNCTION__, mq.model, mq.model->m_root.toUtf8().constData());
+    mq.model->m_provider = nullptr;
+    mq.model = nullptr;
+    mq.root.clear();
   }
 }
 

@@ -42,7 +42,7 @@ GenreItem::GenreItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
 QVariant GenreItem::payload() const
 {
   QVariant var;
-  var.setValue<SONOS::DigitalItemPtr>(m_ptr);
+  var.setValue<SONOS::DigitalItemPtr>(SONOS::DigitalItemPtr(m_ptr));
   return var;
 }
 
@@ -62,7 +62,7 @@ GenresModel::~GenresModel()
 void GenresModel::addItem(GenreItem* item)
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items << item;
     endInsertRows();
@@ -73,17 +73,13 @@ void GenresModel::addItem(GenreItem* item)
 int GenresModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   return m_items.count();
 }
 
 QVariant GenresModel::data(const QModelIndex& index, int role) const
 {
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -115,7 +111,7 @@ QHash<int, QByteArray> GenresModel::roleNames() const
 
 QVariantMap GenresModel::get(int row)
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const GenreItem* item = m_items[row];
@@ -140,7 +136,7 @@ bool GenresModel::init(Sonos* provider, const QString& root, bool fill)
 
 void GenresModel::clearData()
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
@@ -155,7 +151,7 @@ bool GenresModel::loadData()
     return false;
   }
 
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
   m_dataState = DataStatus::DataNotFound;
@@ -195,7 +191,7 @@ bool GenresModel::asyncLoad()
 void GenresModel::resetModel()
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     if (m_dataState != DataStatus::DataLoaded)
       return;
     beginResetModel();
@@ -222,7 +218,7 @@ void GenresModel::resetModel()
 
 void GenresModel::clearModel()
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (m_dataState != DataStatus::DataBlank)
   {
     qDeleteAll(m_data);

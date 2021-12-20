@@ -47,7 +47,7 @@ PlaylistItem::PlaylistItem(const SONOS::DigitalItemPtr& ptr, const QString& base
 QVariant PlaylistItem::payload() const
 {
   QVariant var;
-  var.setValue<SONOS::DigitalItemPtr>(m_ptr);
+  var.setValue<SONOS::DigitalItemPtr>(SONOS::DigitalItemPtr(m_ptr));
   return var;
 }
 
@@ -67,7 +67,7 @@ PlaylistsModel::~PlaylistsModel()
 void PlaylistsModel::addItem(PlaylistItem* item)
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items << item;
     endInsertRows();
@@ -78,17 +78,13 @@ void PlaylistsModel::addItem(PlaylistItem* item)
 int PlaylistsModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   return m_items.count();
 }
 
 QVariant PlaylistsModel::data(const QModelIndex& index, int role) const
 {
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -126,7 +122,7 @@ QHash<int, QByteArray> PlaylistsModel::roleNames() const
 
 QVariantMap PlaylistsModel::get(int row)
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const PlaylistItem* item = m_items[row];
@@ -153,7 +149,7 @@ bool PlaylistsModel::init(Sonos* provider, const QString& root, bool fill)
 
 void PlaylistsModel::clearData()
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
@@ -168,7 +164,7 @@ bool PlaylistsModel::loadData()
     return false;
   }
 
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
   m_dataState = DataStatus::DataNotFound;
@@ -207,7 +203,7 @@ void PlaylistsModel::handleDataUpdate()
 void PlaylistsModel::resetModel()
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     if (m_dataState != DataStatus::DataLoaded)
       return;
     beginResetModel();

@@ -42,7 +42,7 @@ ArtistItem::ArtistItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
 QVariant ArtistItem::payload() const
 {
   QVariant var;
-  var.setValue<SONOS::DigitalItemPtr>(m_ptr);
+  var.setValue<SONOS::DigitalItemPtr>(SONOS::DigitalItemPtr(m_ptr));
   return var;
 }
 
@@ -62,7 +62,7 @@ ArtistsModel::~ArtistsModel()
 void ArtistsModel::addItem(ArtistItem* item)
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items << item;
     endInsertRows();
@@ -73,17 +73,13 @@ void ArtistsModel::addItem(ArtistItem* item)
 int ArtistsModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   return m_items.count();
 }
 
 QVariant ArtistsModel::data(const QModelIndex& index, int role) const
 {
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -118,7 +114,7 @@ QHash<int, QByteArray> ArtistsModel::roleNames() const
 
 QVariantMap ArtistsModel::get(int row)
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const ArtistItem* item = m_items[row];
@@ -144,7 +140,7 @@ bool ArtistsModel::init(Sonos* provider, const QString& root, bool fill)
 
 void ArtistsModel::clearData()
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
@@ -159,7 +155,7 @@ bool ArtistsModel::loadData()
     return false;
   }
 
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
   m_dataState = DataStatus::DataNotFound;
@@ -199,7 +195,7 @@ bool ArtistsModel::asyncLoad()
 void ArtistsModel::resetModel()
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     if (m_dataState != DataStatus::DataLoaded)
       return;
     beginResetModel();
@@ -226,7 +222,7 @@ void ArtistsModel::resetModel()
 
 void ArtistsModel::clearModel()
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (m_dataState != DataStatus::DataBlank)
   {
     qDeleteAll(m_data);

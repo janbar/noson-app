@@ -261,7 +261,9 @@ private:
 
   Locked<QString> m_locale; // language_COUNTRY
 
-  static void systemEventCB(void* handle);
+  static void systemEventCB(void *handle);
+
+  static void unregisterContent(ManagedContents& mc, ListModel<Sonos> *model);
 
   ///////////////////////////////////////////////////////////////////////////////
   ///

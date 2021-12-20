@@ -20,10 +20,10 @@
 #include "mediaparser.h"
 #include "mediarunnable.h"
 #include "mediascanner.h"
+#include "locked.h"
 
 #include <QThread>
 #include <QThreadPool>
-#include <QMutex>
 #include <QWaitCondition>
 #include <QList>
 #include <QSet>
@@ -84,7 +84,7 @@ private:
   NodeMap m_nodes;
   NodeMap m_items;
   FileMap m_files;
-  QMutex * m_fileItemsLock;
+  QRecursiveMutex * m_fileItemsLock;
   QFileSystemWatcher m_watcher;
   QList<MediaParserPtr> m_parsers;
   QThreadPool m_workerPool;

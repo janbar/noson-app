@@ -36,8 +36,6 @@ Q_DECLARE_METATYPE(SONOS::ZonePlayerPtr)
 Q_DECLARE_METATYPE(SONOS::SMServicePtr)
 Q_DECLARE_METATYPE(SONOS::AlarmPtr)
 
-#define USE_RECURSIVE_MUTEX
-
 namespace nosonapp
 {
 
@@ -82,17 +80,13 @@ public:
   , m_dataState(DataBlank)
   , m_updateSignaled(false)
   {
-  #ifdef USE_RECURSIVE_MUTEX
-    m_lock = new QMutex(QMutex::Recursive);
-  #else
-    m_lock = new QMutex();
-  #endif
+    m_lock = new QRecursiveMutex();
   }
 
   virtual ~ListModel()
   {
     {
-      LockGuard g(m_lock);
+      LockGuard<QRecursiveMutex> g(m_lock);
       ContentProvider<T>* cp = (ContentProvider<T>*) m_provider;
       if (cp)
         cp->unregisterContent(this);
@@ -112,7 +106,7 @@ public:
 
 public:
   T* m_provider;
-  QMutex* m_lock;
+  QRecursiveMutex* m_lock;
   unsigned m_updateID;
   QString m_root;
   bool m_pending;
@@ -125,7 +119,7 @@ protected:
     if (cp)
     {
       {
-        LockGuard g(m_lock);
+        LockGuard<QRecursiveMutex> g(m_lock);
         if (m_provider)
           ((ContentProvider<T>*) m_provider)->unregisterContent(this);
         cp->registerContent(this, root);

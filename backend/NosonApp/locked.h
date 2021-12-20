@@ -20,12 +20,24 @@
 
 #include <QMutex>
 
+#if QT_VERSION < 0x050E00 //QT_VERSION_CHECK(5, 14, 0)
+class QRecursiveMutex : private QMutex
+{
+public:
+  QRecursiveMutex() : QMutex(QMutex::Recursive) { }
+  void lock() { QMutex::lock(); }
+  void unlock() { QMutex::unlock(); }
+  bool try_lock() { return QMutex::try_lock(); }
+};
+#endif /* QT_VERSION */
+
 namespace nosonapp
 {
 
 /**
  * This implements a "guard" pattern
  */
+template<typename T>
 class LockGuard
 {
 public:
@@ -35,33 +47,37 @@ public:
    * destructor.
    * @param lock The pointer to lockable object
    */
-  LockGuard(QMutex * lock)
+  LockGuard(T * lock)
   : m_lock(lock)
   {
     if (m_lock)
       m_lock->lock();
   }
-  
+
   ~LockGuard()
   {
     if (m_lock)
       m_lock->unlock();
   }
-  
-  LockGuard(const LockGuard& other)
-  : m_lock(other.m_lock)
-  { }
-  
-  LockGuard& operator=(const LockGuard& other)
+
+  LockGuard(const LockGuard& other) = delete;
+  LockGuard& operator=(const LockGuard& other) = delete;
+
+  LockGuard(LockGuard&& other) : m_lock(other.m_lock)
   {
-    if (m_lock)
-      m_lock->unlock();
+    other.m_lock = nullptr;
+  }
+
+  LockGuard& operator=(LockGuard&& other)
+  {
+    T * tmp = m_lock;
     m_lock = other.m_lock;
+    other.m_lock = tmp;
     return *this;
   }
-  
+
 private:
-  QMutex * m_lock;
+  T * m_lock;
 };
 
 template<typename T>
@@ -70,26 +86,26 @@ class Locked
 public:
   Locked(const T& val)
   : m_val(val)
-  , m_lock(new QMutex(QMutex::Recursive)) {}
-  
+  , m_lock(new QMutex()) {}
+
   ~Locked()
   {
     delete m_lock;
   }
-  
+
   T Load()
   {
-    LockGuard g(m_lock);
+    LockGuard<QMutex> g(m_lock);
     return m_val; // return copy
   }
-  
+
   const T& Store(const T& newval)
   {
-    LockGuard g(m_lock);
+    LockGuard<QMutex> g(m_lock);
     m_val = newval;
     return newval; // return input
   }
-  
+
   class pointer
   {
   public:
@@ -98,18 +114,18 @@ public:
     T *operator->() const { return &m_val; }
   private:
     T& m_val;
-    LockGuard m_g;
+    LockGuard<QMutex> m_g;
   };
-  
+
   pointer Get()
   {
     return pointer(m_val, m_lock);
   }
-  
+
 protected:
   T m_val;
   QMutex * m_lock;
-  
+
   // Prevent copy
   Locked(const Locked<T>& other);
   Locked<T>& operator=(const Locked<T>& other);
@@ -121,24 +137,24 @@ class LockedNumber : public Locked<T>
 public:
   LockedNumber(T val)
   : Locked<T>(val) {}
-  
+
   T Add(T amount)
   {
-    LockGuard g(Locked<T>::m_lock);
+    LockGuard<QMutex> g(Locked<T>::m_lock);
     return Locked<T>::m_val += amount;
   }
-  
+
   T operator+=(T amount)
   {
     return Add(amount);
   }
-  
+
   T Sub(T amount)
   {
-    LockGuard g(Locked<T>::m_lock);
+    LockGuard<QMutex> g(Locked<T>::m_lock);
     return Locked<T>::m_val -= amount;
   }
-  
+
   T operator-=(T amount)
   {
     return Sub(amount);

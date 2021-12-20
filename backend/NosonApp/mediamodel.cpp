@@ -100,7 +100,7 @@ MediaItem::MediaItem(const SONOS::SMAPIItem& data)
 QVariant MediaItem::payload() const
 {
   QVariant var;
-  var.setValue<SONOS::DigitalItemPtr>(m_ptr);
+  var.setValue<SONOS::DigitalItemPtr>(SONOS::DigitalItemPtr(m_ptr));
   return var;
 }
 
@@ -125,7 +125,7 @@ MediaModel::~MediaModel()
 void MediaModel::addItem(MediaItem* item)
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items << item;
     endInsertRows();
@@ -136,17 +136,13 @@ void MediaModel::addItem(MediaItem* item)
 int MediaModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   return m_items.count();
 }
 
 QVariant MediaModel::data(const QModelIndex& index, int role) const
 {
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -211,7 +207,7 @@ QHash<int, QByteArray> MediaModel::roleNames() const
 
 QVariantMap MediaModel::get(int row)
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const MediaItem* item = m_items[row];
@@ -258,7 +254,7 @@ bool MediaModel::init(Sonos* provider, const QVariant& service, bool fill)
 
 void MediaModel::clearData()
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
@@ -266,7 +262,7 @@ void MediaModel::clearData()
 bool MediaModel::loadData()
 {
   setUpdateSignaled(false);
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (!m_smapi)
   {
     emit loaded(false);
@@ -313,9 +309,7 @@ bool MediaModel::loadData()
 
 QString MediaModel::pathName() const
 {
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (m_path.empty())
     return ROOT_TAG;
   else
@@ -324,9 +318,7 @@ QString MediaModel::pathName() const
 
 QString MediaModel::pathId() const
 {
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (m_path.empty())
     return ROOT_TAG;
   else
@@ -335,9 +327,7 @@ QString MediaModel::pathId() const
 
 int MediaModel::parentDisplayType() const
 {
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (m_path.empty())
     return ROOT_DISPLAY_TYPE;
   else
@@ -346,7 +336,7 @@ int MediaModel::parentDisplayType() const
 
 int MediaModel::viewIndex() const
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (m_path.empty())
     return 0;
   else
@@ -356,7 +346,7 @@ int MediaModel::viewIndex() const
 QList<QString> MediaModel::listSearchCategories() const
 {
   QList<QString> list;
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (m_smapi)
   {
     SONOS::ElementList el = m_smapi->AvailableSearchCategories();
@@ -452,7 +442,7 @@ bool MediaModel::asyncLoad()
 
 bool MediaModel::loadMoreData()
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (!m_smapi)
   {
     emit loadedMore(false);
@@ -516,7 +506,7 @@ bool MediaModel::loadChild(const QString& id, const QString& title, int displayT
   if (id.isEmpty())
     return false;
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     // save current view index for this path item
     if (!m_path.empty())
       m_path.top().viewIndex = viewIndex;
@@ -531,7 +521,7 @@ bool MediaModel::asyncLoadChild(const QString &id, const QString &title, int dis
   if (id.isEmpty())
     return false;
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     // save current view index for this path item
     if (!m_path.empty())
       m_path.top().viewIndex = viewIndex;
@@ -545,7 +535,7 @@ bool MediaModel::loadParent()
 {
   bool searching;
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     if (!m_path.empty())
       m_path.pop();
     // reload current search else the parent item
@@ -575,7 +565,7 @@ bool MediaModel::asyncLoadParent()
 bool MediaModel::loadSearch(const QString &category, const QString &term)
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     m_searchCategory = category.toUtf8().constData();
     m_searchTerm = term.toUtf8().constData();
     m_searching = true; // enable search state
@@ -589,7 +579,7 @@ bool MediaModel::loadSearch(const QString &category, const QString &term)
 bool MediaModel::asyncLoadSearch(const QString &category, const QString &term)
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     m_searchCategory = category.toUtf8().constData();
     m_searchTerm = term.toUtf8().constData();
     m_searching = true; // enable search state
@@ -605,7 +595,7 @@ bool MediaModel::asyncLoadSearch(const QString &category, const QString &term)
 
 bool MediaModel::search()
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (!m_smapi)
   {
     emit loaded(false);
@@ -651,7 +641,7 @@ bool MediaModel::search()
 void MediaModel::resetModel()
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     if (m_dataState != DataStatus::DataLoaded)
       return;
     beginResetModel();
@@ -679,7 +669,7 @@ void MediaModel::resetModel()
 void MediaModel::appendModel()
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     if (m_dataState != DataStatus::DataLoaded)
       return;
     int cnt = m_items.count();

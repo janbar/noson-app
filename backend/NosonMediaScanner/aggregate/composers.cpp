@@ -32,7 +32,7 @@ ComposerModel::ComposerModel(const MediaFilePtr& file)
 QVariant ComposerModel::payload() const
 {
   QVariant var;
-  var.setValue<MediaFilePtr>(m_file);
+  var.setValue<MediaFilePtr>(MediaFilePtr(m_file));
   return var;
 }
 
@@ -49,7 +49,7 @@ Composers::~Composers()
 void Composers::addItem(ItemPtr& item)
 {
   {
-    LockGuard lock(m_lock);
+    LockGuard<QRecursiveMutex> lock(m_lock);
     beginInsertRows(QModelIndex(), rowCount(), rowCount());
     m_items << item;
     endInsertRows();
@@ -60,7 +60,7 @@ void Composers::addItem(ItemPtr& item)
 void Composers::removeItem(const QByteArray& id)
 {
   {
-    LockGuard lock(m_lock);
+    LockGuard<QRecursiveMutex> lock(m_lock);
     int row = 0;
     for (const ItemPtr& item : m_items)
     {
@@ -80,13 +80,13 @@ void Composers::removeItem(const QByteArray& id)
 int Composers::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-  LockGuard lock(m_lock);
+  LockGuard<QRecursiveMutex> lock(m_lock);
   return m_items.count();
 }
 
 QVariant Composers::data(const QModelIndex& index, int role) const
 {
-  LockGuard lock(m_lock);
+  LockGuard<QRecursiveMutex> lock(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -96,7 +96,7 @@ QVariant Composers::data(const QModelIndex& index, int role) const
   case PayloadRole:
   {
     QVariant var;
-    var.setValue<ItemPtr>(item);
+    var.setValue<ItemPtr>(ItemPtr(item));
     return var;
   }
   case IdRole:
@@ -112,7 +112,7 @@ QVariant Composers::data(const QModelIndex& index, int role) const
 
 bool Composers::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-  LockGuard lock(m_lock);
+  LockGuard<QRecursiveMutex> lock(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return false;
 
@@ -136,14 +136,14 @@ QHash<int, QByteArray> Composers::roleNames() const
 
 QVariantMap Composers::get(int row)
 {
-  LockGuard lock(m_lock);
+  LockGuard<QRecursiveMutex> lock(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const ItemPtr item = m_items[row];
   QVariantMap model;
   QHash<int, QByteArray> roles = roleNames();
   QVariant var;
-  var.setValue<ItemPtr>(item);
+  var.setValue<ItemPtr>(ItemPtr(item));
   model[roles[PayloadRole]] = var;
   model[roles[IdRole]] = item->model.key();
   model[roles[ComposerRole]] = item->model.composer();
@@ -153,7 +153,7 @@ QVariantMap Composers::get(int row)
 
 void Composers::clear()
 {
-  LockGuard lock(m_lock);
+  LockGuard<QRecursiveMutex> lock(m_lock);
   if (m_dataState == ListModel::New)
       return;
   if (m_items.count() > 0)
@@ -168,7 +168,7 @@ void Composers::clear()
 bool Composers::load()
 {
   {
-    LockGuard lock(m_lock);
+    LockGuard<QRecursiveMutex> lock(m_lock);
     beginResetModel();
     clear();
 

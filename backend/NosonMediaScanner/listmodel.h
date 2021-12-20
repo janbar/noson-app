@@ -24,8 +24,6 @@
 #include <QObject>
 #include <QAbstractListModel>
 
-class QMutex;
-
 namespace mediascanner
 {
 
@@ -53,9 +51,9 @@ public:
 public slots:
   virtual void onFileAdded(const MediaFilePtr& file) = 0;
   virtual void onFileRemoved(const MediaFilePtr& file) = 0;
-  
+
 protected:
-  QMutex * m_lock;
+  QRecursiveMutex * m_lock;
   MediaScanner * m_provider;
   dataState m_dataState;
 

@@ -38,7 +38,7 @@ RoomItem::RoomItem(const SONOS::ZonePlayerPtr& ptr)
 QVariant RoomItem::payload() const
 {
   QVariant var;
-  var.setValue<SONOS::ZonePlayerPtr>(m_ptr);
+  var.setValue<SONOS::ZonePlayerPtr>(SONOS::ZonePlayerPtr(m_ptr));
   return var;
 }
 

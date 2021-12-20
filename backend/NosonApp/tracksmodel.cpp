@@ -58,7 +58,7 @@ TrackItem::TrackItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
 QVariant TrackItem::payload() const
 {
   QVariant var;
-  var.setValue<SONOS::DigitalItemPtr>(m_ptr);
+  var.setValue<SONOS::DigitalItemPtr>(SONOS::DigitalItemPtr(m_ptr));
   return var;
 }
 
@@ -83,7 +83,7 @@ TracksModel::~TracksModel()
 void TracksModel::addItem(TrackItem* item)
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items << item;
     endInsertRows();
@@ -94,17 +94,13 @@ void TracksModel::addItem(TrackItem* item)
 int TracksModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   return m_items.count();
 }
 
 QVariant TracksModel::data(const QModelIndex& index, int role) const
 {
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -134,7 +130,7 @@ QVariant TracksModel::data(const QModelIndex& index, int role) const
 
 bool TracksModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return false;
 
@@ -165,7 +161,7 @@ QHash<int, QByteArray> TracksModel::roleNames() const
 
 QVariantMap TracksModel::get(int row)
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const TrackItem* item = m_items[row];
@@ -194,7 +190,7 @@ bool TracksModel::init(Sonos* provider, const QString& root, bool fill)
 
 void TracksModel::clearData()
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
@@ -209,7 +205,7 @@ bool TracksModel::loadData()
     return false;
   }
 
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   SAFE_DELETE(m_contentList);
   SAFE_DELETE(m_contentDirectory);
   m_contentDirectory = new SONOS::ContentDirectory(m_provider->getHost(), m_provider->getPort());
@@ -270,7 +266,7 @@ bool TracksModel::asyncLoad()
 
 bool TracksModel::loadMoreData()
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (!m_contentDirectory || !m_contentList)
   {
     emit loadedMore(false);
@@ -326,7 +322,7 @@ bool TracksModel::asyncLoadMore()
 void TracksModel::resetModel()
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     if (m_dataState != DataStatus::DataLoaded)
       return;
     beginResetModel();
@@ -354,7 +350,7 @@ void TracksModel::resetModel()
 void TracksModel::appendModel()
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     if (m_dataState != DataStatus::DataLoaded)
       return;
     int cnt = m_items.count();

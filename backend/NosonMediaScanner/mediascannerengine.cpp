@@ -44,7 +44,7 @@ MediaScannerEngine::MediaScannerEngine(MediaScanner * scanner, QObject* parent)
 , m_nodes()
 , m_items()
 , m_files()
-, m_fileItemsLock(new QMutex(QMutex::Recursive))
+, m_fileItemsLock(new QRecursiveMutex())
 , m_watcher()
 , m_parsers()
 , m_workerPool()
@@ -72,7 +72,6 @@ MediaScannerEngine::~MediaScannerEngine()
 
 void MediaScannerEngine::addParser(MediaParser* parser)
 {
-  LockGuard gc(m_condLock);
   for (MediaParserPtr p : m_parsers)
   {
     if (p->commonName() == parser->commonName())
@@ -83,7 +82,6 @@ void MediaScannerEngine::addParser(MediaParser* parser)
 
 void MediaScannerEngine::removeParser(const QString& name)
 {
-  LockGuard gc(m_condLock);
   QList<MediaParserPtr>::iterator it = m_parsers.begin();
   while (it != m_parsers.end())
   {
@@ -112,7 +110,7 @@ void MediaScannerEngine::setMaxThread(int maxThread)
 
 QList<MediaFilePtr> MediaScannerEngine::allParsedFiles() const
 {
-  LockGuard g(m_fileItemsLock);
+  LockGuard<QRecursiveMutex> g(m_fileItemsLock);
 
   QList<MediaFilePtr> list;
   for (const MediaFilePtr& file : m_files)
@@ -191,7 +189,7 @@ void MediaScannerEngine::onFileChanged(const QString& filePath)
   QFile f(filePath);
   if (f.exists() && f.size() > FILE_MIN_SIZE)
   {
-    LockGuard g(m_fileItemsLock);
+    LockGuard<QRecursiveMutex> g(m_fileItemsLock);
 
     NodeMap::iterator it = m_items.find(filePath);
     if (it != m_items.end())
@@ -252,9 +250,10 @@ void MediaScannerEngine::run()
 
 void MediaScannerEngine::launchScan(const QString& dirPath)
 {
-  LockGuard gc(m_condLock);
+  m_condLock->lock();
   m_todo.enqueue(dirPath);
   m_cond.wakeOne();
+  m_condLock->unlock();
 }
 
 void MediaScannerEngine::scanDir(const QString &dirPath, const QList<MediaParserPtr>& parsers, bool deepScan /*= false*/)
@@ -282,7 +281,7 @@ void MediaScannerEngine::scanDir(const QString &dirPath, const QList<MediaParser
         MediaParserPtr p = matchParser(parsers, info);
         if (p)
         {
-          LockGuard g(m_fileItemsLock);
+          LockGuard<QRecursiveMutex> g(m_fileItemsLock);
 
           NodeMap::iterator itf = m_items.find(info.absoluteFilePath());
           if (itf == m_items.end())
@@ -385,7 +384,7 @@ void MediaScannerEngine::cleanNode(const QString& nodeName, bool evenPinned, QLi
   if (m_scanner->isDebug())
     qDebug("Clean node %s", nodeName.toUtf8().constData());
 
-  LockGuard g(m_fileItemsLock);
+  LockGuard<QRecursiveMutex> g(m_fileItemsLock);
 
   QPair<FileMap::iterator, FileMap::iterator> pair = m_files.equal_range(nodeName);
   FileMap::iterator it = pair.first;
@@ -488,16 +487,18 @@ MediaScannerEngine::DelayedQueue::~DelayedQueue()
 
 void MediaScannerEngine::DelayedQueue::enqueue(MediaRunnable* runnable)
 {
-  LockGuard g(m_delayedJobsLock);
+  m_delayedJobsLock->lock();
   runnable->setTimeout(RETRY_TIMEOUT_MS);
   m_delayedJobs.enqueue(runnable);
+  m_delayedJobsLock->unlock();
 }
 
 void MediaScannerEngine::DelayedQueue::clear()
 {
-  LockGuard g(m_delayedJobsLock);
+  m_delayedJobsLock->lock();
   while (!m_delayedJobs.isEmpty())
     delete m_delayedJobs.dequeue();
+  m_delayedJobsLock->unlock();
 }
 
 void MediaScannerEngine::DelayedQueue::startProcessing(QThreadPool* pool)
@@ -525,13 +526,14 @@ void MediaScannerEngine::DelayedQueue::run()
   {
     QThread::msleep(THREAD_WAIT_TIMEOUT);
     {
-      LockGuard g(m_delayedJobsLock);
+      m_delayedJobsLock->lock();
       while (!m_delayedJobs.isEmpty() && !isInterruptionRequested())
       {
         if (m_delayedJobs.front()->timeLeft() > 0)
           break;
         m_workerPool->start(m_delayedJobs.dequeue());
       }
+      m_delayedJobsLock->unlock();
     }
   }
 }

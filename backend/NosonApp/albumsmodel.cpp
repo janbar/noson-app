@@ -50,7 +50,7 @@ AlbumItem::AlbumItem(const SONOS::DigitalItemPtr& ptr, const QString& baseURL)
 QVariant AlbumItem::payload() const
 {
   QVariant var;
-  var.setValue<SONOS::DigitalItemPtr>(m_ptr);
+  var.setValue<SONOS::DigitalItemPtr>(SONOS::DigitalItemPtr(m_ptr));
   return var;
 }
 
@@ -70,7 +70,7 @@ AlbumsModel::~AlbumsModel()
 void AlbumsModel::addItem(AlbumItem* item)
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items << item;
     endInsertRows();
@@ -81,17 +81,13 @@ void AlbumsModel::addItem(AlbumItem* item)
 int AlbumsModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   return m_items.count();
 }
 
 QVariant AlbumsModel::data(const QModelIndex& index, int role) const
 {
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -117,7 +113,7 @@ QVariant AlbumsModel::data(const QModelIndex& index, int role) const
 
 bool AlbumsModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return false;
 
@@ -146,7 +142,7 @@ QHash<int, QByteArray> AlbumsModel::roleNames() const
 
 QVariantMap AlbumsModel::get(int row)
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const AlbumItem* item = m_items[row];
@@ -173,7 +169,7 @@ bool AlbumsModel::init(Sonos* provider, const QString& root, bool fill)
 
 void AlbumsModel::clearData()
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
@@ -188,7 +184,7 @@ bool AlbumsModel::loadData()
     return false;
   }
 
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
   m_dataState = DataStatus::DataNotFound;
@@ -228,7 +224,7 @@ bool AlbumsModel::asyncLoad()
 void AlbumsModel::resetModel()
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     if (m_dataState != DataStatus::DataLoaded)
       return;
     beginResetModel();
@@ -255,7 +251,7 @@ void AlbumsModel::resetModel()
 
 void AlbumsModel::clearModel()
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (m_dataState != DataStatus::DataBlank)
   {
     qDeleteAll(m_data);

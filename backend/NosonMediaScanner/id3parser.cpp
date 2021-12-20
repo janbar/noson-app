@@ -192,7 +192,7 @@ static QByteArray _cs_conv_latin1(const char * data, unsigned size)
 
 static QByteArray _cs_conv_utf16(const char * data, unsigned size)
 {
-  return QString::fromUtf16((const ushort*) data, size / 2).toUtf8();
+  return QString::fromUtf16((const char16_t*) data, size / 2).toUtf8();
 }
 
 static QByteArray _cs_conv_utf16be(const char * data, unsigned size)
@@ -674,7 +674,7 @@ static int _parse_id3v2(FILE * fp, long id3v2_offset, ID3Iinfo * info, off_t * p
         info->has_art = true;
       else if (major_version > 0x2 && major_version < 0x5 && memcmp(fh.frame_id, "APIC", 4) == 0)
         info->has_art = true;
-      
+
       if (fh.data_length_indicator)
         fseek(fp, fh.frame_size + 4, SEEK_CUR);
       else

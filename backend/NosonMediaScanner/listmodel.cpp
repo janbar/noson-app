@@ -27,13 +27,13 @@ ListModel::ListModel(QObject * parent)
 , m_dataState(ListModel::New)
 , m_updateSignaled(false)
 {
-  m_lock = new QMutex(QMutex::Recursive);
+  m_lock = new QRecursiveMutex();
 }
 
 ListModel::~ListModel()
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     m_provider->unregisterModel(this);
   }
   delete m_lock;
@@ -41,7 +41,7 @@ ListModel::~ListModel()
 
 bool ListModel::init(bool fill /*= true*/)
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock); // is recursive
   m_provider->unregisterModel(this);
   m_provider->registerModel(this);
   m_dataState = ListModel::NoData;

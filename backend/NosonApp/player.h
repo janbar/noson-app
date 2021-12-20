@@ -312,6 +312,8 @@ private:
 
   static void playerEventCB(void* handle);
 
+  static void unregisterContent(ManagedQueue& mq);
+
   Mpris2* m_mpris2;
 
   ///////////////////////////////////////////////////////////////////////////////

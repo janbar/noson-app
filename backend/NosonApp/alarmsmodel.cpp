@@ -33,7 +33,7 @@ AlarmItem::AlarmItem(const SONOS::AlarmPtr& ptr)
 QVariant AlarmItem::payload() const
 {
   QVariant var;
-  var.setValue<SONOS::AlarmPtr>(m_ptr);
+  var.setValue<SONOS::AlarmPtr>(SONOS::AlarmPtr(m_ptr));
   return var;
 }
 
@@ -173,7 +173,7 @@ AlarmsModel::~AlarmsModel()
 void AlarmsModel::addItem(AlarmItem* item)
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items << item;
     endInsertRows();
@@ -184,17 +184,13 @@ void AlarmsModel::addItem(AlarmItem* item)
 int AlarmsModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   return m_items.count();
 }
 
 QVariant AlarmsModel::data(const QModelIndex& index, int role) const
 {
-#ifdef USE_RECURSIVE_MUTEX
-  LockGuard g(m_lock);
-#endif
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return QVariant();
 
@@ -234,7 +230,7 @@ QVariant AlarmsModel::data(const QModelIndex& index, int role) const
 
 bool AlarmsModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (index.row() < 0 || index.row() >= m_items.count())
       return false;
 
@@ -285,7 +281,7 @@ bool AlarmsModel::insertRow(int row, const QModelIndex& parent)
 {
   Q_UNUSED(parent);
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     if (row < 0 || row > m_items.count())
       return false;
     SONOS::AlarmPtr ptr(new SONOS::Alarm());
@@ -301,7 +297,7 @@ bool AlarmsModel::removeRow(int row, const QModelIndex& parent)
 {
   Q_UNUSED(parent);
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     if (row < 0 || row >= m_items.count())
       return false;
     beginRemoveRows(QModelIndex(), row, row);
@@ -348,7 +344,7 @@ QHash<int, QByteArray> AlarmsModel::roleNames() const
 
 QVariantMap AlarmsModel::get(int row)
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   if (row < 0 || row >= m_items.count())
     return QVariantMap();
   const AlarmItem* item = m_items[row];
@@ -372,7 +368,7 @@ QVariantMap AlarmsModel::get(int row)
 
 void AlarmsModel::clearData()
 {
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
 }
@@ -387,7 +383,7 @@ bool AlarmsModel::loadData()
     return false;
   }
 
-  LockGuard g(m_lock);
+  LockGuard<QRecursiveMutex> g(m_lock);
   qDeleteAll(m_data);
   m_data.clear();
   m_dataState = DataStatus::DataNotFound;
@@ -418,7 +414,7 @@ bool AlarmsModel::asyncLoad()
 void AlarmsModel::resetModel()
 {
   {
-    LockGuard g(m_lock);
+    LockGuard<QRecursiveMutex> g(m_lock);
     if (m_dataState != DataStatus::DataLoaded)
       return;
     beginResetModel();
