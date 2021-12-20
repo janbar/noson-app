@@ -96,9 +96,9 @@ set(
 include_directories (${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(QT_STATICPLUGIN)
-    add_library(NosonMediaScanner STATIC ${NosonMediaScanner_SOURCES})
+    add_library(NosonMediaScanner STATIC ${NosonMediaScanner_SOURCES} ${NosonMediaScanner_HEADERS})
 else()
-    add_library(NosonMediaScanner MODULE ${NosonMediaScanner_SOURCES})
+    add_library(NosonMediaScanner MODULE ${NosonMediaScanner_SOURCES} ${NosonMediaScanner_HEADERS})
 endif()
 
 set_target_properties(NosonMediaScanner PROPERTIES

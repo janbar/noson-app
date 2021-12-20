@@ -28,7 +28,7 @@ set(
   builtin.h
 )
 
-add_executable (noson-cli ${noson-cli_SOURCES})
+add_executable (noson-cli ${noson-cli_SOURCES} ${noson-cli_HEADERS})
 
 if(NOT noson_FOUND)
     add_dependencies(noson-cli noson)

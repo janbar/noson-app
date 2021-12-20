@@ -75,9 +75,9 @@ set(
 )
 
 if(QT_STATICPLUGIN)
-    add_library(NosonThumbnailer STATIC ${NosonThumbnailer_SOURCES})
+    add_library(NosonThumbnailer STATIC ${NosonThumbnailer_SOURCES} ${NosonThumbnailer_HEADERS})
 else()
-    add_library(NosonThumbnailer MODULE ${NosonThumbnailer_SOURCES})
+    add_library(NosonThumbnailer MODULE ${NosonThumbnailer_SOURCES} ${NosonThumbnailer_HEADERS})
 endif()
 
 set_target_properties(NosonThumbnailer PROPERTIES

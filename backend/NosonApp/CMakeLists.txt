@@ -112,9 +112,9 @@ if(HAVE_DBUS)
 endif()
 
 if(QT_STATICPLUGIN)
-    add_library(NosonApp STATIC ${NosonApp_SOURCES})
+    add_library(NosonApp STATIC ${NosonApp_SOURCES} ${NosonApp_HEADERS})
 else()
-    add_library(NosonApp MODULE ${NosonApp_SOURCES})
+    add_library(NosonApp MODULE ${NosonApp_SOURCES} ${NosonApp_HEADERS})
 endif()
 
 if(NOT noson_FOUND)
