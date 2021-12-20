@@ -40,9 +40,9 @@ MouseArea {
 
     Connections {
         target: row
-        onActionPressed: actionPressed()
-        onAction2Pressed: action2Pressed()
-        onAction3Pressed: action3Pressed()
+        function onActionPressed() { actionPressed() }
+        function onAction2Pressed() { action2Pressed() }
+        function onAction3Pressed() { action3Pressed() }
     }
 
     property alias contentHeight: row.contentHeight

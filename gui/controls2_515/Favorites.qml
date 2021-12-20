@@ -143,7 +143,7 @@ MusicPage {
 
         Connections {
             target: AllFavoritesModel
-            onLoaded: {
+            function onLoaded(succeeded) {
                 if (favoriteList.focusIndex > 0) {
                     favoriteList.positionViewAtIndex(favoriteList.focusIndex, ListView.Center);
                     favoriteList.focusIndex = 0;

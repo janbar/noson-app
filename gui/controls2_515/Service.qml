@@ -70,8 +70,8 @@ MusicPage {
 
     Connections {
         target: mediaModel
-        onDataUpdated: mediaModel.asyncLoad()
-        onLoaded: {
+        function onDataUpdated() { mediaModel.asyncLoad() }
+        function onLoaded(succeeded) {
             if (succeeded) {
                 mediaModel.resetModel()
                 servicePage.displayType = servicePage.parentDisplayType // apply displayType
@@ -102,7 +102,7 @@ MusicPage {
                 }
             }
         }
-        onLoadedMore: {
+        function onLoadedMore(succeeded) {
             if (succeeded) {
                 mediaModel.appendModel()
                 if (focusViewIndex) {
@@ -116,7 +116,7 @@ MusicPage {
             }
         }
 
-        onPathChanged: {
+        function onPathChanged() {
             if (mediaModel.isRoot) {
                 pageTitle = serviceItem.title;
             } else {
@@ -169,7 +169,7 @@ MusicPage {
             // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
-                onLoaded: {
+                function onLoaded(succeeded) {
                     listItem.isFavorite = model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
                 }
             }
@@ -279,7 +279,7 @@ MusicPage {
             // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
-                onLoaded: {
+                function onLoaded(succeeded) {
                     isFavorite = model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
                 }
             }
@@ -405,7 +405,7 @@ MusicPage {
 
     Connections {
         target: mediaModel
-        onIsAuthExpiredChanged: {
+        function onIsAuthExpiredChanged() {
             var auth;
             if (mediaModel.isAuthExpired) {
                 if (mediaModel.policyAuth === 1) {

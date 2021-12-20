@@ -61,18 +61,18 @@ MouseArea {
 
     Connections {
         target: listview
-        onSynchronizeChecked: {
+        function onSynchronizeChecked() {
             row.checked = listview.isSelectedIndex(index)
         }
     }
 
     Connections {
         target: row
-        onActionPressed: actionPressed()
-        onAction2Pressed: action2Pressed()
-        onAction3Pressed: action3Pressed()
-        onSelected: listview.selectIndex(index)
-        onDeselected: listview.deselectIndex(index)
+        function onActionPressed() { actionPressed() }
+        function onAction2Pressed() { action2Pressed() }
+        function onAction3Pressed() { action3Pressed() }
+        function onSelected() { listview.selectIndex(index) }
+        function onDeselected() { listview.deselectIndex(index) }
     }
 
     property alias contentHeight: row.contentHeight

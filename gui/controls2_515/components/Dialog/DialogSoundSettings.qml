@@ -82,7 +82,7 @@ Item {
 
                     Connections {
                         target: player
-                        onTrebleChanged:{
+                        function onTrebleChanged() {
                             if (!trebleSlider.pressed) {
                                 trebleSlider.value = player.treble;
                             }
@@ -182,7 +182,7 @@ Item {
 
                     Connections {
                         target: player
-                        onBassChanged:{
+                        function onBassChanged() {
                             if (!bassSlider.pressed) {
                                 bassSlider.value = player.bass;
                             }
@@ -243,7 +243,7 @@ Item {
                     }
                     Connections {
                         target: player
-                        onNightmodeEnabledChanged: nightMode.checked = player.nightmodeEnabled
+                        function onNightmodeEnabledChanged() { nightMode.checked = player.nightmodeEnabled }
                     }
                 }
                 MusicCheckBox {
@@ -266,7 +266,7 @@ Item {
                     }
                     Connections {
                         target: player
-                        onLoudnessEnabledChanged: loudness.checked = player.loudnessEnabled
+                        function onLoudnessEnabledChanged() { loudness.checked = player.loudnessEnabled }
                     }
                 }
             }
@@ -302,7 +302,7 @@ Item {
                     }
                     Connections {
                         target: player
-                        onCurrentProtocolChanged: playIN.checked = (player.currentProtocol === 1)
+                        function onCurrentProtocolChanged() { playIN.checked = (player.currentProtocol === 1) }
                     }
                 }
                 MusicCheckBox {
@@ -332,7 +332,7 @@ Item {
                     }
                     Connections {
                         target: player
-                        onCurrentProtocolChanged: playTV.checked = (player.currentProtocol === 5)
+                        function onCurrentProtocolChanged() { playTV.checked = (player.currentProtocol === 5) }
                     }
                 }
                 MusicCheckBox {
@@ -363,7 +363,7 @@ Item {
                     }
                     Connections {
                         target: player
-                        onCurrentMetaSourceChanged: playPulse.checked = (player.isPulseStream())
+                        function onCurrentMetaSourceChanged() { playPulse.checked = (player.isPulseStream()) }
                     }
                 }
             }

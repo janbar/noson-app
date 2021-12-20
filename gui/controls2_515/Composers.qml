@@ -73,7 +73,7 @@ MusicPage {
             // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
-                onLoaded: {
+                function onLoaded(succeeded) {
                     composerCard.isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
                 }
             }

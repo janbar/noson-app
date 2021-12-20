@@ -146,7 +146,7 @@ MusicPage {
 
     Connections {
         target: AllGenresModel
-        onCountChanged: resetIndexModel()
+        function onCountChanged() { resetIndexModel() }
     }
 
     // Overlay to show when no index found

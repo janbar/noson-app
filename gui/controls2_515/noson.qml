@@ -210,7 +210,7 @@ ApplicationWindow {
 
     Connections {
         target: Qt.application
-        onStateChanged: {
+        function onStateChanged() {
             if (Qt.application.state === Qt.ApplicationSuspended)
                 applicationSuspended = true;
             else if (applicationSuspended === true) {
@@ -234,9 +234,9 @@ ApplicationWindow {
     Connections {
         target: Sonos
 
-        onJobCountChanged: jobRunning = Sonos.jobCount > 0 ? true : false
+        function onJobCountChanged() { jobRunning = Sonos.jobCount > 0 ? true : false }
 
-        onInitDone: {
+        function onInitDone(succeeded) {
             if (succeeded) {
                 // clear the setting deviceUrl when ssdp method succeeded
                 if (ssdp && deviceUrl !== "") {
@@ -251,14 +251,14 @@ ApplicationWindow {
             }
         }
 
-        onLoadingFinished: {
+        function onLoadingFinished() {
             if (infoLoadedIndex) {
                 infoLoadedIndex = false;
                 popInfo.open(qsTr("Index loaded"));
             }
         }
 
-        onTopologyChanged: {
+        function onTopologyChanged() {
             AllZonesModel.asyncLoad();
         }
     }
@@ -342,8 +342,8 @@ ApplicationWindow {
     // Invoking asyncLoad() will schedule the reloading of data.
     Connections {
         target: AllZonesModel
-        onDataUpdated: AllZonesModel.asyncLoad()
-        onLoaded: {
+        function onDataUpdated() { AllZonesModel.asyncLoad() }
+        function onLoaded(succeeded) {
             AllZonesModel.resetModel();
             reloadZone();
         }
@@ -351,62 +351,62 @@ ApplicationWindow {
 
     Connections {
         target: AllServicesModel
-        onDataUpdated: AllServicesModel.asyncLoad()
-        onLoaded: AllServicesModel.resetModel()
+        function onDataUpdated() { AllServicesModel.asyncLoad() }
+        function onLoaded(succeeded) { AllServicesModel.resetModel() }
     }
 
     Connections {
         target: MyServicesModel
-        onDataUpdated: MyServicesModel.asyncLoad()
-        onLoaded: MyServicesModel.resetModel()
+        function onDataUpdated() { MyServicesModel.asyncLoad() }
+        function onLoaded(succeeded) { MyServicesModel.resetModel() }
     }
 
     Connections {
         target: AllFavoritesModel
-        onDataUpdated: AllFavoritesModel.asyncLoad()
-        onLoaded: AllFavoritesModel.resetModel()
-        onCountChanged: { tabs.setProperty(2, "visible", (AllFavoritesModel.count > 0)) }
+        function onDataUpdated() { AllFavoritesModel.asyncLoad() }
+        function onLoaded(succeeded) { AllFavoritesModel.resetModel() }
+        function onCountChanged() { tabs.setProperty(2, "visible", (AllFavoritesModel.count > 0)) }
     }
 
     Connections {
         target: AllArtistsModel
-        onDataUpdated: AllArtistsModel.asyncLoad()
-        onLoaded: AllArtistsModel.resetModel()
+        function onDataUpdated() { AllArtistsModel.asyncLoad() }
+        function onLoaded(succeeded) { AllArtistsModel.resetModel() }
     }
 
     Connections {
         target: AllAlbumsModel
-        onDataUpdated: AllAlbumsModel.asyncLoad()
-        onLoaded: AllAlbumsModel.resetModel()
+        function onDataUpdated() { AllAlbumsModel.asyncLoad() }
+        function onLoaded(succeeded) { AllAlbumsModel.resetModel() }
     }
 
     Connections {
         target: AllGenresModel
-        onDataUpdated: AllGenresModel.asyncLoad()
-        onLoaded: AllGenresModel.resetModel()
+        function onDataUpdated() { AllGenresModel.asyncLoad() }
+        function onLoaded(succeeded) { AllGenresModel.resetModel() }
     }
 
     Connections {
         target: AllComposersModel
-        onDataUpdated: AllComposersModel.asyncLoad()
-        onLoaded: AllComposersModel.resetModel()
+        function onDataUpdated() { AllComposersModel.asyncLoad() }
+        function onLoaded(succeeded) { AllComposersModel.resetModel() }
     }
 
     Connections {
         target: AllPlaylistsModel
-        onDataUpdated: AllPlaylistsModel.asyncLoad()
-        onLoaded: AllPlaylistsModel.resetModel()
+        function onDataUpdated() { AllPlaylistsModel.asyncLoad() }
+        function onLoaded(succeeded) { AllPlaylistsModel.resetModel() }
     }
 
     Connections {
         target: Sonos
-        onAlarmClockChanged: alarmsModel.asyncLoad()
-        onShareIndexInProgress: {
+        function onAlarmClockChanged() { alarmsModel.asyncLoad() }
+        function onShareIndexInProgress() {
             if (!shareIndexInProgress) {
                 shareIndexInProgress = true;
             }
         }
-        onShareIndexFinished: {
+        function onShareIndexFinished() {
             if (shareIndexInProgress) {
                 shareIndexInProgress = false;
                 // Queue item metadata could be outdated: force reloading of the queue

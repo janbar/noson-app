@@ -54,7 +54,7 @@ Flickable {
                 }
                 Connections {
                     target: player
-                    onSourceChanged: {
+                    function onSourceChanged() {
                         albumImage.covers = player.covers.slice();
                     }
                 }
@@ -268,7 +268,7 @@ Flickable {
 
             Connections {
                 target: player
-                onCurrentPositionChanged: {
+                function onCurrentPositionChanged(position, duration) {
                     // seeked is a workaround for bug 1310706 as the first position after a seek is sometimes invalid (0)
                     if (progressSliderMusic.seeking === false && !progressSliderMusic.seeked) {
                         fullviewPositionLabel.text = durationToString(position)
@@ -280,7 +280,7 @@ Flickable {
 
                     progressSliderMusic.seeked = false;
                 }
-                onStopped: fullviewPositionLabel.text = durationToString(0);
+                function onStopped() { fullviewPositionLabel.text = durationToString(0) }
             }
         }
 

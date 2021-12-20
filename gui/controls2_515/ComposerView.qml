@@ -170,7 +170,7 @@ MusicPage {
             // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
-                onLoaded: {
+                function onLoaded(succeeded) {
                     albumCard.isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
                 }
             }
@@ -204,7 +204,7 @@ MusicPage {
     // check favorite on data loaded
     Connections {
         target: AllFavoritesModel
-        onCountChanged: {
+        function onCountChanged() {
             isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
         }
     }

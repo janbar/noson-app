@@ -39,7 +39,7 @@ MusicListView {
     // try to reset the model on signal renderingControlChanged
     Connections {
         target: player
-        onRenderingControlChanged: {
+        function onRenderingControlChanged() {
             refreshRendering.start()
         }
     }

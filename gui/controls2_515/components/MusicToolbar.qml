@@ -114,7 +114,7 @@ Item {
 
                 Connections {
                     target: player
-                    onPlaybackStateChanged: {
+                    function onPlaybackStateChanged() {
                         if (player.playbackState !== "TRANSITIONING")
                             disabledPlayerControlsPlayButton.animationRunning = false
                     }
@@ -181,7 +181,7 @@ Item {
                  }
                  Connections {
                      target: player
-                     onSourceChanged: {
+                     function onSourceChanged() {
                          playerControlsImage.covers = player.covers.slice();
                      }
                  }
@@ -287,7 +287,7 @@ Item {
                 // control the animation depending of the playback state
                 Connections {
                     target: player
-                    onPlaybackStateChanged: {
+                    function onPlaybackStateChanged() {
                         if (player.playbackState !== "TRANSITIONING")
                             playerControlsPlayButton.animationRunning = false
                         else if (!playerControlsPlayButton.animationRunning)
@@ -327,8 +327,8 @@ Item {
 
                 Connections {
                     target: player
-                    onCurrentPositionChanged: playerControlsProgressBarHint.hint(position, duration)
-                    onStopped: playerControlsProgressBarHint.hint(0, 0)
+                    function onCurrentPositionChanged(position, duration) { playerControlsProgressBarHint.hint(position, duration) }
+                    function onStopped() { playerControlsProgressBarHint.hint(0, 0) }
                 }
             }
         }

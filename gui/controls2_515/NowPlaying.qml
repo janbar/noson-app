@@ -50,7 +50,7 @@ MusicPage {
 
     Connections {
         target: mainView
-        onWideAspectChanged: {
+        function onWideAspectChanged() {
             if (wideAspect)
                 stackView.pop()
         }
