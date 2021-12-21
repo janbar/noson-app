@@ -19,3 +19,8 @@ cp AndroidManifest.xml.in.${NDK_REVISION} AndroidManifest.xml.in
 
 source ./linux-build.sh -DKEYSTORE_FILE=~/.android/janbar.keystore -DKEYSTORE_ALIAS=key0 -DKEYSTORE_PASSWORD=${PASSWORD}
 
+### Extras
+
+- Setup for lollipop (sdk21):
+  ANDROID_NATIVE_API_LEVEL=21, ANDROID_SDK_MINVER=21, ANDROID_SDK_TARGET=21
+
