@@ -223,8 +223,8 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
                 set(EXTRA_PLUGINS "${PLUGIN}")
             endif()
         endforeach()
-        set(QT_ANDROID_APP_EXTRA_PLUGINS "\"android-extra-plugins\": \"${EXTRA_PLUGINS}\",")
     endif()
+    set(QT_ANDROID_APP_EXTRA_PLUGINS "\"android-extra-plugins\": \"${EXTRA_PLUGINS}\",")
 
     # determine whether to use the gcc- or llvm/clang- toolchain;
     # if ANDROID_USE_LLVM was explicitly set, use its value directly,
