@@ -81,6 +81,7 @@ jobs:
 
     - name: Configure
       run: |
+        git submodule init && git submodule update
         find ${{ steps.qt.outputs.qt_dir }}/lib/cmake -maxdepth 1
         mkdir -p build
         cd build

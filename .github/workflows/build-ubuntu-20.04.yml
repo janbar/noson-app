@@ -25,6 +25,8 @@ jobs:
               qml-module-qtquick-window2 libqt5dbus5 libqt5svg5
               zlib1g-dev libssl-dev libpulse-dev libflac-dev libflac++-dev
               libdbus-1-dev"
+      - name: Init submodules
+        run: git submodule init && git submodule update
       - name: Configure build
         run: "cmake -B build
                     -Wno-dev"
