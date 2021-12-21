@@ -1,4 +1,8 @@
-noson-app (4.4) UNRELEASED; urgency=low
+noson-app (4.5) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 4.5.0
+  * Support for Qt5.15
 
   [ janbar ]
   * Release 4.4.0
