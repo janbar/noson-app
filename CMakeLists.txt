@@ -37,6 +37,7 @@ set(NOSON_GUI "${PLUGINS_DIR}/noson-gui")
 set(NOSON_CLI "${PLUGINS_DIR}/noson-cli")
 
 if(NOT QT_STATICPLUGIN)
+  set(PLUGINS_BINARY_DIR ${CMAKE_BINARY_DIR}/backend/qml)
   configure_file(
     ${EXEC}.in
     ${CMAKE_CURRENT_BINARY_DIR}/${EXEC}
@@ -45,6 +46,8 @@ if(NOT QT_STATICPLUGIN)
     PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/${EXEC}"
     DESTINATION ${CMAKE_INSTALL_BINDIR}
   )
+else()
+  set(PLUGINS_BINARY_DIR "")
 endif()
 
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${APP_DESKTOP_ID}.desktop "[Desktop Entry]
@@ -136,7 +139,7 @@ if(ANDROID)
       PACKAGE_SOURCES ${CMAKE_SOURCE_DIR}/android/package-sources
       BUILDTOOLS_REVISION ${QT_ANDROID_SDK_BUILDTOOLS_REVISION}
       DEPENDS ssl crypto FLAC FLACXX
-      PLUGINS ${CMAKE_BINARY_DIR}/backend/qml
+      PLUGINS ${PLUGINS_BINARY_DIR}
       KEYSTORE ${KEYSTORE_FILE} ${KEYSTORE_ALIAS}
       KEYSTORE_PASSWORD ${KEYSTORE_PASSWORD}
   )
@@ -152,7 +155,7 @@ if(QT_STATICPLUGIN)
 else()
   add_custom_target(
     "run"
-    QML2_IMPORT_PATH=${CMAKE_BINARY_DIR}/backend/qml ${CMAKE_BINARY_DIR}/gui/noson-gui
+    QML2_IMPORT_PATH=${PLUGINS_BINARY_DIR} ${CMAKE_BINARY_DIR}/gui/noson-gui
     DEPENDS noson-gui
             NosonApp NosonApp-qmldir
             NosonThumbnailer NosonThumbnailer-qmldir
