@@ -36,7 +36,6 @@ class Sonos;
 class MediaType : public QObject
 {
   Q_OBJECT
-  Q_ENUMS(itemType)
 
 public:
   enum itemType
@@ -49,6 +48,8 @@ public:
     audioItem = 5,
     folder    = 6,
   };
+
+  Q_ENUM(itemType)
 
   MediaType(QObject* parent)
   : QObject(parent) {}

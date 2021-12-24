@@ -34,7 +34,6 @@ class Sonos;
 class FavoriteType : public QObject
 {
   Q_OBJECT
-  Q_ENUMS(itemType)
 
 public:
   enum itemType
@@ -46,6 +45,8 @@ public:
     playlist  = 4,
     audioItem = 5,
   };
+
+  Q_ENUM(itemType)
 
   FavoriteType(QObject* parent = 0)
   : QObject(parent) { }
