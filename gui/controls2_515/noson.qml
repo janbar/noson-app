@@ -306,7 +306,7 @@ ApplicationWindow {
         }
 
         // initialize all data models
-        AllZonesModel.init(Sonos, "",       false);
+        AllZonesModel.init(Sonos, "");
         AllFavoritesModel.init(Sonos, "",   false);
         AllServicesModel.init(Sonos,        false);
         AllPlaylistsModel.init(Sonos, "",   false);
