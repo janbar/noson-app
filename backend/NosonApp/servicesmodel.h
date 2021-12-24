@@ -104,7 +104,7 @@ public:
 
   Q_INVOKABLE bool isNew() { return m_dataState == DataStatus::DataBlank; }
 
-  Q_INVOKABLE bool init(Sonos* provider, bool fill = false) { return ListModel<Sonos>::configure(provider, fill); }
+  Q_INVOKABLE bool init(nosonapp::Sonos* provider, bool fill = false) { return ListModel<Sonos>::configure(provider, fill); }
 
   virtual void clearData();
 

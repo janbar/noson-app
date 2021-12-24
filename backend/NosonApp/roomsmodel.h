@@ -89,9 +89,9 @@ public:
 
   virtual bool loadData();
 
-  Q_INVOKABLE bool load(Sonos* sonos);
+  Q_INVOKABLE bool load(nosonapp::Sonos* sonos);
 
-  Q_INVOKABLE bool load(Sonos* sonos, const QString& zoneId);
+  Q_INVOKABLE bool load(nosonapp::Sonos* sonos, const QString& zoneId);
 
   virtual void resetModel();
 

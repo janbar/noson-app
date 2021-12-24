@@ -65,18 +65,18 @@ public:
   ///
   /// About futures
 
-  Q_INVOKABLE Future* tryInit(int debug = 0);
-  Q_INVOKABLE Future* tryRenewSubscriptions();
-  Q_INVOKABLE Future* tryJoinZones(const QVariantList& zonePayloads, const QVariant& toZonePayload);
-  Q_INVOKABLE Future* tryUnjoinZone(const QVariant& zonePayload);
-  Q_INVOKABLE Future* tryUnjoinRooms(const QVariantList& roomPayloads);
-  Q_INVOKABLE Future* tryCreateAlarm(const QVariant& alarmPayload);
-  Q_INVOKABLE Future* tryUpdateAlarm(const QVariant& alarmPayload);
-  Q_INVOKABLE Future* tryDestroyAlarm(const QString& id);
-  Q_INVOKABLE Future* tryRefreshShareIndex();
-  Q_INVOKABLE Future* tryDestroySavedQueue(const QString& SQid);
-  Q_INVOKABLE Future* tryAddItemToFavorites(const QVariant& payload, const QString& description, const QString& artURI);
-  Q_INVOKABLE Future* tryDestroyFavorite(const QString& FVid);
+  Q_INVOKABLE nosonapp::Future* tryInit(int debug = 0);
+  Q_INVOKABLE nosonapp::Future* tryRenewSubscriptions();
+  Q_INVOKABLE nosonapp::Future* tryJoinZones(const QVariantList& zonePayloads, const QVariant& toZonePayload);
+  Q_INVOKABLE nosonapp::Future* tryUnjoinZone(const QVariant& zonePayload);
+  Q_INVOKABLE nosonapp::Future* tryUnjoinRooms(const QVariantList& roomPayloads);
+  Q_INVOKABLE nosonapp::Future* tryCreateAlarm(const QVariant& alarmPayload);
+  Q_INVOKABLE nosonapp::Future* tryUpdateAlarm(const QVariant& alarmPayload);
+  Q_INVOKABLE nosonapp::Future* tryDestroyAlarm(const QString& id);
+  Q_INVOKABLE nosonapp::Future* tryRefreshShareIndex();
+  Q_INVOKABLE nosonapp::Future* tryDestroySavedQueue(const QString& SQid);
+  Q_INVOKABLE nosonapp::Future* tryAddItemToFavorites(const QVariant& payload, const QString& description, const QString& artURI);
+  Q_INVOKABLE nosonapp::Future* tryDestroyFavorite(const QString& FVid);
 
   ///////////////////////////////////////////////////////////////////////////////
   ///

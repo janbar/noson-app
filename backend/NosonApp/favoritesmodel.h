@@ -148,7 +148,7 @@ public:
 
   Q_INVOKABLE bool isNew() { return m_dataState == DataStatus::DataBlank; }
 
-  Q_INVOKABLE bool init(Sonos* provider, const QString& root, bool fill = false);
+  Q_INVOKABLE bool init(nosonapp::Sonos* provider, const QString& root, bool fill = false);
 
   virtual void clearData();
 

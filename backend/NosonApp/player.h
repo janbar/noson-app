@@ -71,8 +71,8 @@ public:
   explicit Player(QObject *parent = nullptr);
   ~Player();
 
-  Q_INVOKABLE bool init(Sonos* sonos, const QString& zoneName);
-  Q_INVOKABLE bool init(Sonos* sonos, const QVariant& zone);
+  Q_INVOKABLE bool init(nosonapp::Sonos* sonos, const QString& zoneName);
+  Q_INVOKABLE bool init(nosonapp::Sonos* sonos, const QVariant& zone);
 
   bool init(Sonos* sonos, const SONOS::ZonePtr& zone);
   bool connected() const { return m_connected; }
@@ -95,49 +95,49 @@ public:
   ///
   /// About futures
 
-  Q_INVOKABLE Future* tryPing();
-  Q_INVOKABLE Future* tryConfigureSleepTimer(int seconds);
-  Q_INVOKABLE Future* tryRemainingSleepTimerDuration();
-  Q_INVOKABLE Future* tryPlay();
-  Q_INVOKABLE Future* tryStop();
-  Q_INVOKABLE Future* tryPause();
-  Q_INVOKABLE Future* tryPrevious();
-  Q_INVOKABLE Future* tryNext();
-  Q_INVOKABLE Future* tryToggleRepeat();
-  Q_INVOKABLE Future* tryToggleShuffle();
-  Q_INVOKABLE Future* tryToggleMute();
-  Q_INVOKABLE Future* tryToggleMute(const QString& uuid);
-  Q_INVOKABLE Future* tryToggleNightmode();
-  Q_INVOKABLE Future* tryToggleNightmode(const QString& uuid);
-  Q_INVOKABLE Future* tryToggleLoudness();
-  Q_INVOKABLE Future* tryToggleLoudness(const QString& uuid);
-  Q_INVOKABLE Future* tryToggleOutputFixed(const QString& uuid);
-  Q_INVOKABLE Future* tryPlayLineIN();
-  Q_INVOKABLE Future* tryPlayDigitalIN();
-  Q_INVOKABLE Future* tryPlayQueue(bool start);
-  Q_INVOKABLE Future* trySeekTime(int timesec);
-  Q_INVOKABLE Future* trySeekTrack(int position);
-  Q_INVOKABLE Future* tryAddItemToQueue(const QVariant& payload, int position);
-  Q_INVOKABLE Future* tryAddMultipleItemsToQueue(const QVariantList& payloads);
-  Q_INVOKABLE Future* tryRemoveAllTracksFromQueue();
-  Q_INVOKABLE Future* tryRemoveTrackFromQueue(const QString& id, int containerUpdateID);
-  Q_INVOKABLE Future* tryReorderTrackInQueue(int trackNo, int newPosition, int containerUpdateID);
-  Q_INVOKABLE Future* trySaveQueue(const QString& title);
-  Q_INVOKABLE Future* tryCreateSavedQueue(const QString& title);
-  Q_INVOKABLE Future* tryAddItemToSavedQueue(const QString& SQid, const QVariant& payload, int containerUpdateID);
-  Q_INVOKABLE Future* tryAddMultipleItemsToSavedQueue(const QString& SQid, const QVariantList& payloads, int containerUpdateID);
-  Q_INVOKABLE Future* tryRemoveTracksFromSavedQueue(const QString& SQid, const QVariantList& indexes, int containerUpdateID);
-  Q_INVOKABLE Future* tryReorderTrackInSavedQueue(const QString& SQid, int index, int newIndex, int containerUpdateID);
-  Q_INVOKABLE Future* tryPlaySource(const QVariant& payload);
-  Q_INVOKABLE Future* tryPlayStream(const QString& url, const QString& title);
-  Q_INVOKABLE Future* tryPlayFavorite(const QVariant& payload);
-  Q_INVOKABLE Future* tryPlayPulse();
-  Q_INVOKABLE Future* tryCurrentTrackPosition();
+  Q_INVOKABLE nosonapp::Future* tryPing();
+  Q_INVOKABLE nosonapp::Future* tryConfigureSleepTimer(int seconds);
+  Q_INVOKABLE nosonapp::Future* tryRemainingSleepTimerDuration();
+  Q_INVOKABLE nosonapp::Future* tryPlay();
+  Q_INVOKABLE nosonapp::Future* tryStop();
+  Q_INVOKABLE nosonapp::Future* tryPause();
+  Q_INVOKABLE nosonapp::Future* tryPrevious();
+  Q_INVOKABLE nosonapp::Future* tryNext();
+  Q_INVOKABLE nosonapp::Future* tryToggleRepeat();
+  Q_INVOKABLE nosonapp::Future* tryToggleShuffle();
+  Q_INVOKABLE nosonapp::Future* tryToggleMute();
+  Q_INVOKABLE nosonapp::Future* tryToggleMute(const QString& uuid);
+  Q_INVOKABLE nosonapp::Future* tryToggleNightmode();
+  Q_INVOKABLE nosonapp::Future* tryToggleNightmode(const QString& uuid);
+  Q_INVOKABLE nosonapp::Future* tryToggleLoudness();
+  Q_INVOKABLE nosonapp::Future* tryToggleLoudness(const QString& uuid);
+  Q_INVOKABLE nosonapp::Future* tryToggleOutputFixed(const QString& uuid);
+  Q_INVOKABLE nosonapp::Future* tryPlayLineIN();
+  Q_INVOKABLE nosonapp::Future* tryPlayDigitalIN();
+  Q_INVOKABLE nosonapp::Future* tryPlayQueue(bool start);
+  Q_INVOKABLE nosonapp::Future* trySeekTime(int timesec);
+  Q_INVOKABLE nosonapp::Future* trySeekTrack(int position);
+  Q_INVOKABLE nosonapp::Future* tryAddItemToQueue(const QVariant& payload, int position);
+  Q_INVOKABLE nosonapp::Future* tryAddMultipleItemsToQueue(const QVariantList& payloads);
+  Q_INVOKABLE nosonapp::Future* tryRemoveAllTracksFromQueue();
+  Q_INVOKABLE nosonapp::Future* tryRemoveTrackFromQueue(const QString& id, int containerUpdateID);
+  Q_INVOKABLE nosonapp::Future* tryReorderTrackInQueue(int trackNo, int newPosition, int containerUpdateID);
+  Q_INVOKABLE nosonapp::Future* trySaveQueue(const QString& title);
+  Q_INVOKABLE nosonapp::Future* tryCreateSavedQueue(const QString& title);
+  Q_INVOKABLE nosonapp::Future* tryAddItemToSavedQueue(const QString& SQid, const QVariant& payload, int containerUpdateID);
+  Q_INVOKABLE nosonapp::Future* tryAddMultipleItemsToSavedQueue(const QString& SQid, const QVariantList& payloads, int containerUpdateID);
+  Q_INVOKABLE nosonapp::Future* tryRemoveTracksFromSavedQueue(const QString& SQid, const QVariantList& indexes, int containerUpdateID);
+  Q_INVOKABLE nosonapp::Future* tryReorderTrackInSavedQueue(const QString& SQid, int index, int newIndex, int containerUpdateID);
+  Q_INVOKABLE nosonapp::Future* tryPlaySource(const QVariant& payload);
+  Q_INVOKABLE nosonapp::Future* tryPlayStream(const QString& url, const QString& title);
+  Q_INVOKABLE nosonapp::Future* tryPlayFavorite(const QVariant& payload);
+  Q_INVOKABLE nosonapp::Future* tryPlayPulse();
+  Q_INVOKABLE nosonapp::Future* tryCurrentTrackPosition();
 
-  Q_INVOKABLE Future* trySetTreble(double val);
-  Q_INVOKABLE Future* trySetBass(double val);
-  Q_INVOKABLE Future* trySetVolumeGroup(double volume);
-  Q_INVOKABLE Future* trySetVolume(const QString& uuid, double volume);
+  Q_INVOKABLE nosonapp::Future* trySetTreble(double val);
+  Q_INVOKABLE nosonapp::Future* trySetBass(double val);
+  Q_INVOKABLE nosonapp::Future* trySetVolumeGroup(double volume);
+  Q_INVOKABLE nosonapp::Future* trySetVolume(const QString& uuid, double volume);
 
   ///////////////////////////////////////////////////////////////////////////////
   ///

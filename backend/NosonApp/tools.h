@@ -38,7 +38,7 @@ namespace nosonapp
     QString tmp = str.normalized(QString::NormalizationForm_D);
     ret.reserve(tmp.size());
     int pcat = QChar::Separator_Space;
-    for (QString::const_iterator it = tmp.begin(); it != tmp.end(); ++it)
+    for (QString::const_iterator it = tmp.cbegin(); it != tmp.cend(); ++it)
     {
       int cat = it->category();
       if (cat != QChar::Mark_NonSpacing && cat != QChar::Mark_SpacingCombining)

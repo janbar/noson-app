@@ -125,7 +125,7 @@ public:
 
   Q_INVOKABLE QVariantMap get(int row);
 
-  Q_INVOKABLE bool init(Sonos* sonos, bool fill = false) { return ListModel<Sonos>::configure(sonos, fill); }
+  Q_INVOKABLE bool init(nosonapp::Sonos* sonos, bool fill = false) { return ListModel<Sonos>::configure(sonos, fill); }
 
   virtual void clearData();
 

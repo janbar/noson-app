@@ -115,11 +115,11 @@ private:
 class MediaAuth : public QObject
 {
   Q_OBJECT
-  Q_PROPERTY(QString type READ type)
-  Q_PROPERTY(QString serialNum READ serialNum)
-  Q_PROPERTY(QString key READ key)
-  Q_PROPERTY(QString token READ token)
-  Q_PROPERTY(QString username READ username)
+  Q_PROPERTY(QString type READ type CONSTANT)
+  Q_PROPERTY(QString serialNum READ serialNum CONSTANT)
+  Q_PROPERTY(QString key READ key CONSTANT)
+  Q_PROPERTY(QString token READ token CONSTANT)
+  Q_PROPERTY(QString username READ username CONSTANT)
 
 public:
   MediaAuth(QObject* parent = 0) : QObject(parent) { }
@@ -145,10 +145,10 @@ class MediaModel : public QAbstractListModel, public ListModel<Sonos>
   Q_PROPERTY(int totalCount READ totalCount NOTIFY totalCountChanged)
   Q_PROPERTY(bool isRoot READ isRoot NOTIFY pathChanged)
   Q_PROPERTY(bool isAuthExpired READ isAuthExpired NOTIFY authStatusChanged())
-  Q_PROPERTY(int policyAuth READ policyAuth)
-  Q_PROPERTY(QString regURL READ regURL)
-  Q_PROPERTY(QString linkCode READ linkCode)
-  Q_PROPERTY(QString username READ username)
+  Q_PROPERTY(int policyAuth READ policyAuth CONSTANT)
+  Q_PROPERTY(QString regURL READ regURL CONSTANT)
+  Q_PROPERTY(QString linkCode READ linkCode CONSTANT)
+  Q_PROPERTY(QString username READ username CONSTANT)
 
 public:
   enum AnyRoles
@@ -183,7 +183,7 @@ public:
 
   Q_INVOKABLE bool isNew() { return m_dataState == DataStatus::DataBlank; }
 
-  Q_INVOKABLE bool init(Sonos* provider, const QVariant& service, bool fill = false);
+  Q_INVOKABLE bool init(nosonapp::Sonos* provider, const QVariant& service, bool fill = false);
 
   Q_INVOKABLE void clearData();
 
@@ -232,7 +232,7 @@ public:
   Q_INVOKABLE bool asyncLoadChild(const QString& id, const QString& title, int displayType, int viewIndex = 0);
 
   virtual bool loadParent();
-  
+
   Q_INVOKABLE bool asyncLoadParent();
 
   virtual bool loadSearch(const QString& category, const QString& term);

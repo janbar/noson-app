@@ -43,7 +43,7 @@ public:
   bool isValid() const { return m_valid; }
 
   QVariant payload() const;
-  
+
   const QString& id() const { return m_id; }
 
   const QString& name() const { return m_name; }
@@ -98,13 +98,13 @@ public:
 
   Q_INVOKABLE QVariantMap get(int row);
 
-  Q_INVOKABLE Player* holdPlayer(int row);
+  Q_INVOKABLE nosonapp::Player* holdPlayer(int row);
 
-  Q_INVOKABLE void releasePlayer(Player* player);
+  Q_INVOKABLE void releasePlayer(nosonapp::Player* player);
 
   Q_INVOKABLE bool isNew() { return m_dataState == DataStatus::DataBlank; }
 
-  Q_INVOKABLE bool init(Sonos* provider, bool fill = false) { return ListModel<Sonos>::configure(provider, fill); }
+  Q_INVOKABLE bool init(nosonapp::Sonos* provider, bool fill = false) { return ListModel<Sonos>::configure(provider, fill); }
 
   virtual void clearData();
 

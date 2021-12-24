@@ -63,7 +63,7 @@ public:
 
   Q_INVOKABLE bool isNew() { return m_dataState == DataStatus::DataBlank; }
 
-  Q_INVOKABLE bool init(Player* provider, const QString& root, bool fill = false);
+  Q_INVOKABLE bool init(nosonapp::Player* provider, const QString& root, bool fill = false);
 
   virtual void clearData();
 
