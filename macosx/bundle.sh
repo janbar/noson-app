@@ -196,6 +196,7 @@ function checkLibraries {
 
 function copyAdditionalLibraries {
     #cp -v -R $QT_DIR/lib/QtADDITIONAL.framework $BUILD_BUNDLE_FRW_DIR
+    cp -v -R $QT_DIR/lib/QtQmlWorkerScript.framework $BUILD_BUNDLE_FRW_DIR
 
     # Additional plugins
     cp -v $QT_DIR/plugins/imageformats/libqsvg.dylib $BUILD_BUNDLE_PLUGIN_DIR/imageformats/
