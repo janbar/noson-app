@@ -49,4 +49,12 @@ GridView {
     addDisplaced: Transition {
         NumberAnimation { properties: "x,y"; duration: 200 }
     }
+
+    Component.onCompleted: {
+        // Return values depending on the grid unit definition
+        // for Flickable.maximumFlickVelocity and Flickable.flickDeceleration
+        var scaleFactor = units.scaleFactor;
+        maximumFlickVelocity = maximumFlickVelocity * scaleFactor;
+        flickDeceleration = flickDeceleration * scaleFactor;
+    }
 }
