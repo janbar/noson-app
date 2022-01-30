@@ -1,6 +1,7 @@
-project(noson-app C CXX)
 cmake_minimum_required(VERSION 3.8.2)
+cmake_policy(VERSION 3.8.2)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+project(noson-app C CXX)
 
 option(INSTALL_TESTS "Install the tests on make install" OFF)
 
