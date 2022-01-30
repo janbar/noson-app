@@ -44,7 +44,8 @@ target_link_libraries(noson-cli ${noson-cli_LIBRARIES})
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "SunOS")
   find_library(SOCKET socket REQUIRED)
-  target_link_libraries(noson-cli socket)
+  find_library(NSL nsl REQUIRED)
+  target_link_libraries(noson-cli socket nsl)
 endif()
 
 install(TARGETS noson-cli DESTINATION ${PLUGINS_DIR}/)

@@ -81,5 +81,6 @@ endif()
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "SunOS")
   find_library(SOCKET socket REQUIRED)
-  target_link_libraries(noson-gui socket)
+  find_library(NSL nsl REQUIRED)
+  target_link_libraries(noson-gui socket nsl)
 endif()
