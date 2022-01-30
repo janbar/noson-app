@@ -23,7 +23,7 @@ endif()
 if(NOT ZLIB_FOUND)
     download_project(PROJ zlib
         URL "${CMAKE_CURRENT_SOURCE_DIR}/zlib-1.2.11.tar.gz"
-        URL_HASH MD5=9360ea14677db33dfdc2cfde1914918e
+        URL_HASH MD5=d8c654d5d16f31de88db6b8c6a1bdc48
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
         UPDATE_DISCONNECTED ON)
     set(BUILD_SHARED_LIBS OFF)
@@ -47,7 +47,7 @@ if(NOT OPENSSL_FOUND)
     if(OPENSSL_DL_ABI STREQUAL "1.0")
         download_project(PROJ "openssl-${OPENSSL_DL_ABI}"
             GIT_REPOSITORY https://github.com/janbar/openssl-cmake.git
-            GIT_TAG 1.0.2p-20191208
+            GIT_TAG 1.0.2p-20220130
             GIT_SHALLOW 1
             PREFIX ${CMAKE_CURRENT_BINARY_DIR}
             UPDATE_DISCONNECTED ON)
@@ -55,7 +55,7 @@ if(NOT OPENSSL_FOUND)
         set(OPENSSL_DL_ABI "1.1")
         download_project(PROJ "openssl-${OPENSSL_DL_ABI}"
             GIT_REPOSITORY https://github.com/janbar/openssl-cmake.git
-            GIT_TAG 1.1.1m-20220121
+            GIT_TAG 1.1.1m-20220130
             GIT_SHALLOW 1
             PREFIX ${CMAKE_CURRENT_BINARY_DIR}
             UPDATE_DISCONNECTED ON)
@@ -120,7 +120,7 @@ else()
     if(NOT LIBNOSON_GIT_MASTER)
         download_project(PROJ noson
           URL "${CMAKE_CURRENT_SOURCE_DIR}/noson-2.6.2.tar.gz"
-          URL_HASH MD5=507b324d58b1240568d42fe34eb8fbd8
+          URL_HASH MD5=b9cfed81af0430fe80c04780de1bdc20
           PREFIX ${CMAKE_CURRENT_BINARY_DIR}
           UPDATE_DISCONNECTED ON)
     else()
