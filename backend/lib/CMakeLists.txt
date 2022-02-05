@@ -139,7 +139,10 @@ else()
     )
 endif()
 
-set(noson_LIBRARIES noson                               PARENT_SCOPE)
+set(noson_LIBRARIES noson
+    ${ZLIB_LIBRARIES}
+    ${OPENSSL_CRYPTO_LIBRARY} ${OPENSSL_SSL_LIBRARY}
+    ${FLAC_LIBRARIES} ${FLACXX_LIBRARIES}               PARENT_SCOPE)
 set(noson_INCLUDE_DIRS "${noson_BINARY_DIR}/public"     PARENT_SCOPE)
 set(noson_FOUND ON                                      PARENT_SCOPE)
 message(STATUS "Build noson: ${noson_BINARY_DIR}")
