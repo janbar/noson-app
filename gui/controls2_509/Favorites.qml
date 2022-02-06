@@ -73,17 +73,18 @@ MusicPage {
             noCover: model.type === 5 && !model.canQueue ? "qrc:/images/radio.png"
                    : model.type === 2 ? "qrc:/images/none.png"
                    : "qrc:/images/no_cover.png"
-            imageSources: model.type === 1 ? makeCoverSource(model.art, model.artist, model.title)
-                        : model.type === 2 ? makeCoverSource(undefined, model.artist, undefined)
-                        : model.type === 5 && model.canQueue ? makeCoverSource(model.art, model.author, model.album)
-                        : model.type === 5 && model.art === "" ? "qrc:/images/radio.png"
+            imageSources: model.type === FavoritesModel.TypeAlbum ? makeCoverSource(model.art, model.artist, model.title)
+                        : model.type === FavoritesModel.TypePerson ? makeCoverSource(undefined, model.artist, undefined)
+                        : model.type === FavoritesModel.TypeGenre ? [{art: "qrc:/images/no_cover.png"}]
+                        : model.type === FavoritesModel.TypeAudioItem && model.canQueue ? makeCoverSource(model.art, model.author, model.album)
+                        : model.type === FavoritesModel.TypeAudioItem && model.art === "" ? [{art: "qrc:/images/radio.png"}]
                         : makeCoverSource(model.art, undefined, undefined)
             description:  model.description.length > 0 ? model.description
-                       : model.type === 1 ? qsTr("Album")
-                       : model.type === 2 ? qsTr("Artist")
-                       : model.type === 3 ? qsTr("Genre")
-                       : model.type === 4 ? qsTr("Playlist")
-                       : model.type === 5 ? qsTr("Song")
+                       : model.type === FavoritesModel.TypeAlbum ? qsTr("Album")
+                       : model.type === FavoritesModel.TypePerson ? qsTr("Artist")
+                       : model.type === FavoritesModel.TypeGenre ? qsTr("Genre")
+                       : model.type === FavoritesModel.TypePlaylist ? qsTr("Playlist")
+                       : model.type === FavoritesModel.TypeAudioItem ? qsTr("Song")
                        : "";
 
             onImageError: model.art = "" // reset invalid url from model
@@ -171,20 +172,21 @@ MusicPage {
             width: favoriteGrid.cellWidth
             primaryText: model.title
             secondaryText: model.description.length > 0 ? model.description
-                         : model.type === 1 ? qsTr("Album")
-                         : model.type === 2 ? qsTr("Artist")
-                         : model.type === 3 ? qsTr("Genre")
-                         : model.type === 4 ? qsTr("Playlist")
-                         : model.type === 5 ? qsTr("Song")
+                         : model.type === FavoritesModel.TypeAlbum ? qsTr("Album")
+                         : model.type === FavoritesModel.TypePerson ? qsTr("Artist")
+                         : model.type === FavoritesModel.TypeGenre ? qsTr("Genre")
+                         : model.type === FavoritesModel.TypePlaylist ? qsTr("Playlist")
+                         : model.type === FavoritesModel.TypeAudioItem ? qsTr("Song")
                          : ""
             overlay: false // item icon could be transparent
-            noCover: model.type === 5 && !model.canQueue ? "qrc:/images/radio.png"
-                   : model.type === 2 ? "qrc:/images/none.png"
+            noCover: model.type === FavoritesModel.TypeAudioItem && !model.canQueue ? "qrc:/images/radio.png"
+                   : model.type === FavoritesModel.TypePerson ? "qrc:/images/none.png"
                    : "qrc:/images/no_cover.png"
-            coverSources: model.type === 1 ? makeCoverSource(model.art, model.artist, model.title)
-                        : model.type === 2 ? makeCoverSource(undefined, model.artist, undefined)
-                        : model.type === 5 && model.canQueue ? makeCoverSource(model.art, model.author, model.album)
-                        : model.type === 5 && model.art === "" ? [{art: "qrc:/images/radio.png"}]
+            coverSources: model.type === FavoritesModel.TypeAlbum ? makeCoverSource(model.art, model.artist, model.title)
+                        : model.type === FavoritesModel.TypePerson ? makeCoverSource(undefined, model.artist, undefined)
+                        : model.type === FavoritesModel.TypeGenre ? [{art: "qrc:/images/no_cover.png"}]
+                        : model.type === FavoritesModel.TypeAudioItem && model.canQueue ? makeCoverSource(model.art, model.author, model.album)
+                        : model.type === FavoritesModel.TypeAudioItem && model.art === "" ? [{art: "qrc:/images/radio.png"}]
                         : makeCoverSource(model.art, undefined, undefined)
 
             onImageError: model.art = "" // reset invalid url from model
@@ -201,42 +203,37 @@ MusicPage {
     function clickItem(model) {
         if (!model.isService) {
             if (model.type === 1) {
-                stackView.push("qrc:/controls2/SongsView.qml",
-                                   {
-                                       "containerItem": {id: model.objectId, payload: model.object},
-                                       "songSearch": model.objectId,
-                                       "album": model.album,
-                                       "artist": model.artist,
-                                       "covers": [{art: model.art}],
-                                       "isAlbum": true,
-                                       "genre": "",
-                                       "pageTitle": qsTr("Album"),
-                                       "line1": model.artist !== undefined ? model.artist : "",
-                                       "line2": model.album !== undefined ? model.album : qsTr("Unknown Album")
-                                   })
+                stackView.push("qrc:/controls2/Library.qml",
+                               {
+                                   "rootPath": model.objectId,
+                                   "rootTitle": model.album,
+                                   "rootType": LibraryModel.NodeAlbum,
+                                   "isListView": true,
+                                   "displayType": LibraryModel.DisplayTrackList,
+                                   "nodeItem": makeContainerItem(model)
+                               })
             }
             else if (model.type === 2) {
-                stackView.push("qrc:/controls2/ArtistView.qml",
-                                   {
-                                       "containerItem": {id: model.objectId, payload: model.object},
-                                       "artistSearch": model.objectId,
-                                       "artist": model.artist,
-                                       "covers": makeCoverSource(undefined, model.artist, undefined),
-                                       "pageTitle": qsTr("Artist")
-                                   })
+                stackView.push("qrc:/controls2/Library.qml",
+                               {
+                                   "rootPath": model.objectId,
+                                   "rootTitle": model.artist,
+                                   "rootType": LibraryModel.NodePerson,
+                                   "isListView": false,
+                                   "displayType": LibraryModel.DisplayGrid,
+                                   "nodeItem": makeContainerItem(model)
+                               })
             }
             else if (model.type === 3) {
-                stackView.push("qrc:/controls2/SongsView.qml",
-                                   {
-                                       "containerItem": {id: model.objectId, payload: model.object},
-                                       "songSearch": model.objectId + "//",
-                                       "covers": [],
-                                       "album": "",
-                                       "genre": model.title,
-                                       "pageTitle": qsTr("Genre"),
-                                       "line1": "",
-                                       "line2": model.title
-                                   })
+                stackView.push("qrc:/controls2/Library.qml",
+                               {
+                                   "rootPath": model.objectId,
+                                   "rootTitle": model.title,
+                                   "rootType": LibraryModel.NodeGenre,
+                                   "isListView": false,
+                                   "displayType": LibraryModel.DisplayEditorial,
+                                   "nodeItem": makeContainerItem(model)
+                               })
             }
             else if (model.type === 4) {
                 stackView.push("qrc:/controls2/SongsView.qml",
@@ -282,5 +279,14 @@ MusicPage {
             }
         }
         visible: active
+    }
+
+    Component.onCompleted: {
+        if (settings.preferListView)
+            isListView = true
+    }
+
+    onListViewClicked: {
+        settings.preferListView = isListView
     }
 }

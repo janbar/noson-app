@@ -31,6 +31,7 @@ MusicPage {
     Queue {
         id: queue
         anchors.fill: parent
+        queueModel: player.trackQueue.model
     }
 
     // Page actions

@@ -180,5 +180,7 @@
         <file alias="controls2/components/Dialog/DialogServiceLabel.qml">controls2_509/components/Dialog/DialogServiceLabel.qml</file>
         <file alias="controls2/ThisDevice/Composers.qml">controls2_509/ThisDevice/Composers.qml</file>
         <file alias="controls2/ThisDevice/ComposerView.qml">controls2_509/ThisDevice/ComposerView.qml</file>
+        <file alias="controls2/Library.qml">controls2_509/Library.qml</file>
+        <file alias="toolbox.js">toolbox.js</file>
     </qresource>
 </RCC>

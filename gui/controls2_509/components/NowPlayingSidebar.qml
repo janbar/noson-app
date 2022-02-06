@@ -18,6 +18,7 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
+import "../../toolbox.js" as ToolBox
 
 Page {
     id: nowPlayingSidebar
@@ -40,31 +41,149 @@ Page {
             bottomProgressHint: false
             mirror: true
         }
+
+        /* Background for progress bar component */
+        Rectangle {
+            id: fullviewProgressBackground
+            height: units.gu(3)
+            width: parent.width
+            color: "transparent"
+
+            /* Progress bar component */
+            Item {
+                id: fullviewProgressContainer
+                anchors {
+                    left: fullviewProgressBackground.left
+                    right: fullviewProgressBackground.right
+                    top: fullviewProgressBackground.top
+                    topMargin: -units.gu(2)
+                }
+                height: units.gu(2)
+                width: parent.width
+                visible: player.isPlayingQueued()
+
+                /* Position label */
+                Label {
+                    id: fullviewPositionLabel
+                    anchors {
+                        top: progressSliderMusic.bottom
+                        topMargin: units.gu(-2)
+                        left: parent.left
+                        leftMargin: units.gu(1)
+                    }
+                    color: styleMusic.nowPlaying.secondaryColor
+                    font.pointSize: units.fs("small")
+                    height: parent.height
+                    horizontalAlignment: Text.AlignLeft
+                    text: durationToString(player.trackPosition)
+                    verticalAlignment: Text.AlignVCenter
+                    width: units.gu(3)
+                }
+
+                StyledSlider {
+                    id: progressSliderMusic
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                        top: parent.top
+                    }
+                    from: 0
+                    to: player.trackDuration  // load value at startup
+                    objectName: "progressSliderShape"
+                    value: player.trackPosition  // load value at startup
+                    wheelEnabled: false
+                    stepSize: 5000.0
+
+                    foregroundColor: styleMusic.playerControls.progressForegroundColor
+                    backgroundColor: styleMusic.playerControls.progressBackgroundColor
+                    handleColor: styleMusic.playerControls.progressHandleColor
+                    handleColorPressed: styleMusic.playerControls.backgroundColor
+                    handleBorderColor: handleColor
+                    handleSize: units.gu(1.5)
+
+                    function formatValue(v) {
+                        if (seeking) {  // update position label while dragging
+                            fullviewPositionLabel.text = durationToString(v)
+                        }
+
+                        return durationToString(v)
+                    }
+
+                    property bool seeking: false
+                    property bool seeked: false
+
+                    onSeekingChanged: {
+                        if (seeking === false) {
+                            fullviewPositionLabel.text = durationToString(player.trackPosition)
+                        }
+                    }
+
+                    onPressedChanged: {
+                        seeking = pressed
+
+                        if (!pressed) {
+                            seeked = true
+                            seekInTrack.start(); // start or restart the request
+
+                            fullviewPositionLabel.text = durationToString(value)
+                        }
+                    }
+
+                    Timer {
+                        id: seekInTrack
+                        interval: 250
+                        onTriggered: {
+                            player.seek(progressSliderMusic.value, mainView.actionFinished);
+                        }
+                    }
+
+                    Connections {
+                        target: player
+                        onCurrentPositionChanged: {
+                            // seeked is a workaround for bug 1310706 as the first position after a seek is sometimes invalid (0)
+                            if (progressSliderMusic.seeking === false && !progressSliderMusic.seeked) {
+                                fullviewPositionLabel.text = durationToString(position)
+                                fullviewDurationLabel.text = durationToString(duration)
+
+                                progressSliderMusic.value = position
+                                progressSliderMusic.to = duration
+                            }
+
+                            progressSliderMusic.seeked = false;
+                        }
+                        onStopped: fullviewPositionLabel.text = durationToString(0);
+                    }
+                }
+
+                /* Duration label */
+                Label {
+                    id: fullviewDurationLabel
+                    anchors {
+                        top: progressSliderMusic.bottom
+                        topMargin: units.gu(-2)
+                        right: parent.right
+                        rightMargin: units.gu(1)
+                    }
+                    color: styleMusic.nowPlaying.secondaryColor
+                    font.pointSize: units.fs("small")
+                    height: parent.height
+                    horizontalAlignment: Text.AlignRight
+                    text: durationToString(player.trackDuration)
+                    verticalAlignment: Text.AlignVCenter
+                    width: units.gu(3)
+                }
+            }
+        }
     }
 
     Queue {
         id: queue
+        queueModel: player.trackQueue.model
         anchors {
             top: toolbar.bottom
             bottom: parent.bottom
             left: parent.left
             right: parent.right
-        }
-
-        header: Column {
-            anchors {
-                left: parent.left
-                right: parent.right
-            }
-            NowPlayingFullView {
-                id: fullView
-                anchors {
-                    fill: undefined
-                }
-                clip: true
-                height: width + units.gu(3)
-                width: parent.width
-            }
         }
     }
 
@@ -133,24 +252,34 @@ Page {
     // Ensure that the listview has loaded before attempting to positionAt
     function ensureListViewLoaded() {
         if (queue.listview.count === player.trackQueue.model.count) {
-            positionAt(player.currentIndex);
+            positionAtCurrentIndex();
         } else {
-            queue.listview.onCountChanged.connect(function() {
+            ToolBox.connectOnce(queue.listview.onCountChanged, function(){
                 if (queueLoader.item.listview.count === player.trackQueue.model.count) {
-                    positionAt(player.currentIndex);
+                    positionAtCurrentIndex();
                 }
             })
         }
     }
 
     // Position the view at the index
-    function positionAt(index) {
-        customdebug("Set queue position view at " + index);
-        queue.listview.positionViewAtIndex(index > 0 ? index - 1 : 0, ListView.Beginning);
+    function positionAtCurrentIndex() {
+        customdebug("Set queue position view at " + player.currentIndex);
+        queue.positionAt(player.currentIndex);
     }
 
-    onVisibleChanged: {
-        if (visible)
-            ensureListViewLoaded();
+   function activate() {
+        ensureListViewLoaded();
+        // tracking of current index
+        player.onCurrentIndexChanged.connect(positionAtCurrentIndex);
+   }
+
+   function deactivate() {
+        // disconnect tracking of current index
+        player.onCurrentIndexChanged.disconnect(positionAtCurrentIndex);
     }
+
+   Component.onDestruction: {
+       deactivate();
+   }
 }

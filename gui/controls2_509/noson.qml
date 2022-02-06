@@ -53,6 +53,7 @@ ApplicationWindow {
         property string lastfmKey: ""
         property string deviceUrl: ""
         property string musicLocation: ""
+        property bool preferListView: false
     }
 
     Material.accent: Material.Grey
@@ -1370,7 +1371,9 @@ ApplicationWindow {
         onShownChanged: {
             // move to current position in queue
             if (shown)
-                item.ensureListViewLoaded();
+                item.activate();
+            else
+                item.deactivate();
         }
 
         Behavior on anchors.leftMargin {

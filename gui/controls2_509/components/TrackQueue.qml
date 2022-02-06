@@ -29,7 +29,7 @@ Item {
     // Initialize the queue for given zone player
     function initQueue(zonePlayer) {
         if (zonePlayer) {
-            queue.init(zonePlayer, "", false);
+            queue.init(zonePlayer, false);
             queue.asyncLoad();
         }
     }
@@ -46,7 +46,7 @@ Item {
         onLoaded: {
             if (succeeded) {
                 queue.resetModel()
-                trackCount = queue.count
+                trackCount = queue.totalCount
             } else {
                 queue.resetModel()
                 trackCount = 0

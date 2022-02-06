@@ -31,27 +31,6 @@ namespace nosonapp
 
 class Sonos;
 
-class FavoriteType : public QObject
-{
-  Q_OBJECT
-
-public:
-  enum itemType
-  {
-    unknown   = 0,
-    album     = 1,
-    person    = 2,
-    genre     = 3,
-    playlist  = 4,
-    audioItem = 5,
-  };
-
-  Q_ENUM(itemType)
-
-  FavoriteType(QObject* parent = 0)
-  : QObject(parent) { }
-};
-
 class FavoriteItem
 {
 public:
@@ -102,7 +81,7 @@ private:
   SONOS::DigitalItemPtr m_objectPtr;
   QString m_objectId;
   QString m_objectUri;
-  FavoriteType::itemType m_type;
+  int m_type;
   bool m_canQueue;
   QString m_artist;
   QString m_album;
@@ -133,6 +112,18 @@ public:
     AlbumRole,
     IsServiceRole,
   };
+
+  enum ItemType
+  {
+    TypeUnknown   = 0,
+    TypeAlbum     = 1,
+    TypePerson    = 2,
+    TypeGenre     = 3,
+    TypePlaylist  = 4,
+    TypeAudioItem = 5,
+  };
+
+  Q_ENUM(ItemType)
 
   FavoritesModel(QObject* parent = 0);
   virtual ~FavoritesModel();

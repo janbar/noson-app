@@ -7,7 +7,7 @@ message(STATUS "Found Qt5 version ${Qt5Core_VERSION}")
 
 if(NOT BUILD_DEPENDENCIES)
     if(NOT BUILD_LIBNOSON)
-        find_package(noson 2.6 REQUIRED)
+        find_package(noson 2.7 REQUIRED)
     endif()
 endif()
 if(NOT noson_FOUND)

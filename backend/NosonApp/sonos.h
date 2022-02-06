@@ -39,6 +39,7 @@
 #include "servicesmodel.h"
 #include "mediamodel.h"
 #include "allservicesmodel.h"
+#include "librarymodel.h"
 
 #include <QObject>
 #include <QString>

@@ -34,11 +34,14 @@ class QueueModel : public QAbstractListModel, public ListModel<Player>
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
   Q_PROPERTY(bool failure READ dataFailure NOTIFY loaded)
+  Q_PROPERTY(int totalCount READ totalCount NOTIFY totalCountChanged)
+  Q_PROPERTY(int firstIndex READ firstIndex NOTIFY loaded)
 
 public:
   enum QueueRoles
   {
     PayloadRole,
+    TrackIndexRole,
     IdRole,
     TitleRole,
     AuthorRole,
@@ -63,17 +66,25 @@ public:
 
   Q_INVOKABLE bool isNew() { return m_dataState == DataStatus::DataBlank; }
 
-  Q_INVOKABLE bool init(nosonapp::Player* provider, const QString& root, bool fill = false);
+  Q_INVOKABLE bool init(nosonapp::Player* provider, bool fill = false);
 
   virtual void clearData();
 
   virtual bool loadData();
 
+  int totalCount() const { return m_totalCount; }
+
+  int firstIndex() const { return m_firstIndex; }
+
+  Q_INVOKABLE bool fetchAt(int index);
+
+  Q_INVOKABLE bool fetchBack();
+
+  Q_INVOKABLE bool fetchFront();
+
   Q_INVOKABLE bool asyncLoad();
 
   Q_INVOKABLE void resetModel();
-
-  Q_INVOKABLE void appendModel() { }
 
   virtual void handleDataUpdate();
 
@@ -83,6 +94,8 @@ signals:
   void dataUpdated();
   void countChanged();
   void loaded(bool succeeded);
+  void viewUpdated();
+  void totalCountChanged();
 
 protected:
   QHash<int, QByteArray> roleNames() const;
@@ -90,6 +103,12 @@ protected:
 private:
   QList<TrackItem*> m_items;
   QList<TrackItem*> m_data;
+
+  SONOS::ContentDirectory * m_content = nullptr;
+  SONOS::ContentBrowser * m_browser = nullptr;
+  unsigned m_totalCount = 0;
+  unsigned m_firstIndex = 0;
+  unsigned m_fetchIndex = 0;
 };
 
 }
