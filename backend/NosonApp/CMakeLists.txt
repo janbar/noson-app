@@ -68,6 +68,7 @@ set(
     alarmsmodel.cpp
     composersmodel.cpp
     future.cpp
+    librarymodel.cpp
 )
 
 set(
@@ -98,6 +99,7 @@ set(
     alarmsmodel.h
     composersmodel.h
     future.h
+    librarymodel.h
 )
 
 if(HAVE_DBUS)

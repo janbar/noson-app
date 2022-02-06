@@ -55,27 +55,27 @@ FavoriteItem::FavoriteItem(const SONOS::DigitalItemPtr& ptr, const QString& base
     switch (m_objectPtr->subType())
     {
     case SONOS::DigitalItem::SubType_album:
-      m_type = FavoriteType::album;
+      m_type = FavoritesModel::TypeAlbum;
       m_artist = QString::fromUtf8(m_objectPtr->GetValue("dc:creator").c_str());
       m_album = QString::fromUtf8(m_objectPtr->GetValue("dc:title").c_str());
       break;
     case SONOS::DigitalItem::SubType_person:
-      m_type = FavoriteType::person;
+      m_type = FavoritesModel::TypePerson;
       m_artist = QString::fromUtf8(m_objectPtr->GetValue("dc:title").c_str());
       break;
     case SONOS::DigitalItem::SubType_genre:
-      m_type = FavoriteType::genre;
+      m_type = FavoritesModel::TypeGenre;
       break;
     case SONOS::DigitalItem::SubType_playlistContainer:
-      m_type = FavoriteType::playlist;
+      m_type = FavoritesModel::TypePlaylist;
       break;
     case SONOS::DigitalItem::SubType_audioItem:
-      m_type = FavoriteType::audioItem;
+      m_type = FavoritesModel::TypeAudioItem;
       m_artist = QString::fromUtf8(m_objectPtr->GetValue("dc:creator").c_str());
       m_album = QString::fromUtf8(m_objectPtr->GetValue("upnp:album").c_str());
       break;
     default:
-      m_type = FavoriteType::unknown;
+      m_type = FavoritesModel::TypeUnknown;
     }
   }
 }

@@ -29,7 +29,7 @@ Item {
     // Initialize the queue for given zone player
     function initQueue(zonePlayer) {
         if (zonePlayer) {
-            queue.init(zonePlayer, "", false);
+            queue.init(zonePlayer, false);
             queue.asyncLoad();
         }
     }

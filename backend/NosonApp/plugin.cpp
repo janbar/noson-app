@@ -68,10 +68,15 @@ void NosonAppPlugin::registerTypes(const char *uri)
   qmlRegisterType<MediaModel>(uri, 1, 0, "MediaModel");
   qmlRegisterType<MediaAuth>(uri, 1, 0, "MediaAuth");
   qmlRegisterType<AlarmsModel>(uri, 1, 0, "AlarmsModel");
+  qmlRegisterType<LibraryModel>(uri, 1, 0, "LibraryModel");
 
   qRegisterMetaType<Sonos*>("Sonos*");
   qRegisterMetaType<Player*>("Player*");
   qRegisterMetaType<Future*>("Future*");
+
+  qRegisterMetaType<LibraryModel::DisplayType>("Library::DisplayType");
+  qRegisterMetaType<LibraryModel::NodeType>("Library::NodeType");
+  qRegisterMetaType<FavoritesModel::ItemType>("Favorites::ItemType");
 }
 
 void NosonAppPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

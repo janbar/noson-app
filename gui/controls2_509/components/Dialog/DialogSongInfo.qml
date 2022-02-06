@@ -90,10 +90,9 @@ Item {
             } else {
                 buttonPlay.visible = false;
             }
-            // do not stack more than one page for artist view
+            // do not stack more than one page for library view
             // do not show the artist view for an item of service
-            if (!stackView.find(function(item) { return item.objectName === "artistViewPage"; }) &&
-                    (forceActionMore || !Sonos.isItemFromService(songInfo.model.payload))) {
+            if (moreSource.length > 0 && (forceActionMore || !Sonos.isItemFromService(songInfo.model.payload))) {
                 buttonMore.visible = true;
             } else {
                 buttonMore.visible = false;

@@ -179,12 +179,13 @@ MusicPage {
                     arts = [{art: imageSource}]; // item cover
 
                 dialogSongInfo.open(model, arts,
-                                    "qrc:/controls2/ArtistView.qml",
+                                    "qrc:/controls2/Library.qml",
                                     {
-                                        "artistSearch": "A:ARTIST/" + model.author,
-                                        "artist": model.author,
-                                        "covers": makeCoverSource(undefined, model.author, undefined),
-                                        "pageTitle": qsTr("Artist")
+                                        "rootPath": "A:ARTIST/" + model.author,
+                                        "rootTitle": model.author,
+                                        "rootType": LibraryModel.NodePerson,
+                                        "isListView": false,
+                                        "displayType": LibraryModel.DisplayGrid
                                     },
                                     true,   // force show more
                                     true,   // can play
