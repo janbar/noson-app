@@ -250,6 +250,10 @@ static bool parseCommand(const std::string& line)
       PRINT("PLAYQUEUE                     Play queue\n");
       PRINT("PLAYLINEIN                    Play line-IN\n");
       PRINT("PLAYDIGITALIN                 Play digital-IN/TV\n");
+      PRINT("SEARCH                        Show valid roots for search\n");
+      PRINT("SEARCH {root}                 Search items in library\n");
+      PRINT("PLAYITEM {ParentId} {index}   Queue and play an item\n");
+      PRINT("CLEARQUEUE                    Remove all tracks from queue\n");
       PRINT("PLAY                          Press play\n");
       PRINT("PAUSE                         Press pause\n");
       PRINT("STOP                          Press stop\n");
@@ -696,6 +700,109 @@ static bool parseCommand(const std::string& line)
     else if (token == "PLAYDIGITALIN")
     {
       if (gPlayer->PlayDigitalIN())
+        PERROR("Succeeded\n");
+      else
+        PERROR("Failed\n");
+    }
+    else if (token == "SEARCH")
+    {
+      if (++it != tokens.end())
+      {
+        std::string param(*it);
+        while(++it != tokens.end())
+          param.append(" ").append(*it);
+        SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
+        SONOS::ContentList bdir(mycontent, param);
+        PRINT1("UpdateID  : %u\n", bdir.GetUpdateID());
+        PRINT1("Item count: %u\n", bdir.size());
+        SONOS::ContentList::iterator ic = bdir.begin();
+        int i = 0;
+        while (ic != bdir.end())
+        {
+          PRINT("\n");
+          PRINT2("%d: [%s]\n", ++i, (*ic)->GetValue("dc:title").c_str());
+          PRINT2("%d: PARENTID=[%s]\n", i, (*ic)->GetParentID().c_str());
+          PRINT2("%d: OBJECTID=[%s]\n", i, (*ic)->GetObjectID().c_str());
+          PRINT2("%d: BROWSABLE=%s\n", i, (*ic)->IsContainer() ? "Y" : "N");
+          PRINT2("%d: CAN_QUEUE=%s\n", i, (*ic)->GetValue("res").empty() ? "N" : "Y");
+          auto elems = (*ic)->GetElements();
+          for (auto elem : elems)
+          {
+            PRINT3("%d: [%s]=[%s]\n", i, elem->GetKey().c_str(), elem->c_str());
+          }
+          ++ic;
+        }
+      }
+      else
+      {
+        for (int i = 0; i < static_cast<int>(SONOS::Search_unknown); ++i)
+        {
+          auto root = SONOS::ContentSearch::rootenum(static_cast<SONOS::Search_t>(i));
+          PRINT2("%-16s Search by %s\n", root.first.c_str(), root.second.c_str());  
+        }
+      }
+    }
+    else if (token == "PLAYITEM")
+    {
+      if (++it != tokens.end())
+      {
+        std::string obj(*it);
+        if (++it != tokens.end())
+        {
+          std::string num(*it);
+          int32_t idx;
+          if (string_to_int32(num.c_str(), &idx) == 0 && idx > 0)
+          {
+            SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
+            SONOS::ContentList bdir(mycontent, obj);
+            if (bdir.size() > --idx)
+            {
+              auto it = bdir.begin();
+              for (;idx > 0; --idx)
+                it++;
+              auto res = (*it)->GetValue("res");
+              if (res.empty())
+                PERROR("Item not playable\n");
+              else if ((*it)->IsContainer())
+              {
+                if (!gPlayer->RemoveAllTracksFromQueue() || !gPlayer->PlayQueue(false) ||
+                      !gPlayer->AddURIToQueue(*it, 1) || !gPlayer->SeekTrack(1) || !gPlayer->Play())
+                  PERROR("Failed\n");
+                else
+                {
+                  PERROR1("Queuing [%s]\n", (*it)->GetValue("dc:title").c_str());
+                  PERROR("Succeeded\n");
+                }
+              }
+              else
+              {
+                SONOS::ContentDirectory myqueue(gSonos->GetHost(), gSonos->GetPort());
+                SONOS::ContentList qdir(myqueue, SONOS::ContentSearch(SONOS::SearchQueue, ""));
+                if (!gPlayer->PlayQueue(false) || !gPlayer->AddURIToQueue(*it, -1) ||
+                        !gPlayer->SeekTrack(qdir.size() + 1) || !gPlayer->Play())
+                  PERROR("Failed\n");
+                else
+                {
+                  PERROR1("Playing [%s]\n", (*it)->GetValue("dc:title").c_str());
+                  PERROR("Succeeded\n");
+                }
+              }
+            }
+            else
+              PERROR1("Error: Invalid item index. Found %u item(s).\n", bdir.size());
+          }
+          else
+            PERROR("Error: Invalid index.\n");
+        }
+        else
+          PERROR("Error: Missing index argument.\n");
+      }
+      else
+        PERROR("Error: Missing arguments.\n");
+    }
+    else if (token == "CLEARQUEUE")
+    {
+      if (gPlayer->RemoveAllTracksFromQueue())
         PERROR("Succeeded\n");
       else
         PERROR("Failed\n");
