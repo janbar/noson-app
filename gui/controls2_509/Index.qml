@@ -45,8 +45,6 @@ MusicPage {
       id: indexModel
     }
 
-    property bool noIndex: false
-
     MusicListView {
         id: indexList
         anchors.fill: parent
@@ -103,13 +101,7 @@ MusicPage {
     }
 
     Component.onCompleted: {
-        if (AllGenresModel.isNew()) {
-            AllGenresModel.init(Sonos, "", false);
-            if (Sonos.isConnected())
-                AllGenresModel.asyncLoad();
-        } else {
-            resetIndexModel();
-        }
+        resetIndexModel();
         if (settings.preferListView)
             isListView = true
     }
@@ -120,67 +112,48 @@ MusicPage {
 
     function resetIndexModel() {
         indexModel.clear();
-        if (AllGenresModel.count > 0) {
-            noIndex = false;
-            indexModel.append({
-                title: qsTr("Artists"),
-                art: "qrc:/images/folder_artist.png",
-                source: "qrc:/controls2/Library.qml",
-                args: { "rootPath": "A:ALBUMARTIST", "rootTitle": qsTr("Artists") }
-            });
-            indexModel.append({
-                title: qsTr("Composers"),
-                art: "qrc:/images/folder_composer.png",
-                source: "qrc:/controls2/Library.qml",
-                args: { "rootPath": "A:COMPOSER", "rootTitle": qsTr("Composers") }
-            });
-            indexModel.append({
-                title: qsTr("Contributing Artists"),
-                art: "qrc:/images/folder_artist.png",
-                source: "qrc:/controls2/Library.qml",
-                args: { "rootPath": "A:ARTIST", "rootTitle": qsTr("Contributing Artists") }
-            });
-            indexModel.append({
-                title: qsTr("Albums"),
-                art: "qrc:/images/folder_album.png",
-                source: "qrc:/controls2/Library.qml",
-                args: { "rootPath": "A:ALBUM", "rootTitle": qsTr("Albums") }
-            });
-            indexModel.append({
-                title: qsTr("Genres"),
-                art: "qrc:/images/folder_genre.png",
-                source: "qrc:/controls2/Library.qml",
-                args: { "rootPath": "A:GENRE", "rootTitle": qsTr("Genres") }
-            });
-            indexModel.append({
-                title: qsTr("Tracks"),
-                art: "qrc:/images/folder_genre.png",
-                source: "qrc:/controls2/Library.qml",
-                args: { "rootPath": "A:TRACKS", "rootTitle": qsTr("Tracks"), "isListView": true }
-            });
-            indexModel.append({
-                title: qsTr("Share"),
-                art: "qrc:/images/folder_genre.png",
-                source: "qrc:/controls2/Library.qml",
-                args: { "rootPath": "S:", "rootTitle": qsTr("Share"), "isListView": true }
-            });
-        } else {
-            noIndex = true;
-        }
-    }
-
-    Connections {
-        target: AllGenresModel
-        onCountChanged: resetIndexModel()
-    }
-
-    // Overlay to show when no index found
-    Loader {
-        anchors.fill: parent
-        active: noIndex && !infoLoadedIndex && !shareIndexInProgress && !AllGenresModel.failure
-        asynchronous: true
-        source: "qrc:/controls2/components/IndexEmptyState.qml"
-        visible: active
+        indexModel.append({
+            title: qsTr("Artists"),
+            art: "qrc:/images/folder_artist.png",
+            source: "qrc:/controls2/Library.qml",
+            args: { "rootPath": "A:ALBUMARTIST", "rootTitle": qsTr("Artists") }
+        });
+        indexModel.append({
+            title: qsTr("Composers"),
+            art: "qrc:/images/folder_composer.png",
+            source: "qrc:/controls2/Library.qml",
+            args: { "rootPath": "A:COMPOSER", "rootTitle": qsTr("Composers") }
+        });
+        indexModel.append({
+            title: qsTr("Contributing Artists"),
+            art: "qrc:/images/folder_artist.png",
+            source: "qrc:/controls2/Library.qml",
+            args: { "rootPath": "A:ARTIST", "rootTitle": qsTr("Contributing Artists") }
+        });
+        indexModel.append({
+            title: qsTr("Albums"),
+            art: "qrc:/images/folder_album.png",
+            source: "qrc:/controls2/Library.qml",
+            args: { "rootPath": "A:ALBUM", "rootTitle": qsTr("Albums") }
+        });
+        indexModel.append({
+            title: qsTr("Genres"),
+            art: "qrc:/images/folder_genre.png",
+            source: "qrc:/controls2/Library.qml",
+            args: { "rootPath": "A:GENRE", "rootTitle": qsTr("Genres") }
+        });
+        indexModel.append({
+            title: qsTr("Tracks"),
+            art: "qrc:/images/folder_genre.png",
+            source: "qrc:/controls2/Library.qml",
+            args: { "rootPath": "A:TRACKS", "rootTitle": qsTr("Tracks"), "isListView": true }
+        });
+        indexModel.append({
+            title: qsTr("Share"),
+            art: "qrc:/images/folder_genre.png",
+            source: "qrc:/controls2/Library.qml",
+            args: { "rootPath": "S:", "rootTitle": qsTr("Share"), "isListView": true }
+        });
     }
 
     // Overlay to show when index is being refreshed
@@ -194,18 +167,5 @@ MusicPage {
 
     function clickItem(model) {
         stackView.push(model.source, model.args);
-    }
-
-    // Overlay to show when load failed
-    Loader {
-        anchors.fill: parent
-        active: AllGenresModel.failure
-        asynchronous: true
-        sourceComponent: Component {
-            DataFailureState {
-                onReloadClicked: AllGenresModel.asyncLoad();
-            }
-        }
-        visible: active
     }
 }

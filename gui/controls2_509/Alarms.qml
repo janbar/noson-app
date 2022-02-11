@@ -251,7 +251,7 @@ MusicPage {
     // Overlay to show when no alarms are on the device
     Loader {
         anchors.fill: parent
-        active: alarmList.count === 0 && !infoLoadedIndex
+        active: alarmList.count === 0 && indexLoaded
         asynchronous: true
         source: "qrc:/controls2/components/AlarmsEmptyState.qml"
         visible: active
