@@ -28,10 +28,6 @@
 #include "future.h"
 #include "zonesmodel.h"
 #include "roomsmodel.h"
-#include "albumsmodel.h"
-#include "artistsmodel.h"
-#include "composersmodel.h"
-#include "genresmodel.h"
 #include "tracksmodel.h"
 #include "queuemodel.h"
 #include "playlistsmodel.h"
@@ -166,34 +162,6 @@ public:
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
     return new ZonesModel;
-  }
-
-  static QObject* allAlbumsModel_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
-  {
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-    return new AlbumsModel;
-  }
-
-  static QObject* allArtistsModel_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
-  {
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-    return new ArtistsModel;
-  }
-
-  static QObject* allComposersModel_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
-  {
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-    return new ComposersModel;
-  }
-
-  static QObject* allGenresModel_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
-  {
-    Q_UNUSED(engine)
-    Q_UNUSED(scriptEngine)
-    return new GenresModel;
   }
 
   static QObject* allPlaylistsModel_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
