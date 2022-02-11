@@ -9,8 +9,6 @@
         <file alias="images/music_download_icon.png">images/music_download_icon.png</file>
         <file alias="images/wifi_phone_icon.png">images/wifi_phone_icon.png</file>
         <file alias="images/div.png">images/div.png</file>
-        <file alias="controls2/Albums.qml">controls2_509/Albums.qml</file>
-        <file alias="controls2/Artists.qml">controls2_509/Artists.qml</file>
         <file alias="controls2/components/Delegates/Card.qml">controls2_509/components/Delegates/Card.qml</file>
         <file alias="controls2/components/Flickables/MusicGridView.qml">controls2_509/components/Flickables/MusicGridView.qml</file>
         <file alias="controls2/components/CoverGrid.qml">controls2_509/components/CoverGrid.qml</file>
@@ -78,7 +76,6 @@
         <file alias="images/dialog-question-symbolic.svg">images/dialog-question-symbolic.svg</file>
         <file alias="images/dialog-warning-symbolic.svg">images/dialog-warning-symbolic.svg</file>
         <file alias="images/important.svg">images/important.svg</file>
-        <file alias="controls2/Genres.qml">controls2_509/Genres.qml</file>
         <file alias="images/edit-clear.svg">images/edit-clear.svg</file>
         <file alias="images/edit-cut.svg">images/edit-cut.svg</file>
         <file alias="controls2/MusicServices.qml">controls2_509/MusicServices.qml</file>
@@ -123,7 +120,6 @@
         <file alias="controls2/components/ViewButton/PlayAllButton.qml">controls2_509/components/ViewButton/PlayAllButton.qml</file>
         <file alias="controls2/components/ViewButton/QueueAllButton.qml">controls2_509/components/ViewButton/QueueAllButton.qml</file>
         <file alias="controls2/components/ViewButton/ShuffleButton.qml">controls2_509/components/ViewButton/ShuffleButton.qml</file>
-        <file alias="controls2/ArtistView.qml">controls2_509/ArtistView.qml</file>
         <file alias="controls2/components/Dialog/DialogSleepTimer.qml">controls2_509/components/Dialog/DialogSleepTimer.qml</file>
         <file alias="controls2/components/Dialog/DialogSongInfo.qml">controls2_509/components/Dialog/DialogSongInfo.qml</file>
         <file alias="i18n/noson_en.qm">i18n/noson_en.qm</file>
@@ -151,8 +147,6 @@
         <file alias="images/folder_artist.png">images/folder_artist.png</file>
         <file alias="images/folder_genre.png">images/folder_genre.png</file>
         <file alias="images/folder_composer.png">images/folder_composer.png</file>
-        <file alias="controls2/Composers.qml">controls2_509/Composers.qml</file>
-        <file alias="controls2/ComposerView.qml">controls2_509/ComposerView.qml</file>
         <file alias="controls2/components/IndexUpdateState.qml">controls2_509/components/IndexUpdateState.qml</file>
         <file alias="controls2/components/ServiceEmptyState.qml">controls2_509/components/ServiceEmptyState.qml</file>
         <file alias="images/settings.svg">images/settings.svg</file>

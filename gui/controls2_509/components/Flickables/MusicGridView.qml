@@ -29,9 +29,6 @@ GridView {
     cellHeight: cellSize + heightOffset
     cellWidth: cellSize + widthOffset
 
-    Behavior on cellHeight { NumberAnimation { duration: 100; } }
-    Behavior on cellWidth { NumberAnimation { duration: 100; } }
-
     ScrollBar.vertical: ScrollBar { }
 
     readonly property int columns: parseInt(width / itemWidth) || 1  // never drop to 0

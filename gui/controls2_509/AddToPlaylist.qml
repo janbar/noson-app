@@ -158,7 +158,7 @@ MusicPage {
     // Overlay to show when no playlists are on the device
     Loader {
         anchors.fill: parent
-        active: AllPlaylistsModel.count === 0 && !infoLoadedIndex
+        active: AllPlaylistsModel.count === 0 && indexLoaded
         asynchronous: true
         source: "../components/PlaylistsEmptyState.qml"
         visible: active
@@ -169,9 +169,7 @@ MusicPage {
         if (modelItems.length > 0) {
             if (modelItems.length === 1) {
                 player.addItemToSavedQueue(playlistId, modelItems[0], containerUpdateID, function(result) {
-                    if (result > 0) {
-                        popInfo.open(qsTr("song added"));
-                    } else {
+                    if (result <= 0) {
                         mainView.actionFailed();
                     }
                 });
@@ -182,9 +180,7 @@ MusicPage {
                     items.push(modelItems[i].payload);
                 }
                 player.addMultipleItemsToSavedQueue(playlistId, items, containerUpdateID, function(result) {
-                    if (result > 0) {
-                        popInfo.open(qsTr("%n song(s) added", "", items.length));
-                    } else {
+                    if (result <= 0) {
                         mainView.actionFailed();
                     }
                 });

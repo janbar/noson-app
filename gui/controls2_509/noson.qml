@@ -159,8 +159,8 @@ ApplicationWindow {
     property real wideSongView: units.gu(70)
     property bool wideAspect: width >= units.gu(100) && loadedUI
 
-    // property to enable pop info on index loaded
-    property bool infoLoadedIndex: true // enabled at startup
+    // property to store index loading
+    property bool indexLoaded: false
 
     // property to detect thumbnailer is available
     property bool thumbValid: false
@@ -172,9 +172,6 @@ ApplicationWindow {
 
     minimumHeight: units.gu(minSizeGU)
     minimumWidth: units.gu(minSizeGU)
-
-    // built-in cache for genre artworks
-    property var genreArtworks: []
 
     // about alarms
     AlarmsModel {
@@ -253,8 +250,8 @@ ApplicationWindow {
         }
 
         onLoadingFinished: {
-            if (infoLoadedIndex) {
-                infoLoadedIndex = false;
+            if (!indexLoaded) {
+                indexLoaded = true;
                 popInfo.open(qsTr("Index loaded"));
             }
         }
@@ -370,30 +367,6 @@ ApplicationWindow {
     }
 
     Connections {
-        target: AllArtistsModel
-        onDataUpdated: AllArtistsModel.asyncLoad()
-        onLoaded: AllArtistsModel.resetModel()
-    }
-
-    Connections {
-        target: AllAlbumsModel
-        onDataUpdated: AllAlbumsModel.asyncLoad()
-        onLoaded: AllAlbumsModel.resetModel()
-    }
-
-    Connections {
-        target: AllGenresModel
-        onDataUpdated: AllGenresModel.asyncLoad()
-        onLoaded: AllGenresModel.resetModel()
-    }
-
-    Connections {
-        target: AllComposersModel
-        onDataUpdated: AllComposersModel.asyncLoad()
-        onLoaded: AllComposersModel.resetModel()
-    }
-
-    Connections {
         target: AllPlaylistsModel
         onDataUpdated: AllPlaylistsModel.asyncLoad()
         onLoaded: AllPlaylistsModel.resetModel()
@@ -412,10 +385,6 @@ ApplicationWindow {
                 shareIndexInProgress = false;
                 // Queue item metadata could be outdated: force reloading of the queue
                 player.trackQueue.loadQueue();
-                // Force reload genres to be sure the items count is uptodate
-                if (!AllGenresModel.isNew()) {
-                    AllGenresModel.asyncLoad();
-                }
             }
         }
     }
@@ -579,7 +548,7 @@ ApplicationWindow {
         future.finished.connect(function(result) {
             if (result) {
                 // enable info on loaded index
-                infoLoadedIndex = true;
+                indexLoaded = false;
                 popInfo.open(qsTr("Refreshing of index is running"));
             } else {
                 actionFailed();
@@ -1014,7 +983,7 @@ ApplicationWindow {
         sequence: "Ctrl+J"              // Ctrl+J      Jump to playing song
         onActivated: {
             tabs.pushNowPlaying();
-            if (nowPlayingPage !== null)
+            if (nowPlayingPage != null)
                 nowPlayingPage.isListView = true;
         }
     }
@@ -1168,7 +1137,7 @@ ApplicationWindow {
                         stackView.pop()
                     }
 
-                    visible: (stackView.currentItem !== null && !stackView.currentItem.isRoot)
+                    visible: (stackView.currentItem != null && !stackView.currentItem.isRoot)
                     enabled: visible
                 }
 
@@ -1178,7 +1147,7 @@ ApplicationWindow {
                     anchors.centerIn: parent
                     source: "qrc:/images/contextual-menu.svg"
 
-                    visible: (stackView.currentItem === null || stackView.currentItem.isRoot)
+                    visible: (stackView.currentItem == null || stackView.currentItem.isRoot)
                     enabled: visible
 
                     onClicked: optionsMenu.open()
@@ -1236,7 +1205,7 @@ ApplicationWindow {
         function pushNowPlaying()
         {
             if (!wideAspect) {
-                if (nowPlayingPage === null)
+                if (nowPlayingPage == null)
                     nowPlayingPage = stackView.push("qrc:/controls2/NowPlaying.qml", false, true);
                 if (nowPlayingPage.isListView) {
                     nowPlayingPage.isListView = false; // ensure full view
@@ -1274,7 +1243,7 @@ ApplicationWindow {
                 font.pointSize: units.fs("large")
                 highlighted: ListView.isCurrentItem
                 onClicked: {
-                    if (index != pageList.currentIndex) {
+                    if (index !== pageList.currentIndex) {
                         stackView.clear(StackView.ReplaceTransition);
                         stackView.push(model.source);
                         pageList.currentIndex = index;
