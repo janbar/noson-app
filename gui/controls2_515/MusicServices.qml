@@ -155,5 +155,13 @@ MusicPage {
         stackView.push("qrc:/controls2/AddService.qml")
     }
 
+    Component.onCompleted: {
+        if (settings.preferListView)
+            isListView = true
+    }
+
+    onListViewClicked: {
+        settings.preferListView = isListView
+    }
 }
 
