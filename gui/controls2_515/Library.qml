@@ -176,7 +176,7 @@ MusicPage {
                 elide: Text.ElideRight
             }
             onClicked: {
-                addQueue(libraryPage.parentItem)
+                addQueue(libraryPage.nodeItem)
             }
         }
         Icon {
@@ -192,7 +192,7 @@ MusicPage {
                 elide: Text.ElideRight
             }
             onClicked: {
-                playAll(libraryPage.parentItem)
+                playAll(libraryPage.nodeItem)
             }
         }
     }
