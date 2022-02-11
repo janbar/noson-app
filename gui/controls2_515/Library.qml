@@ -170,7 +170,7 @@ MusicPage {
             source: "qrc:/images/add.svg"
             label {
                 //: this appears in a button with limited space (around 14 characters)
-                text: qsTr("Tout mettre en file d'attente") //Queue all
+                text: qsTr("Queue all")
                 font.pointSize: units.fs("small")
                 width: listHeader.childSize - units.gu(6)
                 elide: Text.ElideRight
