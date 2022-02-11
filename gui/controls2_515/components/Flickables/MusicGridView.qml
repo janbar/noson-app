@@ -29,16 +29,13 @@ GridView {
     cellHeight: cellSize + heightOffset
     cellWidth: cellSize + widthOffset
 
-    Behavior on cellHeight { NumberAnimation { duration: 100; } }
-    Behavior on cellWidth { NumberAnimation { duration: 100; } }
-
     ScrollBar.vertical: ScrollBar { }
 
     readonly property int columns: parseInt(width / itemWidth) || 1  // never drop to 0
     readonly property int cellSize: width / columns
-    property int itemWidth: units.gu(15)
-    property int heightOffset: 0
-    property int widthOffset: 0
+    property real itemWidth: units.gu(15)
+    property real heightOffset: 0
+    property real widthOffset: 0
 
     add: Transition {
         NumberAnimation { properties: "x,y"; duration: 200 }

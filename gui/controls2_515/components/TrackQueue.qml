@@ -46,7 +46,7 @@ Item {
         function onLoaded(succeeded) {
             if (succeeded) {
                 queue.resetModel()
-                trackCount = queue.count
+                trackCount = queue.totalCount
             } else {
                 queue.resetModel()
                 trackCount = 0

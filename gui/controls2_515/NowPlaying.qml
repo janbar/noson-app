@@ -19,6 +19,7 @@ import QtQuick 2.9
 import QtQuick.Controls 2.2
 import "components"
 import "components/Dialog"
+import "../toolbox.js" as ToolBox
 
 MusicPage {
     id: nowPlaying
@@ -37,15 +38,24 @@ MusicPage {
             if (queueLoader.status === Loader.Ready) {
                 ensureListViewLoaded()
             } else {
-                queueLoader.onStatusChanged.connect(function() {
+                ToolBox.connectOnce(queueLoader.onStatusChanged , function(){
                     if (queueLoader.status === Loader.Ready) {
                         ensureListViewLoaded()
                     }
                 })
             }
+            // tracking of current index
+            player.onCurrentIndexChanged.connect(positionAtCurrentIndex);
         } else {
             listview = null;
+            // disconnect tracking of current index
+            player.onCurrentIndexChanged.disconnect(positionAtCurrentIndex);
         }
+    }
+
+    Component.onDestruction: {
+        // disconnect tracking of current index
+        player.onCurrentIndexChanged.disconnect(positionAtCurrentIndex);
     }
 
     Connections {
@@ -77,20 +87,20 @@ MusicPage {
     // Ensure that the listview has loaded before attempting to positionAt
     function ensureListViewLoaded() {
         if (queueLoader.item.listview.count === player.trackQueue.model.count) {
-            positionAt(player.currentIndex);
+            positionAtCurrentIndex();
         } else {
-            queueLoader.item.listview.onCountChanged.connect(function() {
+            ToolBox.connectOnce(queueLoader.item.listview.onCountChanged, function(){
                 if (queueLoader.item.listview.count === player.trackQueue.model.count) {
-                    positionAt(player.currentIndex);
+                    positionAtCurrentIndex();
                 }
             })
         }
     }
 
     // Position the view at the index
-    function positionAt(index) {
-        customdebug("Set queue position view at " + index);
-        queueLoader.item.listview.positionViewAtIndex(index > 0 ? index - 1 : 0, ListView.Beginning);
+    function positionAtCurrentIndex() {
+        customdebug("Set queue position view at " + player.currentIndex);
+        queueLoader.item.positionAt(player.currentIndex);
     }
 
     BlurredBackground {
@@ -144,6 +154,12 @@ MusicPage {
             right: parent.right
         }
         asynchronous: true
+        sourceComponent: Component {
+            Queue {
+                backgroundColor: "transparent"
+                queueModel: player.trackQueue.model
+            }
+        }
     }
 
     DialogManageQueue {
@@ -170,8 +186,4 @@ MusicPage {
             onTriggered: dialogSelectSource.open()
         }
     ]
-
-    Component.onCompleted: {
-        queueLoader.setSource("qrc:/controls2/components/Queue.qml", { "backgroundColor": "transparent" })
-    }
 }
