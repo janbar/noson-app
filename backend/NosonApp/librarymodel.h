@@ -199,9 +199,9 @@ public:
 
   Q_INVOKABLE bool asyncLoadParent();
 
-//  virtual bool loadSearch(const QString& category, const QString& term);
+  virtual bool loadSearch(const QString& category, const QString& term);
 
-//  Q_INVOKABLE bool asyncLoadSearch(const QString& category, const QString& term);
+  Q_INVOKABLE bool asyncLoadSearch(const QString& category, const QString& term);
 
   virtual bool loadDataForContext(int id);
 
@@ -246,11 +246,6 @@ private:
   };
 
   QStack<Path> m_path;
-  bool m_searching = false;
-  std::string m_searchCategory;
-  std::string m_searchTerm;
-
-//  bool search();
 };
 
 }

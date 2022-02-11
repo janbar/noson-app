@@ -31,6 +31,12 @@
 #define ROOT_TAG            "root"
 #define SEARCH_TAG          "SEARCH"
 
+#define SEARCH_ARTISTS      "artists"
+#define SEARCH_ALBUMS       "albums"
+#define SEARCH_TRACKS       "tracks"
+#define SEARCH_GENRES       "genres"
+#define SEARCH_COMPOSERS    "composers"
+
 using namespace nosonapp;
 
 LibraryItem::LibraryItem(const SONOS::DigitalItemPtr& data, const QString& baseURL)
@@ -293,7 +299,6 @@ bool LibraryModel::loadData()
   qDeleteAll(m_data);
   m_data.clear();
   m_dataState = DataStatus::DataNotFound;
-  m_searching = false; // enable browse state
 
   SAFE_DELETE(m_browser);
   m_browser = new SONOS::ContentBrowser(*m_content, pathId().toUtf8().constData(), 1);
@@ -459,13 +464,11 @@ int LibraryModel::viewIndex() const
 QList<QString> LibraryModel::listSearchCategories() const
 {
   QList<QString> list;
-  LockGuard<QRecursiveMutex> g(m_lock);
-//  if (m_smapi)
-//  {
-//    SONOS::ElementList el = m_smapi->AvailableSearchCategories();
-//    for (SONOS::ElementList::const_iterator it = el.begin(); it != el.end(); ++it)
-//      list << QString::fromUtf8((*it)->GetKey().c_str());
-//  }
+  list.append("artists");
+  list.append("albums");
+  list.append("tracks");
+  list.append("genres");
+  list.append("composers");
   return list;
 }
 
@@ -513,29 +516,17 @@ bool LibraryModel::asyncLoadChild(const QString &id, const QString &title, int d
 
 bool LibraryModel::loadParent()
 {
-  bool searching;
   {
     LockGuard<QRecursiveMutex> g(m_lock);
     if (!m_path.empty())
       m_path.pop();
-    // reload current search else the parent item
-    // also reset state before signal the change
-    m_searching = searching = (pathName() == SEARCH_TAG);
+    // reset state before signal the change
     m_fetchIndex = m_path.top().fetchIndex;
   }
-  if (searching)
-  {
-//    emit pathChanged();
-//    return search();
-    return false;
-  }
-  else
-  {
-    emit pathChanged();
-    // reconfigure to listen any update on the current content
-    ListModel<Sonos>::configure(m_provider, pathId().toUtf8().constData(), false);
-    return loadData();
-  }
+  emit pathChanged();
+  // reconfigure to listen any update on the current content
+  ListModel<Sonos>::configure(m_provider, pathId().toUtf8().constData(), false);
+  return loadData();
 }
 
 bool LibraryModel::asyncLoadParent()
@@ -546,81 +537,56 @@ bool LibraryModel::asyncLoadParent()
   return true;
 }
 
-//bool LibraryModel::loadSearch(const QString &category, const QString &term)
-//{
-//  {
-//    LockGuard<QRecursiveMutex> g(m_lock);
-//    m_searchCategory = category.toUtf8().constData();
-//    m_searchTerm = term.toUtf8().constData();
-//    m_searching = true; // enable search state
-//    m_path.clear();
-//    m_path.push(Path("", SEARCH_TAG, ROOT_DISPLAY_TYPE));
-//  }
-//  emit pathChanged();
-//  return search();
-//}
+bool LibraryModel::loadSearch(const QString &category, const QString &term)
+{
+  {
+    LockGuard<QRecursiveMutex> g(m_lock);
+    m_path.clear();
+    QString arg;
+    if (category == SEARCH_ALBUMS)
+      arg.append("A:ALBUM");
+    else if (category == SEARCH_ARTISTS)
+      arg.append("A:ARTIST");
+    else if (category == SEARCH_COMPOSERS)
+      arg.append("A:COMPOSER");
+    else if (category == SEARCH_GENRES)
+      arg.append("A:GENRE");
+    else if (category == SEARCH_TRACKS)
+      arg.append("A:TRACKS");
+    arg.append(":").append(term);
+    m_path.push(Path(arg, SEARCH_TAG, LibraryModel::DisplayItemList, LibraryModel::NodeFolder));
+    m_fetchIndex = 0;
+  }
+  emit pathChanged();
+  return loadData();
+}
 
-//bool LibraryModel::asyncLoadSearch(const QString &category, const QString &term)
-//{
-//  {
-//    LockGuard<QRecursiveMutex> g(m_lock);
-//    m_searchCategory = category.toUtf8().constData();
-//    m_searchTerm = term.toUtf8().constData();
-//    m_searching = true; // enable search state
-//    m_path.clear();
-//    m_path.push(Path("", SEARCH_TAG, ROOT_DISPLAY_TYPE));
-//    emit pathChanged();
-//  }
-//  if (!m_provider)
-//    return false;
-//  m_provider->runContentLoaderForContext(this, 2);
-//  return true;
-//}
-
-//bool LibraryModel::search()
-//{
-//  LockGuard<QRecursiveMutex> g(m_lock);
-//  if (!m_smapi)
-//  {
-//    emit loaded(false);
-//    return false;
-//  }
-
-//  SONOS::SMAPIMetadata meta;
-//  if (!m_smapi->Search(m_searchCategory, m_searchTerm, 0, LOAD_BULKSIZE, meta))
-//  {
-//    emit totalCountChanged();
-//    if (m_smapi->AuthTokenExpired())
-//      emit authStatusChanged();
-//    m_dataState = DataStatus::DataLoaded;
-//    emit loaded(false);
-//    return false;
-//  }
-
-//  qDeleteAll(m_data);
-//  m_data.clear();
-//  m_dataState = DataStatus::DataNotFound;
-//  m_totalCount = meta.TotalCount();
-//  m_nextIndex = meta.ItemCount();
-//  SONOS::SMAPIItemList list = meta.GetItems();
-//  for (SONOS::SMAPIItemList::const_iterator it = list.begin(); it != list.end(); ++it)
-//  {
-//    LibraryItem* item = new LibraryItem(*it);
-//    if (item->isValid())
-//      m_data << item;
-//    else
-//    {
-//      delete item;
-//      // Also decrease total count
-//      if (m_totalCount > 0)
-//        --m_totalCount;
-//    }
-//  }
-//  emit totalCountChanged();
-//  m_dataState = DataStatus::DataLoaded;
-//  emit loaded(true);
-//  return true;
-//}
+bool LibraryModel::asyncLoadSearch(const QString &category, const QString &term)
+{
+  {
+    LockGuard<QRecursiveMutex> g(m_lock);
+    m_path.clear();
+    QString arg;
+    if (category == SEARCH_ALBUMS)
+      arg.append("A:ALBUM");
+    else if (category == SEARCH_ARTISTS)
+      arg.append("A:ARTIST");
+    else if (category == SEARCH_COMPOSERS)
+      arg.append("A:COMPOSER");
+    else if (category == SEARCH_GENRES)
+      arg.append("A:GENRE");
+    else if (category == SEARCH_TRACKS)
+      arg.append("A:TRACKS");
+    arg.append(":").append(term);
+    m_path.push(Path(arg, SEARCH_TAG, LibraryModel::DisplayItemList, LibraryModel::NodeFolder));
+    m_fetchIndex = 0;
+  }
+  emit pathChanged();
+  if (!m_provider)
+    return false;
+  m_provider->runContentLoaderForContext(this, 2);
+  return true;
+}
 
 bool LibraryModel::loadDataForContext(int id)
 {
@@ -630,10 +596,8 @@ bool LibraryModel::loadDataForContext(int id)
       return loadData();
     case 1:
       return loadParent();
-//    case 2:
-//    {
-//      return search();
-//    }
+    case 2:
+      return loadData();
     default:
       return false;
   }

@@ -30,7 +30,7 @@ MusicPage {
     objectName: "indexPage"
     isRoot: true
     multiView: true
-    searchable: false
+    searchable: true
 
     pageTitle: qsTr("My Index")
     pageFlickable: indexGrid.visible ? indexGrid : indexList
@@ -167,5 +167,9 @@ MusicPage {
 
     function clickItem(model) {
         stackView.push(model.source, model.args);
+    }
+
+    onSearchClicked: {
+        stackView.push("qrc:/controls2/Library.qml", { "rootPath": "", "rootTitle": qsTr("Search"), "isListView": true })
     }
 }

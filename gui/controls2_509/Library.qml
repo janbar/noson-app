@@ -23,7 +23,7 @@ import "components/Delegates"
 import "components/Flickables"
 import "components/ListItemActions"
 import "components/Dialog"
-
+import "../toolbox.js" as ToolBox
 
 MusicPage {
     id: libraryPage
@@ -111,15 +111,13 @@ MusicPage {
             }
         }
         onPathChanged: {
-            if (mediaModel.isRoot) {
+            var name = mediaModel.pathName();
+            if (name === "SEARCH")
+                pageTitle = qsTr("Search");
+            else if (mediaModel.isRoot)
                 pageTitle = rootTitle;
-            } else {
-                var name = mediaModel.pathName();
-                if (name === "SEARCH")
-                    pageTitle = mediaModel.pathName() + " : " + qsTr("Search");
-                else
-                    pageTitle = name;
-            }
+            else
+                pageTitle = name;
         }
     }
 
@@ -415,8 +413,18 @@ MusicPage {
 
     Component.onCompleted: {
         mediaModel.init(Sonos, rootPath, false)
-        mediaModel.asyncLoad()
-        searchable = (mediaModel.listSearchCategories().length > 0)
+        if (rootPath.length === 0) {
+            // no root path: open the search dialog ...
+            // if the dialog is rejected then pop this page
+            ToolBox.connectOnce(dialogSearch.closed, function(){
+                if (dialogSearch.result === Dialog.Rejected)
+                    stackView.pop();
+            });
+            dialogSearch.open();
+        } else {
+            mediaModel.asyncLoad()
+            searchable = (mediaModel.listSearchCategories().length > 0)
+        }
         if (settings.preferListView)
             isListView = true
     }
