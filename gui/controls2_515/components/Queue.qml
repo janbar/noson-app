@@ -21,12 +21,14 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQml.Models 2.3
+import NosonApp 1.0
 import "Delegates"
 import "Flickables"
 import "ListItemActions"
 
 Item {
     id: queue
+    property QueueModel queueModel: null
     property alias listview: queueList
     property alias header: queueList.header
     property alias headerItem: queueList.headerItem
@@ -39,6 +41,22 @@ Item {
         color: "transparent"
     }
 
+    function positionAt(index) {
+        // index is in view ?
+        if (index >= queueModel.firstIndex &&
+                index < queueModel.firstIndex + queueModel.count) {
+            // move view at desired position - 1
+            var i = index - queueModel.firstIndex - 1;
+            queueList.positionViewAtIndex(i < 0 ? 0 : i, ListView.Beginning);
+        } else {
+            // set desired focus after reloading
+            queueList.focusId = index;
+            queueList.focusMode = ListView.Beginning;
+            // reload starting at position - 1
+            queueModel.fetchAt(index - 1);
+        }
+    }
+
     Component {
         id: dragDelegate
 
@@ -47,10 +65,11 @@ Item {
             listview: queueList
             color: bg.color
             highlightedColor: styleMusic.view.highlightedColor
-            highlighted: (player.currentIndex === index)
+            highlighted: (player.currentIndex === model.trackIndex)
 
             onSwipe: {
-                listview.focusIndex = index > 0 ? index - 1 : 0;
+                listview.focusId = model.trackIndex > 0 ? model.trackIndex - 1 : 0;
+                listview.focusMode = ListView.Center;
                 removeTrackFromQueue(model);
                 color = "red";
             }
@@ -60,21 +79,22 @@ Item {
             }
 
             onClick: dialogSongInfo.open(model, [{art: imageSource}],
-                                         "qrc:/controls2/ArtistView.qml",
+                                         "qrc:/controls2/Library.qml",
                                          {
-                                             "artistSearch": "A:ARTIST/" + model.author,
-                                             "artist": model.author,
-                                             "covers": makeCoverSource(undefined, model.author, undefined),
-                                             "pageTitle": qsTr("Artist")
+                                             "rootPath": "A:ARTIST/" + model.author,
+                                             "rootTitle": model.author,
+                                             "rootType": LibraryModel.NodePerson,
+                                             "isListView": false,
+                                             "displayType": LibraryModel.DisplayGrid
                                          })
 
             imageSources: makeCoverSource(model.art, model.author, model.album)
             description: qsTr("Song")
 
             onImageError: model.art = "" // reset invalid url from model
-            onActionPressed: indexQueueClicked(model.index)
+            onActionPressed: indexQueueClicked(model.trackIndex)
             actionVisible: true
-            actionIconSource: (player.isPlaying && player.currentIndex === index ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-preview-start.svg")
+            actionIconSource: (player.isPlaying && player.currentIndex === model.trackIndex ? "qrc:/images/media-playback-pause.svg" : "qrc:/images/media-preview-start.svg")
             menuVisible: true
 
             menuItems: [
@@ -91,7 +111,8 @@ Item {
                 },
                 Remove {
                     onTriggered: {
-                        listview.focusIndex = index > 0 ? index - 1 : 0;
+                        listview.focusId = model.trackIndex > 0 ? model.trackIndex - 1 : 0;
+                        listview.focusMode = ListView.Center;
                         removeTrackFromQueue(model);
                         color = "red";
                     }
@@ -101,6 +122,13 @@ Item {
             coverSize: units.gu(5)
 
             column: Column {
+                Label {
+                    id: trackIndex
+                    color: styleMusic.view.primaryColor
+                    font.pointSize: units.fs("small")
+                    text: "# " + (model.trackIndex + 1)
+                }
+
                 Label {
                     id: trackTitle
                     color: styleMusic.view.primaryColor
@@ -132,20 +160,26 @@ Item {
 
         model: DelegateModel {
             id: visualModel
-            model: player.trackQueue.model
+            model: queueModel
             delegate: dragDelegate
         }
 
-        property int focusIndex: 0
+        property int focusId: 0
+        property int focusMode: ListView.Center
 
         Connections {
-            target: player.trackQueue.model
-            function onLoaded(succeeded) {
-                if (queueList.focusIndex > 0) {
-                    queueList.positionViewAtIndex(queueList.focusIndex, ListView.Center);
-                    queueList.focusIndex = 0;
-                } else {
-                    queueList.positionViewAtIndex(player.currentIndex > 0 ? player.currentIndex - 1 : 0, ListView.Beginning);
+            target: queueModel
+            function onDataUpdated() {
+                // save current focus
+                queueList.focusId = queueModel.firstIndex + queueList.indexAt(queueList.contentX, queueList.contentY);
+                queueList.focusMode = ListView.Beginning;
+            }
+            function onViewUpdated() {
+                // move to the saved fosus
+                if (queueList.focusId > 0) {
+                    queueList.positionViewAtIndex(queueList.focusId - queueModel.firstIndex, queueList.focusMode);
+                    // clear saved focus
+                    queueList.focusId = 0;
                 }
             }
         }
@@ -154,10 +188,36 @@ Item {
 
         onReorder: {
             customdebug("Reorder queue item " + from + " to " + to);
-            queueList.focusIndex = to;
-            reorderTrackInQueue(from, to);
+            queueList.focusId = to + queueModel.firstIndex;
+            queueList.focusMode = ListView.Center;
+            reorderTrackInQueue(queueModel.firstIndex + from, queueModel.firstIndex + to);
         }
 
-    }
+        onAtYEndChanged: {
+            if (queueList.atYEnd && queueModel.totalCount > (queueModel.firstIndex + queueModel.count)) {
+                if (queueList.focusId === 0) {
+                    queueList.focusId = queueModel.firstIndex + queueModel.count;
+                    queueList.focusMode = ListView.End;
+                    queueModel.fetchBack();
+                }
+            }
+        }
 
+        onAtYBeginningChanged: {
+            if (queueList.atYBeginning && queueModel.firstIndex > 0) {
+                if (queueList.focusId === 0) {
+                    queueList.focusId = queueModel.firstIndex - 1;
+                    queueList.focusMode = ListView.Beginning;
+                    queueModel.fetchFront();
+                }
+            }
+        }
+
+        Component.onCompleted: {
+            // FIX move up triggering
+            if (queueList.atYBeginning && queueModel.firstIndex > 0) {
+                queueList.positionViewAtIndex(1, ListView.Beginning);
+            }
+        }
+    }
 }

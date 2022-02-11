@@ -62,6 +62,8 @@ Page {
         }
     ]
 
+    signal listViewClicked
+
     signal goUpClicked // action for a non-root page
     signal searchClicked
     signal selectAllClicked
@@ -138,6 +140,7 @@ Page {
                         height: units.gu(5)
                         onClicked: {
                             isListView = !isListView
+                            listViewClicked()
                         }
                     }
 
