@@ -49,9 +49,6 @@ set(
     plugin.cpp
     sonos.cpp
     player.cpp
-    albumsmodel.cpp
-    artistsmodel.cpp
-    genresmodel.cpp
     tracksmodel.cpp
     queuemodel.cpp
     playlistsmodel.cpp
@@ -66,7 +63,6 @@ set(
     qmlsortfiltermodel.cpp
     allservicesmodel.cpp
     alarmsmodel.cpp
-    composersmodel.cpp
     future.cpp
     librarymodel.cpp
 )
@@ -80,9 +76,6 @@ set(
     sonos.h
     player.h
     listmodel.h
-    albumsmodel.h
-    artistsmodel.h
-    genresmodel.h
     tracksmodel.h
     queuemodel.h
     playlistsmodel.h
@@ -97,7 +90,6 @@ set(
     qmlsortfiltermodel.h
     allservicesmodel.h
     alarmsmodel.h
-    composersmodel.h
     future.h
     librarymodel.h
 )
