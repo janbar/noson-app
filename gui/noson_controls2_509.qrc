@@ -176,5 +176,7 @@
         <file alias="controls2/ThisDevice/ComposerView.qml">controls2_509/ThisDevice/ComposerView.qml</file>
         <file alias="controls2/Library.qml">controls2_509/Library.qml</file>
         <file alias="toolbox.js">toolbox.js</file>
+        <file>images/folder_track.png</file>
+        <file>images/folder_share.png</file>
     </qresource>
 </RCC>

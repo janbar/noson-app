@@ -61,6 +61,8 @@ MusicPage {
             noCover: ""
             imageSources: [{art: model.art}]
 
+            height: units.gu(8)
+
             column: Column {
                 Label {
                     id: mediaTitle
@@ -77,7 +79,7 @@ MusicPage {
 
     MusicGridView {
         id: indexGrid
-        itemWidth: units.gu(15)
+        itemWidth: units.gu(12)
         heightOffset: units.gu(7)
 
         model: indexModel
@@ -125,12 +127,6 @@ MusicPage {
             args: { "rootPath": "A:COMPOSER", "rootTitle": qsTr("Composers") }
         });
         indexModel.append({
-            title: qsTr("Contributing Artists"),
-            art: "qrc:/images/folder_artist.png",
-            source: "qrc:/controls2/Library.qml",
-            args: { "rootPath": "A:ARTIST", "rootTitle": qsTr("Contributing Artists") }
-        });
-        indexModel.append({
             title: qsTr("Albums"),
             art: "qrc:/images/folder_album.png",
             source: "qrc:/controls2/Library.qml",
@@ -144,13 +140,13 @@ MusicPage {
         });
         indexModel.append({
             title: qsTr("Tracks"),
-            art: "qrc:/images/folder_genre.png",
+            art: "qrc:/images/folder_track.png",
             source: "qrc:/controls2/Library.qml",
             args: { "rootPath": "A:TRACKS", "rootTitle": qsTr("Tracks"), "isListView": true }
         });
         indexModel.append({
             title: qsTr("Share"),
-            art: "qrc:/images/folder_genre.png",
+            art: "qrc:/images/folder_share.png",
             source: "qrc:/controls2/Library.qml",
             args: { "rootPath": "S:", "rootTitle": qsTr("Share"), "isListView": true }
         });

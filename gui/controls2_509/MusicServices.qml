@@ -89,7 +89,7 @@ MusicPage {
                 }
             ]
 
-            coverSize: units.gu(5)
+            height: units.gu(8)
 
             column: Column {
                 Label {
@@ -118,8 +118,8 @@ MusicPage {
 
     MusicGridView {
         id: serviceGrid
-        itemWidth: units.gu(15)
-        heightOffset: units.gu(9)
+        itemWidth: units.gu(12)
+        heightOffset: units.gu(7)
 
         model: servicesModel
 
