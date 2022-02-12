@@ -1091,64 +1091,56 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../controls2_509/Index.qml" line="116"/>
-        <location filename="../controls2_509/Index.qml" line="119"/>
-        <location filename="../controls2_515/Index.qml" line="116"/>
-        <location filename="../controls2_515/Index.qml" line="119"/>
+        <location filename="../controls2_509/Index.qml" line="118"/>
+        <location filename="../controls2_509/Index.qml" line="121"/>
+        <location filename="../controls2_515/Index.qml" line="118"/>
+        <location filename="../controls2_515/Index.qml" line="121"/>
         <source>Artists</source>
         <translation type="unfinished">Artists</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Index.qml" line="128"/>
-        <location filename="../controls2_509/Index.qml" line="131"/>
-        <location filename="../controls2_515/Index.qml" line="128"/>
-        <location filename="../controls2_515/Index.qml" line="131"/>
-        <source>Contributing Artists</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../controls2_509/Index.qml" line="134"/>
-        <location filename="../controls2_509/Index.qml" line="137"/>
-        <location filename="../controls2_515/Index.qml" line="134"/>
-        <location filename="../controls2_515/Index.qml" line="137"/>
+        <location filename="../controls2_509/Index.qml" line="130"/>
+        <location filename="../controls2_509/Index.qml" line="133"/>
+        <location filename="../controls2_515/Index.qml" line="130"/>
+        <location filename="../controls2_515/Index.qml" line="133"/>
         <source>Albums</source>
         <translation type="unfinished">Albums</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Index.qml" line="140"/>
-        <location filename="../controls2_509/Index.qml" line="143"/>
-        <location filename="../controls2_515/Index.qml" line="140"/>
-        <location filename="../controls2_515/Index.qml" line="143"/>
+        <location filename="../controls2_509/Index.qml" line="136"/>
+        <location filename="../controls2_509/Index.qml" line="139"/>
+        <location filename="../controls2_515/Index.qml" line="136"/>
+        <location filename="../controls2_515/Index.qml" line="139"/>
         <source>Genres</source>
         <translation type="unfinished">Genres</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Index.qml" line="146"/>
-        <location filename="../controls2_509/Index.qml" line="149"/>
-        <location filename="../controls2_515/Index.qml" line="146"/>
-        <location filename="../controls2_515/Index.qml" line="149"/>
+        <location filename="../controls2_509/Index.qml" line="142"/>
+        <location filename="../controls2_509/Index.qml" line="145"/>
+        <location filename="../controls2_515/Index.qml" line="142"/>
+        <location filename="../controls2_515/Index.qml" line="145"/>
         <source>Tracks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../controls2_509/Index.qml" line="152"/>
-        <location filename="../controls2_509/Index.qml" line="155"/>
-        <location filename="../controls2_515/Index.qml" line="152"/>
-        <location filename="../controls2_515/Index.qml" line="155"/>
+        <location filename="../controls2_509/Index.qml" line="148"/>
+        <location filename="../controls2_509/Index.qml" line="151"/>
+        <location filename="../controls2_515/Index.qml" line="148"/>
+        <location filename="../controls2_515/Index.qml" line="151"/>
         <source>Share</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../controls2_509/Index.qml" line="173"/>
-        <location filename="../controls2_515/Index.qml" line="173"/>
+        <location filename="../controls2_509/Index.qml" line="169"/>
+        <location filename="../controls2_515/Index.qml" line="169"/>
         <source>Search</source>
         <translation type="unfinished">Search</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Index.qml" line="122"/>
-        <location filename="../controls2_509/Index.qml" line="125"/>
-        <location filename="../controls2_515/Index.qml" line="122"/>
-        <location filename="../controls2_515/Index.qml" line="125"/>
+        <location filename="../controls2_509/Index.qml" line="124"/>
+        <location filename="../controls2_509/Index.qml" line="127"/>
+        <location filename="../controls2_515/Index.qml" line="124"/>
+        <location filename="../controls2_515/Index.qml" line="127"/>
         <source>Composers</source>
         <translation type="unfinished">Composers</translation>
     </message>
