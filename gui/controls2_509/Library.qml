@@ -94,17 +94,18 @@ MusicPage {
                 emptyState.message = qsTr("No items found");
                 emptyState.active = true;
             } else {
+                var idx;
                 if (emptyState.active)
                     emptyState.active = false;
                 if (focusViewIndex) {
                     // restore parent index position in view
-                    let idx = mediaModel.viewIndex()
+                    idx = mediaModel.viewIndex()
                     focusViewIndex = false;
                     mediaList.positionViewAtIndex(idx, ListView.Center);
                     mediaGrid.positionViewAtIndex(idx, GridView.Center);
                 } else if (focusId > 0) {
                     // restore saved focus
-                    let idx = libraryPage.focusId - mediaModel.firstIndex;
+                    idx = libraryPage.focusId - mediaModel.firstIndex;
                     mediaList.positionViewAtIndex(idx, focusMode);
                     mediaGrid.positionViewAtIndex(idx, focusMode);
                     libraryPage.focusId = 0;
