@@ -24,6 +24,7 @@ DialogBase {
     id: dialog
 
     property var searchableModel
+    property string searchType
 
     footer: Row {
         leftPadding: units.gu(1)
@@ -68,7 +69,7 @@ DialogBase {
                     else if (id === "albums")
                         tr = qsTr("Albums");
                     else if (id === "tracks")
-                        tr = qsTr("Songs");
+                        tr = qsTr("Tracks");
                     else if (id === "playlists")
                         tr = qsTr("Playlists");
                     else if (id === "stations")
@@ -82,8 +83,11 @@ DialogBase {
                     else
                         tr = id;
                     selectorModel.insert(i, {'id': id, 'text': tr});
+                    if (searchType && id === searchType)
+                        selector.currentIndex = i;
                 }
-                selector.currentIndex = 0;
+                if (selector.currentIndex < 0 && selectorModel.count > 0)
+                    selector.currentIndex = 0;
             }
         }
     }

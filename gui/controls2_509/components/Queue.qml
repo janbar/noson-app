@@ -195,20 +195,18 @@ Item {
 
         onAtYEndChanged: {
             if (queueList.atYEnd && queueModel.totalCount > (queueModel.firstIndex + queueModel.count)) {
-                if (queueList.focusId === 0) {
+                if (queueList.focusId === 0 && queueModel.fetchBack()) {
                     queueList.focusId = queueModel.firstIndex + queueModel.count;
                     queueList.focusMode = ListView.End;
-                    queueModel.fetchBack();
                 }
             }
         }
 
         onAtYBeginningChanged: {
             if (queueList.atYBeginning && queueModel.firstIndex > 0) {
-                if (queueList.focusId === 0) {
+                if (queueList.focusId === 0 && queueModel.fetchFront()) {
                     queueList.focusId = queueModel.firstIndex - 1;
                     queueList.focusMode = ListView.Beginning;
-                    queueModel.fetchFront();
                 }
             }
         }

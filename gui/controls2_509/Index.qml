@@ -118,37 +118,51 @@ MusicPage {
             title: qsTr("Artists"),
             art: "qrc:/images/folder_artist.png",
             source: "qrc:/controls2/Library.qml",
-            args: { "rootPath": "A:ALBUMARTIST", "rootTitle": qsTr("Artists") }
+            args: { "rootPath": "A:ALBUMARTIST",
+                                  "rootTitle": qsTr("Artists"),
+                                  "searchType": "artists" }
         });
         indexModel.append({
             title: qsTr("Composers"),
             art: "qrc:/images/folder_composer.png",
             source: "qrc:/controls2/Library.qml",
-            args: { "rootPath": "A:COMPOSER", "rootTitle": qsTr("Composers") }
+            args: { "rootPath": "A:COMPOSER",
+                                  "rootTitle": qsTr("Composers"),
+                                  "searchType": "composers" }
         });
         indexModel.append({
             title: qsTr("Albums"),
             art: "qrc:/images/folder_album.png",
             source: "qrc:/controls2/Library.qml",
-            args: { "rootPath": "A:ALBUM", "rootTitle": qsTr("Albums") }
+            args: { "rootPath": "A:ALBUM",
+                                  "rootTitle": qsTr("Albums"),
+                                  "searchType": "albums" }
         });
         indexModel.append({
             title: qsTr("Genres"),
             art: "qrc:/images/folder_genre.png",
             source: "qrc:/controls2/Library.qml",
-            args: { "rootPath": "A:GENRE", "rootTitle": qsTr("Genres") }
+            args: { "rootPath": "A:GENRE",
+                                  "rootTitle": qsTr("Genres"),
+                                  "searchType": "genres" }
         });
         indexModel.append({
             title: qsTr("Tracks"),
             art: "qrc:/images/folder_track.png",
             source: "qrc:/controls2/Library.qml",
-            args: { "rootPath": "A:TRACKS", "rootTitle": qsTr("Tracks"), "isListView": true }
+            args: { "rootPath": "A:TRACKS",
+                                  "rootTitle": qsTr("Tracks"),
+                                  "isListView": true,
+                                  "searchType": "tracks" }
         });
         indexModel.append({
             title: qsTr("Share"),
             art: "qrc:/images/folder_share.png",
             source: "qrc:/controls2/Library.qml",
-            args: { "rootPath": "S:", "rootTitle": qsTr("Share"), "isListView": true }
+            args: { "rootPath": "S:",
+                                  "rootTitle": qsTr("Share"),
+                                  "isListView": true,
+                                  "searchType": "tracks" }
         });
     }
 
@@ -166,6 +180,7 @@ MusicPage {
     }
 
     onSearchClicked: {
-        stackView.push("qrc:/controls2/Library.qml", { "rootPath": "", "rootTitle": qsTr("Search"), "isListView": true })
+        stackView.push("qrc:/controls2/Library.qml",
+                       { "rootPath": "", "rootTitle": qsTr("Search"), "isListView": true })
     }
 }
