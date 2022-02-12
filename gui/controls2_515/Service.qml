@@ -33,8 +33,8 @@ MusicPage {
     searchable: true
 
     property var serviceItem: null
-    property int displayType: 3  // display type for root
-    property int parentDisplayType: 0
+    property int displayType: MediaModel.DisplayEditorial  // display type for root
+    property int parentDisplayType: MediaModel.DisplayGrid
     property bool focusViewIndex: false
 
     // the model handles search
@@ -60,7 +60,7 @@ MusicPage {
     function restoreFocusViewIndex() {
         var idx = mediaModel.viewIndex()
         if (mediaModel.count <= idx) {
-          mediaModel.asyncLoadMore() // load more !!!
+          mediaModel.fetchBack() // load more !!!
         } else {
             focusViewIndex = false;
             mediaList.positionViewAtIndex(idx, ListView.Center);
@@ -130,7 +130,7 @@ MusicPage {
     }
 
     onDisplayTypeChanged: {
-        isListView = (displayType === 0 /*Grid*/ || displayType === 3 /*Editorial*/) ? false : true
+        isListView = (displayType === MediaModel.DisplayGrid || displayType === MediaModel.DisplayEditorial) ? false : true
     }
 
     // Overlay to show when no item available
@@ -174,20 +174,20 @@ MusicPage {
                 }
             }
 
-            noCover: model.type === 2 ? "qrc:/images/none.png"
+            noCover: model.type === MediaModel.TypePerson ? "qrc:/images/none.png"
                    : model.canPlay && !model.canQueue ? "qrc:/images/radio.png"
                    : "qrc:/images/no_cover.png"
             imageSources: model.art !== "" ? [{art: model.art}]
-                        : model.type === 2 ? [{art: "qrc:/images/none.png"}]
+                        : model.type === MediaModel.TypePerson ? [{art: "qrc:/images/none.png"}]
                         : model.canPlay && !model.canQueue ? [{art: "qrc:/images/radio.png"}]
                         : [{art: "qrc:/images/no_cover.png"}]
             description: model.description.length > 0 ? model.description
-                    : model.type === 1 ? model.artist.length > 0 ? model.artist : qsTr("Album")
-                    : model.type === 2 ? qsTr("Artist")
-                    : model.type === 3 ? qsTr("Genre")
-                    : model.type === 4 ? qsTr("Playlist")
-                    : model.type === 5 && model.canQueue ? model.artist.length > 0 ? model.artist : qsTr("Song")
-                    : model.type === 5 ? qsTr("Radio")
+                    : model.type === MediaModel.TypeAlbum ? model.artist.length > 0 ? model.artist : qsTr("Album")
+                    : model.type === MediaModel.TypePerson ? qsTr("Artist")
+                    : model.type === MediaModel.TypeGenre ? qsTr("Genre")
+                    : model.type === MediaModel.TypePlaylist ? qsTr("Playlist")
+                    : model.type === MediaModel.TypeAudioItem && model.canQueue ? model.artist.length > 0 ? model.artist : qsTr("Song")
+                    : model.type === MediaModel.TypeAudioItem ? qsTr("Radio")
                     : ""
             onActionPressed: playItem(model)
             actionVisible: model.canPlay
@@ -247,7 +247,7 @@ MusicPage {
 
         onAtYEndChanged: {
             if (mediaList.atYEnd && mediaModel.totalCount > mediaModel.count) {
-                mediaModel.asyncLoadMore()
+                mediaModel.fetchBack()
             }
         }
     }
@@ -265,12 +265,12 @@ MusicPage {
             width: mediaGrid.cellWidth
             primaryText: model.title
             secondaryText: model.description.length > 0 ? model.description
-                         : model.type === 1 ? model.artist.length > 0 ? model.artist : qsTr("Album")
-                         : model.type === 2 ? qsTr("Artist")
-                         : model.type === 3 ? qsTr("Genre")
-                         : model.type === 4 ? qsTr("Playlist")
-                         : model.type === 5 && model.canQueue ? model.artist.length > 0 ? model.artist : qsTr("Song")
-                         : model.type === 5 ? qsTr("Radio")
+                         : model.type === MediaModel.TypeAlbum ? model.artist.length > 0 ? model.artist : qsTr("Album")
+                         : model.type === MediaModel.TypePerson ? qsTr("Artist")
+                         : model.type === MediaModel.TypeGenre ? qsTr("Genre")
+                         : model.type === MediaModel.TypePlaylist ? qsTr("Playlist")
+                         : model.type === MediaModel.TypeAudioItem && model.canQueue ? model.artist.length > 0 ? model.artist : qsTr("Song")
+                         : model.type === MediaModel.TypeAudioItem ? qsTr("Radio")
                          : ""
 
             // check favorite on data loaded
@@ -284,11 +284,11 @@ MusicPage {
             canPlay: model.canPlay
 
             overlay: false // item icon could be transparent
-            noCover: model.type === 2 ? "qrc:/images/none.png"
+            noCover: model.type === MediaModel.TypePerson ? "qrc:/images/none.png"
                    : model.canPlay && !model.canQueue ? "qrc:/images/radio.png"
                    : "qrc:/images/no_cover.png"
             coverSources: model.art !== "" ? [{art: model.art}]
-                        : model.type === 2 ? [{art: "qrc:/images/none.png"}]
+                        : model.type === MediaModel.TypePerson ? [{art: "qrc:/images/none.png"}]
                         : model.canPlay && !model.canQueue ? [{art: "qrc:/images/radio.png"}]
                         : [{art: "qrc:/images/no_cover.png"}]
 
@@ -316,7 +316,7 @@ MusicPage {
 
         onAtYEndChanged: {
             if (mediaGrid.atYEnd && mediaModel.totalCount > mediaModel.count) {
-                mediaModel.asyncLoadMore()
+                mediaModel.fetchBack()
             }
         }
     }
@@ -402,7 +402,7 @@ MusicPage {
         function onIsAuthExpiredChanged() {
             var auth;
             if (mediaModel.isAuthExpired) {
-                if (mediaModel.policyAuth === 1) {
+                if (mediaModel.policyAuth === MediaModel.AuthUserId) {
                     if (!loginService.active) {
                         // first try with saved login/password
                         auth = mediaModel.getDeviceAuth();
@@ -413,7 +413,7 @@ MusicPage {
                             mediaModel.asyncLoad();
                         }
                     }
-                } else if (mediaModel.policyAuth === 2 || mediaModel.policyAuth === 3) {
+                } else if (mediaModel.policyAuth === MediaModel.AuthDeviceLink || mediaModel.policyAuth === MediaModel.AuthAppLink) {
                     if (registeringService.active)
                         registeringService.active = false; // restart new registration
                     else

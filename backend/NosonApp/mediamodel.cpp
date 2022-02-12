@@ -59,7 +59,7 @@ MediaItem::MediaItem(const SONOS::SMAPIItem& data)
   switch (data.item->subType())
   {
   case SONOS::DigitalItem::SubType_album:
-    m_type = MediaType::album;
+    m_type = MediaModel::TypeAlbum;
     tmp = data.item->GetValue("dc:creator");
     if (!tmp.empty())
       m_artist = QString::fromUtf8(tmp.c_str());
@@ -68,17 +68,17 @@ MediaItem::MediaItem(const SONOS::SMAPIItem& data)
     m_album = QString::fromUtf8(data.item->GetValue("dc:title").c_str());
     break;
   case SONOS::DigitalItem::SubType_person:
-    m_type = MediaType::person;
+    m_type = MediaModel::TypePerson;
     m_artist = QString::fromUtf8(data.item->GetValue("dc:title").c_str());
     break;
   case SONOS::DigitalItem::SubType_genre:
-    m_type = MediaType::genre;
+    m_type = MediaModel::TypeGenre;
     break;
   case SONOS::DigitalItem::SubType_playlistContainer:
-    m_type = MediaType::playlist;
+    m_type = MediaModel::TypePlaylist;
     break;
   case SONOS::DigitalItem::SubType_audioItem:
-    m_type = MediaType::audioItem;
+    m_type = MediaModel::TypeAudioItem;
     tmp = data.item->GetValue("dc:creator");
     if (!tmp.empty())
       m_artist = QString::fromUtf8(tmp.c_str());
@@ -87,10 +87,10 @@ MediaItem::MediaItem(const SONOS::SMAPIItem& data)
     m_album = QString::fromUtf8(data.item->GetValue("upnp:album").c_str());
     break;
   case SONOS::DigitalItem::SubType_storageFolder:
-    m_type = MediaType::folder;
+    m_type = MediaModel::TypeFolder;
     break;
   default:
-    m_type = MediaType::unknown;
+    m_type = MediaModel::TypeUnknown;
   }
   m_displayType = data.displayType;
   m_isContainer = data.item->IsContainer();
@@ -119,7 +119,7 @@ MediaModel::~MediaModel()
   m_data.clear();
   qDeleteAll(m_items);
   m_items.clear();
-  SAFE_DELETE(m_smapi);
+  SAFE_DELETE(m_smapi)
 }
 
 void MediaModel::addItem(MediaItem* item)
@@ -235,7 +235,7 @@ bool MediaModel::init(Sonos* provider, const QVariant& service, bool fill)
 {
   if (!provider)
     return false;
-  SAFE_DELETE(m_smapi);
+  SAFE_DELETE(m_smapi)
   m_smapi = new SONOS::SMAPI(provider->getSystem());
   SONOS::SMServicePtr msvc = service.value<SONOS::SMServicePtr>();
   if (!m_smapi || !m_smapi->Init(msvc, provider->getLocale().toUtf8().constData()))
@@ -493,7 +493,7 @@ bool MediaModel::loadMoreData()
   return true;
 }
 
-bool MediaModel::asyncLoadMore()
+bool MediaModel::fetchBack()
 {
   if (!m_provider)
     return false;
@@ -662,6 +662,8 @@ void MediaModel::resetModel()
     }
     m_dataState = DataStatus::DataSynced;
     endResetModel();
+
+    emit viewUpdated();
   }
   emit countChanged();
 }
@@ -679,6 +681,8 @@ void MediaModel::appendModel()
     m_data.clear();
     m_dataState = DataStatus::DataSynced;
     endInsertRows();
+
+    emit viewUpdated();
   }
   emit countChanged();
 }
@@ -707,7 +711,7 @@ void MediaModel::handleDataUpdate()
   if (!updateSignaled())
   {
     setUpdateSignaled(true);
-    dataUpdated();
+    emit dataUpdated();
   }
 }
 

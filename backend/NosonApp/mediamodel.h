@@ -33,28 +33,6 @@ namespace nosonapp
 
 class Sonos;
 
-class MediaType : public QObject
-{
-  Q_OBJECT
-
-public:
-  enum itemType
-  {
-    unknown   = 0,
-    album     = 1,
-    person    = 2,
-    genre     = 3,
-    playlist  = 4,
-    audioItem = 5,
-    folder    = 6,
-  };
-
-  Q_ENUM(itemType)
-
-  MediaType(QObject* parent)
-  : QObject(parent) {}
-};
-
 class MediaItem
 {
 public:
@@ -102,7 +80,7 @@ private:
   QString m_description;
   QString m_art;
   QString m_normalized;
-  MediaType::itemType m_type;
+  int m_type;
   bool m_canQueue;
   bool m_canPlay;
   QString m_artist;
@@ -171,6 +149,39 @@ public:
     IsContainerRole,
   };
 
+  enum NodeType
+  {
+    TypeUnknown   = 0,
+    TypeAlbum     = 1,
+    TypePerson    = 2,
+    TypeGenre     = 3,
+    TypePlaylist  = 4,
+    TypeAudioItem = 5,
+    TypeFolder    = 6,
+  };
+
+  Q_ENUM(NodeType)
+
+  enum DisplayType
+  {
+    DisplayGrid       = SONOS::SMAPIItem::DisplayType::Grid,
+    DisplayList       = SONOS::SMAPIItem::DisplayType::List,
+    DisplayHero       = SONOS::SMAPIItem::DisplayType::Hero,
+    DisplayEditorial  = SONOS::SMAPIItem::DisplayType::Editorial,
+  };
+
+  Q_ENUM(DisplayType)
+
+  enum AuthType
+  {
+    AuthAnonymous  = SONOS::SMAPI::Auth_Anonymous,
+    AuthUserId     = SONOS::SMAPI::Auth_UserId,
+    AuthDeviceLink = SONOS::SMAPI::Auth_DeviceLink,
+    AuthAppLink    = SONOS::SMAPI::Auth_AppLink,
+  };
+
+  Q_ENUM(AuthType)
+
   MediaModel(QObject* parent = 0);
   virtual ~MediaModel();
 
@@ -226,7 +237,7 @@ public:
 
   virtual bool loadMoreData();
 
-  Q_INVOKABLE bool asyncLoadMore();
+  Q_INVOKABLE bool fetchBack();
 
   virtual bool loadChild(const QString& id, const QString& title, int displayType, int viewIndex = 0);
 
@@ -255,11 +266,12 @@ public:
 signals:
   void dataUpdated();
   void countChanged();
+  void loaded(bool succeeded);
+  void loadedMore(bool succeeded);
+  void viewUpdated();
   void totalCountChanged();
   void pathChanged();
   void authStatusChanged();
-  void loaded(bool succeeded);
-  void loadedMore(bool succeeded);
 
 protected:
   QHash<int, QByteArray> roleNames() const;
