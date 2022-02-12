@@ -38,13 +38,6 @@
         <extracomment>this appears in the header with limited space (around 20 characters)</extracomment>
         <translation>Wiedergabeliste auswählen</translation>
     </message>
-    <message numerus="yes">
-        <source>%n song(s) added</source>
-        <translation type="obsolete">
-            <numerusform>%n song added</numerusform>
-            <numerusform>%n songs added</numerusform>
-        </translation>
-    </message>
     <message>
         <location filename="../controls2_509/AddToPlaylist.qml" line="125"/>
         <location filename="../controls2_515/AddToPlaylist.qml" line="125"/>
@@ -238,33 +231,6 @@
         <source>%n song(s)</source>
         <translation><numerusform>%n Lied</numerusform><numerusform>%n Lieder</numerusform></translation>
     </message>
-    <message>
-        <source>Unknown Album</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Album</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Unknown Artist</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Remove from favorites</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Add to favorites</source>
-        <translation type="unfinished"/>
-    </message>
-</context>
-<context>
-    <name>Composers</name>
-    <message>
-        <source>Composers</source>
-        <translation type="unfinished"/>
-    </message>
 </context>
 <context>
     <name>DataFailureState</name>
@@ -328,10 +294,6 @@
         <source>Alarm</source>
         <extracomment>this is a title of a dialog to configure an alarm</extracomment>
         <translation>Weckruf</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../controls2_509/components/Dialog/DialogAlarm.qml" line="53"/>
@@ -398,14 +360,6 @@
         <location filename="../controls2_515/components/Dialog/DialogAlarm.qml" line="284"/>
         <source>Sun</source>
         <translation>So</translation>
-    </message>
-    <message>
-        <source>Action can&apos;t be performed</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Room</source>
-        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -600,75 +554,79 @@
 <context>
     <name>DialogSearchMusic</name>
     <message>
-        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="37"/>
-        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="37"/>
+        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="38"/>
+        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="38"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="42"/>
-        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="42"/>
+        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="43"/>
+        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="43"/>
         <source>Search</source>
         <translation>Suche</translation>
     </message>
     <message>
-        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="49"/>
-        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="49"/>
+        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="50"/>
+        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="50"/>
         <source>Search music</source>
         <extracomment>this is a title of a dialog to setup search</extracomment>
         <translation>Musik durchsuchen</translation>
     </message>
     <message>
-        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="67"/>
-        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="67"/>
+        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="68"/>
+        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="68"/>
         <source>Artists</source>
         <translation>Künstler</translation>
     </message>
     <message>
-        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="69"/>
-        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="69"/>
+        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="70"/>
+        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="70"/>
         <source>Albums</source>
         <translation>Alben</translation>
     </message>
     <message>
-        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="71"/>
-        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="71"/>
         <source>Songs</source>
-        <translation>Lieder</translation>
+        <translation type="vanished">Lieder</translation>
     </message>
     <message>
-        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="73"/>
-        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="73"/>
+        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="72"/>
+        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="72"/>
+        <source>Tracks</source>
+        <translation>Audiospuren</translation>
+    </message>
+    <message>
+        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="74"/>
+        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="74"/>
         <source>Playlists</source>
         <translation>Wiedergabelisten</translation>
     </message>
     <message>
-        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="75"/>
-        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="75"/>
+        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="76"/>
+        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="76"/>
         <source>Radios</source>
         <translation>Radiosender</translation>
     </message>
     <message>
-        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="77"/>
-        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="77"/>
+        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="78"/>
+        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="78"/>
         <source>Podcasts</source>
         <translation>Podcasts</translation>
     </message>
     <message>
-        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="79"/>
-        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="79"/>
+        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="80"/>
+        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="80"/>
         <source>Genres</source>
         <translation>Genres</translation>
     </message>
     <message>
-        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="81"/>
-        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="81"/>
+        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="82"/>
+        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="82"/>
         <source>Composers</source>
         <translation>Komponisten</translation>
     </message>
     <message>
-        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="111"/>
-        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="111"/>
+        <location filename="../controls2_509/components/Dialog/DialogSearchMusic.qml" line="115"/>
+        <location filename="../controls2_515/components/Dialog/DialogSearchMusic.qml" line="115"/>
         <source>Type search</source>
         <translation>Suchbegriff eingeben</translation>
     </message>
@@ -762,7 +720,7 @@
         <location filename="../controls2_509/components/Dialog/DialogServiceLabel.qml" line="40"/>
         <location filename="../controls2_515/components/Dialog/DialogServiceLabel.qml" line="40"/>
         <source>Ok</source>
-        <translation type="unfinished"/>
+        <translation>Ok</translation>
     </message>
     <message>
         <location filename="../controls2_509/components/Dialog/DialogServiceLabel.qml" line="60"/>
@@ -901,10 +859,6 @@
         <translation>Mehr</translation>
     </message>
     <message>
-        <source>Artist</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <location filename="../controls2_509/components/Dialog/DialogSongInfo.qml" line="76"/>
         <location filename="../controls2_515/components/Dialog/DialogSongInfo.qml" line="76"/>
         <source>Unknown Album</source>
@@ -967,10 +921,6 @@
         <location filename="../controls2_515/components/Dialog/DialogSoundSettings.qml" line="284"/>
         <source>Line IN</source>
         <translation>Audio-Eingang</translation>
-    </message>
-    <message>
-        <source>Action can&apos;t be performed</source>
-        <translation type="unfinished"/>
     </message>
     <message>
         <location filename="../controls2_509/components/Dialog/DialogSoundSettings.qml" line="314"/>
@@ -1077,64 +1027,56 @@
         <translation>Mein Musikverzeichnis</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Index.qml" line="116"/>
-        <location filename="../controls2_509/Index.qml" line="119"/>
-        <location filename="../controls2_515/Index.qml" line="116"/>
-        <location filename="../controls2_515/Index.qml" line="119"/>
+        <location filename="../controls2_509/Index.qml" line="118"/>
+        <location filename="../controls2_509/Index.qml" line="122"/>
+        <location filename="../controls2_515/Index.qml" line="118"/>
+        <location filename="../controls2_515/Index.qml" line="122"/>
         <source>Artists</source>
         <translation>Künstler</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Index.qml" line="128"/>
-        <location filename="../controls2_509/Index.qml" line="131"/>
-        <location filename="../controls2_515/Index.qml" line="128"/>
-        <location filename="../controls2_515/Index.qml" line="131"/>
-        <source>Contributing Artists</source>
-        <translation>Mitwirkende Künstler</translation>
-    </message>
-    <message>
         <location filename="../controls2_509/Index.qml" line="134"/>
-        <location filename="../controls2_509/Index.qml" line="137"/>
+        <location filename="../controls2_509/Index.qml" line="138"/>
         <location filename="../controls2_515/Index.qml" line="134"/>
-        <location filename="../controls2_515/Index.qml" line="137"/>
+        <location filename="../controls2_515/Index.qml" line="138"/>
         <source>Albums</source>
         <translation>Alben</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Index.qml" line="140"/>
-        <location filename="../controls2_509/Index.qml" line="143"/>
-        <location filename="../controls2_515/Index.qml" line="140"/>
-        <location filename="../controls2_515/Index.qml" line="143"/>
+        <location filename="../controls2_509/Index.qml" line="142"/>
+        <location filename="../controls2_509/Index.qml" line="146"/>
+        <location filename="../controls2_515/Index.qml" line="142"/>
+        <location filename="../controls2_515/Index.qml" line="146"/>
         <source>Genres</source>
         <translation>Genres</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Index.qml" line="146"/>
-        <location filename="../controls2_509/Index.qml" line="149"/>
-        <location filename="../controls2_515/Index.qml" line="146"/>
-        <location filename="../controls2_515/Index.qml" line="149"/>
+        <location filename="../controls2_509/Index.qml" line="150"/>
+        <location filename="../controls2_509/Index.qml" line="154"/>
+        <location filename="../controls2_515/Index.qml" line="150"/>
+        <location filename="../controls2_515/Index.qml" line="154"/>
         <source>Tracks</source>
         <translation>Audiospuren</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Index.qml" line="152"/>
-        <location filename="../controls2_509/Index.qml" line="155"/>
-        <location filename="../controls2_515/Index.qml" line="152"/>
-        <location filename="../controls2_515/Index.qml" line="155"/>
+        <location filename="../controls2_509/Index.qml" line="159"/>
+        <location filename="../controls2_509/Index.qml" line="163"/>
+        <location filename="../controls2_515/Index.qml" line="159"/>
+        <location filename="../controls2_515/Index.qml" line="163"/>
         <source>Share</source>
         <translation>Ordner</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Index.qml" line="173"/>
-        <location filename="../controls2_515/Index.qml" line="173"/>
+        <location filename="../controls2_509/Index.qml" line="184"/>
+        <location filename="../controls2_515/Index.qml" line="184"/>
         <source>Search</source>
         <translation>Suche</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Index.qml" line="122"/>
-        <location filename="../controls2_509/Index.qml" line="125"/>
-        <location filename="../controls2_515/Index.qml" line="122"/>
-        <location filename="../controls2_515/Index.qml" line="125"/>
+        <location filename="../controls2_509/Index.qml" line="126"/>
+        <location filename="../controls2_509/Index.qml" line="130"/>
+        <location filename="../controls2_515/Index.qml" line="126"/>
+        <location filename="../controls2_515/Index.qml" line="130"/>
         <source>Composers</source>
         <translation>Komponisten</translation>
     </message>
@@ -1160,97 +1102,97 @@
 <context>
     <name>Library</name>
     <message>
-        <location filename="../controls2_509/Library.qml" line="56"/>
-        <location filename="../controls2_515/Library.qml" line="57"/>
+        <location filename="../controls2_509/Library.qml" line="57"/>
+        <location filename="../controls2_515/Library.qml" line="58"/>
         <source>My Index</source>
         <translation>Mein Musikverzeichnis</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Library.qml" line="93"/>
-        <location filename="../controls2_515/Library.qml" line="94"/>
+        <location filename="../controls2_509/Library.qml" line="94"/>
+        <location filename="../controls2_515/Library.qml" line="95"/>
         <source>No items found</source>
         <translation>Keine Elemente gefunden</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Library.qml" line="116"/>
-        <location filename="../controls2_515/Library.qml" line="117"/>
+        <location filename="../controls2_509/Library.qml" line="117"/>
+        <location filename="../controls2_515/Library.qml" line="118"/>
         <source>Search</source>
         <translation>Suche</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Library.qml" line="156"/>
-        <location filename="../controls2_515/Library.qml" line="157"/>
+        <location filename="../controls2_509/Library.qml" line="157"/>
+        <location filename="../controls2_515/Library.qml" line="158"/>
         <source>Shuffle</source>
         <extracomment>this appears in a button with limited space (around 14 characters)</extracomment>
         <translation>Zufällig</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Library.qml" line="172"/>
-        <location filename="../controls2_515/Library.qml" line="173"/>
+        <location filename="../controls2_509/Library.qml" line="173"/>
+        <location filename="../controls2_515/Library.qml" line="174"/>
         <source>Queue all</source>
         <extracomment>this appears in a button with limited space (around 14 characters)</extracomment>
         <translation>Alle zur Warteschlange hinzufügen</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Library.qml" line="188"/>
-        <location filename="../controls2_515/Library.qml" line="189"/>
+        <location filename="../controls2_509/Library.qml" line="189"/>
+        <location filename="../controls2_515/Library.qml" line="190"/>
         <source>Play all</source>
         <extracomment>this appears in a button with limited space (around 14 characters)</extracomment>
         <translation>Alle abspielen</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Library.qml" line="209"/>
-        <location filename="../controls2_509/Library.qml" line="250"/>
-        <location filename="../controls2_509/Library.qml" line="346"/>
-        <location filename="../controls2_515/Library.qml" line="210"/>
-        <location filename="../controls2_515/Library.qml" line="251"/>
-        <location filename="../controls2_515/Library.qml" line="347"/>
+        <location filename="../controls2_509/Library.qml" line="210"/>
+        <location filename="../controls2_509/Library.qml" line="251"/>
+        <location filename="../controls2_509/Library.qml" line="345"/>
+        <location filename="../controls2_515/Library.qml" line="211"/>
+        <location filename="../controls2_515/Library.qml" line="252"/>
+        <location filename="../controls2_515/Library.qml" line="346"/>
         <source>Album</source>
         <translation>Alben</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Library.qml" line="210"/>
-        <location filename="../controls2_509/Library.qml" line="251"/>
-        <location filename="../controls2_509/Library.qml" line="347"/>
-        <location filename="../controls2_515/Library.qml" line="211"/>
-        <location filename="../controls2_515/Library.qml" line="252"/>
-        <location filename="../controls2_515/Library.qml" line="348"/>
+        <location filename="../controls2_509/Library.qml" line="211"/>
+        <location filename="../controls2_509/Library.qml" line="252"/>
+        <location filename="../controls2_509/Library.qml" line="346"/>
+        <location filename="../controls2_515/Library.qml" line="212"/>
+        <location filename="../controls2_515/Library.qml" line="253"/>
+        <location filename="../controls2_515/Library.qml" line="347"/>
         <source>Artist</source>
         <translation>Künstler</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Library.qml" line="211"/>
-        <location filename="../controls2_509/Library.qml" line="252"/>
-        <location filename="../controls2_509/Library.qml" line="348"/>
-        <location filename="../controls2_515/Library.qml" line="212"/>
-        <location filename="../controls2_515/Library.qml" line="253"/>
-        <location filename="../controls2_515/Library.qml" line="349"/>
+        <location filename="../controls2_509/Library.qml" line="212"/>
+        <location filename="../controls2_509/Library.qml" line="253"/>
+        <location filename="../controls2_509/Library.qml" line="347"/>
+        <location filename="../controls2_515/Library.qml" line="213"/>
+        <location filename="../controls2_515/Library.qml" line="254"/>
+        <location filename="../controls2_515/Library.qml" line="348"/>
         <source>Genre</source>
         <translation>Genre</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Library.qml" line="212"/>
-        <location filename="../controls2_509/Library.qml" line="253"/>
-        <location filename="../controls2_509/Library.qml" line="349"/>
-        <location filename="../controls2_515/Library.qml" line="213"/>
-        <location filename="../controls2_515/Library.qml" line="254"/>
-        <location filename="../controls2_515/Library.qml" line="350"/>
-        <source>Playlist</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <location filename="../controls2_509/Library.qml" line="213"/>
         <location filename="../controls2_509/Library.qml" line="254"/>
-        <location filename="../controls2_509/Library.qml" line="350"/>
+        <location filename="../controls2_509/Library.qml" line="348"/>
         <location filename="../controls2_515/Library.qml" line="214"/>
         <location filename="../controls2_515/Library.qml" line="255"/>
-        <location filename="../controls2_515/Library.qml" line="351"/>
-        <source>Song</source>
-        <translation type="unfinished"/>
+        <location filename="../controls2_515/Library.qml" line="349"/>
+        <source>Playlist</source>
+        <translation>Playlist</translation>
     </message>
     <message>
+        <location filename="../controls2_509/Library.qml" line="214"/>
         <location filename="../controls2_509/Library.qml" line="255"/>
+        <location filename="../controls2_509/Library.qml" line="349"/>
+        <location filename="../controls2_515/Library.qml" line="215"/>
         <location filename="../controls2_515/Library.qml" line="256"/>
+        <location filename="../controls2_515/Library.qml" line="350"/>
+        <source>Song</source>
+        <translation>Lied</translation>
+    </message>
+    <message>
+        <location filename="../controls2_509/Library.qml" line="256"/>
+        <location filename="../controls2_515/Library.qml" line="257"/>
         <source>Radio</source>
         <translation type="unfinished"/>
     </message>
@@ -1323,10 +1265,6 @@
         <location filename="../controls2_515/components/MusicPage.qml" line="389"/>
         <source>None</source>
         <translation>Keine</translation>
-    </message>
-    <message>
-        <source>About</source>
-        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1426,14 +1364,6 @@
         <source>Select source</source>
         <translation>Quelle auswählen</translation>
     </message>
-    <message>
-        <source>Under construction</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>This feature will be added in a next version. Please rate the App.</source>
-        <translation type="unfinished"/>
-    </message>
 </context>
 <context>
     <name>PlayAllButton</name>
@@ -1499,10 +1429,6 @@
         <location filename="../controls2_515/components/Queue.qml" line="92"/>
         <source>Song</source>
         <translation>Lied</translation>
-    </message>
-    <message>
-        <source>Artist</source>
-        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1854,59 +1780,6 @@
         <source>Transitioning</source>
         <translation type="unfinished"/>
     </message>
-    <message>
-        <source>Action can&apos;t be performed</source>
-        <translation type="unfinished"/>
-    </message>
-</context>
-<context>
-    <name>harbour-noson</name>
-    <message>
-        <source>&lt;Undefined&gt;</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Index loaded</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Refreshing of index is running</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Action can&apos;t be performed</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>song added</source>
-        <translation type="unfinished"/>
-    </message>
-    <message numerus="yes">
-        <source>%n song(s) added</source>
-        <translation type="obsolete">
-            <numerusform>%n song added</numerusform>
-            <numerusform>%n songs added</numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>Queue cleared</source>
-        <translation type="unfinished"/>
-    </message>
-    <message numerus="yes">
-        <source>%n song(s) removed</source>
-        <translation type="obsolete">
-            <numerusform>%n song removed</numerusform>
-            <numerusform>%n songs removed</numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>Favorites</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Playlists</source>
-        <translation type="unfinished"/>
-    </message>
 </context>
 <context>
     <name>noson</name>
@@ -2047,10 +1920,6 @@
     <message>
         <source>Restart is required</source>
         <translation type="vanished">Ein Neustart der Anwendung ist erforderlich.</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="unfinished"/>
     </message>
 </context>
 </TS>
