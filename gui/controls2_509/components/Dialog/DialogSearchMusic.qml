@@ -58,6 +58,7 @@ DialogBase {
     }
 
     onOpened: {
+        _search = false; // fix qt5.9
         if (selector.currentIndex < 0 && searchableModel !== null) {
             var list = searchableModel.listSearchCategories();
             if (list.length) {
@@ -118,9 +119,12 @@ DialogBase {
     }
 
     onAccepted: {
+        _search = true; // fix qt5.9
         if (searchableModel !== null && selector.currentIndex >= 0 && searchField.text.length) {
             searchableModel.asyncLoadSearch(selectorModel.get(selector.currentIndex).id, searchField.text);
         }
         dialog.close();
     }
+
+    property bool _search: false    // fix qt5.9: dialog result not defined
 }

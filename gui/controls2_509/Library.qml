@@ -415,8 +415,11 @@ MusicPage {
             // no root path: open the search dialog ...
             // if the dialog is rejected then pop this page
             ToolBox.connectOnce(dialogSearch.closed, function(){
-                if (dialogSearch.result === Dialog.Rejected)
+                // fix qt5.9
+                if (!dialogSearch._search)
                     stackView.pop();
+                //if (dialogSearch.result === Dialog.Rejected)
+                //    stackView.pop();
             });
             dialogSearch.open();
         } else {
