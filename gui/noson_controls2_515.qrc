@@ -5,7 +5,6 @@
         <file alias="controls2/NoZoneState.qml">controls2_515/NoZoneState.qml</file>
         <file alias="controls2/components/ActivitySpinner.qml">controls2_515/components/ActivitySpinner.qml</file>
         <file alias="controls2/components/Player.qml">controls2_515/components/Player.qml</file>
-        <file alias="controls2/components/TrackQueue.qml">controls2_515/components/TrackQueue.qml</file>
         <file alias="images/music_download_icon.png">images/music_download_icon.png</file>
         <file alias="images/wifi_phone_icon.png">images/wifi_phone_icon.png</file>
         <file alias="images/div.png">images/div.png</file>
