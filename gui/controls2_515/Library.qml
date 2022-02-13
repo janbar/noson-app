@@ -25,7 +25,6 @@ import "components/ListItemActions"
 import "components/Dialog"
 import "../toolbox.js" as ToolBox
 
-
 MusicPage {
     id: libraryPage
     objectName: "libraryPage"
@@ -58,9 +57,6 @@ MusicPage {
     pageTitle: qsTr("My Index")
     pageFlickable: mediaGrid.visible ? mediaGrid : mediaList
 
-    property int focusId: -1
-    property int focusMode: ListView.Center
-
     LibraryModel {
       id: mediaModel
     }
@@ -69,11 +65,14 @@ MusicPage {
         target: mediaModel
         function onDataUpdated() {
             // save current focus
-            if (mediaList.visible)
-                libraryPage.focusId = LibraryModel.firstIndex + mediaList.indexAt(mediaList.contentX, mediaList.contentY);
-            else if (mediaGrid.visible)
-                libraryPage.focusId = LibraryModel.firstIndex + mediaGrid.indexAt(mediaGrid.contentX, mediaGrid.contentY);
-            libraryPage.focusMode = ListView.Beginning;
+            var focusId;
+            if (mediaList.visible) {
+                focusId = LibraryModel.firstIndex + mediaList.indexAt(mediaList.contentX, mediaList.contentY);
+                mediaList.saveViewFocus(focusId, ListView.Beginning);
+            } else if (mediaGrid.visible) {
+                focusId = LibraryModel.firstIndex + mediaGrid.indexAt(mediaGrid.contentX, mediaGrid.contentY);
+                mediaGrid.saveViewFocus(focusId, GridView.Beginning);
+            }
             // refresh data
             mediaModel.asyncLoad();
         }
@@ -104,12 +103,6 @@ MusicPage {
                     focusViewIndex = false;
                     mediaList.positionViewAtIndex(idx, ListView.Center);
                     mediaGrid.positionViewAtIndex(idx, GridView.Center);
-                } else if (focusId >= 0) {
-                    // restore saved focus
-                    idx = libraryPage.focusId - mediaModel.firstIndex;
-                    mediaList.positionViewAtIndex(idx, focusMode);
-                    mediaGrid.positionViewAtIndex(idx, focusMode);
-                    libraryPage.focusId = -1;
                 }
             }
         }
@@ -121,6 +114,11 @@ MusicPage {
                 pageTitle = rootTitle;
             else
                 pageTitle = name;
+            // the focus will be resetted for a child page or search
+            if (!focusViewIndex) {
+                mediaList.saveViewFocus(0, ListView.Beginning);
+                mediaGrid.saveViewFocus(0, GridView.Beginning);
+            }
         }
     }
 
@@ -313,19 +311,38 @@ MusicPage {
         opacity: showListView ? 1.0 : 0.0
         visible: opacity > 0.0
 
+        property bool fetchEnabled: false // property to enable/disable fetch on move
+
+        function focusView(focusId, focusMode) {
+            var index = (focusId < mediaModel.firstIndex ? 0 : focusId - mediaModel.firstIndex);
+            positionViewAtIndex(index, focusMode);
+            // finally enable fetch on move
+            fetchEnabled = true;
+        }
+
+        function saveViewFocus(focusId, focusMode) {
+            // disable fetch on move
+            fetchEnabled = false;
+            ToolBox.connectOnce(mediaModel.onViewUpdated, function(){
+                mediaList.focusView(focusId, focusMode);
+            });
+        }
+
         onAtYEndChanged: {
-            if (visible && mediaList.atYEnd && mediaModel.totalCount > (mediaModel.firstIndex + mediaModel.count)) {
-                if (libraryPage.focusId < 0 && mediaModel.fetchBack()) {
-                    libraryPage.focusId = mediaModel.firstIndex + mediaModel.count;
-                    libraryPage.focusMode = ListView.End;
+            if (visible && fetchEnabled && mediaList.atYEnd &&
+                    mediaModel.totalCount > (mediaModel.firstIndex + mediaModel.count)) {
+                if (mediaModel.fetchBack()) {
+                    var focusId = mediaModel.firstIndex + mediaModel.count;
+                    mediaList.saveViewFocus(focusId, ListView.End);
                 }
             }
         }
         onAtYBeginningChanged: {
-            if (visible && mediaList.atYBeginning && mediaModel.firstIndex > 0) {
-                if (libraryPage.focusId < 0 && mediaModel.fetchFront()) {
-                    libraryPage.focusId = mediaModel.firstIndex - 1;
-                    libraryPage.focusMode = ListView.Beginning;
+            if (visible && fetchEnabled && mediaList.atYBeginning &&
+                    mediaModel.firstIndex > 0) {
+                if (mediaModel.fetchFront()) {
+                    var focusId = mediaModel.firstIndex - 1;
+                    mediaList.saveViewFocus(focusId, ListView.Beginning);
                 }
             }
         }
@@ -392,25 +409,48 @@ MusicPage {
         opacity: showListView ? 0.0 : 1.0
         visible: opacity > 0.0
 
+        property bool fetchEnabled: false // property to enable/disable fetch on move
+
+        function focusView(focusId, focusMode) {
+            var index = (focusId < mediaModel.firstIndex ? 0 : focusId - mediaModel.firstIndex);
+            positionViewAtIndex(index, focusMode);
+            // finally enable fetch on move
+            fetchEnabled = true;
+        }
+
+        function saveViewFocus(focusId, focusMode) {
+            // disable fetch on move
+            fetchEnabled = false;
+            ToolBox.connectOnce(mediaModel.onViewUpdated, function(){
+                mediaGrid.focusView(focusId, focusMode);
+            });
+        }
+
         onAtYEndChanged: {
-            if (visible && mediaGrid.atYEnd && mediaModel.totalCount > (mediaModel.firstIndex + mediaModel.count)) {
-                if (libraryPage.focusId < 0 && mediaModel.fetchBack()) {
-                    libraryPage.focusId = mediaModel.firstIndex + mediaModel.count;
-                    libraryPage.focusMode = GridView.End;
+            if (visible && fetchEnabled && mediaGrid.atYEnd &&
+                    mediaModel.totalCount > (mediaModel.firstIndex + mediaModel.count)) {
+                if (mediaModel.fetchBack()) {
+                    var focusId = mediaModel.firstIndex + mediaModel.count;
+                    mediaGrid.saveViewFocus(focusId, GridView.End);
                 }
             }
         }
         onAtYBeginningChanged: {
-            if (visible && mediaGrid.atYBeginning && mediaModel.firstIndex > 0) {
-                if (libraryPage.focusId < 0 && mediaModel.fetchFront()) {
-                    libraryPage.focusId = mediaModel.firstIndex - 1;
-                    libraryPage.focusMode = GridView.Beginning;
+            if (visible && fetchEnabled && mediaGrid.atYBeginning &&
+                    mediaModel.firstIndex > 0) {
+                if (lmediaModel.fetchFront()) {
+                    var focusId = mediaModel.firstIndex - 1;
+                    mediaGrid.saveViewFocus(focusId, GridView.Beginning);
                 }
             }
         }
     }
 
     Component.onCompleted: {
+        // on first load enable fetching by focusing views
+        mediaList.saveViewFocus(0,ListView.Beginning);
+        mediaGrid.saveViewFocus(0,GridView.Beginning);
+        //
         mediaModel.init(Sonos, rootPath, false)
         if (rootPath.length === 0) {
             // no root path: open the search dialog ...
