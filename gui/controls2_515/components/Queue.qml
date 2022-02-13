@@ -25,6 +25,7 @@ import NosonApp 1.0
 import "Delegates"
 import "Flickables"
 import "ListItemActions"
+import "../../toolbox.js" as ToolBox
 
 Item {
     id: queue
@@ -46,13 +47,10 @@ Item {
         if (index >= queueModel.firstIndex &&
                 index < queueModel.firstIndex + queueModel.count) {
             // move view at desired position - 1
-            var i = index - queueModel.firstIndex - 1;
-            queueList.positionViewAtIndex(i < 0 ? 0 : i, ListView.Beginning);
+            queueList.focusView(index - 1, ListView.Beginning);
         } else {
-            // set desired focus after reloading
-            queueList.focusId = index;
-            queueList.focusMode = ListView.Beginning;
             // reload starting at position - 1
+            queueList.saveViewFocus(index, ListView.Beginning);
             queueModel.fetchAt(index - 1);
         }
     }
@@ -68,8 +66,8 @@ Item {
             highlighted: (player.currentIndex === model.trackIndex)
 
             onSwipe: {
-                listview.focusId = model.trackIndex > 0 ? model.trackIndex - 1 : 0;
-                listview.focusMode = ListView.Center;
+                var focusId = model.trackIndex - 1;
+                queueList.saveViewFocus(focusId, ListView.Center);
                 removeTrackFromQueue(model);
                 color = "red";
             }
@@ -111,8 +109,8 @@ Item {
                 },
                 Remove {
                     onTriggered: {
-                        listview.focusId = model.trackIndex > 0 ? model.trackIndex - 1 : 0;
-                        listview.focusMode = ListView.Center;
+                        var focusId = model.trackIndex - 1;
+                        queueList.saveViewFocus(focusId, ListView.Center);
                         removeTrackFromQueue(model);
                         color = "red";
                     }
@@ -164,49 +162,58 @@ Item {
             delegate: dragDelegate
         }
 
-        property int focusId: -1
-        property int focusMode: ListView.Center
-
         Connections {
             target: queueModel
             function onDataUpdated() {
-                // save current focus
-                queueList.focusId = queueModel.firstIndex + queueList.indexAt(queueList.contentX, queueList.contentY);
-                queueList.focusMode = ListView.Beginning;
+                var focusId = queueModel.firstIndex + queueList.indexAt(queueList.contentX, queueList.contentY);
+                queueList.saveViewFocus(focusId, ListView.Beginning);
             }
-            function onViewUpdated() {
-                // move to the saved fosus
-                if (queueList.focusId >= 0) {
-                    queueList.positionViewAtIndex(queueList.focusId - queueModel.firstIndex, queueList.focusMode);
-                    // clear saved focus
-                    queueList.focusId = -1;
-                }
-            }
+            //function onViewUpdated() {
+            //}
+        }
+
+        property bool fetchEnabled: false // property to enable/disable fetch on move
+
+        function focusView(focusId, focusMode) {
+            var index = (focusId < queueModel.firstIndex ? 0 : focusId - queueModel.firstIndex);
+            positionViewAtIndex(index, focusMode);
+            // finally enable fetch on move
+            fetchEnabled = true;
+        }
+
+        function saveViewFocus(focusId, focusMode) {
+            // disable fetch on move
+            fetchEnabled = false;
+            ToolBox.connectOnce(queueModel.onViewUpdated, function(){
+                queueList.focusView(focusId, focusMode);
+            });
         }
 
         signal reorder(int from, int to)
 
         onReorder: {
             customdebug("Reorder queue item " + from + " to " + to);
-            queueList.focusId = to + queueModel.firstIndex;
-            queueList.focusMode = ListView.Center;
+            var focusId = to + queueModel.firstIndex;
+            queueList.saveViewFocus(focusId, ListView.Center);
             reorderTrackInQueue(queueModel.firstIndex + from, queueModel.firstIndex + to);
         }
 
         onAtYEndChanged: {
-            if (queueList.atYEnd && queueModel.totalCount > (queueModel.firstIndex + queueModel.count)) {
-                if (queueList.focusId < 0 && queueModel.fetchBack()) {
-                    queueList.focusId = queueModel.firstIndex + queueModel.count;
-                    queueList.focusMode = ListView.End;
+            if (fetchEnabled && queueList.atYEnd &&
+                    queueModel.totalCount > (queueModel.firstIndex + queueModel.count)) {
+                if (queueModel.fetchBack()) {
+                    var focusId = queueModel.firstIndex + queueModel.count;
+                    queueList.saveViewFocus(focusId, ListView.End);
                 }
             }
         }
 
         onAtYBeginningChanged: {
-            if (queueList.atYBeginning && queueModel.firstIndex > 0) {
-                if (queueList.focusId < 0 && queueModel.fetchFront()) {
-                    queueList.focusId = queueModel.firstIndex - 1;
-                    queueList.focusMode = ListView.Beginning;
+            if (fetchEnabled && queueList.atYBeginning &&
+                    queueModel.firstIndex > 0) {
+                if (queueModel.fetchFront()) {
+                    var focusId = queueModel.firstIndex - 1;
+                    queueList.saveViewFocus(focusId, ListView.Beginning);
                 }
             }
         }
@@ -216,6 +223,7 @@ Item {
             if (queueList.atYBeginning && queueModel.firstIndex > 0) {
                 queueList.positionViewAtIndex(1, ListView.Beginning);
             }
+            queueList.fetchEnabled = true;
         }
     }
 }
