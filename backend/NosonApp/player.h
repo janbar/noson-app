@@ -27,6 +27,7 @@
 #include "future.h"
 
 #include <QObject>
+#include <QList>
 
 namespace nosonapp
 {
@@ -305,14 +306,16 @@ private:
   int m_currentProtocol;
 
   typedef RegisteredContent<Player> ManagedQueue;
-  Locked<ManagedQueue> m_queue;
-  unsigned m_queueUpdateID;
+  typedef QList<ManagedQueue> ManagedQueueList ;
+  Locked<ManagedQueueList> m_managedQueues; // list of managed queues
 
   bool m_shareIndexInProgress;
 
   static void playerEventCB(void* handle);
 
+  static ManagedQueueList::iterator findManagedQueue(ManagedQueueList& list, const ListModel<Player>* model);
   static void unregisterContent(ManagedQueue& mq);
+  static void unregisterAllContent(ManagedQueueList& list);
 
   Mpris2* m_mpris2;
 

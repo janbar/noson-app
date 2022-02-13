@@ -40,8 +40,7 @@ Player::Player(QObject *parent)
 , m_currentIndex(-1)
 , m_currentTrackDuration(0)
 , m_currentProtocol(-1)
-, m_queue(ManagedQueue(nullptr, ""))
-, m_queueUpdateID(0)
+, m_managedQueues(ManagedQueueList())
 , m_shareIndexInProgress(false)
 , m_mpris2(nullptr)
 {
@@ -50,12 +49,11 @@ Player::Player(QObject *parent)
 Player::~Player()
 {
   {
-    // queue model must be unregistered before destroying this
-    auto queue = m_queue.Get();
-    unregisterContent(*queue);
+    // all managed queue must be unregistered before destroying this
+    unregisterAllContent(*(m_managedQueues.Get()));
   }
   if (m_sonos && m_shareIndexInProgress)
-    m_sonos->shareIndexFinished();
+    emit m_sonos->shareIndexFinished();
   disableMPRIS2();
   m_player.reset();
   m_sonos = nullptr;
@@ -1169,13 +1167,21 @@ void Player::loadContent(ListModel<Player>* model)
 
 void Player::loadAllContent()
 {
-  ListModel<Player>* model = m_queue.Get()->model;
-  if (model && model->m_dataState == DataStatus::DataNotFound)
+  QList<ListModel<Player>*> left;
   {
-    //emit loadingStarted();
-    model->loadData();
-    //emit loadingFinished();
+    auto list = m_managedQueues.Get();
+    for (ManagedQueue& mq : *list)
+      if (mq.model->m_dataState == DataStatus::DataNotFound)
+        left.push_back(mq.model);
   }
+  //emit loadingStarted();
+  while (!left.isEmpty())
+  {
+    ListModel<Player>* model = left.front();
+    model->loadData();
+    left.pop_front();
+  }
+  //emit loadingFinished();
 }
 
 void Player::runContentLoaderForContext(ListModel<Player>* model, int id)
@@ -1222,24 +1228,33 @@ void Player::registerContent(ListModel<Player>* model, const QString& root)
   if (model)
   {
     qDebug("%s: %p (%s)", __FUNCTION__, model, model->m_root.toUtf8().constData());
-    auto rc = m_queue.Get();
-    if (rc->model == model)
+    // lock the list
+    auto list = m_managedQueues.Get();
+    // if already registered then update the root
+    ManagedQueueList::iterator mq = findManagedQueue(*list, model);
+    if (mq != list->end())
     {
-      rc->root = root;
+      mq->root = root;
       return;
     }
-    if (rc->model)
-      rc->model->m_provider = nullptr;
-    rc->model = model;
-    rc->root = root;
+    // else register it as managed queue
+    list->push_back(ManagedQueue(model, root));
   }
 }
 
 void Player::unregisterContent(ListModel<Player>* model)
 {
-  auto mq = m_queue.Get();
-  if (mq->model == model)
-    unregisterContent(*mq);
+  if (model)
+  {
+    // lock the list
+    auto list = m_managedQueues.Get();
+    ManagedQueueList::iterator mq = findManagedQueue(*list, model);
+    if (mq != list->end())
+    {
+      unregisterContent(*mq);
+      list->erase(mq);
+    }
+  }
 }
 
 void Player::handleTransportChange()
@@ -1510,27 +1525,40 @@ void Player::playerEventCB(void* handle)
         player->m_shareIndexInProgress = prop.ShareIndexInProgress;
       }
 
-      auto cl = player->m_queue.Get();
-      // find the base of the model from its root
-      if (cl->model)
+      // handle data update of all managed queues
+      for (ManagedQueue& mq : *(player->m_managedQueues.Get()))
       {
-        QString _base;
-        int slash = cl->model->m_root.indexOf("/");
-        if (slash < 0)
-          _base.append(cl->model->m_root);
-        else
-          _base.append(cl->model->m_root.left(slash));
-
-        for (std::vector<std::pair<std::string, unsigned> >::const_iterator uit = prop.ContainerUpdateIDs.begin(); uit != prop.ContainerUpdateIDs.end(); ++uit)
+        // find the base of the model from its root
+        if (mq.model)
         {
-          qDebug("%s: container [%s] has being updated to %u", __FUNCTION__, uit->first.c_str(), uit->second);
-          // same base
-          if (cl->model->m_updateID != uit->second && _base == uit->first.c_str())
-            cl->model->handleDataUpdate();
+          QString _base;
+          int slash = mq.model->m_root.indexOf("/");
+          if (slash < 0)
+            _base.append(mq.model->m_root);
+          else
+            _base.append(mq.model->m_root.left(slash));
+
+          for (std::vector<std::pair<std::string, unsigned> >::const_iterator uit = prop.ContainerUpdateIDs.begin(); uit != prop.ContainerUpdateIDs.end(); ++uit)
+          {
+            qDebug("%s: container [%s] has being updated to %u", __FUNCTION__, uit->first.c_str(), uit->second);
+            // same base
+            if (mq.model->m_updateID != uit->second && _base == uit->first.c_str())
+              mq.model->handleDataUpdate();
+          }
         }
       }
     }
   }
+}
+
+Player::ManagedQueueList::iterator Player::findManagedQueue(ManagedQueueList& list, const ListModel<Player>* model)
+{
+  for (ManagedQueueList::iterator it = list.begin(); it != list.end(); ++it)
+  {
+    if (it->model == model)
+      return it;
+  }
+  return list.end();
 }
 
 void Player::unregisterContent(ManagedQueue& mq)
@@ -1543,6 +1571,13 @@ void Player::unregisterContent(ManagedQueue& mq)
     mq.model = nullptr;
     mq.root.clear();
   }
+}
+
+void Player::unregisterAllContent(ManagedQueueList& list)
+{
+  for (ManagedQueue& mq : list)
+    unregisterContent(mq);
+  list.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
