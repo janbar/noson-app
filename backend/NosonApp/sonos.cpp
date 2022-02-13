@@ -446,14 +446,11 @@ void Sonos::loadAllContent()
         left.push_back(it->model);
   }
   emit loadingStarted();
-  if (!left.empty())
+  while (!left.isEmpty())
   {
-    while (!left.isEmpty())
-    {
-      ListModel<Sonos>* model = left.front();
-      model->loadData();
-      left.pop_front();
-    }
+    ListModel<Sonos>* model = left.front();
+    model->loadData();
+    left.pop_front();
   }
   emit loadingFinished();
 }
