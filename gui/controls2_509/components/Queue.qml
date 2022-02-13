@@ -219,11 +219,8 @@ Item {
         }
 
         Component.onCompleted: {
-            // FIX move up triggering
-            if (queueList.atYBeginning && queueModel.firstIndex > 0) {
-                queueList.positionViewAtIndex(1, ListView.Beginning);
-            }
-            queueList.fetchEnabled = true;
+            // on first load enable fetching by focusing view
+            saveViewFocus(0, ListView.Beginning);
         }
     }
 }
