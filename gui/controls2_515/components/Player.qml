@@ -28,7 +28,7 @@ import NosonApp 1.0
 Item {
     id: player
     objectName: "controller"
-    property alias trackQueue: trackQueueLoader.item
+    property alias trackQueue: queue
     property alias renderingModel: renderingModelLoader.item
     property bool connected: false
     property string zoneId: ""
@@ -293,13 +293,13 @@ Item {
     }
 
     function removeTrackFromQueue(modelItem, onFinished) {
-        var future = zone.handle.tryRemoveTrackFromQueue(modelItem.id, trackQueue.model.containerUpdateID());
+        var future = zone.handle.tryRemoveTrackFromQueue(modelItem.id, queue.containerUpdateID());
         future.onFinished.connect(onFinished);
         return future.start();
     }
 
     function reorderTrackInQueue(nrFrom, nrTo, onFinished) {
-        var future = zone.handle.tryReorderTrackInQueue(nrFrom, nrTo, trackQueue.model.containerUpdateID());
+        var future = zone.handle.tryReorderTrackInQueue(nrFrom, nrTo, queue.containerUpdateID());
         future.onFinished.connect(onFinished);
         return future.start();
     }
@@ -454,7 +454,7 @@ Item {
         player.remainingSleepTimerDuration(function(result) {
             player.sleepTimerEnabled = result > 0 ? true : false
         });
-        trackQueue.initQueue(zone.handle);
+        queue.initQueue(zone.handle);
     }
 
     function handleZPSourceChanged() {
@@ -568,15 +568,31 @@ Item {
 
     // the track queue related to the player
     // it must be plugged to the current instance of the zone player
-    // also it must be reloaded after any connection event
-    Loader {
-        id: trackQueueLoader
-        asynchronous: false
-        sourceComponent: Component {
-            TrackQueue {
-                // init is done by handleZPConnectedChanged
-                onTrackCountChanged: player.currentCount = trackCount
+    // so init is done by handleZPConnectedChanged
+    QueueModel {
+        id: queue
+        onDataUpdated: {
+            asyncLoad();
+        }
+        onLoaded: {
+            if (succeeded) {
+                resetModel();
+                player.currentCount = totalCount;
+            } else {
+                resetModel();
+                player.currentCount = 0;
             }
+        }
+
+        // Initialize the queue for given zone handle
+        function initQueue(handle) {
+            if (handle) {
+                init(handle, false);
+                asyncLoad();
+            }
+        }
+        function reloadQueue() {
+            asyncLoad();
         }
     }
 

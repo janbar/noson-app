@@ -241,7 +241,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: styleMusic.playerControls.labelColor
                 source: "qrc:/images/media-skip-backward.svg"
-                opacity: player.trackQueue.model.totalCount > 0 && player.currentIndex > 0  ? 1 : .3
+                opacity: player.trackQueue.totalCount > 0 && player.currentIndex > 0  ? 1 : .3
                 onClicked: player.previousSong(mainView.actionFinished)
             }
         }
@@ -303,7 +303,7 @@ Item {
                 color: styleMusic.playerControls.labelColor
                 source: "qrc:/images/media-skip-forward.svg"
                 objectName: "forwardShape"
-                opacity: player.trackQueue.model.totalCount > 0 && (player.currentIndex + 1) < player.trackQueue.model.totalCount ? 1 : .3
+                opacity: player.trackQueue.totalCount > 0 && (player.currentIndex + 1) < player.trackQueue.totalCount ? 1 : .3
                 onClicked: player.nextSong(mainView.actionFinished)
             }
         }

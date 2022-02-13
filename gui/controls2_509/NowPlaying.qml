@@ -86,11 +86,11 @@ MusicPage {
 
     // Ensure that the listview has loaded before attempting to positionAt
     function ensureListViewLoaded() {
-        if (queueLoader.item.listview.count === player.trackQueue.model.count) {
+        if (queueLoader.item.listview.count === player.trackQueue.count) {
             positionAtCurrentIndex();
         } else {
             ToolBox.connectOnce(queueLoader.item.listview.onCountChanged, function(){
-                if (queueLoader.item.listview.count === player.trackQueue.model.count) {
+                if (queueLoader.item.listview.count === player.trackQueue.count) {
                     positionAtCurrentIndex();
                 }
             })
@@ -157,7 +157,7 @@ MusicPage {
         sourceComponent: Component {
             Queue {
                 backgroundColor: "transparent"
-                queueModel: player.trackQueue.model
+                queueModel: player.trackQueue
             }
         }
     }

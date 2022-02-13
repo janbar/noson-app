@@ -178,7 +178,7 @@ Page {
 
     Queue {
         id: queue
-        queueModel: player.trackQueue.model
+        queueModel: player.trackQueue
         anchors {
             top: toolbar.bottom
             bottom: parent.bottom
@@ -251,11 +251,11 @@ Page {
 
     // Ensure that the listview has loaded before attempting to positionAt
     function ensureListViewLoaded() {
-        if (queue.listview.count === player.trackQueue.model.count) {
+        if (queue.listview.count === player.trackQueue.count) {
             positionAtCurrentIndex();
         } else {
             ToolBox.connectOnce(queue.listview.onCountChanged, function(){
-                if (queueLoader.item.listview.count === player.trackQueue.model.count) {
+                if (queueLoader.item.listview.count === player.trackQueue.count) {
                     positionAtCurrentIndex();
                 }
             })
