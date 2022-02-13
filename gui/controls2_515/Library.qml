@@ -58,7 +58,7 @@ MusicPage {
     pageTitle: qsTr("My Index")
     pageFlickable: mediaGrid.visible ? mediaGrid : mediaList
 
-    property int focusId: 0
+    property int focusId: -1
     property int focusMode: ListView.Center
 
     LibraryModel {
@@ -104,12 +104,12 @@ MusicPage {
                     focusViewIndex = false;
                     mediaList.positionViewAtIndex(idx, ListView.Center);
                     mediaGrid.positionViewAtIndex(idx, GridView.Center);
-                } else if (focusId > 0) {
+                } else if (focusId >= 0) {
                     // restore saved focus
                     idx = libraryPage.focusId - mediaModel.firstIndex;
                     mediaList.positionViewAtIndex(idx, focusMode);
                     mediaGrid.positionViewAtIndex(idx, focusMode);
-                    libraryPage.focusId = 0;
+                    libraryPage.focusId = -1;
                 }
             }
         }
@@ -315,7 +315,7 @@ MusicPage {
 
         onAtYEndChanged: {
             if (visible && mediaList.atYEnd && mediaModel.totalCount > (mediaModel.firstIndex + mediaModel.count)) {
-                if (libraryPage.focusId === 0 && mediaModel.fetchBack()) {
+                if (libraryPage.focusId < 0 && mediaModel.fetchBack()) {
                     libraryPage.focusId = mediaModel.firstIndex + mediaModel.count;
                     libraryPage.focusMode = ListView.End;
                 }
@@ -323,7 +323,7 @@ MusicPage {
         }
         onAtYBeginningChanged: {
             if (visible && mediaList.atYBeginning && mediaModel.firstIndex > 0) {
-                if (libraryPage.focusId === 0 && mediaModel.fetchFront()) {
+                if (libraryPage.focusId < 0 && mediaModel.fetchFront()) {
                     libraryPage.focusId = mediaModel.firstIndex - 1;
                     libraryPage.focusMode = ListView.Beginning;
                 }
@@ -394,7 +394,7 @@ MusicPage {
 
         onAtYEndChanged: {
             if (visible && mediaGrid.atYEnd && mediaModel.totalCount > (mediaModel.firstIndex + mediaModel.count)) {
-                if (libraryPage.focusId === 0 && mediaModel.fetchBack()) {
+                if (libraryPage.focusId < 0 && mediaModel.fetchBack()) {
                     libraryPage.focusId = mediaModel.firstIndex + mediaModel.count;
                     libraryPage.focusMode = GridView.End;
                 }
@@ -402,7 +402,7 @@ MusicPage {
         }
         onAtYBeginningChanged: {
             if (visible && mediaGrid.atYBeginning && mediaModel.firstIndex > 0) {
-                if (libraryPage.focusId === 0 && mediaModel.fetchFront()) {
+                if (libraryPage.focusId < 0 && mediaModel.fetchFront()) {
                     libraryPage.focusId = mediaModel.firstIndex - 1;
                     libraryPage.focusMode = GridView.Beginning;
                 }

@@ -164,7 +164,7 @@ Item {
             delegate: dragDelegate
         }
 
-        property int focusId: 0
+        property int focusId: -1
         property int focusMode: ListView.Center
 
         Connections {
@@ -176,10 +176,10 @@ Item {
             }
             function onViewUpdated() {
                 // move to the saved fosus
-                if (queueList.focusId > 0) {
+                if (queueList.focusId >= 0) {
                     queueList.positionViewAtIndex(queueList.focusId - queueModel.firstIndex, queueList.focusMode);
                     // clear saved focus
-                    queueList.focusId = 0;
+                    queueList.focusId = -1;
                 }
             }
         }
@@ -195,7 +195,7 @@ Item {
 
         onAtYEndChanged: {
             if (queueList.atYEnd && queueModel.totalCount > (queueModel.firstIndex + queueModel.count)) {
-                if (queueList.focusId === 0 && queueModel.fetchBack()) {
+                if (queueList.focusId < 0 && queueModel.fetchBack()) {
                     queueList.focusId = queueModel.firstIndex + queueModel.count;
                     queueList.focusMode = ListView.End;
                 }
@@ -204,7 +204,7 @@ Item {
 
         onAtYBeginningChanged: {
             if (queueList.atYBeginning && queueModel.firstIndex > 0) {
-                if (queueList.focusId === 0 && queueModel.fetchFront()) {
+                if (queueList.focusId < 0 && queueModel.fetchFront()) {
                     queueList.focusId = queueModel.firstIndex - 1;
                     queueList.focusMode = ListView.Beginning;
                 }
