@@ -92,6 +92,10 @@ Item {
         AllZonesModel.releasePlayer(zp);
     }
 
+    function zoneHandle() {
+        return (connected ? zone.handle : null);
+    }
+
     function coordinatorName() {
         return zone.handle.coordinatorName();
     }

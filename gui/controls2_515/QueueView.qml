@@ -28,10 +28,33 @@ MusicPage {
     isListView: true
     listview: queue.listview
 
+    QueueModel {
+        id: model
+        onDataUpdated: asyncLoad()
+        onLoaded: resetModel()
+    }
+
+    Connections {
+        target: player
+        function onConnectedChanged() {
+            if (player.connected) {
+                model.init(player.zoneHandle(), false);
+                model.asyncLoad();
+            }
+        }
+    }
+
+    Component.onCompleted: {
+        if (player.connected) {
+            model.init(player.zoneHandle(), false);
+            model.asyncLoad();
+        }
+    }
+
     Queue {
         id: queue
         anchors.fill: parent
-        queueModel: player.trackQueue.model
+        queueModel: model
     }
 
     // Page actions
