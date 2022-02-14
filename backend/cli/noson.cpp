@@ -671,7 +671,7 @@ static bool parseCommand(const std::string& line)
     }
     else if (token == "SHOWQUEUE")
     {
-      SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
+      SONOS::ContentDirectory mycontent(gPlayer->GetHost(), gPlayer->GetPort());
       SONOS::ContentList bdir(mycontent, "Q:0");
       PRINT1("UpdateID  : %u\n", bdir.GetUpdateID());
       PRINT1("Item count: %u\n", bdir.size());
@@ -738,7 +738,7 @@ static bool parseCommand(const std::string& line)
         for (int i = 0; i < static_cast<int>(SONOS::Search_unknown); ++i)
         {
           auto root = SONOS::ContentSearch::rootenum(static_cast<SONOS::Search_t>(i));
-          PRINT2("%-16s Search by %s\n", root.first.c_str(), root.second.c_str());  
+          PRINT2("%-16s Search by %s\n", root.first.c_str(), root.second.c_str());
         }
       }
     }
