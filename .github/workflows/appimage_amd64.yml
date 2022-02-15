@@ -1,0 +1,44 @@
+name: appimage_amd64
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-appimage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: "sudo apt-get update && sudo apt-get install -y
+              qt5-default cmake
+              qtbase5-dev qttools5-dev qttools5-dev-tools qtdeclarative5-dev
+              qtdeclarative5-dev-tools qtquickcontrols2-5-dev libqt5svg5-dev libqt5svg5
+              qml-module-qt-labs-settings qml-module-qtgraphicaleffects
+              qml-module-qtqml-models2 qml-module-qtquick2 qml-module-qtquick-controls2
+              qml-module-qtquick-layouts qml-module-qtquick-particles2
+              qml-module-qtquick-templates2 qml-module-qtquick-window2
+              zlib1g-dev libssl-dev libflac-dev libflac++-dev libpulse-dev
+              libdbus-1-dev libqt5dbus5"
+
+      - name: Init submodules
+        run: git submodule init && git submodule update
+
+      - name: Configure
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+
+      - name: Build
+        run: cd build && make -j`nproc` install DESTDIR=AppDir
+          
+      - name: Build AppImage
+        uses: AppImageCrafters/build-appimage-action@master
+        env:
+          UPDATE_INFO: gh-releases-zsync|AppImageCrafters|noson-app|latest|*x86_64.AppImage.zsync
+        with:
+          recipe: AppImageBuilder.yml
+      - uses: actions/upload-artifact@v2
+        with:
+          name: AppImage
+          path: './*.AppImage*'
