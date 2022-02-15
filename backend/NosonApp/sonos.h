@@ -198,10 +198,7 @@ public:
     return nosonapp::normalizedString(str);
   }
 
-  Q_INVOKABLE static bool havePulseAudio()
-  {
-    return SONOS::System::HavePulseAudio();
-  }
+  Q_INVOKABLE bool havePulseAudio();
 
 signals:
   void initDone(bool succeeded);

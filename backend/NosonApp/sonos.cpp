@@ -532,6 +532,15 @@ void Sonos::endJob()
   emit jobCountChanged();
 }
 
+bool Sonos::havePulseAudio()
+{
+#ifdef HAVE_PULSEAUDIO
+  if (m_system.GetRequestBroker(PULSESTREAMER_CNAME))
+    return true;
+#endif
+  return false;
+}
+
 void Sonos::systemEventCB(void *handle)
 {
   Sonos* sonos = static_cast<Sonos*>(handle);
