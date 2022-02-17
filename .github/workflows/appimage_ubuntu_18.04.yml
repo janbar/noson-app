@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-appimage:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
 
@@ -31,13 +31,13 @@ jobs:
 
       - name: Build
         run: cd build && make -j`nproc` install DESTDIR=AppDir
-          
+
       - name: Build AppImage
         uses: AppImageCrafters/build-appimage-action@master
         env:
           UPDATE_INFO: gh-releases-zsync|AppImageCrafters|noson-app|latest|*x86_64.AppImage.zsync
         with:
-          recipe: AppImageBuilder.yml
+          recipe: appimage/builder_ubuntu_18.04.yml
       - uses: actions/upload-artifact@v2
         with:
           name: AppImage
