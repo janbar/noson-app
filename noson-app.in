@@ -1,13 +1,18 @@
 #!/bin/sh
 
-MYROOT=''
+NOSON_CLI=@NOSON_CLI@
+NOSON_GUI=@NOSON_GUI@
+PLUGINS_DIR=@PLUGINS_DIR@
+
 # Check for an instance of AppImage
-if [ -n "$APPDIR" ] && [ -d "$APPDIR@PLUGINS_DIR@" ]; then
-  MYROOT="$APPDIR"
+if [ -n "$APPDIR" ] && [ -d "$APPDIR$PLUGINS_DIR" ]; then
+  NOSON_CLI="$APPDIR$NOSON_CLI"
+  NOSON_GUI="$APPDIR$NOSON_GUI"
+  PLUGINS_DIR="$APPDIR$PLUGINS_DIR"
 fi
 
 # Launch the CLI else the GUI
-[ "--cli" = "$1" ] && shift && exec "$MYROOT@NOSON_CLI@" $@
+[ "--cli" = "$1" ] && shift && exec "$NOSON_CLI" $@
 
 # Migrate the GUI settings
 if [ -f "$HOME/.config/janbar/noson.conf" ]; then
@@ -17,5 +22,5 @@ if [ -f "$HOME/.config/janbar/noson.conf" ]; then
 fi
 
 # Launch the GUI
-export QML2_IMPORT_PATH="$MYROOT@PLUGINS_DIR@"
-exec "$MYROOT@NOSON_GUI@" $@
+export QML2_IMPORT_PATH="$PLUGINS_DIR"
+exec "$NOSON_GUI" $@
