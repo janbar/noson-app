@@ -438,7 +438,7 @@ MusicPage {
         onAtYBeginningChanged: {
             if (visible && fetchEnabled && mediaGrid.atYBeginning &&
                     mediaModel.firstIndex > 0) {
-                if (lmediaModel.fetchFront()) {
+                if (mediaModel.fetchFront()) {
                     var focusId = mediaModel.firstIndex - 1;
                     mediaGrid.saveViewFocus(focusId, GridView.Beginning);
                 }
