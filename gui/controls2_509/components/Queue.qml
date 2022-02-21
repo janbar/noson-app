@@ -185,7 +185,8 @@ Item {
             // disable fetch on move
             fetchEnabled = false;
             ToolBox.connectOnce(queueModel.onViewUpdated, function(){
-                queueList.focusView(focusId, focusMode);
+                if (queueList)
+                    queueList.focusView(focusId, focusMode);
             });
         }
 
