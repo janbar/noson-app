@@ -75,6 +75,7 @@ class TracksModel : public QAbstractListModel, public ListModel<Sonos>
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
   Q_PROPERTY(int totalCount READ totalCount NOTIFY totalCountChanged)
+  Q_PROPERTY(int firstIndex READ firstIndex CONSTANT)
 
 public:
   enum TrackRoles
@@ -90,15 +91,15 @@ public:
   };
 
   TracksModel(QObject* parent = 0);
-  virtual ~TracksModel();
+  ~TracksModel() override;
 
   void addItem(TrackItem* item);
 
-  int rowCount(const QModelIndex& parent = QModelIndex()) const;
+  int rowCount(const QModelIndex& parent = QModelIndex()) const override;
 
-  QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+  QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
-  bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+  bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
   Q_INVOKABLE QVariantMap get(int row);
 
@@ -106,15 +107,19 @@ public:
 
   Q_INVOKABLE bool init(nosonapp::Sonos* provider, const QString& root, bool fill = false);
 
-  virtual void clearData();
+  void clearData() override;
 
-  virtual bool loadData();
+  bool loadData() override;
 
   int totalCount() const { return m_totalCount; }
 
+  int firstIndex() const { return 0; }
+
+  Q_INVOKABLE bool fetchAt(int index);
+
   Q_INVOKABLE bool asyncLoad();
 
-  virtual bool loadMoreData();
+  bool loadMoreData(unsigned size = 0);
 
   Q_INVOKABLE bool asyncLoadMore();
 
@@ -122,9 +127,9 @@ public:
 
   Q_INVOKABLE void appendModel();
 
-  virtual bool loadDataForContext(int id);
+  bool loadDataForContext(int id) override;
 
-  virtual void handleDataUpdate();
+  void handleDataUpdate() override;
 
   Q_INVOKABLE int containerUpdateID() { return m_updateID; }
 
@@ -133,10 +138,11 @@ signals:
   void countChanged();
   void totalCountChanged();
   void loaded(bool succeeded);
+  void viewUpdated();
   void loadedMore(bool succeeded);
 
 protected:
-  QHash<int, QByteArray> roleNames() const;
+  QHash<int, QByteArray> roleNames() const override;
 
 private:
   QList<TrackItem*> m_items;
@@ -146,7 +152,7 @@ private:
   SONOS::ContentList* m_contentList;
   SONOS::ContentList::iterator m_iterator;
   unsigned m_totalCount;
-
+  unsigned m_fetchSize;
 };
 
 }

@@ -67,6 +67,7 @@ TracksModel::TracksModel(QObject* parent)
 , m_contentDirectory(0)
 , m_contentList(0)
 , m_totalCount(0)
+, m_fetchSize(0)
 {
 }
 
@@ -254,6 +255,19 @@ bool TracksModel::loadData()
   return true;
 }
 
+bool TracksModel::fetchAt(int index)
+{
+  if (!m_provider)
+    return false;
+  LockGuard<QRecursiveMutex> g(m_lock);
+  if ((index + LOAD_BULKSIZE) <= m_items.count() || static_cast<unsigned>(index) >= m_totalCount)
+    return false;
+  // estimate the next fetch size for the targeted index
+  m_fetchSize = (index + LOAD_BULKSIZE) - m_items.count();
+  m_provider->runContentLoaderForContext(this, 1);
+  return true;
+}
+
 bool TracksModel::asyncLoad()
 {
   if (m_provider)
@@ -264,7 +278,7 @@ bool TracksModel::asyncLoad()
   return false;
 }
 
-bool TracksModel::loadMoreData()
+bool TracksModel::loadMoreData(unsigned size)
 {
   LockGuard<QRecursiveMutex> g(m_lock);
   if (!m_contentDirectory || !m_contentList)
@@ -278,11 +292,12 @@ bool TracksModel::loadMoreData()
     emit loadedMore(false);
     return false;
   }
-
   QString url = m_provider->getBaseUrl();
 
+  if (size == 0)
+    size = LOAD_BULKSIZE;
   unsigned cnt = 0;
-  while (cnt < LOAD_BULKSIZE && m_iterator != m_contentList->end())
+  while (cnt < size && m_iterator != m_contentList->end())
   {
     TrackItem* item = new TrackItem(*m_iterator, url);
     if (item->isValid())
@@ -341,8 +356,11 @@ void TracksModel::resetModel()
       m_data.clear();
       endInsertRows();
     }
-    m_dataState = DataStatus::DataSynced;
     endResetModel();
+
+    emit viewUpdated();
+
+    m_dataState = DataStatus::DataSynced;
   }
   emit countChanged();
 }
@@ -357,9 +375,12 @@ void TracksModel::appendModel()
     beginInsertRows(QModelIndex(), cnt, cnt + m_data.count()-1);
     foreach (TrackItem* item, m_data)
         m_items << item;
+    endInsertRows();
+
+    emit viewUpdated();
+
     m_data.clear();
     m_dataState = DataStatus::DataSynced;
-    endInsertRows();
   }
   emit countChanged();
 }
@@ -371,7 +392,11 @@ bool TracksModel::loadDataForContext(int id)
     case 0:
       return loadData();
     case 1:
-      return loadMoreData();
+    {
+      unsigned c = m_fetchSize;
+      m_fetchSize = 0;
+      return loadMoreData(c);
+    }
     default:
       return false;
   }
@@ -382,6 +407,6 @@ void TracksModel::handleDataUpdate()
   if (!updateSignaled())
   {
     setUpdateSignaled(true);
-    dataUpdated();
+    emit dataUpdated();
   }
 }
