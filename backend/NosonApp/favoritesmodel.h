@@ -121,6 +121,7 @@ public:
     TypeGenre     = 3,
     TypePlaylist  = 4,
     TypeAudioItem = 5,
+    TypeFolder    = 6,
   };
 
   Q_ENUM(ItemType)

@@ -78,6 +78,7 @@ MusicPage {
                         : model.type === FavoritesModel.TypeGenre ? [{art: "qrc:/images/no_cover.png"}]
                         : model.type === FavoritesModel.TypeAudioItem && model.canQueue ? makeCoverSource(model.art, model.author, model.album)
                         : model.type === FavoritesModel.TypeAudioItem && model.art === "" ? [{art: "qrc:/images/radio.png"}]
+                        : model.type === FavoritesModel.TypeFolder ? [{art: "qrc:/images/folder_share.png"}]
                         : makeCoverSource(model.art, undefined, undefined)
             description:  model.description.length > 0 ? model.description
                        : model.type === FavoritesModel.TypeAlbum ? qsTr("Album")
@@ -187,6 +188,7 @@ MusicPage {
                         : model.type === FavoritesModel.TypeGenre ? [{art: "qrc:/images/no_cover.png"}]
                         : model.type === FavoritesModel.TypeAudioItem && model.canQueue ? makeCoverSource(model.art, model.author, model.album)
                         : model.type === FavoritesModel.TypeAudioItem && model.art === "" ? [{art: "qrc:/images/radio.png"}]
+                        : model.type === FavoritesModel.TypeFolder ? [{art: "qrc:/images/folder_share.png"}]
                         : makeCoverSource(model.art, undefined, undefined)
 
             onImageError: model.art = "" // reset invalid url from model
@@ -202,7 +204,7 @@ MusicPage {
 
     function clickItem(model) {
         if (!model.isService) {
-            if (model.type === 1) {
+            if (model.type === FavoritesModel.TypeAlbum) {
                 stackView.push("qrc:/controls2/Library.qml",
                                {
                                    "rootPath": model.objectId,
@@ -213,29 +215,40 @@ MusicPage {
                                    "nodeItem": makeContainerItem(model)
                                })
             }
-            else if (model.type === 2) {
+            else if (model.type === FavoritesModel.TypePerson) {
                 stackView.push("qrc:/controls2/Library.qml",
                                {
                                    "rootPath": model.objectId,
                                    "rootTitle": model.artist,
                                    "rootType": LibraryModel.NodePerson,
                                    "isListView": false,
-                                   "displayType": LibraryModel.DisplayGrid,
+                                   "displayType": LibraryModel.DisplayUnknown,
                                    "nodeItem": makeContainerItem(model)
                                })
             }
-            else if (model.type === 3) {
+            else if (model.type === FavoritesModel.TypeGenre) {
                 stackView.push("qrc:/controls2/Library.qml",
                                {
                                    "rootPath": model.objectId,
                                    "rootTitle": model.title,
                                    "rootType": LibraryModel.NodeGenre,
                                    "isListView": false,
-                                   "displayType": LibraryModel.DisplayEditorial,
+                                   "displayType": LibraryModel.DisplayUnknown,
                                    "nodeItem": makeContainerItem(model)
                                })
             }
-            else if (model.type === 4) {
+            else if (model.type === FavoritesModel.TypeFolder) {
+                stackView.push("qrc:/controls2/Library.qml",
+                               {
+                                   "rootPath": model.objectId,
+                                   "rootTitle": model.title,
+                                   "rootType": LibraryModel.NodePlayable,
+                                   "isListView": true,
+                                   "displayType": LibraryModel.DisplayItemList,
+                                   "nodeItem": makeContainerItem(model)
+                               })
+            }
+            else if (model.type === FavoritesModel.TypePlaylist) {
                 stackView.push("qrc:/controls2/SongsView.qml",
                                    {
                                        "containerItem": {id: model.objectId, payload: model.object},
@@ -249,7 +262,7 @@ MusicPage {
                                        "line2": model.title
                                    })
             }
-            else if (model.type === 5) {
+            else if (model.type === FavoritesModel.TypeAudioItem) {
                 player.playFavorite(model, mainView.actionFinished); // play it
             }
         } else {

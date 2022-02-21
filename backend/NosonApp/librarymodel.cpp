@@ -63,6 +63,7 @@ LibraryItem::LibraryItem(const SONOS::DigitalItemPtr& data, const QString& baseU
   m_displayType = LibraryModel::DisplayUnknown;
   bool _canqueue = false;
   bool _canplay = false;
+  bool _hasRes = !data->GetValue("res").empty();
 
   std::string tmp;
   switch (data->subType())
@@ -93,8 +94,8 @@ LibraryItem::LibraryItem(const SONOS::DigitalItemPtr& data, const QString& baseU
   case SONOS::DigitalItem::SubType_playlistContainer:
     m_type = LibraryModel::NodePlaylist;
     m_displayType = LibraryModel::DisplayTrackList;
-    _canqueue = false;
-    _canplay = false;
+    _canqueue = true;
+    _canplay = true;
     break;
   case SONOS::DigitalItem::SubType_audioItem:
     m_type = LibraryModel::NodeAudioItem;
@@ -114,10 +115,23 @@ LibraryItem::LibraryItem(const SONOS::DigitalItemPtr& data, const QString& baseU
     _canplay = false;
     break;
   default:
-    m_type = LibraryModel::NodeUnknown;
+    // a container in root 'S:' can be playable
+    if (data->IsContainer() && data->GetObjectID().substr(0, 2) == "S:")
+    {
+      m_type = _hasRes ? LibraryModel::NodePlayable : LibraryModel::NodeFolder;
+      m_displayType = LibraryModel::DisplayItemList;
+      _canqueue = false; // prohibit add to playlist
+      _canplay = _hasRes;
+    }
+    else
+    {
+      m_type = LibraryModel::NodeUnknown;
+      _canqueue = false;
+      _canplay = false;
+    }
   }
 
-  if (!data->GetValue("res").empty())
+  if (_hasRes)
   {
     m_canQueue = (_canqueue && SONOS::System::CanQueueItem(data));
     m_canPlay = _canplay;
@@ -263,7 +277,7 @@ QVariantMap LibraryModel::get(int row)
   return model;
 }
 
-bool LibraryModel::init(Sonos* provider, const QString& root, bool fill)
+bool LibraryModel::init(Sonos* provider, const QString& root, bool fill, int display, int node)
 {
   if (!provider)
     return false;
@@ -272,7 +286,7 @@ bool LibraryModel::init(Sonos* provider, const QString& root, bool fill)
   m_content = new SONOS::ContentDirectory(provider->getHost(), provider->getPort());
   // initialize path from root
   m_path.clear();
-  m_path.push(Path(root, QString(ROOT_TAG), DisplayUnknown, NodeUnknown));
+  m_path.push(Path(root, QString(ROOT_TAG), display, node));
   emit pathChanged();
   // configure to listen any update on the current content
   return ListModel<Sonos>::configure(provider, pathId().toUtf8().constData(), fill);

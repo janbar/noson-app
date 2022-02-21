@@ -75,7 +75,13 @@ FavoriteItem::FavoriteItem(const SONOS::DigitalItemPtr& ptr, const QString& base
       m_album = QString::fromUtf8(m_objectPtr->GetValue("upnp:album").c_str());
       break;
     default:
-      m_type = FavoritesModel::TypeUnknown;
+      if (m_objectPtr->IsContainer() && m_objectPtr->GetObjectID().substr(0, 2) == "S:")
+      {
+        m_type = FavoritesModel::TypeFolder;
+        m_canQueue = false; // prohibit add to playlist
+      }
+      else
+        m_type = FavoritesModel::TypeUnknown;
     }
   }
 }

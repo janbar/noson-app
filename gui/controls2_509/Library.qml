@@ -50,6 +50,7 @@ MusicPage {
     property bool taintedView: false
 
     // internal binding to select the type of view
+    // type DisplayUnknown allow switching view list/grid
     property bool showListView: (isListView && displayType === LibraryModel.DisplayUnknown) ||
                 displayType === LibraryModel.DisplayTrackList ||
                 displayType === LibraryModel.DisplayItemList
@@ -80,7 +81,7 @@ MusicPage {
             if (succeeded) {
                 mediaModel.resetModel()
                 libraryPage.displayType = mediaModel.displayType() // apply displayType
-                libraryPage.nodeType = (mediaModel.isRoot ? libraryPage.rootType : mediaModel.nodeType()) // apply nodeType
+                libraryPage.nodeType = mediaModel.nodeType() // apply nodeType
                 libraryPage.taintedView = false // reset
             } else {
                 mediaModel.resetModel();
@@ -141,9 +142,11 @@ MusicPage {
 
     header: Row {
         id: listHeader
-        visible: showListView && nodeType === LibraryModel.NodeAlbum
+        visible: showListView && (nodeType === LibraryModel.NodeAlbum ||
+                                  nodeType === LibraryModel.NodePlaylist ||
+                                  nodeType === LibraryModel.NodePlayable)
         height: visible ? units.gu(7) : 0
-        property real childSize: (width - units.gu(4)) / 3
+        property real childSize: Math.min((width - units.gu(4)) / 3, units.gu(16))
         spacing: units.gu(1)
         leftPadding: units.gu(1)
         rightPadding: units.gu(1)
@@ -167,22 +170,6 @@ MusicPage {
             height: units.gu(5)
             width: listHeader.childSize
             anchors.verticalCenter: parent.verticalCenter
-            source: "qrc:/images/add.svg"
-            label {
-                //: this appears in a button with limited space (around 14 characters)
-                text: qsTr("Queue all")
-                font.pointSize: units.fs("small")
-                width: listHeader.childSize - units.gu(6)
-                elide: Text.ElideRight
-            }
-            onClicked: {
-                addQueue(libraryPage.nodeItem)
-            }
-        }
-        Icon {
-            height: units.gu(5)
-            width: listHeader.childSize
-            anchors.verticalCenter: parent.verticalCenter
             source: "qrc:/images/media-playback-start.svg"
             label {
                 //: this appears in a button with limited space (around 14 characters)
@@ -194,6 +181,24 @@ MusicPage {
             onClicked: {
                 playAll(libraryPage.nodeItem)
             }
+        }
+        Icon {
+            height: units.gu(5)
+            width: listHeader.childSize
+            anchors.verticalCenter: parent.verticalCenter
+            source: "qrc:/images/add.svg"
+            label {
+                //: this appears in a button with limited space (around 14 characters)
+                text: qsTr("Queue all")
+                font.pointSize: units.fs("small")
+                width: listHeader.childSize - units.gu(6)
+                elide: Text.ElideRight
+            }
+            onClicked: {
+                addQueue(libraryPage.nodeItem)
+            }
+            enabled: (libraryPage.nodeType === LibraryModel.NodeAlbum || libraryPage.nodeType === LibraryModel.NodePlaylist)
+            visible: enabled
         }
     }
 
@@ -212,6 +217,7 @@ MusicPage {
                                   : model.type === LibraryModel.NodeGenre ? qsTr("Genre")
                                   : model.type === LibraryModel.NodePlaylist ? qsTr("Playlist")
                                   : model.type === LibraryModel.NodeAudioItem && model.canQueue ? model.artist.length > 0 ? model.artist : qsTr("Song")
+                                  : model.type === LibraryModel.NodeAudioItem ? qsTr("Radio")
                                   : ""
 
             onClicked: {
@@ -244,6 +250,9 @@ MusicPage {
                         : model.type === LibraryModel.NodePerson ? makeCoverSource(undefined, model.artist, undefined)
                         : model.type === LibraryModel.NodeAudioItem ? makeCoverSource(model.art, model.artist, model.album)
                         : model.type === LibraryModel.NodeGenre ? [{art: "qrc:/images/no_cover.png"}]
+                        : model.type === LibraryModel.NodeFolder ? [{art: "qrc:/images/no_cover.png"}]
+                        : model.type === LibraryModel.NodePlaylist ? [{art: "qrc:/images/no_cover.png"}]
+                        : model.type === LibraryModel.NodePlayable ? [{art: "qrc:/images/no_cover.png"}]
                         : model.canPlay && !model.canQueue ? [{art: "qrc:/images/streaming.png"}]
                         : model.art !== "" ? [{art: model.art}]
                         : [{art: "qrc:/images/no_cover.png"}]
@@ -272,7 +281,6 @@ MusicPage {
                         libraryPage.taintedView = true;
                     }
                 },
-                //@FIXME add to playlist service item doesn't work
                 AddToPlaylist {
                     enabled: model.canQueue
                     visible: enabled
@@ -366,6 +374,7 @@ MusicPage {
                          : model.type === LibraryModel.NodeGenre ? qsTr("Genre")
                          : model.type === LibraryModel.NodePlaylist ? qsTr("Playlist")
                          : model.type === LibraryModel.NodeAudioItem && model.canQueue ? model.artist.length > 0 ? model.artist : qsTr("Song")
+                         : model.type === LibraryModel.NodeAudioItem ? qsTr("Radio")
                          : ""
 
             // check favorite on data loaded
@@ -376,7 +385,7 @@ MusicPage {
                 }
             }
 
-            canPlay: model.canQueue
+            canPlay: model.canPlay
 
             overlay: false // item icon could be transparent
             noCover: model.type === 2 ? "qrc:/images/none.png"
@@ -385,6 +394,9 @@ MusicPage {
                         : model.type === LibraryModel.NodePerson ? makeCoverSource(undefined, model.artist, undefined)
                         : model.type === LibraryModel.NodeAudioItem ? makeCoverSource(model.art, model.artist, model.album)
                         : model.type === LibraryModel.NodeGenre ? [{art: "qrc:/images/no_cover.png"}]
+                        : model.type === LibraryModel.NodeFolder ? [{art: "qrc:/images/no_cover.png"}]
+                        : model.type === LibraryModel.NodePlaylist ? [{art: "qrc:/images/no_cover.png"}]
+                        : model.type === LibraryModel.NodePlayable ? [{art: "qrc:/images/no_cover.png"}]
                         : model.canPlay && !model.canQueue ? [{art: "qrc:/images/streaming.png"}]
                         : model.art !== "" ? [{art: model.art}]
                         : [{art: "qrc:/images/no_cover.png"}]
@@ -399,7 +411,7 @@ MusicPage {
                     libraryPage.taintedView = true;
                 }
             }
-            onPlayClicked: { if (model.canQueue) playItem(model); }
+            onPlayClicked: { if (model.canPlay) playItem(model); }
 
             Component.onCompleted: {
                 mediaCard.isFavorite = model.canPlay ? (AllFavoritesModel.findFavorite(model.payload).length > 0) : false
@@ -450,8 +462,8 @@ MusicPage {
         // on first load enable fetching by focusing views
         mediaList.saveViewFocus(0,ListView.Beginning);
         mediaGrid.saveViewFocus(0,GridView.Beginning);
-        //
-        mediaModel.init(Sonos, rootPath, false)
+        // init and setup the root node with provided properties
+        mediaModel.init(Sonos, rootPath, false, displayType, rootType)
         if (rootPath.length === 0) {
             // no root path: open the search dialog ...
             // if the dialog is rejected then pop this page

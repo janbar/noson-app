@@ -130,6 +130,7 @@ public:
     NodePlaylist  = 4,
     NodeAudioItem = 5,
     NodeFolder    = 6,
+    NodePlayable  = 7, // dummy playable
   };
 
   Q_ENUM(NodeType)
@@ -157,7 +158,7 @@ public:
 
   Q_INVOKABLE bool isNew() { return m_dataState == DataStatus::DataBlank; }
 
-  Q_INVOKABLE bool init(nosonapp::Sonos* provider, const QString& root, bool fill = false);
+  Q_INVOKABLE bool init(nosonapp::Sonos* provider, const QString& root, bool fill = false, int display = DisplayUnknown, int node = NodeUnknown);
 
   Q_INVOKABLE void clearData();
 
