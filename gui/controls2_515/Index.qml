@@ -153,7 +153,8 @@ MusicPage {
             args: { "rootPath": "A:TRACKS",
                                   "rootTitle": qsTr("Tracks"),
                                   "isListView": true,
-                                  "searchType": "tracks" }
+                                  "searchType": "tracks",
+                                  "rootType": LibraryModel.NodePlaylist }
         });
         indexModel.append({
             title: qsTr("Share"),
