@@ -26,6 +26,7 @@ import NosonApp 1.0
 import NosonThumbnailer 1.0
 import "components"
 import "components/Dialog"
+import "../toolbox.js" as ToolBox
 
 ApplicationWindow {
     id: mainView
@@ -630,17 +631,30 @@ ApplicationWindow {
 
         if (model.totalCount !== undefined) {
             index = Math.floor(model.totalCount * Math.random(seed));
-            while (model.count < index && model.loadMore());
-        }
-        else {
+            if (index < model.firstIndex || index >= model.firstIndex + model.count) {
+                if (model.fetchAt(index - 1)) {
+                    ToolBox.connectOnce(model.onViewUpdated, function(){
+                        if (player.isPlaying)
+                            return trackClicked(model.get(index - model.firstIndex), false);
+                        else
+                            return trackClicked(model.get(index - model.firstIndex), true); // play track
+                    });
+                }
+            } else {
+                if (player.isPlaying)
+                    return trackClicked(model.get(index - model.firstIndex), false);
+                else
+                    return trackClicked(model.get(index - model.firstIndex), true); // play track
+            }
+        } else {
             index = Math.floor(model.count * Math.random(seed));
+            if (index >= model.count)
+                return false;
+            else if (player.isPlaying)
+                return trackClicked(model.get(index), false);
+            else
+                return trackClicked(model.get(index), true); // play track
         }
-        if (index >= model.count)
-            return false;
-        else if (player.isPlaying)
-            return trackClicked(model.get(index), false);
-        else
-            return trackClicked(model.get(index), true); // play track
     }
 
     // Action add queue multiple items
