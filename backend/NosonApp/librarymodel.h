@@ -72,6 +72,8 @@ public:
 
   bool isContainer() const { return m_isContainer; }
 
+  int albumTrackNo() const { return m_albumTrackNo; }
+
 private:
   SONOS::DigitalItemPtr m_ptr;
   bool m_valid;
@@ -89,6 +91,7 @@ private:
   QString m_objectId;
   int m_displayType;
   bool m_isContainer;
+  int m_albumTrackNo;
 };
 
 class LibraryModel : public QAbstractListModel, public ListModel<Sonos>
@@ -119,6 +122,7 @@ public:
     ObjectIdRole,
     DisplayTypeRole,
     IsContainerRole,
+    AlbumTrackNoRole,
   };
 
   enum NodeType

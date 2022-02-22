@@ -25,6 +25,7 @@
 
 #include <cstdio> // for strncpy
 #include <cctype> // for isdigit
+#include <cstdlib> // for atoi
 
 #define MODELVIEW_SIZE      100
 #define ROOT_DISPLAY_TYPE   SONOS::SMAPIItem::Editorial
@@ -51,6 +52,7 @@ LibraryItem::LibraryItem(const SONOS::DigitalItemPtr& data, const QString& baseU
   m_title = QString::fromUtf8(data->GetValue("dc:title").c_str());
   m_normalized = normalizedString(m_title);
   m_description = QString::fromUtf8(data->GetValue("r:description").c_str());
+  m_albumTrackNo = atoi(data->GetValue("upnp:originalTrackNumber").c_str());
   QString uri = QString::fromUtf8(data->GetValue("upnp:albumArtURI").c_str());
   if (!uri.isEmpty())
   {
@@ -223,6 +225,8 @@ QVariant LibraryModel::data(const QModelIndex& index, int role) const
     return item->displayType();
   case IsContainerRole:
     return item->isContainer();
+  case AlbumTrackNoRole:
+    return item->albumTrackNo();
   default:
     return QVariant();
   }
@@ -247,6 +251,7 @@ QHash<int, QByteArray> LibraryModel::roleNames() const
   roles[ObjectIdRole] = "objectId";
   roles[DisplayTypeRole] = "displayType";
   roles[IsContainerRole] = "isContainer";
+  roles[AlbumTrackNoRole] = "albumTrackNo";
   return roles;
 }
 
@@ -274,6 +279,7 @@ QVariantMap LibraryModel::get(int row)
   model[roles[ObjectIdRole]] = item->objectId();
   model[roles[DisplayTypeRole]] = item->displayType();
   model[roles[IsContainerRole]] = item->isContainer();
+  model[roles[AlbumTrackNoRole]] = item->albumTrackNo();
   return model;
 }
 

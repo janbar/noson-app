@@ -501,7 +501,8 @@ MusicPage {
                 "title": model.title,
                 "author": model.artist,
                 "album": model.album,
-                "description": model.description
+                "description": model.description,
+                "albumTrackNo": model.albumTrackNo
             };
             dialogSongInfo.open(songModel, [{art: model.art}],
                                 "", undefined, false,
