@@ -20,7 +20,7 @@ import QtQuick.Controls 2.2
 import NosonApp 1.0
 import "components"
 import "components/Dialog"
-
+import "../toolbox.js" as ToolBox
 
 MusicPage {
     id: queuePage
@@ -40,6 +40,12 @@ MusicPage {
             if (player.connected) {
                 model.init(player.zoneHandle(), false);
                 model.asyncLoad();
+                // focus current index
+                if (player.currentIndex > 0) {
+                    ToolBox.connectOnce(model.onViewUpdated, function(){
+                        queue.positionAt(player.currentIndex - 1);
+                    });
+                }
             }
         }
     }
@@ -48,6 +54,12 @@ MusicPage {
         if (player.connected) {
             model.init(player.zoneHandle(), false);
             model.asyncLoad();
+            // focus current index
+            if (player.currentIndex > 0) {
+                ToolBox.connectOnce(model.onViewUpdated, function(){
+                    queue.positionAt(player.currentIndex - 1);
+                });
+            }
         }
     }
 
