@@ -25,6 +25,7 @@ import "components/Flickables"
 import "components/ListItemActions"
 import "components/ViewButton"
 import "components/Dialog"
+import "../toolbox.js" as ToolBox
 
 MusicPage {
     id: songStackPage
@@ -37,7 +38,6 @@ MusicPage {
     property string line1: ""
     property string line2: ""
     property var covers: []
-    property int coverFlow: 1
     property bool isAlbum: false
     property bool isPlaylist: false
     property string year: ""
@@ -54,6 +54,9 @@ MusicPage {
     // enable selection toolbar
     selectable: true
 
+    // focus index
+    property int focusIndex: -1
+
     onStateChanged: {
         if (state === "selection")
             songList.state = "selection"
@@ -66,7 +69,7 @@ MusicPage {
         interval: 100
         property var selectedIndices: []
         onTriggered: {
-            songList.focusIndex = selectedIndices[selectedIndices.length-1];
+            focusIndex = selectedIndices[selectedIndices.length-1];
             if (!removeTracksFromPlaylist(containerItem.id, selectedIndices, songsModel.containerUpdateID(), function(result) {
                 if (result) {
                     popInfo.open(qsTr("%n song(s) removed", "", selectedIndices.length));
@@ -81,65 +84,38 @@ MusicPage {
 
     TracksModel {
         id: songsModel
-        onDataUpdated: songsModel.asyncLoad()
-        onLoaded: songsModel.resetModel()
         Component.onCompleted: {
             songsModel.init(Sonos, songSearch, false)
             songsModel.asyncLoad()
         }
     }
 
-    function restoreFocusIndex() {
-        if (songsModel.count <= songList.focusIndex) {
-            songsModel.asyncLoadMore() // load more !!!
-        } else {
-            songList.positionViewAtIndex(songList.focusIndex, ListView.Center);
-            songList.focusIndex = -1
-        }
-    }
-
     Connections {
         target: songsModel
-        function onDataUpdated() { songsModel.asyncLoad() }
+        function onDataUpdated() {
+            songsModel.asyncLoad()
+        }
         function onLoaded(succeeded) {
             songsModel.resetModel()
-            if (succeeded) {
-                if (songList.focusIndex > 0) {
-                    // restore index position in view
-                    restoreFocusIndex()
-                }
-            }
         }
         function onLoadedMore(succeeded) {
-            if (succeeded) {
+            if (succeeded)
                 songsModel.appendModel();
-                if (songList.focusIndex > 0) {
-                    // restore index position in view
-                    restoreFocusIndex()
+        }
+        function onViewUpdated() {
+            if (focusIndex >= 0) {
+                if (focusIndex >= songsModel.totalCount) {
+                    focusIndex = songsModel.totalCount - 1;
                 }
-            } else if (songList.focusIndex > 0) {
-                songList.positionViewAtEnd();
-                songList.focusIndex = -1;
-            }
-        }
-
-    }
-
-    Repeater {
-        id: songModelRepeater
-        model: songsModel
-
-        delegate: Item {
-            property string art: model.art
-            property string artist: model.author
-            property string album: model.album
-        }
-        property bool hasCover: covers.length ? true : false
-
-        onItemAdded: {
-            if (!hasCover && item.art !== "") {
-                songStackPage.covers = [{art: item.art}]
-                hasCover = true
+                if (focusIndex >= songsModel.count) {
+                    if (!songsModel.fetchAt(focusIndex)) {
+                        songList.positionViewAtIndex(songList.count - 1, ListView.End);
+                        focusIndex = -1;
+                    }
+                } else {
+                    songList.positionViewAtIndex(focusIndex, ListView.Center);
+                    focusIndex = -1;
+                }
             }
         }
     }
@@ -148,6 +124,135 @@ MusicPage {
         id: blurredBackground
         height: parent.height
     }
+
+    header: Column {
+        width: parent.width
+        height: implicitHeight
+        Row {
+            id: listHeader
+            width: parent.width
+            height: units.gu(7)
+            property real childSize: Math.min((width - units.gu(4)) / 3, units.gu(16))
+            spacing: units.gu(1)
+            leftPadding: units.gu(1)
+            rightPadding: units.gu(1)
+            Icon {
+                height: units.gu(5)
+                width: listHeader.childSize
+                anchors.verticalCenter: parent.verticalCenter
+                source: "qrc:/images/media-playlist-shuffle.svg"
+                label {
+                    //: this appears in a button with limited space (around 14 characters)
+                    text: qsTr("Shuffle")
+                    font.pointSize: units.fs("small")
+                    width: listHeader.childSize - units.gu(6)
+                    elide: Text.ElideRight
+                }
+                onClicked: {
+                    shuffleModel(songsModel)
+                }
+            }
+            Icon {
+                height: units.gu(5)
+                width: listHeader.childSize
+                anchors.verticalCenter: parent.verticalCenter
+                source: "qrc:/images/media-playback-start.svg"
+                label {
+                    //: this appears in a button with limited space (around 14 characters)
+                    text: qsTr("Play all")
+                    font.pointSize: units.fs("small")
+                    width: listHeader.childSize - units.gu(6)
+                    elide: Text.ElideRight
+                }
+                onClicked: {
+                    playAll(songStackPage.containerItem)
+                }
+                enabled: containerItem ? true : false
+                visible: enabled
+            }
+            Icon {
+                height: units.gu(5)
+                width: listHeader.childSize
+                anchors.verticalCenter: parent.verticalCenter
+                source: "qrc:/images/add.svg"
+                label {
+                    //: this appears in a button with limited space (around 14 characters)
+                    text: qsTr("Queue all")
+                    font.pointSize: units.fs("small")
+                    width: listHeader.childSize - units.gu(6)
+                    elide: Text.ElideRight
+                }
+                onClicked: {
+                    addQueue(songStackPage.containerItem)
+                }
+                enabled: containerItem ? true : false
+                visible: enabled
+            }
+        }
+
+        Column {
+            width: parent.width
+            height: implicitHeight
+            spacing: units.gu(1)
+            Label {
+               id: albumLabel
+               anchors {
+                   leftMargin: units.gu(1)
+                   rightMargin: units.gu(1)
+                   left: parent.left
+                   right: parent.right
+               }
+               color: styleMusic.view.foregroundColor
+               elide: Text.ElideRight
+               font.pointSize: units.fs("x-large")
+               maximumLineCount: 1
+               text: line2
+               wrapMode: Text.NoWrap
+            }
+
+            Label {
+               id: albumArtist
+               anchors {
+                   leftMargin: units.gu(1)
+                   rightMargin: units.gu(1)
+                   left: parent.left
+                   right: parent.right
+               }
+               color: styleMusic.view.secondaryColor
+               elide: Text.ElideRight
+               font.pointSize: units.fs("small")
+               maximumLineCount: 1
+               text: line1
+               visible: line1 !== ""
+               wrapMode: Text.NoWrap
+            }
+
+            Label {
+               id: albumYear
+               anchors {
+                   leftMargin: units.gu(1)
+                   rightMargin: units.gu(1)
+                   left: parent.left
+                   right: parent.right
+               }
+               color: styleMusic.view.secondaryColor
+               elide: Text.ElideRight
+               font.pointSize: units.fs("small")
+               maximumLineCount: 1
+               text: isAlbum
+                     ? (year !== "" ? year + " | " : "") + qsTr("%n song(s)", "", songsModel.totalCount)
+                     : qsTr("%n song(s)", "", songsModel.totalCount)
+               wrapMode: Text.NoWrap
+            }
+
+            Item {
+                id: spacer
+                width: parent.width
+                height: units.dp(1)
+            }
+        }
+    }
+
 
     Component {
         id: dragDelegate
@@ -160,7 +265,7 @@ MusicPage {
 
             onSwipe: {
                 if (isPlaylist) {
-                    listview.focusIndex = index > 0 ? index - 1 : 0;
+                    focusIndex = index > 0 ? index - 1 : 0;
                     delayRemoveSelectedFromPlaylist.selectedIndices = [index]
                     delayRemoveSelectedFromPlaylist.start()
                     color = "red";
@@ -228,7 +333,7 @@ MusicPage {
                     enabled: isPlaylist
                     visible: enabled
                     onTriggered: {
-                        listview.focusIndex = index > 0 ? index - 1 : 0;
+                        focusIndex = index > 0 ? index - 1 : 0;
                         delayRemoveSelectedFromPlaylist.selectedIndices = [index]
                         delayRemoveSelectedFromPlaylist.start()
                         color = "red";
@@ -239,6 +344,13 @@ MusicPage {
             coverSize: units.gu(5)
 
             column: Column {
+                Label {
+                    id: trackIndex
+                    color: styleMusic.view.primaryColor
+                    font.pointSize: units.fs("small")
+                    text: "# " + (model.index + 1)
+                }
+
                 Label {
                     id: trackTitle
                     color: styleMusic.view.primaryColor
@@ -266,104 +378,18 @@ MusicPage {
     MultiSelectListView {
         id: songList
         anchors.fill: parent
-
-        header: MusicHeader {
-            id: blurredHeader
-            isFavorite: songStackPage.isFavorite
-            rightColumn: Column {
-                spacing: units.gu(1)
-                ShuffleButton {
-                    model: songsModel
-                    width: units.gu(24)
-                }
-                QueueAllButton {
-                    containerItem: songStackPage.containerItem
-                    width: units.gu(24)
-                    visible: containerItem ? true : false
-                }
-                PlayAllButton {
-                    containerItem: songStackPage.containerItem
-                    width: units.gu(24)
-                    visible: containerItem ? true : false
-
-                }
-            }
-            height: contentHeight
-            coverSources: songStackPage.covers
-            coverFlow: songStackPage.coverFlow
-            titleColumn: Column {
-                spacing: units.gu(1)
-
-                Label {
-                    id: albumLabel
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                    }
-                    color: styleMusic.view.foregroundColor
-                    elide: Text.ElideRight
-                    font.pointSize: units.fs("x-large")
-                    maximumLineCount: 1
-                    text: line2
-                    wrapMode: Text.NoWrap
-                }
-
-                Label {
-                    id: albumArtist
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                    }
-                    color: styleMusic.view.secondaryColor
-                    elide: Text.ElideRight
-                    font.pointSize: units.fs("small")
-                    maximumLineCount: 1
-                    text: line1
-                    visible: line1 !== ""
-                    wrapMode: Text.NoWrap
-                }
-
-                Label {
-                    id: albumYear
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                    }
-                    color: styleMusic.view.secondaryColor
-                    elide: Text.ElideRight
-                    font.pointSize: units.fs("small")
-                    maximumLineCount: 1
-                    text: isAlbum
-                          ? (year !== "" ? year + " | " : "") + qsTr("%n song(s)", "", songsModel.totalCount)
-                          : qsTr("%n song(s)", "", songsModel.totalCount)
-                    wrapMode: Text.NoWrap
-                }
-
-                Item {
-                    id: spacer
-                    width: parent.width
-                    height: units.gu(1)
-                }
-            }
-
-            onFirstSourceChanged: {
-                blurredBackground.art = firstSource
-            }
-        }
-
+        clip: true
         model: DelegateModel {
             id: visualModel
             model: songsModel
             delegate: dragDelegate
         }
 
-        property int focusIndex: 0
-
         signal reorder(int from, int to)
 
         onReorder: {
             customdebug("Reorder item " + from + " to " + to);
-            songList.focusIndex = to;
+            focusIndex = to;
             if (!reorderTrackInPlaylist(containerItem.id, from, to, songsModel.containerUpdateID(), function(result) {
                 if (!result) {
                     songsModel.asyncLoad();
@@ -377,7 +403,7 @@ MusicPage {
 
         onAtYEndChanged: {
             if (songList.atYEnd && songsModel.totalCount > songsModel.count) {
-                songsModel.asyncLoadMore()
+                songsModel.asyncLoadMore();
             }
         }
 
@@ -424,7 +450,7 @@ MusicPage {
             function onRemoveSelectedClicked() {
                 delayRemoveSelectedFromPlaylist.selectedIndices = songList.getSelectedIndices()
                 if (delayRemoveSelectedFromPlaylist.selectedIndices.length > 0)
-                    songList.focusIndex = delayRemoveSelectedFromPlaylist.selectedIndices[delayRemoveSelectedFromPlaylist.selectedIndices.length - 1]
+                    focusIndex = delayRemoveSelectedFromPlaylist.selectedIndices[delayRemoveSelectedFromPlaylist.selectedIndices.length - 1]
                 delayRemoveSelectedFromPlaylist.start()
                 songList.selectNone()
                 songStackPage.state = "default"
