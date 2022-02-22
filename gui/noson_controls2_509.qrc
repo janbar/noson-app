@@ -116,9 +116,6 @@
         <file alias="images/font-scalling.svg">images/font-scalling.svg</file>
         <file alias="images/graphic-scalling.svg">images/graphic-scalling.svg</file>
         <file alias="controls2/components/MusicHeader.qml">controls2_509/components/MusicHeader.qml</file>
-        <file alias="controls2/components/ViewButton/PlayAllButton.qml">controls2_509/components/ViewButton/PlayAllButton.qml</file>
-        <file alias="controls2/components/ViewButton/QueueAllButton.qml">controls2_509/components/ViewButton/QueueAllButton.qml</file>
-        <file alias="controls2/components/ViewButton/ShuffleButton.qml">controls2_509/components/ViewButton/ShuffleButton.qml</file>
         <file alias="controls2/components/Dialog/DialogSleepTimer.qml">controls2_509/components/Dialog/DialogSleepTimer.qml</file>
         <file alias="controls2/components/Dialog/DialogSongInfo.qml">controls2_509/components/Dialog/DialogSongInfo.qml</file>
         <file alias="i18n/noson_en.qm">i18n/noson_en.qm</file>
