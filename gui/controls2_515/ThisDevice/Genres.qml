@@ -72,7 +72,7 @@ MusicPage {
             secondaryTextVisible: false
 
             onClicked: {
-                stackView.push("qrc:/controls2/ThisDevice/SongsView.qml",
+                stackView.push("qrc:/controls2/ThisDevice/TrackStackView.qml",
                                    {
                                        "album": undefined,
                                        "genre": model.genre,

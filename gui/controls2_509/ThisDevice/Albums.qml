@@ -77,7 +77,7 @@ MusicPage {
             onImageError: model.art = "" // reset invalid url from model
 
             onClicked: {
-                stackView.push("qrc:/controls2/ThisDevice/SongsView.qml",
+                stackView.push("qrc:/controls2/ThisDevice/TrackStackView.qml",
                                    {
                                        "album": model.album,
                                        "artist": model.artist,

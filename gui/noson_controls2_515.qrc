@@ -154,7 +154,7 @@
         <file alias="controls2/ThisDevice/Artists.qml">controls2_515/ThisDevice/Artists.qml</file>
         <file alias="controls2/ThisDevice/Albums.qml">controls2_515/ThisDevice/Albums.qml</file>
         <file alias="controls2/ThisDevice/Genres.qml">controls2_515/ThisDevice/Genres.qml</file>
-        <file alias="controls2/ThisDevice/SongsView.qml">controls2_515/ThisDevice/SongsView.qml</file>
+        <file alias="controls2/ThisDevice/TrackStackView.qml">controls2_515/ThisDevice/TrackStackView.qml</file>
         <file alias="controls2/ThisDevice/ArtistView.qml">controls2_515/ThisDevice/ArtistView.qml</file>
         <file alias="controls2/ThisDevice/AddToQueue.qml">controls2_515/ThisDevice/AddToQueue.qml</file>
         <file alias="controls2/ThisDevice/PlayAllButton.qml">controls2_515/ThisDevice/PlayAllButton.qml</file>

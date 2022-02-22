@@ -26,8 +26,8 @@ import "../components/Flickables"
 import "../components/Dialog"
 
 MusicPage {
-    id: songStackPage
-    objectName: "songsPage"
+    id: trackStackPage
+    objectName: "trackStackPage"
     visible: false
     pageFlickable: songList
     isListView: true
@@ -57,10 +57,10 @@ MusicPage {
 
     TrackList {
         id: tracks
-        album: songStackPage.album
-        artist: songStackPage.artist
-        genre: songStackPage.genre
-        composer: songStackPage.composer
+        album: trackStackPage.album
+        artist: trackStackPage.artist
+        genre: trackStackPage.genre
+        composer: trackStackPage.composer
         Component.onCompleted: init()
     }
 
@@ -157,23 +157,23 @@ MusicPage {
         }
         Row {
             width: parent.width
-            height: units.gu(10)
+            height: coverGrid.visible ? coverGrid.height + units.gu(1) : headerInfo.height + units.gu(1)
             spacing: units.gu(1)
             leftPadding: spacing
             Rectangle {
                 id: coverGrid
                 anchors.verticalCenter: parent.verticalCenter
-                width: parent.height - units.gu(1)
-                height: width
+                height: units.gu(9)
+                width: height
                 border.color: visible ? "grey" : "transparent"
                 color: "transparent"
                 CoverGrid {
                     id: coversImage
                     anchors.verticalCenter: parent.verticalCenter
                     size: parent.height
-                    covers: songStackPage.covers
-                    flowModel: songStackPage.coverFlow
-                    noCover: songStackPage.noCover
+                    covers: trackStackPage.covers
+                    flowModel: trackStackPage.coverFlow
+                    noCover: trackStackPage.noCover
                     onFirstSourceChanged: {
                         blurredBackground.art = firstSource
                     }
@@ -182,12 +182,14 @@ MusicPage {
                 visible: enabled
             }
             Item {
+                id: headerInfo
+                anchors.verticalCenter: parent.verticalCenter
                 width: parent.width - coverGrid.width - units.gu(3)
-                height: parent.height
+                height: headerInfoContent.height
                 Column {
+                    id: headerInfoContent
                     width: parent.width
                     height: implicitHeight
-                    anchors.verticalCenter: parent.verticalCenter
                     spacing: units.gu(1)
                     Label {
                         id: albumLabel
@@ -274,8 +276,8 @@ MusicPage {
             color: "transparent"
 
             noCover: "qrc:/images/no_cover.png"
-            rowNumber: songStackPage.isAlbum ? model.albumTrackNo > 0 ? model.albumTrackNo.toString() : "#" : ""
-            imageSources: !songStackPage.isAlbum ? makeFileCoverSource(model) : []
+            rowNumber: trackStackPage.isAlbum ? model.albumTrackNo > 0 ? model.albumTrackNo.toString() : "#" : ""
+            imageSources: !trackStackPage.isAlbum ? makeFileCoverSource(model) : []
             description: qsTr("Song")
 
             onImageError: model.art = "" // reset invalid url from model
@@ -321,7 +323,7 @@ MusicPage {
 
             Component.onCompleted: {
                 if (model.year > 0) {
-                    songStackPage.year = model.year
+                    trackStackPage.year = model.year
                 }
             }
         }
@@ -339,14 +341,14 @@ MusicPage {
         }
 
         Connections {
-            target: songStackPage
-            onSelectAllClicked: {
+            target: trackStackPage
+            function onSelectAllClicked() {
                 songList.selectAll()
             }
-            onSelectNoneClicked: {
+            function onSelectNoneClicked() {
                 songList.selectNone()
             }
-            onAddToQueueClicked: {
+            function onAddToQueueClicked() {
                 var indicies = songList.getSelectedIndices();
                 var items = [];
                 for (var i = 0; i < indicies.length; i++) {
@@ -356,26 +358,26 @@ MusicPage {
                 }
                 if (addMultipleItemsToQueue(items)) {
                     songList.selectNone()
-                    songStackPage.state = "default"
+                    trackStackPage.state = "default"
                 }
             }
         }
 
         onHasSelectionChanged: {
-            songStackPage.selectAllVisible = !hasSelection
-            songStackPage.selectNoneVisible = hasSelection
-            songStackPage.addToQueueVisible = hasSelection
-            songStackPage.addToPlaylistVisible = false
-            songStackPage.removeSelectedVisible = false
+            trackStackPage.selectAllVisible = !hasSelection
+            trackStackPage.selectNoneVisible = hasSelection
+            trackStackPage.addToQueueVisible = hasSelection
+            trackStackPage.addToPlaylistVisible = false
+            trackStackPage.removeSelectedVisible = false
 
         }
 
         Component.onCompleted: {
-            songStackPage.selectAllVisible = !hasSelection
-            songStackPage.selectNoneVisible = hasSelection
-            songStackPage.addToQueueVisible = hasSelection
-            songStackPage.addToPlaylistVisible = false
-            songStackPage.removeSelectedVisible = false
+            trackStackPage.selectAllVisible = !hasSelection
+            trackStackPage.selectNoneVisible = hasSelection
+            trackStackPage.addToQueueVisible = hasSelection
+            trackStackPage.addToPlaylistVisible = false
+            trackStackPage.removeSelectedVisible = false
         }
     }
 }

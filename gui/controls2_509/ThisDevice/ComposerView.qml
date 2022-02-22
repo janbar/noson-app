@@ -137,7 +137,7 @@ MusicPage {
                         width: height
                         source: "qrc:/images/view-list-symbolic.svg"
                         onClicked: {
-                            stackView.push("qrc:/controls2/ThisDevice/SongsView.qml",
+                            stackView.push("qrc:/controls2/ThisDevice/TrackStackView.qml",
                                                {
                                                    "covers": blurredHeader.coverSources,
                                                    "noCover": blurredHeader.noCover,
@@ -176,7 +176,7 @@ MusicPage {
 
             onImageError: model.art = "" // reset invalid url from model
             onClicked: {
-                stackView.push("qrc:/controls2/ThisDevice/SongsView.qml",
+                stackView.push("qrc:/controls2/ThisDevice/TrackStackView.qml",
                                    {
                                        "album": model.album,
                                        "artist": model.artist,
