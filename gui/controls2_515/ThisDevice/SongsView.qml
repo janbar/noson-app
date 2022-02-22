@@ -37,6 +37,7 @@ MusicPage {
     property string line2: ""
     property var covers: []
     property int coverFlow: 1
+    property string noCover: ""
     property bool isAlbum: false
     property string year: ""
     property string album: ""
@@ -92,36 +93,149 @@ MusicPage {
         return items;
     }
 
-    Repeater {
-        id: songModelRepeater
-        model: songsModel
+//    Repeater {
+//        id: songModelRepeater
+//        model: songsModel
 
-        delegate: Item {
-            property string art: model.art
-            property string artist: model.author
-            property string album: model.album
-            property string filePath: model.filePath
-            property bool hasArt: model.hasArt
-        }
-        property bool hasCover: covers.length ? true : false
+//        delegate: Item {
+//            property string art: model.art
+//            property string artist: model.author
+//            property string album: model.album
+//            property string filePath: model.filePath
+//            property bool hasArt: model.hasArt
+//        }
+//        property bool hasCover: covers.length ? true : false
 
-        onItemAdded: {
-            if (!hasCover) {
-                if (item.art !== "") {
-                    songStackPage.covers = [{art: item.art}];
-                    hasCover = true;
-                } else if (item.hasArt) {
-                    item.art = player.makeFilePictureLocalURL(item.filePath);
-                    songStackPage.covers = [{art: item.art}];
-                    hasCover = true;
-                }
-            }
-        }
-    }
+//        onItemAdded: {
+//            if (!hasCover) {
+//                if (item.art !== "") {
+//                    songStackPage.covers = [{art: item.art}];
+//                    hasCover = true;
+//                } else if (item.hasArt) {
+//                    item.art = player.makeFilePictureLocalURL(item.filePath);
+//                    songStackPage.covers = [{art: item.art}];
+//                    hasCover = true;
+//                }
+//            }
+//        }
+//    }
 
     BlurredBackground {
         id: blurredBackground
         height: parent.height
+    }
+
+    header: Column {
+        width: parent.width
+        height: implicitHeight
+        Row {
+            id: listHeader
+            width: parent.width
+            height: units.gu(7)
+            property real childSize: Math.min((width - units.gu(4)) / 3, units.gu(16))
+            spacing: units.gu(1)
+            leftPadding: units.gu(1)
+            rightPadding: units.gu(1)
+            ShuffleButton {
+                height: units.gu(5)
+                width: listHeader.childSize
+                anchors.verticalCenter: parent.verticalCenter
+                model: songsModel
+            }
+            PlayAllButton {
+                height: units.gu(5)
+                width: listHeader.childSize
+                anchors.verticalCenter: parent.verticalCenter
+                model: songsModel
+            }
+            QueueAllButton {
+                height: units.gu(5)
+                width: listHeader.childSize
+                anchors.verticalCenter: parent.verticalCenter
+                model: songsModel
+            }
+        }
+        Row {
+            width: parent.width
+            height: units.gu(10)
+            spacing: units.gu(1)
+            leftPadding: spacing
+            Rectangle {
+                id: coverGrid
+                anchors.verticalCenter: parent.verticalCenter
+                width: parent.height - units.gu(1)
+                height: width
+                border.color: visible ? "grey" : "transparent"
+                color: "transparent"
+                CoverGrid {
+                    id: coversImage
+                    anchors.verticalCenter: parent.verticalCenter
+                    size: parent.height
+                    covers: songStackPage.covers
+                    flowModel: songStackPage.coverFlow
+                    noCover: songStackPage.noCover
+                    onFirstSourceChanged: {
+                        blurredBackground.art = firstSource
+                    }
+                }
+                enabled: covers.length > 0
+                visible: enabled
+            }
+            Item {
+                width: parent.width - coverGrid.width - units.gu(3)
+                height: parent.height
+                Column {
+                    width: parent.width
+                    height: implicitHeight
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: units.gu(1)
+                    Label {
+                        id: albumLabel
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                        }
+                        color: styleMusic.view.foregroundColor
+                        elide: Text.ElideRight
+                        font.pointSize: units.fs("x-large")
+                        maximumLineCount: 1
+                        text: line2
+                        wrapMode: Text.NoWrap
+                    }
+
+                    Label {
+                        id: albumArtist
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                        }
+                        color: styleMusic.view.secondaryColor
+                        elide: Text.ElideRight
+                        font.pointSize: units.fs("small")
+                        maximumLineCount: 1
+                        text: line1
+                        visible: line1 !== ""
+                        wrapMode: Text.NoWrap
+                    }
+
+                    Label {
+                        id: albumYear
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                        }
+                        color: styleMusic.view.secondaryColor
+                        elide: Text.ElideRight
+                        font.pointSize: units.fs("small")
+                        maximumLineCount: 1
+                        text: isAlbum
+                              ? (year !== "" ? year + " | " : "") + qsTr("%n song(s)", "", songsModel.count)
+                              : qsTr("%n song(s)", "", songsModel.count)
+                        wrapMode: Text.NoWrap
+                    }
+                }
+            }
+        }
     }
 
     Component {
@@ -216,86 +330,7 @@ MusicPage {
     MultiSelectListView {
         id: songList
         anchors.fill: parent
-
-        header: MusicHeader {
-            id: blurredHeader
-            rightColumn: Column {
-                spacing: units.gu(1)
-                ShuffleButton {
-                    model: songsModel
-                    width: units.gu(24)
-                }
-                QueueAllButton {
-                    model: songsModel
-                    width: units.gu(24)
-                }
-                PlayAllButton {
-                    model: songsModel
-                    width: units.gu(24)
-                }
-            }
-            height: contentHeight
-            coverSources: songStackPage.covers
-            coverFlow: songStackPage.coverFlow
-            titleColumn: Column {
-                spacing: units.gu(1)
-
-                Label {
-                    id: albumLabel
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                    }
-                    color: styleMusic.view.foregroundColor
-                    elide: Text.ElideRight
-                    font.pointSize: units.fs("x-large")
-                    maximumLineCount: 1
-                    text: line2
-                    wrapMode: Text.NoWrap
-                }
-
-                Label {
-                    id: albumArtist
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                    }
-                    color: styleMusic.view.secondaryColor
-                    elide: Text.ElideRight
-                    font.pointSize: units.fs("small")
-                    maximumLineCount: 1
-                    text: line1
-                    visible: line1 !== ""
-                    wrapMode: Text.NoWrap
-                }
-
-                Label {
-                    id: albumYear
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                    }
-                    color: styleMusic.view.secondaryColor
-                    elide: Text.ElideRight
-                    font.pointSize: units.fs("small")
-                    maximumLineCount: 1
-                    text: isAlbum
-                          ? (year !== "" ? year + " | " : "") + qsTr("%n song(s)", "", songsModel.count)
-                          : qsTr("%n song(s)", "", songsModel.count)
-                    wrapMode: Text.NoWrap
-                }
-
-                Item {
-                    id: spacer
-                    width: parent.width
-                    height: units.gu(1)
-                }
-            }
-
-            onFirstSourceChanged: {
-                blurredBackground.art = firstSource
-            }
-        }
+        clip: true
 
         model: DelegateModel {
             id: visualModel
@@ -305,8 +340,12 @@ MusicPage {
 
         Connections {
             target: songStackPage
-            function onSelectAllClicked() { songList.selectAll() }
-            function onSelectNoneClicked() { songList.selectNone() }
+            function onSelectAllClicked() {
+                songList.selectAll()
+            }
+            function onSelectNoneClicked() {
+                songList.selectNone()
+            }
             function onAddToQueueClicked() {
                 var indicies = songList.getSelectedIndices();
                 var items = [];

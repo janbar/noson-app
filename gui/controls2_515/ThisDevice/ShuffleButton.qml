@@ -21,13 +21,13 @@ import "../components"
 
 Icon {
     height: units.gu(5)
-    width: units.gu(20)
+    width: units.gu(16)
     source: "qrc:/images/media-playlist-shuffle.svg"
     label {
         //: this appears in a button with limited space (around 14 characters)
         text: qsTr("Shuffle")
-        font.pointSize: units.fs("medium")
-        width: parent.width - units.gu(6)
+        font.pointSize: units.fs("small")
+        width: width - units.gu(6)
         elide: Text.ElideRight
     }
 

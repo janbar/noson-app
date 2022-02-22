@@ -83,6 +83,8 @@ MusicPage {
             noCover: ""
             imageSources: [{art: model.art}]
 
+            height: units.gu(8)
+
             column: Column {
                 Label {
                     id: mediaTitle
@@ -124,10 +126,16 @@ MusicPage {
     }
 
     Component.onCompleted: {
+        if (settings.preferListView)
+            isListView = true
         genres.init();
         if (settings.musicLocation.length > 0)
             MediaScanner.addRootPath(settings.musicLocation);
         MediaScanner.start();
+    }
+
+    onListViewClicked: {
+        settings.preferListView = isListView
     }
 
     // Overlay to show when no index found

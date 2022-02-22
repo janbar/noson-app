@@ -74,8 +74,6 @@ MusicPage {
             onClicked: {
                 stackView.push("qrc:/controls2/ThisDevice/SongsView.qml",
                                    {
-                                       "coverFlow": 4,
-                                       "covers": coverSources,
                                        "album": undefined,
                                        "genre": model.genre,
                                        "pageTitle": pageTitle,

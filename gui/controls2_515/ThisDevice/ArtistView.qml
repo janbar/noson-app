@@ -139,7 +139,8 @@ MusicPage {
                         onClicked: {
                             stackView.push("qrc:/controls2/ThisDevice/SongsView.qml",
                                                {
-                                                   "covers": artistViewPage.covers,
+                                                   "covers": blurredHeader.coverSources,
+                                                   "noCover": blurredHeader.noCover,
                                                    "album": undefined,
                                                    "artist": artistViewPage.artist,
                                                    "genre": "",

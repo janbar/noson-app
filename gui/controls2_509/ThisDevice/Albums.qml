@@ -82,6 +82,7 @@ MusicPage {
                                        "album": model.album,
                                        "artist": model.artist,
                                        "covers": albumCard.imageSource != "" ? [{art: albumCard.imageSource}] : coverSources,
+                                       "noCover": "qrc:/images/no_cover.png",
                                        "isAlbum": true,
                                        "genre": "",
                                        "pageTitle": pageTitle,
