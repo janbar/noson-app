@@ -197,8 +197,6 @@ MusicPage {
             onClicked: {
                 addQueue(libraryPage.nodeItem)
             }
-            enabled: (libraryPage.nodeType === LibraryModel.NodeAlbum || libraryPage.nodeType === LibraryModel.NodePlaylist)
-            visible: enabled
         }
     }
 
