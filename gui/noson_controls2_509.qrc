@@ -88,7 +88,7 @@
         <file alias="controls2/components/MusicCheckBox.qml">controls2_509/components/MusicCheckBox.qml</file>
         <file alias="controls2/components/Delegates/SelectMusicListItem.qml">controls2_509/components/Delegates/SelectMusicListItem.qml</file>
         <file alias="controls2/Playlists.qml">controls2_509/Playlists.qml</file>
-        <file alias="controls2/SongsView.qml">controls2_509/SongsView.qml</file>
+        <file alias="controls2/TrackStackView.qml">controls2_509/TrackStackView.qml</file>
         <file alias="images/add.svg">images/add.svg</file>
         <file alias="images/edit.svg">images/edit.svg</file>
         <file alias="images/info.svg">images/info.svg</file>

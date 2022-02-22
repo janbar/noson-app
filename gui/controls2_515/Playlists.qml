@@ -89,20 +89,14 @@ MusicPage {
             coverFlow: 4
 
             onClicked: {
-                stackView.push("qrc:/controls2/SongsView.qml",
-                                   {
-                                       "containerItem": makeContainerItem(model),
-                                       "songSearch": model.id,
-                                       "album": undefined,
-                                       "coverFlow": 4,
-                                       "covers": coverSources,
-                                       "isPlaylist": true,
-                                       "genre": undefined,
-                                       "page": playlistsPage,
-                                       "pageTitle": qsTr("Playlist"),
-                                       "line1": "",
-                                       "line2": model.title,
-                                   })
+                stackView.push("qrc:/controls2/TrackStackView.qml",
+                               {
+                                   "containerItem": makeContainerItem(model),
+                                   "containerTitle": model.title,
+                                   "containerId": model.id,
+                                   "covers": coverSources,
+                                   "pageTitle": qsTr("Playlist")
+                               })
             }
             onPressAndHold: {
                 if (isFavorite && removeFromFavorites(model.payload))

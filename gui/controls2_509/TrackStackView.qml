@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016, 2017
+ * Copyright (C) 2016, 2022
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -23,31 +23,20 @@ import "components"
 import "components/Delegates"
 import "components/Flickables"
 import "components/ListItemActions"
-import "components/ViewButton"
 import "components/Dialog"
-import "../toolbox.js" as ToolBox
 
 MusicPage {
-    id: songStackPage
-    objectName: "songsPage"
+    id: tracksPage
+    objectName: "tracksPage"
     visible: false
-    pageFlickable: songList
+    pageFlickable: trackList
     isListView: true
-    listview: songList
+    listview: trackList
 
-    property string line1: ""
-    property string line2: ""
     property var covers: []
-    property bool isAlbum: false
-    property bool isPlaylist: false
-    property string year: ""
-
     property var containerItem: null
-
-    property string songSearch: ""
-    property string album: ""
-    property string artist: ""
-    property string genre: ""
+    property string containerTitle: ""
+    property string containerId: ""
 
     property bool isFavorite: false
 
@@ -59,9 +48,9 @@ MusicPage {
 
     onStateChanged: {
         if (state === "selection")
-            songList.state = "selection"
+            trackList.state = "selection"
         else
-            songList.state = "default"
+            trackList.state = "default"
     }
 
     Timer {
@@ -70,7 +59,7 @@ MusicPage {
         property var selectedIndices: []
         onTriggered: {
             focusIndex = selectedIndices[selectedIndices.length-1];
-            if (!removeTracksFromPlaylist(containerItem.id, selectedIndices, songsModel.containerUpdateID(), function(result) {
+            if (!removeTracksFromPlaylist(containerItem.id, selectedIndices, tracksModel.containerUpdateID(), function(result) {
                 if (result) {
                     popInfo.open(qsTr("%n song(s) removed", "", selectedIndices.length));
                 } else {
@@ -83,37 +72,37 @@ MusicPage {
     }
 
     TracksModel {
-        id: songsModel
+        id: tracksModel
         Component.onCompleted: {
-            songsModel.init(Sonos, songSearch, false)
-            songsModel.asyncLoad()
+            tracksModel.init(Sonos, containerId, false)
+            tracksModel.asyncLoad()
         }
     }
 
     Connections {
-        target: songsModel
-        function onDataUpdated() {
-            songsModel.asyncLoad()
+        target: tracksModel
+        onDataUpdated: {
+            tracksModel.asyncLoad()
         }
-        function onLoaded(succeeded) {
-            songsModel.resetModel()
+        onLoaded: {
+            tracksModel.resetModel()
         }
-        function onLoadedMore(succeeded) {
+        onLoadedMore: {
             if (succeeded)
-                songsModel.appendModel();
+                tracksModel.appendModel();
         }
-        function onViewUpdated() {
+        onViewUpdated: {
             if (focusIndex >= 0) {
-                if (focusIndex >= songsModel.totalCount) {
-                    focusIndex = songsModel.totalCount - 1;
+                if (focusIndex >= tracksModel.totalCount) {
+                    focusIndex = tracksModel.totalCount - 1;
                 }
-                if (focusIndex >= songsModel.count) {
-                    if (!songsModel.fetchAt(focusIndex)) {
-                        songList.positionViewAtIndex(songList.count - 1, ListView.End);
+                if (focusIndex >= tracksModel.count) {
+                    if (!tracksModel.fetchAt(focusIndex)) {
+                        trackList.positionViewAtIndex(trackList.count - 1, ListView.End);
                         focusIndex = -1;
                     }
                 } else {
-                    songList.positionViewAtIndex(focusIndex, ListView.Center);
+                    trackList.positionViewAtIndex(focusIndex, ListView.Center);
                     focusIndex = -1;
                 }
             }
@@ -149,7 +138,7 @@ MusicPage {
                     elide: Text.ElideRight
                 }
                 onClicked: {
-                    shuffleModel(songsModel)
+                    shuffleModel(tracksModel)
                 }
             }
             Icon {
@@ -165,7 +154,7 @@ MusicPage {
                     elide: Text.ElideRight
                 }
                 onClicked: {
-                    playAll(songStackPage.containerItem)
+                    playAll(tracksPage.containerItem)
                 }
                 enabled: containerItem ? true : false
                 visible: enabled
@@ -183,7 +172,7 @@ MusicPage {
                     elide: Text.ElideRight
                 }
                 onClicked: {
-                    addQueue(songStackPage.containerItem)
+                    addQueue(tracksPage.containerItem)
                 }
                 enabled: containerItem ? true : false
                 visible: enabled
@@ -195,7 +184,7 @@ MusicPage {
             height: implicitHeight
             spacing: units.gu(1)
             Label {
-               id: albumLabel
+               id: titleLabel
                anchors {
                    leftMargin: units.gu(1)
                    rightMargin: units.gu(1)
@@ -206,12 +195,12 @@ MusicPage {
                elide: Text.ElideRight
                font.pointSize: units.fs("x-large")
                maximumLineCount: 1
-               text: line2
+               text: containerTitle
                wrapMode: Text.NoWrap
             }
 
             Label {
-               id: albumArtist
+               id: summary
                anchors {
                    leftMargin: units.gu(1)
                    rightMargin: units.gu(1)
@@ -222,26 +211,7 @@ MusicPage {
                elide: Text.ElideRight
                font.pointSize: units.fs("small")
                maximumLineCount: 1
-               text: line1
-               visible: line1 !== ""
-               wrapMode: Text.NoWrap
-            }
-
-            Label {
-               id: albumYear
-               anchors {
-                   leftMargin: units.gu(1)
-                   rightMargin: units.gu(1)
-                   left: parent.left
-                   right: parent.right
-               }
-               color: styleMusic.view.secondaryColor
-               elide: Text.ElideRight
-               font.pointSize: units.fs("small")
-               maximumLineCount: 1
-               text: isAlbum
-                     ? (year !== "" ? year + " | " : "") + qsTr("%n song(s)", "", songsModel.totalCount)
-                     : qsTr("%n song(s)", "", songsModel.totalCount)
+               text: qsTr("%n song(s)", "", tracksModel.totalCount)
                wrapMode: Text.NoWrap
             }
 
@@ -259,17 +229,15 @@ MusicPage {
 
         SelectMusicListItem {
             id: listItem
-            listview: songList
-            reorderable: isPlaylist
+            listview: trackList
+            reorderable: true
             selectable: true
 
             onSwipe: {
-                if (isPlaylist) {
-                    focusIndex = index > 0 ? index - 1 : 0;
-                    delayRemoveSelectedFromPlaylist.selectedIndices = [index]
-                    delayRemoveSelectedFromPlaylist.start()
-                    color = "red";
-                }
+                focusIndex = index > 0 ? index - 1 : 0;
+                delayRemoveSelectedFromPlaylist.selectedIndices = [index]
+                delayRemoveSelectedFromPlaylist.start()
+                color = "red";
             }
 
             onReorder: {
@@ -277,12 +245,7 @@ MusicPage {
             }
 
             onClick: {
-                var arts = [];
-                if (isAlbum)
-                    arts = covers; // header covers
-                else
-                    arts = [{art: imageSource}]; // item cover
-
+                var arts = [{art: imageSource}]; // item cover
                 dialogSongInfo.open(model, arts,
                                     "qrc:/controls2/Library.qml",
                                     {
@@ -303,14 +266,14 @@ MusicPage {
             // check favorite on data loaded
             Connections {
                 target: AllFavoritesModel
-                function onCountChanged() {
+                onCountChanged: {
                     listItem.isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
                 }
             }
 
             noCover: "qrc:/images/no_cover.png"
-            rowNumber: songStackPage.isAlbum ? model.albumTrackNo !== "" ? model.albumTrackNo : "#" : ""
-            imageSources: !songStackPage.isAlbum ? makeCoverSource(model.art, model.author, model.album) : []
+            rowNumber: model.index + 1
+            imageSources: makeCoverSource(model.art, model.author, model.album)
             description: qsTr("Song")
 
             onImageError: model.art = "" // reset invalid url from model
@@ -330,8 +293,6 @@ MusicPage {
                 AddToQueue {
                 },
                 Remove {
-                    enabled: isPlaylist
-                    visible: enabled
                     onTriggered: {
                         focusIndex = index > 0 ? index - 1 : 0;
                         delayRemoveSelectedFromPlaylist.selectedIndices = [index]
@@ -345,19 +306,11 @@ MusicPage {
 
             column: Column {
                 Label {
-                    id: trackIndex
-                    color: styleMusic.view.primaryColor
-                    font.pointSize: units.fs("small")
-                    text: "# " + (model.index + 1)
-                }
-
-                Label {
                     id: trackTitle
                     color: styleMusic.view.primaryColor
                     font.pointSize: units.fs("medium")
                     text: model.title
                 }
-
                 Label {
                     id: trackArtist
                     color: styleMusic.view.secondaryColor
@@ -368,20 +321,17 @@ MusicPage {
 
             Component.onCompleted: {
                 isFavorite = (AllFavoritesModel.findFavorite(model.payload).length > 0)
-                if (model.date !== undefined) {
-                    songStackPage.year = new Date(model.date).toLocaleString(Qt.locale(),'yyyy')
-                }
             }
         }
     }
 
     MultiSelectListView {
-        id: songList
+        id: trackList
         anchors.fill: parent
         clip: true
         model: DelegateModel {
             id: visualModel
-            model: songsModel
+            model: tracksModel
             delegate: dragDelegate
         }
 
@@ -390,87 +340,91 @@ MusicPage {
         onReorder: {
             customdebug("Reorder item " + from + " to " + to);
             focusIndex = to;
-            if (!reorderTrackInPlaylist(containerItem.id, from, to, songsModel.containerUpdateID(), function(result) {
+            if (!reorderTrackInPlaylist(containerItem.id, from, to, tracksModel.containerUpdateID(), function(result) {
                 if (!result) {
-                    songsModel.asyncLoad();
+                    tracksModel.asyncLoad();
                     mainView.actionFailed();
                 }
             })) {
-                songsModel.asyncLoad();
+                tracksModel.asyncLoad();
                 mainView.actionFailed();
             }
         }
 
         onAtYEndChanged: {
-            if (songList.atYEnd && songsModel.totalCount > songsModel.count) {
-                songsModel.asyncLoadMore();
+            if (trackList.atYEnd && tracksModel.totalCount > tracksModel.count) {
+                tracksModel.asyncLoadMore();
             }
         }
 
         Connections {
-            target: songStackPage
-            function onSelectAllClicked() { songList.selectAll() }
-            function onSelectNoneClicked() { songList.selectNone() }
-            function onAddToQueueClicked() {
-                var indicies = songList.getSelectedIndices();
+            target: tracksPage
+            onSelectAllClicked: {
+                trackList.selectAll()
+            }
+            onSelectNoneClicked: {
+                trackList.selectNone()
+            }
+            onAddToQueueClicked: {
+                var indicies = trackList.getSelectedIndices();
                 // when select all then add the container if exists
-                if (containerItem && indicies.length === songsModel.count) {
+                if (containerItem && indicies.length === tracksModel.count) {
                     if (addQueue(containerItem)) {
-                        songList.selectNone()
-                        songStackPage.state = "default"
+                        trackList.selectNone()
+                        tracksPage.state = "default"
                     }
                 }
                 else {
                     var items = [];
                     for (var i = 0; i < indicies.length; i++) {
-                        items.push(songsModel.get(indicies[i]));
+                        items.push(tracksModel.get(indicies[i]));
                     }
                     if (addMultipleItemsToQueue(items)) {
-                        songList.selectNone()
-                        songStackPage.state = "default"
+                        trackList.selectNone()
+                        tracksPage.state = "default"
                     }
                 }
             }
-            function onAddToPlaylistClicked() {
+            onAddToPlaylistClicked: {
                 var items = []
-                var indicies = songList.getSelectedIndices();
+                var indicies = trackList.getSelectedIndices();
                 // when select all then add the container if exists
-                if (containerItem && indicies.length === songsModel.count)
+                if (containerItem && indicies.length === tracksModel.count)
                     items.push(containerItem);
                 else {
                     for (var i = 0; i < indicies.length; i++) {
-                        items.push({"payload": songsModel.get(indicies[i]).payload});
+                        items.push({"payload": tracksModel.get(indicies[i]).payload});
                     }
                 }
                 stackView.push("qrc:/controls2/AddToPlaylist.qml", {"chosenElements": items})
-                songList.selectNone()
-                songStackPage.state = "default"
+                trackList.selectNone()
+                tracksPage.state = "default"
             }
 
-            function onRemoveSelectedClicked() {
-                delayRemoveSelectedFromPlaylist.selectedIndices = songList.getSelectedIndices()
+            onRemoveSelectedClicked: {
+                delayRemoveSelectedFromPlaylist.selectedIndices = trackList.getSelectedIndices()
                 if (delayRemoveSelectedFromPlaylist.selectedIndices.length > 0)
                     focusIndex = delayRemoveSelectedFromPlaylist.selectedIndices[delayRemoveSelectedFromPlaylist.selectedIndices.length - 1]
                 delayRemoveSelectedFromPlaylist.start()
-                songList.selectNone()
-                songStackPage.state = "default"
+                trackList.selectNone()
+                tracksPage.state = "default"
             }
         }
 
         onHasSelectionChanged: {
-            songStackPage.selectAllVisible = !hasSelection
-            songStackPage.selectNoneVisible = hasSelection
-            songStackPage.addToQueueVisible = hasSelection
-            songStackPage.addToPlaylistVisible = hasSelection
-            songStackPage.removeSelectedVisible = isPlaylist && hasSelection
+            tracksPage.selectAllVisible = !hasSelection
+            tracksPage.selectNoneVisible = hasSelection
+            tracksPage.addToQueueVisible = hasSelection
+            tracksPage.addToPlaylistVisible = hasSelection
+            tracksPage.removeSelectedVisible = hasSelection
         }
 
         Component.onCompleted: {
-            songStackPage.selectAllVisible = !hasSelection
-            songStackPage.selectNoneVisible = hasSelection
-            songStackPage.addToQueueVisible = hasSelection
-            songStackPage.addToPlaylistVisible = hasSelection
-            songStackPage.removeSelectedVisible = isPlaylist && hasSelection
+            tracksPage.selectAllVisible = !hasSelection
+            tracksPage.selectNoneVisible = hasSelection
+            tracksPage.addToQueueVisible = hasSelection
+            tracksPage.addToPlaylistVisible = hasSelection
+            tracksPage.removeSelectedVisible = hasSelection
         }
     }
 
@@ -478,12 +432,10 @@ MusicPage {
         id: dialogRemovePlaylist
 
         onAccepted: {
-            if (songStackPage.isPlaylist) {
-                // removing playlist
-                removeFromFavorites(songStackPage.containerItem.payload)
-                removePlaylist(songStackPage.containerItem.id)
-                stackView.pop()
-            }
+            // removing playlist
+            removeFromFavorites(tracksPage.containerItem.payload)
+            removePlaylist(tracksPage.containerItem.id)
+            stackView.pop()
         }
     }
 
@@ -492,25 +444,23 @@ MusicPage {
     optionsMenuContentItems: [
         MenuItem {
             enabled: containerItem ? true : false
-            text: songStackPage.isFavorite ?  qsTr("Remove from favorites") : qsTr("Add to favorites")
+            text: tracksPage.isFavorite ?  qsTr("Remove from favorites") : qsTr("Add to favorites")
             font.pointSize: units.fs("medium")
             onTriggered: {
-                if (!songStackPage.isFavorite) {
-                    if (addItemToFavorites(containerItem, pageTitle, songList.headerItem.firstSource))
-                        songStackPage.isFavorite = true
+                if (!tracksPage.isFavorite) {
+                    if (addItemToFavorites(containerItem, pageTitle, trackList.headerItem.firstSource))
+                        tracksPage.isFavorite = true
                 } else {
                     if (removeFromFavorites(containerItem.payload))
-                        songStackPage.isFavorite = false
+                        tracksPage.isFavorite = false
                 }
             }
         },
         MenuItem {
-            visible: songStackPage.isPlaylist
             height: (visible ? implicitHeight : 0)
             text: qsTr("Delete")
             font.pointSize: units.fs("medium")
             onTriggered: {
-                if (isPlaylist)
                     dialogRemovePlaylist.open()
             }
         }
@@ -519,7 +469,7 @@ MusicPage {
     // check favorite on data loaded
     Connections {
         target: AllFavoritesModel
-        function onCountChanged() {
+        onCountChanged: {
             if (containerItem)
                 isFavorite = (AllFavoritesModel.findFavorite(containerItem.payload).length > 0)
         }
