@@ -115,7 +115,7 @@ DialogBase {
         inputMethodHints: Qt.ImhNoPredictiveText
         placeholderText: qsTr("Type search")
         font.pointSize: units.fs("medium")
-        EnterKey.type: Qt.EnterKeyDone
+        Keys.onReturnPressed: dialog.accept()
     }
 
     onAccepted: {
