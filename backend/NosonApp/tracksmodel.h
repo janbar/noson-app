@@ -119,7 +119,7 @@ public:
 
   Q_INVOKABLE bool asyncLoad();
 
-  bool loadMoreData(unsigned size = 0);
+  bool loadMoreData();
 
   Q_INVOKABLE bool asyncLoadMore();
 

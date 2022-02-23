@@ -181,6 +181,7 @@ QVariantMap TracksModel::get(int row)
 
 bool TracksModel::init(Sonos* provider, const QString& root, bool fill)
 {
+  m_fetchSize = 0;
   QString _root;
   if (root.isEmpty())
     _root = QString::fromUtf8(SONOS::ContentSearch(SONOS::SearchTrack,"").Root().c_str());
@@ -207,6 +208,10 @@ bool TracksModel::loadData()
   }
 
   LockGuard<QRecursiveMutex> g(m_lock);
+  // reset fetchsize to default
+  unsigned size = m_fetchSize > 0 ? m_fetchSize : LOAD_BULKSIZE;
+  m_fetchSize = LOAD_BULKSIZE;
+
   SAFE_DELETE(m_contentList);
   SAFE_DELETE(m_contentDirectory);
   m_contentDirectory = new SONOS::ContentDirectory(m_provider->getHost(), m_provider->getPort());
@@ -225,8 +230,9 @@ bool TracksModel::loadData()
   qDeleteAll(m_data);
   m_data.clear();
   m_dataState = DataStatus::DataNotFound;
+
   unsigned cnt = 0;
-  while (cnt < LOAD_BULKSIZE && m_iterator != m_contentList->end())
+  while (cnt < size && m_iterator != m_contentList->end())
   {
     TrackItem* item = new TrackItem(*m_iterator, url);
     if (item->isValid())
@@ -260,11 +266,14 @@ bool TracksModel::fetchAt(int index)
   if (!m_provider)
     return false;
   LockGuard<QRecursiveMutex> g(m_lock);
-  if ((index + LOAD_BULKSIZE) <= m_items.count() || static_cast<unsigned>(index) >= m_totalCount)
+  if ((index + LOAD_BULKSIZE) <= m_items.count())
     return false;
   // estimate the next fetch size for the targeted index
   m_fetchSize = (index + LOAD_BULKSIZE) - m_items.count();
-  m_provider->runContentLoaderForContext(this, 1);
+  if (m_contentList)
+    m_provider->runContentLoaderForContext(this, 1);
+  else
+    m_provider->runContentLoaderForContext(this, 0);
   return true;
 }
 
@@ -278,10 +287,14 @@ bool TracksModel::asyncLoad()
   return false;
 }
 
-bool TracksModel::loadMoreData(unsigned size)
+bool TracksModel::loadMoreData()
 {
   LockGuard<QRecursiveMutex> g(m_lock);
-  if (!m_contentDirectory || !m_contentList)
+  // reset fetchsize to default
+  unsigned size = m_fetchSize > 0 ? m_fetchSize : LOAD_BULKSIZE;
+  m_fetchSize = LOAD_BULKSIZE;
+
+  if (!m_contentList)
   {
     emit loadedMore(false);
     return false;
@@ -294,8 +307,6 @@ bool TracksModel::loadMoreData(unsigned size)
   }
   QString url = m_provider->getBaseUrl();
 
-  if (size == 0)
-    size = LOAD_BULKSIZE;
   unsigned cnt = 0;
   while (cnt < size && m_iterator != m_contentList->end())
   {
@@ -392,11 +403,7 @@ bool TracksModel::loadDataForContext(int id)
     case 0:
       return loadData();
     case 1:
-    {
-      unsigned c = m_fetchSize;
-      m_fetchSize = 0;
-      return loadMoreData(c);
-    }
+      return loadMoreData();
     default:
       return false;
   }
