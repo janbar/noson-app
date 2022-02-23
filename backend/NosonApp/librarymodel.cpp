@@ -122,7 +122,7 @@ LibraryItem::LibraryItem(const SONOS::DigitalItemPtr& data, const QString& baseU
     {
       m_type = _hasRes ? LibraryModel::NodePlayable : LibraryModel::NodeFolder;
       m_displayType = LibraryModel::DisplayItemList;
-      _canqueue = false; // prohibit add to playlist
+      _canqueue = _hasRes;
       _canplay = _hasRes;
     }
     else
