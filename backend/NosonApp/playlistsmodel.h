@@ -102,8 +102,6 @@ public:
 
   Q_INVOKABLE void resetModel();
 
-  Q_INVOKABLE void appendModel() { }
-
   virtual void handleDataUpdate();
 
   Q_INVOKABLE int containerUpdateID() { return m_updateID; }
