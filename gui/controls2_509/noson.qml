@@ -561,7 +561,7 @@ ApplicationWindow {
     // Action on track clicked
     function trackClicked(modelItem, play) {
         play = play === undefined ? true : play  // default play to true
-        var nr = player.trackQueue.count + 1; // push back
+        var nr = player.trackQueue.totalCount + 1; // push back
         if (play) {
             return player.playQueue(false, function(result) {
                 if (result) {
@@ -711,7 +711,7 @@ ApplicationWindow {
     // Action add queue
     function addQueue(modelItem)
     {
-        var nr = player.trackQueue.count;
+        var nr = player.trackQueue.totalCount;
         return player.addItemToQueue(modelItem, ++nr, function(result) {
             if (result > 0) {
                 popInfo.open(qsTr("song added"));

@@ -197,6 +197,8 @@ MusicPage {
             onClicked: {
                 addQueue(libraryPage.nodeItem)
             }
+            enabled: nodeType !== LibraryModel.NodePlayable
+            visible: enabled
         }
     }
 
