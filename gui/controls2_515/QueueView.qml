@@ -39,12 +39,12 @@ MusicPage {
         function onConnectedChanged() {
             if (player.connected) {
                 model.init(player.zoneHandle(), false);
-                model.asyncLoad();
                 // focus current index
                 if (player.currentIndex > 0) {
-                    ToolBox.connectOnce(model.onViewUpdated, function(){
-                        queue.positionAt(player.currentIndex - 1);
-                    });
+                    model.fetchAt(player.currentIndex - 1);
+                    queue.saveViewFocus(player.currentIndex, ListView.Beginning);
+                } else {
+                    model.asyncLoad();
                 }
             }
         }
@@ -53,12 +53,12 @@ MusicPage {
     Component.onCompleted: {
         if (player.connected) {
             model.init(player.zoneHandle(), false);
-            model.asyncLoad();
             // focus current index
             if (player.currentIndex > 0) {
-                ToolBox.connectOnce(model.onViewUpdated, function(){
-                    queue.positionAt(player.currentIndex - 1);
-                });
+                model.fetchAt(player.currentIndex - 1);
+                queue.saveViewFocus(player.currentIndex, ListView.Beginning);
+            } else {
+                model.asyncLoad();
             }
         }
     }

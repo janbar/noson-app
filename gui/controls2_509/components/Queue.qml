@@ -47,12 +47,31 @@ Item {
         if (index >= queueModel.firstIndex &&
                 index < queueModel.firstIndex + queueModel.count) {
             // move view at desired position - 1
-            queueList.focusView(index - 1, ListView.Beginning);
+            focusView(index - 1, ListView.Beginning);
         } else {
             // reload starting at position - 1
-            queueList.saveViewFocus(index, ListView.Beginning);
+            saveViewFocus(index, ListView.Beginning);
             queueModel.fetchAt(index - 1);
         }
+    }
+
+    // internal property to enable/disable fetch on move
+    property bool fetchEnabled: true
+
+    function focusView(focusId, focusMode) {
+        var index = (focusId < queueModel.firstIndex ? 0 : focusId - queueModel.firstIndex);
+        if (queueList)
+            queueList.positionViewAtIndex(index, focusMode);
+        // finally enable fetch on move
+        fetchEnabled = true;
+    }
+
+    function saveViewFocus(focusId, focusMode) {
+        // disable fetch on move
+        fetchEnabled = false;
+        ToolBox.connectOnce(queueModel.onViewUpdated, function(){
+            focusView(focusId, focusMode);
+        });
     }
 
     Component {
@@ -67,7 +86,7 @@ Item {
 
             onSwipe: {
                 var focusId = model.trackIndex - 1;
-                queueList.saveViewFocus(focusId, ListView.Center);
+                saveViewFocus(focusId, ListView.Center);
                 removeTrackFromQueue(model);
                 color = "red";
             }
@@ -110,7 +129,7 @@ Item {
                 Remove {
                     onTriggered: {
                         var focusId = model.trackIndex - 1;
-                        queueList.saveViewFocus(focusId, ListView.Center);
+                        saveViewFocus(focusId, ListView.Center);
                         removeTrackFromQueue(model);
                         color = "red";
                     }
@@ -166,28 +185,10 @@ Item {
             target: queueModel
             onDataUpdated: {
                 var focusId = queueModel.firstIndex + queueList.indexAt(queueList.contentX, queueList.contentY);
-                queueList.saveViewFocus(focusId, ListView.Beginning);
+                saveViewFocus(focusId, ListView.Beginning);
             }
             //onViewUpdated: {
             //}
-        }
-
-        property bool fetchEnabled: false // property to enable/disable fetch on move
-
-        function focusView(focusId, focusMode) {
-            var index = (focusId < queueModel.firstIndex ? 0 : focusId - queueModel.firstIndex);
-            positionViewAtIndex(index, focusMode);
-            // finally enable fetch on move
-            fetchEnabled = true;
-        }
-
-        function saveViewFocus(focusId, focusMode) {
-            // disable fetch on move
-            fetchEnabled = false;
-            ToolBox.connectOnce(queueModel.onViewUpdated, function(){
-                if (queueList)
-                    queueList.focusView(focusId, focusMode);
-            });
         }
 
         signal reorder(int from, int to)
@@ -195,7 +196,7 @@ Item {
         onReorder: {
             customdebug("Reorder queue item " + from + " to " + to);
             var focusId = to + queueModel.firstIndex;
-            queueList.saveViewFocus(focusId, ListView.Center);
+            saveViewFocus(focusId, ListView.Center);
             reorderTrackInQueue(queueModel.firstIndex + from, queueModel.firstIndex + to);
         }
 
@@ -204,7 +205,7 @@ Item {
                     queueModel.totalCount > (queueModel.firstIndex + queueModel.count)) {
                 if (queueModel.fetchBack()) {
                     var focusId = queueModel.firstIndex + queueModel.count;
-                    queueList.saveViewFocus(focusId, ListView.End);
+                    saveViewFocus(focusId, ListView.End);
                 }
             }
         }
@@ -214,14 +215,9 @@ Item {
                     queueModel.firstIndex > 0) {
                 if (queueModel.fetchFront()) {
                     var focusId = queueModel.firstIndex - 1;
-                    queueList.saveViewFocus(focusId, ListView.Beginning);
+                    saveViewFocus(focusId, ListView.Beginning);
                 }
             }
-        }
-
-        Component.onCompleted: {
-            // on first load enable fetching by focusing view
-            saveViewFocus(0, ListView.Beginning);
         }
     }
 }
