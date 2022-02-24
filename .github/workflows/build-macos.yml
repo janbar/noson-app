@@ -14,7 +14,7 @@ jobs:
       matrix:
         config:
         - {
-            name: "macOS-10.15-x64", artifact: "macOS-10.15-x64.zip",
+            name: "macOS-10.13-x64", artifact: "macOS-10.13-x64.zip",
             os: macos-10.15
           }
     runs-on: ${{ matrix.config.os }}
@@ -65,7 +65,7 @@ jobs:
         file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}/qt5/${qt_dir_prefix}" qt_dir)
         message("::set-output name=qt_dir::${qt_dir}")
 
-        foreach(package qtbase qtdeclarative qttools qtsvg qtquickcontrols2 qttranslations qtsensors qtlocation)
+        foreach(package qtbase qtdeclarative qttools qtsvg qtquickcontrols2 qtgraphicaleffects qttranslations qtsensors qtlocation)
           file(DOWNLOAD
             "${qt_base_url}/${qt_package_name}/${package_version}${package}${package_suffix}.7z" ./${package}.7z
             SHOW_PROGRESS
@@ -86,7 +86,9 @@ jobs:
         mkdir -p build
         cd build
         cmake .. \
+          -DBUILD_DEPENDENCIES=ON \
           -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_OSX_DEPLOYMENT_TARGET="10.13" \
           -DCMAKE_PREFIX_PATH=${{ steps.qt.outputs.qt_dir }} \
           -DQt5Core_DIR=${{ steps.qt.outputs.qt_dir }}/lib/cmake/Qt5Core \
           -DQt5Gui_DIR=${{ steps.qt.outputs.qt_dir }}/lib/cmake/Qt5Gui \
@@ -116,7 +118,7 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: package ${{ matrix.config.os }}
+        name: ${{ matrix.config.artifact }}
         path: ${{ github.workspace }}/build/noson-MacOSX_*.tar.gz
         retention-days: 5
 
