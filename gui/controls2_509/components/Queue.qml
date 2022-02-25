@@ -47,7 +47,7 @@ Item {
         if (index >= queueModel.firstIndex &&
                 index < queueModel.firstIndex + queueModel.count) {
             // move view at desired position - 1
-            focusView(index - 1, ListView.Beginning);
+            focusView(index, ListView.Beginning);
         } else {
             // reload starting at position - 1
             saveViewFocus(index, ListView.Beginning);
