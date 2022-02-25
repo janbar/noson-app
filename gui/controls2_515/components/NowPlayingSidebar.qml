@@ -42,138 +42,212 @@ Page {
             mirror: true
         }
 
-        /* Background for progress bar component */
-        Rectangle {
-            id: fullviewProgressBackground
-            height: units.gu(3)
+        Column {
             width: parent.width
-            color: "transparent"
 
-            /* Progress bar component */
-            Item {
-                id: fullviewProgressContainer
-                anchors {
-                    left: fullviewProgressBackground.left
-                    right: fullviewProgressBackground.right
-                    top: fullviewProgressBackground.top
-                    topMargin: -units.gu(2)
-                }
-                height: units.gu(2)
+            /* Background for progress bar component */
+            Rectangle {
+                id: fullviewProgressBackground
+                height: visible ? units.gu(4) : 0
                 width: parent.width
+                color: "transparent"
                 visible: player.isPlayingQueued()
 
-                /* Position label */
-                Label {
-                    id: fullviewPositionLabel
+                /* Progress bar component */
+                Item {
+                    id: fullviewProgressContainer
                     anchors {
-                        top: progressSliderMusic.bottom
-                        topMargin: units.gu(-2)
-                        left: parent.left
-                        leftMargin: units.gu(1)
+                        left: fullviewProgressBackground.left
+                        right: fullviewProgressBackground.right
+                        top: fullviewProgressBackground.top
+                        topMargin: -units.gu(2)
                     }
-                    color: styleMusic.nowPlaying.secondaryColor
-                    font.pointSize: units.fs("small")
-                    height: parent.height
-                    horizontalAlignment: Text.AlignLeft
-                    text: durationToString(player.trackPosition)
-                    verticalAlignment: Text.AlignVCenter
-                    width: units.gu(3)
+                    height: units.gu(2)
+                    width: parent.width
+
+                    /* Position label */
+                    Label {
+                        id: fullviewPositionLabel
+                        anchors {
+                            top: progressSliderMusic.bottom
+                            topMargin: units.gu(-2)
+                            left: parent.left
+                            leftMargin: units.gu(1)
+                        }
+                        color: styleMusic.nowPlaying.secondaryColor
+                        font.pointSize: units.fs("small")
+                        height: parent.height
+                        horizontalAlignment: Text.AlignLeft
+                        text: durationToString(player.trackPosition)
+                        verticalAlignment: Text.AlignVCenter
+                        width: units.gu(3)
+                    }
+
+                    StyledSlider {
+                        id: progressSliderMusic
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                            top: parent.top
+                        }
+                        from: 0
+                        to: player.trackDuration  // load value at startup
+                        objectName: "progressSliderShape"
+                        value: player.trackPosition  // load value at startup
+                        wheelEnabled: false
+                        stepSize: 5000.0
+
+                        foregroundColor: styleMusic.playerControls.progressForegroundColor
+                        backgroundColor: styleMusic.playerControls.progressBackgroundColor
+                        handleColor: styleMusic.playerControls.progressHandleColor
+                        handleColorPressed: styleMusic.playerControls.backgroundColor
+                        handleBorderColor: handleColor
+                        handleSize: units.gu(1.5)
+
+                        function formatValue(v) {
+                            if (seeking) {  // update position label while dragging
+                                fullviewPositionLabel.text = durationToString(v)
+                            }
+
+                            return durationToString(v)
+                        }
+
+                        property bool seeking: false
+                        property bool seeked: false
+
+                        onSeekingChanged: {
+                            if (seeking === false) {
+                                fullviewPositionLabel.text = durationToString(player.trackPosition)
+                            }
+                        }
+
+                        onPressedChanged: {
+                            seeking = pressed
+
+                            if (!pressed) {
+                                seeked = true
+                                seekInTrack.start(); // start or restart the request
+
+                                fullviewPositionLabel.text = durationToString(value)
+                            }
+                        }
+
+                        Timer {
+                            id: seekInTrack
+                            interval: 250
+                            onTriggered: {
+                                player.seek(progressSliderMusic.value, mainView.actionFinished);
+                            }
+                        }
+
+                        Connections {
+                            target: player
+                            function onCurrentPositionChanged(position, duration) {
+                                // seeked is a workaround for bug 1310706 as the first position after a seek is sometimes invalid (0)
+                                if (progressSliderMusic.seeking === false && !progressSliderMusic.seeked) {
+                                    fullviewPositionLabel.text = durationToString(position)
+                                    fullviewDurationLabel.text = durationToString(duration)
+
+                                    progressSliderMusic.value = position
+                                    progressSliderMusic.to = duration
+                                }
+
+                                progressSliderMusic.seeked = false;
+                            }
+                            function onStopped() {
+                                fullviewPositionLabel.text = durationToString(0);
+                            }
+                        }
+                    }
+
+                    /* Duration label */
+                    Label {
+                        id: fullviewDurationLabel
+                        anchors {
+                            top: progressSliderMusic.bottom
+                            topMargin: units.gu(-2)
+                            right: parent.right
+                            rightMargin: units.gu(1)
+                        }
+                        color: styleMusic.nowPlaying.secondaryColor
+                        font.pointSize: units.fs("small")
+                        height: parent.height
+                        horizontalAlignment: Text.AlignRight
+                        text: durationToString(player.trackDuration)
+                        verticalAlignment: Text.AlignVCenter
+                        width: units.gu(3)
+                    }
                 }
+            }
 
-                StyledSlider {
-                    id: progressSliderMusic
+            /* Background for stream info */
+            Rectangle {
+                id: nowPlayingWideAspectLabelsMask
+                width: parent.width
+                height: visible ? nowPlayingWideAspectLabels.implicitHeight + units.gu(1) : 0
+                clip: true
+                color: "transparent"
+                visible: !player.isPlayingQueued()
+
+                /* Column for labels */
+                Column {
+                    id: nowPlayingWideAspectLabels
                     anchors {
                         left: parent.left
+                        leftMargin: units.gu(2)
                         right: parent.right
-                        top: parent.top
-                    }
-                    from: 0
-                    to: player.trackDuration  // load value at startup
-                    objectName: "progressSliderShape"
-                    value: player.trackPosition  // load value at startup
-                    wheelEnabled: false
-                    stepSize: 5000.0
-
-                    foregroundColor: styleMusic.playerControls.progressForegroundColor
-                    backgroundColor: styleMusic.playerControls.progressBackgroundColor
-                    handleColor: styleMusic.playerControls.progressHandleColor
-                    handleColorPressed: styleMusic.playerControls.backgroundColor
-                    handleBorderColor: handleColor
-                    handleSize: units.gu(1.5)
-
-                    function formatValue(v) {
-                        if (seeking) {  // update position label while dragging
-                            fullviewPositionLabel.text = durationToString(v)
-                        }
-
-                        return durationToString(v)
+                        rightMargin: units.gu(2)
+                        verticalCenter: parent.verticalCenter
                     }
 
-                    property bool seeking: false
-                    property bool seeked: false
-
-                    onSeekingChanged: {
-                        if (seeking === false) {
-                            fullviewPositionLabel.text = durationToString(player.trackPosition)
+                    /* Title of stream */
+                    Label {
+                        id: nowPlayingWideAspectTitle
+                        anchors {
+                            left: parent.left
+                            leftMargin: units.gu(1)
+                            right: parent.right
+                            rightMargin: units.gu(1)
                         }
+                        color: styleMusic.nowPlaying.primaryColor
+                        elide: Text.ElideRight
+                        font.pointSize: units.fs("medium")
+                        font.weight: Font.DemiBold
+                        maximumLineCount: 2
+                        objectName: "playercontroltitle"
+                        text: player.currentMetaTitle
+                        wrapMode: Text.WordWrap
                     }
 
-                    onPressedChanged: {
-                        seeking = pressed
-
-                        if (!pressed) {
-                            seeked = true
-                            seekInTrack.start(); // start or restart the request
-
-                            fullviewPositionLabel.text = durationToString(value)
-                        }
+                    /* Meta of stream */
+                    Label {
+                        id: nowPlayingWideAspectMeta
+                        color: styleMusic.nowPlaying.primaryColor
+                        font.pointSize: units.fs("small")
+                        font.weight: Font.DemiBold
+                        text: player.currentMetaArtist
+                        x:units.gu(1)
                     }
 
                     Timer {
-                        id: seekInTrack
-                        interval: 250
-                        onTriggered: {
-                            player.seek(progressSliderMusic.value, mainView.actionFinished);
-                        }
+                        interval: 35
+                        onTriggered: moveMarquee()
+                        running: true
+                        repeat: true
                     }
-
-                    Connections {
-                        target: player
-                        function onCurrentPositionChanged(position, duration) {
-                            // seeked is a workaround for bug 1310706 as the first position after a seek is sometimes invalid (0)
-                            if (progressSliderMusic.seeking === false && !progressSliderMusic.seeked) {
-                                fullviewPositionLabel.text = durationToString(position)
-                                fullviewDurationLabel.text = durationToString(duration)
-
-                                progressSliderMusic.value = position
-                                progressSliderMusic.to = duration
-                            }
-
-                            progressSliderMusic.seeked = false;
-                        }
-                        function onStopped() { fullviewPositionLabel.text = durationToString(0); }
-                    }
-                }
-
-                /* Duration label */
-                Label {
-                    id: fullviewDurationLabel
-                    anchors {
-                        top: progressSliderMusic.bottom
-                        topMargin: units.gu(-2)
-                        right: parent.right
-                        rightMargin: units.gu(1)
-                    }
-                    color: styleMusic.nowPlaying.secondaryColor
-                    font.pointSize: units.fs("small")
-                    height: parent.height
-                    horizontalAlignment: Text.AlignRight
-                    text: durationToString(player.trackDuration)
-                    verticalAlignment: Text.AlignVCenter
-                    width: units.gu(3)
                 }
             }
         }
+    }
+
+    function moveMarquee(){
+        if (nowPlayingWideAspectMeta.width > nowPlayingWideAspectMeta.parent.width){
+            if(nowPlayingWideAspectMeta.x + nowPlayingWideAspectMeta.width < -20){
+                nowPlayingWideAspectMeta.x = nowPlayingWideAspectMeta.parent.width;
+            }
+            nowPlayingWideAspectMeta.x -= 1;
+        } else if (nowPlayingWideAspectMeta.x !== units.gu(1))
+            nowPlayingWideAspectMeta.x = units.gu(1);
     }
 
     Queue {
@@ -277,7 +351,7 @@ Page {
    function deactivate() {
         // disconnect tracking of current index
         player.onCurrentIndexChanged.disconnect(positionAtCurrentIndex);
-    }
+   }
 
    Component.onDestruction: {
        deactivate();
