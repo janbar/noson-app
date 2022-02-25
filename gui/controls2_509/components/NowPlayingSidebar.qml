@@ -342,18 +342,29 @@ Page {
         queue.positionAt(player.currentIndex);
     }
 
-   function activate() {
-        ensureListViewLoaded();
-        // tracking of current index
-        player.onCurrentIndexChanged.connect(positionAtCurrentIndex);
-   }
+    QtObject {
+        id: internal
+        property bool activated: false
+    }
 
-   function deactivate() {
-        // disconnect tracking of current index
-        player.onCurrentIndexChanged.disconnect(positionAtCurrentIndex);
-   }
+    function activate() {
+        if (!internal.activated) {
+            internal.activated = true;
+            ensureListViewLoaded();
+            // tracking of current index
+            player.onCurrentIndexChanged.connect(positionAtCurrentIndex);
+        }
+    }
 
-   Component.onDestruction: {
-       deactivate();
-   }
+    function deactivate() {
+        if (internal.activated) {
+            // disconnect tracking of current index
+            player.onCurrentIndexChanged.disconnect(positionAtCurrentIndex);
+            internal.activated = false;
+        }
+    }
+
+    Component.onDestruction: {
+        deactivate();
+    }
 }
