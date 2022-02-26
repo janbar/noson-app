@@ -135,7 +135,7 @@ MusicPage {
             bottom: parent.bottom
             bottomMargin: isListView ? nowPlaying.height - nowPlaying.footer.height - height : 0
         }
-        preferedHeight: !isListView && mainView.height * 0.20 > units.gu(16) ? Math.min((mainView.height * 0.25), units.gu(28)) : units.gu(16)
+        preferedHeight: !isListView && mainView.height * 0.20 > units.gu(16) ? Math.min((mainView.height * 0.20), units.gu(28)) : units.gu(16)
         height: toolbarHeight
         width: parent.width
         backgroundColor: "transparent"
