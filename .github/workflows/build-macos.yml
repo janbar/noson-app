@@ -118,7 +118,7 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.config.artifact }}
+        name: ${{ matrix.config.name }}
         path: ${{ github.workspace }}/build/noson-MacOSX_*.tar.gz
         retention-days: 5
 
