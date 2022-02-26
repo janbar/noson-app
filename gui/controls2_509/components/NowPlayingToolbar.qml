@@ -353,7 +353,7 @@ Item {
         }
         color: "transparent"
         height: units.gu(0.25)
-        visible: isListView && player.isPlayingQueued()
+        visible: player.isPlayingQueued()
 
         Rectangle {
             id: playerControlsProgressBarHint
