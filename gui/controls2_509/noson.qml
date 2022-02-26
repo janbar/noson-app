@@ -606,19 +606,29 @@ ApplicationWindow {
         if (player.currentIndex === index) {
             return player.toggle(actionFinished);
         } else {
-            return player.playQueue(false, function(result) {
-                if (result) {
-                    player.seekTrack(index + 1, function(result) {
-                        if (result) {
-                            player.play(actionFinished);
-                        } else {
-                            actionFailed();
-                        }
-                    });
-                } else {
-                    actionFailed();
-                }
-            });
+            if (player.isPlayingQueued()) {
+                return player.seekTrack(index + 1, function(result) {
+                    if (result) {
+                        player.play(actionFinished);
+                    } else {
+                        actionFailed();
+                    }
+                });
+            } else {
+                return player.playQueue(false, function(result) {
+                    if (result) {
+                        player.seekTrack(index + 1, function(result) {
+                            if (result) {
+                                player.play(actionFinished);
+                            } else {
+                                actionFailed();
+                            }
+                        });
+                    } else {
+                        actionFailed();
+                    }
+                });
+            }
         }
     }
 
