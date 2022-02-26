@@ -45,7 +45,7 @@ Page {
         Column {
             width: parent.width
 
-            /* Background for progress bar component */
+            /* Object for progress bar component when playing queue */
             Rectangle {
                 id: fullviewProgressBackground
                 height: visible ? units.gu(4) : 0
@@ -180,60 +180,91 @@ Page {
                 }
             }
 
-            /* Background for stream info */
+            /* Object for stream info when playing stream */
             Rectangle {
-                id: nowPlayingWideAspectLabelsMask
-                width: parent.width
-                height: visible ? nowPlayingWideAspectLabels.implicitHeight + units.gu(1) : 0
-                clip: true
-                color: "transparent"
+                id: nowPlayingWideAspectStreamInfo
                 visible: !player.isPlayingQueued()
+                width: parent.width
+                height: visible ? Math.max(coversImage.size + units.gu(1), nowPlayingWideAspectLabels.implicitHeight + units.gu(2))
+                                : 0
+                color: "transparent"
 
-                /* Column for labels */
-                Column {
-                    id: nowPlayingWideAspectLabels
-                    anchors {
-                        left: parent.left
-                        leftMargin: units.gu(2)
-                        right: parent.right
-                        rightMargin: units.gu(2)
-                        verticalCenter: parent.verticalCenter
+                CoverGrid {
+                    id: coversImage
+                    anchors.left: parent.left
+                    anchors.leftMargin: units.gu(1)
+                    anchors.verticalCenter: parent.verticalCenter
+                    size: enabled ? (queue.listview.count > 0 ? units.gu(5)
+                                                              : units.gu(12))
+                                  : 0
+                    enabled: covers.length > 0
+                    visible: enabled
+                    Component.onCompleted: {
+                        covers = player.covers.slice();
                     }
-
-                    /* Title of stream */
-                    Label {
-                        id: nowPlayingWideAspectTitle
-                        anchors {
-                            left: parent.left
-                            leftMargin: units.gu(1)
-                            right: parent.right
-                            rightMargin: units.gu(1)
+                    Connections {
+                        target: player
+                        onSourceChanged: {
+                            coversImage.covers = player.covers.slice();
                         }
-                        color: styleMusic.nowPlaying.primaryColor
-                        elide: Text.ElideRight
-                        font.pointSize: units.fs("medium")
-                        font.weight: Font.DemiBold
-                        maximumLineCount: 2
-                        objectName: "playercontroltitle"
-                        text: player.currentMetaTitle
-                        wrapMode: Text.WordWrap
                     }
-
-                    /* Meta of stream */
-                    Label {
-                        id: nowPlayingWideAspectMeta
-                        color: styleMusic.nowPlaying.primaryColor
-                        font.pointSize: units.fs("small")
-                        font.weight: Font.DemiBold
-                        text: player.currentMetaArtist
-                        x:units.gu(1)
+                    Behavior on size {
+                        NumberAnimation { }
                     }
+                }
 
-                    Timer {
-                        interval: 35
-                        onTriggered: moveMarquee()
-                        running: true
-                        repeat: true
+                Rectangle {
+                    id: nowPlayingWideAspectLabelsMask
+                    clip: true
+                    color: "transparent"
+                    height: nowPlayingWideAspectLabels.implicitHeight
+                    anchors {
+                        verticalCenter: parent.verticalCenter
+                        left: coversImage.right
+                        leftMargin: units.gu(1)
+                        right: parent.right
+                        rightMargin: units.gu(1)
+                    }
+                    /* Column for labels */
+                    Column {
+                        id: nowPlayingWideAspectLabels
+                        spacing: units.gu(1)
+                        anchors {
+                            verticalCenter: parent.verticalCenter
+                            left: parent.left
+                            right: parent.right
+                        }
+
+                        /* Title of stream */
+                        Label {
+                            id: nowPlayingWideAspectTitle
+                            anchors {
+                                left: parent.left
+                                right: parent.right
+                            }
+                            color: styleMusic.nowPlaying.primaryColor
+                            elide: Text.ElideRight
+                            font.pointSize: units.fs("large")
+                            font.weight: Font.DemiBold
+                            objectName: "playercontroltitle"
+                            text: player.currentMetaTitle
+                        }
+
+                        /* Meta of stream */
+                        Label {
+                            id: nowPlayingWideAspectMeta
+                            color: styleMusic.nowPlaying.primaryColor
+                            font.pointSize: units.fs("small")
+                            font.weight: Font.DemiBold
+                            text: player.currentMetaArtist
+                        }
+
+                        Timer {
+                            interval: 35
+                            onTriggered: moveMarquee()
+                            running: true
+                            repeat: true
+                        }
                     }
                 }
             }
@@ -246,8 +277,8 @@ Page {
                 nowPlayingWideAspectMeta.x = nowPlayingWideAspectMeta.parent.width;
             }
             nowPlayingWideAspectMeta.x -= 1;
-        } else if (nowPlayingWideAspectMeta.x !== units.gu(1))
-            nowPlayingWideAspectMeta.x = units.gu(1);
+        } else if (nowPlayingWideAspectMeta.x !== 0)
+            nowPlayingWideAspectMeta.x = 0;
     }
 
     Queue {
