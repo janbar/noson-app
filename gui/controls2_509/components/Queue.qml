@@ -187,8 +187,12 @@ Item {
                 var focusId = queueModel.firstIndex + queueList.indexAt(queueList.contentX, queueList.contentY);
                 saveViewFocus(focusId, ListView.Beginning);
             }
-            //onViewUpdated: {
-            //}
+            onViewUpdated: {
+                if (queueModel.count <= 0)
+                    emptyState.active = true;
+                else if (emptyState.active)
+                    emptyState.active = false;
+            }
         }
 
         signal reorder(int from, int to)
@@ -220,4 +224,27 @@ Item {
             }
         }
     }
+
+    // Overlay to show when no item available
+    Loader {
+        id: emptyState
+        anchors.fill: parent
+        active: false
+        asynchronous: true
+        source: "qrc:/controls2/components/ServiceEmptyState.qml"
+        visible: active
+
+        property string message: qsTr("No queue item found");
+
+        onStatusChanged: {
+            if (emptyState.status === Loader.Ready)
+                item.text = message;
+        }
+    }
+
+    Component.onCompleted: {
+        if (queueModel.count <= 0)
+            emptyState.active = true;
+    }
+
 }
