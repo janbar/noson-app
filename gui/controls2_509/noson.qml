@@ -329,7 +329,7 @@ ApplicationWindow {
         if (noZone) {
             noZonePage = stackView.push("qrc:/controls2/NoZoneState.qml")
         } else {
-            if (stackView.currentItem === noZonePage) {
+            if (stackView.currentItem == noZonePage) {
                 stackView.pop()
             }
         }
