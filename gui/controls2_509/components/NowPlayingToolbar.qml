@@ -197,7 +197,7 @@ Item {
             height: units.gu(6)
             width: height
             color: "transparent"
-            visible: player.isPlayingQueued()
+            visible: player.currentInQueue
 
             Icon {
                 id: repeatIcon
@@ -231,7 +231,7 @@ Item {
             height: units.gu(6)
             width: height
             color: "transparent"
-            visible: player.isPlayingQueued()
+            visible: player.currentInQueue || player.canGoNext || player.canGoPrevious
 
             Icon {
                 id: nowPlayingPreviousIndicator
@@ -241,7 +241,8 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: styleMusic.playerControls.labelColor
                 source: "qrc:/images/media-skip-backward.svg"
-                opacity: player.trackQueue.totalCount > 0 && player.currentIndex > 0  ? 1 : .3
+                opacity: player.canGoPrevious  ? 1 : .3
+                enabled: player.canGoPrevious
                 onClicked: player.previousSong(mainView.actionFinished)
             }
         }
@@ -292,7 +293,7 @@ Item {
             height: units.gu(6)
             width: height
             color: "transparent"
-            visible: player.isPlayingQueued()
+            visible: player.currentInQueue || player.canGoNext || player.canGoPrevious
 
             Icon {
                 id: nowPlayingNextIndicator
@@ -303,7 +304,8 @@ Item {
                 color: styleMusic.playerControls.labelColor
                 source: "qrc:/images/media-skip-forward.svg"
                 objectName: "forwardShape"
-                opacity: player.trackQueue.totalCount > 0 && (player.currentIndex + 1) < player.trackQueue.totalCount ? 1 : .3
+                opacity: player.canGoNext ? 1 : .3
+                enabled: player.canGoNext
                 onClicked: player.nextSong(mainView.actionFinished)
             }
         }
@@ -317,7 +319,7 @@ Item {
             height: units.gu(6)
             width: height
             color: "transparent"
-            visible: player.isPlayingQueued()
+            visible: player.currentInQueue
 
             Icon {
                 id: shuffleIcon
@@ -353,7 +355,7 @@ Item {
         }
         color: "transparent"
         height: units.gu(0.25)
-        visible: player.isPlayingQueued()
+        visible: player.currentInQueue
 
         Rectangle {
             id: playerControlsProgressBarHint

@@ -42,8 +42,13 @@ Item {
     property string currentMetaTitle: ""
     property string currentMetaURITitle: ""
     property int currentProtocol: -1
-    property int currentIndex: -1
-    property int currentCount: 0
+    property bool canGoNext: false
+    property bool canGoPrevious: false
+    property bool canSeek: false
+    property bool currentInQueue: false
+    property int currentIndex: -1   // index in queue
+    property int currentTrackNo: -1 // track no
+    property int currentCount: 0    // tracks count
     property string playbackState: ""
     readonly property bool isPlaying: (playbackState === "PLAYING")
     property int trackPosition: 0
@@ -186,7 +191,7 @@ Item {
     }
 
     function seek(position, onFinished) {
-        if (player.canSeekInStream()) {
+        if (player.canSeek) {
             var future = zone.handle.trySeekTime(Math.floor(position / 1000));
             future.onFinished.connect(onFinished);
             return future.start();
@@ -418,23 +423,6 @@ Item {
         future.start(false);
     }
 
-    function isPlayingQueued() {
-        return player.trackDuration > 0;
-    }
-
-    function canSeekInStream() {
-        switch (currentProtocol) {
-        case 1:  // x-rincon-stream
-        case 2:  // x-rincon-mp3radio
-        case 5:  // x-sonos-htastream
-        case 14: // http-get
-            return false;
-        default:
-            // the noson streamer uses the protocol http(17)
-            return isPlayingQueued();
-        }
-    }
-
     // reload the rendering model
     // it should be triggered on signal renderingControlChanged
     function refreshRendering() {
@@ -465,10 +453,17 @@ Item {
         player.currentMetaSource = zone.handle.currentMetaSource || "";
         player.currentMetaTitle = zone.handle.currentMetaTitle || "";
         player.currentMetaURITitle = zone.handle.currentMetaURITitle || "";
-        player.currentIndex = zone.handle.currentIndex;
         player.currentProtocol = zone.handle.currentProtocol;
+        player.canGoNext = zone.handle.canGoNext;
+        player.canGoPrevious = zone.handle.canGoPrevious;
+        player.canSeek = zone.handle.canSeek;
+        player.currentInQueue = zone.handle.currentInQueue;
+        if (zone.handle.currentInQueue)
+            player.currentIndex = zone.handle.currentIndex;
+        else
+            player.currentIndex = -1;
+        player.currentTrackNo = zone.handle.currentIndex;
         player.trackDuration = 1000 * zone.handle.currentTrackDuration;
-        // reset position
         if (zone.handle.currentTrackDuration > 0) {
             player.syncTrackPosition();
         } else {
@@ -479,8 +474,12 @@ Item {
             player.covers = [{art: "qrc:/images/linein.png"}];
         } else if (player.currentProtocol == 5) {
             player.covers = [{art: "qrc:/images/tv.png"}];
-        } else {
+        } else if (player.currentMetaArt != "") {
             player.covers = makeCoverSource(player.currentMetaArt, player.currentMetaArtist, player.currentMetaAlbum);
+        } else if (player.currentMetaAlbum != "") {
+            player.covers = makeCoverSource("", player.currentMetaArtist, player.currentMetaAlbum);
+        } else {
+            player.covers = [];
         }
         player.sourceChanged();
         player.currentPositionChanged(player.trackPosition, player.trackDuration);

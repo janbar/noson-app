@@ -51,7 +51,7 @@ Page {
                 height: visible ? units.gu(4) : 0
                 width: parent.width
                 color: "transparent"
-                visible: player.isPlayingQueued()
+                visible: player.currentInQueue
 
                 /* Progress bar component */
                 Item {
@@ -183,7 +183,7 @@ Page {
             /* Object for stream info when playing stream */
             Rectangle {
                 id: nowPlayingWideAspectStreamInfo
-                visible: !player.isPlayingQueued()
+                visible: !player.currentInQueue
                 width: parent.width
                 height: visible ? Math.max(coversImage.size + units.gu(1), nowPlayingWideAspectLabels.implicitHeight + units.gu(2))
                                 : 0

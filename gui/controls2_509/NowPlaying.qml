@@ -143,7 +143,7 @@ MusicPage {
         Behavior on anchors.bottomMargin {
             NumberAnimation { duration: 100 }
         }
-        bottomProgressHint: isListView && player.isPlayingQueued()
+        bottomProgressHint: isListView && player.currentInQueue
     }
 
     Loader {

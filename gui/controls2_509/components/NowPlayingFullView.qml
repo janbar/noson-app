@@ -189,7 +189,7 @@ Flickable {
         }
         height: units.gu(2)
         width: parent.width
-        visible: player.isPlayingQueued()
+        visible: player.currentInQueue
 
         /* Position label */
         Label {

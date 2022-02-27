@@ -606,7 +606,7 @@ ApplicationWindow {
         if (player.currentIndex === index) {
             return player.toggle(actionFinished);
         } else {
-            if (player.isPlayingQueued()) {
+            if (player.currentInQueue) {
                 return player.seekTrack(index + 1, function(result) {
                     if (result) {
                         player.play(actionFinished);
