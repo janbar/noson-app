@@ -64,6 +64,9 @@ class Player : public QObject, public ContentProvider<Player>
   Q_PROPERTY(int currentTrackDuration READ currentTrackDuration NOTIFY sourceChanged)
   Q_PROPERTY(int currentProtocol READ currentProtocol NOTIFY sourceChanged)
   Q_PROPERTY(bool currentInQueue READ currentInQueue NOTIFY sourceChanged)
+  Q_PROPERTY(bool canGoNext READ canGoNext NOTIFY sourceChanged)
+  Q_PROPERTY(bool canGoPrevious READ canGoPrevious NOTIFY sourceChanged)
+  Q_PROPERTY(bool canSeek READ canSeek NOTIFY sourceChanged)
 
   Q_PROPERTY(int numberOfTracks READ numberOfTracks NOTIFY playbackStateChanged)
   Q_PROPERTY(QString playbackState READ playbackState NOTIFY playbackStateChanged)
@@ -253,9 +256,12 @@ public:
   int currentTrackDuration() const { return m_currentTrackDuration; }
   int currentProtocol() const { return m_currentProtocol; } // returns SONOS::Protocol_t
   bool currentInQueue() const { return m_currentProtocol == SONOS::Protocol_xRinconQueue; }
+  bool canGoNext() const { return m_currentIndex >= 0 && numberOfTracks() > (m_currentIndex + 1); }
+  bool canGoPrevious() const { return currentInQueue() && m_currentIndex > 0; }
   int numberOfTracks() const { return m_AVTProperty.NumberOfTracks; }
   QString playbackState() const { return QString::fromUtf8(m_AVTProperty.TransportState.c_str()); }
   QString playMode() const { return QString::fromUtf8(m_AVTProperty.CurrentPlayMode.c_str()); }
+  bool canSeek() const;
 
   // Implements ContentProvider
   void beforeLoad();

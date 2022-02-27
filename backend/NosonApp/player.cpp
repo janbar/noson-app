@@ -1138,6 +1138,21 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
   }
 }
 
+bool Player::canSeek() const
+{
+  switch (currentProtocol())
+  {
+  case 1: // x-rincon-stream
+  case 2: // x-rincon-mp3radio
+  case 5: // x-sonos-htastream
+  case 14: // http-get
+    return false;
+  default:
+    // the noson streamer uses the protocol http(17)
+    return currentInQueue();
+  }
+}
+
 void Player::beforeLoad()
 {
   if (m_sonos)

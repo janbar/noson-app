@@ -327,12 +327,12 @@ double Mpris2::MinimumRate() const
 
 bool Mpris2::CanGoNext() const
 {
-  return (m_player->currentTrackDuration() > 0 && m_player->numberOfTracks() > (m_player->currentIndex() + 1));
+  return m_player->canGoNext();
 }
 
 bool Mpris2::CanGoPrevious() const
 {
-  return (m_player->currentTrackDuration() > 0 && m_player->currentIndex() > 0);
+  return m_player->canGoPrevious();
 }
 
 bool Mpris2::CanPlay() const
@@ -347,17 +347,7 @@ bool Mpris2::CanPause() const
 
 bool Mpris2::CanSeek() const
 {
-  switch (m_player->currentProtocol())
-  {
-  case 1: // x-rincon-stream
-  case 2: // x-rincon-mp3radio
-  case 5: // x-sonos-htastream
-  case 14: // http-get
-  case 17: // http
-    return false;
-  default:
-    return (m_player->currentTrackDuration() > 0);
-  }
+  return m_player->canSeek();
 }
 
 bool Mpris2::CanControl() const
