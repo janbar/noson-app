@@ -99,6 +99,7 @@ class LibraryModel : public QAbstractListModel, public ListModel<Sonos>
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
   Q_PROPERTY(bool failure READ dataFailure NOTIFY loaded)
+  Q_PROPERTY(int dataState READ dataState NOTIFY loaded)
   Q_PROPERTY(int totalCount READ totalCount NOTIFY totalCountChanged)
   Q_PROPERTY(int firstIndex READ firstIndex NOTIFY loaded)
   Q_PROPERTY(bool isRoot READ isRoot NOTIFY pathChanged)

@@ -65,6 +65,7 @@ void NosonAppPlugin::registerTypes(const char *uri)
   qRegisterMetaType<Player*>("Player*");
   qRegisterMetaType<Future*>("Future*");
 
+  qRegisterMetaType<Sonos::DataState>("Sonos.DataState");
   qRegisterMetaType<LibraryModel::DisplayType>("Library.DisplayType");
   qRegisterMetaType<LibraryModel::NodeType>("Library.NodeType");
   qRegisterMetaType<MediaModel::DisplayType>("Media.DisplayType");

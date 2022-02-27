@@ -58,6 +58,15 @@ public:
 
   Q_INVOKABLE void debug(int debug);
 
+  enum DataState {
+    DataBlank     = nosonapp::DataBlank,
+    DataFailure   = nosonapp::DataFailure,
+    DataNotFound  = nosonapp::DataNotFound,
+    DataLoaded    = nosonapp::DataLoaded,
+    DataSynced    = nosonapp::DataSynced
+  };
+  Q_ENUM(DataState);
+
   ///////////////////////////////////////////////////////////////////////////////
   ///
   /// About futures

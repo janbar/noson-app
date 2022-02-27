@@ -93,6 +93,7 @@ class FavoritesModel : public QAbstractListModel, public ListModel<Sonos>
   Q_OBJECT
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
   Q_PROPERTY(bool failure READ dataFailure NOTIFY loaded)
+  Q_PROPERTY(int dataState READ dataState NOTIFY loaded)
 
 public:
   enum AnyRoles

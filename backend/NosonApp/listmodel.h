@@ -104,6 +104,8 @@ public:
 
   virtual bool dataFailure() { return m_dataState == DataStatus::DataFailure; }
 
+  virtual int dataState() { return m_dataState; }
+
 public:
   T* m_provider;
   QRecursiveMutex* m_lock;
