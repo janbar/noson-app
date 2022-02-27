@@ -1076,7 +1076,9 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
     playerUrl.append(p->GetHost().c_str()).append(":").append(port);
 
     // Set the protocol
-    m_currentProtocol = p->GetURIProtocol(prop.CurrentTrackURI);
+    m_currentProtocol = p->GetURIProtocol(prop.AVTransportURI);
+    if (m_currentProtocol == SONOS::Protocol_unknown)
+      m_currentProtocol = p->GetURIProtocol(prop.CurrentTrackURI);
 
     // Set the source (URI)
     m_currentMetaSource = QString::fromUtf8(prop.CurrentTrackURI.c_str());
