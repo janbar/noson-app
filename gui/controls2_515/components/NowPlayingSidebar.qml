@@ -199,6 +199,7 @@ Page {
                                   : 0
                     enabled: covers.length > 0
                     visible: enabled
+                    noCover: ""
                     Component.onCompleted: {
                         covers = player.covers.slice();
                     }
