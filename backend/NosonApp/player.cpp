@@ -1104,7 +1104,10 @@ void Player::setCurrentMeta(const SONOS::AVTProperty& prop)
         }
         else
         {
-          m_currentMetaTitle = m_currentMetaURITitle;
+          if (m_currentMetaURITitle.isEmpty())
+            m_currentMetaTitle = QString::fromUtf8(prop.CurrentTrackMetaData->GetValue("dc:title").c_str());
+          else
+            m_currentMetaTitle = m_currentMetaURITitle;
           std::string content = prop.CurrentTrackMetaData->GetValue("r:streamContent");
           if (content.empty())
           {
