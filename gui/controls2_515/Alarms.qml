@@ -251,7 +251,7 @@ MusicPage {
     // Overlay to show when no alarms are on the device
     Loader {
         anchors.fill: parent
-        active: alarmList.count === 0 && indexLoaded
+        active: alarmsModel.dataState === Sonos.DataSynced && alarmsModel.count === 0
         asynchronous: true
         source: "qrc:/controls2/components/AlarmsEmptyState.qml"
         visible: active
