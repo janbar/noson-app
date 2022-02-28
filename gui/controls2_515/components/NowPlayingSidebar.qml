@@ -186,20 +186,19 @@ Page {
                 id: nowPlayingWideAspectStreamInfo
                 visible: !player.currentInQueue || nowPlayingSidebar.height > transitionHeight + units.gu(4)
                 width: parent.width
-                height: visible ? Math.max(coversImage.size + units.gu(1), nowPlayingWideAspectLabels.implicitHeight + units.gu(2))
+                height: visible ? Math.max(coverGrid.size + units.gu(1), nowPlayingWideAspectLabels.implicitHeight + units.gu(2))
                                 : 0
                 color: "transparent"
 
                 CoverGrid {
-                    id: coversImage
+                    id: coverGrid
                     anchors.left: parent.left
                     anchors.leftMargin: units.gu(1)
                     anchors.verticalCenter: parent.verticalCenter
-                    size: enabled ? (queue.listview.count > 0 &&
+                    size: visible ? (queue.listview.count > 0 &&
                                      nowPlayingSidebar.height < transitionHeight ? units.gu(5)
                                                                                  : units.gu(12)) : 0
-                    enabled: covers.length > 0
-                    visible: enabled
+                    visible: covers.length > 0
                     noCover: ""
                     Component.onCompleted: {
                         covers = player.covers.slice();
@@ -207,7 +206,7 @@ Page {
                     Connections {
                         target: player
                         function onSourceChanged() {
-                            coversImage.covers = player.covers.slice();
+                            coverGrid.covers = player.covers.slice();
                         }
                     }
                     Behavior on size {
@@ -222,7 +221,7 @@ Page {
                     height: nowPlayingWideAspectLabels.implicitHeight
                     anchors {
                         verticalCenter: parent.verticalCenter
-                        left: coversImage.right
+                        left: coverGrid.right
                         leftMargin: units.gu(1)
                         right: parent.right
                         rightMargin: units.gu(1)
