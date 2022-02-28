@@ -25,6 +25,7 @@ Page {
     anchors.fill: parent
 
     property bool isListView: true
+    readonly property real transitionHeight: units.gu(43)
 
     Column {
         id: toolbar
@@ -183,7 +184,7 @@ Page {
             /* Object for stream info when playing stream */
             Rectangle {
                 id: nowPlayingWideAspectStreamInfo
-                visible: !player.currentInQueue
+                visible: !player.currentInQueue || nowPlayingSidebar.height > transitionHeight + units.gu(4)
                 width: parent.width
                 height: visible ? Math.max(coversImage.size + units.gu(1), nowPlayingWideAspectLabels.implicitHeight + units.gu(2))
                                 : 0
@@ -194,9 +195,9 @@ Page {
                     anchors.left: parent.left
                     anchors.leftMargin: units.gu(1)
                     anchors.verticalCenter: parent.verticalCenter
-                    size: enabled ? (queue.listview.count > 0 ? units.gu(5)
-                                                              : units.gu(12))
-                                  : 0
+                    size: enabled ? (queue.listview.count > 0 &&
+                                     nowPlayingSidebar.height < transitionHeight ? units.gu(5)
+                                                                                 : units.gu(12)) : 0
                     enabled: covers.length > 0
                     visible: enabled
                     noCover: ""
