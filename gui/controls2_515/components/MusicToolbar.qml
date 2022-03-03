@@ -307,6 +307,7 @@ Item {
             }
             color: styleMusic.playerControls.backgroundColor
             height: units.gu(0.25)
+            visible: player.currentInQueue
 
             Rectangle {
                 id: playerControlsProgressBarHint
