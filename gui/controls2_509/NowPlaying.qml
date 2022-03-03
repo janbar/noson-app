@@ -61,24 +61,12 @@ MusicPage {
     Connections {
         target: mainView
         onWideAspectChanged: {
-            if (wideAspect)
-                stackView.pop()
-        }
-    }
-
-    // FIXME: workaround for when entering wideAspect coming back from a stacked page (AddToPlaylist) and the page being deleted breaks the stacked page
-    onVisibleChanged: {
-        if (wideAspect) {
-           popWaitTimer.start()
-        }
-    }
-
-    Timer {
-        id: popWaitTimer
-        interval: 250
-        onTriggered: {
-            if (stackView.currentItem === nowPlaying) {
+            if (wideAspect) {
                 stackView.pop();
+                // previous page can be over nowPlaying, i.e AddToPlaylist
+                if (stackView.currentItem === nowPlaying) {
+                    stackView.pop();
+                }
                 mainView.nowPlayingPage = null;
             }
         }
