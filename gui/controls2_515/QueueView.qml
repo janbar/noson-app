@@ -89,8 +89,13 @@ MusicPage {
     Connections {
         target: mainView
         function onWideAspectChanged() {
-            if (wideAspect)
-                stackView.pop()
+            if (wideAspect) {
+                stackView.pop();
+                // previous page can be over queuePage, i.e AddToPlaylist
+                if (stackView.currentItem === queuePage) {
+                    stackView.pop();
+                }
+            }
         }
     }
 }
