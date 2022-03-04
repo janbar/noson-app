@@ -80,7 +80,7 @@ Row {
             id: image
             height: coverSize
             width: cover.visible ? height : rowNumber.visible ? units.gu(5) : units.dp(1)
-            border.color: cover.visible ? "grey" : "transparent"
+            border.color: cover.status !== Image.Ready ? "grey" : "transparent"
             color: "transparent"
             anchors.verticalCenter: parent.verticalCenter
 

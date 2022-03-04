@@ -165,7 +165,7 @@ MusicPage {
                 anchors.verticalCenter: parent.verticalCenter
                 height: units.gu(9)
                 width: height
-                border.color: visible ? "grey" : "transparent"
+                border.color: "grey"
                 color: "transparent"
                 CoverGrid {
                     id: coversImage
@@ -178,8 +178,7 @@ MusicPage {
                         blurredBackground.art = firstSource
                     }
                 }
-                enabled: covers.length > 0
-                visible: enabled
+                visible: covers.length > 0
             }
             Item {
                 id: headerInfo
