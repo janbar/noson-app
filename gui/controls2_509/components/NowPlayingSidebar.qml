@@ -195,10 +195,9 @@ Page {
                     anchors.left: parent.left
                     anchors.leftMargin: units.gu(1)
                     anchors.verticalCenter: parent.verticalCenter
-                    size: visible ? (queue.listview.count > 0 &&
+                    size: covers.length > 0 ? (queue.listview.count > 0 &&
                                      nowPlayingSidebar.height < transitionHeight ? units.gu(5)
                                                                                  : units.gu(12)) : 0
-                    visible: covers.length > 0
                     noCover: ""
                     Component.onCompleted: {
                         covers = player.covers.slice();
