@@ -264,9 +264,9 @@ MusicPage {
                                     {
                                         "artist": model.author,
                                         "covers": makeCoverSource(undefined, model.author, undefined),
-                                        "pageTitle": qsTr("Artist")
+                                        "pageTitle": pageTitle
                                     },
-                                    true,   // force show more
+                                    !stackView.objectInStack("artistViewPage"), // force show more
                                     true,   // can play
                                     true    // can queue
                                     );

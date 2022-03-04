@@ -1294,6 +1294,14 @@ ApplicationWindow {
             top: parent.top
         }
         initialItem: "qrc:/controls2/Welcome.qml"
+
+        function objectInStack(objectName) {
+            for (var i = 0; i < depth; ++i) {
+                if (get(i, stackView.DontLoad).objectName === objectName)
+                    return true;
+            }
+            return false;
+        }
     }
 
 
