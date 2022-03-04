@@ -101,10 +101,13 @@ void AlbumInfo::run()
       m_error.errorCode = 0;
       m_error.errorString = ERRMSG_NOT_FOUND;
     }
-    m_error.status = ReplySuccess;
-    m_error.errorCode = 0;
-    m_error.errorString.clear();
-    m_cached = true; // hold data is cached
+    else
+    {
+      m_error.status = ReplySuccess;
+      m_error.errorCode = 0;
+      m_error.errorString.clear();
+      m_cached = true; // hold data is cached
+    }
     emit finished();
     return;
   }
