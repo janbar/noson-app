@@ -157,7 +157,6 @@ ApplicationWindow {
 
     // property to detect if the UI has finished
     property bool loadedUI: false
-    property real wideSongView: units.gu(70)
     property bool wideAspect: width >= units.gu(100) && loadedUI
 
     // property to store index loading

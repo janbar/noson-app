@@ -62,7 +62,6 @@ MusicPage {
             height: contentHeight
             noCover: "qrc:/images/none.png"
             coverSources: artistViewPage.covers
-            titleColumn: Item {}
             rightColumn: Item {
                 height: units.gu(9)
 
