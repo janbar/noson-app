@@ -272,6 +272,10 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.json
         INPUT ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.json.in
     )
+    # 3. Configure build.gradle to properly work with Android Studio import
+    if(EXISTS "${QT_ANDROID_SOURCE_DIR}/build.gradle.in")
+        configure_file(${QT_ANDROID_SOURCE_DIR}/build.gradle.in ${QT_ANDROID_APP_BINARY_DIR}/build.gradle @ONLY)
+    endif()
 
     # check if the apk must be signed
     if(ARG_KEYSTORE)
