@@ -241,10 +241,4 @@ Item {
                 item.text = message;
         }
     }
-
-    Component.onCompleted: {
-        if (queueModel.count <= 0)
-            emptyState.active = true;
-    }
-
 }
