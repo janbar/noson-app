@@ -1,7 +1,7 @@
 
 ### Requirements:
 
-- Android SDK 26-28
+- Android SDK 29
 - Java jdk 1.8
 - Qt Creator 4.12
 
