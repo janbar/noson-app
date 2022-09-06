@@ -308,6 +308,7 @@ ApplicationWindow {
         AllFavoritesModel.init(Sonos, "",   false);
         AllServicesModel.init(Sonos,        false);
         AllPlaylistsModel.init(Sonos, "",   false);
+        AllRadiosModel.init(Sonos, "",      false);
         MyServicesModel.init(Sonos,         false);
         alarmsModel.init(Sonos,             false);
         // launch connection
@@ -370,6 +371,12 @@ ApplicationWindow {
         target: AllPlaylistsModel
         function onDataUpdated() { AllPlaylistsModel.asyncLoad() }
         function onLoaded(succeeded) { AllPlaylistsModel.resetModel() }
+    }
+
+    Connections {
+        target: AllRadiosModel
+        function onDataUpdated() { AllRadiosModel.asyncLoad() }
+        function onLoaded(succeeded) { AllRadiosModel.resetModel() }
     }
 
     Connections {
@@ -772,6 +779,13 @@ ApplicationWindow {
     // Action on create playlist
     function createPlaylist(title) {
         return player.createSavedQueue(title, actionFinished);
+    }
+
+    // Action on create radio station
+    function createRadio(streamURL, title) {
+        var future = Sonos.tryCreateRadio(streamURL, title);
+        future.onFinished.connect(actionFinished);
+        return future.start();
     }
 
     // Action on append item to a playlist
@@ -1214,6 +1228,7 @@ ApplicationWindow {
         id: tabs
         ListElement { title: qsTr("My Services"); source: "qrc:/controls2/MusicServices.qml"; visible: true }
         ListElement { title: qsTr("My Index"); source: "qrc:/controls2/Index.qml"; visible: true }
+        ListElement { title: qsTr("My Radios"); source: "qrc:/controls2/RadioStations.qml"; visible: true }
         ListElement { title: qsTr("Favorites"); source: "qrc:/controls2/Favorites.qml"; visible: false }
         ListElement { title: qsTr("Playlists"); source: "qrc:/controls2/Playlists.qml"; visible: true }
         ListElement { title: qsTr("Alarm clock"); source: "qrc:/controls2/Alarms.qml"; visible: true }

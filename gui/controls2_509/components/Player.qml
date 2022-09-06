@@ -480,6 +480,8 @@ Item {
             player.covers = makeCoverSource("", player.currentMetaArtist, player.currentMetaAlbum);
         } else {
             player.covers = [];
+            if (player.currentProtocol == 2)
+                player.covers.push( {art: "qrc:/images/radio.png"} );
         }
         player.sourceChanged();
         player.currentPositionChanged(player.trackPosition, player.trackDuration);

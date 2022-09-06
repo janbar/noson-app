@@ -174,5 +174,8 @@
         <file>toolbox.js</file>
         <file>images/folder_track.png</file>
         <file>images/folder_share.png</file>
+        <file alias="controls2/RadioStations.qml">controls2_515/RadioStations.qml</file>
+        <file alias="controls2/components/RadiosEmptyState.qml">controls2_515/components/RadiosEmptyState.qml</file>
+        <file alias="controls2/components/Dialog/DialogNewRadio.qml">controls2_515/components/Dialog/DialogNewRadio.qml</file>
     </qresource>
 </RCC>
