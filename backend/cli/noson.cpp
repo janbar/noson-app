@@ -250,6 +250,7 @@ static bool parseCommand(const std::string& line)
       PRINT("PLAYQUEUE                     Play queue\n");
       PRINT("PLAYLINEIN                    Play line-IN\n");
       PRINT("PLAYDIGITALIN                 Play digital-IN/TV\n");
+      PRINT("PLAYRD {title}                Play the given radio station\n");
       PRINT("SEARCH                        Show valid roots for search\n");
       PRINT("SEARCH {root}                 Search items in library\n");
       PRINT("PLAYITEM {ParentId} {index}   Queue and play an item\n");
@@ -267,6 +268,7 @@ static bool parseCommand(const std::string& line)
       PRINT("SHOWFV                        Show favorites\n");
       PRINT("SHOWSQ                        Show playlists\n");
       PRINT("SHOWAC                        Show alarms clock\n");
+      PRINT("SHOWRD                        Show radio stations\n");
       PRINT("CREATEAC {1} {2} {3} {4} {5}  Create alarm clock using arguments:\n");
       PRINT("  1:ROOM       The room UUID\n");
       PRINT("  2:STARTTIME  The time using format HH:MM:SS\n");
@@ -281,6 +283,10 @@ static bool parseCommand(const std::string& line)
       PRINT("  3:New value\n");
       PRINT("  Program 0 for Buzzer or the index of favorite (see SHOWFV)\n");
       PRINT("REFRESHSHAREINDEX             Update the music index on Sonos\n");
+      PRINT("CREATERD {1} {2}              Create radio station item\n");
+      PRINT("  1:URI        The stream URI\n");
+      PRINT("  3:TITLE      The title\n");
+      PRINT("DESTROYRD {title}             Destroy the given radio station item\n");
       PRINT("HELP                          Print this help\n");
       PRINT("\n");
     }
@@ -532,7 +538,7 @@ static bool parseCommand(const std::string& line)
               uint16_t value = 0;
               string_to_uint16(it->c_str(), &value);
               SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
-              SONOS::ContentList bdir(mycontent, "FV:2");
+              SONOS::ContentList bdir(mycontent, SONOS::ContentSearch(SONOS::SearchFavorite, ""));
               SONOS::ContentList::iterator ic = bdir.begin();
               uint16_t i = 0;
               while (ic != bdir.end())
@@ -810,7 +816,7 @@ static bool parseCommand(const std::string& line)
     else if (token == "SHOWFV")
     {
       SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
-      SONOS::ContentList bdir(mycontent, "FV:2");
+      SONOS::ContentList bdir(mycontent, SONOS::ContentSearch(SONOS::SearchFavorite, ""));
       PRINT1("UpdateID  : %u\n", bdir.GetUpdateID());
       PRINT1("Item count: %u\n", bdir.size());
       SONOS::ContentList::iterator ic = bdir.begin();
@@ -826,7 +832,7 @@ static bool parseCommand(const std::string& line)
       if (++it != tokens.end())
       {
         SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
-        SONOS::ContentList bdir(mycontent, "FV:2");
+        SONOS::ContentList bdir(mycontent, SONOS::ContentSearch(SONOS::SearchFavorite, ""));
         SONOS::ContentList::iterator ic = bdir.begin();
         while (ic != bdir.end())
         {
@@ -900,6 +906,96 @@ static bool parseCommand(const std::string& line)
         PERROR("Succeeded\n");
       else
         PERROR("Failed\n");
+    }
+    else if (token == "SHOWRD")
+    {
+      SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
+      SONOS::ContentList bdir(mycontent, SONOS::ContentSearch(SONOS::SearchRadioStation, ""));
+      PRINT1("UpdateID  : %u\n", bdir.GetUpdateID());
+      PRINT1("Item count: %u\n", bdir.size());
+      SONOS::ContentList::iterator ic = bdir.begin();
+      int i = 0;
+      while (ic != bdir.end())
+      {
+        PRINT3("%d: [%s] [%s]\n", ++i, (*ic)->GetValue("dc:title").c_str(), (*ic)->GetValue("res").c_str());
+        ++ic;
+      }
+    }
+    else if (token == "CREATERD")
+    {
+      std::string streamURI;
+      if (++it != tokens.end())
+        streamURI.assign(*it);
+      if (++it != tokens.end())
+      {
+        std::string title(*it);
+        while(++it != tokens.end())
+          title.append(" ").append(*it);
+
+        if (gSonos->CreateRadio(streamURI, title))
+          PERROR("Succeeded\n");
+        else
+          PERROR("Failed\n");
+      }
+      else
+        PERROR("Error: Missing arguments.\n");
+    }
+    else if (token == "PLAYRD")
+    {
+      if (++it != tokens.end())
+      {
+        std::string param(*it);
+        while(++it != tokens.end())
+          param.append(" ").append(*it);
+
+        SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
+        SONOS::ContentList bdir(mycontent, SONOS::ContentSearch(SONOS::SearchRadioStation, ""));
+        SONOS::ContentList::iterator ic = bdir.begin();
+        while (ic != bdir.end())
+        {
+          if ((*ic)->GetValue("dc:title") == param || (*ic)->GetObjectID() == param)
+          {
+              PRINT2("Playing [%s] [%s]\n", (*ic)->GetObjectID().c_str(), (*ic)->GetValue("dc:title").c_str());
+              if (gPlayer->SetCurrentURI(*ic) && gPlayer->Play())
+                PERROR("Succeeded\n");
+              else
+                PERROR("Failed\n");
+              break;
+          }
+          if (ic++ == bdir.end())
+            PERROR("Error: Item not found.\n");
+        }
+      }
+      else
+        PERROR("Error: Missing arguments.\n");
+    }
+    else if (token == "DESTROYRD")
+    {
+      if (++it != tokens.end())
+      {
+        std::string param(*it);
+        while(++it != tokens.end())
+          param.append(" ").append(*it);
+
+        SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
+        SONOS::ContentList bdir(mycontent, SONOS::ContentSearch(SONOS::SearchRadioStation, ""));
+        SONOS::ContentList::iterator ic = bdir.begin();
+        while (ic != bdir.end())
+        {
+          if ((*ic)->GetValue("dc:title") == param || (*ic)->GetObjectID() == param)
+          {
+              PRINT2("Deleting [%s] [%s]\n", (*ic)->GetObjectID().c_str(), (*ic)->GetValue("dc:title").c_str());
+              if (mycontent.DestroyObject((*ic)->GetObjectID()))
+                PERROR("Succeeded\n");
+              else
+                PERROR("Failed\n");
+              break;
+          }
+          ++ic;
+        }
+      }
+      else
+        PERROR("Error: Missing arguments.\n");
     }
     else
     {
