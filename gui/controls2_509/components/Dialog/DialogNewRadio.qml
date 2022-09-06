@@ -51,7 +51,7 @@ DialogBase {
 
     TextField {
         id: radioName
-        font.pointSize: units.fs("large")
+        font.pointSize: units.fs("medium")
         placeholderText: qsTr("Enter radio name")
         inputMethodHints: Qt.ImhNone
         EnterKey.type: Qt.EnterKeyDone
@@ -63,7 +63,6 @@ DialogBase {
         placeholderText: qsTr("Enter stream URL")
         inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhUrlCharactersOnly
         EnterKey.type: Qt.EnterKeyDone
-        text: "http://"
     }
 
     Button {
