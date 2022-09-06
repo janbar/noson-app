@@ -170,14 +170,14 @@
 <context>
     <name>ArtistView</name>
     <message numerus="yes">
-        <location filename="../controls2_509/ThisDevice/ArtistView.qml" line="101"/>
-        <location filename="../controls2_515/ThisDevice/ArtistView.qml" line="101"/>
+        <location filename="../controls2_509/ThisDevice/ArtistView.qml" line="100"/>
+        <location filename="../controls2_515/ThisDevice/ArtistView.qml" line="100"/>
         <source>%n album(s)</source>
         <translation><numerusform>%n album</numerusform><numerusform>%n albums</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../controls2_509/ThisDevice/ArtistView.qml" line="120"/>
-        <location filename="../controls2_515/ThisDevice/ArtistView.qml" line="120"/>
+        <location filename="../controls2_509/ThisDevice/ArtistView.qml" line="119"/>
+        <location filename="../controls2_515/ThisDevice/ArtistView.qml" line="119"/>
         <source>%n song(s)</source>
         <translation><numerusform>%n nummer</numerusform><numerusform>%n nummers</numerusform></translation>
     </message>
@@ -220,14 +220,14 @@
 <context>
     <name>ComposerView</name>
     <message numerus="yes">
-        <location filename="../controls2_509/ThisDevice/ComposerView.qml" line="101"/>
-        <location filename="../controls2_515/ThisDevice/ComposerView.qml" line="101"/>
+        <location filename="../controls2_509/ThisDevice/ComposerView.qml" line="100"/>
+        <location filename="../controls2_515/ThisDevice/ComposerView.qml" line="100"/>
         <source>%n album(s)</source>
         <translation><numerusform>%n album</numerusform><numerusform>%n albums</numerusform></translation>
     </message>
     <message numerus="yes">
-        <location filename="../controls2_509/ThisDevice/ComposerView.qml" line="120"/>
-        <location filename="../controls2_515/ThisDevice/ComposerView.qml" line="120"/>
+        <location filename="../controls2_509/ThisDevice/ComposerView.qml" line="119"/>
+        <location filename="../controls2_515/ThisDevice/ComposerView.qml" line="119"/>
         <source>%n song(s)</source>
         <translation><numerusform>%n nummer</numerusform><numerusform>%n nummers</numerusform></translation>
     </message>
@@ -521,6 +521,46 @@
         <location filename="../controls2_515/components/Dialog/DialogNewPlaylist.qml" line="71"/>
         <source>Please type in a name.</source>
         <translation>Voer een naam in.</translation>
+    </message>
+</context>
+<context>
+    <name>DialogNewRadio</name>
+    <message>
+        <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="25"/>
+        <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="25"/>
+        <source>New radio</source>
+        <extracomment>this is a title of a dialog with a prompt to add a new radio</extracomment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="36"/>
+        <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="36"/>
+        <source>Close</source>
+        <translation>Sluiten</translation>
+    </message>
+    <message>
+        <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="55"/>
+        <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="55"/>
+        <source>Enter radio name</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="63"/>
+        <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="63"/>
+        <source>Enter stream URL</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="71"/>
+        <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="71"/>
+        <source>Create</source>
+        <translation>Creëren</translation>
+    </message>
+    <message>
+        <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="80"/>
+        <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="80"/>
+        <source>Please type in a name and stream URL.</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1141,34 +1181,14 @@
         <translation>Alles afspelen</translation>
     </message>
     <message>
-        <location filename="../controls2_509/Library.qml" line="213"/>
-        <location filename="../controls2_509/Library.qml" line="258"/>
-        <location filename="../controls2_509/Library.qml" line="370"/>
-        <location filename="../controls2_515/Library.qml" line="213"/>
-        <location filename="../controls2_515/Library.qml" line="258"/>
-        <location filename="../controls2_515/Library.qml" line="370"/>
-        <source>Album</source>
-        <translation>Album</translation>
-    </message>
-    <message>
-        <location filename="../controls2_509/Library.qml" line="214"/>
-        <location filename="../controls2_509/Library.qml" line="259"/>
-        <location filename="../controls2_509/Library.qml" line="371"/>
-        <location filename="../controls2_515/Library.qml" line="214"/>
-        <location filename="../controls2_515/Library.qml" line="259"/>
-        <location filename="../controls2_515/Library.qml" line="371"/>
-        <source>Artist</source>
-        <translation>Artiest</translation>
-    </message>
-    <message>
         <location filename="../controls2_509/Library.qml" line="215"/>
         <location filename="../controls2_509/Library.qml" line="260"/>
         <location filename="../controls2_509/Library.qml" line="372"/>
         <location filename="../controls2_515/Library.qml" line="215"/>
         <location filename="../controls2_515/Library.qml" line="260"/>
         <location filename="../controls2_515/Library.qml" line="372"/>
-        <source>Genre</source>
-        <translation>Genre</translation>
+        <source>Album</source>
+        <translation>Album</translation>
     </message>
     <message>
         <location filename="../controls2_509/Library.qml" line="216"/>
@@ -1177,8 +1197,8 @@
         <location filename="../controls2_515/Library.qml" line="216"/>
         <location filename="../controls2_515/Library.qml" line="261"/>
         <location filename="../controls2_515/Library.qml" line="373"/>
-        <source>Playlist</source>
-        <translation>Afspeellijst</translation>
+        <source>Artist</source>
+        <translation>Artiest</translation>
     </message>
     <message>
         <location filename="../controls2_509/Library.qml" line="217"/>
@@ -1187,8 +1207,8 @@
         <location filename="../controls2_515/Library.qml" line="217"/>
         <location filename="../controls2_515/Library.qml" line="262"/>
         <location filename="../controls2_515/Library.qml" line="374"/>
-        <source>Song</source>
-        <translation>Nummer</translation>
+        <source>Genre</source>
+        <translation>Genre</translation>
     </message>
     <message>
         <location filename="../controls2_509/Library.qml" line="218"/>
@@ -1197,6 +1217,26 @@
         <location filename="../controls2_515/Library.qml" line="218"/>
         <location filename="../controls2_515/Library.qml" line="263"/>
         <location filename="../controls2_515/Library.qml" line="375"/>
+        <source>Playlist</source>
+        <translation>Afspeellijst</translation>
+    </message>
+    <message>
+        <location filename="../controls2_509/Library.qml" line="219"/>
+        <location filename="../controls2_509/Library.qml" line="264"/>
+        <location filename="../controls2_509/Library.qml" line="376"/>
+        <location filename="../controls2_515/Library.qml" line="219"/>
+        <location filename="../controls2_515/Library.qml" line="264"/>
+        <location filename="../controls2_515/Library.qml" line="376"/>
+        <source>Song</source>
+        <translation>Nummer</translation>
+    </message>
+    <message>
+        <location filename="../controls2_509/Library.qml" line="220"/>
+        <location filename="../controls2_509/Library.qml" line="265"/>
+        <location filename="../controls2_509/Library.qml" line="377"/>
+        <location filename="../controls2_515/Library.qml" line="220"/>
+        <location filename="../controls2_515/Library.qml" line="265"/>
+        <location filename="../controls2_515/Library.qml" line="377"/>
         <source>Radio</source>
         <translation>Radio</translation>
     </message>
@@ -1342,14 +1382,14 @@
         <translation>Nu aan het afspelen</translation>
     </message>
     <message>
-        <location filename="../controls2_509/NowPlaying.qml" line="179"/>
-        <location filename="../controls2_515/NowPlaying.qml" line="179"/>
+        <location filename="../controls2_509/NowPlaying.qml" line="168"/>
+        <location filename="../controls2_515/NowPlaying.qml" line="168"/>
         <source>Manage queue</source>
         <translation>Wachtrij beheren</translation>
     </message>
     <message>
-        <location filename="../controls2_509/NowPlaying.qml" line="184"/>
-        <location filename="../controls2_515/NowPlaying.qml" line="184"/>
+        <location filename="../controls2_509/NowPlaying.qml" line="173"/>
+        <location filename="../controls2_515/NowPlaying.qml" line="173"/>
         <source>Select source</source>
         <translation>Bron selecteren</translation>
     </message>
@@ -1357,14 +1397,14 @@
 <context>
     <name>NowPlayingSidebar</name>
     <message>
-        <location filename="../controls2_509/components/NowPlayingSidebar.qml" line="235"/>
-        <location filename="../controls2_515/components/NowPlayingSidebar.qml" line="235"/>
+        <location filename="../controls2_509/components/NowPlayingSidebar.qml" line="340"/>
+        <location filename="../controls2_515/components/NowPlayingSidebar.qml" line="340"/>
         <source>Manage queue</source>
         <translation>Wachtrij beheren</translation>
     </message>
     <message>
-        <location filename="../controls2_509/components/NowPlayingSidebar.qml" line="241"/>
-        <location filename="../controls2_515/components/NowPlayingSidebar.qml" line="241"/>
+        <location filename="../controls2_509/components/NowPlayingSidebar.qml" line="346"/>
+        <location filename="../controls2_515/components/NowPlayingSidebar.qml" line="346"/>
         <source>Select source</source>
         <translation>Bron selecteren</translation>
     </message>
@@ -1382,8 +1422,8 @@
 <context>
     <name>Player</name>
     <message>
-        <location filename="../controls2_509/components/Player.qml" line="356"/>
-        <location filename="../controls2_515/components/Player.qml" line="356"/>
+        <location filename="../controls2_509/components/Player.qml" line="361"/>
+        <location filename="../controls2_515/components/Player.qml" line="361"/>
         <source>Untitled</source>
         <translation>Naamloos</translation>
     </message>
@@ -1427,10 +1467,16 @@
 <context>
     <name>Queue</name>
     <message>
-        <location filename="../controls2_509/components/Queue.qml" line="90"/>
-        <location filename="../controls2_515/components/Queue.qml" line="90"/>
+        <location filename="../controls2_509/components/Queue.qml" line="109"/>
+        <location filename="../controls2_515/components/Queue.qml" line="109"/>
         <source>Song</source>
         <translation>Nummer</translation>
+    </message>
+    <message>
+        <location filename="../controls2_509/components/Queue.qml" line="237"/>
+        <location filename="../controls2_515/components/Queue.qml" line="237"/>
+        <source>No queue item found</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1465,6 +1511,15 @@
     </message>
 </context>
 <context>
+    <name>RadioStations</name>
+    <message>
+        <location filename="../controls2_509/RadioStations.qml" line="31"/>
+        <location filename="../controls2_515/RadioStations.qml" line="31"/>
+        <source>My Radios</source>
+        <translation>Mijn Radio&apos;s</translation>
+    </message>
+</context>
+<context>
     <name>Radios</name>
     <message>
         <source>My Radios</source>
@@ -1473,6 +1528,21 @@
     <message>
         <source>Radio</source>
         <translation type="vanished">Radio</translation>
+    </message>
+</context>
+<context>
+    <name>RadiosEmptyState</name>
+    <message>
+        <location filename="../controls2_509/components/RadiosEmptyState.qml" line="41"/>
+        <location filename="../controls2_515/components/RadiosEmptyState.qml" line="41"/>
+        <source>No radio found</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../controls2_509/components/RadiosEmptyState.qml" line="52"/>
+        <location filename="../controls2_515/components/RadiosEmptyState.qml" line="52"/>
+        <source>Get more out of Sonos by tapping the %1 icon to add radio stream.</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -1703,25 +1773,23 @@
 <context>
     <name>TrackStackView</name>
     <message numerus="yes">
+        <location filename="../controls2_509/ThisDevice/TrackStackView.qml" line="233"/>
         <location filename="../controls2_509/ThisDevice/TrackStackView.qml" line="234"/>
-        <location filename="../controls2_509/ThisDevice/TrackStackView.qml" line="235"/>
         <location filename="../controls2_509/TrackStackView.qml" line="214"/>
+        <location filename="../controls2_515/ThisDevice/TrackStackView.qml" line="233"/>
         <location filename="../controls2_515/ThisDevice/TrackStackView.qml" line="234"/>
-        <location filename="../controls2_515/ThisDevice/TrackStackView.qml" line="235"/>
         <location filename="../controls2_515/TrackStackView.qml" line="214"/>
         <source>%n song(s)</source>
         <translation><numerusform>%n nummer</numerusform><numerusform>%n nummers</numerusform></translation>
     </message>
     <message>
-        <location filename="../controls2_509/ThisDevice/TrackStackView.qml" line="268"/>
-        <location filename="../controls2_515/ThisDevice/TrackStackView.qml" line="268"/>
         <source>Artist</source>
-        <translation>Artiest</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../controls2_509/ThisDevice/TrackStackView.qml" line="281"/>
+        <location filename="../controls2_509/ThisDevice/TrackStackView.qml" line="280"/>
         <location filename="../controls2_509/TrackStackView.qml" line="277"/>
-        <location filename="../controls2_515/ThisDevice/TrackStackView.qml" line="281"/>
+        <location filename="../controls2_515/ThisDevice/TrackStackView.qml" line="280"/>
         <location filename="../controls2_515/TrackStackView.qml" line="277"/>
         <source>Song</source>
         <translation>Nummer</translation>
@@ -1835,46 +1903,46 @@
 <context>
     <name>noson</name>
     <message>
-        <location filename="../controls2_509/noson.qml" line="256"/>
-        <location filename="../controls2_515/noson.qml" line="256"/>
+        <location filename="../controls2_509/noson.qml" line="255"/>
+        <location filename="../controls2_515/noson.qml" line="255"/>
         <source>Index loaded</source>
         <translation>De index is geladen</translation>
     </message>
     <message>
-        <location filename="../controls2_509/noson.qml" line="553"/>
-        <location filename="../controls2_515/noson.qml" line="553"/>
+        <location filename="../controls2_509/noson.qml" line="559"/>
+        <location filename="../controls2_515/noson.qml" line="559"/>
         <source>Refreshing of index is running</source>
         <translation>Bezig met verversen van de index</translation>
     </message>
     <message>
-        <location filename="../controls2_509/noson.qml" line="538"/>
-        <location filename="../controls2_509/noson.qml" line="754"/>
-        <location filename="../controls2_515/noson.qml" line="538"/>
-        <location filename="../controls2_515/noson.qml" line="754"/>
+        <location filename="../controls2_509/noson.qml" line="544"/>
+        <location filename="../controls2_509/noson.qml" line="770"/>
+        <location filename="../controls2_515/noson.qml" line="544"/>
+        <location filename="../controls2_515/noson.qml" line="770"/>
         <source>Action can&apos;t be performed</source>
         <translation>De actie kan niet worden uitgevoerd</translation>
     </message>
     <message>
-        <location filename="../controls2_509/noson.qml" line="596"/>
-        <location filename="../controls2_509/noson.qml" line="688"/>
-        <location filename="../controls2_509/noson.qml" line="717"/>
-        <location filename="../controls2_509/noson.qml" line="772"/>
-        <location filename="../controls2_515/noson.qml" line="596"/>
-        <location filename="../controls2_515/noson.qml" line="688"/>
-        <location filename="../controls2_515/noson.qml" line="717"/>
-        <location filename="../controls2_515/noson.qml" line="772"/>
+        <location filename="../controls2_509/noson.qml" line="602"/>
+        <location filename="../controls2_509/noson.qml" line="704"/>
+        <location filename="../controls2_509/noson.qml" line="733"/>
+        <location filename="../controls2_509/noson.qml" line="795"/>
+        <location filename="../controls2_515/noson.qml" line="602"/>
+        <location filename="../controls2_515/noson.qml" line="704"/>
+        <location filename="../controls2_515/noson.qml" line="733"/>
+        <location filename="../controls2_515/noson.qml" line="795"/>
         <source>song added</source>
         <translation>nummer toegevoegd</translation>
     </message>
     <message numerus="yes">
-        <location filename="../controls2_509/noson.qml" line="664"/>
-        <location filename="../controls2_515/noson.qml" line="664"/>
+        <location filename="../controls2_509/noson.qml" line="680"/>
+        <location filename="../controls2_515/noson.qml" line="680"/>
         <source>%n song(s) added</source>
         <translation><numerusform>%n nummer toegevoegd</numerusform><numerusform>%n nummers toegevoegd</numerusform></translation>
     </message>
     <message>
-        <location filename="../controls2_509/noson.qml" line="729"/>
-        <location filename="../controls2_515/noson.qml" line="729"/>
+        <location filename="../controls2_509/noson.qml" line="745"/>
+        <location filename="../controls2_515/noson.qml" line="745"/>
         <source>Queue cleared</source>
         <translation>Wachtrij gewist</translation>
     </message>
@@ -1883,42 +1951,44 @@
         <translation type="vanished"><numerusform>%n nummer verwijderd</numerusform><numerusform>%n nummers verwijderd</numerusform></translation>
     </message>
     <message>
-        <location filename="../controls2_509/noson.qml" line="1177"/>
-        <location filename="../controls2_515/noson.qml" line="1177"/>
+        <location filename="../controls2_509/noson.qml" line="1200"/>
+        <location filename="../controls2_515/noson.qml" line="1200"/>
         <source>Standby timer</source>
         <translation>Standby-tijdsklok</translation>
     </message>
     <message>
-        <location filename="../controls2_509/noson.qml" line="1184"/>
-        <location filename="../controls2_515/noson.qml" line="1184"/>
+        <location filename="../controls2_509/noson.qml" line="1207"/>
+        <location filename="../controls2_515/noson.qml" line="1207"/>
         <source>Sonos settings</source>
         <translation>Sonos-instellingen</translation>
     </message>
     <message>
-        <location filename="../controls2_509/noson.qml" line="1189"/>
-        <location filename="../controls2_515/noson.qml" line="1189"/>
+        <location filename="../controls2_509/noson.qml" line="1212"/>
+        <location filename="../controls2_515/noson.qml" line="1212"/>
         <source>General settings</source>
         <translation>Algemene instellingen</translation>
     </message>
     <message>
-        <location filename="../controls2_509/noson.qml" line="1194"/>
-        <location filename="../controls2_515/noson.qml" line="1194"/>
+        <location filename="../controls2_509/noson.qml" line="1217"/>
+        <location filename="../controls2_515/noson.qml" line="1217"/>
         <source>About</source>
         <translation>Over</translation>
     </message>
     <message>
-        <location filename="../controls2_509/noson.qml" line="1206"/>
-        <location filename="../controls2_515/noson.qml" line="1206"/>
+        <location filename="../controls2_509/noson.qml" line="1229"/>
+        <location filename="../controls2_515/noson.qml" line="1229"/>
         <source>My Services</source>
         <translation>Mijn Diensten</translation>
     </message>
     <message>
+        <location filename="../controls2_509/noson.qml" line="1231"/>
+        <location filename="../controls2_515/noson.qml" line="1231"/>
         <source>My Radios</source>
-        <translation type="vanished">Mijn Radio&apos;s</translation>
+        <translation>Mijn Radio&apos;s</translation>
     </message>
     <message>
-        <location filename="../controls2_509/noson.qml" line="1208"/>
-        <location filename="../controls2_515/noson.qml" line="1208"/>
+        <location filename="../controls2_509/noson.qml" line="1232"/>
+        <location filename="../controls2_515/noson.qml" line="1232"/>
         <source>Favorites</source>
         <translation>Favorieten</translation>
     </message>
@@ -1935,32 +2005,32 @@
         <translation type="vanished">Genres</translation>
     </message>
     <message>
-        <location filename="../controls2_509/noson.qml" line="172"/>
-        <location filename="../controls2_515/noson.qml" line="172"/>
+        <location filename="../controls2_509/noson.qml" line="171"/>
+        <location filename="../controls2_515/noson.qml" line="171"/>
         <source>&lt;Undefined&gt;</source>
         <translation>&lt;Ongedefinieerd&gt;</translation>
     </message>
     <message>
-        <location filename="../controls2_509/noson.qml" line="1207"/>
-        <location filename="../controls2_515/noson.qml" line="1207"/>
+        <location filename="../controls2_509/noson.qml" line="1230"/>
+        <location filename="../controls2_515/noson.qml" line="1230"/>
         <source>My Index</source>
         <translation>Mijn Muziekindex</translation>
     </message>
     <message>
-        <location filename="../controls2_509/noson.qml" line="1209"/>
-        <location filename="../controls2_515/noson.qml" line="1209"/>
+        <location filename="../controls2_509/noson.qml" line="1233"/>
+        <location filename="../controls2_515/noson.qml" line="1233"/>
         <source>Playlists</source>
         <translation>Afspeellijsten</translation>
     </message>
     <message>
-        <location filename="../controls2_509/noson.qml" line="1210"/>
-        <location filename="../controls2_515/noson.qml" line="1210"/>
+        <location filename="../controls2_509/noson.qml" line="1234"/>
+        <location filename="../controls2_515/noson.qml" line="1234"/>
         <source>Alarm clock</source>
         <translation>Alarmklok</translation>
     </message>
     <message>
-        <location filename="../controls2_509/noson.qml" line="1211"/>
-        <location filename="../controls2_515/noson.qml" line="1211"/>
+        <location filename="../controls2_509/noson.qml" line="1235"/>
+        <location filename="../controls2_515/noson.qml" line="1235"/>
         <source>This Device</source>
         <translation>Dit Apparaat</translation>
     </message>
