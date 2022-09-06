@@ -45,6 +45,7 @@ void NosonAppPlugin::registerTypes(const char *uri)
   qmlRegisterSingletonType<FavoritesModel>(uri, 1, 0, "AllFavoritesModel", Sonos::allFavoritesModel_provider);
   qmlRegisterSingletonType<ServicesModel>(uri, 1, 0, "MyServicesModel", Sonos::MyServicesModel_provider);
   qmlRegisterSingletonType<AllServicesModel>(uri, 1, 0, "AllServicesModel", Sonos::allServicesModel_provider);
+  qmlRegisterSingletonType<RadiosModel>(uri, 1, 0, "AllRadiosModel", Sonos::allRadiosModel_provider);
 
   // register noson instantiable types
   qmlRegisterType<Player>(uri, 1, 0, "ZonePlayer");
@@ -60,6 +61,7 @@ void NosonAppPlugin::registerTypes(const char *uri)
   qmlRegisterType<MediaAuth>(uri, 1, 0, "MediaAuth");
   qmlRegisterType<AlarmsModel>(uri, 1, 0, "AlarmsModel");
   qmlRegisterType<LibraryModel>(uri, 1, 0, "LibraryModel");
+  qmlRegisterType<RadiosModel>(uri, 1, 0, "RadiosModel");
 
   qRegisterMetaType<Sonos*>("Sonos*");
   qRegisterMetaType<Player*>("Player*");

@@ -140,6 +140,16 @@ Future* Sonos::tryDestroyFavorite(const QString& FVid)
   return new Future(new PromiseDestroyFavorite(*this, FVid), this);
 }
 
+Future* Sonos::tryCreateRadio(const QString& streamURL, const QString& title)
+{
+  return new Future(new PromiseCreateRadio(*this, streamURL, title), this);
+}
+
+Future* Sonos::tryDestroyRadio(const QString& RDid)
+{
+  return new Future(new PromiseDestroyRadio(*this, RDid), this);
+}
+
 bool Sonos::init(int debug /*= 0*/)
 {
   SONOS::System::Debug(2);
@@ -351,6 +361,16 @@ bool Sonos::addItemToFavorites(const QVariant& payload, const QString& descripti
 bool Sonos::destroyFavorite(const QString& FVid)
 {
   return m_system.DestroyFavorite(FVid.toUtf8().constData());
+}
+
+bool Sonos::createRadio(const QString& streamURL, const QString& title)
+{
+  return m_system.CreateRadio(streamURL.toUtf8().constData(), title.toUtf8().constData());
+}
+
+bool Sonos::destroyRadio(const QString& RDid)
+{
+  return m_system.DestroyRadio(RDid.toUtf8().constData());
 }
 
 QString Sonos::getObjectIDFromUriMetadata(const QVariant& itemPayload)
@@ -704,5 +724,17 @@ void Sonos::PromiseAddItemToFavorites::run()
 void Sonos::PromiseDestroyFavorite::run()
 {
   bool r = m_sonos.destroyFavorite(m_FVid);
+  setResult(QVariant(r));
+}
+
+void Sonos::PromiseCreateRadio::run()
+{
+  bool r = m_sonos.createRadio(m_streamURL, m_title);
+  setResult(QVariant(r));
+}
+
+void Sonos::PromiseDestroyRadio::run()
+{
+  bool r = m_sonos.destroyRadio(m_RDid);
   setResult(QVariant(r));
 }

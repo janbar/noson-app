@@ -36,6 +36,7 @@
 #include "mediamodel.h"
 #include "allservicesmodel.h"
 #include "librarymodel.h"
+#include "radiosmodel.h"
 
 #include <QObject>
 #include <QString>
@@ -83,6 +84,8 @@ public:
   Q_INVOKABLE nosonapp::Future* tryDestroySavedQueue(const QString& SQid);
   Q_INVOKABLE nosonapp::Future* tryAddItemToFavorites(const QVariant& payload, const QString& description, const QString& artURI);
   Q_INVOKABLE nosonapp::Future* tryDestroyFavorite(const QString& FVid);
+  Q_INVOKABLE nosonapp::Future* tryCreateRadio(const QString& streamURL, const QString& title);
+  Q_INVOKABLE nosonapp::Future* tryDestroyRadio(const QString& RDid);
 
   ///////////////////////////////////////////////////////////////////////////////
   ///
@@ -126,6 +129,9 @@ public:
   Q_INVOKABLE bool destroySavedQueue(const QString& SQid);
   Q_INVOKABLE bool addItemToFavorites(const QVariant& payload, const QString& description, const QString& artURI);
   Q_INVOKABLE bool destroyFavorite(const QString& FVid);
+
+  Q_INVOKABLE bool createRadio(const QString& streamURL, const QString& title);
+  Q_INVOKABLE bool destroyRadio(const QString& RDid);
 
   Q_INVOKABLE QString getObjectIDFromUriMetadata(const QVariant& itemPayload);
 
@@ -199,6 +205,13 @@ public:
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
     return new ServicesModel;
+  }
+
+  static QObject* allRadiosModel_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
+  {
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+    return new RadiosModel;
   }
 
   // Helpers
@@ -375,6 +388,29 @@ private:
   private:
     Sonos& m_sonos;
     const QString m_FVid;
+  };
+
+  class PromiseCreateRadio : public Promise
+  {
+  public:
+    PromiseCreateRadio(Sonos& sonos, const QString& streamURL, const QString& title)
+    : m_sonos(sonos), m_streamURL(streamURL), m_title(title) { }
+    void run() override;
+  private:
+    Sonos& m_sonos;
+    const QString m_streamURL;
+    const QString m_title;
+  };
+
+  class PromiseDestroyRadio : public Promise
+  {
+  public:
+    PromiseDestroyRadio(Sonos& sonos, const QString& RDid)
+    : m_sonos(sonos), m_RDid(RDid) { }
+    void run() override;
+  private:
+    Sonos& m_sonos;
+    const QString m_RDid;
   };
 
 };
