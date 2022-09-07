@@ -1,9 +1,9 @@
 name: appimage_amd64
 on:
   push:
-    branches: [ master ]
+    branches: [ devel ]
   pull_request:
-    branches: [ master ]
+    branches: [ devel ]
 
 jobs:
   build-appimage:
@@ -30,7 +30,7 @@ jobs:
         run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
 
       - name: Build
-        run: cd build && make -j`nproc` install DESTDIR=AppDir
+        run: cd build && make -j`nproc` install DESTDIR=AppDir && ls -l /github/workspace/AppDir/usr/bin/
 
       - name: Build AppImage
         uses: AppImageCrafters/build-appimage-action@master
