@@ -65,6 +65,13 @@ DialogBase {
         EnterKey.type: Qt.EnterKeyDone
     }
 
+    Label {
+        font.pointSize: units.fs("medium")
+        maximumLineCount: 2
+        wrapMode: Label.Wrap
+        text: qsTr("Supported format is MP3 and AAC up to 320kbps.")
+    }
+
     Button {
         height: units.gu(6)
         text: qsTr("Create")
