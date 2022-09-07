@@ -33,7 +33,7 @@ jobs:
         run: cd build && make -j`nproc` install DESTDIR=AppDir
 
       - name: Build AppImage
-        uses: AppImageCrafters/build-appimage-action@master
+        uses: AppImageCrafters/build-appimage-action@fe2205a4d6056be47051f7b1b3811106e9814910
         env:
           UPDATE_INFO: gh-releases-zsync|AppImageCrafters|noson-app|latest|*x86_64.AppImage.zsync
         with:
