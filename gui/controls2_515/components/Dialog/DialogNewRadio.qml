@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016, 2017
+ * Copyright (C) 2022
  *      Jean-Luc Barriere <jlbarriere68@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
