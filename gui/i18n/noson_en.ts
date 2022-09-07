@@ -565,14 +565,20 @@
         <translation type="unfinished">Enter stream URL</translation>
     </message>
     <message>
-        <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="71"/>
-        <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="71"/>
+        <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="72"/>
+        <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="72"/>
+        <source>Supported format is MP3 and AAC up to 320kbps.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="77"/>
+        <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="77"/>
         <source>Create</source>
         <translation type="unfinished">Create</translation>
     </message>
     <message>
-        <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="80"/>
-        <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="80"/>
+        <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="86"/>
+        <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="86"/>
         <source>Please type in a name and stream URL.</source>
         <translation type="unfinished"></translation>
     </message>

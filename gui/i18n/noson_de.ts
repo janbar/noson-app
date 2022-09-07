@@ -548,17 +548,23 @@
         <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="63"/>
         <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="63"/>
         <source>Enter stream URL</source>
-        <translation>Stream-URL eingeben</translation>
+        <translation>Stream URL eingeben</translation>
     </message>
     <message>
-        <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="71"/>
-        <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="71"/>
+        <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="72"/>
+        <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="72"/>
+        <source>Supported format is MP3 and AAC up to 320kbps.</source>
+        <translation>Unterstütztes Format ist MP3 oder AAC mit bis zu 320 kbps.</translation>
+    </message>
+    <message>
+        <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="77"/>
+        <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="77"/>
         <source>Create</source>
         <translation>Erstellen</translation>
     </message>
     <message>
-        <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="80"/>
-        <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="80"/>
+        <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="86"/>
+        <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="86"/>
         <source>Please type in a name and stream URL.</source>
         <translation>Bitte eine Namen und eine URL eingeben.</translation>
     </message>
