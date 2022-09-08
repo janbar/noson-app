@@ -150,8 +150,15 @@ MusicPage {
                         imageSources = [{art: "qrc:/images/linein.png"}];
                     } else if (zonePlayer.currentProtocol === 5) {
                         imageSources = [{art: "qrc:/images/tv.png"}];
-                    } else {
+                    } else if (zonePlayer.currentMetaArt != "") {
                         imageSources = makeCoverSource(zonePlayer.currentMetaArt, zonePlayer.currentMetaArtist, zonePlayer.currentMetaAlbum);
+                    } else if (zonePlayer.currentMetaAlbum != "") {
+                        imageSources = makeCoverSource("", zonePlayer.currentMetaArtist, zonePlayer.currentMetaAlbum);
+                    } else {
+                        if (zonePlayer.currentProtocol === 2)
+                            imageSources = [{art: "qrc:/images/radio.png"}];
+                        else
+                            imageSources = [];
                     }
                     currentMetaTitle = zonePlayer.currentMetaTitle;
                     if (zonePlayer.currentTrackDuration > 0)
