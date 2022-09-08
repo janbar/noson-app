@@ -364,7 +364,7 @@ ApplicationWindow {
         target: AllFavoritesModel
         onDataUpdated: AllFavoritesModel.asyncLoad()
         onLoaded: AllFavoritesModel.resetModel()
-        onCountChanged: { tabs.setProperty(2, "visible", (AllFavoritesModel.count > 0)) }
+        onCountChanged: { tabs.setProperty(3, "visible", (AllFavoritesModel.count > 0)) }
     }
 
     Connections {
