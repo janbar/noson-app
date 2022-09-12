@@ -285,7 +285,7 @@ static bool parseCommand(const std::string& line)
       PRINT("REFRESHSHAREINDEX             Update the music index on Sonos\n");
       PRINT("CREATERD {1} {2}              Create radio station item\n");
       PRINT("  1:URI        The stream URI\n");
-      PRINT("  3:TITLE      The title\n");
+      PRINT("  2:TITLE      The title\n");
       PRINT("DESTROYRD {title}             Destroy the given radio station item\n");
       PRINT("HELP                          Print this help\n");
       PRINT("\n");
