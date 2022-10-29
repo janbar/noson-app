@@ -114,7 +114,7 @@ MouseArea {
     property real lastX: -1
     property real lastY: -1
 
-    onPressed: {
+    onPressed: function(mouse) {
         lastX = mouse.x
         lastY = mouse.y
     }
@@ -126,7 +126,7 @@ MouseArea {
                 held = true
         }
     }
-    onReleased: {
+    onReleased: function(mouse) {
         if (state !== "selection") {
             if (held) {
                 held = false;
