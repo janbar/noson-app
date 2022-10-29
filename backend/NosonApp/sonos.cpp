@@ -68,9 +68,8 @@ Sonos::~Sonos()
   {
     // deregister the remaining contents before destroying this
     auto left = m_library.Get();
-    for (ManagedContents::iterator it = left->begin(); it != left->end(); ++it)
-      unregisterContent(*left, it->model);
-    left->clear();
+    while (!left->empty())
+      unregisterContent(*left, left->front().model);
   }
   m_workerPool.clear();
 }
