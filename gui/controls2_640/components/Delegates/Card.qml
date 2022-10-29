@@ -65,7 +65,7 @@ Item {
         CoverGrid {
             id: coverGrid
             size: parent.width
-            onImageError: card.imageError(index)
+            onImageError: function(index) { card.imageError(index); }
         }
 
         // Adjust spacing
@@ -157,7 +157,7 @@ Item {
             fill: parent
             bottomMargin: parent.height * 0.25 // do not override action icons
         }
-        onClicked: card.clicked(mouse)
-        onPressAndHold: card.pressAndHold(mouse)
+        onClicked: function(mouse) { card.clicked(mouse); }
+        onPressAndHold: function(mouse) { card.pressAndHold(mouse); }
     }
 }
