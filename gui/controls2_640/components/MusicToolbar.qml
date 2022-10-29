@@ -317,7 +317,6 @@ Item {
                 }
                 color: styleMusic.playerControls.progressForegroundColor
                 height: parent.height
-                width: hint(player.trackPosition, player.trackDuration)
 
                 function hint(position, duration) {
                     var val = 0;
@@ -330,6 +329,10 @@ Item {
                     target: player
                     function onCurrentPositionChanged(position, duration) { playerControlsProgressBarHint.hint(position, duration) }
                     function onStopped() { playerControlsProgressBarHint.hint(0, 0) }
+                }
+
+                Component.onCompleted: {
+                    width = hint(player.trackPosition, player.trackDuration);
                 }
             }
         }
