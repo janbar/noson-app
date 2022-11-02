@@ -69,18 +69,16 @@ int main(int argc, char *argv[])
 
     QSettings settings;
     QStringList availableStyles;
-    QString style = QQuickStyle::name();
-    if (!style.isEmpty())
-        settings.setValue("style", style);
-    else
+    if (settings.value("style").isNull() || settings.value("firstRun", QVariant::fromValue(true)).toBool())
     {
-        if (settings.value("style").isNull())
-        {
-            QQuickStyle::setStyle("Material");
-            settings.setValue("style", QQuickStyle::name());
-        }
-        QQuickStyle::setStyle(settings.value("style").toString());
+#if defined(Q_OS_ANDROID)
+        QQuickStyle::setStyle("Material");
+#else
+        QQuickStyle::setStyle("Material");
+#endif
+        settings.setValue("style", QQuickStyle::name());
     }
+    QQuickStyle::setStyle(settings.value("style").toString());
 
     QScopedPointer<QQmlApplicationEngine> engine(new QQmlApplicationEngine());
     // 100MB cache for network data
@@ -114,12 +112,19 @@ int main(int argc, char *argv[])
 #endif
 
     engine->load(QUrl("qrc:/controls2/noson.qml"));
-    if (engine->rootObjects().isEmpty()) {
+    if (engine->rootObjects().isEmpty())
+    {
         qWarning() << "Failed to load QML";
         return -1;
     }
 
     ret = app.exec();
+
+    // next run won't be the first
+    if (settings.value("firstRun", QVariant::fromValue(true)).toBool())
+    {
+        settings.setValue("firstRun", QVariant::fromValue(false));
+    }
 #ifdef Q_OS_WIN
     WSACleanup();
 #endif
