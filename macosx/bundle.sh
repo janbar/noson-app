@@ -79,7 +79,7 @@ function printLinkingApp {
         printLinking $F
     done
     
-    for F in `find $BUILD_BUNDLE_FRW_DIR/Qt*.framework/Versions/5 -type f -maxdepth 1` 
+    for F in `find $BUILD_BUNDLE_FRW_DIR/Qt*.framework/Versions/A -type f -maxdepth 1` 
     do
         printLinking $F
     done
@@ -96,7 +96,7 @@ function printLinkingApp {
         checkLibraries $F
     done
     
-    for F in `find $BUILD_BUNDLE_FRW_DIR/Qt*.framework/Versions/5 -type f -maxdepth 1` 
+    for F in `find $BUILD_BUNDLE_FRW_DIR/Qt*.framework/Versions/A -type f -maxdepth 1` 
     do
         checkLibraries $F
     done
@@ -114,7 +114,7 @@ function adjustLinking {
         adjustLinkQt $F "libq"
     done
 
-    for F in `find $BUILD_BUNDLE_FRW_DIR/Qt*.framework/Versions/5 -type f -maxdepth 1` 
+    for F in `find $BUILD_BUNDLE_FRW_DIR/Qt*.framework/Versions/A -type f -maxdepth 1` 
     do 
         adjustLinkQt $F "Qt"
         adjustLinkQt $F "libdbus"
@@ -147,7 +147,7 @@ function adjustLinkQt {
         PREL="@executable_path/../Frameworks/$LIB"
 
         if [[ "$P" == *".framework"* ]]; then
-            LIB_VERSION=Versions/5
+            LIB_VERSION=Versions/A
             LIB=$LIB.framework/$LIB_VERSION/$LIB
             PREL="@executable_path/../Frameworks/$LIB"
         elif [[ "$P" == *"plugins"* ]]; then
@@ -197,15 +197,18 @@ function checkLibraries {
 function copyAdditionalLibraries {
     #cp -v -R $QT_DIR/lib/QtADDITIONAL.framework $BUILD_BUNDLE_FRW_DIR
     cp -v -R $QT_DIR/lib/QtQmlWorkerScript.framework $BUILD_BUNDLE_FRW_DIR
+    cp -v -R $QT_DIR/lib/QtQuickLayouts.framework $BUILD_BUNDLE_FRW_DIR
+    cp -v -R $QT_DIR/lib/QtQuickControls2Impl.framework $BUILD_BUNDLE_FRW_DIR
+    cp -v -R $QT_DIR/lib/QtLabsSettings.framework $BUILD_BUNDLE_FRW_DIR
+    cp -v -R $QT_DIR/lib/QtShaderTools.framework $BUILD_BUNDLE_FRW_DIR
 
     # Additional plugins
     cp -v $QT_DIR/plugins/imageformats/libqsvg.dylib $BUILD_BUNDLE_PLUGIN_DIR/imageformats/
 
     # QML
     cp -v -R $QT_DIR/qml/Qt $BUILD_BUNDLE_RES_DIR/qml/
-    cp -v -R $QT_DIR/qml/QtGraphicalEffects $BUILD_BUNDLE_RES_DIR/qml/
+    cp -v -R $QT_DIR/qml/Qt5Compat $BUILD_BUNDLE_RES_DIR/qml/
     cp -v -R $QT_DIR/qml/QtQuick $BUILD_BUNDLE_RES_DIR/qml/
-    cp -v -R $QT_DIR/qml/QtQuick.2 $BUILD_BUNDLE_RES_DIR/qml/
     cp -v -R $QT_DIR/qml/QtQml $BUILD_BUNDLE_RES_DIR/qml/
 }
 
