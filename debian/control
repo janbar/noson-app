@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: janbar <jlbarriere68@gmail.com>
 Build-Depends: cmake,
                git,
-               debhelper-compat (= 12),
+               debhelper (>= 9.0.0),
                qtbase5-dev (>= 5.9.1),
                qttools5-dev,
                qttools5-dev-tools,
