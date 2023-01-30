@@ -1,6 +1,6 @@
 Source: noson-app
 Section: misc
-Priority: extra
+Priority: optional
 Maintainer: janbar <jlbarriere68@gmail.com>
 Build-Depends: cmake,
                git,
