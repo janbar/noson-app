@@ -120,7 +120,7 @@ else()
     if(NOT LIBNOSON_GIT_MASTER)
         download_project(PROJ noson
           URL "${CMAKE_CURRENT_SOURCE_DIR}/noson-2.10.1.tar.gz"
-          URL_HASH MD5=31913a5d9a3a88558a8c3a2d5b0f3cf1
+          URL_HASH MD5=dd656712f6e1109c47ae62816a0dcbd6
           PREFIX ${CMAKE_CURRENT_BINARY_DIR}
           UPDATE_DISCONNECTED ON)
     else()
