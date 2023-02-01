@@ -1,6 +1,9 @@
 noson-app (5.4) UNRELEASED; urgency=low
 
   [ janbar ]
+  * Release 5.4.0
+
+  [ janbar ]
   * Release 5.1.0
   * Refactoring this device views
   * Refactoring playlist views
