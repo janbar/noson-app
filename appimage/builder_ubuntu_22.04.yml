@@ -1,0 +1,110 @@
+version: 1
+AppDir:
+  path: AppDir
+  app_info:
+    id: io.github.janbar.noson
+    name: noson
+    icon: noson
+    version: latest-ubuntu-jammy
+    exec: bin/sh
+    exec_args: $APPDIR/usr/bin/noson-app $@
+  apt:
+    arch:
+    - amd64
+    allow_unauthenticated: true
+    sources:
+    - sourceline: deb http://fr.archive.ubuntu.com/ubuntu/ jammy main restricted
+    - sourceline: deb http://fr.archive.ubuntu.com/ubuntu/ jammy-updates main restricted
+    - sourceline: deb http://fr.archive.ubuntu.com/ubuntu/ jammy universe
+    - sourceline: deb http://fr.archive.ubuntu.com/ubuntu/ jammy-updates universe
+    - sourceline: deb http://fr.archive.ubuntu.com/ubuntu/ jammy multiverse
+    - sourceline: deb http://fr.archive.ubuntu.com/ubuntu/ jammy-updates multiverse
+    - sourceline: deb http://fr.archive.ubuntu.com/ubuntu/ jammy-backports main restricted
+        universe multiverse
+    - sourceline: deb http://security.ubuntu.com/ubuntu jammy-security main restricted
+    - sourceline: deb http://security.ubuntu.com/ubuntu jammy-security universe
+    - sourceline: deb http://security.ubuntu.com/ubuntu jammy-security multiverse
+    include:
+    - dash
+    - libc6:amd64
+    - libbz2-1.0
+    - libexpat1
+    - libfam0
+    - libgcrypt20
+    - liblz4-1
+    - libpciaccess0
+    - libpcre3
+    - libsm6
+    - libsystemd0
+    - libxau6
+    - libxcb-render-util0
+    - libxcb-sync1
+    - libxcb-xinerama0
+    - libxcb-xkb1
+    - libxdamage1
+    - libxdmcp6
+    - libxext6
+    - libxfixes3
+    - libxrender1
+    - libxshmfence1
+    - libxxf86vm1
+    - libqt5core5a
+    - libqt5concurrent5
+    - libqt5gui5
+    - libqt5qml5
+    - libqt5qmlmodels5
+    - libqt5qmlworkerscript5
+    - libqt5network5
+    - libqt5quick5
+    - libqt5quickcontrols2-5
+    - libqt5quicktemplates2-5
+    - libqt5quickparticles5
+    - libqt5quickwidgets5
+    - libqt5dbus5
+    - libqt5opengl5
+    - libqt5svg5
+    - libqt5widgets5
+    - libqt5x11extras5
+    - qml-module-qt-labs-settings
+    - qml-module-qtgraphicaleffects
+    - qml-module-qtqml-models2
+    - qml-module-qtquick2
+    - qml-module-qtquick-controls2
+    - qml-module-qtquick-layouts
+    - qml-module-qtquick-particles2
+    - qml-module-qtquick-templates2
+    - qml-module-qtquick-window2
+    - qttranslations5-l10n
+    - qtwayland5
+    - libqt5x11extras5
+    - zlib1g
+    - libssl3
+    - libdbus-1-3
+    - dbus-x11
+    - libpulse0
+    - libflac++6v5
+    - libflac8
+    exclude:
+    - hicolor-icon-theme
+    - sound-theme-freedesktop
+    - perl
+    - perl-base
+    - kwayland-data
+    - libwacom2
+    - libasound2
+    - breeze
+    - breeze-icon-theme
+    - breeze-cursor-theme
+    - kwin-style-breeze
+    - kde-style-breeze
+    - plasma-integration
+  files:
+    exclude:
+    - usr/share/man
+    - usr/share/doc/*/README.*
+    - usr/share/doc/*/changelog.*
+    - usr/share/doc/*/NEWS.*
+    - usr/share/doc/*/TODO.*
+AppImage:
+  arch: x86_64
+  update-information: gh-releases-zsync|AppImageCrafters|noson-app|latest|*x86_64.AppImage.zsync
