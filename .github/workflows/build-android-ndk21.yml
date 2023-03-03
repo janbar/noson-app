@@ -33,10 +33,11 @@ jobs:
           version: '5.15.2'
           host: 'linux'
           target: 'android'
-          modules: android
           install-deps: 'true'
       - name: Dump Qt DIR
-        run:  echo ${Qt5_DIR}
+        run: |
+          echo ${Qt5_DIR}
+          aqt list-qt linux android --modules 5.15.2 android
 
       - name: Init submodules
         run: git submodule init && git submodule update
