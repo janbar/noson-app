@@ -74,8 +74,11 @@ if(NOT OPENSSL_FOUND)
     set(OPENSSL_CRYPTO_LIBRARY crypto)
     set(OPENSSL_INCLUDE_DIR "${openssl_BINARY_DIR}/include" "${openssl_BINARY_DIR}")
     set(OPENSSL_FOUND ON)
+    export(TARGETS crypto ssl FILE FindOpenSSL.cmake)
+    add_library(OpenSSL::Crypto ALIAS crypto)
+    add_library(OpenSSL::SSL ALIAS ssl)
     message(STATUS "Build OpenSSL: ${openssl_BINARY_DIR}")
-    list(APPEND noson_DEPENDENCIES crypto ssl)
+    list(APPEND noson_DEPENDENCIES ${OPENSSL_CRYPTO_LIBRARY} ${OPENSSL_SSL_LIBRARY})
 endif()
 
 # Provides dependency FLAC
