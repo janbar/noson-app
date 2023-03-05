@@ -74,7 +74,7 @@ if(NOT OPENSSL_FOUND)
     set(OPENSSL_CRYPTO_LIBRARY crypto)
     set(OPENSSL_INCLUDE_DIR "${openssl_BINARY_DIR}/include" "${openssl_BINARY_DIR}")
     set(OPENSSL_FOUND ON)
-    export(TARGETS crypto ssl FILE FindOpenSSL.cmake)
+    export(TARGETS crypto ssl FILE OpenSSLTargets.cmake)
     add_library(OpenSSL::Crypto ALIAS crypto)
     add_library(OpenSSL::SSL ALIAS ssl)
     message(STATUS "Build OpenSSL: ${openssl_BINARY_DIR}")
@@ -123,7 +123,7 @@ else()
     if(NOT LIBNOSON_GIT_MASTER)
         download_project(PROJ noson
           URL "${CMAKE_CURRENT_SOURCE_DIR}/noson-2.10.1.tar.gz"
-          URL_HASH MD5=dd656712f6e1109c47ae62816a0dcbd6
+          URL_HASH MD5=1550e93cf3f08659e220af0bfdd9d65e
           PREFIX ${CMAKE_CURRENT_BINARY_DIR}
           UPDATE_DISCONNECTED ON)
     else()
