@@ -22,8 +22,8 @@ if(NOT BUILD_DEPENDENCIES)
 endif()
 if(NOT ZLIB_FOUND)
     download_project(PROJ zlib
-        URL "${CMAKE_CURRENT_SOURCE_DIR}/zlib-1.2.11.tar.gz"
-        URL_HASH MD5=d8c654d5d16f31de88db6b8c6a1bdc48
+        URL "${CMAKE_CURRENT_SOURCE_DIR}/zlib-1.2.13.tar.gz"
+        URL_HASH MD5=201979193acddd53849e7e0a7f035564
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
         UPDATE_DISCONNECTED ON)
     set(BUILD_SHARED_LIBS OFF)
