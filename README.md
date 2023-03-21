@@ -3,7 +3,7 @@
 ![build status](https://github.com/janbar/noson-app/actions/workflows/build-android-ndk21.yml/badge.svg?branch=master)
 
 ## Noson
-A fast and smart SONOS controller for Linux platforms.
+A fast and smart SONOS controller for Unix platforms.
 
 Go to [project page](http://janbar.github.io/noson-app/index.html) for further details. Translations are managed by **transifex** at [noson-translations](https://www.transifex.com/janbar/noson/).
 
