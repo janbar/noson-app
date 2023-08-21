@@ -287,6 +287,9 @@ static bool parseCommand(const std::string& line)
       PRINT("  1:URI        The stream URI\n");
       PRINT("  2:TITLE      The title\n");
       PRINT("DESTROYRD {title}             Destroy the given radio station item\n");
+      PRINT("SHOWAUTOPLAY                  Show Autoplay status\n");
+      PRINT("AUTOPLAY OFF|ON {0..100}      Disable or enable Autoplay and optionally set the initial volume\n");
+      PRINT("LEDSTATE OFF|ON               Disable or enable LED of the connected device\n");
       PRINT("HELP                          Print this help\n");
       PRINT("\n");
     }
@@ -996,6 +999,78 @@ static bool parseCommand(const std::string& line)
       }
       else
         PERROR("Error: Missing arguments.\n");
+    }
+    else if (token == "SHOWAUTOPLAY")
+    {
+      std::string roomuuid;
+      uint8_t volume;
+      if (gPlayer->GetAutoplay(roomuuid) && gPlayer->GetAutoplayVolume(&volume))
+      {
+        if (roomuuid.empty())
+          PERROR("Autoplay = OFF\n");
+        else
+          PERROR1("Autoplay = ON (%s)\n", roomuuid.c_str());
+        PERROR1("Volume = %u\n", volume);
+      }
+      else
+        PERROR("Failed\n");
+    }
+    else if (token == "AUTOPLAY")
+    {
+      if (++it != tokens.end())
+      {
+        std::string param(*it);
+        upstr(param);
+        if (param == "ON")
+        {
+          if (++it != tokens.end())
+          {
+            uint8_t volume;
+            if (string_to_uint8(it->c_str(), &volume) != 0 || volume > 100)
+              PERROR("Error: Invalid arguments.\n");
+            else if (gPlayer->SetAutoplayVolume(volume) && gPlayer->SetAutoplay(true))
+              PERROR("Succeeded\n");
+          }
+          else if (gPlayer->SetAutoplay(true))
+              PERROR("Succeeded\n");
+          else
+            PERROR("Failed\n");
+        }
+        else if (param == "OFF")
+        {
+          if (gPlayer->SetAutoplay(false))
+            PERROR("Succeeded\n");
+          else
+            PERROR("Failed\n");
+        }
+        else
+          PERROR("Error: Invalid arguments.\n");
+      }
+    }
+    else if (token == "LEDSTATE")
+    {
+      if (++it != tokens.end())
+      {
+        std::string param(*it);
+        upstr(param);
+        if (param == "ON")
+
+        {
+          if (gPlayer->SetLEDState(true))
+            PERROR("Succeeded\n");
+          else
+            PERROR("Failed\n");
+        }
+        else if (param == "OFF")
+        {
+          if (gPlayer->SetLEDState(false))
+            PERROR("Succeeded\n");
+          else
+            PERROR("Failed\n");
+        }
+        else
+          PERROR("Error: Invalid arguments.\n");
+      }
     }
     else
     {
