@@ -1,4 +1,7 @@
-noson-app (5.4) UNRELEASED; urgency=low
+noson-app (5.5) UNRELEASED; urgency=low
+
+  [ janbar ]
+  * Release 5.5.0
 
   [ janbar ]
   * Release 5.4.0
