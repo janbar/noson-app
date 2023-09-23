@@ -134,6 +134,8 @@ bool FLACParser::parse(MediaFile * file, MediaInfo * info, bool debug)
           info->artist = str.mid(7);
         else if (str.startsWith("ALBUM=", Qt::CaseInsensitive))
           info->album = str.mid(6);
+        else if (str.startsWith("ALBUMARTIST=", Qt::CaseInsensitive))
+          info->albumArtist = str.mid(12);
         else if (str.startsWith("GENRE=", Qt::CaseInsensitive))
           info->genre = str.mid(6);
         else if (str.startsWith("COMPOSER=", Qt::CaseInsensitive))

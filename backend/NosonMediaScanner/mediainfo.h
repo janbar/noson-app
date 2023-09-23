@@ -19,6 +19,7 @@
 #define MEDIAINFO_H
 
 #include <QString>
+#include <QStringList>
 
 namespace mediascanner
 {
@@ -28,6 +29,7 @@ struct MediaInfo
   QString title;
   QString artist;
   QString album;
+  QString albumArtist;
   QString genre;
   QString composer;
   int trackNo;

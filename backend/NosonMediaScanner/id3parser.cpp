@@ -69,6 +69,7 @@ struct ID3Iinfo
 {
   QByteArray title;
   QByteArray album;
+  QByteArray albumArtist;
   QByteArray genre;
   QByteArray artist;
   QByteArray composer;
@@ -173,6 +174,7 @@ bool ID3Parser::parse(MediaFile * file, MediaInfo * info, bool debug)
   info->container = file->suffix.toLower();
   info->title = id3info.title.isEmpty() ? file->baseName : id3info.title;
   info->album = id3info.album;
+  info->albumArtist = id3info.albumArtist;
   info->genre = id3info.genre;
   info->artist = id3info.artist;
   info->trackNo = id3info.track_no > 0 ? id3info.track_no : 0;
@@ -563,7 +565,12 @@ static void _parse_id3v2_frame(struct ID3v2FrameHeader * fh, const char * frame_
   else if (fid[1] == 'P')
   {
     if (fid[2] == 'E')
+    {
+        /* TPE2: AlbumArtist */
+      if (fid[3] == '2')
+        _get_id3v2_frame_info(frame_data, frame_size, &info->albumArtist, csconv, 1);
       _get_id3v2_artist(fid[3] - '1', frame_data, frame_size, info, csconv);
+    }
     else if (fid[2] >= '1' && fid[2] <= '4')
       _get_id3v2_artist(fid[2] - '1', frame_data, frame_size, info, csconv);
   }

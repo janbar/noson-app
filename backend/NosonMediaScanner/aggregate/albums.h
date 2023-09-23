@@ -30,7 +30,7 @@ class AlbumModel : public Model
 public:
   AlbumModel(const MediaFilePtr& file);
   const QByteArray& key() const { return m_key; }
-  const QString& artist() { return m_file->mediaInfo->artist; }
+  const QString& artist() { return m_file->mediaInfo->albumArtist; }
   const QString& album() { return m_file->mediaInfo->album; }
   const QString& filePath() { return m_file->filePath; }
   int year() { return m_file->mediaInfo->year; }

@@ -24,7 +24,7 @@ AlbumModel::AlbumModel(const MediaFilePtr& file)
 {
   if (file->mediaInfo)
   {
-    m_key = file->mediaInfo->artist.toLower().toUtf8()
+    m_key = file->mediaInfo->albumArtist.toLower().toUtf8()
         .append("/").append(file->mediaInfo->album.toLower().toUtf8());
     m_normalized = normalizedString(file->mediaInfo->album);
   }

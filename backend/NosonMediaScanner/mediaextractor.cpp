@@ -37,6 +37,8 @@ void MediaExtractor::run()
       // default undefined tags
       if (infoPtr->album.isEmpty())
         infoPtr->album = TAG_UNDEFINED;
+      if (infoPtr->albumArtist.isEmpty())
+        infoPtr->albumArtist = TAG_UNDEFINED;
       if (infoPtr->artist.isEmpty())
         infoPtr->artist = TAG_UNDEFINED;
       if (infoPtr->genre.isEmpty())
@@ -53,6 +55,7 @@ void MediaExtractor::run()
       MediaInfo * info = m_filePtr->mediaInfo.data();
       qDebug("title       = %s", info->title.toUtf8().constData());
       qDebug("album       = %s", info->album.toUtf8().constData());
+      qDebug("albumArtist = %s", info->albumArtist.toUtf8().constData());
       qDebug("artist      = %s", info->artist.toUtf8().constData());
       qDebug("genre       = %s", info->genre.toUtf8().constData());
       qDebug("composer    = %s", info->composer.toUtf8().constData());

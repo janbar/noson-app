@@ -33,6 +33,7 @@ public:
   const QString& title() { return m_file->mediaInfo->title; }
   const QString& author() { return m_file->mediaInfo->artist; }
   const QString& album() { return m_file->mediaInfo->album; }
+  const QString& albumArtist() { return m_file->mediaInfo->albumArtist; }
   const QString& genre() { return m_file->mediaInfo->genre; }
   const QString& composer() { return m_file->mediaInfo->composer; }
   const QString& codec() { return m_file->mediaInfo->codec; }
@@ -60,6 +61,7 @@ class Tracks : public ListModel
   Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
   Q_PROPERTY(QString artist READ artistFilter WRITE setArtistFilter NOTIFY artistChanged)
   Q_PROPERTY(QString album READ albumFilter WRITE setAlbumFilter NOTIFY albumChanged)
+  Q_PROPERTY(QString albumArtist READ albumArtistFilter WRITE setAlbumArtistFilter NOTIFY albumChanged)
   Q_PROPERTY(QString genre READ genreFilter WRITE setGenreFilter NOTIFY genreChanged)
   Q_PROPERTY(QString composer READ composerFilter WRITE setComposerFilter NOTIFY composerChanged)
 
@@ -74,6 +76,7 @@ public:
     IdRole,
     TitleRole,
     AlbumRole,
+    AlbumArtistRole,
     AuthorRole,
     GenreRole,
     ComposerRole,
@@ -97,6 +100,8 @@ public:
   void setArtistFilter(const QString& filter) { m_artistFilter = filter; emit artistChanged(); }
   const QString& albumFilter() { return m_albumFilter; }
   void setAlbumFilter(const QString& filter) { m_albumFilter = filter; emit albumChanged(); }
+  const QString& albumArtistFilter() { return m_albumArtistFilter; }
+  void setAlbumArtistFilter(const QString& filter) { m_albumArtistFilter = filter; emit albumChanged(); }
   const QString& genreFilter() { return m_genreFilter; }
   void setGenreFilter(const QString& filter) { m_genreFilter = filter; emit genreChanged(); }
   const QString& composerFilter() { return m_composerFilter; }
@@ -143,6 +148,7 @@ private:
   QList<ItemPtr> m_items;
   QString m_artistFilter;
   QString m_albumFilter;
+  QString m_albumArtistFilter;
   QString m_genreFilter;
   QString m_composerFilter;
 };

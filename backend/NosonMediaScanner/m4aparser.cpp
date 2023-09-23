@@ -191,7 +191,7 @@ int M4AParser::parse_ilst(uint64_t * remaining, FILE * fp, MediaInfo * info)
     else if (child == 0xa9415254) // _ART
       loadUtf8Value(&rest, fp, info->artist);
     else if (child == 0x61415254) // aART
-      loadUtf8Value(&rest, fp, info->artist);
+      loadUtf8Value(&rest, fp, info->albumArtist);
     else if (child == 0xa967656e) // _gen
       loadUtf8Value(&rest, fp, info->genre);
     else if (child == 0xa9777274) // _wrt
