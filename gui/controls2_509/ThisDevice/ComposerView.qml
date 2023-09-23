@@ -141,6 +141,7 @@ MusicPage {
                                                    "covers": blurredHeader.coverSources,
                                                    "noCover": blurredHeader.noCover,
                                                    "album": undefined,
+                                                   "albumArtist": undefined,
                                                    "artist": "",
                                                    "genre": "",
                                                    "composer": composerViewPage.composer,
@@ -169,7 +170,7 @@ MusicPage {
             id: albumCard
             height: composerAlbumView.cellHeight
             width: composerAlbumView.cellWidth
-            coverSources: makeFileCoverSource(model.hasArt, model.filePath, model.artist, model.album)
+            coverSources: makeFileCoverSource(model.hasArt, model.filePath, model.albumArtist, model.album)
             primaryText: (model.album !== "<Undefined>" ? model.album : tr_undefined)
             secondaryTextVisible: false
 
@@ -178,14 +179,14 @@ MusicPage {
                 stackView.push("qrc:/controls2/ThisDevice/TrackStackView.qml",
                                    {
                                        "album": model.album,
-                                       "artist": model.artist,
+                                       "albumArtist": model.albumArtist,
                                        "covers": albumCard.imageSource != "" ? [{art: albumCard.imageSource}] : coverSources,
                                        "noCover": "qrc:/images/no_cover.png",
                                        "isAlbum": true,
                                        "genre": "",
                                        "composer": composerViewPage.composer,
                                        "pageTitle": pageTitle,
-                                       "line1": (model.artist !== "<Undefined>" ? model.artist : tr_undefined),
+                                       "line1": (model.albumArtist !== "<Undefined>" ? model.albumArtist : tr_undefined),
                                        "line2": (model.album !== "<Undefined>" ? model.album : tr_undefined)
                                    })
             }
