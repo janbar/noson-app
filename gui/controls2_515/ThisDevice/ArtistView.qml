@@ -179,14 +179,14 @@ MusicPage {
                 stackView.push("qrc:/controls2/ThisDevice/TrackStackView.qml",
                                    {
                                        "album": model.album,
-                                       "albumArtist": model.albumArtist,
+                                       "albumArtist": model.artist,
                                        "artist": "",
                                        "covers": albumCard.imageSource != "" ? [{art: albumCard.imageSource}] : coverSources,
                                        "noCover": "qrc:/images/no_cover.png",
                                        "isAlbum": true,
                                        "genre": "",
                                        "pageTitle": pageTitle,
-                                       "line1": (model.albumArtist !== "<Undefined>" ? model.albumArtist : tr_undefined),
+                                       "line1": (model.artist !== "<Undefined>" ? model.artist : tr_undefined),
                                        "line2": (model.album !== "<Undefined>" ? model.album : tr_undefined)
                                    })
             }
