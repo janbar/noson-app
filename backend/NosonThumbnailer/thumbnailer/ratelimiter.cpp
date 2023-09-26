@@ -52,7 +52,7 @@ namespace thumbnailer
       return schedule_now(job);
     }
 
-    list_.emplace_back(make_shared <function<void()> >(move(job)));
+    list_.emplace_back(make_shared <function<void()> >(std::move(job)));
 
     // Returned function clears the job when called, provided the job is still in the queue.
     // done() removes any cleared jobs from the queue without calling them.
