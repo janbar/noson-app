@@ -80,7 +80,8 @@ MusicPage {
                 stackView.push("qrc:/controls2/ThisDevice/TrackStackView.qml",
                                    {
                                        "album": model.album,
-                                       "artist": model.artist,
+                                       "albumArtist": model.artist,
+                                       "artist": "",
                                        "covers": albumCard.imageSource != "" ? [{art: albumCard.imageSource}] : coverSources,
                                        "noCover": "qrc:/images/no_cover.png",
                                        "isAlbum": true,
