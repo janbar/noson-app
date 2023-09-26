@@ -141,6 +141,7 @@ MusicPage {
                                                    "covers": blurredHeader.coverSources,
                                                    "noCover": blurredHeader.noCover,
                                                    "album": undefined,
+                                                   "albumArtist": undefined,
                                                    "artist": "",
                                                    "genre": "",
                                                    "composer": composerViewPage.composer,
@@ -178,7 +179,7 @@ MusicPage {
                 stackView.push("qrc:/controls2/ThisDevice/TrackStackView.qml",
                                    {
                                        "album": model.album,
-                                       "artist": model.artist,
+                                       "albumArtist": model.artist,
                                        "covers": albumCard.imageSource != "" ? [{art: albumCard.imageSource}] : coverSources,
                                        "noCover": "qrc:/images/no_cover.png",
                                        "isAlbum": true,

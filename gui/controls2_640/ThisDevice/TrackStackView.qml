@@ -41,6 +41,7 @@ MusicPage {
     property bool isAlbum: false
     property string year: ""
     property string album: ""
+    property string albumArtist: ""
     property string artist: ""
     property string genre: ""
     property string composer: ""
@@ -58,6 +59,7 @@ MusicPage {
     TrackList {
         id: tracks
         album: trackStackPage.album
+        albumArtist: trackStackPage.albumArtist
         artist: trackStackPage.artist
         genre: trackStackPage.genre
         composer: trackStackPage.composer
@@ -76,7 +78,7 @@ MusicPage {
         var art = "";
         if (modelItem.hasArt)
             art = player.makeFilePictureLocalURL(modelItem.filePath);
-        return makeCoverSource(art, modelItem.author, modelItem.album);
+        return makeCoverSource(art, modelItem.albumArtist, modelItem.album);
     }
 
     function makeItemPayload(modelItem) {
