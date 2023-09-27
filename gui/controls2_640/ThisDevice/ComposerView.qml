@@ -140,8 +140,8 @@ MusicPage {
                                                {
                                                    "covers": blurredHeader.coverSources,
                                                    "noCover": blurredHeader.noCover,
-                                                   "album": undefined,
-                                                   "albumArtist": undefined,
+                                                   "album": "",
+                                                   "albumArtist": "",
                                                    "artist": "",
                                                    "genre": "",
                                                    "composer": composerViewPage.composer,
