@@ -74,7 +74,8 @@ MusicPage {
             onClicked: {
                 stackView.push("qrc:/controls2/ThisDevice/TrackStackView.qml",
                                    {
-                                       "album": undefined,
+                                       "album": "",
+                                       "albumArtist": "",
                                        "genre": model.genre,
                                        "pageTitle": pageTitle,
                                        "line1": "",
