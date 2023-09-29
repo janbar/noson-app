@@ -221,7 +221,7 @@ void MediaScannerEngine::run()
       QList<MediaParserPtr> parserList = parsers();
       // signal start working
       m_working = true;
-      m_scanner->workingChanged();
+      emit m_scanner->workingChanged();
       do
       {
         QString path = m_todo.dequeue();
@@ -232,7 +232,7 @@ void MediaScannerEngine::run()
       while (!isInterruptionRequested() && !m_todo.isEmpty());
       // signal stop working
       m_working = false;
-      m_scanner->workingChanged();
+      emit m_scanner->workingChanged();
     }
   }
   m_condLock->unlock();
@@ -268,7 +268,7 @@ void MediaScannerEngine::scanDir(const QString &dirPath, const QList<MediaParser
   QDirIterator di(QDir(dirPath), flags);
   while (di.hasNext() && !isInterruptionRequested())
   {
-    QString o = di.next();
+    di.next();
     QFileInfo info = di.fileInfo();
     if (!info.isHidden() && info.isReadable()
             // current and parent path aren't hidden on windows platform
@@ -406,7 +406,7 @@ void MediaScannerEngine::cleanNode(const QString& nodeName, bool evenPinned, QLi
         if (m_scanner->isDebug())
           qDebug("Remove item %s", it.value()->filePath.toUtf8().constData());
         m_items.remove(it.value()->filePath);
-        m_scanner->remove(it.value());
+        emit m_scanner->remove(it.value());
         // check empty state
         if (it.value()->signaled)
         {
@@ -428,12 +428,17 @@ void MediaScannerEngine::scheduleExtractor(MediaFilePtr filePtr, bool wait /*= t
     while (!isInterruptionRequested())
     {
       if (m_workerPool.tryStart(job))
-        break;
+        return;
       msleep(SCHEDULE_TIMEOUT_MS);
     }
   }
   else if (!isInterruptionRequested())
+  {
     m_workerPool.start(job);
+    return;
+  }
+  // free the unprocessed job
+  delete job;
 }
 
 void MediaScannerEngine::mediaExtractorCallback(void * handle, MediaFilePtr& filePtr)
@@ -443,7 +448,7 @@ void MediaScannerEngine::mediaExtractorCallback(void * handle, MediaFilePtr& fil
     return;
   if (filePtr->isValid)
   {
-    engine->m_scanner->put(filePtr);
+    emit engine->m_scanner->put(filePtr);
     // check empty state
     if (!filePtr->signaled)
     {
