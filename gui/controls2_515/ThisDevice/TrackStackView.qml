@@ -69,7 +69,7 @@ MusicPage {
     SortFilterModel {
         id: songsModel
         model: tracks
-        sort.property: isAlbum ? "albumTrackNo" : "normalized"
+        sort.property: isAlbum ? "position" : "normalized"
         sort.order: Qt.AscendingOrder
         sortCaseSensitivity: Qt.CaseInsensitive
     }

@@ -28,6 +28,7 @@ TrackModel::TrackModel(const MediaFilePtr& file)
   if (file->mediaInfo)
   {
     m_normalized = normalizedString(file->mediaInfo->title);
+    m_position = ((file->mediaInfo->discNo & 0x7fff) << 16) | (file->mediaInfo->trackNo & 0xffff);
   }
 }
 
@@ -125,6 +126,8 @@ QVariant Tracks::data(const QModelIndex& index, int role) const
     return item->model.codec();
   case AlbumTrackNoRole:
     return item->model.albumTrackNo();
+  case AlbumDiscNoRole:
+    return item->model.albumDiscNo();
   case YearRole:
     return item->model.year();
   case DurationRole:
@@ -137,10 +140,12 @@ QVariant Tracks::data(const QModelIndex& index, int role) const
     return item->model.bitRate();
   case HasArtRole:
     return item->model.hasArt();
-  case NormalizedRole:
-    return item->model.normalized();
   case ArtRole:
     return item->model.art();
+  case NormalizedRole:
+    return item->model.normalized();
+  case PositionRole:
+    return item->model.position();
   default:
     return QVariant();
   }
@@ -177,14 +182,16 @@ QHash<int, QByteArray> Tracks::roleNames() const
   roles[FilePathRole] = "filePath";
   roles[CodecRole] = "codec";
   roles[AlbumTrackNoRole] = "albumTrackNo";
+  roles[AlbumDiscNoRole] = "albumDiscNo";
   roles[YearRole] = "year";
   roles[DurationRole] = "duration";
   roles[SampleRateRole] = "sampleRate";
   roles[ChannelsRole] = "channels";
   roles[BitRateRole] = "bitRate";
   roles[HasArtRole] = "hasArt";
-  roles[NormalizedRole] = "normalized";
   roles[ArtRole] = "art";
+  roles[NormalizedRole] = "normalized";
+  roles[PositionRole] = "position";
   return roles;
 }
 
@@ -209,14 +216,16 @@ QVariantMap Tracks::get(int row)
   model[roles[FilePathRole]] = item->model.filePath();
   model[roles[CodecRole]] = item->model.codec();
   model[roles[AlbumTrackNoRole]] = item->model.albumTrackNo();
+  model[roles[AlbumDiscNoRole]] = item->model.albumDiscNo();
   model[roles[YearRole]] = item->model.year();
   model[roles[DurationRole]] = item->model.duration();
   model[roles[SampleRateRole]] = item->model.sampleRate();
   model[roles[ChannelsRole]] = item->model.channels();
   model[roles[BitRateRole]] = item->model.bitRate();
   model[roles[HasArtRole]] = item->model.hasArt();
-  model[roles[NormalizedRole]] = item->model.normalized();
   model[roles[ArtRole]] = item->model.art();
+  model[roles[NormalizedRole]] = item->model.normalized();
+  model[roles[PositionRole]] = item->model.position();
   return model;
 }
 

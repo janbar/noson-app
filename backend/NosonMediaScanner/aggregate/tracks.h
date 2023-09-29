@@ -39,6 +39,7 @@ public:
   const QString& codec() { return m_file->mediaInfo->codec; }
   const QString& filePath() { return m_file->filePath; }
   int albumTrackNo() { return m_file->mediaInfo->trackNo; }
+  int albumDiscNo() { return m_file->mediaInfo->discNo; }
   int year() { return m_file->mediaInfo->year; }
   int duration() { return m_file->mediaInfo->duration; }
   int sampleRate() { return m_file->mediaInfo->sampleRate; }
@@ -46,6 +47,7 @@ public:
   int bitRate() { return m_file->mediaInfo->bitRate; }
   bool hasArt() { return m_file->mediaInfo->hasArt; }
   const QString& normalized() { return m_normalized; }
+  int position() { return m_position; }
   const QString& art() const { return m_art; }
   void setArt(const QString& art) { m_art = art; }
   QVariant payload() const;
@@ -53,6 +55,7 @@ private:
   QByteArray m_key;
   QString m_normalized;
   QString m_art;
+  int m_position;
 };
 
 class Tracks : public ListModel
@@ -83,6 +86,7 @@ public:
     CodecRole,
     FilePathRole,
     AlbumTrackNoRole,
+    AlbumDiscNoRole,
     YearRole,
     DurationRole,
     SampleRateRole,
@@ -91,6 +95,7 @@ public:
     HasArtRole,
     ArtRole,
     NormalizedRole,
+    PositionRole,
   };
 
   Tracks(QObject* parent = nullptr);
