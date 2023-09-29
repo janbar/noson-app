@@ -80,8 +80,8 @@ public:
 signals:
   void emptyStateChanged();
   void workingChanged();
-  void put(MediaFilePtr filePtr);
-  void remove(MediaFilePtr filePtr);
+  void put(mediascanner::MediaFilePtr filePtr);
+  void remove(mediascanner::MediaFilePtr filePtr);
 
 private:
   MediaScannerEngine * m_engine;
