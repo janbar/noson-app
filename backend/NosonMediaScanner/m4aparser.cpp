@@ -209,6 +209,12 @@ int M4AParser::parse_ilst(uint64_t * remaining, FILE * fp, MediaInfo * info)
       loadUtf8Value(&rest, fp, str);
       info->trackNo = str.toInt();
     }
+    else if (child == 0x6469736b) // disk
+    {
+      QString str;
+      loadUtf8Value(&rest, fp, str);
+      info->discNo = str.toInt();
+    }
     else if (child == 0x636f7672) // covr
       info->hasArt = (rest > M4A_HEADER_SIZE);
 

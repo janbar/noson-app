@@ -144,6 +144,8 @@ bool FLACParser::parse(MediaFile * file, MediaInfo * info, bool debug)
           info->trackNo = str.mid(12).toInt();
         else if (str.startsWith("DATE=", Qt::CaseInsensitive))
           info->year = str.mid(5,4).toInt(); // format should be 'yyyy-mm-dd'
+        else if (str.startsWith("DISCNUMBER=", Qt::CaseInsensitive))
+          info->discNo = str.mid(11).toInt();
         vp += len;
         --count;
         if (debug)

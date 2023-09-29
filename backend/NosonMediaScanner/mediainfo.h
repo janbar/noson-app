@@ -33,6 +33,7 @@ struct MediaInfo
   QString genre;
   QString composer;
   int trackNo;
+  int discNo;
   int year;
   bool hasArt;
   bool isDeleted;
@@ -44,7 +45,15 @@ struct MediaInfo
   int duration;
 
   MediaInfo()
-  : trackNo(0), year(0), hasArt(false), isDeleted(false), channels(0), sampleRate(0), bitRate(0), duration(0)
+  : trackNo(0)
+  , discNo(0)
+  , year(0)
+  , hasArt(false)
+  , isDeleted(false)
+  , channels(0)
+  , sampleRate(0)
+  , bitRate(0)
+  , duration(0)
   {}
 };
 

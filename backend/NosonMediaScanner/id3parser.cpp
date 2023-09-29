@@ -74,6 +74,7 @@ struct ID3Iinfo
   QByteArray artist;
   QByteArray composer;
   int artist_priority;
+  int disc_no;
   int track_no;
   bool has_art;
 };
@@ -110,7 +111,8 @@ static int _parse_mpeg_header(FILE * fp, off_t off, MediaInfo * audio_info, size
 bool ID3Parser::parse(MediaFile * file, MediaInfo * info, bool debug)
 {
   ID3Iinfo id3info;
-  id3info.track_no = -1;
+  id3info.disc_no = 0;
+  id3info.track_no = 0;
   id3info.artist_priority = 0;
   id3info.has_art = false;
 
@@ -132,10 +134,7 @@ bool ID3Parser::parse(MediaFile * file, MediaInfo * info, bool debug)
 
     if (_parse_id3v2(fp, id3v2_offset, &id3info, &id3v2_size) != 0 ||
             id3info.title.isEmpty() ||
-            id3info.artist.isEmpty() ||
-            id3info.album.isEmpty() ||
-            id3info.genre.isEmpty() ||
-            id3info.track_no == -1)
+            id3info.artist.isEmpty())
     {
       id3v2_offset = -1;
     }
@@ -177,6 +176,7 @@ bool ID3Parser::parse(MediaFile * file, MediaInfo * info, bool debug)
   info->albumArtist = id3info.albumArtist;
   info->genre = id3info.genre;
   info->artist = id3info.artist;
+  info->discNo = id3info.disc_no > 0 ? id3info.disc_no : 0;
   info->trackNo = id3info.track_no > 0 ? id3info.track_no : 0;
   info->hasArt = id3info.has_art;
 
@@ -532,6 +532,15 @@ static void _get_id3v2_trackno(const char * frame_data, unsigned int frame_size,
   info->track_no = atoi(buf.constData());
 }
 
+static void _get_id3v2_discno(const char * frame_data, unsigned int frame_size, ID3Iinfo * info, cs_conv_t csconv)
+{
+  QByteArray buf;
+  _get_id3v2_frame_info(frame_data, frame_size, &buf, csconv, 0);
+  if (buf.isEmpty())
+    return;
+  info->disc_no = atoi(buf.constData());
+}
+
 static void _parse_id3v2_frame(struct ID3v2FrameHeader * fh, const char * frame_data, ID3Iinfo * info)
 {
   cs_conv_t csconv;
@@ -573,6 +582,9 @@ static void _parse_id3v2_frame(struct ID3v2FrameHeader * fh, const char * frame_
     }
     else if (fid[2] >= '1' && fid[2] <= '4')
       _get_id3v2_artist(fid[2] - '1', frame_data, frame_size, info, csconv);
+    /* TPA, TPOS: Part number */
+    else if (fid[2] == 'A' || (fid[2] == 'O' && fid[3] == 'S'))
+      _get_id3v2_discno(frame_data, frame_size, info, csconv);
   }
     /* TALB, TAL */
   else if (fid[1] == 'A' && fid[2] == 'L')
@@ -662,7 +674,7 @@ static int _parse_id3v2(FILE * fp, long id3v2_offset, ID3Iinfo * info, off_t * p
         fseek(fp, 4, SEEK_CUR);
 
       frame_data = (char*) malloc(sizeof(char) * fh.frame_size);
-      if (fread(frame_data, 1, fh.frame_size, fp) != (int) fh.frame_size)
+      if (fread(frame_data, 1, fh.frame_size, fp) != fh.frame_size)
       {
         free(frame_data);
         return -1;
@@ -731,7 +743,7 @@ static int _parse_id3v1(FILE * fp, ID3Iinfo * info, cs_conv_t csconv)
     _id3v1_str_get(&info->album, tag.album, sizeof(tag.album), csconv);
   if (info->genre.isEmpty())
     _get_id3v1_genre(tag.genre, &info->genre);
-  if (info->track_no == -1 &&
+  if (info->track_no == 0 &&
           tag.comments[28] == '\0' && tag.comments[29] != '\0')
     info->track_no = (unsigned char) tag.comments[29];
 

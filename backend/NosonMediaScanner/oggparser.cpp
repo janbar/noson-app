@@ -281,6 +281,8 @@ bool OGGParser::parse_comment(packet_t * packet, MediaInfo *info, bool debug)
       info->trackNo = str.mid(12).toInt();
     else if (str.startsWith("DATE=", Qt::CaseInsensitive))
       info->year = str.mid(5,4).toInt(); // format should be 'yyyy-mm-dd'
+    else if (str.startsWith("DISCNUMBER=", Qt::CaseInsensitive))
+      info->discNo = str.mid(11).toInt();
     else if (str.startsWith("METADATA_BLOCK_PICTURE=", Qt::CaseInsensitive))
       info->hasArt = true;
     vp += len;
