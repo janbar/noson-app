@@ -115,6 +115,8 @@ private:
   QList<ItemPtr> m_items;
   QString m_artistFilter;
   QString m_composerFilter;
+
+  void checkAndAdd(const MediaFilePtr& file);
 };
 
 }

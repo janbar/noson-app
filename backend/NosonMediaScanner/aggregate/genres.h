@@ -93,6 +93,8 @@ protected:
 private:
   AggregateType m_data;
   QList<ItemPtr> m_items;
+
+  void checkAndAdd(const MediaFilePtr& file);
 };
 
 }

@@ -253,7 +253,7 @@ bool Tracks::load()
     m_data.clear();
     QList<MediaFilePtr> list = m_provider->allParsedFiles();
     for (const MediaFilePtr& file : list)
-      onFileAdded(file);
+      checkAndAdd(file);
 
     m_dataState = ListModel::Loaded;
     endResetModel();
@@ -263,21 +263,28 @@ bool Tracks::load()
   return true;
 }
 
+void Tracks::checkAndAdd(const MediaFilePtr& file)
+{
+    QByteArray key;
+    if (
+            (m_artistFilter.isEmpty() || m_artistFilter.compare(file->mediaInfo->artist, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
+            (m_albumFilter.isEmpty() || m_albumFilter.compare(file->mediaInfo->album, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
+            (m_albumArtistFilter.isEmpty() || m_albumArtistFilter.compare(file->mediaInfo->albumArtist, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
+            (m_genreFilter.isEmpty() || m_genreFilter.compare(file->mediaInfo->genre, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
+            (m_composerFilter.isEmpty() || m_composerFilter.compare(file->mediaInfo->composer, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
+            m_data.insertFile(file, &key))
+      addItem(m_data.find(key).value());
+}
+
 void Tracks::onFileAdded(const MediaFilePtr& file)
 {
-  QByteArray key;
-  if (
-          (m_artistFilter.isEmpty() || m_artistFilter.compare(file->mediaInfo->artist, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
-          (m_albumFilter.isEmpty() || m_albumFilter.compare(file->mediaInfo->album, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
-          (m_albumArtistFilter.isEmpty() || m_albumArtistFilter.compare(file->mediaInfo->albumArtist, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
-          (m_genreFilter.isEmpty() || m_genreFilter.compare(file->mediaInfo->genre, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
-          (m_composerFilter.isEmpty() || m_composerFilter.compare(file->mediaInfo->composer, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
-          m_data.insertFile(file, &key))
-    addItem(m_data.find(key).value());
+  LockGuard<QRecursiveMutex> lock(m_lock);
+  checkAndAdd(file);
 }
 
 void Tracks::onFileRemoved(const MediaFilePtr& file)
 {
+  LockGuard<QRecursiveMutex> lock(m_lock);
   QByteArray key;
   if (m_data.removeFile(file, &key))
     removeItem(key);

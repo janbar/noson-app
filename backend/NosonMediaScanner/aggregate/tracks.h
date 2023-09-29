@@ -156,6 +156,8 @@ private:
   QString m_albumArtistFilter;
   QString m_genreFilter;
   QString m_composerFilter;
+
+  void checkAndAdd(const MediaFilePtr& file);
 };
 
 }

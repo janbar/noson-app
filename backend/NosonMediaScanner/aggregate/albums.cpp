@@ -195,7 +195,7 @@ bool Albums::load()
     m_data.clear();
     QList<MediaFilePtr> list = m_provider->allParsedFiles();
     for (const MediaFilePtr& file : list)
-      onFileAdded(file);
+      checkAndAdd(file);
 
     m_dataState = ListModel::Loaded;
     endResetModel();
@@ -205,7 +205,7 @@ bool Albums::load()
   return true;
 }
 
-void Albums::onFileAdded(const MediaFilePtr& file)
+void Albums::checkAndAdd(const MediaFilePtr& file)
 {
   QByteArray key;
   if (
@@ -215,8 +215,15 @@ void Albums::onFileAdded(const MediaFilePtr& file)
     addItem(m_data.find(key).value());
 }
 
+void Albums::onFileAdded(const MediaFilePtr& file)
+{
+  LockGuard<QRecursiveMutex> lock(m_lock);
+  checkAndAdd(file);
+}
+
 void Albums::onFileRemoved(const MediaFilePtr& file)
 {
+  LockGuard<QRecursiveMutex> lock(m_lock);
   QByteArray key;
   if (m_data.removeFile(file, &key))
     removeItem(key);

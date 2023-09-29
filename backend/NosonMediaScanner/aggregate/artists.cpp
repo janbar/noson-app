@@ -175,7 +175,7 @@ bool Artists::load()
     m_data.clear();
     QList<MediaFilePtr> list = m_provider->allParsedFiles();
     for (const MediaFilePtr& file : list)
-      onFileAdded(file);
+      checkAndAdd(file);
 
     m_dataState = ListModel::Loaded;
     endResetModel();
@@ -185,15 +185,22 @@ bool Artists::load()
   return true;
 }
 
-void Artists::onFileAdded(const MediaFilePtr& file)
+void Artists::checkAndAdd(const MediaFilePtr& file)
 {
   QByteArray key;
   if (m_data.insertFile(file, &key))
     addItem(m_data.find(key).value());
 }
 
+void Artists::onFileAdded(const MediaFilePtr& file)
+{
+  LockGuard<QRecursiveMutex> lock(m_lock);
+  checkAndAdd(file);
+}
+
 void Artists::onFileRemoved(const MediaFilePtr& file)
 {
+  LockGuard<QRecursiveMutex> lock(m_lock);
   QByteArray key;
   if (m_data.removeFile(file, &key))
     removeItem(key);
