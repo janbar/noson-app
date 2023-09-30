@@ -59,10 +59,6 @@ public:
   Artists(QObject* parent = nullptr);
   virtual ~Artists() override;
 
-  void addItem(ItemPtr& item);
-
-  void removeItem(const QByteArray& key);
-
   int rowCount(const QModelIndex& parent = QModelIndex()) const override;
 
   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
@@ -94,7 +90,10 @@ private:
   AggregateType m_data;
   QList<ItemPtr> m_items;
 
+  // unlocked
   void checkAndAdd(const MediaFilePtr& file);
+  void addItem(ItemPtr& item);
+  void removeItem(const QByteArray& key);
 };
 
 }

@@ -49,37 +49,6 @@ Albums::~Albums()
   clear();
 }
 
-void Albums::addItem(ItemPtr& item)
-{
-  {
-    LockGuard<QRecursiveMutex> lock(m_lock);
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    m_items << item;
-    endInsertRows();
-  }
-  emit countChanged();
-}
-
-void Albums::removeItem(const QByteArray& id)
-{
-  {
-    LockGuard<QRecursiveMutex> lock(m_lock);
-    int row = 0;
-    for (const ItemPtr& item : m_items)
-    {
-      if (item->model.key() == id)
-      {
-        beginRemoveRows(QModelIndex(), row, row);
-        m_items.removeOne(item);
-        endRemoveRows();
-        break;
-      }
-      ++row;
-    }
-  }
-  emit countChanged();
-}
-
 int Albums::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
@@ -205,16 +174,6 @@ bool Albums::load()
   return true;
 }
 
-void Albums::checkAndAdd(const MediaFilePtr& file)
-{
-  QByteArray key;
-  if (
-          (m_artistFilter.isEmpty() || m_artistFilter.compare(file->mediaInfo->artist, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
-          (m_composerFilter.isEmpty() || m_composerFilter.compare(file->mediaInfo->composer, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
-          m_data.insertFile(file, &key))
-    addItem(m_data.find(key).value());
-}
-
 void Albums::onFileAdded(const MediaFilePtr& file)
 {
   LockGuard<QRecursiveMutex> lock(m_lock);
@@ -227,4 +186,39 @@ void Albums::onFileRemoved(const MediaFilePtr& file)
   QByteArray key;
   if (m_data.removeFile(file, &key))
     removeItem(key);
+}
+
+void Albums::checkAndAdd(const MediaFilePtr& file)
+{
+  QByteArray key;
+  if (
+          (m_artistFilter.isEmpty() || m_artistFilter.compare(file->mediaInfo->artist, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
+          (m_composerFilter.isEmpty() || m_composerFilter.compare(file->mediaInfo->composer, Qt::CaseSensitivity::CaseInsensitive) == 0) &&
+          m_data.insertFile(file, &key))
+    addItem(m_data.find(key).value());
+}
+
+void Albums::addItem(ItemPtr& item)
+{
+  beginInsertRows(QModelIndex(), rowCount(), rowCount());
+  m_items << item;
+  endInsertRows();
+  emit countChanged();
+}
+
+void Albums::removeItem(const QByteArray& id)
+{
+  int row = 0;
+  for (const ItemPtr& item : m_items)
+  {
+    if (item->model.key() == id)
+    {
+      beginRemoveRows(QModelIndex(), row, row);
+      m_items.removeOne(item);
+      endRemoveRows();
+      break;
+    }
+    ++row;
+  }
+  emit countChanged();
 }

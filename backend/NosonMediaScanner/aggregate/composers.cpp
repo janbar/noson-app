@@ -46,37 +46,6 @@ Composers::~Composers()
   clear();
 }
 
-void Composers::addItem(ItemPtr& item)
-{
-  {
-    LockGuard<QRecursiveMutex> lock(m_lock);
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    m_items << item;
-    endInsertRows();
-  }
-  emit countChanged();
-}
-
-void Composers::removeItem(const QByteArray& id)
-{
-  {
-    LockGuard<QRecursiveMutex> lock(m_lock);
-    int row = 0;
-    for (const ItemPtr& item : m_items)
-    {
-      if (item->model.key() == id)
-      {
-        beginRemoveRows(QModelIndex(), row, row);
-        m_items.removeOne(item);
-        endRemoveRows();
-        break;
-      }
-      ++row;
-    }
-  }
-  emit countChanged();
-}
-
 int Composers::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
@@ -185,13 +154,6 @@ bool Composers::load()
   return true;
 }
 
-void Composers::checkAndAdd(const MediaFilePtr& file)
-{
-  QByteArray key;
-  if (m_data.insertFile(file, &key))
-    addItem(m_data.find(key).value());
-}
-
 void Composers::onFileAdded(const MediaFilePtr& file)
 {
   LockGuard<QRecursiveMutex> lock(m_lock);
@@ -204,4 +166,36 @@ void Composers::onFileRemoved(const MediaFilePtr& file)
   QByteArray key;
   if (m_data.removeFile(file, &key))
     removeItem(key);
+}
+
+void Composers::checkAndAdd(const MediaFilePtr& file)
+{
+  QByteArray key;
+  if (m_data.insertFile(file, &key))
+    addItem(m_data.find(key).value());
+}
+
+void Composers::addItem(ItemPtr& item)
+{
+  beginInsertRows(QModelIndex(), rowCount(), rowCount());
+  m_items << item;
+  endInsertRows();
+  emit countChanged();
+}
+
+void Composers::removeItem(const QByteArray& id)
+{
+  int row = 0;
+  for (const ItemPtr& item : m_items)
+  {
+    if (item->model.key() == id)
+    {
+      beginRemoveRows(QModelIndex(), row, row);
+      m_items.removeOne(item);
+      endRemoveRows();
+      break;
+    }
+    ++row;
+  }
+  emit countChanged();
 }

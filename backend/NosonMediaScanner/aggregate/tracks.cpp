@@ -53,37 +53,6 @@ Tracks::~Tracks()
   clear();
 }
 
-void Tracks::addItem(ItemPtr& item)
-{
-  {
-    LockGuard<QRecursiveMutex> lock(m_lock);
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    m_items << item;
-    endInsertRows();
-  }
-  emit countChanged();
-}
-
-void Tracks::removeItem(const QByteArray& id)
-{
-  {
-    LockGuard<QRecursiveMutex> lock(m_lock);
-    int row = 0;
-    for (const ItemPtr& item : m_items)
-    {
-      if (item->model.key() == id)
-      {
-        beginRemoveRows(QModelIndex(), row, row);
-        m_items.removeOne(item);
-        endRemoveRows();
-        break;
-      }
-      ++row;
-    }
-  }
-  emit countChanged();
-}
-
 int Tracks::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
@@ -263,6 +232,20 @@ bool Tracks::load()
   return true;
 }
 
+void Tracks::onFileAdded(const MediaFilePtr& file)
+{
+  LockGuard<QRecursiveMutex> lock(m_lock);
+  checkAndAdd(file);
+}
+
+void Tracks::onFileRemoved(const MediaFilePtr& file)
+{
+  LockGuard<QRecursiveMutex> lock(m_lock);
+  QByteArray key;
+  if (m_data.removeFile(file, &key))
+    removeItem(key);
+}
+
 void Tracks::checkAndAdd(const MediaFilePtr& file)
 {
     QByteArray key;
@@ -276,16 +259,27 @@ void Tracks::checkAndAdd(const MediaFilePtr& file)
       addItem(m_data.find(key).value());
 }
 
-void Tracks::onFileAdded(const MediaFilePtr& file)
+void Tracks::addItem(ItemPtr& item)
 {
-  LockGuard<QRecursiveMutex> lock(m_lock);
-  checkAndAdd(file);
+  beginInsertRows(QModelIndex(), rowCount(), rowCount());
+  m_items << item;
+  endInsertRows();
+  emit countChanged();
 }
 
-void Tracks::onFileRemoved(const MediaFilePtr& file)
+void Tracks::removeItem(const QByteArray& id)
 {
-  LockGuard<QRecursiveMutex> lock(m_lock);
-  QByteArray key;
-  if (m_data.removeFile(file, &key))
-    removeItem(key);
+  int row = 0;
+  for (const ItemPtr& item : m_items)
+  {
+    if (item->model.key() == id)
+    {
+      beginRemoveRows(QModelIndex(), row, row);
+      m_items.removeOne(item);
+      endRemoveRows();
+      break;
+    }
+    ++row;
+  }
+  emit countChanged();
 }

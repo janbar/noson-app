@@ -76,10 +76,6 @@ public:
   const QString& composerFilter() { return m_composerFilter; }
   void setComposerFilter(const QString& filter) { m_composerFilter = filter; emit composerChanged(); }
 
-  void addItem(ItemPtr& item);
-
-  void removeItem(const QByteArray& key);
-
   int rowCount(const QModelIndex& parent = QModelIndex()) const override;
 
   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
@@ -116,7 +112,10 @@ private:
   QString m_artistFilter;
   QString m_composerFilter;
 
+  // unlocked
   void checkAndAdd(const MediaFilePtr& file);
+  void addItem(ItemPtr& item);
+  void removeItem(const QByteArray& key);
 };
 
 }
