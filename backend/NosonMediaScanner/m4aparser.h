@@ -34,6 +34,7 @@ private:
   static int nextChild(unsigned char * buf, uint64_t * remaining, FILE * fp, unsigned * child, uint64_t * childSize);
   static int loadDataValue(uint64_t * remaining, FILE * fp, char ** alloc, unsigned * allocSize);
   static int loadUtf8Value(uint64_t * remaining, FILE * fp, QString& str);
+  static int loadU32Value(uint64_t * remaining, FILE * fp, unsigned* u32);
   static int parse_ilst(uint64_t * remaining, FILE * fp, MediaInfo * info);
   static int parse_meta(uint64_t * remaining, FILE * fp, MediaInfo * info);
   static int parse_udta(uint64_t * remaining, FILE * fp, MediaInfo * info);

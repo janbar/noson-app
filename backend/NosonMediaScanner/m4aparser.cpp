@@ -175,6 +175,26 @@ int M4AParser::loadUtf8Value(uint64_t * remaining, FILE * fp, QString& str)
   return r;
 }
 
+int M4AParser::loadU32Value(uint64_t * remaining, FILE * fp, unsigned * u32)
+{
+  char * alloc = nullptr;
+  unsigned allocSize = 0;
+  int r = loadDataValue(remaining, fp, &alloc, &allocSize);
+  if (r == 0 && allocSize >= 12) // 0 = datatype implicit
+  {
+    *u32 = read32be(alloc + 8) & 0xffffffff;
+    //qDebug("%s: %u", __FUNCTION__, *u32);
+  }
+  else if (r == 2 && allocSize >= 10) // 2 = datatype u16
+  {
+    *u32 = read16be(alloc + 8) & 0xffff;
+    //qDebug("%s: %u", __FUNCTION__, *u32);
+  }
+  if (alloc)
+    delete [] alloc;
+  return r;
+}
+
 int M4AParser::parse_ilst(uint64_t * remaining, FILE * fp, MediaInfo * info)
 {
   unsigned char buf[M4A_HEADER_SIZE];
@@ -205,15 +225,15 @@ int M4AParser::parse_ilst(uint64_t * remaining, FILE * fp, MediaInfo * info)
     }
     else if (child == 0x74726b6e) // trkn
     {
-      QString str;
-      loadUtf8Value(&rest, fp, str);
-      info->trackNo = str.toInt();
+      unsigned u32;
+      loadU32Value(&rest, fp, &u32);
+      info->trackNo = (int)u32;
     }
     else if (child == 0x6469736b) // disk
     {
-      QString str;
-      loadUtf8Value(&rest, fp, str);
-      info->discNo = str.toInt();
+      unsigned u32;
+      loadU32Value(&rest, fp, &u32);
+      info->discNo = (int)u32;
     }
     else if (child == 0x636f7672) // covr
       info->hasArt = (rest > M4A_HEADER_SIZE);
