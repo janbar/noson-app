@@ -49,8 +49,6 @@ Depends: qml-module-qt-labs-settings,
          zlib1g,
          openssl,
          libpulse0,
-         libflac++6v5,
-         libflac8,
          libdbus-1-3,
          ${shlibs:Depends}, ${misc:Depends}
 Description: SONOS controller for Linux
