@@ -69,7 +69,7 @@ MusicPage {
     SortFilterModel {
         id: songsModel
         model: tracks
-        sort.property: isAlbum ? "albumTrackNo" : "normalized"
+        sort.property: isAlbum ? "position" : "normalized"
         sort.order: Qt.AscendingOrder
         sortCaseSensitivity: Qt.CaseInsensitive
     }
@@ -252,7 +252,8 @@ MusicPage {
 
             onClick: {
                 var item = {
-                    id: model.id, title: model.title, album: model.album, author: model.author, albumTrackNo: model.albumTrackNo,
+                    id: model.id, title: model.title, album: model.album, author: model.author,
+                    albumDiscNo: model.albumDiscNo, albumTrackNo: model.albumTrackNo,
                     payload: makeItemPayload(model)
                 };
                 var arts = [];

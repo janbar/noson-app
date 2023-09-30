@@ -252,7 +252,8 @@ MusicPage {
 
             onClick: {
                 var item = {
-                    id: model.id, title: model.title, album: model.album, author: model.author, albumTrackNo: model.albumTrackNo,
+                    id: model.id, title: model.title, album: model.album, author: model.author,
+                    albumDiscNo: model.albumDiscNo, albumTrackNo: model.albumTrackNo,
                     payload: makeItemPayload(model)
                 };
                 var arts = [];

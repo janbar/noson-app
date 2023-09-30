@@ -77,7 +77,10 @@ Item {
                 card.secondaryText = songInfo.model.author !== "" ? songInfo.model.author : qsTr("Unknown Artist");
                 card.tertiaryLabelVisible = (songInfo.model.album.length > 0);
                 if (songInfo.model.albumTrackNo && songInfo.model.albumTrackNo > 0) {
-                    card.tertiaryText = qsTr("%1 - track #%2").arg(songInfo.model.album).arg(songInfo.model.albumTrackNo);
+                    if (songInfo.model.albumDiscNo && songInfo.model.albumDiscNo > 0)
+                        card.tertiaryText = qsTr("%1 - track #%2.%3").arg(songInfo.model.album).arg(songInfo.model.albumDiscNo).arg(songInfo.model.albumTrackNo);
+                    else
+                        card.tertiaryText = qsTr("%1 - track #%2").arg(songInfo.model.album).arg(songInfo.model.albumTrackNo);
                 } else if (songInfo.model.description) {
                     card.tertiaryText = songInfo.model.description;
                 } else {
