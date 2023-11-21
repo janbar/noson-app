@@ -16,8 +16,8 @@ if(IOS OR ANDROID)
   set(QT_STATICPLUGIN ON CACHE BOOL "Build static plugins" FORCE)
 endif()
 
-set(APP_VERSION       "5.6.0")
-set(APP_VERSION_CODE  103)
+set(APP_VERSION       "5.6.1")
+set(APP_VERSION_CODE  104)
 set(APP_ID            "io.github.janbar.noson")
 set(APP_NAME          "noson")
 
@@ -163,7 +163,7 @@ if(QT_STATICPLUGIN)
 else()
   add_custom_target(
     "run"
-    QML2_IMPORT_PATH=${PLUGINS_BINARY_DIR} ${CMAKE_BINARY_DIR}/gui/noson-gui
+    QML2_IMPORT_PATH=${PLUGINS_BINARY_DIR} ${CMAKE_BINARY_DIR}/gui/noson-gui --debug
     DEPENDS noson-gui
             NosonApp NosonApp-qmldir
             NosonThumbnailer NosonThumbnailer-qmldir
