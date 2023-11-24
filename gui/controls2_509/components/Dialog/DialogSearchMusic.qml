@@ -64,25 +64,28 @@ DialogBase {
             if (list.length) {
                 for (var i = 0; i < list.length; ++i) {
                     var id = list[i];
-                    var tr;
-                    if (id === "artists")
-                        tr = qsTr("Artists");
-                    else if (id === "albums")
-                        tr = qsTr("Albums");
-                    else if (id === "tracks")
-                        tr = qsTr("Tracks");
-                    else if (id === "playlists")
-                        tr = qsTr("Playlists");
-                    else if (id === "stations")
-                        tr = qsTr("Radios");
-                    else if (id === "podcasts")
-                        tr = qsTr("Podcasts");
-                    else if (id === "genres")
-                        tr = qsTr("Genres");
-                    else if (id === "composers")
-                        tr = qsTr("Composers")
+                    var tt = id.split("::", 2);
+                    var tr = "";
+                    if (tt.length > 1)
+                        tr = tt[1] + " / ";
+                    if (tt[0] === "artists")
+                        tr += qsTr("Artists");
+                    else if (tt[0] === "albums")
+                        tr += qsTr("Albums");
+                    else if (tt[0] === "tracks")
+                        tr += qsTr("Tracks");
+                    else if (tt[0] === "playlists")
+                        tr += qsTr("Playlists");
+                    else if (tt[0] === "stations")
+                        tr += qsTr("Radios");
+                    else if (tt[0] === "podcasts")
+                        tr += qsTr("Podcasts");
+                    else if (tt[0] === "genres")
+                        tr += qsTr("Genres");
+                    else if (tt[0] === "composers")
+                        tr += qsTr("Composers")
                     else
-                        tr = id;
+                        tr += tt[0];
                     selectorModel.insert(i, {'id': id, 'text': tr});
                     if (searchType && id === searchType)
                         selector.currentIndex = i;
