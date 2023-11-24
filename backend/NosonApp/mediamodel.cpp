@@ -235,10 +235,12 @@ bool MediaModel::init(Sonos* provider, const QVariant& service, bool fill)
 {
   if (!provider)
     return false;
+  SONOS::SMServicePtr msvc = service.value<SONOS::SMServicePtr>();
+  if (!msvc)
+    return false;
   SAFE_DELETE(m_smapi)
   m_smapi = new SONOS::SMAPI(provider->getSystem());
-  SONOS::SMServicePtr msvc = service.value<SONOS::SMServicePtr>();
-  if (!m_smapi || !m_smapi->Init(msvc, provider->getLocale().toUtf8().constData()))
+  if (!m_smapi->Init(msvc, provider->getLocale().toUtf8().constData()))
     return false;
   // initialize auth for the service account
   SONOS::SMAccount::Credentials oa = msvc->GetAccount()->GetCredentials();
