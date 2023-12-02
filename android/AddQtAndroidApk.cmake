@@ -1,5 +1,24 @@
 cmake_minimum_required(VERSION 3.0)
 
+# Provides:
+#  macro add_qt_android_apk
+#
+# Requires:
+#  env ANDROID_SDK                The SDK root path
+#  env ANDROID_NDK                The NDK root path
+#  env JAVA_HOME                  Path Java JRE supported by SDK
+#  ANDROID_ABI                    "arm64-v8a"
+#  ANDROID_NATIVE_API_LEVEL       SDK API (i.e 24)
+#  ANDROID_STL_PREFIX             "llvm-libc++"
+#  QT_ANDROID_QT_ROOT             The Qt root path
+#  QT_ANDROID_PLATFORM_LEVEL      SDK platform (i.e 29)
+#  QT_ANDROID_TOOL_PREFIX         Build tools prefix ("aarch64-linux-android")
+#  [ANDROID_SDK_MINVER]           = ANDROID_NATIVE_API_LEVEL
+#  [ANDROID_SDK_TARGET]           = ANDROID_SDK_MINVER
+#  [ANDROID_STL_SHARED_LIBRARIES] = "c++_shared" (option for NDK <= r18)
+#  [QT_ANDROID_SDK_ROOT]          = env ANDROID_SDK
+#  [QT_ANDROID_NDK_ROOT]          = env ANDROID_NDK
+
 # store the current source directory for future use
 set(QT_ANDROID_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR})
 
@@ -62,6 +81,28 @@ include(CMakeParseArguments)
 #     PLUGINS "path/to/plugin" ...
 #     INSTALL
 #)
+#
+# list of bind variables for target qtdeploy.json
+#  QT_ANDROID_SDK_BUILDTOOLS_REVISION
+#  QT_ANDROID_SUPPORT_MULTI_ABI
+#  QT_ANDROID_ARCHITECTURES
+#  QT_ANDROID_APPLICATION_BINARY
+#  QT_ANDROID_MANIFEST_TEMPLATE
+#  QT_ANDROID_STL_PATH
+#  QT_ANDROID_USE_LLVM
+#  QT_ANDROID_TOOLCHAIN_PREFIX
+#  QT_ANDROID_TOOLCHAIN_VERSION
+#  QT_ANDROID_PRE_COMMANDS
+#  ANDROID_USE_LLVM
+#  QT_ANDROID_APP_PATH
+#  QT_ANDROID_APP_NAME
+#  QT_ANDROID_APP_PACKAGE_NAME
+#  QT_ANDROID_APP_VERSION_CODE
+#  QT_ANDROID_APP_VERSION
+#  QT_ANDROID_APP_PACKAGE_SOURCE_ROOT
+#  QT_ANDROID_APP_EXTRA_LIBS
+#  QT_ANDROID_APP_EXTRA_PLUGINS
+#  QT_ANDROID_APP_BINARY_DIR
 # 
 macro(add_qt_android_apk TARGET SOURCE_TARGET)
 
@@ -226,21 +267,13 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     endif()
     set(QT_ANDROID_APP_EXTRA_PLUGINS "\"android-extra-plugins\": \"${EXTRA_PLUGINS}\",")
 
-    # determine whether to use the gcc- or llvm/clang- toolchain;
-    # if ANDROID_USE_LLVM was explicitly set, use its value directly,
-    # otherwise ANDROID_TOOLCHAIN value (set by the NDK's toolchain file)
-    # says whether llvm/clang or gcc is used
-    if(DEFINED ANDROID_USE_LLVM)
-        string(TOLOWER "${ANDROID_USE_LLVM}" QT_ANDROID_USE_LLVM)
-    elseif(ANDROID_TOOLCHAIN STREQUAL clang)
-        set(QT_ANDROID_USE_LLVM "true")
-    else()
-        set(QT_ANDROID_USE_LLVM "false")
-    endif()
-
     # set some toolchain variables used by androiddeployqt;
-    # unfortunately, Qt tries to build paths from these variables although these full paths
-    # are already available in the toochain file, so we have to parse them
+    # unfortunately, Qt tries to build paths from these variables although
+    # these full paths are already available in the toochain file, so we have
+    # to parse them.
+    # also determine whether to use the gcc- or llvm/clang- toolchain;
+    # note that ANDROID_TOOLCHAIN value (set by the NDK's toolchain file) says
+    # whether llvm/clang or gcc is used, but this will not be used.
     string(REGEX MATCH "${ANDROID_NDK}/toolchains/llvm/prebuilt/.*" ANDROID_USE_LLVM_PARSED ${ANDROID_TOOLCHAIN_ROOT})
     if(ANDROID_USE_LLVM_PARSED)
         set(QT_ANDROID_USE_LLVM "true")
@@ -260,9 +293,6 @@ macro(add_qt_android_apk TARGET SOURCE_TARGET)
     # make sure that the output directory for the Android package exists
     set(QT_ANDROID_APP_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/${SOURCE_TARGET}-${ANDROID_ABI})
     file(MAKE_DIRECTORY ${QT_ANDROID_APP_BINARY_DIR}/libs/${ANDROID_ABI})
-
-    # create the configuration file that will feed androiddeployqt
-    configure_file(${QT_ANDROID_SOURCE_DIR}/qtdeploy.json.in ${CMAKE_CURRENT_BINARY_DIR}/qtdeploy.json @ONLY)
 
     # create the configuration file that will feed androiddeployqt
     # 1. replace placeholder variables at generation time
