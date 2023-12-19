@@ -41,7 +41,7 @@ inline void __tokenize(const std::string& str, const char *delimiters, std::vect
     while (trimnull && str.find_first_of(delimiters, pb) == pb);
   }
 
-  if (!trimnull || pa < (str.size() - 1))
+  if (!trimnull || pa < str.size())
     tokens.push_back(str.substr(pa));
 }
 
