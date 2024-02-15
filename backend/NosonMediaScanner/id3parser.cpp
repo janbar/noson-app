@@ -1070,9 +1070,9 @@ static int _parse_vbr_headers(FILE * fp, off_t mpeg_offset, struct mpeg_header *
     flags = buf[7];
 
     if (flags & 1)
-      nframes = read32be(&buf[8]);
+      nframes = read_b32be(&buf[8]);
     if (flags & 2)
-      size = read32be(&buf[8 + !!(flags & 1) * 4]);
+      size = read_b32be(&buf[8 + !!(flags & 1) * 4]);
 
     goto proceed;
   }
@@ -1082,11 +1082,11 @@ static int _parse_vbr_headers(FILE * fp, off_t mpeg_offset, struct mpeg_header *
   fseek(fp, mpeg_offset + 36, SEEK_SET);
   if (fread(buf, 1, sizeof(buf), fp) != sizeof(buf))
     return -1;
-
-  if (memcmp(buf, "VBRI", 4) == 0 && read16be(buf) == 1)
+  
+  if (memcmp(buf, "VBRI", 4) == 0 && read_b16be(buf) == 1)
   {
-    size = read32be(&buf[10]);
-    nframes = read32be(&buf[14]);
+    size = read_b32be(&buf[10]);
+    nframes = read_b32be(&buf[14]);
 
     goto proceed;
   }

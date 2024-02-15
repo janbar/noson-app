@@ -68,7 +68,7 @@ bool FLACParser::parse(MediaFile * file, MediaInfo * info, bool debug)
     isLast = ((*buf & 0x80) != 0);
     unsigned block = *buf & 0x7f;
     // get the current block size
-    unsigned offset = (read32be(buf) & 0xffffff);
+    unsigned offset = (read_b32be(buf) & 0xffffff);
     if (debug)
       qDebug("%s: on block type %02x size %u", __FUNCTION__, block, offset);
 
@@ -85,11 +85,11 @@ bool FLACParser::parse(MediaFile * file, MediaInfo * info, bool debug)
       if (fread(buf, 1, FLAC_BLOCK_SIZE, fp) != FLAC_BLOCK_SIZE)
         break;
       offset -= FLAC_BLOCK_SIZE;
-      unsigned stream = read32be(buf + 10) >> 4;
+      unsigned stream = read_b32be(buf + 10) >> 4;
       unsigned sampleRate = (stream & 0xffffff00) >> 8;
       unsigned channels = ((stream & 0xe0) >> 5) + 1;
       unsigned bitsPerSample = (stream & 0x1f) + 1;
-      uint64_t samples = ((uint64_t)(buf[13] & 0x0f) << 32) + (uint32_t)read32be(buf + 14);
+      uint64_t samples = ((uint64_t)(buf[13] & 0x0f) << 32) + (uint32_t)read_b32be(buf + 14);
       if (debug)
         qDebug("%s: sr:%u ch:%u bps:%u", __FUNCTION__, sampleRate, channels, bitsPerSample);
       if (sampleRate == 0)
@@ -118,12 +118,12 @@ bool FLACParser::parse(MediaFile * file, MediaInfo * info, bool debug)
       offset = 0;
 
       unsigned char * vp = vorbis;
-      vp += read32le(vp) + 4; // pass vendor string
-      unsigned count = read32le(vp); // comment list length;
+      vp += read_b32le(vp) + 4; // pass vendor string
+      unsigned count = read_b32le(vp); // comment list length;
       vp += 4;
       while (count > 0)
       {
-        unsigned len = read32le(vp);
+        unsigned len = read_b32le(vp);
         vp += 4;
         if ((vp + len) > ve)
           break; // buffer overflow

@@ -69,12 +69,12 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
       return false;
     }
     //char stream_structure_version = read8(buf + 4);
-    unsigned char header_type_flag = (unsigned char)read8(buf + 5);
-    uint64_t granule_position = ((uint64_t)read32le(buf + 6)) + ((uint64_t)read32le(buf + 10) << 32);
+    unsigned char header_type_flag = (unsigned char)read_b8(buf + 5);
+    uint64_t granule_position = ((uint64_t)read_b32le(buf + 6)) + ((uint64_t)read_b32le(buf + 10) << 32);
     //uint32_t bitstream_serial _number = read32le(buf + 14);
     //uint32_t page_sequence_number = (uint32_t)read32le(buf + 18);
     //uint32_t CRC_checksum = read32le(buf + 22);
-    unsigned char number_page_segments = (unsigned char)read8(buf + 26);
+    unsigned char number_page_segments = (unsigned char)read_b8(buf + 26);
 
     uint32_t segment_table = 0;
     if (fread(lacing, 1, number_page_segments, fp) != number_page_segments)
@@ -85,7 +85,7 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
     }
 
     for (int i = 0; i < number_page_segments; ++i)
-      segment_table += (unsigned char)read8(lacing + i);
+      segment_table += (unsigned char)read_b8(lacing + i);
 
     // bit 0x04: this is the last page of a logical bitstream (eos)
     if ((header_type_flag & 0x04) == 0x04)
@@ -147,7 +147,7 @@ bool OGGParser::parse(MediaFile * file, MediaInfo * info, bool debug)
     }
 
     // check for vorbis header
-    unsigned char block = (unsigned char)read8(packet.data);
+    unsigned char block = (unsigned char)read_b8(packet.data);
     if ((block & 0x01) == 0x01 && packet.datalen > 7 &&
         memcmp(packet.data + 1, "vorbis", 6) == 0)
     {
@@ -232,10 +232,10 @@ bool OGGParser::fill_packet(packet_t * packet, uint32_t len, FILE * fp)
 bool OGGParser::parse_identification(packet_t * packet, MediaInfo *info, bool debug)
 {
   unsigned char * vorbis = packet->data;
-  int channels = read8(vorbis + 11);
-  int sampleRate = read32le(vorbis + 12);
-  int bitRateMaximum = read32le(vorbis + 16);
-  int bitRateNominal = read32le(vorbis + 20);
+  int channels = read_b8(vorbis + 11);
+  int sampleRate = read_b32le(vorbis + 12);
+  int bitRateMaximum = read_b32le(vorbis + 16);
+  int bitRateNominal = read_b32le(vorbis + 20);
   //int bitRateMinimum = read32le(vorbis + 24);
   if (sampleRate == 0)
     return false; // invalid sample rate
@@ -255,12 +255,12 @@ bool OGGParser::parse_comment(packet_t * packet, MediaInfo *info, bool debug)
 {
   unsigned char * ve = packet->data + packet->datalen;
   unsigned char * vp = packet->data + 7; // pass magic string
-  vp += read32le(vp) + 4; // pass vendor string
-  int count = read32le(vp); // comment list length;
+  vp += read_b32le(vp) + 4; // pass vendor string
+  int count = read_b32le(vp); // comment list length;
   vp += 4;
   while (count > 0)
   {
-    int len = read32le(vp);
+    int len = read_b32le(vp);
     vp += 4;
     if ((vp + len) > ve)
       break; // buffer overflow

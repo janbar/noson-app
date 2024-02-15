@@ -115,15 +115,15 @@ int M4AParser::nextChild(unsigned char * buf, uint64_t * remaining, FILE * fp, u
   if (fread(buf, 1, M4A_HEADER_SIZE, fp) == M4A_HEADER_SIZE)
   {
     *remaining -= M4A_HEADER_SIZE;
-    *child = (unsigned)read32be(buf + 4);
-    *childSize = (uint32_t)read32be(buf);
+    *child = (unsigned)read_b32be(buf + 4);
+    *childSize = (uint32_t)read_b32be(buf);
     if (*childSize == 1)
     {
       // size of 1 means the real size follows the header in next 8 bytes (64bits)
       if (*remaining < 8 || fread(buf, 1, 8, fp) != 8)
         return -1; // error
       *remaining -= 8;
-      *childSize = (((uint64_t)read32be(buf) << 32) | (uint32_t)read32be(buf + 4)) - M4A_HEADER_SIZE - 8;
+      *childSize = (((uint64_t)read_b32be(buf) << 32) | (uint32_t)read_b32be(buf + 4)) - M4A_HEADER_SIZE - 8;
     }
     else
     {
@@ -155,7 +155,7 @@ int M4AParser::loadDataValue(uint64_t * remaining, FILE * fp, char ** alloc, uns
     *remaining -= size;
     *allocSize = size;
     *alloc = _alloc;
-    return (read32be(_alloc) & 0x00ffffff); // return datatype
+    return (read_b32be(_alloc) & 0x00ffffff); // return datatype
   }
   return r;
 }
@@ -182,12 +182,12 @@ int M4AParser::loadU32Value(uint64_t * remaining, FILE * fp, unsigned * u32)
   int r = loadDataValue(remaining, fp, &alloc, &allocSize);
   if (r == 0 && allocSize >= 12) // 0 = datatype implicit
   {
-    *u32 = read32be(alloc + 8) & 0xffffffff;
+    *u32 = read_b32be(alloc + 8) & 0xffffffff;
     //qDebug("%s: %u", __FUNCTION__, *u32);
   }
   else if (r == 2 && allocSize >= 10) // 2 = datatype u16
   {
-    *u32 = read16be(alloc + 8) & 0xffff;
+    *u32 = read_b16be(alloc + 8) & 0xffff;
     //qDebug("%s: %u", __FUNCTION__, *u32);
   }
   if (alloc)
@@ -303,8 +303,8 @@ int M4AParser::parse_mvhd(uint64_t * remaining, FILE * fp, MediaInfo * info)
   if (*remaining < MVHD_SIZE || fread(buf, 1, MVHD_SIZE, fp) != MVHD_SIZE)
     return -1;
   *remaining -= MVHD_SIZE;
-  unsigned scale = read32be(buf + 12);
-  unsigned duration = read32be(buf + 16);
+  unsigned scale = read_b32be(buf + 12);
+  unsigned duration = read_b32be(buf + 16);
   if (scale != 0)
     info->duration = (int) (duration / scale);
   else

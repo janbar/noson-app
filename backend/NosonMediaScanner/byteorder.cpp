@@ -22,4 +22,4 @@ static int test_endianess() {
   return (*((char*)(&test))) ? LITTLE_ENDIAN : BIG_ENDIAN;
 }
 
-int __endianess__ = test_endianess();
+int machine_bom = test_endianess();
