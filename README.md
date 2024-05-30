@@ -55,10 +55,23 @@ dbus-devel
     $ export PATH=$(pwd)/cmake-3.14.7-Linux-x86_64/bin:$PATH
     ```
 
-###### For FreeBSD 12.0
+###### For FreeBSD
+
+there is a port/package for FreeBSD available. 
+To install the package:
 
 ```bash
-$ pkg install cmake git bash dbus flac pulseaudio \
+$ pkg install noson-app
+```
+To use the port
+```bash
+$ cd /usr/ports/audio/noson-app && make install clean
+```
+
+To build from source
+
+```bash
+$ pkg install cmake git bash dbus flac pulseaudio ca_root_nss \
 qt5-buildtools qt5-core qt5-dbus qt5-declarative qt5-graphicaleffects \
 qt5-gui qt5-network qt5-qmake qt5-quickcontrols2 qt5-svg qt5-widgets \
 qt5-xml qt5-xmlpatterns
