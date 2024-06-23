@@ -27,6 +27,8 @@
 
 using namespace nosonapp;
 
+const char * ServiceItem::icon_sizes[] = { "x-large", "large", "medium", "square", "medium", "small", "x-small", nullptr };
+
 ServiceItem::ServiceItem(const SONOS::SMServicePtr& ptr)
 : m_ptr(ptr)
 , m_valid(false)
@@ -34,7 +36,13 @@ ServiceItem::ServiceItem(const SONOS::SMServicePtr& ptr)
   m_id = QString::fromUtf8(ptr->GetServiceDesc().c_str());
   m_title = QString::fromUtf8(ptr->GetName().c_str());
   m_normalized = normalizedString(m_title);
-  m_icon = QString::fromUtf8(SONOS::System::GetLogoForService(ptr, "square").c_str());
+  // looking for the largest icon size available
+  for (int i = 0; icon_sizes[i] != nullptr; ++i)
+  {
+    m_icon = QString::fromUtf8(SONOS::System::GetLogoForService(ptr, icon_sizes[i]).c_str());
+    if (!m_icon.isEmpty())
+      break;
+  }
   m_nickName = QString::fromUtf8(ptr->GetAccount()->GetCredentials().username.c_str());
   m_type = QString::fromUtf8(ptr->GetServiceType().c_str());
   m_serialNum = QString::fromUtf8(ptr->GetAccount()->GetSerialNum().c_str());

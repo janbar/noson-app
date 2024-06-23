@@ -69,6 +69,8 @@ private:
   QString m_type;
   QString m_serialNum;
   QString m_auth;
+
+  static const char * icon_sizes[];
 };
 
 class ServicesModel : public QAbstractListModel, public ListModel<Sonos>
