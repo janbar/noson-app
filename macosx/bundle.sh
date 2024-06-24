@@ -164,12 +164,12 @@ function adjustLinkQt {
 #echo "L    = $L"
 #echo "-----"
 		if [[ "$LIB" == *"$FREL" ]]; then
-            echo "name_tool: $FREL >> $PREL ($P)"
-            sudo install_name_tool -id $PREL $F
-        elif [[ "$P" == *$L* ]]; then
-            echo "name_tool: $FREL > $PREL ($P)"
-            sudo install_name_tool -change $P $PREL $F
-        fi
+        echo "name_tool: $FREL >> $PREL ($P)"
+        sudo install_name_tool -id $PREL $F
+    elif [[ "$P" == *$L* ]]; then
+        echo "name_tool: $FREL > $PREL ($P)"
+        sudo install_name_tool -change $P $PREL $F
+    fi
     done
 }
 
@@ -290,8 +290,6 @@ if [[ "$1" == "bundle" ]]; then
     copyAdditionalLibraries
     echo "---copy external files -------------"
     copyExternalFiles
-    echo "---adjust linking ------------------"
-    adjustLinking
     echo "---external tools ------------------"
     copyExtTools
     adjustLinkingExtTools
