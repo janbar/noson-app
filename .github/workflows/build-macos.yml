@@ -15,7 +15,7 @@ jobs:
         config:
         - {
             name: "macOS-10.13-x64", artifact: "macOS-10.13-x64.zip",
-            os: macos-latest
+            os: macos-12
           }
     runs-on: ${{ matrix.config.os }}
 
