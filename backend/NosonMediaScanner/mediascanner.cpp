@@ -17,7 +17,6 @@
  */
 #include "mediascanner.h"
 #include "mediascannerengine.h"
-#include "mediaparser.h"
 #include "flacparser.h"
 #include "id3parser.h"
 #include "m4aparser.h"
