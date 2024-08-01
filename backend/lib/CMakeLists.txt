@@ -32,7 +32,9 @@ if(NOT ZLIB_FOUND)
         ${CMAKE_CURRENT_BINARY_DIR}/zlib-build
         EXCLUDE_FROM_ALL
     )
-    set(ZLIB_LIBRARIES zlib)
+    set(ZLIB_LIBRARY zlib)
+    set(ZLIB_INCLUDE_DIR "${zlib_BINARY_DIR}")
+    set(ZLIB_LIBRARIES ${ZLIB_LIBRARY})
     set(ZLIB_INCLUDE_DIRS "${zlib_SOURCE_DIR}" "${zlib_BINARY_DIR}")
     set(ZLIB_FOUND ON)
     message(STATUS "Build ZLIB: ${zlib_BINARY_DIR}")
