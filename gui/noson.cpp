@@ -16,6 +16,11 @@
 #include <QIcon>
 #include <QTime>
 
+#ifdef Q_OS_ANDROID
+#include <QtAndroid>
+#include <QAndroidJniObject>
+#endif
+
 #include "diskcache/diskcachefactory.h"
 
 #define CACHE_SIZE 100000000L
@@ -88,12 +93,19 @@ int main(int argc, char *argv[])
     // bind arguments
     engine->rootContext()->setContextProperty("ApplicationArguments", app.arguments());
 
-#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
+#if defined(Q_OS_ANDROID)
     // bind Android flag
     engine->rootContext()->setContextProperty("Android", QVariant(true));
     // select and bind styles available and known to work
     availableStyles.append("Default");
     availableStyles.append("Material");
+    // request permissions for media audio
+    {
+      QStringList androidPermissions;
+      androidPermissions.append("android.permission.READ_EXTERNAL_STORAGE");
+      androidPermissions.append("android.permission.WRITE_EXTERNAL_STORAGE");
+      QtAndroid::requestPermissionsSync(androidPermissions);
+    }
 #else
     // bind Android flag
     engine->rootContext()->setContextProperty("Android", QVariant(false));
@@ -167,7 +179,7 @@ void prepareTranslator(QGuiApplication& app, const QString& translationPath, con
 
 void doExit(int code)
 {
-#if !defined(Q_OS_ANDROID) && !defined(Q_OS_IOS)
+#if !defined(Q_OS_ANDROID)
   if (code == 16)
   {
     // loop a short time to flush setting changes

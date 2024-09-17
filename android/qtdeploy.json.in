@@ -1,21 +1,19 @@
 {
  "description": "This file is to be read by androiddeployqt",
- "qt": "@QT_ANDROID_QT_ROOT@",
+ "qt": "@QT_ANDROID_QT_DIR@",
  "sdk": "@QT_ANDROID_SDK_ROOT@",
- "ndk": "@QT_ANDROID_NDK_ROOT@",
  "sdkBuildToolsRevision": "@QT_ANDROID_SDK_BUILDTOOLS_REVISION@",
- "toolchain-prefix": "@QT_ANDROID_TOOLCHAIN_PREFIX@",
- "tool-prefix": "@QT_ANDROID_TOOL_PREFIX@",
- "toolchain-version": "@QT_ANDROID_TOOLCHAIN_VERSION@",
+ "ndk": "@QT_ANDROID_NDK_ROOT@",
+ "toolchain-prefix": "llvm",
+ "tool-prefix": "llvm",
+ "useLLVM": true,
  "ndk-host": "@ANDROID_NDK_HOST_SYSTEM_NAME@",
- "architectures": { @QT_ANDROID_ARCHITECTURES@ },
- "target-architecture": "@ANDROID_ABI@",
- "application-binary": "@QT_ANDROID_APPLICATION_BINARY@",
+ "architectures": { "@ANDROID_ABI@": "@QT_ANDROID_ARCHITECTURE@" },
+ "application-binary": "@QT_ANDROID_APP_TARGET@",
  "android-package": "@QT_ANDROID_APP_PACKAGE_NAME@",
  "android-app-name": "@QT_ANDROID_APP_NAME@",
  "qml-root-path": "@CMAKE_SOURCE_DIR@",
  "stdcpp-path": "@QT_ANDROID_STL_PATH@",
- "useLLVM": "@QT_ANDROID_USE_LLVM@",
  @QT_ANDROID_APP_EXTRA_LIBS@
  @QT_ANDROID_APP_EXTRA_PLUGINS@
  "android-package-source-directory": "@QT_ANDROID_APP_PACKAGE_SOURCE_ROOT@"
