@@ -115,12 +115,14 @@ MouseArea {
         radius: height / 2
         color: area.color
         opacity: 0
+        visible: !Android
 
         Behavior on opacity {
             NumberAnimation { duration: 100 }
         }
     }
 
-    onEntered: ripple.opacity = 0.1
-    onExited: ripple.opacity = 0
+    onEntered: { if (ripple.visible) ripple.opacity = 0.1; }
+    onExited: { if (ripple.visible) ripple.opacity = 0; }
+    onReleased: { if (ripple.visible) ripple.opacity = 0; }
 }
