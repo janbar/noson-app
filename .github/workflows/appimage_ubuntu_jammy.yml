@@ -41,7 +41,7 @@ jobs:
         run: ./appimage-builder-x86_64.AppImage --recipe appimage/builder_ubuntu_22.04.yml
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: AppImage
           path: './noson*.AppImage*'
