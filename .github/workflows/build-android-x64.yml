@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: build
     steps:
       - name: Checkout
@@ -31,7 +31,7 @@ jobs:
       - name: Configure ENV
         run:  |
             echo "ANDROID_NDK=${ANDROID_HOME}/ndk/21.4.7075529" >> $GITHUB_ENV
-            echo "QT_DIR=${HOME}/Qt/5.15.14/android" >> $GITHUB_ENV
+            echo "QT_DIR=${HOME}/Qt/5.15.15/android" >> $GITHUB_ENV
 
       - name: Cache Qt
         id: cache-qt
@@ -39,17 +39,17 @@ jobs:
         env:
           cache-name: cache-qt
         with:
-          path: ~/Qt/5.15.14/android
-          key: qtandroid-51514-ndk21
+          path: ~/Qt/5.15.15/android
+          key: qtandroid-51515-ndk21
 
       - if: ${{ steps.cache-qt.outputs.cache-hit != 'true' }}
         name: Install Qt
         continue-on-error: true
         run: |
-            wget -q ${{secrets.PRIVATE_URL_DOWNLOAD}}/qt/qt-5.15.14-android-ndk21-linux64.tar.xz
+            wget -q ${{secrets.PRIVATE_URL_DOWNLOAD}}/qt/qt-5.15.15-android-ndk21-linux64.tar.xz
             mkdir -p ~/Qt
-            tar xfJ qt-5.15.14-android-ndk21-linux64.tar.xz -C ~/Qt/
-            rm -f qt-5.15.14-android-ndk21-linux64.tar.xz
+            tar xfJ qt-5.15.15-android-ndk21-linux64.tar.xz -C ~/Qt/
+            rm -f qt-5.15.15-android-ndk21-linux64.tar.xz
 
       - name: Fetch submodules
         run: git submodule init && git submodule update
