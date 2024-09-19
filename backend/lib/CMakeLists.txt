@@ -49,7 +49,7 @@ if(NOT OPENSSL_FOUND)
     if(OPENSSL_DL_ABI STREQUAL "1.0")
         download_project(PROJ "openssl-${OPENSSL_DL_ABI}"
             GIT_REPOSITORY https://github.com/janbar/openssl-cmake.git
-            GIT_TAG 1.0.2p-20220130
+            GIT_TAG 1.0.2p-20231130
             GIT_SHALLOW 1
             PREFIX ${CMAKE_CURRENT_BINARY_DIR}
             UPDATE_DISCONNECTED ON)
@@ -57,7 +57,7 @@ if(NOT OPENSSL_FOUND)
         set(OPENSSL_DL_ABI "1.1")
         download_project(PROJ "openssl-${OPENSSL_DL_ABI}"
             GIT_REPOSITORY https://github.com/janbar/openssl-cmake.git
-            GIT_TAG 1.1.1t-20230216
+            GIT_TAG 1.1.1w-20231130
             GIT_SHALLOW 1
             PREFIX ${CMAKE_CURRENT_BINARY_DIR}
             UPDATE_DISCONNECTED ON)
