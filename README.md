@@ -1,6 +1,6 @@
 [![Gitter](https://badges.gitter.im/janbar/noson-app.svg)](https://gitter.im/janbar/noson-app?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 ![build status](https://github.com/janbar/noson-app/actions/workflows/build-ubuntu-latest.yml/badge.svg?branch=master)
-![build status](https://github.com/janbar/noson-app/actions/workflows/build-android-ndk21.yml/badge.svg?branch=master)
+![build status](https://github.com/janbar/noson-app/actions/workflows/build-android-x64.yml/badge.svg?branch=master)
 
 ## Noson
 A fast and smart SONOS controller for Unix platforms.
