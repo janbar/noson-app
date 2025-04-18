@@ -1,7 +1,7 @@
 # Distributed under the OSI-approved MIT License.  See accompanying
 # file LICENSE or https://github.com/Crascit/DownloadProject for details.
 
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.8.2...3.20)
 
 project(${DL_ARGS_PROJ}-download NONE)
 
@@ -14,4 +14,5 @@ ExternalProject_Add(${DL_ARGS_PROJ}-download
                     BUILD_COMMAND       ""
                     INSTALL_COMMAND     ""
                     TEST_COMMAND        ""
+                    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )

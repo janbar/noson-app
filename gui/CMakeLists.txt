@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8.2)
+cmake_minimum_required(VERSION 3.8.2...3.20)
 # Automatically create moc files
 set(CMAKE_AUTOMOC ON)
 
