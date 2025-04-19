@@ -49,7 +49,7 @@ if(NOT OPENSSL_FOUND)
     if(OPENSSL_DL_ABI STREQUAL "1.0")
         download_project(PROJ "openssl-${OPENSSL_DL_ABI}"
             GIT_REPOSITORY https://github.com/janbar/openssl-cmake.git
-            GIT_TAG 1.0.2p-20231130
+            GIT_TAG 1.0.2p-20250419
             GIT_SHALLOW 1
             PREFIX ${CMAKE_CURRENT_BINARY_DIR}
             UPDATE_DISCONNECTED ON)
@@ -57,7 +57,7 @@ if(NOT OPENSSL_FOUND)
         set(OPENSSL_DL_ABI "1.1")
         download_project(PROJ "openssl-${OPENSSL_DL_ABI}"
             GIT_REPOSITORY https://github.com/janbar/openssl-cmake.git
-            GIT_TAG 1.1.1w-20231130
+            GIT_TAG 1.1.1w-20250419
             GIT_SHALLOW 1
             PREFIX ${CMAKE_CURRENT_BINARY_DIR}
             UPDATE_DISCONNECTED ON)
@@ -91,7 +91,7 @@ endif()
 if(NOT FLAC_FOUND OR NOT FLACXX_FOUND)
     download_project(PROJ flac
         GIT_REPOSITORY https://github.com/janbar/flac-cmake.git
-        GIT_TAG 1.3.2-20191201
+        GIT_TAG 1.3.2-20250419
         GIT_SHALLOW 1
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
         UPDATE_DISCONNECTED ON)
