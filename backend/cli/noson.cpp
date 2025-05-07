@@ -45,7 +45,6 @@
 
 #include <cstdlib>
 #include <cstdio>
-#include <iostream>
 #include <string>
 #include <algorithm> // std::find
 
@@ -86,6 +85,7 @@ int gDebug = 0;
 
 void handleEventCB(void* handle)
 {
+  (void)handle;
   if (gDebug > 2)
   {
     unsigned char mask = gSonos->LastEvents();
@@ -735,7 +735,7 @@ static bool parseCommand(const std::string& line)
           PRINT2("%d: BROWSABLE=%s\n", i, (*ic)->IsContainer() ? "Y" : "N");
           PRINT2("%d: CAN_QUEUE=%s\n", i, (*ic)->GetValue("res").empty() ? "N" : "Y");
           auto elems = (*ic)->GetElements();
-          for (auto elem : elems)
+          for (auto& elem : elems)
           {
             PRINT3("%d: [%s]=[%s]\n", i, elem->GetKey().c_str(), elem->c_str());
           }
@@ -764,7 +764,8 @@ static bool parseCommand(const std::string& line)
           {
             SONOS::ContentDirectory mycontent(gSonos->GetHost(), gSonos->GetPort());
             SONOS::ContentList bdir(mycontent, obj);
-            if (bdir.size() > --idx)
+            idx -= 1;
+            if (bdir.size() > (unsigned)idx)
             {
               auto it = bdir.begin();
               for (;idx > 0; --idx)
