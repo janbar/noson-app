@@ -3,6 +3,11 @@
 
 cmake_minimum_required(VERSION 3.8.2...3.20)
 
+# Avoid warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake 3.24
+if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+    cmake_policy(SET CMP0135 NEW)
+endif()
+
 project(${DL_ARGS_PROJ}-download NONE)
 
 include(ExternalProject)
@@ -14,5 +19,4 @@ ExternalProject_Add(${DL_ARGS_PROJ}-download
                     BUILD_COMMAND       ""
                     INSTALL_COMMAND     ""
                     TEST_COMMAND        ""
-                    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
