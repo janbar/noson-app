@@ -1091,7 +1091,7 @@ static void prompt() {
 
 static void readInStream()
 {
-  static int maxlen = 1023;
+  static size_t maxlen = 1023;
   char* buf = new char[maxlen + 1];
   size_t len = 0;
   bool run = true;
@@ -1113,10 +1113,15 @@ static void readInStream()
     if (r > 0 && FD_ISSET(STDIN_FILENO, &fds))
 #endif
     {
-      int chr;
-      while (run && (chr = getchar()) != EOF)
+      while (run)
       {
-        if (chr != '\n')
+        int chr = getchar();
+        if (chr == EOF)
+        {
+          run = false;
+          break;
+        }
+        else if (chr != '\n')
         {
           if (len < maxlen)
             buf[len++] = (char) chr;
