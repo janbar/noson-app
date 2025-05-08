@@ -97,12 +97,13 @@ DialogBase {
         apiKey.text = settings.lastfmKey;
     }
 
-    ColumnLayout {
+    Column {
         id: settingsColumn
         spacing: units.gu(1)
 
         RowLayout {
             spacing: 0
+            width: parent.width
             Icon {
                 height: units.gu(5)
                 width: height
@@ -144,6 +145,7 @@ DialogBase {
 
         RowLayout {
             spacing: 0
+            width: parent.width
             Icon {
                 height: units.gu(5)
                 width: height
@@ -187,7 +189,11 @@ DialogBase {
 
         RowLayout {
             spacing: units.gu(1)
-            Layout.fillWidth: true
+            anchors {
+                left: parent.left
+                right: parent.right
+                rightMargin: units.gu(1)
+            }
             Label {
                 text: qsTr("Style")
                 font.pointSize: units.fs("medium");
@@ -218,7 +224,11 @@ DialogBase {
         RowLayout {
             visible: styleBox.currentText === "Material" || styleBox.currentText === "Universal"
             spacing: units.gu(1)
-            Layout.fillWidth: true
+            anchors {
+                left: parent.left
+                right: parent.right
+                rightMargin: units.gu(1)
+            }
             Label {
                 text: qsTr("Theme")
                 font.pointSize: units.fs("medium");
@@ -245,24 +255,26 @@ DialogBase {
         }
 
         Label {
-            text: qsTr("Restart is required")
-            font.pointSize: units.fs("medium")
+            text: qsTr("Restart is required");
+            font.pointSize: units.fs("small")
+            font.bold: true
             color: "red"
-            opacity: styleBox.currentIndex !== styleBox.styleIndex ||
-                     scaleBox.realValue !== scaleBox.acceptedValue ? 1.0 : 0.0
-            horizontalAlignment: Label.AlignHCenter
+            visible: styleBox.currentIndex !== styleBox.styleIndex ||
+                     scaleBox.realValue !== scaleBox.acceptedValue ? true : false
+            horizontalAlignment: Label.AlignLeft
             verticalAlignment: Label.AlignVCenter
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+            width: parent.width
         }
 
         ColumnLayout {
             visible: !Android
             spacing: units.gu(0.5)
-            Layout.fillWidth: true
+            width: parent.width
             Label {
                 font.pointSize: units.fs("medium")
                 text: qsTr("Additional music location")
+                elide: Label.ElideRight
+                Layout.fillWidth: true
             }
             TextField {
                 id: addMusicPath
@@ -277,7 +289,7 @@ DialogBase {
         ColumnLayout {
             visible: true
             spacing: units.gu(0.5)
-            Layout.fillWidth: true
+            width: parent.width
             RowLayout {
                 spacing: units.gu(1)
                 Image {

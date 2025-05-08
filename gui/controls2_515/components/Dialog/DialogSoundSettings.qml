@@ -30,7 +30,6 @@ Item {
         //: this is a title of a dialog to configure sound settings
         title: qsTr("Sound settings")
         contentSpacing: units.gu(1)
-        edgeMargins: units.gu(0)
 
         footer: Row {
             leftPadding: units.gu(1)

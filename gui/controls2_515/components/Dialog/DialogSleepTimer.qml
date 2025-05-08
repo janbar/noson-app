@@ -102,8 +102,13 @@ DialogBase {
     ComboBox {
         id: selector
         textRole: "text"
+        anchors {
+            left: parent.left
+            leftMargin: units.gu(1)
+            right: parent.right
+            rightMargin: units.gu(1)
+        }
         model: selectorModel
-        Layout.fillWidth: true
         font.pointSize: units.fs("medium")
         currentIndex: 0
         Component.onCompleted: {

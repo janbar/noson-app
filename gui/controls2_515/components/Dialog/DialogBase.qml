@@ -28,11 +28,6 @@ Dialog {
     default property alias contents: contentsColumn.data
 
     /*!
-      The property holds the margins from the dialog's dismissArea.
-      */
-    property real edgeMargins: units.gu(2)
-
-    /*!
       The property controls whether the dialog is modal or not. Modal dialogs block
       event propagation to items under dismissArea, when non-modal ones let these
       events passed to these items. In addition, non-modal dialogs do not dim the
@@ -62,19 +57,17 @@ Dialog {
     y: Math.round((mainView.height - (height + header.height + footer.height)) / 2)
     width: Math.max(Math.round(Math.min(mainView.width, mainView.height) / 3 * 2), dialog.minimumWidth)
     readonly property real h: contentsColumn.height + units.gu(6) +
-                              2 * dialog.edgeMargins + dialog.header.height + dialog.footer.height
+                              dialog.header.height + dialog.footer.height
     height: Math.max(Math.min(h, Math.round(mainView.height / 4 * 3)), dialog.minimumHeight)
 
     Rectangle {
         id: background
         color: "transparent"
         anchors.fill: parent
-        anchors.margins: dialog.edgeMargins
     }
 
     Flickable {
         anchors.fill: parent
-        anchors.leftMargin: dialog.edgeMargins
         contentWidth: contentsColumn.width
         contentHeight: contentsColumn.height
         boundsBehavior: Flickable.StopAtBounds
@@ -83,6 +76,13 @@ Dialog {
         ScrollBar.vertical: ScrollBar {
             policy: ScrollBar.AlwaysOn
             visible: (parent.visibleArea.heightRatio < 1.0)
+            onVisibleChanged: {
+                if (visible) {
+                    background.anchors.rightMargin = units.gu(2);
+                } else {
+                    background.anchors.rightMargin = 0;
+                }
+            }
         }
 
         Column {

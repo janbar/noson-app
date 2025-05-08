@@ -39,7 +39,6 @@ Item {
         //: this is a title of a dialog to configure an alarm
         title: qsTr("Alarm")
         contentSpacing: units.gu(1)
-        edgeMargins: units.gu(0)
 
         footer: Row {
             leftPadding: units.gu(1)
