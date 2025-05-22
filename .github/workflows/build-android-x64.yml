@@ -24,14 +24,14 @@ jobs:
       - name: Setup Android SDK tools
         uses: android-actions/setup-android@v3
         with:
-          packages: "platform-tools platforms;android-31 build-tools;31.0.0 ndk;21.4.7075529"
+          packages: "platform-tools platforms;android-31 build-tools;31.0.0 ndk;26.3.11579264"
       - name: Dump Android NDK
         run: "ls ${ANDROID_HOME}/ndk"
 
       - name: Configure ENV
         run:  |
-            echo "ANDROID_NDK=${ANDROID_HOME}/ndk/21.4.7075529" >> $GITHUB_ENV
-            echo "QT_DIR=${HOME}/Qt/5.15.15/android" >> $GITHUB_ENV
+            echo "ANDROID_NDK=${ANDROID_HOME}/ndk/26.3.11579264" >> $GITHUB_ENV
+            echo "QT_DIR=${HOME}/Qt/5.15.16/android" >> $GITHUB_ENV
 
       - name: Cache Qt
         id: cache-qt
@@ -39,17 +39,17 @@ jobs:
         env:
           cache-name: cache-qt
         with:
-          path: ~/Qt/5.15.15/android
-          key: qtandroid-51515-ndk21
+          path: ~/Qt/5.15.16/android
+          key: qtandroid-51516-ndk23
 
       - if: ${{ steps.cache-qt.outputs.cache-hit != 'true' }}
         name: Install Qt
         continue-on-error: true
         run: |
-            wget -q ${{secrets.PRIVATE_URL_DOWNLOAD}}/qt/qt-5.15.15-android-ndk21-linux64.tar.xz
+            wget -q ${{secrets.PRIVATE_URL_DOWNLOAD}}/qt/qt-5.15.16-android-ndk23-linux64.tar.xz
             mkdir -p ~/Qt
-            tar xfJ qt-5.15.15-android-ndk21-linux64.tar.xz -C ~/Qt/
-            rm -f qt-5.15.15-android-ndk21-linux64.tar.xz
+            tar xfJ qt-5.15.16-android-ndk23-linux64.tar.xz -C ~/Qt/
+            rm -f qt-5.15.16-android-ndk23-linux64.tar.xz
 
       - name: Fetch submodules
         run: git submodule init && git submodule update
@@ -58,9 +58,11 @@ jobs:
             cmake -B build \
                   -DCMAKE_SYSTEM_NAME=Android \
                   -DCMAKE_PREFIX_PATH=${QT_DIR} \
+                  -DCMAKE_FIND_ROOT_PATH=${QT_DIR} \
                   -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake \
                   -DCMAKE_MAKE_PROGRAM=$ANDROID_NDK/prebuilt/linux-x86_64/bin/make \
                   -DCMAKE_BUILD_TYPE=Debug \
+                  -DANDROID_STL=c++_static \
                   -DANDROID_ABI="x86_64" \
                   -DANDROID_SDK_MINVER=24 \
                   -DANDROID_SDK_TARGET=26 \
@@ -69,18 +71,6 @@ jobs:
                   -DANDROID_SDK_ROOT=$ANDROID_SDK_ROOT \
                   -DANDROID_NDK=$ANDROID_NDK \
                   -DQT_ANDROID_PLATFORM_LEVEL=31 \
-                  -DQt5_DIR=${QT_DIR}/lib/cmake/Qt5 \
-                  -DQt5Core_DIR=${QT_DIR}/lib/cmake/Qt5Core \
-                  -DQt5Gui_DIR=${QT_DIR}/lib/cmake/Qt5Gui \
-                  -DQt5Qml_DIR=${QT_DIR}/lib/cmake/Qt5Qml \
-                  -DQt5Network_DIR=${QT_DIR}/lib/cmake/Qt5Network \
-                  -DQt5Quick_DIR=${QT_DIR}/lib/cmake/Qt5Quick \
-                  -DQt5QuickControls2_DIR=${QT_DIR}/lib/cmake/Qt5QuickControls2 \
-                  -DQt5Xml_DIR=${QT_DIR}/lib/cmake/Qt5Xml \
-                  -DQt5Svg_DIR=${QT_DIR}/lib/cmake/Qt5Svg \
-                  -DQt5Widgets_DIR=${QT_DIR}/lib/cmake/Qt5Widgets \
-                  -DQt5QmlModels_DIR=${QT_DIR}/lib/cmake/Qt5QmlModels \
-                  -DQt5AndroidExtras_DIR=${QT_DIR}/lib/cmake/Qt5AndroidExtras \
                   -Wno-dev
       - name: Build
         run:  cmake --build build
