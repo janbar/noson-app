@@ -22,6 +22,5 @@ if [ -f "$HOME/.config/janbar/noson.conf" ]; then
 fi
 
 # Launch the GUI
-export QT_QPA_PLATFORM=xcb
 export QML2_IMPORT_PATH="$PLUGINS_DIR"
 exec "$NOSON_GUI" $@
