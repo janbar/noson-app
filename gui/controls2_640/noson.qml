@@ -1317,6 +1317,11 @@ ApplicationWindow {
             }
             return false;
         }
+
+        popEnter: Transition { }
+        popExit: Transition { }
+        pushEnter: Transition { }
+        pushExit: Transition { }
     }
 
 
