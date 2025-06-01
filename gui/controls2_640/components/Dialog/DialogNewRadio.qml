@@ -49,12 +49,24 @@ DialogBase {
         font.weight: Font.Normal
     }
 
+    // space for qt6 placeholder
+    Item {
+        width: parent.width
+        height: units.gu(0.5)
+    }
+
     TextField {
         id: radioName
         font.pointSize: units.fs("medium")
         placeholderText: qsTr("Enter radio name")
         inputMethodHints: Qt.ImhNone
         EnterKey.type: Qt.EnterKeyDone
+    }
+
+    // space for qt6 placeholder
+    Item {
+        width: parent.width
+        height: units.gu(0.5)
     }
 
     TextField {
