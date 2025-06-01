@@ -37,16 +37,6 @@ GridView {
     property real heightOffset: 0
     property real widthOffset: 0
 
-    add: Transition {
-        NumberAnimation { properties: "x,y"; duration: 200 }
-    }
-    removeDisplaced: Transition {
-        NumberAnimation { properties: "x,y"; duration: 200 }
-    }
-    addDisplaced: Transition {
-        NumberAnimation { properties: "x,y"; duration: 200 }
-    }
-
     Component.onCompleted: {
         // Return values depending on the grid unit definition
         // for Flickable.maximumFlickVelocity and Flickable.flickDeceleration
