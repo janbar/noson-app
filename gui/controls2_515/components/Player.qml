@@ -576,7 +576,7 @@ Item {
         onDataUpdated: {
             asyncLoad();
         }
-        onLoaded: {
+        onLoaded: function(succeeded) {
             if (succeeded) {
                 resetModel();
                 player.currentCount = totalCount;
