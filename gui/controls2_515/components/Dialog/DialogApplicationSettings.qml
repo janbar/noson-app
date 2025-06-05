@@ -118,7 +118,6 @@ DialogBase {
                 to: 200
                 stepSize: 10
                 font.pointSize: units.fs("medium");
-                Layout.fillWidth: true
 
                 property int decimals: 2
                 property real realValue: value / 100
@@ -160,7 +159,6 @@ DialogBase {
                 to: 400
                 stepSize: 10
                 font.pointSize: units.fs("medium");
-                Layout.fillWidth: true
 
                 property int decimals: 2
                 property real realValue: value / 100
@@ -213,7 +211,8 @@ DialogBase {
                         settings.theme = 0;
                     }
                 }
-                Layout.fillWidth: true
+
+                //Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                 font.pointSize: units.fs("medium");
                 popup {
                     font.pointSize: units.fs("medium");
@@ -246,7 +245,7 @@ DialogBase {
                     settings.theme = index
                 }
 
-                Layout.fillWidth: true
+                //Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                 font.pointSize: units.fs("medium");
                 Component.onCompleted: {
                     popup.font.pointSize = units.fs("medium");
