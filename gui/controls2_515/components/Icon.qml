@@ -87,7 +87,6 @@ MouseArea {
         Label {
             id: label
             anchors.verticalCenter: parent.verticalCenter
-            width: text !== "" && area.visible ? implicitWidth + units.gu(0.5) : 0
         }
     }
 
