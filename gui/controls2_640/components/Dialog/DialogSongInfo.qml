@@ -25,7 +25,6 @@ import "../"
 Item {
     id: songInfo
     property var model: null
-    property var covers: []
     property string moreSource: ""
     property var moreArgs: ({})
     property bool forceActionMore: false
@@ -72,19 +71,18 @@ Item {
         onOpened: {
             timer.restart();
             if (songInfo.model) {
-                card.coverSources = covers
-                card.primaryText = songInfo.model.title !== "" ? songInfo.model.title : qsTr("Unknown Album");
-                card.secondaryText = songInfo.model.author !== "" ? songInfo.model.author : qsTr("Unknown Artist");
-                card.tertiaryLabelVisible = (songInfo.model.album.length > 0);
+                primaryText = songInfo.model.title !== "" ? songInfo.model.title : qsTr("Unknown Album");
+                secondaryText = songInfo.model.author !== "" ? songInfo.model.author : qsTr("Unknown Artist");
+                tertiaryLabelVisible = (songInfo.model.album.length > 0);
                 if (songInfo.model.albumTrackNo && songInfo.model.albumTrackNo > 0) {
                     if (songInfo.model.albumDiscNo && songInfo.model.albumDiscNo > 0)
-                        card.tertiaryText = qsTr("%1 - track #%2.%3").arg(songInfo.model.album).arg(songInfo.model.albumDiscNo).arg(songInfo.model.albumTrackNo);
+                        tertiaryText = qsTr("%1 - track #%2.%3").arg(songInfo.model.album).arg(songInfo.model.albumDiscNo).arg(songInfo.model.albumTrackNo);
                     else
-                        card.tertiaryText = qsTr("%1 - track #%2").arg(songInfo.model.album).arg(songInfo.model.albumTrackNo);
+                        tertiaryText = qsTr("%1 - track #%2").arg(songInfo.model.album).arg(songInfo.model.albumTrackNo);
                 } else if (songInfo.model.description) {
-                    card.tertiaryText = songInfo.model.description;
+                    tertiaryText = songInfo.model.description;
                 } else {
-                    card.tertiaryText = songInfo.model.album;
+                    tertiaryText = songInfo.model.album;
                 }
             }
 
@@ -117,102 +115,60 @@ Item {
 
         onClosed: {
             timer.stop()
-            card.coverSources = [];
-            card.primaryText = "";
-            card.secondaryText = "";
-            card.tertiaryLabelVisible = "";
-            card.tertiaryText = "";
+            primaryText = "";
+            secondaryText = "";
+            tertiaryLabelVisible = "";
+            tertiaryText = "";
             buttonMore.visible = false;
             buttonPlay.visible = false;
         }
 
-        Item {
-            id: card
-            height: coverGrid.height
+        property alias primaryText: primaryLabel.text
+        property alias secondaryText: secondaryLabel.text
+        property alias tertiaryText: tertiaryLabel.text
+        property alias tertiaryLabelVisible: tertiaryLabel.visible
 
-            property alias coverSources: coverGrid.covers
-            property alias primaryText: primaryLabel.text
-            property alias secondaryText: secondaryLabel.text
-            property alias tertiaryText: tertiaryLabel.text
-            property alias tertiaryLabelVisible: tertiaryLabel.visible
+        /* Column for labels */
+        Column {
+            spacing: units.gu(0.5)
 
-
-            CoverGrid {
-                id: coverGrid
-                size: parent.width
-                noCover: ""
-
-                Rectangle {
-                    id: labelsBackground
-                    anchors.bottom: parent.bottom
-                    height: labels.height < units.gu(6) ? units.gu(9)
-                                                         : labels.height + units.gu(3)
-                    width: parent.width
-                    color: styleMusic.dialog.backgroundColor
-                    opacity: 0.60
-                    clip: true
+            Label {
+                id: primaryLabel
+                anchors {
+                    left: parent.left
+                    right: parent.right
                 }
-
-                /* Column for labels */
-                Column {
-                    id: labels
-                    anchors {
-                        left: parent.left
-                        leftMargin: units.gu(1.5)
-                        right: parent.right
-                        rightMargin: units.gu(1.5)
-                        bottom: parent.bottom
-                        bottomMargin: units.gu(1.5)
-                    }
-
-                    spacing: units.gu(0.5)
-
-                    Label {
-                        id: primaryLabel
-                        anchors {
-                            left: parent.left
-                            right: parent.right
-                        }
-                        color: styleMusic.dialog.labelColor
-                        elide: Text.ElideRight
-                        font.pointSize: units.fs("large")
-                        font.bold: true
-                        opacity: 1.0
-                        wrapMode: Text.WordWrap
-                    }
-
-                    Label {
-                        id: secondaryLabel
-                        anchors {
-                            left: parent.left
-                            right: parent.right
-                        }
-                        color: styleMusic.dialog.labelColor
-                        elide: Text.ElideRight
-                        font.pointSize: units.fs("medium")
-                        opacity: 0.9
-                        wrapMode: Text.WordWrap
-                    }
-
-                    Label {
-                        id: tertiaryLabel
-                        anchors {
-                            left: parent.left
-                            right: parent.right
-                        }
-                        color: styleMusic.dialog.labelColor
-                        elide: Text.ElideRight
-                        font.pointSize: units.fs("medium")
-                        opacity: 0.9
-                        wrapMode: Text.WordWrap
-                        font.italic: true
-                    }
-                }
+                color: styleMusic.dialog.labelColor
+                font.pointSize: units.fs("large")
+                font.bold: true
+                opacity: 1.0
+                wrapMode: Text.WordWrap
             }
-        }
 
-        Behavior on opacity {
-            NumberAnimation { duration: 500 }
+            Label {
+                id: secondaryLabel
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
+                color: styleMusic.dialog.labelColor
+                font.pointSize: units.fs("medium")
+                opacity: 0.9
+                wrapMode: Text.WordWrap
+            }
+
+            Label {
+                id: tertiaryLabel
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                }
+                color: styleMusic.dialog.labelColor
+                font.pointSize: units.fs("medium")
+                opacity: 0.9
+                wrapMode: Text.WordWrap
+                font.italic: true
+            }
         }
 
         Timer {
@@ -228,16 +184,14 @@ Item {
             id: timer
             interval: 10000
             onTriggered: {
-                opacity = 0
                 closingDialogTimer.start()
             }
         }
 
     }
 
-    function open(model, covers, moreSource, moreArgs, forceActionMore, canPlay, canQueue, isContainer) {
+    function open(model, art, moreSource, moreArgs, forceActionMore, canPlay, canQueue, isContainer) {
         songInfo.model = model;
-        songInfo.covers = covers;
         songInfo.moreSource = moreSource;
         songInfo.moreArgs = moreArgs;
         songInfo.forceActionMore = (forceActionMore ? true : false);
