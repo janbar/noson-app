@@ -16,7 +16,7 @@ if(IOS OR ANDROID)
   set(QT_STATICPLUGIN ON CACHE BOOL "Build static plugins" FORCE)
 endif()
 
-set(APP_VERSION       "5.6.12")
+set(APP_VERSION       "5.6.13")
 set(APP_VERSION_CODE  115)
 set(APP_ID            "io.github.janbar.noson")
 set(APP_NAME          "noson")
@@ -120,8 +120,7 @@ if(MSVC)
   configure_msvc_runtime()
 endif()
 
-set(QT_MIN_VERSION 5.9.5)
-find_package(Qt5 ${QT_MIN_VERSION} COMPONENTS Core REQUIRED)
+find_package(Qt5 5.15 COMPONENTS Core REQUIRED)
 
 add_subdirectory(backend)
 add_subdirectory(gui)
