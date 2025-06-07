@@ -347,7 +347,7 @@ MusicPage {
                 "album": model.album,
                 "description": model.description
             };
-            dialogSongInfo.open(songModel, [{art: model.art}],
+            dialogSongInfo.open(songModel, model.art,
                                 "", undefined, false,
                                 model.canPlay,
                                 model.canQueue,

@@ -506,7 +506,7 @@ MusicPage {
                 "description": model.description,
                 "albumTrackNo": model.albumTrackNo
             };
-            dialogSongInfo.open(songModel, [{art: model.art}],
+            dialogSongInfo.open(songModel, model.art,
                                 "", undefined, false,
                                 model.canPlay,
                                 model.canQueue,
