@@ -22,7 +22,6 @@ import NosonThumbnailer 1.0
 import NosonMediaScanner 1.0
 import "../"
 
-
 DialogBase {
     id: dialog
     title: qsTr("General settings")

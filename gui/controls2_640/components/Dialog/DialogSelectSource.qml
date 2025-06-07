@@ -20,7 +20,6 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import NosonApp 1.0
 
-
 DialogBase {
     id: dialog
     //: this is a title of a dialog to select source
