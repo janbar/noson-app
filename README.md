@@ -13,7 +13,7 @@ Go to [project page](http://janbar.github.io/noson-app/index.html) for further d
 
 ## Build instructions
 
-The build can be achieved on any platform supporting Qt version 5.9. See `debian/control` file for more details about dependencies.
+The build can be achieved on any platform supporting Qt version 5.15. See `debian/control` file for more details about dependencies.
 
 ### Linux/BSD
 
@@ -23,7 +23,7 @@ Running Noson in "freedesktop" allows the following extra features.
 
 #### Install the dependencies
 
-###### For Ubuntu(16) / Debian(10) (**qtbase5 >= 5.9**)
+###### For Ubuntu(22) (**qtbase5 >= 5.15**)
 
 ```bash
 $ apt-get install qtbase5-dev qttools5-dev qttools5-dev-tools qtdeclarative5-dev \
@@ -35,9 +35,9 @@ qml-module-qtquick-templates2 qml-module-qtquick-window2 \
 zlib1g-dev libssl-dev libflac-dev libflac++-dev libpulse-dev \
 libdbus-1-dev libqt5dbus5
 ```
-  - Build tools: `build-essential` `git` `cmake` `g++ >= 4.8.5 | clang >= 3.4`
+  - Build tools: `build-essential` `git` `cmake >= 3.8.2` `gcc | clang`
 
-###### For Centos(7) / Fedora(26) (**qt5-qtbase >= 5.9**)
+###### For Centos / Fedora (**qt5-qtbase >= 5.15**)
 
 ```bash
 $ yum install qt5-qtbase-devel qt5-qttools-devel qt5-qtdeclarative-devel \
@@ -45,7 +45,7 @@ qt5-qtquickcontrols2-devel qt5-qtgraphicaleffects qt5-qtsvg-devel \
 qt5-qtsvg zlib-devel openssl-devel flac-devel pulseaudio-libs-devel \
 dbus-devel
 ```
-  - Build tools: `git` `cmake >= 3.8.2` `gcc-c++ >= 4.8.5 | clang >= 3.4`
+  - Build tools: `git` `cmake >= 3.8.2` `gcc | clang`
 
   - As needed you have to install **cmake >= 3.8.2**
 
