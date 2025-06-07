@@ -245,8 +245,7 @@ MusicPage {
             }
 
             onClick: {
-                var arts = [{art: imageSource}]; // item cover
-                dialogSongInfo.open(model, arts,
+                dialogSongInfo.open(model, imageSource,
                                     "qrc:/controls2/Library.qml",
                                     {
                                         "rootPath": "A:ARTIST/" + model.author,

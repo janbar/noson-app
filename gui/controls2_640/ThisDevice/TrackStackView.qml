@@ -256,13 +256,8 @@ MusicPage {
                     albumDiscNo: model.albumDiscNo, albumTrackNo: model.albumTrackNo,
                     payload: makeItemPayload(model)
                 };
-                var arts = [];
-                if (isAlbum)
-                    arts = covers; // header covers
-                else
-                    arts = [{art: imageSource}]; // item cover
-
-                dialogSongInfo.open(item, arts,
+                var art = (isAlbum  && covers.length > 0 ? covers[0].art : imageSource);
+                dialogSongInfo.open(item, art,
                                     "qrc:/controls2/ThisDevice/ArtistView.qml",
                                     {
                                         "artist": model.author,
