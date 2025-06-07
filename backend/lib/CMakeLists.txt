@@ -47,22 +47,13 @@ if(NOT BUILD_DEPENDENCIES)
     find_package(OpenSSL QUIET)
 endif()
 if(NOT OPENSSL_FOUND)
-    if(OPENSSL_DL_ABI STREQUAL "1.0")
-        download_project(PROJ "openssl-${OPENSSL_DL_ABI}"
-            GIT_REPOSITORY https://github.com/janbar/openssl-cmake.git
-            GIT_TAG 1.0.2p-20250419
-            GIT_SHALLOW 1
-            PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-            UPDATE_DISCONNECTED ON)
-    else()
-        set(OPENSSL_DL_ABI "1.1")
-        download_project(PROJ "openssl-${OPENSSL_DL_ABI}"
-            GIT_REPOSITORY https://github.com/janbar/openssl-cmake.git
-            GIT_TAG 1.1.1w-20250419
-            GIT_SHALLOW 1
-            PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-            UPDATE_DISCONNECTED ON)
-    endif()
+    set(OPENSSL_DL_ABI "1.1")
+    download_project(PROJ "openssl-${OPENSSL_DL_ABI}"
+        GIT_REPOSITORY https://github.com/janbar/openssl-cmake.git
+        GIT_TAG 1.1.1w-20250419
+        GIT_SHALLOW 1
+        PREFIX ${CMAKE_CURRENT_BINARY_DIR}
+        UPDATE_DISCONNECTED ON)
     if(ANDROID OR MSVC)
         set(BUILD_SHARED_LIBS ON)
     else()
