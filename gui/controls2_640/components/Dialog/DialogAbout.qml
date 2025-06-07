@@ -21,7 +21,6 @@ import QtQuick.Layouts 1.3
 import NosonApp 1.0
 import NosonThumbnailer 1.0
 
-
 DialogBase {
     id: dialog
     title: qsTr("About")
