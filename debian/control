@@ -5,7 +5,7 @@ Maintainer: janbar <jlbarriere68@gmail.com>
 Build-Depends: cmake,
                git,
                debhelper-compat (= 12),
-               qtbase5-dev (>= 5.9.1),
+               qtbase5-dev (>= 5.15),
                qttools5-dev,
                qttools5-dev-tools,
                qtdeclarative5-dev,
