@@ -5,7 +5,7 @@
 ## Noson
 A fast and smart SONOS controller for Unix platforms.
 
-Go to [project page](http://janbar.github.io/noson-app/index.html) for further details. Translations are managed by **transifex** at [noson-translations](https://www.transifex.com/janbar/noson/).
+Go to [project page](http://janbar.github.io/noson-app/index.html) for further details. Translations are managed by **transifex** at [noson-translations](https://explore.transifex.com/janbar/noson/).
 
 <p align="center">
   <img src="http://janbar.github.io/noson-app/download/noson3.png"/>
@@ -128,6 +128,17 @@ ports=80,443,445,1400:1410,3400,3401,3405,3445,3500,4070,4444/tcp|136,137,138,13
 sudo ufw app update noson
 sudo ufw allow noson
 ```
+
+---
+
+Another option is to allow _**all**_ traffic for a specific device:
+
+```bash
+sudo ufw allow from <DEVICE_IP>
+```
+
+As this traffic is local, it is generally considered safe.
+However, please do your own research and threat assessment.
 
 ---
 
