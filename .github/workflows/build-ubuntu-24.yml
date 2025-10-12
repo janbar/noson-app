@@ -1,0 +1,67 @@
+name: build ubuntu 24.04
+
+on:
+  pull_request:
+    branches:
+      - qt6
+  push:
+    branches:
+      - qt6
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    environment: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Update package list
+        run:  sudo apt-get update
+      - name: Install software-properties-common
+        run: sudo apt-get install software-properties-common
+      - name: Install clang compiler and tools
+        run: |
+          sudo apt-get -y install clang ccache cmake pkg-config curl wget
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y \
+              libflac-dev libflac++-dev libpulse-dev zlib1g-dev \
+              libssl-dev libdbus-1-dev libgl1-mesa-dev libpulse0 \
+              mesa-vulkan-drivers
+
+      - name: Configure ENV
+        run:  |
+            echo "QT_DIR=${HOME}/Qt/6.9.2/gcc_64" >> $GITHUB_ENV
+            echo "QT_HOST_PATH=${HOME}/Qt/6.9.2/gcc_64" >> $GITHUB_ENV
+
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-qt
+        with:
+          path: |
+              ~/Qt/6.9.2
+          key: qtgcc_64-60902
+
+      - if: ${{ steps.cache-qt.outputs.cache-hit != 'true' }}
+        name: Install Qt
+        continue-on-error: true
+        run: |
+            wget -q ${{secrets.PRIVATE_URL_DOWNLOAD}}/qt/qt-6.9.2-gcc_64-linux64.tar.xz
+            mkdir -p ~/Qt
+            tar xfJ qt-6.9.2-gcc_64-linux64.tar.xz -C ~/Qt/
+            rm -f *.tar.xz
+
+      - name: Fetch submodules
+        run: git submodule init && git submodule update
+      - name: Configure build
+        run: |
+          cmake -B build \
+              -DCMAKE_PREFIX_PATH=${QT_DIR} \
+              -DCMAKE_FIND_ROOT_PATH=${QT_DIR} \
+              -Wno-dev
+      - name: Build
+        run:  cmake --build build
+      - name: Install
+        run:  sudo cmake --install build
