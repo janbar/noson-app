@@ -448,7 +448,7 @@
         <location filename="../controls2_509/components/Dialog/DialogApplicationSettings.qml" line="308"/>
         <location filename="../controls2_515/components/Dialog/DialogApplicationSettings.qml" line="308"/>
         <source>Enter a valid API key</source>
-        <translation>Skriv inn en gyldig API-nøkkel/translation>
+        <translation>Skriv inn en gyldig API-nøkkel</translation>
     </message>
 </context>
 <context>
@@ -580,7 +580,7 @@
         <location filename="../controls2_509/components/Dialog/DialogNewRadio.qml" line="86"/>
         <location filename="../controls2_515/components/Dialog/DialogNewRadio.qml" line="86"/>
         <source>Please type in a name and stream URL.</source>
-        <translation">Skriv inn et navn og en strømmeadresse (URL).</translation>
+        <translation>Skriv inn et navn og en strømmeadresse (URL).</translation>
     </message>
 </context>
 <context>
@@ -1878,7 +1878,8 @@
     <message>
         <location filename="../controls2_509/components/ZoneControls.qml" line="57"/>
         <location filename="../controls2_515/components/ZoneControls.qml" line="57"/>
-        <source>This feature will be added in a next version. Please rate the App.</sDenne funksjonen vil bli lagt til i en kommende versjon. Vennligst gi appen en vurdering.</translation>
+        <source>This feature will be added in a next version. Please rate the App.</source>
+        <translation>Denne funksjonen vil bli lagt til i en kommende versjon. Vennligst gi appen en vurdering.</translation>
     </message>
 </context>
 <context>
