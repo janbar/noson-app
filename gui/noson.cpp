@@ -148,6 +148,7 @@ void setupApp(QGuiApplication& app) {
     SignalHandler *sh = new SignalHandler(&app);
     sh->catchSignal(SIGHUP);
     sh->catchSignal(SIGALRM);
+    sh->catchSignal(SIGPIPE);
     app.connect(sh, &SignalHandler::catched, [=](int signal){ fprintf(stderr, "Signal: [%d]\n", signal); });
 #endif
     // set translators
