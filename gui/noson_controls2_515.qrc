@@ -177,5 +177,6 @@
         <file alias="controls2/RadioStations.qml">controls2_515/RadioStations.qml</file>
         <file alias="controls2/components/RadiosEmptyState.qml">controls2_515/components/RadiosEmptyState.qml</file>
         <file alias="controls2/components/Dialog/DialogNewRadio.qml">controls2_515/components/Dialog/DialogNewRadio.qml</file>
+        <file alias="i18n/noson_nb.qm">i18n/noson_nb.qm</file>
     </qresource>
 </RCC>
