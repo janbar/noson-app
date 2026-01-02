@@ -9,4 +9,5 @@
     lrelease noson_nl.ts
     lrelease noson_de.ts
     lrelease noson_da.ts
+    lrelease noson_nb.ts
 
