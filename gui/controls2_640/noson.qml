@@ -150,10 +150,10 @@ ApplicationWindow {
 
     // No zone connected: UI push page "NoZoneState" on top to invit user to retry discovery of Sonos devices
     property bool noZone: false // doesn't pop page on startup
-    property Page noZonePage
+    property QtObject noZonePage
 
     // current page now playing
-    property Page nowPlayingPage
+    property QtObject nowPlayingPage
 
     // property to detect if the UI has finished
     property bool loadedUI: false
