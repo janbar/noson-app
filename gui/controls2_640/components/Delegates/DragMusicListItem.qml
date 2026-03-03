@@ -85,17 +85,17 @@ MouseArea {
     property real lastX: -1
     property real lastY: -1
 
-    onPressed: {
+    onPressed: function(mouse) {
         lastX = mouse.x
         lastY = mouse.y
     }
 
-    onPressAndHold: {
+    onPressAndHold: function(mouse) {
         dragArea.sourceIndex = DelegateModel.itemsIndex
         if (reorderable)
             held = true
     }
-    onReleased: {
+    onReleased: function(mouse) {
         if (held) {
             held = false;
         } else {
@@ -152,20 +152,21 @@ MouseArea {
     }
 
     DropArea {
+        id: dropArea
         anchors { fill: parent; margins: 10 }
-
-        onEntered: {
-            dragArea.targetIndex = dragArea.DelegateModel.itemsIndex;
+        onEntered: function(drag) {
             listview.model.items.move(
                                drag.source.DelegateModel.itemsIndex,
                                dragArea.DelegateModel.itemsIndex);
+            mainView.targetIndex = dragArea.DelegateModel.itemsIndex;
         }
     }
 
     onHeldChanged: {
-        if (!held && sourceIndex !== targetIndex) {
-            reorder(sourceIndex, targetIndex);
-            targetIndex = -1;
+        console.log("#### 2 : item = " + mainView.targetIndex);
+        if (!held && sourceIndex !== mainView.targetIndex) {
+            reorder(sourceIndex, mainView.targetIndex);
+            mainView.targetIndex = -1;
         }
     }
 }

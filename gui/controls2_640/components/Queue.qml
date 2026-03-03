@@ -91,7 +91,7 @@ Item {
                 color = "red";
             }
 
-            onReorder: {
+            onReorder: function(from, to) {
                 listview.reorder(from, to)
             }
 
@@ -197,7 +197,7 @@ Item {
 
         signal reorder(int from, int to)
 
-        onReorder: {
+        onReorder: function(from, to) {
             customdebug("Reorder queue item " + from + " to " + to);
             var focusId = to + queueModel.firstIndex;
             saveViewFocus(focusId, ListView.Center);

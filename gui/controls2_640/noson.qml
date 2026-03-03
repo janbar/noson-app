@@ -1408,4 +1408,7 @@ ApplicationWindow {
         id: spinner
         visible: jobRunning
     }
+
+    property int targetIndex: -1
+    property int sourceIndex: -1
 }
