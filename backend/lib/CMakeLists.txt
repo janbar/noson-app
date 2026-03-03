@@ -49,9 +49,8 @@ endif()
 if(NOT OPENSSL_FOUND)
     set(OPENSSL_DL_ABI "1.1")
     download_project(PROJ "openssl-${OPENSSL_DL_ABI}"
-        GIT_REPOSITORY https://github.com/janbar/openssl-cmake.git
-        GIT_TAG 1.1.1w-20250419
-        GIT_SHALLOW 1
+        URL "${CMAKE_CURRENT_SOURCE_DIR}/openssl-1.1.1w-20250419-1.tar.gz"
+        URL_HASH MD5=a8a6b2841f401b9339ab3a56947dd5cb
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
         UPDATE_DISCONNECTED ON)
     if(ANDROID OR MSVC)
@@ -82,16 +81,10 @@ if(NOT BUILD_DEPENDENCIES)
 endif()
 if(NOT FLAC_FOUND OR NOT FLACXX_FOUND)
     download_project(PROJ flac
-        GIT_REPOSITORY https://github.com/janbar/flac-cmake.git
-        GIT_TAG 1.3.2-20250419
-        GIT_SHALLOW 1
+        URL "${CMAKE_CURRENT_SOURCE_DIR}/flac-1.3.2-20250419.tar.gz"
+        URL_HASH MD5=d86c025eeaa32f8cf76a90cea328e284
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}
         UPDATE_DISCONNECTED ON)
-    if(ANDROID OR MSVC)
-        set(BUILD_SHARED_LIBS ON)
-    else()
-        set(BUILD_SHARED_LIBS OFF)
-    endif()
     add_subdirectory(
         ${CMAKE_CURRENT_BINARY_DIR}/flac-src
         ${CMAKE_CURRENT_BINARY_DIR}/flac-build
