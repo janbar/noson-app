@@ -57,7 +57,7 @@ namespace thumbnailer
     // Returned function clears the job when called, provided the job is still in the queue.
     // done() removes any cleared jobs from the queue without calling them.
     weak_ptr <function<void()> > weak_p(list_.back());
-    return [this, weak_p]() noexcept {
+    return [weak_p]() noexcept {
       auto job_p = weak_p.lock();
       if (job_p)
       {
