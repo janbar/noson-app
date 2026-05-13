@@ -9,6 +9,7 @@
 #include <QSettings>
 #include <QtQuickControls2>
 #include <QTranslator>
+#include <QLibraryInfo>
 #include <QDebug>
 #include <QDir>
 #include <QProcess>
@@ -160,21 +161,33 @@ void setupApp(QGuiApplication& app) {
       prepareTranslator(app, appDir.absolutePath(), "qt", locale);
 #elif defined(Q_OS_ANDROID)
     prepareTranslator(app, "assets:/translations", "qt", locale);
+#else
+    // try to load qt base translations
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    QString qt_translationPath(QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+#else
+    QString qt_translationPath(QLibraryInfo::path(QLibraryInfo::TranslationsPath));
 #endif
+    prepareTranslator(app, qt_translationPath, "qtbase", locale);
+#endif
+
     app.setWindowIcon(QIcon(QPixmap(":/images/noson.png")));
 }
 
 void prepareTranslator(QGuiApplication& app, const QString& translationPath, const QString& translationPrefix, const QLocale& locale)
 {
-    QTranslator * translator = new QTranslator();
-    if (!translator->load(locale, translationPrefix, QString("_"), translationPath))
+    QString i18Path(translationPath);
+    i18Path.append("/").append(translationPrefix).append("_").append(locale.name().left(2)).append(".qm");
+    QTranslator * translator = new QTranslator(&app);
+    if (translator->load(locale, translationPrefix, QString("_"), translationPath))
     {
-        qWarning() << "no file found for translations '"+ translationPath + "/" + translationPrefix + "_" + locale.name().left(2) + ".qm' (using default).";
+        qInfo("using file '%s' for translations.", i18Path.toUtf8().constData());
+        app.installTranslator(translator);
     }
     else
     {
-        qInfo() << "using file '"+ translationPath + "/" + translationPrefix + "_" + locale.name().left(2) + ".qm ' for translations.";
-        app.installTranslator(translator);
+        qWarning("no file found for translations '%s' (using default).", i18Path.toUtf8().constData());
+        delete translator;
     }
 }
 
