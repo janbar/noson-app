@@ -51,8 +51,8 @@ QNetworkAccessManager* NetManager::networkAccessManager()
 bool NetManager::initSSLDefaultConfiguration()
 {
   QSslConfiguration sslConf = QSslConfiguration::defaultConfiguration();
-  // use the protocol TLSv1.2
-  sslConf.setProtocol(QSsl::TlsV1_2);
+  // use the protocol TLSv1.2 or later
+  sslConf.setProtocol(QSsl::TlsV1_2OrLater);
   // do not request a certificate from the peer, no validation will be done
   sslConf.setPeerVerifyMode(QSslSocket::VerifyNone);
   QSslConfiguration::setDefaultConfiguration(sslConf);
