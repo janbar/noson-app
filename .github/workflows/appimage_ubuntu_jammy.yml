@@ -26,7 +26,7 @@ jobs:
         run: git submodule init && git submodule update
 
       - name: Configure
-        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr .
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DQT_STATICPLUGIN=ON -DCMAKE_INSTALL_PREFIX=/usr .
 
       - name: Build
         run: cd build && make -j`nproc` install DESTDIR=../AppDir
@@ -34,11 +34,21 @@ jobs:
       - name: Download AppImage builder
         run: |
           sudo apt-get install -y binutils coreutils desktop-file-utils fakeroot fuse libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync 
-          wget -O appimage-builder-x86_64.AppImage https://github.com/AppImageCrafters/appimage-builder/releases/download/v1.1.0/appimage-builder-1.1.0-x86_64.AppImage
-          chmod +x appimage-builder-x86_64.AppImage
+          wget -O appimagetool https://github.com/AppImage/appimagetool/releases/download/1.9.1/appimagetool-x86_64.AppImage
+          chmod +x appimagetool
+          wget -O linuxdeploy-plugin-qt https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+          chmod +x linuxdeploy-plugin-qt
+          wget -O linuxdeploy https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          chmod +x linuxdeploy
 
-      - name: Build AppImage
-        run: ./appimage-builder-x86_64.AppImage --recipe appimage/builder_ubuntu_22.04.yml
+      - name: Build AppImage stage 1
+        run: |
+          cp -r /usr/lib/x86_64-linux-gnu/qt5/qml ./AppDir/usr/
+          mv ./AppDir/usr/lib/x86_64-linux-gnu/noson/noson-cli ./AppDir/usr/bin/
+      - name: Build AppImage stage 2
+        run: ./linuxdeploy --appdir ./AppDir --plugin qt --library /usr/lib/x86_64-linux-gnu/libpulse-simple.so.0
+      - name: Package AppImage
+        run: ./appimagetool ./AppDir
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
