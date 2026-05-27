@@ -1,12 +1,12 @@
-name: build ubuntu 24.04
+name: build ubuntu 24.04 qt6
 
 on:
   pull_request:
     branches:
-      - qt6
+      - master
   push:
     branches:
-      - qt6
+      - master
 
 jobs:
   build:
@@ -31,8 +31,8 @@ jobs:
 
       - name: Configure ENV
         run:  |
-            echo "QT_DIR=${HOME}/Qt/6.9.2/gcc_64" >> $GITHUB_ENV
-            echo "QT_HOST_PATH=${HOME}/Qt/6.9.2/gcc_64" >> $GITHUB_ENV
+            echo "QT_DIR=${HOME}/Qt/6.9.3/gcc_64" >> $GITHUB_ENV
+            echo "QT_HOST_PATH=${HOME}/Qt/6.9.3/gcc_64" >> $GITHUB_ENV
 
       - name: Cache Qt
         id: cache-qt
@@ -41,16 +41,16 @@ jobs:
           cache-name: cache-qt
         with:
           path: |
-              ~/Qt/6.9.2
-          key: qtgcc_64-60902
+              ~/Qt/6.9.3
+          key: qtgcc_64-60903
 
       - if: ${{ steps.cache-qt.outputs.cache-hit != 'true' }}
         name: Install Qt
         continue-on-error: true
         run: |
-            wget -q ${{secrets.PRIVATE_URL_DOWNLOAD}}/qt/qt-6.9.2-gcc_64-linux64.tar.xz
+            wget -q ${{secrets.PRIVATE_URL_DOWNLOAD}}/qt/qt-6.9.3-gcc_64-linux64.tar.xz
             mkdir -p ~/Qt
-            tar xfJ qt-6.9.2-gcc_64-linux64.tar.xz -C ~/Qt/
+            tar xfJ qt-6.9.3-gcc_64-linux64.tar.xz -C ~/Qt/
             rm -f *.tar.xz
 
       - name: Fetch submodules
