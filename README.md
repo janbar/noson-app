@@ -1,4 +1,4 @@
-![build status](https://github.com/janbar/noson-app/actions/workflows/build-ubuntu-latest.yml/badge.svg?branch=master)
+![build status](https://github.com/janbar/noson-app/actions/workflows/build-ubuntu-24-qt5.yml/badge.svg?branch=master)
 ![build status](https://github.com/janbar/noson-app/actions/workflows/build-android-x64.yml/badge.svg?branch=master)
 
 ## Noson
