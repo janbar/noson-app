@@ -11,11 +11,8 @@ option(DISABLE_ID3PARSER "Disable ID3 parser" OFF)
 option(DISABLE_MP4PARSER "Disable MP4 parser" OFF)
 option(DISABLE_OGGPARSER "Disable OGG parser" OFF)
 
-find_package(Qt6 REQUIRED)
-find_package(Qt6Core REQUIRED)
-find_package(Qt6Gui REQUIRED)
-find_package(Qt6Qml REQUIRED)
-find_package(Qt6Quick REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} ${QT_VERSION} COMPONENTS
+    Core Gui Qml Quick REQUIRED)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 11)
@@ -23,13 +20,13 @@ set(CMAKE_CXX_STANDARD 11)
 ###############################################################################
 # configure
 if(DISABLE_ID3PARSER)
-  add_definitions("-DDISABLE_ID3PARSER")
+    add_definitions("-DDISABLE_ID3PARSER")
 endif()
 if(DISABLE_MP4PARSER)
-  add_definitions("-DDISABLE_MP4PARSER")
+    add_definitions("-DDISABLE_MP4PARSER")
 endif()
 if(DISABLE_OGGPARSER)
-  add_definitions("-DDISABLE_OGGPARSER")
+    add_definitions("-DDISABLE_OGGPARSER")
 endif()
 
 if(QT_STATICPLUGIN)
@@ -39,59 +36,59 @@ if(QT_STATICPLUGIN)
 endif()
 
 if (MSVC)
-  set (CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /W3 /Od /RTC1")
-  set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2 /EHsc /nologo")
-  set (CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} /O2 /EHsc /nologo")
-  set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /O2 /EHsc /nologo")
-  set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W3 /Od /RTC1 /EHsc /nologo")
+    set (CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /W3 /Od /RTC1")
+    set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2 /EHsc /nologo")
+    set (CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} /O2 /EHsc /nologo")
+    set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /O2 /EHsc /nologo")
+    set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W3 /Od /RTC1 /EHsc /nologo")
 endif ()
 
 set(
-  NosonMediaScanner_SOURCES
-  plugin.cpp
-  mediascanner.cpp
-  mediascannerengine.cpp
-  mediarunnable.cpp
-  mediaextractor.cpp
-  flacparser.cpp
-  id3parser.cpp
-  m4aparser.cpp
-  oggparser.cpp
-  listmodel.cpp
-  byteorder.cpp
-  aggregate/artists.cpp
-  aggregate/genres.cpp
-  aggregate/albums.cpp
-  aggregate/tracks.cpp
-  aggregate/composers.cpp
+    NosonMediaScanner_SOURCES
+    plugin.cpp
+    mediascanner.cpp
+    mediascannerengine.cpp
+    mediarunnable.cpp
+    mediaextractor.cpp
+    flacparser.cpp
+    id3parser.cpp
+    m4aparser.cpp
+    oggparser.cpp
+    listmodel.cpp
+    byteorder.cpp
+    aggregate/artists.cpp
+    aggregate/genres.cpp
+    aggregate/albums.cpp
+    aggregate/tracks.cpp
+    aggregate/composers.cpp
 )
 
 set(
-  NosonMediaScanner_HEADERS
-  plugin.h
-  mediascanner.h
-  mediascannerengine.h
-  mediarunnable.h
-  mediaextractor.h
-  flacparser.h
-  id3parser.h
-  id3v1genres.h
-  m4aparser.h
-  oggparser.h
-  listmodel.h
-  mediaparser.h
-  mediafile.h
-  mediainfo.h
-  byteorder.h
-  locked.h
-  tools.h
-  packed.h
-  aggregate/aggregate.h
-  aggregate/artists.h
-  aggregate/genres.h
-  aggregate/albums.h
-  aggregate/tracks.h
-  aggregate/composers.h
+    NosonMediaScanner_HEADERS
+    plugin.h
+    mediascanner.h
+    mediascannerengine.h
+    mediarunnable.h
+    mediaextractor.h
+    flacparser.h
+    id3parser.h
+    id3v1genres.h
+    m4aparser.h
+    oggparser.h
+    listmodel.h
+    mediaparser.h
+    mediafile.h
+    mediainfo.h
+    byteorder.h
+    locked.h
+    tools.h
+    packed.h
+    aggregate/aggregate.h
+    aggregate/artists.h
+    aggregate/genres.h
+    aggregate/albums.h
+    aggregate/tracks.h
+    aggregate/composers.h
 )
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
@@ -104,7 +101,11 @@ endif()
 
 set_target_properties(NosonMediaScanner PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_DIRECTORY}/NosonMediaScanner)
-target_link_libraries(NosonMediaScanner Qt6::Core Qt6::Gui Qt6::Qml Qt6::Quick)
+target_link_libraries(NosonMediaScanner
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Gui
+    Qt${QT_VERSION_MAJOR}::Qml
+    Qt${QT_VERSION_MAJOR}::Quick)
 
 # Copy qmldir file to build dir for running in QtCreator
 add_custom_target(NosonMediaScanner-qmldir ALL
@@ -113,8 +114,8 @@ add_custom_target(NosonMediaScanner-qmldir ALL
 )
 
 if(NOT QT_STATICPLUGIN)
-  # Install plugin file
-  MESSAGE(STATUS "PlugIns install path: ${PLUGINS_DIR}")
-  install(TARGETS NosonMediaScanner DESTINATION ${PLUGINS_DIR}/NosonMediaScanner/)
-  install(FILES   qmldir DESTINATION ${PLUGINS_DIR}/NosonMediaScanner/)
+    # Install plugin file
+    MESSAGE(STATUS "PlugIns install path: ${PLUGINS_DIR}")
+    install(TARGETS NosonMediaScanner DESTINATION ${PLUGINS_DIR}/NosonMediaScanner/)
+    install(FILES   qmldir DESTINATION ${PLUGINS_DIR}/NosonMediaScanner/)
 endif()

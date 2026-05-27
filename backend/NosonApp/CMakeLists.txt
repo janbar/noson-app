@@ -4,18 +4,15 @@ set(CMAKE_AUTOMOC ON)
 
 option(QT_STATICPLUGIN "Build a static plugin" OFF)
 
-find_package(Qt6 REQUIRED)
-find_package(Qt6Core REQUIRED)
-find_package(Qt6Gui REQUIRED)
-find_package(Qt6Qml REQUIRED)
-find_package(Qt6Quick REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} ${QT_VERSION} COMPONENTS
+    Core Gui Qml Quick REQUIRED)
 
 if(UNIX AND NOT APPLE)
 #    include( FindPkgConfig )
 #    pkg_check_modules(DBUS QUIET dbus-1)
     find_library(DBUS_LIBRARIES dbus-1)
     if(DBUS_LIBRARIES)
-        find_package(Qt6DBus REQUIRED)
+        find_package(Qt${QT_VERSION_MAJOR} ${QT_VERSION} COMPONENTS DBus REQUIRED)
         set(HAVE_DBUS 1)
         add_definitions(-DHAVE_DBUS)
         message(STATUS "Enable interface MPRIS")
@@ -28,7 +25,7 @@ set(CMAKE_CXX_STANDARD 11)
 ###############################################################################
 # configure
 include_directories(${noson_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 if(QT_STATICPLUGIN)
@@ -38,11 +35,11 @@ if(QT_STATICPLUGIN)
 endif()
 
 if (MSVC)
-  set (CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /W3 /Od /RTC1")
-  set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2 /EHsc /nologo")
-  set (CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} /O2 /EHsc /nologo")
-  set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /O2 /EHsc /nologo")
-  set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W3 /Od /RTC1 /EHsc /nologo")
+    set (CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /W3 /Od /RTC1")
+    set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2 /EHsc /nologo")
+    set (CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} /O2 /EHsc /nologo")
+    set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /O2 /EHsc /nologo")
+    set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W3 /Od /RTC1 /EHsc /nologo")
 endif ()
 
 set(
@@ -100,10 +97,10 @@ set(
 if(HAVE_DBUS)
     set(NosonApp_SOURCES ${NosonApp_SOURCES} dbus/mpris2.cpp)
     set(NosonApp_HEADERS ${NosonApp_HEADERS} dbus/mpris2.h)
-    qt6_add_dbus_adaptor(NosonApp_SOURCES
+    qt_add_dbus_adaptor(NosonApp_SOURCES
         dbus/org.mpris.MediaPlayer2.xml
         dbus/mpris2.h nosonapp::Mpris2 mpris2_root Mpris2Root)
-    qt6_add_dbus_adaptor(NosonApp_SOURCES
+    qt_add_dbus_adaptor(NosonApp_SOURCES
         dbus/org.mpris.MediaPlayer2.Player.xml
         dbus/mpris2.h nosonapp::Mpris2 mpris2_player Mpris2Player)
 endif()
@@ -120,10 +117,13 @@ endif()
 
 set_target_properties(NosonApp PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_DIRECTORY}/NosonApp)
-target_link_libraries(NosonApp ${noson_LIBRARIES} Qt6::Gui Qt6::Qml Qt6::Quick)
+target_link_libraries(NosonApp ${noson_LIBRARIES}
+    Qt${QT_VERSION_MAJOR}::Gui
+    Qt${QT_VERSION_MAJOR}::Qml
+    Qt${QT_VERSION_MAJOR}::Quick)
 
 if(HAVE_DBUS)
-  target_link_libraries(NosonApp Qt6::DBus)
+    target_link_libraries(NosonApp Qt${QT_VERSION_MAJOR}::DBus)
 endif()
 
 # Copy qmldir file to build dir for running in QtCreator
@@ -133,8 +133,8 @@ add_custom_target(NosonApp-qmldir ALL
 )
 
 if(NOT QT_STATICPLUGIN)
-  # Install plugin file
-  MESSAGE(STATUS "PlugIns install path: ${PLUGINS_DIR}")
-  install(TARGETS NosonApp DESTINATION ${PLUGINS_DIR}/NosonApp/)
-  install(FILES   qmldir DESTINATION ${PLUGINS_DIR}/NosonApp/)
+    # Install plugin file
+    MESSAGE(STATUS "PlugIns install path: ${PLUGINS_DIR}")
+    install(TARGETS NosonApp DESTINATION ${PLUGINS_DIR}/NosonApp/)
+    install(FILES   qmldir DESTINATION ${PLUGINS_DIR}/NosonApp/)
 endif()
