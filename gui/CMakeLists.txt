@@ -4,6 +4,9 @@ set(CMAKE_AUTOMOC ON)
 
 find_package(Qt${QT_VERSION_MAJOR} ${QT_VERSION} COMPONENTS
     Core Gui Qml Quick QuickControls2 Widgets Xml Svg REQUIRED)
+if(ANDROID)
+  find_package(Qt5AndroidExtras REQUIRED)
+endif()
 
 file(GLOB QML_JS_FILES *.qml *.js)
 file(GLOB APP_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.qml *.js *.json)
@@ -71,6 +74,15 @@ target_link_libraries(noson-gui
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Xml
     Qt${QT_VERSION_MAJOR}::Svg)
+if(ANDROID)
+    if (QT_VERSION VERSION_LESS 5.99.0)
+        target_link_libraries(noson-gui android log Qt5::AndroidExtras)
+    else()
+        add_definitions(-frtti) # dynamic_cast: https://github.com/android/ndk/issues/519
+        set_property(TARGET noson-gui PROPERTY SUFFIX "_${ANDROID_ABI}.so")
+        target_link_libraries(noson-gui android log Qt6::CorePrivate)
+    endif()
+endif()
 
 if(QT_STATICPLUGIN)
     add_definitions(-DQT_STATICPLUGIN)

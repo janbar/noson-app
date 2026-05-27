@@ -18,8 +18,13 @@
 #include <QTime>
 
 #ifdef Q_OS_ANDROID
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QtAndroid>
 #include <QAndroidJniObject>
+#else
+#include <QtCore/private/qandroidextras_p.h>
+#include <QJniObject>
+#endif
 #endif
 
 #include "diskcache/diskcachefactory.h"
@@ -68,8 +73,9 @@ int main(int argc, char *argv[])
     QGuiApplication::setApplicationName(APP_NAME);
     QGuiApplication::setApplicationDisplayName(APP_DISPLAY_NAME);
     QGuiApplication::setOrganizationName(ORG_NAME);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
+#endif
     QGuiApplication app(argc, argv);
     setupApp(app);
 
