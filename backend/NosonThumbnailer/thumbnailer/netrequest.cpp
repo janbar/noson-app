@@ -166,7 +166,7 @@ void NetRequest::replyFinished()
     const QVariant statusCode = m_reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
     m_httpStatusCode = statusCode.toInt();
 
-    if (!redirectionTarget.isNull())
+    if (redirectionTarget.isValid())
     {
       const QUrl redirectedUrl = m_request.url().resolved(redirectionTarget.toUrl());
       if (m_enableRedirect)

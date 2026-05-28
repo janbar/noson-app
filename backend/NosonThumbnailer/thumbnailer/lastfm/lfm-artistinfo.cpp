@@ -50,8 +50,8 @@ void LFMArtistInfo::queryInfo(NetRequest* prepared)
   url.setQuery(qry);
 
   prepared->setOperation(QNetworkAccessManager::PostOperation);
-  prepared->setHeader(QNetworkRequest::UserAgentHeader, THUMBNAILER_USER_AGENT);
-  prepared->setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+  prepared->setHeader(QNetworkRequest::UserAgentHeader, QString::fromUtf8(THUMBNAILER_USER_AGENT));
+  prepared->setHeader(QNetworkRequest::ContentTypeHeader, QString::fromUtf8("application/x-www-form-urlencoded"));
   prepared->setHeader("Accept", "text/xml");
   prepared->setHeader("Accept-Charset", "utf-8");
   prepared->setData(postData);

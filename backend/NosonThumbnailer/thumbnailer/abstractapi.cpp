@@ -49,8 +49,8 @@ AbstractAPI::Store::~Store()
 
 bool AbstractAPI::registerMe(AbstractAPI* api)
 {
-  qInfo().noquote() << "thumbnailer: register API [" + QString(api->name()) + "]";
-  QMap<QString, AbstractAPI*>::iterator it = AbstractAPI::apis.map.insert(api->name(), api);
+  qInfo().noquote() << QString::fromUtf8("thumbnailer: register API [%1]").arg(QString::fromUtf8(api->name()));
+  QMap<QString, AbstractAPI*>::iterator it = AbstractAPI::apis.map.insert(QString::fromUtf8(api->name()), api);
   return (it != apis.map.end());
 }
 

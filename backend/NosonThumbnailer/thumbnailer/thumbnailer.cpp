@@ -252,12 +252,11 @@ namespace thumbnailer
     // LCOV_EXCL_START
     catch (const std::exception& e)
     {
-      finishWithError("Thumbnailer: RequestImpl::callFinished(): thumbnailer failed: " +
-              QString::fromStdString(e.what()));
+      finishWithError(QString::fromUtf8("Thumbnailer: RequestImpl::callFinished(): thumbnailer failed: ").append(e.what()));
     }
     catch (...)
     {
-      finishWithError(QStringLiteral("Thumbnailer: RequestImpl::callFinished(): unknown exception"));
+      finishWithError(QString::fromUtf8("Thumbnailer: RequestImpl::callFinished(): unknown exception"));
     }
     // LCOV_EXCL_STOP
   }
@@ -356,7 +355,7 @@ namespace thumbnailer
   , fatal_(0)
   , quota_(0)
   {
-    qInfo().noquote() << "installing thumbnails cache in folder \"" + offlineStoragePath + "\"";
+    qInfo().noquote() << QString::fromUtf8("installing thumbnails cache in folder \"%1\"").arg(offlineStoragePath);
     limiter_ = new RateLimiter(MAX_BACKLOG);
     cache_ = new DiskCacheManager(offlineStoragePath, maxCacheSize);
     nam_ = new NetManager();
@@ -380,7 +379,7 @@ namespace thumbnailer
 
   void ThumbnailerImpl::configure(const QString& apiName, const QString &apiKey)
   {
-    qInfo().noquote() << "thumbnailer: configure API [" + apiName + "]";
+    qInfo().noquote() << QString::fromUtf8("thumbnailer: configure API [%1]").arg(apiName);
     fatal_.store(0); // reset fatal event count
     valid_ = false;
     api_ = nullptr;
@@ -600,7 +599,7 @@ namespace thumbnailer
   {
     const char* name = p_->apiName();
     if (name)
-      return QString(name);
+      return QString(QString::fromUtf8(name));
     return QString();
   }
 

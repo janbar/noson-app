@@ -48,7 +48,7 @@ void DEEZERArtistInfo::queryInfo(NetRequest* prepared)
   url.setQuery(qry);
 
   prepared->setOperation(QNetworkAccessManager::GetOperation);
-  prepared->setHeader(QNetworkRequest::UserAgentHeader, THUMBNAILER_USER_AGENT);
+  prepared->setHeader(QNetworkRequest::UserAgentHeader, QString::fromUtf8(THUMBNAILER_USER_AGENT));
   prepared->setHeader("Accept", "application/json");
   prepared->setHeader("Accept-Charset", "utf-8");
   prepared->setUrl(QUrl(url));
