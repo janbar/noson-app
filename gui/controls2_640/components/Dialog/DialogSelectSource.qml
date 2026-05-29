@@ -49,7 +49,6 @@ DialogBase {
         color: "red"
         font.pointSize: units.fs("x-small")
         font.weight: Font.Normal
-        visible: false // should only be visible when an error is made.
     }
 
     TextField {
@@ -63,7 +62,6 @@ DialogBase {
 
     function actionFailed() {
         sourceOutput.text = qsTr("Playing failed.")
-        sourceOutput.visible = true
     }
 
     Button {
@@ -71,19 +69,17 @@ DialogBase {
         height: units.gu(6)
         text: qsTr("Play stream")
         onClicked: {
-            sourceOutput.visible = false // make sure its hidden now if there was an error last time
+            sourceOutput.text = "" // make sure it is empty
             if (url.text.length > 0) { // make sure something is acually inputed
                 player.playStream(url.text, "", function(result) {
                     if (result) {
                         inputStreamUrl = url.text;
                     } else {
                         sourceOutput.text = qsTr("Playing failed.");
-                        sourceOutput.visible = true;
                     }
                 });
             }
             else {
-                sourceOutput.visible = true
                 sourceOutput.text = qsTr("Please type in an URL.")
             }
         }
