@@ -100,7 +100,7 @@ else()
 endif()
 
 set_target_properties(NosonMediaScanner PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_DIRECTORY}/NosonMediaScanner)
+    LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_PATH}/NosonMediaScanner)
 target_link_libraries(NosonMediaScanner
     Qt${QT_VERSION_MAJOR}::Core
     Qt${QT_VERSION_MAJOR}::Gui
@@ -109,7 +109,7 @@ target_link_libraries(NosonMediaScanner
 
 # Copy qmldir file to build dir for running in QtCreator
 add_custom_target(NosonMediaScanner-qmldir ALL
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QML_IMPORT_DIRECTORY}/NosonMediaScanner/qmldir
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QML_IMPORT_PATH}/NosonMediaScanner/qmldir
     DEPENDS ${QMLFILES}
 )
 

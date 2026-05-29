@@ -11,8 +11,7 @@ if(NOT noson_FOUND)
     add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/lib)
 endif()
 
-set(QML_IMPORT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/qml)
-set(QML_IMPORT_PATH ${QML_IMPORT_DIRECTORY} CACHE STRING "QML Import path" FORCE)
+set(QML_IMPORT_PATH ${CMAKE_CURRENT_BINARY_DIR}/qml CACHE STRING "QML Import path" FORCE)
 
 add_subdirectory(NosonApp)
 add_subdirectory(NosonThumbnailer)

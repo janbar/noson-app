@@ -116,7 +116,7 @@ if(NOT noson_FOUND)
 endif()
 
 set_target_properties(NosonApp PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_DIRECTORY}/NosonApp)
+    LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_PATH}/NosonApp)
 target_link_libraries(NosonApp ${noson_LIBRARIES}
     Qt${QT_VERSION_MAJOR}::Gui
     Qt${QT_VERSION_MAJOR}::Qml
@@ -128,7 +128,7 @@ endif()
 
 # Copy qmldir file to build dir for running in QtCreator
 add_custom_target(NosonApp-qmldir ALL
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QML_IMPORT_DIRECTORY}/NosonApp/qmldir
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QML_IMPORT_PATH}/NosonApp/qmldir
     DEPENDS ${QMLFILES}
 )
 

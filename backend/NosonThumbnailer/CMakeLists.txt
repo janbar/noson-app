@@ -81,14 +81,14 @@ else()
 endif()
 
 set_target_properties(NosonThumbnailer PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_DIRECTORY}/NosonThumbnailer)
+    LIBRARY_OUTPUT_DIRECTORY ${QML_IMPORT_PATH}/NosonThumbnailer)
 target_link_libraries(NosonThumbnailer
     Qt${QT_VERSION_MAJOR}::Qml
     Qt${QT_VERSION_MAJOR}::Quick)
 
 # Copy qmldir file to build dir for running in QtCreator
 add_custom_target(NosonThumbnailer-qmldir ALL
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QML_IMPORT_DIRECTORY}/NosonThumbnailer/qmldir
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/qmldir ${QML_IMPORT_PATH}/NosonThumbnailer/qmldir
     DEPENDS ${QMLFILES}
 )
 
