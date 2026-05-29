@@ -47,9 +47,14 @@ jobs:
         continue-on-error: true
         run: |
             wget -q ${{secrets.PRIVATE_URL_DOWNLOAD}}/qt/qt-5.15.16-android-ndk23-linux64.tar.xz
+            wget -q ${{secrets.PRIVATE_URL_DOWNLOAD}}/qt/android_openssl-20240915.tar.xz
             mkdir -p ~/Qt
             tar xfJ qt-5.15.16-android-ndk23-linux64.tar.xz -C ~/Qt/
+            tar xfJ android_openssl-20240915.tar.xz -C ~/Qt/
             rm -f qt-5.15.16-android-ndk23-linux64.tar.xz
+
+      - name: Configure Android OpenSSL
+        run: ln -s ~/Qt/android_openssl ${ANDROID_SDK_ROOT}/android_openssl
 
       - name: Fetch submodules
         run: git submodule init && git submodule update
