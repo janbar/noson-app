@@ -13,6 +13,8 @@ if((NOT CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "None") AND NOT CMAKE_CONF
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
+include(FeatureSummary)
+
 option(INSTALL_TESTS "Install the tests on make install" OFF)
 
 option(QT_VERSION_PREFERRED "preferred Qt version")
@@ -178,7 +180,17 @@ add_definitions(-DAPP_VERSION="${APP_VERSION}")
 if(ANDROID)
     add_definitions(-frtti) # dynamic_cast: https://github.com/android/ndk/issues/519
     add_library(noson-gui SHARED ${noson-gui_SOURCES} ${noson-gui_HEADERS} ${noson-gui-resources})
-elseif(MSVC)
+    # Provides dependency openssl
+    if(NOT ANDROID_SDK_ROOT)
+        set(ANDROID_SDK_ROOT "$ENV{ANDROID_SDK_ROOT}")
+        if(NOT ANDROID_SDK_ROOT)
+            message(FATAL_ERROR "The ANDROID_SDK_ROOT environment variable is not set")
+        endif()
+    endif()
+    include(${ANDROID_SDK_ROOT}/android_openssl/android_openssl.cmake)
+    add_android_openssl_libraries(noson-gui)
+    get_target_property(ANDROID_EXTRA_LIBS noson-gui QT_ANDROID_EXTRA_LIBS)
+ elseif(MSVC)
     set (CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /W3 /Od /RTC1")
     set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2 /EHsc /nologo")
     set (CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} /O2 /EHsc /nologo")
@@ -239,7 +251,7 @@ if(ANDROID)
         VERSION_CODE ${APP_VERSION_CODE}
         PACKAGE_NAME ${APP_ID}
         PACKAGE_SOURCES ${CMAKE_SOURCE_DIR}/android/package-sources
-        DEPENDS ssl crypto FLAC FLACXX
+        DEPENDS FLAC FLACXX ${ANDROID_EXTRA_LIBS}
         PLUGINS ${PLUGINS_BINARY_DIR}
         KEYSTORE ${KEYSTORE_FILE} ${KEYSTORE_ALIAS}
         KEYSTORE_PASSWORD ${KEYSTORE_PASSWORD}
@@ -276,3 +288,5 @@ else()
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 endif()
+
+feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES)

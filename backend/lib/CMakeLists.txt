@@ -16,6 +16,37 @@ include(DownloadProject)
 # Disable install rules
 set(SKIP_INSTALL_ALL ON)
 
+# Provides dependency openssl
+if(ANDROID)
+    if(NOT ANDROID_SDK_ROOT)
+        set(ANDROID_SDK_ROOT "$ENV{ANDROID_SDK_ROOT}")
+        if(NOT ANDROID_SDK_ROOT)
+            message(FATAL_ERROR "The ANDROID_SDK_ROOT environment variable is not set")
+        endif()
+    endif()
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+      set(SSL_ROOT_PATH ${ANDROID_SDK_ROOT}/android_openssl/no-asm)
+    else()
+      set(SSL_ROOT_PATH ${ANDROID_SDK_ROOT}/android_openssl)
+    endif()
+    if(Qt6_VERSION VERSION_GREATER_EQUAL 6.5.0)
+      if(NOT OPENSSL_ROOT_DIR)
+        set(OPENSSL_ROOT_DIR ${SSL_ROOT_PATH}/ssl_3/${CMAKE_ANDROID_ARCH_ABI})
+        set(OPENSSL_INCLUDE_DIR ${OPENSSL_ROOT_DIR}/include)
+        set(OPENSSL_CRYPTO_LIBRARY ${OPENSSL_ROOT_DIR}/libcrypto_3.so)
+        set(OPENSSL_SSL_LIBRARY ${OPENSSL_ROOT_DIR}/libssl_3.so)
+      endif()
+    else()
+      if(NOT OPENSSL_ROOT_DIR)
+        set(OPENSSL_ROOT_DIR ${SSL_ROOT_PATH}/ssl_1.1/${CMAKE_ANDROID_ARCH_ABI})
+        set(OPENSSL_INCLUDE_DIR ${OPENSSL_ROOT_DIR}/include)
+        set(OPENSSL_CRYPTO_LIBRARY ${OPENSSL_ROOT_DIR}/libcrypto_1_1.so)
+        set(OPENSSL_SSL_LIBRARY ${OPENSSL_ROOT_DIR}/libssl_1_1.so)
+      endif()
+    endif()
+endif()
+find_package(OpenSSL REQUIRED)
+
 # Provides dependency zlib
 if(NOT BUILD_DEPENDENCIES)
     find_package(ZLIB QUIET)
@@ -40,39 +71,6 @@ if(NOT ZLIB_FOUND)
     add_library(ZLIB::ZLIB ALIAS ${ZLIB_LIBRARY})
     message(STATUS "Build ZLIB: ${zlib_BINARY_DIR}")
     list(APPEND noson_DEPENDENCIES ${ZLIB_LIBRARY})
-endif()
-
-# Provides dependency openssl
-if(NOT BUILD_DEPENDENCIES)
-    find_package(OpenSSL QUIET)
-endif()
-if(NOT OPENSSL_FOUND)
-    set(OPENSSL_DL_ABI "1.1")
-    download_project(PROJ "openssl-${OPENSSL_DL_ABI}"
-        GIT_REPOSITORY https://github.com/janbar/openssl-cmake.git
-        GIT_TAG 1.1.1w-20250419
-        GIT_SHALLOW 1
-        PREFIX ${CMAKE_CURRENT_BINARY_DIR}
-        UPDATE_DISCONNECTED ON)
-    if(ANDROID OR MSVC)
-        set(BUILD_SHARED_LIBS ON)
-    else()
-        set(BUILD_SHARED_LIBS OFF)
-    endif()
-    add_subdirectory(
-        ${CMAKE_CURRENT_BINARY_DIR}/openssl-${OPENSSL_DL_ABI}-src
-        ${CMAKE_CURRENT_BINARY_DIR}/openssl-${OPENSSL_DL_ABI}-build
-        EXCLUDE_FROM_ALL
-    )
-    set(OPENSSL_SSL_LIBRARY ssl)
-    set(OPENSSL_CRYPTO_LIBRARY crypto)
-    set(OPENSSL_INCLUDE_DIR "${openssl_BINARY_DIR}/include" "${openssl_BINARY_DIR}")
-    set(OPENSSL_FOUND ON)
-    export(TARGETS crypto ssl FILE OpenSSLTargets.cmake)
-    add_library(OpenSSL::Crypto ALIAS crypto)
-    add_library(OpenSSL::SSL ALIAS ssl)
-    message(STATUS "Build OpenSSL: ${openssl_BINARY_DIR}")
-    list(APPEND noson_DEPENDENCIES ${OPENSSL_CRYPTO_LIBRARY} ${OPENSSL_SSL_LIBRARY})
 endif()
 
 # Provides dependency FLAC

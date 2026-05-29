@@ -1,15 +1,6 @@
 cmake_minimum_required(VERSION 3.8.2...3.20)
 
-OPTION (BUILD_LIBNOSON "Build libnoson from sources." ON)
-
-if(NOT BUILD_DEPENDENCIES)
-    if(NOT BUILD_LIBNOSON)
-        find_package(noson 2.12 REQUIRED)
-    endif()
-endif()
-if(NOT noson_FOUND)
-    add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/lib)
-endif()
+add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
 set(QML_IMPORT_PATH ${CMAKE_CURRENT_BINARY_DIR}/qml CACHE STRING "QML Import path" FORCE)
 
