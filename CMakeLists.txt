@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 3.8.2...3.20)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 project(noson-app C CXX)
 
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 11)
+
 if((NOT CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "None") AND NOT CMAKE_CONFIGURATION_TYPES)
     message(STATUS "Setting build type to 'Release' as none was specified.")
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
@@ -127,13 +130,101 @@ if(MSVC)
 endif()
 
 add_subdirectory(backend)
-add_subdirectory(gui)
+
+find_package(Qt${QT_VERSION_MAJOR} ${QT_VERSION} COMPONENTS
+    Core Gui Qml Quick QuickControls2 Widgets Xml Svg REQUIRED)
+if(QT_VERSION VERSION_GREATER_EQUAL 6)
+    find_package(Qt6 ${QT_VERSION} COMPONENTS Core5Compat REQUIRED)
+endif()
+if(ANDROID)
+    if(QT_VERSION_MAJOR EQUAL 5)
+        find_package(Qt5AndroidExtras REQUIRED)
+    endif()
+endif()
+
+# Automatically create moc files
+set(CMAKE_AUTOMOC ON)
+
+if (QT_VERSION VERSION_LESS 5.99.0)
+    qt_add_resources(noson-gui-resources gui/noson_controls2_515.qrc)
+elseif (QT_VERSION VERSION_LESS 6.99.0)
+    qt_add_resources(noson-gui-resources gui/noson_controls2_640.qrc)
+else()
+    message(FATAL_ERROR "Qt version is not supported")
+endif()
+
+set(
+    noson-gui_SOURCES
+    src/noson.cpp
+    src/diskcache/diskcachefactory.cpp
+    src/diskcache/cachingnetworkaccessmanager.cpp
+    src/diskcache/cachereply.cpp
+)
+
+set(
+    noson-gui_HEADERS
+    src/diskcache/diskcachefactory.h
+    src/diskcache/cachingnetworkaccessmanager.h
+    src/diskcache/cachereply.h
+)
+
+if(UNIX)
+    set(noson-gui_SOURCES ${noson-gui_SOURCES} src/signalhandler.cpp)
+    set(noson-gui_HEADERS ${noson-gui_HEADERS} src/signalhandler.h)
+endif()
+
+add_definitions(-DAPP_VERSION="${APP_VERSION}")
+
+if(ANDROID)
+    add_definitions(-frtti) # dynamic_cast: https://github.com/android/ndk/issues/519
+    add_library(noson-gui SHARED ${noson-gui_SOURCES} ${noson-gui_HEADERS} ${noson-gui-resources})
+elseif(MSVC)
+    set (CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} /W3 /Od /RTC1")
+    set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2 /EHsc /nologo")
+    set (CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} /O2 /EHsc /nologo")
+    set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} /O2 /EHsc /nologo")
+    set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /W3 /Od /RTC1 /EHsc /nologo")
+    add_executable(noson-gui WIN32 ${noson-gui_SOURCES} ${noson-gui_HEADERS} ${noson-gui-resources})
+else()
+    add_executable(noson-gui ${noson-gui_SOURCES} ${noson-gui_HEADERS} ${noson-gui-resources})
+endif()
+
+# Link GUI executable
+target_link_libraries(noson-gui
+    Qt${QT_VERSION_MAJOR}::Gui
+    Qt${QT_VERSION_MAJOR}::Qml
+    Qt${QT_VERSION_MAJOR}::Quick
+    Qt${QT_VERSION_MAJOR}::QuickControls2
+    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Xml
+    Qt${QT_VERSION_MAJOR}::Svg)
+if(ANDROID)
+    if(QT_VERSION_MAJOR EQUAL 5)
+        target_link_libraries(noson-gui android log Qt5::AndroidExtras)
+    elseif(QT_VERSION_MAJOR EQUAL 6)
+        add_definitions(-frtti) # dynamic_cast: https://github.com/android/ndk/issues/519
+        set_property(TARGET noson-gui PROPERTY SUFFIX "_${ANDROID_ABI}.so")
+        target_link_libraries(noson-gui android log Qt6::CorePrivate)
+    endif()
+elseif(MSVC)
+    target_link_libraries(noson-gui ws2_32)
+elseif(${CMAKE_SYSTEM_NAME} STREQUAL "SunOS")
+    find_library(SOCKET socket REQUIRED)
+    find_library(NSL nsl REQUIRED)
+    target_link_libraries(noson-gui socket nsl)
+endif()
 
 if(QT_STATICPLUGIN)
-    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/gui/noson-gui
+    add_definitions(-DQT_STATICPLUGIN)
+    target_link_libraries(noson-gui NosonApp NosonThumbnailer NosonMediaScanner)
+endif()
+
+# Install GUI executable
+if(QT_STATICPLUGIN)
+    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/noson-gui
             DESTINATION ${CMAKE_INSTALL_BINDIR} RENAME ${EXEC})
 else()
-    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/gui/noson-gui
+    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/noson-gui
             DESTINATION ${PLUGINS_DIR})
 endif()
 
@@ -155,6 +246,18 @@ if(ANDROID)
     )
 endif()
 
+# Add custom target uninstall
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake IMMEDIATE @ONLY
+)
+
+add_custom_target(
+    "uninstall"
+    ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
+)
+
+# Add custom target run with debug
 if(QT_STATICPLUGIN)
     add_custom_target(
         "run"
@@ -165,21 +268,11 @@ if(QT_STATICPLUGIN)
 else()
     add_custom_target(
         "run"
-        QML2_IMPORT_PATH=${PLUGINS_BINARY_DIR} ${CMAKE_BINARY_DIR}/gui/noson-gui --debug
+        QML2_IMPORT_PATH=${PLUGINS_BINARY_DIR} ${CMAKE_BINARY_DIR}/noson-gui --debug
         DEPENDS noson-gui
                 NosonApp NosonApp-qmldir
                 NosonThumbnailer NosonThumbnailer-qmldir
                 NosonMediaScanner NosonMediaScanner-qmldir
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/gui
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 endif()
-
-configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake IMMEDIATE @ONLY
-)
-
-add_custom_target(
-    "uninstall"
-    ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
-)

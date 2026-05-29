@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import QtCore
 import QtQuick 2.9
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
 import QtQuick.Controls.Material 2.2
 import QtQuick.Controls.Universal 2.2
-import Qt.labs.settings 1.0
 import Qt5Compat.GraphicalEffects 6.0
 import NosonApp 1.0
 import NosonThumbnailer 1.0
