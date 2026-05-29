@@ -60,15 +60,14 @@ Row {
     states: [
         State {
             name: "default"
-            PropertyChanges { target: select; anchors.rightMargin: -select.width; opacity: anchors.rightMargin > -select.width ? 1 : 0; }
-            PropertyChanges { target: menu; anchors.rightMargin: 0; opacity: 1 }
+            PropertyChanges { target: select; visible: false; }
+            PropertyChanges { target: menu; visible: true; }
             //PropertyChanges { target: action; visible: actionIconSource !== "" }
         },
         State {
             name: "selection"
-            PropertyChanges { target: select; anchors.rightMargin: 0 }
-            PropertyChanges { target: menu; anchors.rightMargin: -select.width; opacity: anchors.rightMargin > -select.width ? 1 : 0; }
-            //PropertyChanges { target: action; visible: false }
+            PropertyChanges { target: select; visible: true; }
+            PropertyChanges { target: menu; visible: false; }
         }
     ]
 
@@ -135,7 +134,8 @@ Row {
             verticalCenter: parent.verticalCenter
         }
 
-        width: parent.width - image.width - parent.spacing - menu.width - action.width - action2.width - action3.width - units.gu(1)
+        width: { parent.width - image.width - parent.spacing - action.width
+                 - action2.width - action3.width - menu.width - select.width - units.gu(2) }
 
         onSourceComponentChanged: {
             for (var i=0; i < item.children.length; i++) {
@@ -154,21 +154,18 @@ Row {
     Item {
         id: action3
         visible: false
-        anchors.right: action2.left
-        anchors.rightMargin: units.gu(1)
         width: visible ? units.gu(5) : 0
+        height: units.gu(5)
         property alias iconSource: icon3.source
 
         Rectangle {
             color: "transparent"
-            width: parent.width
-            height: row.height
+            anchors.fill: parent
 
             Icon {
                 id: icon3
                 source: ""
-                width: parent.width
-                height: width
+                anchors.fill: parent
                 anchors.centerIn: parent
                 onClicked: action3Pressed()
             }
@@ -178,21 +175,18 @@ Row {
     Item {
         id: action2
         visible: false
-        anchors.right: action.left
-        anchors.rightMargin: units.gu(1)
         width: visible ? units.gu(5) : 0
+        height: units.gu(5)
         property alias iconSource: icon2.source
 
         Rectangle {
             color: "transparent"
-            width: parent.width
-            height: row.height
+            anchors.fill: parent
 
             Icon {
                 id: icon2
                 source: ""
-                width: parent.width
-                height: width
+                anchors.fill: parent
                 anchors.centerIn: parent
                 onClicked: action2Pressed()
             }
@@ -202,21 +196,18 @@ Row {
     Item {
         id: action
         visible: false
-        anchors.right: menu.left
-        anchors.rightMargin: units.gu(1)
-        width: units.gu(5)
+        width: visible ? units.gu(5) : 0
+        height: units.gu(5)
         property string iconSource: ""
 
         Rectangle {
             color: "transparent"
-            width: parent.width
-            height: row.height
+            anchors.fill: parent
 
             Icon {
                 id: icon
                 source: isFavorite ? "qrc:/images/starred.svg" : action.iconSource
-                width: parent.width
-                height: width
+                anchors.fill: parent
                 anchors.centerIn: parent
                 onClicked: actionPressed()
             }
@@ -225,18 +216,17 @@ Row {
 
     Item {
         id: menu
-        anchors.right: select.left
-        width: visible ? units.gu(5) : 0
         visible: menuVisible
+        width: visible ? units.gu(5) : 0
+        height: units.gu(5)
 
         Rectangle {
             color: "transparent"
-            width: parent.width
-            height: row.height
+            anchors.fill: parent
 
             Icon {
                 width: menu.visible ? units.gu(5) : 0
-                height: width
+                height: units.gu(5)
                 anchors.centerIn: parent
                 source: "qrc:/images/contextual-menu.svg"
 
@@ -250,24 +240,20 @@ Row {
                 }
             }
         }
-
-        Behavior on anchors.rightMargin {
-            NumberAnimation { duration: 50 }
-        }
     }
 
     Item {
         id: select
-        anchors.right: parent.right
-        width: units.gu(6)
         visible: true
+        width: visible ? units.gu(5) : 0
+        height: units.gu(5)
+
         property alias checked: control.checked
         property alias checkable: control.checkable
 
         Rectangle {
             color: "transparent"
-            width: control.width
-            height: row.height
+            anchors.fill: parent
 
             MusicCheckBox {
                 id: control
@@ -282,10 +268,5 @@ Row {
                 }
             }
         }
-
-        Behavior on anchors.rightMargin {
-            NumberAnimation { duration: 50 }
-        }
     }
-
 }
