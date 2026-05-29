@@ -145,12 +145,12 @@ Flickable {
             property real lastX: -1
             property real lastY: -1
 
-            onPressed: {
+            onPressed: function(mouse) {
                 lastX = mouse.x
                 lastY = mouse.y
             }
 
-            onReleased: {
+            onReleased: function(mouse) {
                 var diffX = mouse.x - lastX
                 if (Math.abs(diffX) > units.gu(10)) {
                     if (diffX < 0) {
