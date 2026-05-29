@@ -39,7 +39,9 @@ jobs:
         env:
           cache-name: cache-qt
         with:
-          path: ~/Qt/5.15.16/android
+          path: |
+            ~/Qt/5.15.16/android
+            ~/Qt/android_openssl
           key: qtandroid-51516-ndk23
 
       - if: ${{ steps.cache-qt.outputs.cache-hit != 'true' }}
