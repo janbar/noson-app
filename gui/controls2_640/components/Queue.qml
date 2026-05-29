@@ -84,14 +84,14 @@ Item {
             highlightedColor: styleMusic.view.highlightedColor
             highlighted: (player.currentIndex === model.trackIndex)
 
-            onSwipe: {
+            onSwipe: function() {
                 var focusId = model.trackIndex - 1;
                 saveViewFocus(focusId, ListView.Center);
                 removeTrackFromQueue(model);
                 color = "red";
             }
 
-            onReorder: {
+            onReorder: function(from, to) {
                 listview.reorder(from, to)
             }
 
@@ -197,7 +197,7 @@ Item {
 
         signal reorder(int from, int to)
 
-        onReorder: {
+        onReorder: function(from, to) {
             customdebug("Reorder queue item " + from + " to " + to);
             var focusId = to + queueModel.firstIndex;
             saveViewFocus(focusId, ListView.Center);

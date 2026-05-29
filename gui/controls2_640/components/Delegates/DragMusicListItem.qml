@@ -65,8 +65,8 @@ MouseArea {
     property alias menuItems: row.menuItems
 
     property bool held: false
-    property int targetIndex: -1
-    property int sourceIndex: -1
+    property int dragTargetIndex: -1
+    property int dragSourceIndex: -1
 
     Component.onCompleted: {
         if (parent != null) {
@@ -85,17 +85,17 @@ MouseArea {
     property real lastX: -1
     property real lastY: -1
 
-    onPressed: {
+    onPressed: function(mouse) {
         lastX = mouse.x
         lastY = mouse.y
     }
 
     onPressAndHold: {
-        dragArea.sourceIndex = DelegateModel.itemsIndex
+        dragArea.dragSourceIndex = DelegateModel.itemsIndex
         if (reorderable)
             held = true
     }
-    onReleased: {
+    onReleased: function(mouse) {
         if (held) {
             held = false;
         } else {
@@ -116,16 +116,16 @@ MouseArea {
         }
         width: dragArea.width; height: row.implicitHeight + units.dp(4)
 
-        color: held ? dragArea.highlightedColor : dragArea.color
+        color: dragArea.held ? dragArea.highlightedColor : dragArea.color
         Behavior on color { ColorAnimation { duration: 100 } }
 
         radius: 0
-        Drag.active: held
+        Drag.active: dragArea.held
         Drag.source: dragArea
         Drag.hotSpot.x: width / 2
         Drag.hotSpot.y: height / 2
         states: State {
-            when: held
+            when: dragArea.held
 
             ParentChange { target: content; parent: listview.parent }
             AnchorChanges {
@@ -154,8 +154,9 @@ MouseArea {
     DropArea {
         anchors { fill: parent; margins: 10 }
 
-        onEntered: {
-            dragArea.targetIndex = dragArea.DelegateModel.itemsIndex;
+        onEntered: function(drag) {
+            // the source area should track the target index
+            drag.source.dragTargetIndex = dragArea.DelegateModel.itemsIndex;
             listview.model.items.move(
                                drag.source.DelegateModel.itemsIndex,
                                dragArea.DelegateModel.itemsIndex);
@@ -163,9 +164,10 @@ MouseArea {
     }
 
     onHeldChanged: {
-        if (!held && sourceIndex !== targetIndex) {
-            reorder(sourceIndex, targetIndex);
-            targetIndex = -1;
+        if (!held && dragSourceIndex !== dragTargetIndex) {
+            reorder(dragSourceIndex, dragTargetIndex);
+            // reset target
+            dragTargetIndex = -1;
         }
     }
 }

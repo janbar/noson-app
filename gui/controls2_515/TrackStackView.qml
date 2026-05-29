@@ -233,14 +233,14 @@ MusicPage {
             reorderable: true
             selectable: true
 
-            onSwipe: {
+            onSwipe: function() {
                 focusIndex = index > 0 ? index - 1 : 0;
                 delayRemoveSelectedFromPlaylist.selectedIndices = [index]
                 delayRemoveSelectedFromPlaylist.start()
                 color = "red";
             }
 
-            onReorder: {
+            onReorder: function(from, to) {
                 listview.reorder(from, to)
             }
 
@@ -336,7 +336,7 @@ MusicPage {
 
         signal reorder(int from, int to)
 
-        onReorder: {
+        onReorder: function(from, to) {
             customdebug("Reorder item " + from + " to " + to);
             focusIndex = to;
             if (!reorderTrackInPlaylist(containerItem.id, from, to, tracksModel.containerUpdateID(), function(result) {
