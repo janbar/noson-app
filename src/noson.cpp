@@ -108,10 +108,23 @@ int main(int argc, char *argv[])
     availableStyles.append("Material");
     // request permissions for media audio
     {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
       QStringList androidPermissions;
       androidPermissions.append("android.permission.READ_EXTERNAL_STORAGE");
       androidPermissions.append("android.permission.WRITE_EXTERNAL_STORAGE");
       QtAndroid::requestPermissionsSync(androidPermissions);
+#else
+      QStringList permissions;
+      permissions.append("android.permission.READ_EXTERNAL_STORAGE");
+      permissions.append("android.permission.WRITE_EXTERNAL_STORAGE");
+      for(QString& p : permissions)
+      {
+        auto result = QtAndroidPrivate::requestPermission(p)
+        .then([](QtAndroidPrivate::PermissionResult result) { return result; });
+        result.waitForFinished();
+        qInfo("%s : %s", p.toStdString().c_str(), result.result() != QtAndroidPrivate::PermissionResult::Denied ? "AUTHORIZED" : "DENIED");
+      }
+#endif
     }
 #else
     // bind Android flag
