@@ -1,27 +1,27 @@
-BUILD_DIR=build-x64
+BUILD_DIR=build-x64-609
 rm -rf $BUILD_DIR/*
 mkdir -p $BUILD_DIR
 
-export JAVA_HOME=$HOME/bin/java/jdk-17.0.12
+export JAVA_HOME=$HOME/bin/java/jdk-21.0.10
 export ANDROID_SDK_ROOT=$HOME/bin/android/sdk
 export ANDROID_NDK=$HOME/bin/android/sdk/ndk/26.3.11579264
-export QT_DIR=$HOME/bin/Qt/5.15.16/android
+export QT_DIR=$HOME/bin/Qt/6.9.3/android_x86_64
+export QT_HOST_PATH=$HOME/bin/Qt/6.9.3/gcc_64
 
 cmake .. -B $BUILD_DIR -DCMAKE_SYSTEM_NAME=Android \
 -DCMAKE_PREFIX_PATH=$QT_DIR \
 -DCMAKE_FIND_ROOT_PATH=${QT_DIR} \
 -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake \
 -DCMAKE_MAKE_PROGRAM=$ANDROID_NDK/prebuilt/linux-x86_64/bin/make \
--DCMAKE_BUILD_TYPE=Debug \
--DANDROID_STL=c++_static \
+-DCMAKE_BUILD_TYPE=Release \
 -DANDROID_ABI="x86_64" \
 -DANDROID_SDK_MINVER=24 \
 -DANDROID_SDK_TARGET=26 \
 -DANDROID_NATIVE_API_LEVEL=24 \
--DANDROID_SDK_BUILD_TOOLS_REVISION="31.0.0" \
+-DANDROID_SDK_BUILD_TOOLS_REVISION="35.0.0" \
 -DANDROID_SDK_ROOT=$ANDROID_SDK_ROOT \
 -DANDROID_NDK=$ANDROID_NDK \
--DQT_ANDROID_PLATFORM_LEVEL=31 \
+-DQT_ANDROID_PLATFORM_LEVEL=35 \
 $@
 
 [ $? -eq 0 ] && cmake --build $BUILD_DIR --parallel 8

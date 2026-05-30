@@ -250,9 +250,10 @@ if(ANDROID)
         NAME ${APP_NAME}
         VERSION_CODE ${APP_VERSION_CODE}
         PACKAGE_NAME ${APP_ID}
-        PACKAGE_SOURCES ${CMAKE_SOURCE_DIR}/android/package-sources
+        PACKAGE_SOURCES ${PROJECT_SOURCE_DIR}/android/package-sources
         DEPENDS FLAC FLACXX ${ANDROID_EXTRA_LIBS}
-        PLUGINS ${PLUGINS_BINARY_DIR}
+        PLUGINS platforms tls iconengines imageformats networkinformation
+                qmltooling styles
         KEYSTORE ${KEYSTORE_FILE} ${KEYSTORE_ALIAS}
         KEYSTORE_PASSWORD ${KEYSTORE_PASSWORD}
     )
