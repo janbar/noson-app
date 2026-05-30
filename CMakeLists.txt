@@ -27,8 +27,8 @@ if(IOS OR ANDROID)
     set(QT_STATICPLUGIN ON CACHE BOOL "Build static plugins" FORCE)
 endif()
 
-set(APP_VERSION       "5.6.26")
-set(APP_VERSION_CODE  127)
+set(APP_VERSION       "5.7.0")
+set(APP_VERSION_CODE  128)
 set(APP_ID            "io.github.janbar.noson")
 set(APP_NAME          "noson")
 
