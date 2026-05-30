@@ -20,18 +20,19 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: zulu
-          java-version: 17
+          java-version: 21
       - name: Setup Android SDK tools
         uses: android-actions/setup-android@v3
         with:
-          packages: "platform-tools platforms;android-31 build-tools;31.0.0 ndk;26.3.11579264"
+          packages: "platform-tools platforms;android-35 build-tools;35.0.0 ndk;26.3.11579264"
       - name: Dump Android NDK
         run: "ls ${ANDROID_HOME}/ndk"
 
       - name: Configure ENV
         run:  |
             echo "ANDROID_NDK=${ANDROID_HOME}/ndk/26.3.11579264" >> $GITHUB_ENV
-            echo "QT_DIR=${HOME}/Qt/5.15.16/android" >> $GITHUB_ENV
+            echo "QT_DIR=${HOME}/Qt/6.9.3/android_x86_64" >> $GITHUB_ENV
+            echo "QT_HOST_PATH=${HOME}/Qt/6.9.3/gcc_64" >> $GITHUB_ENV
 
       - name: Cache Qt
         id: cache-qt
@@ -40,20 +41,20 @@ jobs:
           cache-name: cache-qt
         with:
           path: |
-            ~/Qt/5.15.16/android
-            ~/Qt/android_openssl
-          key: qtandroid-51516-ndk23
+              ~/Qt/6.9.3
+              ~/Qt/android_openssl
+          key: qtandroid_x86_64-60903-ndk26
 
       - if: ${{ steps.cache-qt.outputs.cache-hit != 'true' }}
         name: Install Qt
         continue-on-error: true
         run: |
-            wget -q ${{secrets.PRIVATE_URL_DOWNLOAD}}/qt/qt-5.15.16-android-ndk23-linux64.tar.xz
+            wget -q ${{secrets.PRIVATE_URL_DOWNLOAD}}/qt/qt-6.9.3-android_x86_64-ndk26-linux64.tar.xz
             wget -q ${{secrets.PRIVATE_URL_DOWNLOAD}}/qt/android_openssl-20240915.tar.xz
             mkdir -p ~/Qt
-            tar xfJ qt-5.15.16-android-ndk23-linux64.tar.xz -C ~/Qt/
+            tar xfJ qt-6.9.3-android_x86_64-ndk26-linux64.tar.xz -C ~/Qt/
             tar xfJ android_openssl-20240915.tar.xz -C ~/Qt/
-            rm -f qt-5.15.16-android-ndk23-linux64.tar.xz
+            rm -f *.tar.xz
 
       - name: Configure Android OpenSSL
         run: ln -s ~/Qt/android_openssl ${ANDROID_SDK_ROOT}/android_openssl
@@ -68,16 +69,12 @@ jobs:
                   -DCMAKE_FIND_ROOT_PATH=${QT_DIR} \
                   -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK/build/cmake/android.toolchain.cmake \
                   -DCMAKE_MAKE_PROGRAM=$ANDROID_NDK/prebuilt/linux-x86_64/bin/make \
-                  -DCMAKE_BUILD_TYPE=Debug \
-                  -DANDROID_STL=c++_static \
-                  -DANDROID_ABI="x86_64" \
-                  -DANDROID_SDK_MINVER=24 \
-                  -DANDROID_SDK_TARGET=26 \
+                  -DANDROID_ABI=x86_64 -DANDROID_SDK_MINVER=24 -DANDROID_SDK_TARGET=26 \
                   -DANDROID_NATIVE_API_LEVEL=24 \
-                  -DANDROID_SDK_BUILD_TOOLS_REVISION="31.0.0" \
+                  -DANDROID_SDK_BUILD_TOOLS_REVISION="35.0.0" \
                   -DANDROID_SDK_ROOT=$ANDROID_SDK_ROOT \
                   -DANDROID_NDK=$ANDROID_NDK \
-                  -DQT_ANDROID_PLATFORM_LEVEL=31 \
+                  -DQT_ANDROID_PLATFORM_LEVEL=35 \
                   -Wno-dev
       - name: Build
         run:  cmake --build build
@@ -85,7 +82,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: osmin-x86_64-debug
+          name: noson-x86_64-debug
           path: ${{ github.workspace }}/build/noson-gui-x86_64/build/outputs/apk/debug/noson-gui-*-debug.apk
           retention-days: 5
 
