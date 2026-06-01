@@ -61,7 +61,7 @@ Row {
         State {
             name: "default"
             PropertyChanges { target: select; visible: false; }
-            PropertyChanges { target: menu; visible: true; }
+            PropertyChanges { target: menu; visible: menuVisible; }
             //PropertyChanges { target: action; visible: actionIconSource !== "" }
         },
         State {
@@ -134,8 +134,12 @@ Row {
             verticalCenter: parent.verticalCenter
         }
 
-        width: { parent.width - image.width - parent.spacing - action.width
-                 - action2.width - action3.width - menu.width - select.width - units.gu(2) }
+        width: { parent.width - image.width - parent.spacing
+                 - (action.visible ? action.width + parent.spacing : 0)
+                 - (action2.visible ? action2.width + parent.spacing : 0)
+                 - (action3.visible ? action3.width + parent.spacing : 0)
+                 - (menu.visible ? menu.width + parent.spacing : 0 )
+                 - (select .visible ? select.width + parent.spacing : 0) }
 
         onSourceComponentChanged: {
             for (var i=0; i < item.children.length; i++) {
