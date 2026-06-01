@@ -1,4 +1,4 @@
-name: appimage_amd64
+name: appimage_amd64_qt6
 on:
   push:
     branches: [ master ]
@@ -12,28 +12,57 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: "sudo apt-get update && sudo apt-get install -y cmake
-              qtbase5-dev qttools5-dev qttools5-dev-tools qtdeclarative5-dev
-              qtdeclarative5-dev-tools qtquickcontrols2-5-dev libqt5svg5-dev
-              qml-module-qt-labs-settings qml-module-qtgraphicaleffects
-              qml-module-qtqml-models2 qml-module-qtquick2 qml-module-qtquick-controls2
-              qml-module-qtquick-layouts qml-module-qtquick-particles2
-              qml-module-qtquick-templates2 qml-module-qtquick-window2
-              zlib1g-dev libssl-dev libflac-dev libflac++-dev libpulse-dev
-              libdbus-1-dev libqt5dbus5"
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake \
+              libflac-dev libflac++-dev libpulse-dev zlib1g-dev \
+              libssl-dev libdbus-1-dev libgl1-mesa-dev libpulse0 \
+              mesa-vulkan-drivers libxkbcommon-x11-0 libxcb-cursor0 \
+              libxcb-icccm4 libxcb-util1 libxcb-image0 libxcb-keysyms1 \
+              libxcb-randr0 libxcb-shm0 libxcb-sync1 libxcb-xfixes0 \
+              libxcb-render0 libxcb-shape0 libxcb-xkb1
 
-      - name: Init submodules
+      - name: Configure ENV
+        run:  |
+            echo "QT_DIR=${HOME}/Qt/6.9.3/gcc_64" >> $GITHUB_ENV
+            echo "QT_HOST_PATH=${HOME}/Qt/6.9.3/gcc_64" >> $GITHUB_ENV
+            echo "QMAKE=${HOME}/Qt/6.9.3/gcc_64/bin/qmake" >> $GITHUB_ENV
+
+      - name: Cache Qt
+        id: cache-qt
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-qt
+        with:
+          path: |
+              ~/Qt/6.9.3
+          key: qtgcc_64-60903
+
+      - if: ${{ steps.cache-qt.outputs.cache-hit != 'true' }}
+        name: Install Qt
+        continue-on-error: true
+        run: |
+            wget -q ${{secrets.PRIVATE_URL_DOWNLOAD}}/qt/qt-6.9.3-gcc_64-linux64.tar.xz
+            mkdir -p ~/Qt
+            tar xfJ qt-6.9.3-gcc_64-linux64.tar.xz -C ~/Qt/
+            rm -f *.tar.xz
+
+      - name: Fetch submodules
         run: git submodule init && git submodule update
-
-      - name: Configure
-        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DQT_STATICPLUGIN=ON -DCMAKE_INSTALL_PREFIX=/usr .
-
+      - name: Configure build
+        run: |
+          cmake -B build \
+              -DCMAKE_PREFIX_PATH=${QT_DIR} \
+              -DCMAKE_FIND_ROOT_PATH=${QT_DIR} \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DQT_STATICPLUGIN=ON \
+              -DCMAKE_INSTALL_PREFIX=/usr
       - name: Build
         run: cd build && make -j`nproc` install DESTDIR=../AppDir
 
       - name: Download AppImage builder
         run: |
-          sudo apt-get install -y binutils coreutils desktop-file-utils fakeroot fuse libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync 
+          sudo apt-get install -y binutils coreutils desktop-file-utils fakeroot fuse libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           wget -O appimagetool https://github.com/AppImage/appimagetool/releases/download/1.9.1/appimagetool-x86_64.AppImage
           chmod +x appimagetool
           wget -O linuxdeploy-plugin-qt https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
@@ -43,10 +72,19 @@ jobs:
 
       - name: Build AppImage stage 1
         run: |
-          cp -r /usr/lib/x86_64-linux-gnu/qt5/qml ./AppDir/usr/
+          mkdir -p ./AppDir/usr/qml
+          cp -r ${QT_DIR}/qml/Qt ./AppDir/usr/qml/
+          cp -r ${QT_DIR}/qml/Qt5Compat ./AppDir/usr/qml/
+          cp -r ${QT_DIR}/qml/QtCore ./AppDir/usr/qml/
+          cp -r ${QT_DIR}/qml/QtNetwork ./AppDir/usr/qml/
+          cp -r ${QT_DIR}/qml/QtQml ./AppDir/usr/qml/
+          cp -r ${QT_DIR}/qml/QtQuick ./AppDir/usr/qml/
           mv ./AppDir/usr/lib/x86_64-linux-gnu/noson/noson-cli ./AppDir/usr/bin/
       - name: Build AppImage stage 2
-        run: ./linuxdeploy --appdir ./AppDir --plugin qt --library /usr/lib/x86_64-linux-gnu/libpulse-simple.so.0
+        run: |
+          ./linuxdeploy --appdir ./AppDir --plugin qt \
+              --library /usr/lib/x86_64-linux-gnu/libpulse-simple.so.0 \
+              --library ${QT_DIR}/lib/libQt6QmlCore.so.6
       - name: Package AppImage
         run: ./appimagetool ./AppDir
 
