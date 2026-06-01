@@ -204,7 +204,7 @@ DialogBase {
                     if (styleIndex !== -1)
                         currentIndex = styleIndex
                 }
-                onActivated: {
+                onActivated: function(index) {
                     // reset theme when not supported
                     if (currentText !== "Material" && currentText !== "Universal") {
                         settings.theme = 0;
@@ -240,7 +240,7 @@ DialogBase {
                 ]
 
                 currentIndex: settings.theme
-                onActivated: {
+                onActivated: function(index) {
                     settings.theme = index
                 }
 
