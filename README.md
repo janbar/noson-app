@@ -25,7 +25,7 @@ Running Noson in "freedesktop" allows the following extra features.
 ###### For Ubuntu(22) (**qtbase5 >= 5.15**)
 
 ```bash
-$ apt-get install qtbase5-dev qttools5-dev qttools5-dev-tools qtdeclarative5-dev \
+apt-get install qtbase5-dev qttools5-dev qttools5-dev-tools qtdeclarative5-dev \
 qtdeclarative5-dev-tools qtquickcontrols2-5-dev libqt5svg5-dev libqt5svg5 \
 qml-module-qt-labs-settings qml-module-qtgraphicaleffects \
 qml-module-qtqml-models2 qml-module-qtquick2 qml-module-qtquick-controls2 \
@@ -39,7 +39,7 @@ libdbus-1-dev libqt5dbus5
 ###### For Centos / Fedora (**qt5-qtbase >= 5.15**)
 
 ```bash
-$ yum install qt5-qtbase-devel qt5-qttools-devel qt5-qtdeclarative-devel \
+yum install qt5-qtbase-devel qt5-qttools-devel qt5-qtdeclarative-devel \
 qt5-qtquickcontrols2-devel qt5-qtgraphicaleffects qt5-qtsvg-devel \
 qt5-qtsvg zlib-devel openssl-devel flac-devel pulseaudio-libs-devel \
 dbus-devel
@@ -49,9 +49,9 @@ dbus-devel
   - As needed you have to install **cmake >= 3.8.2**
 
     ```bash
-    $ wget https://github.com/Kitware/CMake/releases/download/v3.14.7/cmake-3.14.7-Linux-x86_64.tar.gz
-    $ tar xvfz cmake-3.14.7-Linux-x86_64.tar.gz
-    $ export PATH=$(pwd)/cmake-3.14.7-Linux-x86_64/bin:$PATH
+    wget https://github.com/Kitware/CMake/releases/download/v3.14.7/cmake-3.14.7-Linux-x86_64.tar.gz
+    tar xvfz cmake-3.14.7-Linux-x86_64.tar.gz
+    export PATH=$(pwd)/cmake-3.14.7-Linux-x86_64/bin:$PATH
     ```
 
 ###### For FreeBSD
@@ -60,17 +60,17 @@ there is a port/package for FreeBSD available.
 To install the package:
 
 ```bash
-$ pkg install noson-app
+pkg install noson-app
 ```
 To use the port
 ```bash
-$ cd /usr/ports/audio/noson-app && make install clean
+cd /usr/ports/audio/noson-app && make install clean
 ```
 
 To build from source
 
 ```bash
-$ pkg install cmake git bash dbus flac pulseaudio ca_root_nss \
+pkg install cmake git bash dbus flac pulseaudio ca_root_nss \
 qt5-buildtools qt5-core qt5-dbus qt5-declarative qt5-graphicaleffects \
 qt5-gui qt5-network qt5-qmake qt5-quickcontrols2 qt5-svg qt5-widgets \
 qt5-xml qt5-xmlpatterns
@@ -79,11 +79,11 @@ qt5-xml qt5-xmlpatterns
 #### Build and install the application
 
 ```bash
-$ git clone https://github.com/janbar/noson-app.git
-$ cd noson-app && mkdir build && cd build
-$ cmake -DCMAKE_BUILD_TYPE=Release ..
-$ make -j5
-$ sudo make install
+git clone https://github.com/janbar/noson-app.git
+cd noson-app && mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make -j5
+sudo make install
 ```
   - To uninstall the application type `sudo make uninstall`
 
