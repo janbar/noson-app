@@ -46,6 +46,7 @@
 
 void setupApp(QGuiApplication& app);
 void prepareTranslator(QGuiApplication& app, const QString& translationPath, const QString& translationPrefix, const QLocale& locale);
+void fixSettings(QSettings& settings);
 void doExit(int code);
 
 #if defined(QT_STATICPLUGIN)
@@ -130,6 +131,8 @@ int main(int argc, char *argv[])
     importStaticPlugins(engine.data());
 #endif
 
+    fixSettings(settings);
+
     engine->load(QUrl("qrc:/controls2/noson.qml"));
     if (engine->rootObjects().isEmpty())
     {
@@ -195,6 +198,25 @@ void prepareTranslator(QGuiApplication& app, const QString& translationPath, con
         qWarning("no file found for translations '%s' (using default).", i18Path.toUtf8().constData());
         delete translator;
     }
+}
+
+void fixSettings(QSettings& settings)
+{
+  bool reset = false;
+  double d;
+  d = settings.value("scaleFactor", 1.0).toDouble();
+  reset = reset || d < 0.5 || d > 4.0;
+  d = settings.value("fontScaleFactor", 1.0).toDouble();
+  reset = reset || d < 0.5 || d > 2.0;
+
+  if (reset)
+  {
+    settings.remove("scaleFactor");
+    settings.remove("fontScaleFactor");
+    settings.remove("widthGU");
+    settings.remove("heightGU");
+    settings.sync();
+  }
 }
 
 void doExit(int code)
