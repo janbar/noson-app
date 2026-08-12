@@ -18,21 +18,6 @@
  *
  */
 
-// SonosAccount: authenticates against the Sonos consumer web session
-// (play.sonos.com / NextAuth) and keeps the session cookie rolling in the
-// background. This is the credential used by the cloud content API
-// (CloudMediaModel) to browse/search a music service catalogue (e.g. YouTube
-// Music) that the local SMAPI path cannot reach without Sonos's private key.
-//
-// Login flow (QML drives a QtWebEngine WebEngineView using webProfile()):
-//   1. QML loads signinUrl() in a WebEngineView bound to webProfile().
-//   2. The user completes the Okta login; play.sonos.com sets the HttpOnly
-//      session cookie, which we capture via the profile's cookie store.
-//   3. captured -> stored -> status becomes Ready, QML closes the view.
-//
-// Refresh: GET /api/auth/session rolls the token expiry (~10 days) and returns
-// a rotated Set-Cookie; we poll it on boot and on a timer.
-
 #ifndef NOSONAPPSONOSACCOUNT_H
 #define NOSONAPPSONOSACCOUNT_H
 
@@ -60,7 +45,7 @@ class SonosAccount : public QObject
 public:
   enum Status {
     SignedOut = 0, // no stored cookie
-    Expired   = 1, // stored cookie is past its expiry -> must log in again
+    Expired   = 1, // stored cookie has passed its expiry; must sign in again
     Working   = 2, // a login/refresh is in flight
     Ready     = 3  // have a valid, refreshed cookie
   };

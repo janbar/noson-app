@@ -14,11 +14,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// YouTube Music via the Sonos cloud content API, laid out like the other
-// service browse pages (Service.qml): the app header drives up-navigation
-// (‹ at the root / ^ when drilled in via goUpClicked), a list/grid toggle,
-// and a search dialog. Sign-in runs an embedded Sonos login (QtWebEngine).
-
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtWebEngine
