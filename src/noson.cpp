@@ -8,6 +8,7 @@
 #include <QQmlContext>
 #include <QSettings>
 #include <QtQuickControls2>
+#include <QtWebEngineQuick>
 #include <QTranslator>
 #include <QLibraryInfo>
 #include <QDebug>
@@ -77,8 +78,13 @@ int main(int argc, char *argv[])
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
+    // QtWebEngine (YouTube Music login webview) needs a shared GL context;
+    // this attribute must be set before the QGuiApplication is constructed.
+    QGuiApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
     QGuiApplication app(argc, argv);
     setupApp(app);
+    // Initialize QtWebEngine before loading any QML that imports QtWebEngine.
+    QtWebEngineQuick::initialize();
 
     QSettings settings;
     QStringList availableStyles;

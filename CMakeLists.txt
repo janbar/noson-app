@@ -134,7 +134,7 @@ endif()
 add_subdirectory(backend)
 
 find_package(Qt${QT_VERSION_MAJOR} ${QT_VERSION} COMPONENTS
-    Core Gui Qml Quick QuickControls2 Widgets Xml Svg REQUIRED)
+    Core Gui Qml Quick QuickControls2 Widgets Xml Svg WebEngineQuick REQUIRED)
 if(QT_VERSION VERSION_GREATER_EQUAL 6)
     find_package(Qt6 ${QT_VERSION} COMPONENTS Core5Compat REQUIRED)
 endif()
@@ -209,7 +209,8 @@ target_link_libraries(noson-gui
     Qt${QT_VERSION_MAJOR}::QuickControls2
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Xml
-    Qt${QT_VERSION_MAJOR}::Svg)
+    Qt${QT_VERSION_MAJOR}::Svg
+    Qt${QT_VERSION_MAJOR}::WebEngineQuick)
 if(ANDROID)
     if(QT_VERSION_MAJOR EQUAL 5)
         target_link_libraries(noson-gui android log Qt5::AndroidExtras)

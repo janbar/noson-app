@@ -58,7 +58,11 @@ MusicPage {
             coverSources: [{art: model.type === "65031" ? "qrc:/images/tunein.png" : model.icon}]
 
             onClicked: {
-               if (model.type !== "65031") {
+               if (model.type === "72711") {
+                   // YouTube Music: use the Sonos cloud web-login flow instead
+                   // of the gated SMAPI AppLink registration.
+                   stackView.push("qrc:/controls2/YoutubeMusic.qml");
+               } else if (model.type !== "65031") {
                    // for UserId the label is username
                    if (model.auth !== "UserId") {
                        dialogServiceLabel.serviceType = model.type;

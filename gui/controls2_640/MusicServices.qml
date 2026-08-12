@@ -71,6 +71,10 @@ MusicPage {
             description: qsTr("Service")
 
             onClicked: {
+                if (model.type === "72711") {
+                    stackView.push("qrc:/controls2/YoutubeMusic.qml");
+                    return;
+                }
                 stackView.push("qrc:/controls2/Service.qml",
                                    {
                                        "serviceItem": model,
@@ -136,6 +140,10 @@ MusicPage {
             coverSources: [{art: model.type === "65031" ? "qrc:/images/tunein.png" : model.icon}]
 
             onClicked: {
+                if (model.type === "72711") {
+                    stackView.push("qrc:/controls2/YoutubeMusic.qml");
+                    return;
+                }
                 stackView.push("qrc:/controls2/Service.qml",
                                    {
                                        "serviceItem": model,

@@ -20,6 +20,8 @@
 
 #include "plugin.h"
 #include "sonos.h"
+#include "sonosaccount.h"
+#include "cloudmediamodel.h"
 #include "player.h"
 #include "future.h"
 #include "renderingmodel.h"
@@ -47,6 +49,13 @@ void NosonAppPlugin::registerTypes(const char *uri)
   qmlRegisterSingletonType<AllServicesModel>(uri, 1, 0, "AllServicesModel", Sonos::allServicesModel_provider);
   qmlRegisterSingletonType<RadiosModel>(uri, 1, 0, "AllRadiosModel", Sonos::allRadiosModel_provider);
 
+  // YouTube Music via the Sonos cloud content API (session-cookie auth)
+  qmlRegisterSingletonType<SonosAccount>(uri, 1, 0, "SonosAccount",
+      [](QQmlEngine* e, QJSEngine* s) -> QObject* {
+        Q_UNUSED(e) Q_UNUSED(s)
+        return new SonosAccount;
+      });
+
   // register noson instantiable types
   qmlRegisterType<Player>(uri, 1, 0, "ZonePlayer");
   qmlRegisterType<ZonesModel>(uri, 1, 0, "ZonesModel");
@@ -62,8 +71,11 @@ void NosonAppPlugin::registerTypes(const char *uri)
   qmlRegisterType<AlarmsModel>(uri, 1, 0, "AlarmsModel");
   qmlRegisterType<LibraryModel>(uri, 1, 0, "LibraryModel");
   qmlRegisterType<RadiosModel>(uri, 1, 0, "RadiosModel");
+  qmlRegisterType<CloudMediaModel>(uri, 1, 0, "CloudMediaModel");
 
   qRegisterMetaType<Sonos*>("Sonos*");
+  qRegisterMetaType<SonosAccount*>("SonosAccount*");
+  qRegisterMetaType<CloudMediaModel*>("CloudMediaModel*");
   qRegisterMetaType<Player*>("Player*");
   qRegisterMetaType<Future*>("Future*");
 

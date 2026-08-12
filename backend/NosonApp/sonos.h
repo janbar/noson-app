@@ -100,6 +100,9 @@ public:
 
   Q_INVOKABLE QString getLibVersion();
 
+  // Muse household id (used by the cloud content API, e.g. YouTube Music)
+  Q_INVOKABLE QString museHouseholdId();
+
   Q_INVOKABLE void addServiceOAuth(const QString& type, const QString& sn, const QString& key, const QString& token, const QString& username);
   Q_INVOKABLE void deleteServiceOAuth(const QString& type, const QString& sn);
 
