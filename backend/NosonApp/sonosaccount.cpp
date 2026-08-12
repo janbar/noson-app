@@ -217,7 +217,7 @@ void SonosAccount::onSessionReply(QNetworkReply* reply)
     }
   }
 
-  // An empty session body ({}) means the session is dead -> re-login.
+  // An empty session body ({}) means the session is dead; sign in again.
   const QJsonDocument doc = QJsonDocument::fromJson(body);
   const QJsonObject obj = doc.object();
   if (obj.isEmpty() || !obj.contains(QStringLiteral("user")))

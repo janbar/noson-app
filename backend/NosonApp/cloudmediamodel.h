@@ -18,15 +18,6 @@
  *
  */
 
-// CloudMediaModel: browses/searches a music service catalogue through the Sonos
-// consumer cloud content API (play.sonos.com), authorized by SonosAccount's
-// session cookie. Each row carries a ready-to-play SONOS::DigitalItemPtr
-// (the same payload MediaModel produces), so the existing Player enqueue path
-// (tryAddItemToQueue / tryPlayQueue) plays it unchanged.
-//
-// v1 targets YouTube Music (serviceType 72711 / sid 284). Household + account
-// are set as configurable constants (see the .cpp) pending dynamic discovery.
-
 #ifndef NOSONAPPCLOUDMEDIAMODEL_H
 #define NOSONAPPCLOUDMEDIAMODEL_H
 
