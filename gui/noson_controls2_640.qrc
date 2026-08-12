@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file alias="controls2/noson.qml">controls2_640/noson.qml</file>
+        <file alias="controls2/YoutubeMusic.qml">controls2_640/YoutubeMusic.qml</file>
         <file alias="controls2/qtquickcontrols2.conf">controls2_640/qtquickcontrols2.conf</file>
         <file alias="controls2/NoZoneState.qml">controls2_640/NoZoneState.qml</file>
         <file alias="controls2/components/ActivitySpinner.qml">controls2_640/components/ActivitySpinner.qml</file>

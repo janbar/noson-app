@@ -5,7 +5,8 @@ set(CMAKE_AUTOMOC ON)
 option(QT_STATICPLUGIN "Build a static plugin" OFF)
 
 find_package(Qt${QT_VERSION_MAJOR} ${QT_VERSION} COMPONENTS
-    Core Gui Qml Quick REQUIRED)
+    Core Gui Qml Quick Network WebEngineCore WebEngineQuick REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR}Keychain REQUIRED)
 
 if(UNIX AND NOT APPLE)
 #    include( FindPkgConfig )
@@ -46,6 +47,8 @@ set(
     NosonApp_SOURCES
     plugin.cpp
     sonos.cpp
+    sonosaccount.cpp
+    cloudmediamodel.cpp
     player.cpp
     tracksmodel.cpp
     queuemodel.cpp
@@ -73,6 +76,8 @@ set(
     locked.h
     cppdef.h
     sonos.h
+    sonosaccount.h
+    cloudmediamodel.h
     player.h
     listmodel.h
     tracksmodel.h
@@ -120,7 +125,11 @@ set_target_properties(NosonApp PROPERTIES
 target_link_libraries(NosonApp ${noson_LIBRARIES}
     Qt${QT_VERSION_MAJOR}::Gui
     Qt${QT_VERSION_MAJOR}::Qml
-    Qt${QT_VERSION_MAJOR}::Quick)
+    Qt${QT_VERSION_MAJOR}::Quick
+    Qt${QT_VERSION_MAJOR}::Network
+    Qt${QT_VERSION_MAJOR}::WebEngineCore
+    Qt${QT_VERSION_MAJOR}::WebEngineQuick
+    Qt${QT_VERSION_MAJOR}Keychain::Qt${QT_VERSION_MAJOR}Keychain)
 
 if(HAVE_DBUS)
     target_link_libraries(NosonApp Qt${QT_VERSION_MAJOR}::DBus)

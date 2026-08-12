@@ -1227,6 +1227,7 @@ ApplicationWindow {
     ListModel {
         id: tabs
         ListElement { title: qsTr("My Services"); source: "qrc:/controls2/MusicServices.qml"; visible: true }
+        ListElement { title: qsTr("YouTube Music"); source: "qrc:/controls2/YoutubeMusic.qml"; visible: true }
         ListElement { title: qsTr("My Index"); source: "qrc:/controls2/Index.qml"; visible: true }
         ListElement { title: qsTr("My Radios"); source: "qrc:/controls2/RadioStations.qml"; visible: true }
         ListElement { title: qsTr("Favorites"); source: "qrc:/controls2/Favorites.qml"; visible: false }
