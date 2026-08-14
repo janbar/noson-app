@@ -45,7 +45,10 @@ if(ANDROID)
       endif()
     endif()
 endif()
-find_package(OpenSSL REQUIRED)
+
+if(NOT OPENSSL_FOUND)
+    find_package(OpenSSL REQUIRED)
+endif()
 
 # Provides dependency zlib
 if(NOT BUILD_DEPENDENCIES)
@@ -114,8 +117,8 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/noson/CMakeLists.txt)
 else()
     if(NOT LIBNOSON_GIT_MASTER)
         download_project(PROJ noson
-          URL "${CMAKE_CURRENT_SOURCE_DIR}/noson-2.12.35.tar.gz"
-          URL_HASH MD5=04310b1586e169a402210700cb57b9de
+          URL "${CMAKE_CURRENT_SOURCE_DIR}/noson-2.13.0.tar.gz"
+          URL_HASH MD5=acf6169ff05c40b9f22e0f5df7d46552
           PREFIX ${CMAKE_CURRENT_BINARY_DIR}
           UPDATE_DISCONNECTED ON)
     else()
