@@ -1,9 +1,9 @@
 name: appimage_amd64_qt6
 on:
   push:
-    branches: [ master ]
+    branches: [ master, devel ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, devel ]
 
 jobs:
   build-appimage:
