@@ -6,7 +6,7 @@ set VCREDIST_DIR="C:\Qt"
 rem the path to the source directory
 set SOURCE_DIR="..\"
 rem the path to the build directory
-set BUILD_DIR="..\..\build-noson-app-Desktop_Qt_5_15_2_MSVC2015_64bit-Release\"
+set BUILD_DIR="..\..\build-noson-app-Release\"
 
 rem Copy Files
 set FILES="Files"
@@ -68,16 +68,12 @@ copy %QT_DIR%\translations\qtbase_*.qm %FILES%\translations
 rem Copy MSVC Redist Files
 copy %VCREDIST_DIR%\vc_redist.x64.exe %FILES%
 
-rem Copy OpenSSL depends
-copy %BUILD_DIR%\backend\lib\openssl-1.1-build\crypto\"libcrypto-1_1-x64.dll" %FILES%
-copy %BUILD_DIR%\backend\lib\openssl-1.1-build\ssl\"libssl-1_1-x64.dll" %FILES%
-
 rem Copy FLAC depends
 copy %BUILD_DIR%\backend\lib\flac-build\"libFLAC.dll" %FILES%
 copy %BUILD_DIR%\backend\lib\flac-build\"libFLAC++.dll" %FILES%
 
 rem Copy application Files
-copy %BUILD_DIR%\gui\noson-gui.exe %FILES%
+copy %BUILD_DIR%\noson-gui.exe %FILES%
 copy %BUILD_DIR%\backend\cli\noson-cli.exe %FILES%
 mkdir %FILES%\NosonApp
 copy %BUILD_DIR%\backend\qml\NosonApp\NosonApp.dll %FILES%\NosonApp
@@ -93,5 +89,15 @@ rem Copy qt.conf
 copy %SOURCE_DIR%\win64\qt.conf %FILES%
 rem Copy noson.ico
 copy %SOURCE_DIR%\win64\noson.ico %FILES%
+
+@echo *********************************************************************
+@echo *                          REQUIREMENTS                             *
+@echo *********************************************************************
+@echo You have to copy manually the OpenSSL depends into the destination
+@echo folder: %FILES%
+@echo Examples:
+@echo     copy C:\OpenSSL\libcrypto-1_1-x64.dll %FILES%
+@echo     copy C:\OpenSSL\libssl-1_1-x64.dll %FILES%
+pause
 
 pause
