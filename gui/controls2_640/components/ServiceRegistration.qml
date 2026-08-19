@@ -59,6 +59,15 @@ Rectangle {
             wrapMode: Text.WordWrap
         }
 
+        Button {
+            id: openLink
+            visible: false
+            height: units.gu(6)
+            text: qsTr("Open the registration link")
+            width: parent.width
+            onClicked: Qt.openUrlExternally(mediaModel.regURL)
+        }
+
         Label {
             id: regMessage
             color: styleMusic.view.foregroundColor
@@ -71,19 +80,17 @@ Rectangle {
             font.pointSize: units.fs("medium")
         }
 
-        Label {
+        TextInput {
             id: regUrl
-            visible: text.length > 0
-            color: styleMusic.view.foregroundColor
-            elide: Text.ElideRight
-            font.pointSize: units.fs("large")
+            visible: openLink.visible
+            color: styleMusic.view.highlightedColor
+            readOnly: true
+            selectByMouse: true
+            font.pointSize: units.fs("medium")
             horizontalAlignment: Text.AlignHCenter
-            maximumLineCount: 6
             text: ""
-            onLinkActivated: Qt.openUrlExternally(link)
-            linkColor: styleMusic.view.linkColor
             width: parent.width
-            wrapMode: Text.WordWrap
+            wrapMode: Text.WrapAnywhere
         }
 
         Button {
@@ -106,8 +113,9 @@ Rectangle {
                 if (mediaModel.beginDeviceRegistration()) {
                     regStartButton.visible = false;
                     regCode.text = mediaModel.linkCode;
-                    regMessage.text = qsTr("Click the link below to authorize this application to use the service.")
-                    regUrl.text = "<a href='" + mediaModel.regURL + "'>" + mediaModel.regURL + "</a>";
+                    regMessage.text = qsTr("Or copy the link below and paste it into your browser ...")
+                    regUrl.text = mediaModel.regURL;
+                    openLink.visible = true;
                     requestAuthForTime.start();
                 }
                 mainView.jobRunning = false
