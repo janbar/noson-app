@@ -32,6 +32,8 @@ MusicPage {
     listview: groupList
 
     state: "group"
+    // unchecked rooms will leave the group
+    groupRoomRemove: groupList.selectedCount < roomsModel.count
 
     property string zoneId: ""
 
