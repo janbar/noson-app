@@ -1323,12 +1323,16 @@
         <translation>Wissen</translation>
     </message>
     <message>
-        <location filename="../controls2_515/components/MusicPage.qml" line="346"/>
-        <location filename="../controls2_515/components/MusicPage.qml" line="399"/>
-        <location filename="../controls2_640/components/MusicPage.qml" line="346"/>
-        <location filename="../controls2_640/components/MusicPage.qml" line="399"/>
+        <location filename="../controls2_515/components/MusicPage.qml" line="401"/>
+        <location filename="../controls2_640/components/MusicPage.qml" line="401"/>
         <source>Done</source>
         <translation>Gereed</translation>
+    </message>
+    <message>
+        <location filename="../controls2_515/components/MusicPage.qml" line="348"/>
+        <location filename="../controls2_640/components/MusicPage.qml" line="348"/>
+        <source>Group</source>
+        <translation>Groeperen</translation>
     </message>
     <message>
         <location filename="../controls2_515/components/MusicPage.qml" line="389"/>
