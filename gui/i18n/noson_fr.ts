@@ -1335,6 +1335,12 @@
         <translation>Grouper</translation>
     </message>
     <message>
+        <location filename="../controls2_515/components/MusicPage.qml" line="401"/>
+        <location filename="../controls2_640/components/MusicPage.qml" line="401"/>
+        <source>Remove</source>
+        <translation>Retirer</translation>
+    </message>
+    <message>
         <location filename="../controls2_515/components/MusicPage.qml" line="389"/>
         <location filename="../controls2_640/components/MusicPage.qml" line="389"/>
         <source>None</source>

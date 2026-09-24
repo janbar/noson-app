@@ -32,6 +32,7 @@ Page {
     property bool isListView: false
     property ListView listview: null
     property bool groupZoneVisible: true
+    property bool groupRoomRemove: false
     property bool isRoot: true // by default this page is root
     property bool showToolbar: true // by default enable the music tool bar
 
@@ -397,7 +398,7 @@ Page {
                         visible: true
                         source: "qrc:/images/group.svg"
                         height: units.gu(5)
-                        label.text: qsTr("Done")
+                        label.text: groupRoomRemove ? qsTr("Remove") : qsTr("Done")
                         label.font.pointSize: units.fs("x-small")
                         onClicked: groupRoomClicked()
                     }
