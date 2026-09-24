@@ -31,6 +31,7 @@ MusicListView {
     ]
 
     property var selectedIndices: []
+    property int selectedCount: 0 // selectedIndices is mutated in place, so bindings need this
 
     signal synchronizeChecked() // need item sync for CheckBox state
     signal selectNone()
@@ -59,6 +60,7 @@ MusicListView {
     }
     onSynchronizeChecked: {
         hasSelection = selectedIndices.length > 0
+        selectedCount = selectedIndices.length
     }
 
     // Expose the selectedIndices
@@ -74,6 +76,7 @@ MusicListView {
 
     function selectIndex(i) {
         selectedIndices.push(i)
+        selectedCount = selectedIndices.length
         if (hasSelection == false)
             hasSelection = true;
         selected(i);
@@ -82,6 +85,7 @@ MusicListView {
     function deselectIndex(i) {
         var index = selectedIndices.indexOf(i)
         selectedIndices.splice(index, 1)
+        selectedCount = selectedIndices.length
         if (selectedIndices.length === 0)
             hasSelection = false;
         deselected(i);

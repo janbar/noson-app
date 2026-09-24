@@ -31,6 +31,8 @@ MusicPage {
     pageFlickable: zoneList
     isListView: true
     listview: zoneList
+    // joining zones needs at least two selected zones
+    groupZoneVisible: zoneList.selectedCount > 1
 
     state: "zone"
 
