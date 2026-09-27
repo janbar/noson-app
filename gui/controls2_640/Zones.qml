@@ -292,7 +292,7 @@ MusicPage {
             }
         }
         // on deselecting
-        onDeselected: {
+        onDeselected: function(index) {
             if (AllZonesModel.get(index).name === currentZone) {
                 selectedIndices.push(index); // re-push the index
                 synchronizeChecked();
