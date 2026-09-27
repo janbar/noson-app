@@ -59,8 +59,9 @@ MusicListView {
         //hasSelection = (tmp.length > 0);
     }
     onSynchronizeChecked: {
-        hasSelection = selectedIndices.length > 0
         selectedCount = selectedIndices.length
+        if (selectedCount > 0)
+            hasSelection = true;
     }
 
     // Expose the selectedIndices
@@ -77,7 +78,7 @@ MusicListView {
     function selectIndex(i) {
         selectedIndices.push(i)
         selectedCount = selectedIndices.length
-        if (hasSelection == false)
+        if (!hasSelection)
             hasSelection = true;
         selected(i);
     }
@@ -86,7 +87,7 @@ MusicListView {
         var index = selectedIndices.indexOf(i)
         selectedIndices.splice(index, 1)
         selectedCount = selectedIndices.length
-        if (selectedIndices.length === 0)
+        if (selectedCount === 0)
             hasSelection = false;
         deselected(i);
     }
