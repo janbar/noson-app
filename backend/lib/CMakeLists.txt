@@ -117,8 +117,8 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/noson/CMakeLists.txt)
 else()
     if(NOT LIBNOSON_GIT_MASTER)
         download_project(PROJ noson
-          URL "${CMAKE_CURRENT_SOURCE_DIR}/noson-2.14.0.tar.gz"
-          URL_HASH MD5=0d5c1128af2e41393bfb2615a48c8530
+          URL "${CMAKE_CURRENT_SOURCE_DIR}/noson-2.14.1.tar.gz"
+          URL_HASH MD5=27c75c903bc20a1112019d71af3620df
           PREFIX ${CMAKE_CURRENT_BINARY_DIR}
           UPDATE_DISCONNECTED ON)
     else()
