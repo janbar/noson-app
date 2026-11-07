@@ -120,8 +120,8 @@ Item {
         width: height
         enabled: canPlay
         opacity: 0.5
-        onClicked: card.playClicked(mouse)
-        onPressAndHold: card.pressAndHold(mouse)
+        onClicked: function(mouse) { card.playClicked(mouse) }
+        onPressAndHold: function(mouse) { card.pressAndHold(mouse) }
         source: "qrc:/images/media-preview-start.svg"
         color: styleMusic.card.foregroundColor
     }
